@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:225
+#: ../../../lib/web/src/lib/error-normalizer.ts:215
 msgid "Please check your internet connection and try again."
 msgstr "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά."
 
@@ -39,14 +39,9 @@ msgstr "[χωρίς ορισμό]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Δέχτηκε # χτύπημα} other {Δέχτηκε # χτυπήματα}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# επιλεγμένο} other {# επιλεγμένα}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:724
+#: src/components/MissionSetup.tsx:749
 msgid "{0} created “{1}”"
 msgstr "{0} δημιούργησε «{1}»"
 
@@ -55,13 +50,13 @@ msgstr "{0} δημιούργησε «{1}»"
 msgid "{0} flying"
 msgstr "{0} στον αέρα"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:432
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:437
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb πάνω από το όριο ασυμμετρίας του καταπέλτη"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:426
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:431
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb πάνω από το μέγιστο βάρος εκτόξευσης"
 
@@ -71,19 +66,14 @@ msgstr "{0} lb πάνω από το μέγιστο βάρος εκτόξευση
 msgid "{0} of {1} flights"
 msgstr ""
 
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "Προεπισκόπηση επιλογής {0}"
-
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:766
+#: src/components/SettingsDialog.tsx:770
 msgid "{0} was already taken, and that control is now unbound."
 msgstr ""
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:762
+#: src/components/SettingsDialog.tsx:766
 msgid "{0} was on {1}, which is now unbound."
 msgstr ""
 
@@ -129,22 +119,6 @@ msgstr "Ο/Η {opponentName} πρότεινε ισοπαλία"
 msgid "{placed} of {limit} bots"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} επιλέχθηκε} other {{manyName} επιλέχθηκαν}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} επιλέχθηκε. Η γραμμή μαζικών ενεργειών είναι διαθέσιμη.} other {# {manyName} επιλέχθηκαν. Η γραμμή μαζικών ενεργειών είναι διαθέσιμη.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# επιλεγμένα} other {# επιλεγμένα}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {Μαζικές ενέργειες για # επιλεγμένο {entityName}} other {Μαζικές ενέργειες για # επιλεγμένα {manyName}}}"
-
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
@@ -179,7 +153,7 @@ msgstr "ΚΑΛΩΔΙΟ 1"
 msgid "12 hours"
 msgstr "12 ώρες"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:485
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -195,7 +169,7 @@ msgstr "24 ώρες"
 msgid "3 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 3"
 
-#: src/components/MissionSetup.tsx:483
+#: src/components/MissionSetup.tsx:488
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -211,47 +185,31 @@ msgstr "Αποδοχή"
 msgid "Access denied"
 msgstr "Άρνηση πρόσβασης"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "Απαγορευμένη πρόσβαση"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Επίπεδο πρόσβασης"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "Ο λογαριασμός προστέθηκε"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "Ο λογαριασμός αφαιρέθηκε"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "Τύπος λογαριασμού"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "Ο λογαριασμός επαληθεύτηκε"
-
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1216
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "Άσος"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Acquire target"
 msgstr "Κλείδωμα στόχου"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Acquisition mode"
 msgstr "Λειτουργία εγκλωβισμού"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -274,19 +232,14 @@ msgid "Add access"
 msgstr "Προσθήκη πρόσβασης"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "Προσθήκη λογαριασμού"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "Προσθέστε έναν λογαριασμό για να λαμβάνετε ειδοποιήσεις και να χρησιμοποιείτε υπηρεσίες."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "Προσθήκη λεζάντας"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "Προσθήκη στοιχείου λίστας ελέγχου"
 
@@ -295,17 +248,13 @@ msgstr "Προσθήκη στοιχείου λίστας ελέγχου"
 msgid "Add field"
 msgstr "Προσθήκη πεδίου"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "Προσθήκη στοιχείου..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "Προσθήκη συνδέσμου"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "Προσθήκη νέου λογαριασμού"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -316,13 +265,8 @@ msgid "Add option"
 msgstr "Προσθήκη επιλογής"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "Προσθήκη ετικέτας..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "Προσθήκη ομάδας/εφαρμογής"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -339,11 +283,7 @@ msgstr "Προσθήκη προβολής"
 msgid "Adding..."
 msgstr "Προσθήκη..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "Προσαρμόστε την εμφάνιση και τη διάταξη σύμφωνα με τις προτιμήσεις σας."
-
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Afterburner"
 msgstr "Μετάκαυση"
 
@@ -351,21 +291,17 @@ msgstr "Μετάκαυση"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:101
 msgid "Aircraft"
 msgstr "Αεροσκάφος"
 
-#: src/components/MissionSetup.tsx:555
+#: src/components/MissionSetup.tsx:560
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Αεροπλανοφόρο <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> από <1>Muhamad Mirza Arrafi</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: αλλαγή κλίμακας, επαναπροσανατολίστηκε, βυθίστηκε έως την ίσαλο γραμμή και απλοποιήθηκε για το web."
 
-#: src/components/MissionSetup.tsx:531
+#: src/components/MissionSetup.tsx:536
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Μοντέλο αεροσκάφους <0>“F/A-18C Hornet”</0> από <1>CreadorDeMu</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: επαναπροσανατολίστηκε και άλλαξε κλίμακα, αφαιρέθηκαν τα αχρησιμοποίητα δεδομένα υφών, τα εξωτερικά φορτία διαχωρίστηκαν σε ξεχωριστό αρχείο, ένα πλέγμα καλύμματος αντικατοπτρίστηκε."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "Όλα"
 
 #: src/components/MatchHistory.tsx:273
 msgid "All modes"
@@ -388,7 +324,7 @@ msgstr "Να επιτρέπεται η ταξινόμηση κατά"
 msgid "An error occurred"
 msgstr "Παρουσιάστηκε σφάλμα"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:266
 msgid "An unexpected error occurred"
 msgstr "Παρουσιάστηκε απροσδόκητο σφάλμα"
 
@@ -401,11 +337,11 @@ msgid "Android push"
 msgstr "Push Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:45
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Anyone"
 msgstr "Οποιοσδήποτε"
 
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Anyone who is logged in"
 msgstr "Οποιοσδήποτε είναι συνδεδεμένος"
 
@@ -413,12 +349,12 @@ msgstr "Οποιοσδήποτε είναι συνδεδεμένος"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Ό,τι είναι εγγεγραμμένο σε αυτήν τη ροή θα σταματήσει να τη λαμβάνει. Μπορείτε να αντιγράψετε μια νέα διεύθυνση URL στη συνέχεια."
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Approach power (ATC)"
 msgstr "Ισχύς προσέγγισης (ATC)"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Approach, on-speed (Vapp)"
 msgstr "Προσέγγιση, στη σωστή ταχύτητα (Vapp)"
 
@@ -439,24 +375,20 @@ msgstr "Είστε βέβαιοι ότι θέλετε να διαγράψετε 
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε; Θα πρέπει να συνδεθείτε ξανά για να αποκτήσετε πρόσβαση στον λογαριασμό σας."
 
-#: src/components/MissionSetup.tsx:1137
+#: src/components/MissionSetup.tsx:1162
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Arrestor hook"
 msgstr "Άγκιστρο ανάσχεσης"
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "Αύξουσα"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Αύξουσα"
 
-#: src/components/MissionSetup.tsx:1105
+#: src/components/MissionSetup.tsx:1130
 msgid "Assists Active"
 msgstr ""
 
@@ -468,12 +400,12 @@ msgstr "Επισύναψη αρχείων σχολίου"
 msgid "Attach reply files"
 msgstr "Επισύναψη αρχείων απάντησης"
 
-#: src/components/SettingsDialog.tsx:632
+#: src/components/SettingsDialog.tsx:636
 msgid "Audio Mixer Channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Authenticated users"
 msgstr "Πιστοποιημένοι χρήστες"
 
@@ -493,16 +425,16 @@ msgstr "Άβαταρ"
 msgid "Avatar for {name}"
 msgstr "Άβαταρ για {name}"
 
-#: src/components/MissionSetup.tsx:1296
+#: src/components/MissionSetup.tsx:1321
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:474
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "Άξονας {i}"
 
-#: src/components/SettingsDialog.tsx:424
+#: src/components/SettingsDialog.tsx:428
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -515,17 +447,16 @@ msgstr "πίσω"
 msgid "Back"
 msgstr "Πίσω"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Επιστροφή στην αρχή"
 
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:996
+#: src/components/MissionSetup.tsx:1021
 msgid "Bandit"
 msgstr "Εχθρός"
 
@@ -537,23 +468,23 @@ msgstr "Μπάνερ"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ΚΑΤΩ ΑΠΟ 250 — ΣΥΣΤΗΜΑ ΚΑΙ ΠΤΕΡΥΓΙΑ"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:449
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Βέλτιστη άνοδος (Vy, 100% ώση)"
 
-#: src/components/MissionSetup.tsx:445
+#: src/components/MissionSetup.tsx:450
 msgid "Best climb (Vy, afterburner)"
 msgstr "Βέλτιστη άνοδος (Vy, μετάκαυση)"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:452
 msgid "Best glide (engines out)"
 msgstr "Βέλτιστη ολίσθηση (σβηστοί κινητήρες)"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Best sustained turn speed"
 msgstr "Ταχύτητα βέλτιστης διατηρούμενης στροφής"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -566,8 +497,8 @@ msgstr "ΜΠΙΝΓΚΟ ΚΑΥΣΙΜΟ"
 msgid "Blocked by"
 msgstr "Αποκλείεται από"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "Αποκλείστηκε η πλοήγηση σε μη αξιόπιστο σύνδεσμο"
 
@@ -624,12 +555,12 @@ msgstr "ΣΤΡΟΦΗ ΟΤΑΝ ΕΤΟΙΜΟΣ"
 msgid "Browser notifications"
 msgstr "Ειδοποιήσεις προγράμματος περιήγησης"
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "Κουμπί {i}"
 
-#: src/components/SettingsDialog.tsx:516
+#: src/components/SettingsDialog.tsx:520
 msgid "Button Mappings"
 msgstr ""
 
@@ -637,7 +568,7 @@ msgstr ""
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — ελεύθερα πυρά από την αρχή"
 
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1015
 msgid "BVR (Start)"
 msgstr ""
 
@@ -646,15 +577,15 @@ msgid "CALL THE BALL"
 msgstr "ΑΝΆΦΕΡΕ ΤΗΝ ΜΠΆΛΑ"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1034
+#: src/components/SettingsDialog.tsx:1038
 msgid "Callsign"
 msgstr "Διακριτικό κλήσης"
 
-#: src/components/SettingsDialog.tsx:843
+#: src/components/SettingsDialog.tsx:847
 msgid "Camera distance"
 msgstr "Απόσταση κάμερας"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Camera unavailable"
 msgstr "Η κάμερα δεν είναι διαθέσιμη"
 
@@ -675,7 +606,7 @@ msgstr "Η κάμερα δεν είναι διαθέσιμη"
 #: src/components/GameCanvas.tsx:536
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -687,11 +618,11 @@ msgstr "Ακύρωση σχολίου"
 msgid "Cancel reply"
 msgstr "Ακύρωση απάντησης"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:594
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:233
 msgid "Canopy"
 msgstr "Θόλος πιλοτηρίου"
 
@@ -700,43 +631,43 @@ msgstr "Θόλος πιλοτηρίου"
 msgid "Caption"
 msgstr "Λεζάντα"
 
-#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:595
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1198
+#: src/components/MissionSetup.tsx:1223
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1052
 msgid "Case I (day)"
 msgstr "Περίπτωση I (ημέρα)"
 
-#: src/components/MissionSetup.tsx:1199
+#: src/components/MissionSetup.tsx:1224
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1053
 msgid "Case II (weather)"
 msgstr "Περίπτωση II (καιρός)"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1225
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1054
 msgid "Case III (night)"
 msgstr "Περίπτωση III (νύχτα)"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1062
 msgid "Catapult"
 msgstr "Καταπέλτης"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:97
+#: ../../../lib/web/src/components/notification-category-button.tsx:99
 msgid "Category for these notifications"
 msgstr "Κατηγορία για αυτές τις ειδοποιήσεις"
 
-#: src/components/MissionSetup.tsx:252
+#: src/components/MissionSetup.tsx:257
 msgid "Centerline"
 msgstr "Κεντρική γραμμή"
 
@@ -744,8 +675,8 @@ msgstr "Κεντρική γραμμή"
 msgid "CHAFF"
 msgstr "ΔΙΠΟΛΑ"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:78
-#: ../../../lib/web/src/components/notification-category-button.tsx:89
+#: ../../../lib/web/src/components/notification-category-button.tsx:80
+#: ../../../lib/web/src/components/notification-category-button.tsx:91
 msgid "Change notification category"
 msgstr "Αλλαγή κατηγορίας ειδοποίησης"
 
@@ -757,11 +688,11 @@ msgstr "Θέα καταδίωξης:"
 msgid "chat"
 msgstr "συνομιλία"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "Chat"
 msgstr "Συνομιλία"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "Chat to everyone"
 msgstr "Συνομιλία με όλους"
 
@@ -769,10 +700,6 @@ msgstr "Συνομιλία με όλους"
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Ζαβολιές"
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "Επιλέξτε «Όλα» για να δείτε παλαιότερες ειδοποιήσεις."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
@@ -785,22 +712,6 @@ msgstr "Λίστα ελέγχου"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Επιλέξτε ένα παιχνίδι από την πλαϊνή στήλη ή ξεκινήστε ένα νέο."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "Επιλέξτε ανάμεσα σε προεπιλεγμένη ανεπτυγμένη, συμπαγή μόνο με εικονίδια ή πλήρη λειτουργία διάταξης"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "Επιλέξτε ανάμεσα σε ένθετη, αιωρούμενη ή τυπική διάταξη πλαϊνής στήλης"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "Επιλέξτε ανάμεσα σε κατεύθυνση ιστότοπου από αριστερά προς τα δεξιά ή από δεξιά προς τα αριστερά"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "Επιλέξτε ανάμεσα σε προτίμηση συστήματος, ανοιχτή λειτουργία ή σκοτεινή λειτουργία"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -816,7 +727,7 @@ msgstr "Επιλογή γλώσσας"
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:677
+#: src/components/SettingsDialog.tsx:681
 msgid "Clear"
 msgstr "Εκκαθάριση"
 
@@ -824,29 +735,15 @@ msgstr "Εκκαθάριση"
 msgid "Clear all"
 msgstr "Εκκαθάριση όλων"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "Εκκαθάριση φίλτρων"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "Εκκαθάριση αναζήτησης"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "Εκκαθάριση επιλογής"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "Εκκαθάριση επιλογής (Escape)"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:470
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:468
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:471
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Κλείσιμο"
@@ -863,8 +760,8 @@ msgstr "Κλείσιμο διαλόγου"
 msgid "Close navigation"
 msgstr "Κλείσιμο πλοήγησης"
 
-#: ../../../lib/web/src/components/layout/right-panel.tsx:265
-#: ../../../lib/web/src/components/layout/right-panel.tsx:268
+#: ../../../lib/web/src/components/layout/right-panel.tsx:234
+#: ../../../lib/web/src/components/layout/right-panel.tsx:237
 msgid "Close panel"
 msgstr "Κλείσιμο πίνακα"
 
@@ -880,7 +777,7 @@ msgstr "Κλείσιμο αναζήτησης"
 msgid "closer"
 msgstr "πιο κοντά"
 
-#: src/components/MissionSetup.tsx:1078
+#: src/components/MissionSetup.tsx:1103
 msgid "Clouds"
 msgstr "Σύννεφα"
 
@@ -912,10 +809,6 @@ msgstr "Οι στήλες ομαδοποιούνται κατά"
 msgid "Comfortable"
 msgstr "Άνετο"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "Έρχεται σύντομα!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "Παλέτα εντολών"
@@ -929,16 +822,15 @@ msgstr "ΞΕΚΙΝΏ"
 msgid "Comment actions"
 msgstr "Ενέργειες σχολίου"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:433
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:445
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:431
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:103
 msgid "Communication"
 msgstr "Επικοινωνία"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "Συμπαγές"
@@ -956,21 +848,17 @@ msgstr "Διαμόρφωση ρυθμίσεων προβολής"
 msgid "Confirm"
 msgstr "Επιβεβαίωση"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:916
 msgid "Connect"
 msgstr "Σύνδεση"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:903
 msgid "Connect to private server"
 msgstr "Σύνδεση σε ιδιωτικό διακομιστή"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "Συνδεδεμένο"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "Συνδεδεμένοι λογαριασμοί"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1017,7 +905,7 @@ msgstr "Αντιγράφηκε στο πρόχειρο"
 msgid "Copy"
 msgstr "Αντιγραφή"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Corner speed (best instant turn)"
 msgstr "Ταχύτητα γωνίας (βέλτιστη στιγμιαία στροφή)"
 
@@ -1029,7 +917,7 @@ msgstr "Δεν ήταν δυνατή η δημιουργία του αγώνα"
 msgid "Could not load this document. Please try again later."
 msgstr "Δεν ήταν δυνατή η φόρτωση αυτού του εγγράφου. Παρακαλώ δοκιμάστε ξανά αργότερα."
 
-#: src/components/SettingsDialog.tsx:291
+#: src/components/SettingsDialog.tsx:295
 msgid "Could not save the profile"
 msgstr "Δεν ήταν δυνατή η αποθήκευση του προφίλ"
 
@@ -1038,11 +926,11 @@ msgstr "Δεν ήταν δυνατή η αποθήκευση του προφίλ
 msgid "Could not save the recording"
 msgstr "Δεν ήταν δυνατή η αποθήκευση της καταγραφής"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 msgid "Could not send the message"
 msgstr "Δεν ήταν δυνατή η αποστολή του μηνύματος"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "Δεν ήταν δυνατή η φόρτωση των ειδοποιήσεων"
 
@@ -1058,8 +946,8 @@ msgstr "Δεν ήταν δυνατή η έναρξη του εκ νέου ελέ
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Δεν ήταν δυνατή η επαλήθευση με αυτόν τον λογαριασμό. Δοκιμάστε ξανά."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Countermeasures"
 msgstr "Αντίμετρα"
 
@@ -1092,8 +980,8 @@ msgstr "Δημιουργία και πτήση"
 msgid "Create match"
 msgstr "Δημιουργία αγώνα"
 
-#: src/components/MissionSetup.tsx:1294
-#: src/components/MissionSetup.tsx:1318
+#: src/components/MissionSetup.tsx:1319
+#: src/components/MissionSetup.tsx:1343
 msgid "Create mission"
 msgstr "Δημιουργία αποστολής"
 
@@ -1111,12 +999,12 @@ msgstr "Δημιουργήθηκε"
 msgid "Creating..."
 msgstr "Δημιουργία..."
 
-#: src/components/MissionSetup.tsx:520
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:531
 msgid "Credits"
 msgstr "Συντελεστές"
 
-#: src/components/MissionSetup.tsx:1085
+#: src/components/MissionSetup.tsx:1110
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1134,23 +1022,16 @@ msgstr "Προσαρμοσμένο"
 msgid "CUT"
 msgstr "ΕΠΙΚΙΝΔΥΝΟ"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Cycle view"
 msgstr "Εναλλαγή προβολής"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "Σκοτεινό"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "Σκοτεινή λειτουργία"
-
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:250
 msgid "Data conflict"
 msgstr "Διένεξη δεδομένων"
 
@@ -1159,7 +1040,7 @@ msgstr "Διένεξη δεδομένων"
 msgid "Date"
 msgstr "Ημερομηνία"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1096
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Ημέρα"
@@ -1176,10 +1057,6 @@ msgstr "ΘΕΣΗ ΚΑΤΑΣΤΡΩΜΑΤΟΣ ΑΠΟΘΗΚΕΥΤΗΚΕ"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "Απόρριψη"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "Προεπιλογή"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1235,13 +1112,9 @@ msgstr "Διαγραφή προβολής"
 msgid "Delete your account on the old server"
 msgstr "Διαγράψτε τον λογαριασμό σας στον παλιό διακομιστή"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1041
 msgid "Departure / Recovery"
 msgstr ""
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "Φθίνουσα"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
@@ -1259,8 +1132,8 @@ msgstr "Καταστράφηκε από πυρκαγιά"
 msgid "Details Panel"
 msgstr "Πίνακας λεπτομερειών"
 
-#: src/components/SettingsDialog.tsx:503
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "Ανίχνευση"
 
@@ -1279,10 +1152,6 @@ msgstr "Εντοπισμός από το πρόγραμμα περιήγησης
 msgid "Different game host"
 msgstr "Διαφορετικός κεντρικός υπολογιστής παιχνιδιού"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "Κατεύθυνση"
-
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Κατάλογος"
@@ -1299,7 +1168,7 @@ msgstr "Απόρριψη"
 msgid "Discard draft?"
 msgstr "Απόρριψη πρόχειρου;"
 
-#: src/components/SettingsDialog.tsx:387
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "αποσυνδεδεμένο"
 
@@ -1311,37 +1180,37 @@ msgstr "Αποσυνδεδεμένο"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1265
-#: src/components/SettingsDialog.tsx:773
+#: src/components/MissionSetup.tsx:1290
+#: src/components/SettingsDialog.tsx:777
 msgid "Dismiss"
 msgstr "Απόρριψη"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:240
 msgid "Display repeater"
 msgstr "Επαναλήπτης οθόνης"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "Εμφανίζει την πλευρική μπάρα κινητού."
 
-#: src/components/SettingsDialog.tsx:974
+#: src/components/SettingsDialog.tsx:978
 msgid "Distance LOD"
 msgstr "LOD απόστασης"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1117
+#: src/components/SettingsDialog.tsx:1121
 msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:452
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:462
 msgid "Download"
 msgstr "Λήψη"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:100
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:98
 msgid "Download failed"
 msgstr "Η λήψη απέτυχε"
 
@@ -1365,11 +1234,11 @@ msgstr "Διπλότυπο"
 msgid "Duration"
 msgstr "Διάρκεια"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:972
 msgid "Dynamic resolution"
 msgstr "Δυναμική ανάλυση"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:141
+#: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Dyslexia-friendly"
 msgstr "Φιλικό προς δυσλεξία"
 
@@ -1416,15 +1285,15 @@ msgstr "Επεξεργασία επιλεγμένης κάρτας"
 msgid "Edit view"
 msgstr "Επεξεργασία προβολής"
 
-#: src/components/SettingsDialog.tsx:962
+#: src/components/SettingsDialog.tsx:966
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:941
+#: src/components/SettingsDialog.tsx:945
 msgid "Effects detail"
 msgstr "Λεπτομέρεια εφέ"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:237
 msgid "Eject"
 msgstr "Εκτίναξη"
 
@@ -1444,8 +1313,8 @@ msgstr "Κωδικός email"
 msgid "EMERG JETT"
 msgstr "ΑΠΟΡΡΙΨΗ ΑΝΑΓΚΗΣ"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Emergency jettison (hold)"
 msgstr "Απόρριψη έκτακτης ανάγκης (κρατήστε)"
 
@@ -1453,8 +1322,8 @@ msgstr "Απόρριψη έκτακτης ανάγκης (κρατήστε)"
 msgid "empty"
 msgstr "κενή"
 
-#: src/components/MissionSetup.tsx:271
-#: src/components/MissionSetup.tsx:282
+#: src/components/MissionSetup.tsx:276
+#: src/components/MissionSetup.tsx:287
 msgid "Empty pylon"
 msgstr "Κενός πυλώνας"
 
@@ -1462,15 +1331,15 @@ msgstr "Κενός πυλώνας"
 msgid "ENGAGED"
 msgstr "ΕΜΠΛΕΚΟΜΑΙ"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1008
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:592
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,7 +1351,7 @@ msgstr "Εισαγάγετε τον κωδικό από το email σας"
 msgid "Enter your authenticator code"
 msgstr "Εισαγάγετε τον κωδικό της εφαρμογής ελέγχου ταυτότητας"
 
-#: src/components/MissionSetup.tsx:1059
+#: src/components/MissionSetup.tsx:1084
 msgid "Environment"
 msgstr "Περιβάλλον"
 
@@ -1517,16 +1386,16 @@ msgstr "Ανάπτυξη"
 msgid "Expand sidebar"
 msgstr "Επέκταση πλευρικής μπάρας"
 
-#: src/components/SettingsDialog.tsx:402
+#: src/components/SettingsDialog.tsx:406
 msgid "Export"
 msgstr "Εξαγωγή"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Extend flaps"
 msgstr "Έκταση πτερυγίων"
 
-#: src/components/SettingsDialog.tsx:933
+#: src/components/SettingsDialog.tsx:937
 msgid "Exterior detail"
 msgstr "Λεπτομέρεια εξωτερικού"
 
@@ -1534,29 +1403,21 @@ msgstr "Λεπτομέρεια εξωτερικού"
 msgid "External URL"
 msgstr "Εξωτερικό URL"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:131
+#: ../../../lib/web/src/lib/preference-utils.ts:124
 msgid "Extra large"
 msgstr "Πολύ μεγάλο"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1335
 msgid "F/A-18C Hornet"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:473
 msgid "F/A-18C reference"
 msgstr "Αναφορά F/A-18C"
 
-#: src/components/MissionSetup.tsx:1243
+#: src/components/MissionSetup.tsx:1268
 msgid "F/A-18C Strike Fighter"
 msgstr ""
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "Αποτυχία προσθήκης λογαριασμού"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "Αποτυχία προσθήκης ετικέτας"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
@@ -1592,11 +1453,11 @@ msgstr "Αποτυχία φόρτωσης"
 msgid "Failed to load history"
 msgstr "Αποτυχία φόρτωσης ιστορικού"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load image"
 msgstr "Αποτυχία φόρτωσης εικόνας"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load video"
 msgstr "Αποτυχία φόρτωσης βίντεο"
 
@@ -1604,17 +1465,9 @@ msgstr "Αποτυχία φόρτωσης βίντεο"
 msgid "Failed to post comment"
 msgstr "Αποτυχία ανάρτησης σχολίου"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "Αποτυχία αφαίρεσης λογαριασμού"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "Αποτυχία ανάκλησης πρόσβασης RSS"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "Αποτυχία αποστολής κωδικού επαλήθευσης"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1642,10 +1495,6 @@ msgstr "Η ΜΑΧΗ ΞΕΚΙΝΑ"
 msgid "Files"
 msgstr "Αρχεία"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "Φιλτράρισμα..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "Ολοκληρώστε τη μεταφορά του λογαριασμού σας"
@@ -1658,12 +1507,12 @@ msgstr "Ολοκληρώθηκε"
 msgid "fire"
 msgstr "πυρ"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Fire weapon"
 msgstr "Άνοιγμα πυρός"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:840
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1695,11 +1544,11 @@ msgstr "Επίπεδη"
 msgid "Flew into the sea"
 msgstr "Έπεσε στη θάλασσα"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:98
 msgid "Flight"
 msgstr "Πτήση"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1126
 msgid "Flight Assists"
 msgstr ""
 
@@ -1707,11 +1556,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "ΑΠΟΤΥΧΙΑ ΠΥΡΗΝΑ ΠΤΗΣΗΣ"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:986
 msgid "Flight Profile"
 msgstr ""
 
@@ -1719,16 +1568,12 @@ msgstr ""
 msgid "Flights"
 msgstr "Πτήσεις"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "Αιωρούμενο"
-
 #: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "Πέταξε"
 
-#: src/components/MissionSetup.tsx:1288
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1360
 msgid "Fly"
 msgstr "Πτήση"
 
@@ -1736,12 +1581,12 @@ msgstr "Πτήση"
 msgid "Fly again"
 msgstr "Πέταξε ξανά"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1002
 msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:998
 msgid "Free flight"
 msgstr "Ελεύθερη πτήση"
 
@@ -1760,9 +1605,8 @@ msgstr "Από"
 #: ../../../lib/web/src/lib/preference-utils.ts:89
 #: ../../../lib/web/src/lib/preference-utils.ts:99
 #: ../../../lib/web/src/lib/preference-utils.ts:110
-#: ../../../lib/web/src/lib/preference-utils.ts:119
-#: ../../../lib/web/src/lib/preference-utils.ts:127
-#: ../../../lib/web/src/lib/preference-utils.ts:138
+#: ../../../lib/web/src/lib/preference-utils.ts:120
+#: ../../../lib/web/src/lib/preference-utils.ts:131
 msgid "From theme"
 msgstr "Από το θέμα"
 
@@ -1786,28 +1630,24 @@ msgstr "ΔΙΑΡΡΟΗ ΚΑΥΣ"
 msgid "FUEL LO"
 msgstr "ΧΑΜΗΛΟ ΚΑΥΣΙΜΟ"
 
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:232
 msgid "Fuel probe"
 msgstr "Ακροφύσιο ανεφοδιασμού"
 
-#: src/components/MissionSetup.tsx:269
+#: src/components/MissionSetup.tsx:274
 msgid "Fuel tank"
 msgstr "Δεξαμενή καυσίμου"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "Πλήρης διάταξη"
 
 #: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:251
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:258
 msgid "Fuselage"
 msgstr "Άτρακτος"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Gain"
 msgstr "Ενίσχυση"
 
@@ -1819,45 +1659,24 @@ msgstr "τροχοί"
 msgid "GEAR"
 msgstr "ΣΚΕΛΗ"
 
-#: src/components/SettingsDialog.tsx:1126
+#: src/components/SettingsDialog.tsx:1130
 msgid "General"
 msgstr "Γενικά"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Πίσω"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "Μετάβαση στην πρώτη σελίδα"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "Μετάβαση στην τελευταία σελίδα"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "Μετάβαση στην επόμενη σελίδα"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "Μετάβαση στη σελίδα {pageNumber}"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "Μετάβαση στην προηγούμενη σελίδα"
-
-#: src/components/SettingsDialog.tsx:1130
+#: src/components/SettingsDialog.tsx:1134
 msgid "Graphics"
 msgstr "Γραφικά"
 
-#: src/components/SettingsDialog.tsx:893
+#: src/components/SettingsDialog.tsx:897
 msgid "Graphics Preset"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:401
 msgid "Gross weight"
 msgstr "Μικτό βάρος"
 
@@ -1878,7 +1697,7 @@ msgstr "Ομάδα: {0}"
 msgid "GUN"
 msgstr "ΠΥΡΟΒΟΛΟ"
 
-#: src/components/MissionSetup.tsx:288
+#: src/components/MissionSetup.tsx:293
 msgid "Gun only"
 msgstr "Μόνο πυροβόλα"
 
@@ -1887,35 +1706,27 @@ msgstr "Μόνο πυροβόλα"
 msgid "Guns only"
 msgstr "Μόνο πυροβόλα"
 
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1285
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Η επιτάχυνση γραφικών υλικού είναι απενεργοποιημένη — ελέγξτε τις ρυθμίσεις του προγράμματος περιήγησης ή τους οδηγούς γραφικών."
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head"
 msgstr "Κεφάλι"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head tracking"
 msgstr "Παρακολούθηση κεφαλιού"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/MissionSetup.tsx:409
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "Απόκρυψη"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "Απόκρυψη κωδικού"
-
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "High"
 msgstr "Υψηλή"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1111
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
@@ -1945,11 +1756,11 @@ msgstr "ΓΑΝΤΖΟΣ"
 msgid "Hot"
 msgstr "Δημοφιλή"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:241
 msgid "HUD altitude source"
 msgstr "Πηγή υψομέτρου HUD"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:242
 msgid "HUD declutter"
 msgstr "Απλοποίηση HUD"
 
@@ -1958,7 +1769,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:318
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
 msgid "Image viewer: {0}"
 msgstr "Προβολή εικόνας: {0}"
 
@@ -1966,16 +1777,16 @@ msgstr "Προβολή εικόνας: {0}"
 msgid "Imperial"
 msgstr "Αυτοκρατορικό"
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:410
 msgid "Import"
 msgstr "Εισαγωγή"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1220
 msgid "In air"
 msgstr "Στον αέρα"
 
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Including anonymous users"
 msgstr "Συμπεριλαμβανομένων ανώνυμων χρηστών"
 
@@ -1987,39 +1798,27 @@ msgstr "Άβαταρ αρχικών"
 msgid "Initials avatar for {name}"
 msgstr "Άβαταρ αρχικών για {name}"
 
-#: src/components/SettingsDialog.tsx:368
+#: src/components/SettingsDialog.tsx:372
 msgid "Input Hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "Εσωτερικό"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "Ενδιαφέροντα"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:387
 msgid "Internal fuel"
 msgstr "Εσωτερικό καύσιμο"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "Μη έγκυρη ημερομηνία"
 
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "Μη έγκυρη ετικέτα: μόνο γράμματα, αριθμοί, κενά, παύλες και κάθετοι (έως 50 χαρακτήρες)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "Μη έγκυρος κωδικός επαλήθευσης"
-
-#: src/components/SettingsDialog.tsx:414
+#: src/components/SettingsDialog.tsx:418
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Άτρωτος"
@@ -2028,7 +1827,7 @@ msgstr "Άτρωτος"
 msgid "INVULNERABLE"
 msgstr "ΑΤΡΩΤΟΣ"
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Άτρωτος (μόνο για ανθρώπινους παίκτες)"
@@ -2037,13 +1836,13 @@ msgstr "Άτρωτος (μόνο για ανθρώπινους παίκτες)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Φαίνεται ότι η σελίδα που αναζητάτε <0/>δεν υπάρχει ή έχει καταργηθεί."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jammer"
 msgstr "Παρεμβολέας"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Jettison tanks"
 msgstr "Απόρριψη δεξαμενών"
 
@@ -2055,8 +1854,8 @@ msgstr "ΑΠΟΡΡΙΨΗ: ΣΥΣΤΗΜΑ ΠΡΟΣΓΕΙΩΣΗΣ"
 msgid "Join"
 msgstr "Συμμετοχή"
 
-#: src/components/MissionSetup.tsx:817
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:842
+#: src/components/MissionSetup.tsx:1320
 msgid "Join server"
 msgstr "Σύνδεση σε διακομιστή"
 
@@ -2065,7 +1864,7 @@ msgid "JOINED"
 msgstr "ΜΠΗΚΕ"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1230
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Κονταρομαχία"
@@ -2074,11 +1873,11 @@ msgstr "Κονταρομαχία"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Μονομαχία — 1v1, η πρώτη κατάρριψη κερδίζει"
 
-#: src/components/MissionSetup.tsx:974
+#: src/components/MissionSetup.tsx:999
 msgid "Joust against bot"
 msgstr "Μονομαχία εναντίον μποτ"
 
-#: src/components/SettingsDialog.tsx:1138
+#: src/components/SettingsDialog.tsx:1142
 msgid "Joystick"
 msgstr "Χειριστήριο"
 
@@ -2094,7 +1893,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: src/components/SettingsDialog.tsx:1142
+#: src/components/SettingsDialog.tsx:1146
 msgid "Keys"
 msgstr "Πλήκτρα"
 
@@ -2123,13 +1922,13 @@ msgstr "ΦΩΤΙΑ ΑΡ ΚΙΝ"
 msgid "L GEAR"
 msgstr "ΑΡ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Landing gear"
 msgstr "Σύστημα προσγείωσης"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:103
-#: ../../../lib/web/src/lib/preference-utils.ts:130
+#: ../../../lib/web/src/lib/preference-utils.ts:123
 msgid "Large"
 msgstr "Μεγάλο"
 
@@ -2137,12 +1936,12 @@ msgstr "Μεγάλο"
 msgid "LATE"
 msgstr "ΑΡΓΆ"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:422
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Launch (catapult)"
 msgstr "Εκτόξευση (καταπέλτης)"
 
@@ -2150,7 +1949,6 @@ msgstr "Εκτόξευση (καταπέλτης)"
 msgid "launch / target"
 msgstr "εκτόξευση / στόχευση"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "Διάταξη"
@@ -2159,12 +1957,7 @@ msgstr "Διάταξη"
 msgid "lb"
 msgstr "lb"
 
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "Μάθετε περισσότερα"
-
-#: src/components/MissionSetup.tsx:913
+#: src/components/MissionSetup.tsx:938
 msgid "Leave server"
 msgstr "Αποχώρηση από διακομιστή"
 
@@ -2176,16 +1969,12 @@ msgstr "Αποχώρησε"
 msgid "LEFT"
 msgstr "ΕΦΥΓΕ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "Από αριστερά προς τα δεξιά"
-
-#: src/components/MissionSetup.tsx:249
-#: src/components/MissionSetup.tsx:250
+#: src/components/MissionSetup.tsx:254
+#: src/components/MissionSetup.tsx:255
 msgid "Left wing"
 msgstr "Αριστερή πτέρυγα"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:253
 msgid "Left wingtip"
 msgstr "Άκρο αριστερής πτέρυγας"
 
@@ -2197,8 +1986,6 @@ msgstr "Μόνο γράμματα, αριθμοί, κενά και παύλες"
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ΕΥΘΕΊΑ ΣΤΑ 1200, ΣΎΣΤΗΜΑ ΚΆΤΩ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "Φωτεινό"
@@ -2207,8 +1994,8 @@ msgstr "Φωτεινό"
 msgid "lights"
 msgstr "φώτα"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:235
 msgid "Lights"
 msgstr "Φώτα"
 
@@ -2249,8 +2036,6 @@ msgstr "Η ΦΟΡΤΩΣΗ ΑΠΕΤΥΧΕ"
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2268,39 +2053,39 @@ msgstr "Επιτυχής αποσύνδεση"
 msgid "Logging out…"
 msgstr "Αποσύνδεση…"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:116
 msgid "Look"
 msgstr "Θέαση"
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:846
 msgid "Look / orbit"
 msgstr "Θέαση / περιστροφή"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look at target"
 msgstr "Κοίτα τον στόχο"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:188
 msgid "Look down"
 msgstr "Θέαση κάτω"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:189
 msgid "Look left"
 msgstr "Θέαση αριστερά"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look right"
 msgstr "Θέαση δεξιά"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:187
 msgid "Look up"
 msgstr "Θέαση πάνω"
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Low"
 msgstr "Χαμηλή"
 
-#: src/components/MissionSetup.tsx:1088
+#: src/components/MissionSetup.tsx:1113
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2310,13 +2095,9 @@ msgstr "Χαμηλά στρώματα"
 msgid "M to close"
 msgstr "M για κλείσιμο"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
+#: ../../../lib/web/src/components/notification-category-button.tsx:127
 msgid "Manage categories"
 msgstr "Διαχείριση κατηγοριών"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "Διαχειριστείτε τους συνδεδεμένους λογαριασμούς σας για ειδοποιήσεις και υπηρεσίες."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
@@ -2326,26 +2107,25 @@ msgstr "Χειροκίνητο"
 msgid "map"
 msgstr "χάρτης"
 
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:243
 msgid "Map"
 msgstr "Χάρτης"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "Σήμανση όλων ως αναγνωσμένα"
 
-#: src/components/SettingsDialog.tsx:607
+#: src/components/SettingsDialog.tsx:611
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:622
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:587
-#: src/components/SettingsDialog.tsx:614
+#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Volume"
 msgstr ""
 
@@ -2353,11 +2133,11 @@ msgstr ""
 msgid "Match type"
 msgstr "Τύπος αγώνα"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:933
 msgid "Matches"
 msgstr "Αγώνες"
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Max fidelity"
 msgstr ""
 
@@ -2370,7 +2150,7 @@ msgid "MCP server"
 msgstr "Διακομιστής MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Medium"
 msgstr "Μεσαίο"
 
@@ -2379,8 +2159,8 @@ msgid "menu"
 msgstr "μενού"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:190
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:246
 msgid "Menu"
 msgstr "Μενού"
 
@@ -2388,7 +2168,7 @@ msgstr "Μενού"
 msgid "Merge — fight on at the pass"
 msgstr "Συνάντηση — η μάχη αρχίζει στο πέρασμα"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1014
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2400,7 +2180,7 @@ msgstr "Μήνυμα"
 msgid "Message everyone"
 msgstr "Μήνυμα σε όλους"
 
-#: src/components/MissionSetup.tsx:741
+#: src/components/MissionSetup.tsx:766
 msgid "Message players on this server"
 msgstr "Στείλτε μήνυμα στους παίκτες αυτού του διακομιστή"
 
@@ -2412,7 +2192,7 @@ msgstr "Μήνυμα στην ομάδα σου"
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: src/components/MissionSetup.tsx:1087
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2422,7 +2202,7 @@ msgstr "Μεσαία στρώματα"
 msgid "Midair collision"
 msgstr "Σύγκρουση στον αέρα"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:607
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Χάρτης της Ατόλης Μίντγουεϊ — οι εικόνες περιέχουν τροποποιημένα δεδομένα <0>Copernicus Sentinel-2</0> (2026)· η γεωμετρία του αεροδρομίου (διάδρομος, τροχόδρομοι, δάπεδα στάθμευσης) © συνεισφέροντες του <1>OpenStreetMap</1>, υπό άδεια <2>ODbL</2>· δεδομένα ακτογραμμής και υφάλων από <3>NOAA NCCOS</3> (κοινό κτήμα)."
 
@@ -2434,7 +2214,7 @@ msgstr "Ελάχιστο μήκος"
 msgid "MISSILE"
 msgstr "ΠΥΡΑΥΛΟΣ"
 
-#: src/components/MissionSetup.tsx:579
+#: src/components/MissionSetup.tsx:584
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Μοντέλο πυραύλου <0>“AIM-120C AMRAAM”</0> από <1>Pippa</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: νέα κλίμακα, νέος προσανατολισμός και κεντράρισμα για την τοποθέτηση."
 
@@ -2464,11 +2244,11 @@ msgstr "Δευτέρα"
 msgid "More options"
 msgstr "Περισσότερες επιλογές"
 
-#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1320
 msgid "Multiplayer dogfights"
 msgstr ""
 
@@ -2493,7 +2273,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "Το όνομα πρέπει να είναι 1000 χαρακτήρες ή λιγότεροι"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:313
 msgid "Network error"
 msgstr "Σφάλμα δικτύου"
 
@@ -2507,12 +2287,12 @@ msgstr "Νέο"
 msgid "New game"
 msgstr "Νέο παιχνίδι"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:527
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:532
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
 msgid "Next image"
 msgstr "Επόμενη εικόνα"
 
-#: src/components/MissionSetup.tsx:1072
+#: src/components/MissionSetup.tsx:1097
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2534,11 +2314,7 @@ msgstr "Δεν υπάρχει ακόμη δραστηριότητα"
 msgid "No comments yet"
 msgstr "Δεν υπάρχουν ακόμη σχόλια"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "Δεν υπάρχουν συνδεδεμένοι λογαριασμοί"
-
-#: src/components/SettingsDialog.tsx:692
+#: src/components/SettingsDialog.tsx:696
 msgid "No control matches “{query}”."
 msgstr ""
 
@@ -2562,7 +2338,7 @@ msgstr "Δεν υπάρχουν διαθέσιμες ομάδες"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Δεν μπορούν να δημιουργηθούν ακόμη τύποι στοιχείων. Δημιουργήστε πρώτα τα απαιτούμενα γονικά στοιχεία."
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Δεν εντοπίστηκε χειριστήριο — πατήστε οποιοδήποτε κουμπί του για να ξυπνήσει."
 
@@ -2570,15 +2346,11 @@ msgstr "Δεν εντοπίστηκε χειριστήριο — πατήστε 
 msgid "No matching objects"
 msgstr "Δεν υπάρχουν αντίστοιχα αντικείμενα"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "Καμία ειδοποίηση ακόμη"
-
 #: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "Δεν υπάρχουν ανοιχτοί αγώνες — δημιούργησε έναν."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "Δεν βρέθηκαν άτομα"
@@ -2587,18 +2359,12 @@ msgstr "Δεν βρέθηκαν άτομα"
 msgid "No places found"
 msgstr "Δεν βρέθηκαν τοποθεσίες"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "Χωρίς προφίλ"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "Δεν βρέθηκαν αποτελέσματα"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Δεν βρέθηκαν αποτελέσματα."
 
@@ -2620,11 +2386,11 @@ msgstr "ΧΩΡΙΣ ΣΤΟΧΟ"
 msgid "No time zone found."
 msgstr "Δεν βρέθηκε ζώνη ώρας."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:104
+#: ../../../lib/web/src/components/notification-category-button.tsx:106
 msgid "No topic record yet — try again after the next notification."
 msgstr "Δεν υπάρχει ακόμη εγγραφή θέματος — προσπαθήστε ξανά μετά την επόμενη ειδοποίηση."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "Καμία μη αναγνωσμένη ειδοποίηση"
 
@@ -2636,7 +2402,7 @@ msgstr "Δεν βρέθηκαν χρήστες"
 msgid "No views"
 msgstr "Χωρίς προβολές"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Δεν υπάρχει διακομιστής κόσμου."
@@ -2645,7 +2411,7 @@ msgstr "Δεν υπάρχει διακομιστής κόσμου."
 msgid "NO-GRADE"
 msgstr "ΧΩΡΙΣ ΒΑΘΜΟ"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:413
 msgid "Nominal"
 msgstr ""
 
@@ -2662,16 +2428,15 @@ msgstr ""
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: ../../../lib/web/src/lib/preference-utils.ts:120
-#: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1084
-#: src/components/SettingsDialog.tsx:468
-#: src/components/SettingsDialog.tsx:544
-#: src/components/SettingsDialog.tsx:817
+#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:1109
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:821
 msgid "None"
 msgstr "Κανένα"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:129
+#: ../../../lib/web/src/lib/preference-utils.ts:122
 msgid "Normal"
 msgstr "Κανονικό"
 
@@ -2679,7 +2444,7 @@ msgstr "Κανονικό"
 msgid "NOSE GEAR"
 msgstr "ΡΙΝ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:304
+#: src/components/SettingsDialog.tsx:308
 msgid "Not a joystick profile"
 msgstr "Δεν είναι προφίλ χειριστηρίου"
 
@@ -2696,25 +2461,17 @@ msgstr "Δεν έχει οριστεί"
 msgid "Nothing found"
 msgstr "Δεν βρέθηκε τίποτα"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 msgid "Nothing yet — say hello."
 msgstr "Τίποτα ακόμα — πείτε ένα γεια."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "Ειδοποιήσεις"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "Ειδοποιήσεις: {0}"
 
-#: src/components/MissionSetup.tsx:1002
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1214
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Αρχάριος"
@@ -2725,7 +2482,7 @@ msgstr "Αρχάριος"
 msgid "Number"
 msgstr "Αριθμός"
 
-#: src/components/SettingsDialog.tsx:949
+#: src/components/SettingsDialog.tsx:953
 msgid "Ocean detail"
 msgstr "Λεπτομέρεια ωκεανού"
 
@@ -2741,13 +2498,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Ενεργό"
 
-#: src/components/MissionSetup.tsx:1026
-#: src/components/MissionSetup.tsx:1197
+#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:1222
 msgid "On carrier"
 msgstr "Στο αεροπλανοφόρο"
 
-#: src/components/MissionSetup.tsx:1025
-#: src/components/MissionSetup.tsx:1196
+#: src/components/MissionSetup.tsx:1050
+#: src/components/MissionSetup.tsx:1221
 msgid "On runway"
 msgstr "Στον διάδρομο"
 
@@ -2763,11 +2520,6 @@ msgstr "Ανοιχτό"
 msgid "Open — anyone may join or leave"
 msgstr "Ανοιχτός — οποιοσδήποτε μπορεί να μπει ή να φύγει"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "Άνοιγμα ενεργειών λογαριασμού"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2782,11 +2534,6 @@ msgstr "Άνοιγμα μενού"
 msgid "Open navigation"
 msgstr "Άνοιγμα πλοήγησης"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "Άνοιγμα μενού πλοήγησης"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2795,11 +2542,6 @@ msgstr "Άνοιγμα ενεργειών επιλογής"
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Άνοιγμα επιλεγμένης κάρτας"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "Άνοιγμα ρυθμίσεων θέματος"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2833,8 +2575,8 @@ msgstr "τροχιά"
 msgid "Other"
 msgstr "Άλλο"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:209
 msgid "Override G limit"
 msgstr "Παράκαμψη ορίου G"
 
@@ -2850,16 +2592,11 @@ msgstr "ΚΛΕΙΔΩΜΑ ΒΛΕΜΜΑΤΟΣ"
 msgid "PADLOCK OFF"
 msgstr "ΒΛΕΜΜΑ ΕΛΕΥΘΕΡΟ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "Σελίδα {currentPage} από {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "Γονικό"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:208
 msgid "Parking brake"
 msgstr "Χειρόφρενο"
 
@@ -2883,23 +2620,19 @@ msgstr "Μοτίβο (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "Επιλέξτε ημερομηνία"
-
-#: src/components/MissionSetup.tsx:664
+#: src/components/MissionSetup.tsx:675
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "πιλότος"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1190
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1215
+#: src/components/MissionSetup.tsx:1274
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Πιλότος"
@@ -2908,7 +2641,7 @@ msgstr "Πιλότος"
 msgid "PILOT DOWN"
 msgstr "ΠΙΛΟΤΟΣ ΝΕΚΡΟΣ"
 
-#: src/components/SettingsDialog.tsx:1030
+#: src/components/SettingsDialog.tsx:1034
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2920,15 +2653,15 @@ msgstr "Ο πιλότος σκοτώθηκε"
 msgid "pitch"
 msgstr "πρόνευση"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:111
 msgid "Pitch"
 msgstr "Πρόνευση"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:199
 msgid "Pitch down"
 msgstr "Μύτη κάτω"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:198
 msgid "Pitch up"
 msgstr "Μύτη πάνω"
 
@@ -2942,7 +2675,7 @@ msgstr "Παίκτες"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:89
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:314
 msgid "Please check your internet connection and try again."
 msgstr "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά."
 
@@ -2966,7 +2699,7 @@ msgstr "Αναρτήσεις"
 msgid "Posts and comments"
 msgstr "Αναρτήσεις και σχόλια"
 
-#: src/components/SettingsDialog.tsx:797
+#: src/components/SettingsDialog.tsx:801
 msgid "Press a key…"
 msgstr "Πατήστε ένα πλήκτρο…"
 
@@ -2974,12 +2707,12 @@ msgstr "Πατήστε ένα πλήκτρο…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ΠΑΤΗΣΕ ENTER ΓΙΑ ΑΠΟΓΕΙΩΣΗ"
 
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:511
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:516
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:509
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
 msgid "Previous image"
 msgstr "Προηγούμενη εικόνα"
 
@@ -2992,12 +2725,8 @@ msgstr "Ιδιωτικότητα"
 msgid "Processing…"
 msgstr "Γίνεται επεξεργασία…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "Προφίλ"
-
-#: src/components/SettingsDialog.tsx:290
-#: src/components/SettingsDialog.tsx:302
+#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:306
 msgid "Profile saved"
 msgstr "Το προφίλ αποθηκεύτηκε"
 
@@ -3005,8 +2734,8 @@ msgstr "Το προφίλ αποθηκεύτηκε"
 msgid "Project members"
 msgstr "Μέλη έργου"
 
-#: src/components/MissionSetup.tsx:844
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:887
 msgid "Public servers"
 msgstr "Δημόσιοι διακομιστές"
 
@@ -3030,8 +2759,8 @@ msgstr "ΦΩΤΙΑ ΔΕΞ ΚΙΝ"
 msgid "R GEAR"
 msgstr "ΔΕΞ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Radar silent"
 msgstr "Σίγαση ραντάρ"
 
@@ -3047,7 +2776,7 @@ msgstr "Επανασυνδέστε τους λογαριασμούς σας σε
 msgid "Re-register your passkeys on this server"
 msgstr "Καταχωρίστε ξανά τα κλειδιά πρόσβασής σας σε αυτόν τον διακομιστή"
 
-#: src/components/MissionSetup.tsx:1279
+#: src/components/MissionSetup.tsx:1304
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3055,11 +2784,10 @@ msgstr ""
 msgid "REARMED"
 msgstr "ΕΠΑΝΟΠΛΙΣΤΗΚΕ"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:848
 msgid "Recent"
 msgstr "Πρόσφατα"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "Συνιστώμενο"
@@ -3068,7 +2796,7 @@ msgstr "Συνιστώμενο"
 msgid "Reconnecting ({retries})..."
 msgstr "Επανασύνδεση ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1055
+#: src/components/SettingsDialog.tsx:1059
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3097,7 +2825,7 @@ msgstr "Ανακατεύθυνση στη σύνδεση."
 msgid "Reduce interest"
 msgstr "Μείωση ενδιαφέροντος"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:467
 msgid "Reference"
 msgstr "Αναφορά"
 
@@ -3125,7 +2853,6 @@ msgstr "Σχετικό εντός 24 ωρών, αλλιώς απόλυτο"
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Αφαίρεση"
 
@@ -3154,7 +2881,7 @@ msgstr "Αφαίρεση πρόσβασης;"
 msgid "Remove interest"
 msgstr "Αφαίρεση ενδιαφέροντος"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "Αφαίρεση στοιχείου"
 
@@ -3176,11 +2903,11 @@ msgstr "Μετονομασία στήλης"
 msgid "Rename this board column"
 msgstr "Μετονομασία αυτής της στήλης πίνακα"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:641
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Η απόδοση γίνεται με το <0>three.js</0> (άδεια MIT)."
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:922
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3202,38 +2929,27 @@ msgstr "Υποχρεωτικό"
 msgid "Resend email"
 msgstr "Επαναποστολή email"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1113
+#: src/components/SettingsDialog.tsx:1117
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "Επαναφορά {title}"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "Επαναφορά όλων των ρυθμίσεων σε προεπιλεγμένες τιμές"
-
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Reset master caution"
 msgstr "Επαναφορά κύριας προειδοποίησης"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Reset trim"
 msgstr "Μηδενισμός αντιστάθμισης"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
-#: src/components/SettingsDialog.tsx:841
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:845
 msgid "Reset view"
 msgstr "Μηδενισμός προβολής"
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:927
 msgid "Resolution"
 msgstr "Επίλυση"
 
@@ -3257,8 +2973,8 @@ msgstr "Αποτέλεσμα"
 msgid "Resume"
 msgstr "Συνέχιση"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Retract flaps"
 msgstr "Ανάκληση πτερυγίων"
 
@@ -3266,7 +2982,7 @@ msgstr "Ανάκληση πτερυγίων"
 msgid "Retry"
 msgstr "Δοκιμή ξανά"
 
-#: src/components/SettingsDialog.tsx:486
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "Αντεστραμμένο"
 
@@ -3282,16 +2998,12 @@ msgstr "Ανάκληση πρόσβασης"
 msgid "Revoke RSS access?"
 msgstr "Ανάκληση πρόσβασης RSS;"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "Από δεξιά προς αριστερά"
-
-#: src/components/MissionSetup.tsx:254
-#: src/components/MissionSetup.tsx:255
+#: src/components/MissionSetup.tsx:259
+#: src/components/MissionSetup.tsx:260
 msgid "Right wing"
 msgstr "Δεξιά πτέρυγα"
 
-#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:261
 msgid "Right wingtip"
 msgstr "Άκρο δεξιάς πτέρυγας"
 
@@ -3299,15 +3011,15 @@ msgstr "Άκρο δεξιάς πτέρυγας"
 msgid "roll"
 msgstr "διατοιχισμός"
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:112
 msgid "Roll"
 msgstr "Διατοιχισμός"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:200
 msgid "Roll left"
 msgstr "Κλίση αριστερά"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Roll right"
 msgstr "Κλίση δεξιά"
 
@@ -3319,10 +3031,6 @@ msgstr "Γραμμές"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "Ομαδοποίηση γραμμών κατά"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "Γραμμές ανά σελίδα"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3352,7 +3060,7 @@ msgstr "Σάββατο"
 msgid "Save"
 msgstr "Αποθήκευση"
 
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:482
 msgid "Sea level"
 msgstr "Στάθμη θάλασσας"
 
@@ -3363,8 +3071,8 @@ msgstr "Στάθμη θάλασσας"
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: src/components/SettingsDialog.tsx:667
-#: src/components/SettingsDialog.tsx:668
+#: src/components/SettingsDialog.tsx:671
+#: src/components/SettingsDialog.tsx:672
 msgid "Search controls"
 msgstr ""
 
@@ -3408,12 +3116,10 @@ msgstr "Αναζήτηση, παρακολούθηση και ταξινόμησ
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Αναζήτηση..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3422,11 +3128,6 @@ msgstr "Αναζήτηση..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "Επιλογή"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "Επιλογή {0}"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3444,10 +3145,6 @@ msgstr "Επιλέξτε έναν χρήστη, ομάδα ή άλλον καν�
 msgid "Select access rule"
 msgstr "Επιλέξτε κανόνα πρόσβασης"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "Επιλέξτε λογαριασμό"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "Επιλέξτε τύπο λογαριασμού"
@@ -3455,10 +3152,6 @@ msgstr "Επιλέξτε τύπο λογαριασμού"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "Επιλέξτε ομάδα"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "Επιλέξτε στυλ διάταξης"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3476,38 +3169,22 @@ msgstr "Επιλέξτε άτομο..."
 msgid "Select previous card"
 msgstr "Επιλογή προηγούμενης κάρτας"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "Επιλέξτε στυλ πλευρικής μπάρας"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "Επιλέξτε κατεύθυνση ιστότοπου"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "Επιλέξτε προτίμηση θέματος"
-
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Select weapon"
 msgstr "Επιλογή όπλου"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "Επιλογή..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "επιλεγμένα"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
 msgid "Selected: <0>{0}</0>"
 msgstr "Επιλέχθηκε: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:773
 msgid "Send"
 msgstr "Αποστολή"
 
@@ -3528,7 +3205,7 @@ msgstr "Αποστολή email"
 msgid "Send message"
 msgstr "Αποστολή μηνύματος"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:140
+#: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Serif"
 msgstr "Με ακρέμονες"
 
@@ -3537,12 +3214,12 @@ msgstr "Με ακρέμονες"
 msgid "Server"
 msgstr "Διακομιστής"
 
-#: src/components/MissionSetup.tsx:713
+#: src/components/MissionSetup.tsx:728
 msgid "Server chat"
 msgstr "Συνομιλία διακομιστή"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:270
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:296
 msgid "Server error"
 msgstr "Σφάλμα διακομιστή"
 
@@ -3560,11 +3237,11 @@ msgstr "ο διακομιστής τρέχει v{0}, εσείς έχετε v{ver
 msgid "SESSION ENDED"
 msgstr "Η ΣΥΝΕΔΡΙΑ ΕΛΗΞΕ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:220
 msgid "Session expired. Please log in again."
 msgstr "Η συνεδρία έληξε. Συνδεθείτε ξανά."
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Set"
 msgstr "Ορισμός"
 
@@ -3576,13 +3253,13 @@ msgstr "Ορίστε αφετηρία και προορισμό"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:464
-#: src/components/MissionSetup.tsx:1296
-#: src/components/SettingsDialog.tsx:1096
-#: src/components/SettingsDialog.tsx:1123
+#: src/components/MissionSetup.tsx:1321
+#: src/components/SettingsDialog.tsx:1100
+#: src/components/SettingsDialog.tsx:1127
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: src/components/SettingsDialog.tsx:980
+#: src/components/SettingsDialog.tsx:984
 msgid "Shadows"
 msgstr "Σκιές"
 
@@ -3594,10 +3271,6 @@ msgstr "Εμφάνιση κλάσεων"
 msgid "Show fields"
 msgstr "Εμφάνιση πεδίων"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "Εμφάνιση κωδικού"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "Εμφάνιση βοήθειας"
@@ -3606,9 +3279,7 @@ msgstr "Εμφάνιση βοήθειας"
 msgid "Showing {totalShown} of {total}"
 msgstr "Εμφανίζονται {totalShown} από {total}"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "Πλευρική μπάρα"
 
@@ -3626,16 +3297,12 @@ msgstr "Αποσύνδεση..."
 msgid "Single line of text only"
 msgstr "Μόνο μία γραμμή κειμένου"
 
-#: src/components/MissionSetup.tsx:446
+#: src/components/MissionSetup.tsx:451
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Βέλτιστη άνοδος με έναν κινητήρα (Vyse, μετάκαυση)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "Μετάβαση στο κύριο περιεχόμενο"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
-#: ../../../lib/web/src/lib/preference-utils.ts:128
+#: ../../../lib/web/src/lib/preference-utils.ts:121
 msgid "Small"
 msgstr "Μικρό"
 
@@ -3643,15 +3310,15 @@ msgstr "Μικρό"
 msgid "Sort"
 msgstr "Ταξινόμηση"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1050
+#: src/components/SettingsDialog.tsx:1054
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1134
+#: src/components/SettingsDialog.tsx:1138
 msgid "Sound"
 msgstr "Ήχος"
 
@@ -3679,13 +3346,13 @@ msgstr "ΑΕΡΟΦΡ"
 msgid "speed brake"
 msgstr "αεροφρένο"
 
-#: src/components/SettingsDialog.tsx:111
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:206
 msgid "Speed brake"
 msgstr "Αεροφρένο"
 
-#: src/components/MissionSetup.tsx:503
+#: src/components/MissionSetup.tsx:508
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Ταχύτητες σε KCAS, ως εύρος από ελαφρύ (ελάχιστο καύσιμο, χωρίς φορτία) έως βαρύ (μέγιστο μικτό βάρος). Τα δεδομένα προέκυψαν πειραματικά εντός του παιχνιδιού. Τυχόν διαφορές από το πραγματικό αεροσκάφος αντικατοπτρίζουν σφάλματα του μοντέλου πτήσης του προσομοιωτή."
 
@@ -3693,11 +3360,11 @@ msgstr "Ταχύτητες σε KCAS, ως εύρος από ελαφρύ (ελ�
 msgid "SPLASH"
 msgstr "ΣΤΟΧΟΣ ΚΑΤΕΡΡΙΦΘΗ"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:456
 msgid "Stall, clean (Vs1)"
 msgstr "Απώλεια στήριξης, καθαρή (Vs1)"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Stall, landing config (Vs0)"
 msgstr "Απώλεια στήριξης, διαμόρφωση προσγείωσης (Vs0)"
 
@@ -3709,15 +3376,11 @@ msgstr "Έναρξη"
 msgid "Start the discussion by adding the first comment."
 msgstr "Ξεκινήστε τη συζήτηση προσθέτοντας το πρώτο σχόλιο."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "Μείνετε όμως συντονισμένοι!"
-
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:447
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Πιο απότομη άνοδος (Vx, 100% ώση)"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:448
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Πιο απότομη άνοδος (Vx, μετάκαυση)"
 
@@ -3739,7 +3402,6 @@ msgstr "Υποβολή απάντησης"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "Εγγραφή"
@@ -3748,8 +3410,8 @@ msgstr "Εγγραφή"
 msgid "Sunday"
 msgstr "Κυριακή"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1217
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Υπεράνθρωπος"
@@ -3759,20 +3421,14 @@ msgid "Switch to view 1-9"
 msgstr "Εναλλαγή σε προβολή 1-9"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
-#: ../../../lib/web/src/lib/preference-utils.ts:139
+#: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
 msgstr "Σύστημα"
 
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "ΤΑΚΤΙΚΟΣ ΧΑΡΤΗΣ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "Ετικέτα"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3791,11 +3447,11 @@ msgstr "Ετικέτες"
 msgid "TALLY"
 msgstr "ΒΛΕΠΩ ΤΟΝ ΕΧΘΡΟ"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:992
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1319
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3815,10 +3471,6 @@ msgstr "Ομάδες"
 #: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "Ομάδες — κόκκινοι εναντίον μπλε"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "Ομάδες/Εφαρμογές"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3862,19 +3514,7 @@ msgstr "Το περιεχόμενο που ζητήσατε δεν βρέθηκ�
 msgid "The server returned a web page instead of data."
 msgstr "Ο διακομιστής επέστρεψε ιστοσελίδα αντί για δεδομένα."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "Ο ιστότοπος δεν είναι διαθέσιμος αυτή τη στιγμή."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "Θέμα"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "Ρυθμίσεις θέματος"
-
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1283
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει WebGL 2, οπότε το παιχνίδι δεν μπορεί να τρέξει — δοκιμάστε άλλο πρόγραμμα περιήγησης."
 
@@ -3882,29 +3522,25 @@ msgstr "Αυτό το πρόγραμμα περιήγησης δεν υποστ�
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Αυτό το λόμπι στέλνει τη σύνδεση του παιχνιδιού σας σε διαφορετικό κεντρικό υπολογιστή ({redirectHost}). Συνεχίστε μόνο αν εμπιστεύεστε αυτόν τον διακομιστή."
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1287
 msgid "This machine may be too slow for smooth flight."
 msgstr "Αυτό το μηχάνημα μπορεί να είναι πολύ αργό για ομαλή πτήση."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "Αυτή η σελίδα δεν έχει δημιουργηθεί ακόμη."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
 msgstr "γκάζι"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:114
 msgid "Throttle"
 msgstr "Γκάζι"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Throttle down"
 msgstr "Μείωση γκαζιού"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:204
 msgid "Throttle up"
 msgstr "Αύξηση γκαζιού"
 
@@ -3912,7 +3548,7 @@ msgstr "Αύξηση γκαζιού"
 msgid "Thursday"
 msgstr "Πέμπτη"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:455
 msgid "Tightest sustained turn speed"
 msgstr "Ταχύτητα στενότερης διατηρούμενης στροφής"
 
@@ -3924,22 +3560,13 @@ msgstr "κλίση"
 msgid "Time"
 msgstr "Χρόνος"
 
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1090
 msgid "Time of day"
 msgstr "Ώρα της ημέρας"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:220
 msgid "To"
 msgstr "Προς"
-
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "Εναλλαγή στηλών"
-
-#: ../../../lib/web/src/components/layout/right-panel.tsx:233
-#: ../../../lib/web/src/components/layout/right-panel.tsx:236
-msgid "Toggle right panel"
-msgstr "Εναλλαγή δεξιού πίνακα"
 
 #: ../../../lib/web/src/components/layout/nav-group.tsx:365
 #: ../../../lib/web/src/components/layout/nav-group.tsx:372
@@ -3948,20 +3575,15 @@ msgstr "Εναλλαγή δεξιού πίνακα"
 msgid "Toggle section"
 msgstr "Εναλλαγή ενότητας"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "Εναλλαγή πλαϊνής μπάρας"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "Εναλλαγή πλευρικής μπάρας"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "Εναλλαγή θέματος"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3980,7 +3602,7 @@ msgstr "Πάρα πολλά αιτήματα"
 msgid "Top"
 msgstr "Κορυφή"
 
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:996
 msgid "Tracers"
 msgstr "Ιχνηλάτες"
 
@@ -3992,42 +3614,40 @@ msgstr "Σε ταξίδι"
 msgid "trim"
 msgstr "αντιστάθμιση"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:99
 msgid "Trim"
 msgstr "Αντιστάθμιση"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:117
 msgid "Trim hat"
 msgstr "Καπέλο αντιστάθμισης"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim nose down"
 msgstr "Αντιστάθμιση: ρύγχος κάτω"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim nose up"
 msgstr "Αντιστάθμιση: ρύγχος πάνω"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Trim roll left"
 msgstr "Αντιστάθμιση: κλίση αριστερά"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim roll right"
 msgstr "Αντιστάθμιση: κλίση δεξιά"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "Δοκιμάστε να προσαρμόσετε τους όρους αναζήτησής σας"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Δοκιμάστε ξανά"
 
@@ -4056,11 +3676,11 @@ msgstr "Πληκτρολογήστε για αναζήτηση χρηστών"
 msgid "Type to search..."
 msgstr "Πληκτρολογήστε για αναζήτηση..."
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:292
 msgid "Unable to connect to remote server"
 msgstr "Δεν είναι δυνατή η σύνδεση με τον απομακρυσμένο διακομιστή"
 
@@ -4069,7 +3689,7 @@ msgstr "Δεν είναι δυνατή η σύνδεση με τον απομα�
 msgid "Unable to redirect to login. Please try again."
 msgstr "Δεν ήταν δυνατή η ανακατεύθυνση στη σύνδεση. Δοκιμάστε ξανά."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "Χωρίς ανάθεση"
 
@@ -4081,13 +3701,13 @@ msgstr "Μη εξουσιοδοτημένη πρόσβαση"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Uncage seeker"
 msgstr "Απελευθέρωση αναζητητή"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Undesignate target"
 msgstr "Ακύρωση ορισμού στόχου"
 
@@ -4108,23 +3728,23 @@ msgstr "Άγνωστο"
 msgid "Unlimited"
 msgstr "Απεριόριστο"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Απεριόριστα πυρομαχικά"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 msgid "Unlimited ammunition (all players)"
 msgstr "Απεριόριστα πυρομαχικά (όλοι οι παίκτες)"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Απεριόριστα καύσιμα"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 msgid "Unlimited fuel (all players)"
 msgstr "Απεριόριστα καύσιμα (όλοι οι παίκτες)"
 
@@ -4137,10 +3757,6 @@ msgstr "Διαγραφή εγγραφής"
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
 msgid "Untitled"
 msgstr "Χωρίς τίτλο"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "Μη επαληθευμένο"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
@@ -4170,16 +3786,7 @@ msgstr "Χρήστης"
 msgid "Verification code"
 msgstr "Κωδικός επαλήθευσης"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "Ο κωδικός επαλήθευσης στάλθηκε"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "Η επαλήθευση απέτυχε"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Επαλήθευση"
@@ -4188,7 +3795,7 @@ msgstr "Επαλήθευση"
 msgid "Verify email address"
 msgstr "Επαλήθευση διεύθυνσης email"
 
-#: src/components/MissionSetup.tsx:493
+#: src/components/MissionSetup.tsx:498
 msgid "Vertical"
 msgstr "Κατακόρυφη"
 
@@ -4201,7 +3808,7 @@ msgid "Video thumbnail"
 msgstr "Μικρογραφία βίντεο"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:315
 msgid "Video viewer: {0}"
 msgstr "Προβολή βίντεο: {0}"
 
@@ -4209,17 +3816,12 @@ msgstr "Προβολή βίντεο: {0}"
 msgid "view"
 msgstr "θέα"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:102
 msgid "View"
 msgstr "Προβολή"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "Προβολή όλων"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "Προβολή όλων των ειδοποιήσεων"
 
@@ -4227,7 +3829,7 @@ msgstr "Προβολή όλων των ειδοποιήσεων"
 msgid "View controls"
 msgstr "Στοιχεία ελέγχου προβολής"
 
-#: src/components/SettingsDialog.tsx:840
+#: src/components/SettingsDialog.tsx:844
 msgid "Views"
 msgstr "Προβολές"
 
@@ -4253,24 +3855,16 @@ msgstr "ΕΠΑΝΑΚΥΚΛΩΣΗ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Στείλαμε έναν κωδικό επαλήθευσης στο <0>{0}</0>. Εισαγάγετε τον κωδικό παρακάτω για να επαληθεύσετε τη διεύθυνση email σας."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "Θα είμαστε ξανά online σύντομα."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "Θα σας ειδοποιήσουμε όταν συμβεί κάτι σημαντικό."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "όπλο"
 
-#: src/components/SettingsDialog.tsx:114
+#: src/components/SettingsDialog.tsx:118
 msgid "Weapon select hat"
 msgstr "Καπέλο επιλογής όπλου"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:100
 msgid "Weapons"
 msgstr "Όπλα"
 
@@ -4278,25 +3872,21 @@ msgstr "Όπλα"
 msgid "Weather"
 msgstr "Καιρός"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "Ο ιστότοπος βρίσκεται υπό συντήρηση!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "Τετάρτη"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:207
 msgid "Wheel brakes"
 msgstr "Φρένα τροχών"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:593
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:234
 msgid "Wing fold"
 msgstr "Δίπλωμα πτερύγων"
 
@@ -4308,7 +3898,7 @@ msgstr "ΝΙΚΑ"
 msgid "World server"
 msgstr "Διακομιστής κόσμου"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "Ο διακομιστής κόσμου δεν είναι προσβάσιμος"
@@ -4317,17 +3907,17 @@ msgstr "Ο διακομιστής κόσμου δεν είναι προσβάσ�
 msgid "yaw"
 msgstr "εκτροπή"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:113
 msgid "Yaw"
 msgstr "Εκτροπή"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Yaw left"
 msgstr "Εκτροπή αριστερά"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Yaw right"
 msgstr "Εκτροπή δεξιά"
 
@@ -4338,14 +3928,6 @@ msgstr "ΕΣΥ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Δεν έχετε πρόσβαση σε αυτήν την ενότητα."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "Δεν έχετε την απαραίτητη άδεια <0/>για να δείτε αυτόν τον πόρο."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "Τα είδατε όλα!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
@@ -4371,14 +3953,14 @@ msgstr "Το κείμενο και τα συνημμένα σας θα χαθο�
 msgid "Your text will be lost."
 msgstr "Το κείμενό σας θα χαθεί."
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:119
 msgid "Zoom"
 msgstr "Ζουμ"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Zoom in"
 msgstr "Μεγέθυνση"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Zoom out"
 msgstr "Σμίκρυνση"

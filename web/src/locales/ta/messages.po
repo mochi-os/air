@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:225
+#: ../../../lib/web/src/lib/error-normalizer.ts:215
 msgid "Please check your internet connection and try again."
 msgstr "உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
 
@@ -39,14 +39,9 @@ msgstr "[அமைக்கப்படவில்லை]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# குண்டு தாக்கியது} other {# குண்டுகள் தாக்கின}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# தேர்ந்தெடுக்கப்பட்டது} other {# தேர்ந்தெடுக்கப்பட்டது}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:724
+#: src/components/MissionSetup.tsx:749
 msgid "{0} created “{1}”"
 msgstr "{0} “{1}” என்பதை உருவாக்கினார்"
 
@@ -55,13 +50,13 @@ msgstr "{0} “{1}” என்பதை உருவாக்கினார்
 msgid "{0} flying"
 msgstr "{0} பேர் பறக்கின்றனர்"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:432
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:437
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "கவண் சமச்சீரின்மை வரம்பை விட {0} ft·lb அதிகம்"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:426
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:431
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb அதிகபட்ச ஏவல் எடையை விட அதிகம்"
 
@@ -71,19 +66,14 @@ msgstr "{0} lb அதிகபட்ச ஏவல் எடையை விட �
 msgid "{0} of {1} flights"
 msgstr ""
 
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "{0} விருப்பத்தின் முன்னோட்டம்"
-
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:766
+#: src/components/SettingsDialog.tsx:770
 msgid "{0} was already taken, and that control is now unbound."
 msgstr ""
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:762
+#: src/components/SettingsDialog.tsx:766
 msgid "{0} was on {1}, which is now unbound."
 msgstr ""
 
@@ -129,22 +119,6 @@ msgstr "{opponentName} சமநிலை வழங்கினார்"
 msgid "{placed} of {limit} bots"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} தேர்ந்தெடுக்கப்பட்டது} other {{manyName} தேர்ந்தெடுக்கப்பட்டன}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} தேர்ந்தெடுக்கப்பட்டது. மொத்த செயல் கருவிப்பட்டி கிடைக்கிறது.} other {# {manyName} தேர்ந்தெடுக்கப்பட்டன. மொத்த செயல் கருவிப்பட்டி கிடைக்கிறது.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# தேர்ந்தெடுக்கப்பட்டது} other {# தேர்ந்தெடுக்கப்பட்டது}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {# தேர்ந்தெடுக்கப்பட்ட {entityName} க்கான மொத்த செயல்கள்} other {# தேர்ந்தெடுக்கப்பட்ட {manyName} க்கான மொத்த செயல்கள்}}"
-
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
@@ -179,7 +153,7 @@ msgstr "கம்பி 1"
 msgid "12 hours"
 msgstr "12 மணிநேரம்"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:485
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -195,7 +169,7 @@ msgstr "24 மணிநேரம்"
 msgid "3 WIRE"
 msgstr "கம்பி 3"
 
-#: src/components/MissionSetup.tsx:483
+#: src/components/MissionSetup.tsx:488
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -211,47 +185,31 @@ msgstr "ஏற்றுக்கொள்"
 msgid "Access denied"
 msgstr "அணுகல் மறுக்கப்பட்டது"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "அணுகல் தடைசெய்யப்பட்டது"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "அணுகல் நிலை"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "கணக்கு சேர்க்கப்பட்டது"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "கணக்கு அகற்றப்பட்டது"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "கணக்கு வகை"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "கணக்கு சரிபார்க்கப்பட்டது"
-
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1216
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "ஏஸ்"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Acquire target"
 msgstr "இலக்கைப் பூட்டு"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Acquisition mode"
 msgstr "பிடிப்புப் பயன்முறை"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -274,19 +232,14 @@ msgid "Add access"
 msgstr "அணுகல் சேர்"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "கணக்கு சேர்"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "அறிவிப்புகளைப் பெறவும் சேவைகளைப் பயன்படுத்தவும் கணக்கைச் சேர்க்கவும்."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "படக்குறிப்பைச் சேர்"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "சரிபார்ப்பு பட்டியல் உருப்படி சேர்"
 
@@ -295,17 +248,13 @@ msgstr "சரிபார்ப்பு பட்டியல் உருப�
 msgid "Add field"
 msgstr "புலம் சேர்"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "உருப்படி சேர்..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "இணைப்பு சேர்"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "புதிய கணக்கு சேர்"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -316,13 +265,8 @@ msgid "Add option"
 msgstr "விருப்பம் சேர்"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "டேக் சேர்..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "குழு/பயன்பாடு சேர்"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -339,11 +283,7 @@ msgstr "காட்சி சேர்"
 msgid "Adding..."
 msgstr "சேர்க்கிறது..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "உங்கள் விருப்பங்களுக்கு ஏற்ப தோற்றத்தையும் தளவமைப்பையும் சரிசெய்யவும்."
-
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Afterburner"
 msgstr "ஆஃப்டர்பர்னர்"
 
@@ -351,21 +291,17 @@ msgstr "ஆஃப்டர்பர்னர்"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:101
 msgid "Aircraft"
 msgstr "விமானம்"
 
-#: src/components/MissionSetup.tsx:555
+#: src/components/MissionSetup.tsx:560
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "விமானந்தாங்கிக் கப்பல் <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> — <1>Muhamad Mirza Arrafi</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> இன் கீழ் உரிமம் பெற்றது. மாற்றப்பட்டது: அளவு மாற்றப்பட்டது, திசை மாற்றப்பட்டது, நீர்மட்டம் வரை மூழ்கடிக்கப்பட்டது, இணையத்திற்காக எளிமைப்படுத்தப்பட்டது."
 
-#: src/components/MissionSetup.tsx:531
+#: src/components/MissionSetup.tsx:536
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "விமான மாதிரி <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> உரிமத்தின் கீழ். மாற்றப்பட்டது: திசை மாற்றப்பட்டது மற்றும் அளவு மாற்றப்பட்டது, பயன்படுத்தப்படாத டெக்ஸ்சர் தரவு நீக்கப்பட்டது, வெளிப்புற இணைப்புச் சுமைகள் தனி கோப்பாகப் பிரிக்கப்பட்டன, ஒரு உறை மெஷ் கண்ணாடிப் பிரதிபலிப்பாக மாற்றப்பட்டது."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "அனைத்தும்"
 
 #: src/components/MatchHistory.tsx:273
 msgid "All modes"
@@ -388,7 +324,7 @@ msgstr "வரிசைப்படுத்துதலை அனுமதி"
 msgid "An error occurred"
 msgstr "பிழை ஏற்பட்டது"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:266
 msgid "An unexpected error occurred"
 msgstr "எதிர்பாராத பிழை ஏற்பட்டது"
 
@@ -401,11 +337,11 @@ msgid "Android push"
 msgstr "Android புஷ்"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:45
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Anyone"
 msgstr "எவரும்"
 
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Anyone who is logged in"
 msgstr "உள்நுழைந்த யாரும்"
 
@@ -413,12 +349,12 @@ msgstr "உள்நுழைந்த யாரும்"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "இந்த ஊட்டத்திற்கு குழுசேர்ந்த அனைத்தும் அதைப் பெறுவதை நிறுத்தும். பிறகு நீங்கள் புதிய URL ஐ நகலெடுக்கலாம்."
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Approach power (ATC)"
 msgstr "அணுகல் சக்தி (ATC)"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Approach, on-speed (Vapp)"
 msgstr "அணுகல், சரியான வேகத்தில் (Vapp)"
 
@@ -439,24 +375,20 @@ msgstr "இந்த கருத்தை நீக்க விரும்ப
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "வெளியேற விரும்புகிறீர்களா? உங்கள் கணக்கை அணுக மீண்டும் உள்நுழைய வேண்டும்."
 
-#: src/components/MissionSetup.tsx:1137
+#: src/components/MissionSetup.tsx:1162
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Arrestor hook"
 msgstr "தடுப்பு கொக்கி"
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "ஏறு"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ஏறுவரிசை"
 
-#: src/components/MissionSetup.tsx:1105
+#: src/components/MissionSetup.tsx:1130
 msgid "Assists Active"
 msgstr ""
 
@@ -468,12 +400,12 @@ msgstr "கருத்து கோப்புகளை இணை"
 msgid "Attach reply files"
 msgstr "பதிலளிப்பு கோப்புகளை இணை"
 
-#: src/components/SettingsDialog.tsx:632
+#: src/components/SettingsDialog.tsx:636
 msgid "Audio Mixer Channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Authenticated users"
 msgstr "அங்கீகரிக்கப்பட்ட பயனர்கள்"
 
@@ -493,16 +425,16 @@ msgstr "அவதாரம்"
 msgid "Avatar for {name}"
 msgstr "{name} இன் அவதாரம்"
 
-#: src/components/MissionSetup.tsx:1296
+#: src/components/MissionSetup.tsx:1321
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:474
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "அச்சு {i}"
 
-#: src/components/SettingsDialog.tsx:424
+#: src/components/SettingsDialog.tsx:428
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -515,17 +447,16 @@ msgstr "பின்"
 msgid "Back"
 msgstr "பின்"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "முகப்புக்குத் திரும்பு"
 
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:996
+#: src/components/MissionSetup.tsx:1021
 msgid "Bandit"
 msgstr "எதிரி விமானம்"
 
@@ -537,23 +468,23 @@ msgstr "பேனர்"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250க்கு கீழ் — கியர் மற்றும் ஃபிளாப்"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:449
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "சிறந்த ஏற்றம் (Vy, 100% உந்துவிசை)"
 
-#: src/components/MissionSetup.tsx:445
+#: src/components/MissionSetup.tsx:450
 msgid "Best climb (Vy, afterburner)"
 msgstr "சிறந்த ஏற்றம் (Vy, ஆஃப்டர்பர்னர்)"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:452
 msgid "Best glide (engines out)"
 msgstr "சிறந்த சறுக்கல் (எஞ்சின்கள் அணைந்த)"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Best sustained turn speed"
 msgstr "சிறந்த நிலையான திருப்ப வேகம்"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -566,8 +497,8 @@ msgstr "பிங்கோ எரிபொருள்"
 msgid "Blocked by"
 msgstr "தடுக்கப்பட்டது"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "நம்பகமற்ற இணைப்புக்கு வழிசெலுத்தல் தடுக்கப்பட்டது"
 
@@ -624,12 +555,12 @@ msgstr "தயாராகும்போது திரும்பு"
 msgid "Browser notifications"
 msgstr "உலாவி அறிவிப்புகள்"
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "பொத்தான் {i}"
 
-#: src/components/SettingsDialog.tsx:516
+#: src/components/SettingsDialog.tsx:520
 msgid "Button Mappings"
 msgstr ""
 
@@ -637,7 +568,7 @@ msgstr ""
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — தொடக்கத்திலிருந்தே ஆயுதம் சுதந்திரம்"
 
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1015
 msgid "BVR (Start)"
 msgstr ""
 
@@ -646,15 +577,15 @@ msgid "CALL THE BALL"
 msgstr "பந்தை அறிவி"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1034
+#: src/components/SettingsDialog.tsx:1038
 msgid "Callsign"
 msgstr "அழைப்புப் பெயர்"
 
-#: src/components/SettingsDialog.tsx:843
+#: src/components/SettingsDialog.tsx:847
 msgid "Camera distance"
 msgstr "கேமரா தூரம்"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Camera unavailable"
 msgstr "கேமரா கிடைக்கவில்லை"
 
@@ -675,7 +606,7 @@ msgstr "கேமரா கிடைக்கவில்லை"
 #: src/components/GameCanvas.tsx:536
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Cancel"
 msgstr "ரத்துசெய்"
 
@@ -687,11 +618,11 @@ msgstr "கருத்தை ரத்துசெய்"
 msgid "Cancel reply"
 msgstr "பதிலளிப்பை ரத்துசெய்"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:594
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:233
 msgid "Canopy"
 msgstr "கேனோபி"
 
@@ -700,43 +631,43 @@ msgstr "கேனோபி"
 msgid "Caption"
 msgstr "படக்குறிப்பு"
 
-#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:595
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1198
+#: src/components/MissionSetup.tsx:1223
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1052
 msgid "Case I (day)"
 msgstr "நிலை I (பகல்)"
 
-#: src/components/MissionSetup.tsx:1199
+#: src/components/MissionSetup.tsx:1224
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1053
 msgid "Case II (weather)"
 msgstr "நிலை II (வானிலை)"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1225
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1054
 msgid "Case III (night)"
 msgstr "நிலை III (இரவு)"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1062
 msgid "Catapult"
 msgstr "கவண்பொறி"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:97
+#: ../../../lib/web/src/components/notification-category-button.tsx:99
 msgid "Category for these notifications"
 msgstr "இந்த அறிவிப்புகளுக்கான வகை"
 
-#: src/components/MissionSetup.tsx:252
+#: src/components/MissionSetup.tsx:257
 msgid "Centerline"
 msgstr "மைய கோடு"
 
@@ -744,8 +675,8 @@ msgstr "மைய கோடு"
 msgid "CHAFF"
 msgstr "சாஃப்"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:78
-#: ../../../lib/web/src/components/notification-category-button.tsx:89
+#: ../../../lib/web/src/components/notification-category-button.tsx:80
+#: ../../../lib/web/src/components/notification-category-button.tsx:91
 msgid "Change notification category"
 msgstr "அறிவிப்பு வகையை மாற்று"
 
@@ -757,11 +688,11 @@ msgstr "துரத்தல் காட்சி:"
 msgid "chat"
 msgstr "அரட்டை"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "Chat"
 msgstr "அரட்டை"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "Chat to everyone"
 msgstr "அனைவருடனும் அரட்டை"
 
@@ -769,10 +700,6 @@ msgstr "அனைவருடனும் அரட்டை"
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "ஏமாற்றுகள்"
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "முந்தைய அறிவிப்புகளைப் பார்க்க \"அனைத்தும்\" தேர்ந்தெடுக்கவும்."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
@@ -785,22 +712,6 @@ msgstr "சரிபார்ப்பு பட்டியல்"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "பக்கப்பட்டியில் இருந்து ஒரு விளையாட்டைத் தேர்ந்தெடுக்கவும் அல்லது புதிய ஒன்றைத் தொடங்கவும்."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "இயல்பு விரிவாக்கம், சுருக்கமான ஐகான்-மட்டும், அல்லது முழு தளவமைப்பு முறை இவற்றில் தேர்ந்தெடுக்கவும்"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "உள்ளமை, மிதக்கும், அல்லது நிலையான பக்கப்பட்டி தளவமைப்பு இவற்றில் தேர்ந்தெடுக்கவும்"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "இடமிருந்து வலம் அல்லது வலமிருந்து இடம் தள திசை இவற்றில் தேர்ந்தெடுக்கவும்"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "கணினி விருப்பம், ஒளிமுறை, அல்லது இருள்முறை இவற்றில் தேர்ந்தெடுக்கவும்"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -816,7 +727,7 @@ msgstr "மொழியைத் தேர்ந்தெடுக்கவு�
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:677
+#: src/components/SettingsDialog.tsx:681
 msgid "Clear"
 msgstr "அழி"
 
@@ -824,29 +735,15 @@ msgstr "அழி"
 msgid "Clear all"
 msgstr "அனைத்தையும் அழி"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "வடிப்பான்களை அழி"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "தேடலை அழி"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "தேர்வை அழி"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "தேர்வை அழி (Escape)"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:470
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:468
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:471
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "மூடு"
@@ -863,8 +760,8 @@ msgstr "உரையாடலை மூடு"
 msgid "Close navigation"
 msgstr "வழிசெலுத்தலை மூடு"
 
-#: ../../../lib/web/src/components/layout/right-panel.tsx:265
-#: ../../../lib/web/src/components/layout/right-panel.tsx:268
+#: ../../../lib/web/src/components/layout/right-panel.tsx:234
+#: ../../../lib/web/src/components/layout/right-panel.tsx:237
 msgid "Close panel"
 msgstr "பலகத்தை மூடு"
 
@@ -880,7 +777,7 @@ msgstr "தேடலை மூடு"
 msgid "closer"
 msgstr "அருகில்"
 
-#: src/components/MissionSetup.tsx:1078
+#: src/components/MissionSetup.tsx:1103
 msgid "Clouds"
 msgstr "மேகங்கள்"
 
@@ -912,10 +809,6 @@ msgstr "நெடுவரிசைகள் தொகுக்கப்பட�
 msgid "Comfortable"
 msgstr "வசதியான"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "விரைவில் வருகிறது!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "கட்டளைப் பலகை"
@@ -929,16 +822,15 @@ msgstr "தொடங்குகிறேன்"
 msgid "Comment actions"
 msgstr "கருத்து செயல்கள்"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:433
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:445
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:431
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
 msgid "Comments"
 msgstr "கருத்துகள்"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:103
 msgid "Communication"
 msgstr "தொடர்பு"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "சுருக்கமான"
@@ -956,21 +848,17 @@ msgstr "காட்சி அமைப்புகளை உள்ளமைக�
 msgid "Confirm"
 msgstr "உறுதிசெய்"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:916
 msgid "Connect"
 msgstr "இணை"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:903
 msgid "Connect to private server"
 msgstr "தனியார் சேவையகத்துடன் இணைக்கவும்"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "இணைக்கப்பட்டது"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "இணைக்கப்பட்ட கணக்குகள்"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1017,7 +905,7 @@ msgstr "கிளிப்போர்டுக்கு நகலெடுக�
 msgid "Copy"
 msgstr "நகலெடு"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Corner speed (best instant turn)"
 msgstr "மூலை வேகம் (சிறந்த உடனடி திருப்பம்)"
 
@@ -1029,7 +917,7 @@ msgstr "போட்டியை உருவாக்க முடியவி�
 msgid "Could not load this document. Please try again later."
 msgstr "இந்த ஆவணத்தை ஏற்ற முடியவில்லை. பிறகு மீண்டும் முயற்சிக்கவும்."
 
-#: src/components/SettingsDialog.tsx:291
+#: src/components/SettingsDialog.tsx:295
 msgid "Could not save the profile"
 msgstr "சுயவிவரத்தைச் சேமிக்க முடியவில்லை"
 
@@ -1038,11 +926,11 @@ msgstr "சுயவிவரத்தைச் சேமிக்க முட�
 msgid "Could not save the recording"
 msgstr "பதிவைச் சேமிக்க முடியவில்லை"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 msgid "Could not send the message"
 msgstr "செய்தியை அனுப்ப முடியவில்லை"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "அறிவிப்புகளை ஏற்ற முடியவில்லை"
 
@@ -1058,8 +946,8 @@ msgstr "மறுஅங்கீகாரத்தைத் தொடங்க �
 msgid "Couldn't verify with that account. Please try again."
 msgstr "அந்தக் கணக்கைச் சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Countermeasures"
 msgstr "எதிர் நடவடிக்கைகள்"
 
@@ -1092,8 +980,8 @@ msgstr "உருவாக்கிப் பற"
 msgid "Create match"
 msgstr "போட்டியை உருவாக்கு"
 
-#: src/components/MissionSetup.tsx:1294
-#: src/components/MissionSetup.tsx:1318
+#: src/components/MissionSetup.tsx:1319
+#: src/components/MissionSetup.tsx:1343
 msgid "Create mission"
 msgstr "பணி உருவாக்கு"
 
@@ -1111,12 +999,12 @@ msgstr "உருவாக்கப்பட்டது"
 msgid "Creating..."
 msgstr "உருவாக்குகிறது..."
 
-#: src/components/MissionSetup.tsx:520
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:531
 msgid "Credits"
 msgstr "பங்களிப்பாளர்கள்"
 
-#: src/components/MissionSetup.tsx:1085
+#: src/components/MissionSetup.tsx:1110
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1134,23 +1022,16 @@ msgstr "தனிப்பயன்"
 msgid "CUT"
 msgstr "ஆபத்து"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Cycle view"
 msgstr "காட்சியை மாற்று"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "இருள்"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "இருள் முறை"
-
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:250
 msgid "Data conflict"
 msgstr "தரவு முரண்பாடு"
 
@@ -1159,7 +1040,7 @@ msgstr "தரவு முரண்பாடு"
 msgid "Date"
 msgstr "தேதி"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1096
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "பகல்"
@@ -1176,10 +1057,6 @@ msgstr "தள நிலை சேமிக்கப்பட்டது"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "மறு"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "இயல்புநிலை"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1235,13 +1112,9 @@ msgstr "காட்சியை நீக்கு"
 msgid "Delete your account on the old server"
 msgstr "பழைய சேவையகத்தில் உங்கள் கணக்கை நீக்கவும்"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1041
 msgid "Departure / Recovery"
 msgstr ""
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "இறங்கு"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
@@ -1259,8 +1132,8 @@ msgstr "தீயால் அழிந்தது"
 msgid "Details Panel"
 msgstr "விவரங்கள் பலகம்"
 
-#: src/components/SettingsDialog.tsx:503
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "கண்டறி"
 
@@ -1279,10 +1152,6 @@ msgstr "வலை உலாவியிலிருந்து கண்டற�
 msgid "Different game host"
 msgstr "வேறு விளையாட்டு ஹோஸ்ட்"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "திசை"
-
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "கோப்பகம்"
@@ -1299,7 +1168,7 @@ msgstr "நிராகரி"
 msgid "Discard draft?"
 msgstr "வரைவை நிராகரிக்கவா?"
 
-#: src/components/SettingsDialog.tsx:387
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "துண்டிக்கப்பட்டது"
 
@@ -1311,37 +1180,37 @@ msgstr "துண்டிக்கப்பட்டது"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1265
-#: src/components/SettingsDialog.tsx:773
+#: src/components/MissionSetup.tsx:1290
+#: src/components/SettingsDialog.tsx:777
 msgid "Dismiss"
 msgstr "நிராகரி"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:240
 msgid "Display repeater"
 msgstr "காட்சி ரிப்பீட்டர்"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "மொபைல் பக்கப்பட்டியைக் காட்டுகிறது."
 
-#: src/components/SettingsDialog.tsx:974
+#: src/components/SettingsDialog.tsx:978
 msgid "Distance LOD"
 msgstr "தூர LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1117
+#: src/components/SettingsDialog.tsx:1121
 msgid "Done"
 msgstr "முடிந்தது"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:452
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:462
 msgid "Download"
 msgstr "பதிவிறக்கு"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:100
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:98
 msgid "Download failed"
 msgstr "பதிவிறக்கம் தோல்வியடைந்தது"
 
@@ -1365,11 +1234,11 @@ msgstr "நகலெடுக்கிறது"
 msgid "Duration"
 msgstr "கால அளவு"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:972
 msgid "Dynamic resolution"
 msgstr "மாறும் தெளிவுத்திறன்"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:141
+#: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Dyslexia-friendly"
 msgstr "டிஸ்லெக்சியாவுக்கு உகந்தது"
 
@@ -1416,15 +1285,15 @@ msgstr "தேர்ந்தெடுத்த அட்டையை திர�
 msgid "Edit view"
 msgstr "காட்சியைத் திருத்து"
 
-#: src/components/SettingsDialog.tsx:962
+#: src/components/SettingsDialog.tsx:966
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:941
+#: src/components/SettingsDialog.tsx:945
 msgid "Effects detail"
 msgstr "விளைவு விவரம்"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:237
 msgid "Eject"
 msgstr "எஜெக்ட்"
 
@@ -1444,8 +1313,8 @@ msgstr "மின்னஞ்சல் குறியீடு"
 msgid "EMERG JETT"
 msgstr "அவசர வீச்சு"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Emergency jettison (hold)"
 msgstr "அவசர வீச்சு (பிடித்திரு)"
 
@@ -1453,8 +1322,8 @@ msgstr "அவசர வீச்சு (பிடித்திரு)"
 msgid "empty"
 msgstr "காலி"
 
-#: src/components/MissionSetup.tsx:271
-#: src/components/MissionSetup.tsx:282
+#: src/components/MissionSetup.tsx:276
+#: src/components/MissionSetup.tsx:287
 msgid "Empty pylon"
 msgstr "காலியான பைலான்"
 
@@ -1462,15 +1331,15 @@ msgstr "காலியான பைலான்"
 msgid "ENGAGED"
 msgstr "தாக்குகிறேன்"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1008
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:592
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,7 +1351,7 @@ msgstr "உங்கள் மின்னஞ்சலில் உள்ள க
 msgid "Enter your authenticator code"
 msgstr "உங்கள் அங்கீகரிப்பான் குறியீட்டை உள்ளிடவும்"
 
-#: src/components/MissionSetup.tsx:1059
+#: src/components/MissionSetup.tsx:1084
 msgid "Environment"
 msgstr "சூழல்"
 
@@ -1517,16 +1386,16 @@ msgstr "விரிவாக்கு"
 msgid "Expand sidebar"
 msgstr "பக்கப்பட்டியை விரிவாக்கு"
 
-#: src/components/SettingsDialog.tsx:402
+#: src/components/SettingsDialog.tsx:406
 msgid "Export"
 msgstr "ஏற்றுமதி"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Extend flaps"
 msgstr "ஃபிளாப் வெளியே"
 
-#: src/components/SettingsDialog.tsx:933
+#: src/components/SettingsDialog.tsx:937
 msgid "Exterior detail"
 msgstr "வெளிப்புற விவரம்"
 
@@ -1534,29 +1403,21 @@ msgstr "வெளிப்புற விவரம்"
 msgid "External URL"
 msgstr "வெளிப்புற URL"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:131
+#: ../../../lib/web/src/lib/preference-utils.ts:124
 msgid "Extra large"
 msgstr "மிகப் பெரியது"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1335
 msgid "F/A-18C Hornet"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:473
 msgid "F/A-18C reference"
 msgstr "F/A-18C குறிப்பு"
 
-#: src/components/MissionSetup.tsx:1243
+#: src/components/MissionSetup.tsx:1268
 msgid "F/A-18C Strike Fighter"
 msgstr ""
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "கணக்கைச் சேர்க்க முடியவில்லை"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "டேக்கைச் சேர்க்க முடியவில்லை"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
@@ -1592,11 +1453,11 @@ msgstr "ஏற்ற முடியவில்லை"
 msgid "Failed to load history"
 msgstr "வரலாற்றை ஏற்ற முடியவில்லை"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load image"
 msgstr "படத்தை ஏற்ற முடியவில்லை"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load video"
 msgstr "வீடியோவை ஏற்ற முடியவில்லை"
 
@@ -1604,17 +1465,9 @@ msgstr "வீடியோவை ஏற்ற முடியவில்லை"
 msgid "Failed to post comment"
 msgstr "கருத்தைப் பதிவிட முடியவில்லை"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "கணக்கை நீக்க முடியவில்லை"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "RSS அணுகலை நீக்க முடியவில்லை"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "சரிபார்ப்பு குறியீட்டை அனுப்ப முடியவில்லை"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1642,10 +1495,6 @@ msgstr "சண்டை தொடங்கியது"
 msgid "Files"
 msgstr "கோப்புகள்"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "வடிகட்டு..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "கணக்கை நகர்த்துவதை முடிக்கவும்"
@@ -1658,12 +1507,12 @@ msgstr "முடிந்தது"
 msgid "fire"
 msgstr "சுடு"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Fire weapon"
 msgstr "ஆயுதத்தால் சுடு"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:840
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1695,11 +1544,11 @@ msgstr "தட்டையானது"
 msgid "Flew into the sea"
 msgstr "கடலில் மோதியது"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:98
 msgid "Flight"
 msgstr "பறத்தல்"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1126
 msgid "Flight Assists"
 msgstr ""
 
@@ -1707,11 +1556,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "பறப்பு மையம் தோல்வி"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:986
 msgid "Flight Profile"
 msgstr ""
 
@@ -1719,16 +1568,12 @@ msgstr ""
 msgid "Flights"
 msgstr "பறப்புகள்"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "மிதக்கும்"
-
 #: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "பறந்தது"
 
-#: src/components/MissionSetup.tsx:1288
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1360
 msgid "Fly"
 msgstr "பறத்தல்"
 
@@ -1736,12 +1581,12 @@ msgstr "பறத்தல்"
 msgid "Fly again"
 msgstr "மீண்டும் பறக்கவும்"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1002
 msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:998
 msgid "Free flight"
 msgstr "சுதந்திர பறப்பு"
 
@@ -1760,9 +1605,8 @@ msgstr "இருந்து"
 #: ../../../lib/web/src/lib/preference-utils.ts:89
 #: ../../../lib/web/src/lib/preference-utils.ts:99
 #: ../../../lib/web/src/lib/preference-utils.ts:110
-#: ../../../lib/web/src/lib/preference-utils.ts:119
-#: ../../../lib/web/src/lib/preference-utils.ts:127
-#: ../../../lib/web/src/lib/preference-utils.ts:138
+#: ../../../lib/web/src/lib/preference-utils.ts:120
+#: ../../../lib/web/src/lib/preference-utils.ts:131
 msgid "From theme"
 msgstr "தீமிலிருந்து"
 
@@ -1786,28 +1630,24 @@ msgstr "எரிபொருள் கசிவு"
 msgid "FUEL LO"
 msgstr "எரிபொருள் குறைவு"
 
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:232
 msgid "Fuel probe"
 msgstr "எரிபொருள் குழாய்"
 
-#: src/components/MissionSetup.tsx:269
+#: src/components/MissionSetup.tsx:274
 msgid "Fuel tank"
 msgstr "எரிபொருள் தொட்டி"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "முழு தளவமைப்பு"
 
 #: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:251
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:258
 msgid "Fuselage"
 msgstr "விமான உடல்"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Gain"
 msgstr "பெருக்கம்"
 
@@ -1819,45 +1659,24 @@ msgstr "சக்கரம்"
 msgid "GEAR"
 msgstr "கியர்"
 
-#: src/components/SettingsDialog.tsx:1126
+#: src/components/SettingsDialog.tsx:1130
 msgid "General"
 msgstr "பொது"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "திரும்பு"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "முதல் பக்கத்திற்குச் செல்"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "கடைசி பக்கத்திற்குச் செல்"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "அடுத்த பக்கத்திற்குச் செல்"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "பக்கம் {pageNumber}-க்குச் செல்"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "முந்தைய பக்கத்திற்குச் செல்"
-
-#: src/components/SettingsDialog.tsx:1130
+#: src/components/SettingsDialog.tsx:1134
 msgid "Graphics"
 msgstr "வரைகலை"
 
-#: src/components/SettingsDialog.tsx:893
+#: src/components/SettingsDialog.tsx:897
 msgid "Graphics Preset"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:401
 msgid "Gross weight"
 msgstr "மொத்த எடை"
 
@@ -1878,7 +1697,7 @@ msgstr "குழு: {0}"
 msgid "GUN"
 msgstr "பீரங்கி"
 
-#: src/components/MissionSetup.tsx:288
+#: src/components/MissionSetup.tsx:293
 msgid "Gun only"
 msgstr "பீரங்கிகள் மட்டும்"
 
@@ -1887,35 +1706,27 @@ msgstr "பீரங்கிகள் மட்டும்"
 msgid "Guns only"
 msgstr "பீரங்கிகள் மட்டும்"
 
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1285
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "வன்பொருள் கிராபிக்ஸ் முடுக்கம் அணைக்கப்பட்டுள்ளது — உலாவி அமைப்புகள் அல்லது கிராபிக்ஸ் இயக்கிகளைச் சரிபார்க்கவும்."
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head"
 msgstr "தலை"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head tracking"
 msgstr "தலை கண்காணிப்பு"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/MissionSetup.tsx:409
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "மறை"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "கடவுச்சொல்லை மறை"
-
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "High"
 msgstr "உயர்ந்த"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1111
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
@@ -1945,11 +1756,11 @@ msgstr "கொக்கி"
 msgid "Hot"
 msgstr "பிரபலமான"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:241
 msgid "HUD altitude source"
 msgstr "HUD உயர மூலம்"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:242
 msgid "HUD declutter"
 msgstr "HUD எளிமைப்படுத்தல்"
 
@@ -1958,7 +1769,7 @@ msgid "ID"
 msgstr "ஐடி"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:318
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
 msgid "Image viewer: {0}"
 msgstr "பட காட்சி: {0}"
 
@@ -1966,16 +1777,16 @@ msgstr "பட காட்சி: {0}"
 msgid "Imperial"
 msgstr "இம்பீரியல்"
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:410
 msgid "Import"
 msgstr "இறக்குமதி"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1220
 msgid "In air"
 msgstr "காற்றில்"
 
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Including anonymous users"
 msgstr "அநாமதேய பயனர்கள் உட்பட"
 
@@ -1987,39 +1798,27 @@ msgstr "முதலெழுத்து அவதாரம்"
 msgid "Initials avatar for {name}"
 msgstr "{name} இன் முதலெழுத்து அவதாரம்"
 
-#: src/components/SettingsDialog.tsx:368
+#: src/components/SettingsDialog.tsx:372
 msgid "Input Hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "உள்ளமைக்கப்பட்ட"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "ஆர்வங்கள்"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:387
 msgid "Internal fuel"
 msgstr "உள் எரிபொருள்"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "தவறான தேதி"
 
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "தவறான குறிச்சொல்: எழுத்துகள், எண்கள், இடைவெளிகள், இணைப்புக்கோடுகள், சாய்வுக்கோடுகள் மட்டுமே (அதிகபட்சம் 50 எழுத்துகள்)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "தவறான சரிபார்ப்பு குறியீடு"
-
-#: src/components/SettingsDialog.tsx:414
+#: src/components/SettingsDialog.tsx:418
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "காயமடையாத"
@@ -2028,7 +1827,7 @@ msgstr "காயமடையாத"
 msgid "INVULNERABLE"
 msgstr "காயமடையாமை"
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "காயமடையாமை (மனித வீரர்களுக்கு மட்டும்)"
@@ -2037,13 +1836,13 @@ msgstr "காயமடையாமை (மனித வீரர்களுக
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "நீங்கள் தேடும் பக்கம் <0/>இல்லை அல்லது அகற்றப்பட்டிருக்கலாம்."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jammer"
 msgstr "தடைக்கருவி"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Jettison tanks"
 msgstr "தொட்டிகளை வீசு"
 
@@ -2055,8 +1854,8 @@ msgstr "வீச்சு: தரையிறங்கு சக்கரம்
 msgid "Join"
 msgstr "சேர்"
 
-#: src/components/MissionSetup.tsx:817
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:842
+#: src/components/MissionSetup.tsx:1320
 msgid "Join server"
 msgstr "சேவையகத்தில் சேர்"
 
@@ -2065,7 +1864,7 @@ msgid "JOINED"
 msgstr "சேர்ந்தார்"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1230
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "நேருக்குநேர் மோதல்"
@@ -2074,11 +1873,11 @@ msgstr "நேருக்குநேர் மோதல்"
 msgid "Joust — 1v1, first kill wins"
 msgstr "டூயல் — 1v1, முதலில் வீழ்த்துபவர் வெற்றி"
 
-#: src/components/MissionSetup.tsx:974
+#: src/components/MissionSetup.tsx:999
 msgid "Joust against bot"
 msgstr "டூயல் பாட்டுக்கு எதிராக"
 
-#: src/components/SettingsDialog.tsx:1138
+#: src/components/SettingsDialog.tsx:1142
 msgid "Joystick"
 msgstr "ஜாய்ஸ்டிக்"
 
@@ -2094,7 +1893,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "விசைப்பலகை குறுக்குவழிகள்"
 
-#: src/components/SettingsDialog.tsx:1142
+#: src/components/SettingsDialog.tsx:1146
 msgid "Keys"
 msgstr "விசைகள்"
 
@@ -2123,13 +1922,13 @@ msgstr "இடது என்ஜின் தீ"
 msgid "L GEAR"
 msgstr "இடது கியர்"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Landing gear"
 msgstr "தரையிறங்கு சக்கரம்"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:103
-#: ../../../lib/web/src/lib/preference-utils.ts:130
+#: ../../../lib/web/src/lib/preference-utils.ts:123
 msgid "Large"
 msgstr "பெரியது"
 
@@ -2137,12 +1936,12 @@ msgstr "பெரியது"
 msgid "LATE"
 msgstr "தாமதம்"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:422
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Launch (catapult)"
 msgstr "ஏவுதல் (கேட்டப்பல்ட்)"
 
@@ -2150,7 +1949,6 @@ msgstr "ஏவுதல் (கேட்டப்பல்ட்)"
 msgid "launch / target"
 msgstr "ஏவு / இலக்கு"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "தளவமைப்பு"
@@ -2159,12 +1957,7 @@ msgstr "தளவமைப்பு"
 msgid "lb"
 msgstr "lb"
 
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "மேலும் அறிய"
-
-#: src/components/MissionSetup.tsx:913
+#: src/components/MissionSetup.tsx:938
 msgid "Leave server"
 msgstr "சேவையகத்தை விட்டு வெளியேறு"
 
@@ -2176,16 +1969,12 @@ msgstr "வெளியேறினார்"
 msgid "LEFT"
 msgstr "வெளியேறினார்"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "இடமிருந்து வலம்"
-
-#: src/components/MissionSetup.tsx:249
-#: src/components/MissionSetup.tsx:250
+#: src/components/MissionSetup.tsx:254
+#: src/components/MissionSetup.tsx:255
 msgid "Left wing"
 msgstr "இடது இறக்கை"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:253
 msgid "Left wingtip"
 msgstr "இடது இறக்கையின் நுனி"
 
@@ -2197,8 +1986,6 @@ msgstr "எழுத்துகள், எண்கள், இடைவெள�
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-இல் சமன், சக்கரம் கீழே"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "லைட்"
@@ -2207,8 +1994,8 @@ msgstr "லைட்"
 msgid "lights"
 msgstr "விளக்குகள்"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:235
 msgid "Lights"
 msgstr "விளக்குகள்"
 
@@ -2249,8 +2036,6 @@ msgstr "ஏற்றுதல் தோல்வி"
 msgid "Loading..."
 msgstr "ஏற்றுகிறது..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2268,39 +2053,39 @@ msgstr "வெற்றிகரமாக வெளியேறியது"
 msgid "Logging out…"
 msgstr "வெளியேறுகிறது…"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:116
 msgid "Look"
 msgstr "பார்க்க"
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:846
 msgid "Look / orbit"
 msgstr "பார்வை / சுற்று"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look at target"
 msgstr "இலக்கைப் பார்"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:188
 msgid "Look down"
 msgstr "கீழே பார்க்க"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:189
 msgid "Look left"
 msgstr "இடப்புறம் பார்க்க"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look right"
 msgstr "வலப்புறம் பார்க்க"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:187
 msgid "Look up"
 msgstr "மேலே பார்க்க"
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Low"
 msgstr "குறைந்த"
 
-#: src/components/MissionSetup.tsx:1088
+#: src/components/MissionSetup.tsx:1113
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2310,13 +2095,9 @@ msgstr "தாழ் அடுக்கு மேகம்"
 msgid "M to close"
 msgstr "M மூட"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
+#: ../../../lib/web/src/components/notification-category-button.tsx:127
 msgid "Manage categories"
 msgstr "வகைகளை நிர்வகி"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "அறிவிப்புகள் மற்றும் சேவைகளுக்கான உங்கள் இணைக்கப்பட்ட கணக்குகளை நிர்வகிக்கவும்."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
@@ -2326,26 +2107,25 @@ msgstr "கைமுறை"
 msgid "map"
 msgstr "வரைபடம்"
 
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:243
 msgid "Map"
 msgstr "வரைபடம்"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "அனைத்தையும் படித்ததாகக் குறிக்கவும்"
 
-#: src/components/SettingsDialog.tsx:607
+#: src/components/SettingsDialog.tsx:611
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:622
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:587
-#: src/components/SettingsDialog.tsx:614
+#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Volume"
 msgstr ""
 
@@ -2353,11 +2133,11 @@ msgstr ""
 msgid "Match type"
 msgstr "போட்டி வகை"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:933
 msgid "Matches"
 msgstr "போட்டிகள்"
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Max fidelity"
 msgstr ""
 
@@ -2370,7 +2150,7 @@ msgid "MCP server"
 msgstr "MCP சேவையகம்"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Medium"
 msgstr "நடுத்தரம்"
 
@@ -2379,8 +2159,8 @@ msgid "menu"
 msgstr "பட்டி"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:190
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:246
 msgid "Menu"
 msgstr "மெனு"
 
@@ -2388,7 +2168,7 @@ msgstr "மெனு"
 msgid "Merge — fight on at the pass"
 msgstr "மெர்ஜ் — கடக்கும்போது சண்டை தொடங்கும்"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1014
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2400,7 +2180,7 @@ msgstr "செய்தி"
 msgid "Message everyone"
 msgstr "அனைவருக்கும் செய்தி அனுப்புங்கள்"
 
-#: src/components/MissionSetup.tsx:741
+#: src/components/MissionSetup.tsx:766
 msgid "Message players on this server"
 msgstr "இந்த சர்வரில் உள்ள வீரர்களுக்கு செய்தி அனுப்புங்கள்"
 
@@ -2412,7 +2192,7 @@ msgstr "உங்கள் அணிக்கு செய்தி அனுப
 msgid "Metric"
 msgstr "மெட்ரிக்"
 
-#: src/components/MissionSetup.tsx:1087
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2422,7 +2202,7 @@ msgstr "நடு அடுக்கு மேகம்"
 msgid "Midair collision"
 msgstr "நடுவானில் மோதல்"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:607
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "மிட்வே பவளத்தீவு வரைபடம் — படங்களில் மாற்றப்பட்ட <0>Copernicus Sentinel-2</0> தரவு உள்ளது (2026); விமானத்தள வடிவியல் (ஓடுபாதை, நகர்வுப் பாதைகள், நிறுத்துமிடங்கள்) © <1>OpenStreetMap</1> பங்களிப்பாளர்கள், <2>ODbL</2> கீழ் உரிமம் பெற்றது; கடற்கரை மற்றும் பவளப்பாறை தரவு <3>NOAA NCCOS</3> இலிருந்து (பொதுக் களம்)."
 
@@ -2434,7 +2214,7 @@ msgstr "குறைந்தபட்ச நீளம்"
 msgid "MISSILE"
 msgstr "ஏவுகணை"
 
-#: src/components/MissionSetup.tsx:579
+#: src/components/MissionSetup.tsx:584
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ஏவுகணை மாதிரி <0>“AIM-120C AMRAAM”</0> — <1>Pippa</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> இன் கீழ் உரிமம் பெற்றது. மாற்றப்பட்டது: மறுஅளவீடு, மறுதிசை மற்றும் பொருத்துவதற்காக மையப்படுத்தல்."
 
@@ -2464,11 +2244,11 @@ msgstr "திங்கட்கிழமை"
 msgid "More options"
 msgstr "மேலும் விருப்பங்கள்"
 
-#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1320
 msgid "Multiplayer dogfights"
 msgstr ""
 
@@ -2493,7 +2273,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "பெயர் 1000 எழுத்துக்கள் அல்லது அதற்கும் குறைவாக இருக்க வேண்டும்"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:313
 msgid "Network error"
 msgstr "பிணையப் பிழை"
 
@@ -2507,12 +2287,12 @@ msgstr "புதியது"
 msgid "New game"
 msgstr "புதிய விளையாட்டு"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:527
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:532
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
 msgid "Next image"
 msgstr "அடுத்த படம்"
 
-#: src/components/MissionSetup.tsx:1072
+#: src/components/MissionSetup.tsx:1097
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2534,11 +2314,7 @@ msgstr "செயல்பாடு இன்னும் இல்லை"
 msgid "No comments yet"
 msgstr "கருத்துகள் இன்னும் இல்லை"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "இணைக்கப்பட்ட கணக்குகள் இல்லை"
-
-#: src/components/SettingsDialog.tsx:692
+#: src/components/SettingsDialog.tsx:696
 msgid "No control matches “{query}”."
 msgstr ""
 
@@ -2562,7 +2338,7 @@ msgstr "குழுக்கள் கிடைக்கவில்லை"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "உருப்படி வகைகள் எதையும் இன்னும் உருவாக்க முடியாது. முதலில் தேவையான பெற்றோர் உருப்படிகளை உருவாக்கவும்."
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ஜாய்ஸ்டிக் எதுவும் கண்டறியப்படவில்லை — அதை எழுப்ப அதில் ஏதேனும் ஒரு பொத்தானை அழுத்தவும்."
 
@@ -2570,15 +2346,11 @@ msgstr "ஜாய்ஸ்டிக் எதுவும் கண்டறி�
 msgid "No matching objects"
 msgstr "பொருந்தும் ஆப்ஜெக்ட்கள் இல்லை"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "இதுவரை அறிவிப்புகள் இல்லை"
-
 #: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "திறந்த போட்டிகள் இல்லை — ஒன்றை உருவாக்கு."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "நபர்கள் எதுவும் கிடைக்கவில்லை"
@@ -2587,18 +2359,12 @@ msgstr "நபர்கள் எதுவும் கிடைக்கவி�
 msgid "No places found"
 msgstr "இடங்கள் எதுவும் கிடைக்கவில்லை"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "சுயவிவரம் இல்லை"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "முடிவுகள் எதுவும் இல்லை"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "முடிவுகள் எதுவும் கிடைக்கவில்லை."
 
@@ -2620,11 +2386,11 @@ msgstr "இலக்கு இல்லை"
 msgid "No time zone found."
 msgstr "நேர மண்டலம் எதுவும் கிடைக்கவில்லை."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:104
+#: ../../../lib/web/src/components/notification-category-button.tsx:106
 msgid "No topic record yet — try again after the next notification."
 msgstr "தலைப்புப் பதிவு இன்னும் இல்லை — அடுத்த அறிவிப்புக்குப் பிறகு மீண்டும் முயற்சிக்கவும்."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "படிக்காத அறிவிப்புகள் இல்லை"
 
@@ -2636,7 +2402,7 @@ msgstr "பயனர்கள் எதுவும் கிடைக்கவ�
 msgid "No views"
 msgstr "காட்சிகள் இல்லை"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "உலக சேவையகம் இல்லை."
@@ -2645,7 +2411,7 @@ msgstr "உலக சேவையகம் இல்லை."
 msgid "NO-GRADE"
 msgstr "கிரேடு இல்லை"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:413
 msgid "Nominal"
 msgstr ""
 
@@ -2662,16 +2428,15 @@ msgstr ""
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: ../../../lib/web/src/lib/preference-utils.ts:120
-#: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1084
-#: src/components/SettingsDialog.tsx:468
-#: src/components/SettingsDialog.tsx:544
-#: src/components/SettingsDialog.tsx:817
+#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:1109
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:821
 msgid "None"
 msgstr "ஒன்றுமில்லை"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:129
+#: ../../../lib/web/src/lib/preference-utils.ts:122
 msgid "Normal"
 msgstr "சாதாரணம்"
 
@@ -2679,7 +2444,7 @@ msgstr "சாதாரணம்"
 msgid "NOSE GEAR"
 msgstr "முன் கியர்"
 
-#: src/components/SettingsDialog.tsx:304
+#: src/components/SettingsDialog.tsx:308
 msgid "Not a joystick profile"
 msgstr "இது ஜாய்ஸ்டிக் சுயவிவரம் அல்ல"
 
@@ -2696,25 +2461,17 @@ msgstr "அமைக்கப்படவில்லை"
 msgid "Nothing found"
 msgstr "எதுவும் கிடைக்கவில்லை"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 msgid "Nothing yet — say hello."
 msgstr "இன்னும் எதுவும் இல்லை — ஹலோ சொல்லுங்கள்."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "அறிவிப்புகள்"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "அறிவிப்புகள்: {0}"
 
-#: src/components/MissionSetup.tsx:1002
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1214
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "புதியவர்"
@@ -2725,7 +2482,7 @@ msgstr "புதியவர்"
 msgid "Number"
 msgstr "எண்"
 
-#: src/components/SettingsDialog.tsx:949
+#: src/components/SettingsDialog.tsx:953
 msgid "Ocean detail"
 msgstr "கடல் விவரம்"
 
@@ -2741,13 +2498,13 @@ msgstr "OK"
 msgid "On"
 msgstr "இயக்கத்தில்"
 
-#: src/components/MissionSetup.tsx:1026
-#: src/components/MissionSetup.tsx:1197
+#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:1222
 msgid "On carrier"
 msgstr "தாங்கி கப்பலில்"
 
-#: src/components/MissionSetup.tsx:1025
-#: src/components/MissionSetup.tsx:1196
+#: src/components/MissionSetup.tsx:1050
+#: src/components/MissionSetup.tsx:1221
 msgid "On runway"
 msgstr "ஓடுபாதையில்"
 
@@ -2763,11 +2520,6 @@ msgstr "திற"
 msgid "Open — anyone may join or leave"
 msgstr "திறந்தது — யார் வேண்டுமானாலும் சேரலாம் அல்லது வெளியேறலாம்"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "கணக்கு செயல்களைத் திறக்கவும்"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2782,11 +2534,6 @@ msgstr "மெனுவைத் திறக்கவும்"
 msgid "Open navigation"
 msgstr "வழிசெலுத்தலைத் திறக்கவும்"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "வழிசெலுத்தல் மெனுவைத் திறக்கவும்"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2795,11 +2542,6 @@ msgstr "விருப்பத் செயல்களைத் திறக�
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "தேர்ந்தெடுத்த அட்டையை திற"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "தீம் அமைப்புகளைத் திறக்கவும்"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2833,8 +2575,8 @@ msgstr "சுற்று"
 msgid "Other"
 msgstr "மற்றவை"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:209
 msgid "Override G limit"
 msgstr "G வரம்பு மீறல்"
 
@@ -2850,16 +2592,11 @@ msgstr "பார்வை பூட்டு"
 msgid "PADLOCK OFF"
 msgstr "பார்வை விடுதலை"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "பக்கம் {currentPage} / {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "பெற்றோர்"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:208
 msgid "Parking brake"
 msgstr "நிறுத்த பிரேக்"
 
@@ -2883,23 +2620,19 @@ msgstr "வடிவம் (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "தேதியைத் தேர்ந்தெடுக்கவும்"
-
-#: src/components/MissionSetup.tsx:664
+#: src/components/MissionSetup.tsx:675
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "விமானி"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1190
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1215
+#: src/components/MissionSetup.tsx:1274
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "விமானி"
@@ -2908,7 +2641,7 @@ msgstr "விமானி"
 msgid "PILOT DOWN"
 msgstr "விமானி பலி"
 
-#: src/components/SettingsDialog.tsx:1030
+#: src/components/SettingsDialog.tsx:1034
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2920,15 +2653,15 @@ msgstr "விமானி கொல்லப்பட்டார்"
 msgid "pitch"
 msgstr "ஏற்றிறக்கம்"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:111
 msgid "Pitch"
 msgstr "பிட்ச்"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:199
 msgid "Pitch down"
 msgstr "பிட்ச் கீழே"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:198
 msgid "Pitch up"
 msgstr "பிட்ச் மேலே"
 
@@ -2942,7 +2675,7 @@ msgstr "வீரர்கள்"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:89
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:314
 msgid "Please check your internet connection and try again."
 msgstr "உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
 
@@ -2966,7 +2699,7 @@ msgstr "பதிவுகள்"
 msgid "Posts and comments"
 msgstr "பதிவுகள் மற்றும் கருத்துகள்"
 
-#: src/components/SettingsDialog.tsx:797
+#: src/components/SettingsDialog.tsx:801
 msgid "Press a key…"
 msgstr "ஒரு விசையை அழுத்தவும்…"
 
@@ -2974,12 +2707,12 @@ msgstr "ஒரு விசையை அழுத்தவும்…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "பறக்க ENTER அழுத்தவும்"
 
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:511
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:516
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:509
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
 msgid "Previous image"
 msgstr "முந்தைய படம்"
 
@@ -2992,12 +2725,8 @@ msgstr "தனியுரிமை"
 msgid "Processing…"
 msgstr "செயலாக்கப்படுகிறது…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "சுயவிவரம்"
-
-#: src/components/SettingsDialog.tsx:290
-#: src/components/SettingsDialog.tsx:302
+#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:306
 msgid "Profile saved"
 msgstr "சுயவிவரம் சேமிக்கப்பட்டது"
 
@@ -3005,8 +2734,8 @@ msgstr "சுயவிவரம் சேமிக்கப்பட்டத�
 msgid "Project members"
 msgstr "திட்ட உறுப்பினர்கள்"
 
-#: src/components/MissionSetup.tsx:844
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:887
 msgid "Public servers"
 msgstr "பொது சேவையகங்கள்"
 
@@ -3030,8 +2759,8 @@ msgstr "வலது என்ஜின் தீ"
 msgid "R GEAR"
 msgstr "வலது கியர்"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Radar silent"
 msgstr "ரேடார் மௌனம்"
 
@@ -3047,7 +2776,7 @@ msgstr "இந்த சேவையகத்தில் உங்கள் க
 msgid "Re-register your passkeys on this server"
 msgstr "இந்த சேவையகத்தில் உங்கள் கடவுச்சாவிகளை மீண்டும் பதிவு செய்யவும்"
 
-#: src/components/MissionSetup.tsx:1279
+#: src/components/MissionSetup.tsx:1304
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3055,11 +2784,10 @@ msgstr ""
 msgid "REARMED"
 msgstr "மீண்டும் ஆயுதம் ஏற்றப்பட்டது"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:848
 msgid "Recent"
 msgstr "சமீபத்திய"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "பரிந்துரைக்கப்பட்டது"
@@ -3068,7 +2796,7 @@ msgstr "பரிந்துரைக்கப்பட்டது"
 msgid "Reconnecting ({retries})..."
 msgstr "மீண்டும் இணைக்கிறது ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1055
+#: src/components/SettingsDialog.tsx:1059
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3097,7 +2825,7 @@ msgstr "உள்நுழைவுக்கு redirect ஆகிறது."
 msgid "Reduce interest"
 msgstr "ஆர்வத்தைக் குறைக்கவும்"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:467
 msgid "Reference"
 msgstr "குறிப்பு"
 
@@ -3125,7 +2853,6 @@ msgstr "24 மணி நேரத்திற்குள் சார்பு,
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "அகற்று"
 
@@ -3154,7 +2881,7 @@ msgstr "அணுகலை அகற்றவா?"
 msgid "Remove interest"
 msgstr "ஆர்வத்தை அகற்று"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "உருப்படியை அகற்று"
 
@@ -3176,11 +2903,11 @@ msgstr "நெடுவரிசையின் பெயரை மாற்ற�
 msgid "Rename this board column"
 msgstr "இந்த போர்டு நெடுவரிசையின் பெயரை மாற்று"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:641
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "காட்சியாக்கம் <0>three.js</0> மூலம் (MIT உரிமம்)."
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:922
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3202,38 +2929,27 @@ msgstr "தேவை"
 msgid "Resend email"
 msgstr "மின்னஞ்சலை மீண்டும் அனுப்பு"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1113
+#: src/components/SettingsDialog.tsx:1117
 msgid "Reset"
 msgstr "மீட்டமை"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "{title} மீட்டமை"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "அனைத்து அமைப்புகளையும் இயல்பு மதிப்புகளுக்கு மீட்டமைக்கவும்"
-
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Reset master caution"
 msgstr "முதன்மை எச்சரிக்கையை மீட்டமை"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Reset trim"
 msgstr "ட்ரிம் மீட்டமை"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
-#: src/components/SettingsDialog.tsx:841
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:845
 msgid "Reset view"
 msgstr "காட்சியை மீட்டமை"
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:927
 msgid "Resolution"
 msgstr "தீர்வு"
 
@@ -3257,8 +2973,8 @@ msgstr "முடிவு"
 msgid "Resume"
 msgstr "தொடர்"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Retract flaps"
 msgstr "ஃபிளாப் உள்ளே"
 
@@ -3266,7 +2982,7 @@ msgstr "ஃபிளாப் உள்ளே"
 msgid "Retry"
 msgstr "மீண்டும் முயற்சிக்கவும்"
 
-#: src/components/SettingsDialog.tsx:486
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "தலைகீழ்"
 
@@ -3282,16 +2998,12 @@ msgstr "அணுகலை நீக்கு"
 msgid "Revoke RSS access?"
 msgstr "RSS அணுகலை ரத்துசெய்யவா?"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "வலமிருந்து இடம்"
-
-#: src/components/MissionSetup.tsx:254
-#: src/components/MissionSetup.tsx:255
+#: src/components/MissionSetup.tsx:259
+#: src/components/MissionSetup.tsx:260
 msgid "Right wing"
 msgstr "வலது இறக்கை"
 
-#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:261
 msgid "Right wingtip"
 msgstr "வலது இறக்கையின் நுனி"
 
@@ -3299,15 +3011,15 @@ msgstr "வலது இறக்கையின் நுனி"
 msgid "roll"
 msgstr "புரளல்"
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:112
 msgid "Roll"
 msgstr "ரோல்"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:200
 msgid "Roll left"
 msgstr "ரோல் இடப்புறம்"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Roll right"
 msgstr "ரோல் வலப்புறம்"
 
@@ -3319,10 +3031,6 @@ msgstr "வரிசைகள்"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "வரிசைகள் இதன்படி குழுவாக்கம்"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "ஒரு பக்கத்திற்கான வரிசைகள்"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3352,7 +3060,7 @@ msgstr "சனிக்கிழமை"
 msgid "Save"
 msgstr "சேமி"
 
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:482
 msgid "Sea level"
 msgstr "கடல் மட்டம்"
 
@@ -3363,8 +3071,8 @@ msgstr "கடல் மட்டம்"
 msgid "Search"
 msgstr "தேடு"
 
-#: src/components/SettingsDialog.tsx:667
-#: src/components/SettingsDialog.tsx:668
+#: src/components/SettingsDialog.tsx:671
+#: src/components/SettingsDialog.tsx:672
 msgid "Search controls"
 msgstr ""
 
@@ -3408,12 +3116,10 @@ msgstr "இந்த காட்சியைத் தேடு, கவனி, 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "தேடு..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3422,11 +3128,6 @@ msgstr "தேடுகிறது..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "தேர்ந்தெடு"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "{0} தேர்ந்தெடுக்கவும்"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3444,10 +3145,6 @@ msgstr "அணுகலை வழங்க ஒரு பயனர், குழ�
 msgid "Select access rule"
 msgstr "அணுகல் விதியை தேர்ந்தெடு"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "கணக்கைத் தேர்ந்தெடுக்கவும்"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "கணக்கு வகையை தேர்ந்தெடு"
@@ -3455,10 +3152,6 @@ msgstr "கணக்கு வகையை தேர்ந்தெடு"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "குழுவை தேர்ந்தெடு"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "தளவமைப்பு பாணியை தேர்ந்தெடு"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3476,38 +3169,22 @@ msgstr "நபரைத் தேர்ந்தெடுக்கவும்..
 msgid "Select previous card"
 msgstr "முந்தைய அட்டையை தேர்ந்தெடு"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "பக்கப்பட்டி பாணியை தேர்ந்தெடு"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "தள திசையை தேர்ந்தெடு"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "தீம் விருப்பத்தை தேர்ந்தெடு"
-
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Select weapon"
 msgstr "ஆயுதம் தேர்வு"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "தேர்ந்தெடு..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "தேர்ந்தெடுக்கப்பட்டது"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
 msgid "Selected: <0>{0}</0>"
 msgstr "தேர்ந்தெடுக்கப்பட்டது: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:773
 msgid "Send"
 msgstr "அனுப்பு"
 
@@ -3528,7 +3205,7 @@ msgstr "மின்னஞ்சல் அனுப்பு"
 msgid "Send message"
 msgstr "செய்தியை அனுப்பு"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:140
+#: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Serif"
 msgstr "செரிஃப்"
 
@@ -3537,12 +3214,12 @@ msgstr "செரிஃப்"
 msgid "Server"
 msgstr "சர்வர்"
 
-#: src/components/MissionSetup.tsx:713
+#: src/components/MissionSetup.tsx:728
 msgid "Server chat"
 msgstr "சர்வர் அரட்டை"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:270
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:296
 msgid "Server error"
 msgstr "சேவையகப் பிழை"
 
@@ -3560,11 +3237,11 @@ msgstr "சேவையகம் v{0} இயக்குகிறது, உங�
 msgid "SESSION ENDED"
 msgstr "அமர்வு முடிந்தது"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:220
 msgid "Session expired. Please log in again."
 msgstr "அமர்வு காலாவதியானது. மீண்டும் உள்நுழையவும்."
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Set"
 msgstr "அமை"
 
@@ -3576,13 +3253,13 @@ msgstr "துவக்கம் மற்றும் சேருமிடத�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:464
-#: src/components/MissionSetup.tsx:1296
-#: src/components/SettingsDialog.tsx:1096
-#: src/components/SettingsDialog.tsx:1123
+#: src/components/MissionSetup.tsx:1321
+#: src/components/SettingsDialog.tsx:1100
+#: src/components/SettingsDialog.tsx:1127
 msgid "Settings"
 msgstr "அமைப்புகள்"
 
-#: src/components/SettingsDialog.tsx:980
+#: src/components/SettingsDialog.tsx:984
 msgid "Shadows"
 msgstr "நிழல்கள்"
 
@@ -3594,10 +3271,6 @@ msgstr "வகுப்புகளை காட்டு"
 msgid "Show fields"
 msgstr "புலங்களை காட்டு"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "கடவுச்சொல்லைக் காட்டு"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "இந்த உதவியைக் காட்டு"
@@ -3606,9 +3279,7 @@ msgstr "இந்த உதவியைக் காட்டு"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total}-ல் {totalShown} காட்டப்படுகிறது"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "பக்கப்பட்டி"
 
@@ -3626,16 +3297,12 @@ msgstr "வெளியேறுகிறது..."
 msgid "Single line of text only"
 msgstr "ஒரே வரி உரை மட்டும்"
 
-#: src/components/MissionSetup.tsx:446
+#: src/components/MissionSetup.tsx:451
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ஒற்றை எஞ்சின் சிறந்த ஏற்றம் (Vyse, ஆஃப்டர்பர்னர்)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "முதன்மை பகுதிக்கு தவிர்"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
-#: ../../../lib/web/src/lib/preference-utils.ts:128
+#: ../../../lib/web/src/lib/preference-utils.ts:121
 msgid "Small"
 msgstr "சிறியது"
 
@@ -3643,15 +3310,15 @@ msgstr "சிறியது"
 msgid "Sort"
 msgstr "வரிசைப்படுத்து"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1050
+#: src/components/SettingsDialog.tsx:1054
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1134
+#: src/components/SettingsDialog.tsx:1138
 msgid "Sound"
 msgstr "ஒலி"
 
@@ -3679,13 +3346,13 @@ msgstr "வே.தட"
 msgid "speed brake"
 msgstr "வேக தடுப்பி"
 
-#: src/components/SettingsDialog.tsx:111
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:206
 msgid "Speed brake"
 msgstr "வேக தடுப்பி"
 
-#: src/components/MissionSetup.tsx:503
+#: src/components/MissionSetup.tsx:508
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "வேகங்கள் KCAS-இல், இலகுவான (குறைந்தபட்ச எரிபொருள், சரக்கு இல்லை) நிலையிலிருந்து கனமான (அதிகபட்ச மொத்த எடை) வரையிலான வரம்பாக. தரவு விளையாட்டில் சோதனை முறையில் பெறப்பட்டது. உண்மையான விமானத்திலிருந்து ஏதேனும் வேறுபாடுகள் உருவகப்படுத்தியின் பறப்பு மாதிரி பிழைகளைப் பிரதிபலிக்கின்றன."
 
@@ -3693,11 +3360,11 @@ msgstr "வேகங்கள் KCAS-இல், இலகுவான (கு�
 msgid "SPLASH"
 msgstr "இலக்கு வீழ்த்தப்பட்டது"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:456
 msgid "Stall, clean (Vs1)"
 msgstr "ஸ்டால், சுத்தமான (Vs1)"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Stall, landing config (Vs0)"
 msgstr "ஸ்டால், தரையிறங்கும் அமைப்பு (Vs0)"
 
@@ -3709,15 +3376,11 @@ msgstr "தொடங்கு"
 msgid "Start the discussion by adding the first comment."
 msgstr "முதல் கருத்தை சேர்த்து விவாதத்தை தொடங்குங்கள்."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "எனினும் காத்திருங்கள்!"
-
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:447
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "மிகச் செங்குத்தான ஏற்றம் (Vx, 100% உந்துவிசை)"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:448
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "மிகச் செங்குத்தான ஏற்றம் (Vx, ஆஃப்டர்பர்னர்)"
 
@@ -3739,7 +3402,6 @@ msgstr "பதிலை சமர்ப்பி"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "சந்தாதாராக"
@@ -3748,8 +3410,8 @@ msgstr "சந்தாதாராக"
 msgid "Sunday"
 msgstr "ஞாயிற்றுக்கிழமை"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1217
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "மனிதனுக்கு அப்பால்"
@@ -3759,20 +3421,14 @@ msgid "Switch to view 1-9"
 msgstr "காட்சி 1-9 க்கு மாறு"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
-#: ../../../lib/web/src/lib/preference-utils.ts:139
+#: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
 msgstr "சிஸ்டம்"
 
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "தந்திர வரைபடம்"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "டேக்"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3791,11 +3447,11 @@ msgstr "டேக்குகள்"
 msgid "TALLY"
 msgstr "எதிரி பார்வையில்"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:992
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1319
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3815,10 +3471,6 @@ msgstr "அணிகள்"
 #: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "அணிகள் — சிவப்பு எதிர் நீலம்"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "டீம்கள்/ஆப்கள்"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3862,19 +3514,7 @@ msgstr "கோரப்பட்ட உள்ளடக்கத்தைக் �
 msgid "The server returned a web page instead of data."
 msgstr "சேவையகம் தரவுக்குப் பதிலாக ஒரு வலைப் பக்கத்தை வழங்கியது."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "தளம் இந்த நேரத்தில் கிடைக்கவில்லை."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "தீம்"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "தீம் அமைப்புகள்"
-
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1283
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "இந்த உலாவி WebGL 2 ஐ ஆதரிக்கவில்லை, எனவே விளையாட்டு இயங்காது — வேறு உலாவியை முயற்சிக்கவும்."
 
@@ -3882,29 +3522,25 @@ msgstr "இந்த உலாவி WebGL 2 ஐ ஆதரிக்கவில�
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "இந்த லாபி உங்கள் விளையாட்டு இணைப்பை வேறு ஹோஸ்ட்டுக்கு ({redirectHost}) அனுப்புகிறது. இந்த சேவையகத்தை நீங்கள் நம்பினால் மட்டுமே தொடரவும்."
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1287
 msgid "This machine may be too slow for smooth flight."
 msgstr "மென்மையான பறத்தலுக்கு இந்த இயந்திரம் மிக மெதுவாக இருக்கலாம்."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "இந்தப் பக்கம் இன்னும் உருவாக்கப்படவில்லை."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
 msgstr "முடுக்கி"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:114
 msgid "Throttle"
 msgstr "த்ரொட்டில்"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Throttle down"
 msgstr "த்ரொட்டில் குறைக்க"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:204
 msgid "Throttle up"
 msgstr "த்ரொட்டில் அதிகரிக்க"
 
@@ -3912,7 +3548,7 @@ msgstr "த்ரொட்டில் அதிகரிக்க"
 msgid "Thursday"
 msgstr "வியாழக்கிழமை"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:455
 msgid "Tightest sustained turn speed"
 msgstr "மிக இறுக்கமான நிலையான திருப்ப வேகம்"
 
@@ -3924,22 +3560,13 @@ msgstr "சாய்வு"
 msgid "Time"
 msgstr "நேரம்"
 
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1090
 msgid "Time of day"
 msgstr "நாளின் நேரம்"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:220
 msgid "To"
 msgstr "நோக்கி"
-
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "நிரல்களை மாற்று"
-
-#: ../../../lib/web/src/components/layout/right-panel.tsx:233
-#: ../../../lib/web/src/components/layout/right-panel.tsx:236
-msgid "Toggle right panel"
-msgstr "வலது பலகத்தை மாற்று"
 
 #: ../../../lib/web/src/components/layout/nav-group.tsx:365
 #: ../../../lib/web/src/components/layout/nav-group.tsx:372
@@ -3948,20 +3575,15 @@ msgstr "வலது பலகத்தை மாற்று"
 msgid "Toggle section"
 msgstr "பிரிவை நிலைமாற்று"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "பக்கப்பட்டியை மாற்று"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "பக்கப்பட்டியை மாற்று"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "தீமை மாற்று"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3980,7 +3602,7 @@ msgstr "மிக அதிகமான கோரிக்கைகள்"
 msgid "Top"
 msgstr "மேல்"
 
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:996
 msgid "Tracers"
 msgstr "சுவடு குண்டுகள்"
 
@@ -3992,42 +3614,40 @@ msgstr "பயணிக்கிறது"
 msgid "trim"
 msgstr "ட்ரிம்"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:99
 msgid "Trim"
 msgstr "ட்ரிம்"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:117
 msgid "Trim hat"
 msgstr "ட்ரிம் தொப்பி"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim nose down"
 msgstr "ட்ரிம்: மூக்கு கீழே"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim nose up"
 msgstr "ட்ரிம்: மூக்கு மேலே"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Trim roll left"
 msgstr "ட்ரிம்: இடது சாய்வு"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim roll right"
 msgstr "ட்ரிம்: வலது சாய்வு"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "உங்கள் தேடல் சொற்களை சரிசெய்ய முயற்சி செய்யுங்கள்"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "மீண்டும் முயற்சி செய்"
 
@@ -4056,11 +3676,11 @@ msgstr "பயனர்களை தேட தட்டச்சு செய்
 msgid "Type to search..."
 msgstr "தேட தட்டச்சு செய்..."
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Ultra"
 msgstr "அல்ட்ரா"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:292
 msgid "Unable to connect to remote server"
 msgstr "தொலை சேவையகத்துடன் இணைக்க முடியவில்லை"
 
@@ -4069,7 +3689,7 @@ msgstr "தொலை சேவையகத்துடன் இணைக்க 
 msgid "Unable to redirect to login. Please try again."
 msgstr "உள்நுழைவுக்கு திருப்பி விட முடியவில்லை. தயவுசெய்து மீண்டும் முயற்சி செய்யுங்கள்."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "ஒதுக்கப்படாதது"
 
@@ -4081,13 +3701,13 @@ msgstr "அனுமதிக்கப்படாத அணுகல்"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Uncage seeker"
 msgstr "தேடியை விடுவி"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Undesignate target"
 msgstr "இலக்குக் குறிப்பீட்டை நீக்கு"
 
@@ -4108,23 +3728,23 @@ msgstr "தெரியாதது"
 msgid "Unlimited"
 msgstr "வரம்பற்றது"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "வரம்பற்ற வெடிமருந்து"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 msgid "Unlimited ammunition (all players)"
 msgstr "வரம்பற்ற வெடிமருந்து (அனைத்து வீரர்களும்)"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "வரம்பற்ற எரிபொருள்"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 msgid "Unlimited fuel (all players)"
 msgstr "வரம்பற்ற எரிபொருள் (அனைத்து வீரர்களும்)"
 
@@ -4137,10 +3757,6 @@ msgstr "சந்தா நீக்கு"
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
 msgid "Untitled"
 msgstr "தலைப்பிடாதது"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "சரிபார்க்கப்படாதது"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
@@ -4170,16 +3786,7 @@ msgstr "பயனர்"
 msgid "Verification code"
 msgstr "சரிபார்ப்பு குறியீடு"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "சரிபார்ப்பு குறியீடு அனுப்பப்பட்டது"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "சரிபார்ப்பு தோல்வியடைந்தது"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "சரிபார்"
@@ -4188,7 +3795,7 @@ msgstr "சரிபார்"
 msgid "Verify email address"
 msgstr "மின்னஞ்சல் முகவரியை சரிபார்"
 
-#: src/components/MissionSetup.tsx:493
+#: src/components/MissionSetup.tsx:498
 msgid "Vertical"
 msgstr "செங்குத்து"
 
@@ -4201,7 +3808,7 @@ msgid "Video thumbnail"
 msgstr "வீடியோ சிறுபடம்"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:315
 msgid "Video viewer: {0}"
 msgstr "வீடியோ காட்சி: {0}"
 
@@ -4209,17 +3816,12 @@ msgstr "வீடியோ காட்சி: {0}"
 msgid "view"
 msgstr "காட்சி"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:102
 msgid "View"
 msgstr "காட்டு"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "அனைத்தையும் காட்டு"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "அனைத்து அறிவிப்புகளையும் காட்டு"
 
@@ -4227,7 +3829,7 @@ msgstr "அனைத்து அறிவிப்புகளையும் �
 msgid "View controls"
 msgstr "காட்சி கட்டுப்பாடுகள்"
 
-#: src/components/SettingsDialog.tsx:840
+#: src/components/SettingsDialog.tsx:844
 msgid "Views"
 msgstr "காட்சிகள்"
 
@@ -4253,24 +3855,16 @@ msgstr "கோ அரவுண்ட்"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "நாங்கள் <0>{0}</0> க்கு சரிபார்ப்புக் குறியீட்டை அனுப்பியுள்ளோம். உங்கள் மின்னஞ்சல் முகவரியைச் சரிபார்க்க கீழே குறியீட்டை உள்ளிடவும்."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "நாங்கள் விரைவில் ஆன்லைனுக்கு திரும்புவோம்."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "முக்கியமான ஏதேனும் நிகழும்போது உங்களுக்குத் தெரிவிப்போம்."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "ஆயுதம்"
 
-#: src/components/SettingsDialog.tsx:114
+#: src/components/SettingsDialog.tsx:118
 msgid "Weapon select hat"
 msgstr "ஆயுதத் தேர்வு தொப்பி"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:100
 msgid "Weapons"
 msgstr "ஆயுதங்கள்"
 
@@ -4278,25 +3872,21 @@ msgstr "ஆயுதங்கள்"
 msgid "Weather"
 msgstr "வானிலை"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "இணையதளம் பராமரிப்பில் உள்ளது!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "புதன்கிழமை"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:207
 msgid "Wheel brakes"
 msgstr "சக்கர பிரேக்கு"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:593
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:234
 msgid "Wing fold"
 msgstr "இறக்கை மடிப்பு"
 
@@ -4308,7 +3898,7 @@ msgstr "வெற்றி"
 msgid "World server"
 msgstr "உலக சேவையகம்"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "உலக சேவையகத்தை அடைய முடியவில்லை"
@@ -4317,17 +3907,17 @@ msgstr "உலக சேவையகத்தை அடைய முடியவ
 msgid "yaw"
 msgstr "திருப்பம்"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:113
 msgid "Yaw"
 msgstr "யாவ்"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Yaw left"
 msgstr "யாவ் இடப்புறம்"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Yaw right"
 msgstr "யாவ் வலப்புறம்"
 
@@ -4338,14 +3928,6 @@ msgstr "நீங்கள்"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "இந்தப் பிரிவுக்கான அணுகல் உங்களுக்கு இல்லை."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "இந்த ஆதாரத்தைப் பார்க்க <0/>உங்களுக்குத் தேவையான அனுமதி இல்லை."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "அனைத்தையும் பார்த்துவிட்டீர்கள்!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
@@ -4371,14 +3953,14 @@ msgstr "உங்கள் உரையும் இணைப்புகளு�
 msgid "Your text will be lost."
 msgstr "உங்கள் உரை இழக்கப்படும்."
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:119
 msgid "Zoom"
 msgstr "ஜூம்"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Zoom in"
 msgstr "பெரிதாக்கு"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Zoom out"
 msgstr "சிறிதாக்கு"

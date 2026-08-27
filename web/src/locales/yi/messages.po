@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:225
+#: ../../../lib/web/src/lib/error-normalizer.ts:215
 msgid "Please check your internet connection and try again."
 msgstr "זײַט אַזוי גוט קאָנטראָלירט אײַער אינטערנעץ פֿאַרבינדונג און פּרוּווט נאָך אַ מאָל."
 
@@ -39,14 +39,9 @@ msgstr "[נישט געשטעלט]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {באַקומען # קויל} other {באַקומען # קוילן}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# אויסגעקליבן} other {# אויסגעקליבן}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:724
+#: src/components/MissionSetup.tsx:749
 msgid "{0} created “{1}”"
 msgstr "{0} האָט באַשאַפֿן „{1}“"
 
@@ -55,13 +50,13 @@ msgstr "{0} האָט באַשאַפֿן „{1}“"
 msgid "{0} flying"
 msgstr "{0} אין דער לופֿטן"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:432
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:437
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb איבער דעם קאַטאַפּולט אַסימעטריע גרענעץ"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:426
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:431
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb איבער דער מאַקסימאַלער אָפּשאָס וואָג"
 
@@ -71,19 +66,14 @@ msgstr "{0} lb איבער דער מאַקסימאַלער אָפּשאָס וו�
 msgid "{0} of {1} flights"
 msgstr ""
 
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "פֿאָרױסבליק פֿון {0} אָפּציע"
-
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:766
+#: src/components/SettingsDialog.tsx:770
 msgid "{0} was already taken, and that control is now unbound."
 msgstr ""
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:762
+#: src/components/SettingsDialog.tsx:766
 msgid "{0} was on {1}, which is now unbound."
 msgstr ""
 
@@ -129,22 +119,6 @@ msgstr "{opponentName} האָט פֿאָרגעלייגט אַ תּיקו"
 msgid "{placed} of {limit} bots"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} אויסגעקליבן} other {{manyName} אויסגעקליבן}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} אויסגעקליבן. די מאַסן־אַקציע־װאַרג־שטאַנג איז פֿאַראַן.} other {# {manyName} אויסגעקליבן. די מאַסן־אַקציע־װאַרג־שטאַנג איז פֿאַראַן.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# אויסגעקליבן} other {# אויסגעקליבן}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {מאַסן־אַקציעס פֿאַר # אויסגעקליבענעם {entityName}} other {מאַסן־אַקציעס פֿאַר # אויסגעקליבענע {manyName}}}"
-
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
@@ -179,7 +153,7 @@ msgstr "דראָט 1"
 msgid "12 hours"
 msgstr "12 שעה"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:485
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -195,7 +169,7 @@ msgstr "24 שעה"
 msgid "3 WIRE"
 msgstr "דראָט 3"
 
-#: src/components/MissionSetup.tsx:483
+#: src/components/MissionSetup.tsx:488
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -211,47 +185,31 @@ msgstr "אָננעמען"
 msgid "Access denied"
 msgstr "צוטריט אָפּגעזאָגט"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "צוטריט פֿאַרבאָטן"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "צוטריט שטאַפּל"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "קאָנטע צוגעלייגט"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "קאָנטע אַראָפּגענומען"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "קאָנטע סאָרט"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "קאָנטע באַשטעטיקט"
-
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1216
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "מײַסטער"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Acquire target"
 msgstr "פֿאַרכאַפּן ציל"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Acquisition mode"
 msgstr "כאַפּ־מאָדע"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -274,19 +232,14 @@ msgid "Add access"
 msgstr "צולייגן צוטריט"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "צולייגן קאָנטע"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "צולייגן אַ קאָנטע צו באַקומען נאָטיפֿיקאַציעס און נוצן סערוויסעס."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "צוגעבן אן אונטערשריפֿט"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "צולייגן טשעקליסטע פּונקט"
 
@@ -295,17 +248,13 @@ msgstr "צולייגן טשעקליסטע פּונקט"
 msgid "Add field"
 msgstr "צולייגן פֿעלד"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "צולייגן פּונקט..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "צולייגן לינק"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "צולייגן נײַע קאָנטע"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -316,13 +265,8 @@ msgid "Add option"
 msgstr "צולייגן אָפּציע"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "צולייגן טאַג..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "צולייגן מאַנשאַפֿט/אַפּ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -339,11 +283,7 @@ msgstr "צולייגן ווי"
 msgid "Adding..."
 msgstr "צולייגן..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "פּאַסט אָן דעם אויסזען און לייאַוט צו אײַער געשמאַק."
-
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Afterburner"
 msgstr "נאָכברענער"
 
@@ -351,21 +291,17 @@ msgstr "נאָכברענער"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:101
 msgid "Aircraft"
 msgstr "עראָפּלאַן"
 
-#: src/components/MissionSetup.tsx:555
+#: src/components/MissionSetup.tsx:560
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "פֿליגער־טרעגער־שיף <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> פֿון <1>Muhamad Mirza Arrafi</1> (Sketchfab), ליצענצירט אונטער <2>CC BY 4.0</2>. געביטן: איבערגעמאָסטן, איבערגעדרייט, פֿאַרזונקען ביזן וואַסער־ליניע, און פּשוטער געמאַכט פֿאַרן וועב."
 
-#: src/components/MissionSetup.tsx:531
+#: src/components/MissionSetup.tsx:536
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "עראָפּלאַן מאָדעל <0>“F/A-18C Hornet”</0> פֿון <1>CreadorDeMu</1> (Sketchfab), ליצענצירט אונטער <2>CC BY 4.0</2>. געענדערט: איבערגעדרייט און איבערגעמאָסטן, ניט־גענוצטע טעקסטור־דאַטן אַרויסגענומען, דרויסנדיקע אָנהענג־לאַסטן אָפּגעטיילט אין אַ באַזונדער פֿײַל, איין היל־מעש געביטן מיט אַ שפּיגל־קאָפּיע."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "אַלע"
 
 #: src/components/MatchHistory.tsx:273
 msgid "All modes"
@@ -388,7 +324,7 @@ msgstr "דערלויבן סאָרטירן לויט"
 msgid "An error occurred"
 msgstr "אַ פֿעלער איז פֿאָרגעקומען"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:266
 msgid "An unexpected error occurred"
 msgstr "אַן אומדערוואַרטעטער פֿעלער איז פֿאָרגעקומען"
 
@@ -401,11 +337,11 @@ msgid "Android push"
 msgstr "Android פּוש"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:45
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Anyone"
 msgstr "עמעצער"
 
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Anyone who is logged in"
 msgstr "װער עס איז אײַנגעלאָגט"
 
@@ -413,12 +349,12 @@ msgstr "װער עס איז אײַנגעלאָגט"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "אַלץ וואָס איז אַבאָנירט אויף דעם פֿיד וועט אויפֿהערן עס צו באַקומען. איר קענט קאָפּירן אַ נייַעם URL דערנאָך."
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Approach power (ATC)"
 msgstr "דערנעענטערונג־כּוח (ATC)"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Approach, on-speed (Vapp)"
 msgstr "אָנפֿלי, ריכטיקע גיכקײט (Vapp)"
 
@@ -439,24 +375,20 @@ msgstr "זענט איר זיכער איר ווילט אויסמעקן דעם ק�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "זענט איר זיכער איר ווילט אַרויסלאָגן? איר וועט דאַרפֿן ווידער אַרײַנלאָגן צו צוטריט אײַער קאָנטע."
 
-#: src/components/MissionSetup.tsx:1137
+#: src/components/MissionSetup.tsx:1162
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Arrestor hook"
 msgstr "אָפּשטעל-האָק"
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "אַויסשטײַגן"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "אַרויפֿגייענדיק"
 
-#: src/components/MissionSetup.tsx:1105
+#: src/components/MissionSetup.tsx:1130
 msgid "Assists Active"
 msgstr ""
 
@@ -468,12 +400,12 @@ msgstr "צוהענקען קאָמענטאַר פֿײַלן"
 msgid "Attach reply files"
 msgstr "צוהענקען ענטפֿער פֿײַלן"
 
-#: src/components/SettingsDialog.tsx:632
+#: src/components/SettingsDialog.tsx:636
 msgid "Audio Mixer Channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
-#: ../../../lib/web/src/features/access/types.ts:41
+#: ../../../lib/web/src/features/access/types.ts:35
 msgid "Authenticated users"
 msgstr "אױטענטיפֿיצירטע באַניצער"
 
@@ -493,16 +425,16 @@ msgstr "אַװאַטאַר"
 msgid "Avatar for {name}"
 msgstr "אַװאַטאַר פֿאַר {name}"
 
-#: src/components/MissionSetup.tsx:1296
+#: src/components/MissionSetup.tsx:1321
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:474
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "אַקס {i}"
 
-#: src/components/SettingsDialog.tsx:424
+#: src/components/SettingsDialog.tsx:428
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -515,17 +447,16 @@ msgstr "צוריק"
 msgid "Back"
 msgstr "צוריק"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "צוריק צום הויז"
 
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:996
+#: src/components/MissionSetup.tsx:1021
 msgid "Bandit"
 msgstr "באַנדיט"
 
@@ -537,23 +468,23 @@ msgstr "באַנער"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "אונטער 250 — געציַג און קלאַפּן"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:449
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "בעסטע שטײַגונג (Vy, 100% שטופּקראַפֿט)"
 
-#: src/components/MissionSetup.tsx:445
+#: src/components/MissionSetup.tsx:450
 msgid "Best climb (Vy, afterburner)"
 msgstr "בעסטע שטײַגונג (Vy, נאָכברענער)"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:452
 msgid "Best glide (engines out)"
 msgstr "בעסטער גליטש (מאָטאָרן אויס)"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Best sustained turn speed"
 msgstr "בעסטע אָנגעהאַלטענע דריי־גיכקײט"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -566,8 +497,8 @@ msgstr "בינגאָ ברענשטאָף"
 msgid "Blocked by"
 msgstr "געבלאָקירט פֿון"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "געבלאָקירט נאַוויגאַציע צו אומגעטרויטן לינק"
 
@@ -624,12 +555,12 @@ msgstr "דרײ װען גרייט"
 msgid "Browser notifications"
 msgstr "בראָוזער נאָטיפֿיקאַציעס"
 
-#: src/components/SettingsDialog.tsx:348
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:352
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "קנאָפּ {i}"
 
-#: src/components/SettingsDialog.tsx:516
+#: src/components/SettingsDialog.tsx:520
 msgid "Button Mappings"
 msgstr ""
 
@@ -637,7 +568,7 @@ msgstr ""
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — וואָפֿן פֿרײַ פֿון אָנהייב"
 
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1015
 msgid "BVR (Start)"
 msgstr ""
 
@@ -646,15 +577,15 @@ msgid "CALL THE BALL"
 msgstr "מעלד די באַלל"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1034
+#: src/components/SettingsDialog.tsx:1038
 msgid "Callsign"
 msgstr "רוף־נאָמען"
 
-#: src/components/SettingsDialog.tsx:843
+#: src/components/SettingsDialog.tsx:847
 msgid "Camera distance"
 msgstr "קאַמערע-דיסטאַנץ"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Camera unavailable"
 msgstr "די קאַמערע איז נישט פֿאַראַן"
 
@@ -675,7 +606,7 @@ msgstr "די קאַמערע איז נישט פֿאַראַן"
 #: src/components/GameCanvas.tsx:536
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Cancel"
 msgstr "אָפּזאָגן"
 
@@ -687,11 +618,11 @@ msgstr "אָפּזאָגן קאָמענטאַר"
 msgid "Cancel reply"
 msgstr "אָפּזאָגן ענטפֿער"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:594
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:233
 msgid "Canopy"
 msgstr "קאַנאָפּי"
 
@@ -700,43 +631,43 @@ msgstr "קאַנאָפּי"
 msgid "Caption"
 msgstr "אונטערשריפֿט"
 
-#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:595
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1198
+#: src/components/MissionSetup.tsx:1223
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1052
 msgid "Case I (day)"
 msgstr "פאַל I (טאָג)"
 
-#: src/components/MissionSetup.tsx:1199
+#: src/components/MissionSetup.tsx:1224
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1053
 msgid "Case II (weather)"
 msgstr "פאַל II (וועטער)"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1225
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1054
 msgid "Case III (night)"
 msgstr "פאַל III (נאַכט)"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1062
 msgid "Catapult"
 msgstr "קאַטאַפּולט"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:97
+#: ../../../lib/web/src/components/notification-category-button.tsx:99
 msgid "Category for these notifications"
 msgstr "קאַטעגאָריע פֿאַר די דאָזיקע נאָטיפֿיקאַציעס"
 
-#: src/components/MissionSetup.tsx:252
+#: src/components/MissionSetup.tsx:257
 msgid "Centerline"
 msgstr "צענטער ליניע"
 
@@ -744,8 +675,8 @@ msgstr "צענטער ליניע"
 msgid "CHAFF"
 msgstr "טשעף"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:78
-#: ../../../lib/web/src/components/notification-category-button.tsx:89
+#: ../../../lib/web/src/components/notification-category-button.tsx:80
+#: ../../../lib/web/src/components/notification-category-button.tsx:91
 msgid "Change notification category"
 msgstr "ענדערן נאָטיפֿיקאַציע קאַטעגאָריע"
 
@@ -757,11 +688,11 @@ msgstr "נאָכיאָג־בליק:"
 msgid "chat"
 msgstr "שמועס"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "Chat"
 msgstr "שמועס"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "Chat to everyone"
 msgstr "שמועס מיט אַלעמען"
 
@@ -769,10 +700,6 @@ msgstr "שמועס מיט אַלעמען"
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "טשיטס"
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "קלײַבט אױס \"אַלץ\" צו זען אײַערע פֿריִערדיקע מעלדונגען."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
@@ -785,22 +712,6 @@ msgstr "טשעקליסטע"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "קלײַבט אַ שפּיל פֿון דער סײַדבאַר אָדער הייבט אָן אַ נײַע."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "קלײַבט צווישן ברירה פֿאַרברייטערט, קאָמפּאַקט נאָר-ייקאָן, אָדער פֿולער לייאַוט מאָדע"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "קלײַבט צווישן inset, פֿלאָאַט, אָדער סטאַנדאַרט סײַדבאַר לייאַוט"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "קלײַבט צווישן לינקס-צו-רעכטס אָדער רעכטס-צו-לינקס וועבזײַט ריכטונג"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "קלײַבט צווישן סיסטעם פּרעפֿערענץ, ליכטיקע מאָדע, אָדער טונקלע מאָדע"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -816,7 +727,7 @@ msgstr "קלײַבט שפּראַך"
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:677
+#: src/components/SettingsDialog.tsx:681
 msgid "Clear"
 msgstr "רייניקן"
 
@@ -824,29 +735,15 @@ msgstr "רייניקן"
 msgid "Clear all"
 msgstr "רייניקן אַלץ"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "רייניקן פֿילטערס"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "רייניקן זוכן"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "רייניקן אויסקלײַב"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "רייניקן אויסקלײַב (Escape)"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:470
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:468
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:471
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "פֿאַרמאַכן"
@@ -863,8 +760,8 @@ msgstr "פֿאַרמאַכן דיאַלאָג"
 msgid "Close navigation"
 msgstr "פֿאַרמאַכן נאַוויגאַציע"
 
-#: ../../../lib/web/src/components/layout/right-panel.tsx:265
-#: ../../../lib/web/src/components/layout/right-panel.tsx:268
+#: ../../../lib/web/src/components/layout/right-panel.tsx:234
+#: ../../../lib/web/src/components/layout/right-panel.tsx:237
 msgid "Close panel"
 msgstr "פֿאַרמאַכן פּאַנעל"
 
@@ -880,7 +777,7 @@ msgstr "פֿאַרמאַכן זוכן"
 msgid "closer"
 msgstr "נענטער"
 
-#: src/components/MissionSetup.tsx:1078
+#: src/components/MissionSetup.tsx:1103
 msgid "Clouds"
 msgstr "וואָלקנס"
 
@@ -912,10 +809,6 @@ msgstr "זײַלן גרופּירן לויט"
 msgid "Comfortable"
 msgstr "באַקוועם"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "קומט באַלד!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "באַפֿעל־פּאַליטרע"
@@ -929,16 +822,15 @@ msgstr "הייב אָן"
 msgid "Comment actions"
 msgstr "קאָמענטאַר אַקציעס"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:433
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:445
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:431
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
 msgid "Comments"
 msgstr "קאָמענטאַרן"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:103
 msgid "Communication"
 msgstr "קאָמוניקאַציע"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "קאָמפּאַקט"
@@ -956,21 +848,17 @@ msgstr "קאָנפֿיגורירן זעהן אײַנשטעלונגען"
 msgid "Confirm"
 msgstr "באַשטעטיקן"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:916
 msgid "Connect"
 msgstr "פֿאַרבינדן"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:903
 msgid "Connect to private server"
 msgstr "פֿאַרבינדן צו אַ פּריוואַטן סערווער"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "פֿאַרבונדן"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "פֿאַרבונדענע קאָנטעס"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1017,7 +905,7 @@ msgstr "קאָפּירט צו קליפּברעט"
 msgid "Copy"
 msgstr "קאָפּירן"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Corner speed (best instant turn)"
 msgstr "װינקל־גיכקײט (בעסטער מאָמענטאַנער דריי)"
 
@@ -1029,7 +917,7 @@ msgstr "מען האָט נישט געקענט שאַפֿן דעם מאַטש"
 msgid "Could not load this document. Please try again later."
 msgstr "האָט נישט געקאָנט לאָדן דעם דאָקומענט. פּרובירט שפּעטער ווידער."
 
-#: src/components/SettingsDialog.tsx:291
+#: src/components/SettingsDialog.tsx:295
 msgid "Could not save the profile"
 msgstr "מען האָט נישט געקענט אויפֿהיטן דעם פּראָפֿיל"
 
@@ -1038,11 +926,11 @@ msgstr "מען האָט נישט געקענט אויפֿהיטן דעם פּרא
 msgid "Could not save the recording"
 msgstr "מע האָט נישט געקענט שפּייכערן די פֿאַרשרײַבונג"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 msgid "Could not send the message"
 msgstr "מע האָט נישט געקענט שיקן די מעלדונג"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "מען האָט נישט געקענט לאָדן מעלדונגען"
 
@@ -1058,8 +946,8 @@ msgstr "מע האָט נישט געקענט אָנהייבן ווידער־פֿ�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "מע האָט נישט געקענט באַשטעטיקן מיט יענעם קאָנטע. ביטע פּרובירט נאָך אַ מאָל."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Countermeasures"
 msgstr "קעגן־מיטלען"
 
@@ -1092,8 +980,8 @@ msgstr "שאַף און פֿלי"
 msgid "Create match"
 msgstr "שאַף אַ מאַטש"
 
-#: src/components/MissionSetup.tsx:1294
-#: src/components/MissionSetup.tsx:1318
+#: src/components/MissionSetup.tsx:1319
+#: src/components/MissionSetup.tsx:1343
 msgid "Create mission"
 msgstr "שאַפֿן מיסיע"
 
@@ -1111,12 +999,12 @@ msgstr "באַשאַפֿן"
 msgid "Creating..."
 msgstr "באַשאַפֿן..."
 
-#: src/components/MissionSetup.tsx:520
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:531
 msgid "Credits"
 msgstr "קרעדיטן"
 
-#: src/components/MissionSetup.tsx:1085
+#: src/components/MissionSetup.tsx:1110
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1134,23 +1022,16 @@ msgstr "מנהג"
 msgid "CUT"
 msgstr "געפֿערלעך"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Cycle view"
 msgstr "בייט בליק"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "טונקל"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "טונקלע מאָדע"
-
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:250
 msgid "Data conflict"
 msgstr "דאַטן־קאָנפֿליקט"
 
@@ -1159,7 +1040,7 @@ msgstr "דאַטן־קאָנפֿליקט"
 msgid "Date"
 msgstr "דאַטע"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1096
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "טאָג"
@@ -1176,10 +1057,6 @@ msgstr "דעק־פּאָזיציע געשפּייכערט"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "אָפּזאָגן"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "פֿאַרשטאַנדלעך"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1235,13 +1112,9 @@ msgstr "אויסמעקן זעהן"
 msgid "Delete your account on the old server"
 msgstr "לעש אויס דיין קאנטע אויפן אלטן סערווער"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1041
 msgid "Departure / Recovery"
 msgstr ""
-
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "אַראָפּ"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
@@ -1259,8 +1132,8 @@ msgstr "צעשטערט דורך פֿײַער"
 msgid "Details Panel"
 msgstr "פּרטים פּאַנעל"
 
-#: src/components/SettingsDialog.tsx:503
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "דערקענען"
 
@@ -1279,10 +1152,6 @@ msgstr "אויסקלײַבן פֿון וועב בראָוזער"
 msgid "Different game host"
 msgstr "אַן אַנדער שפּיל־האָסט"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "ריכטונג"
-
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "פֿאַרצײכעניש"
@@ -1299,7 +1168,7 @@ msgstr "אַװעקװאַרפֿן"
 msgid "Discard draft?"
 msgstr "אַװעקװאַרפֿן דעם פּראָיעקט?"
 
-#: src/components/SettingsDialog.tsx:387
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "ניט פֿאַרבונדן"
 
@@ -1311,37 +1180,37 @@ msgstr "אפגעשניטן"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1265
-#: src/components/SettingsDialog.tsx:773
+#: src/components/MissionSetup.tsx:1290
+#: src/components/SettingsDialog.tsx:777
 msgid "Dismiss"
 msgstr "אַראָפּזאָגן"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:240
 msgid "Display repeater"
 msgstr "איבערחזרער פֿון דיספּלײ"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "ווײַזט די מאָבילע סײַדבאַר."
 
-#: src/components/SettingsDialog.tsx:974
+#: src/components/SettingsDialog.tsx:978
 msgid "Distance LOD"
 msgstr "ווייטקייט LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1117
+#: src/components/SettingsDialog.tsx:1121
 msgid "Done"
 msgstr "געטאָן"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:452
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:462
 msgid "Download"
 msgstr "אַראָפּלאָדן"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:100
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:98
 msgid "Download failed"
 msgstr "אַראָפּלאָדן דורכגעפֿאַלן"
 
@@ -1365,11 +1234,11 @@ msgstr "טאָפּלען"
 msgid "Duration"
 msgstr "געדויער"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:972
 msgid "Dynamic resolution"
 msgstr "דינאַמישע רעזאָלוציע"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:141
+#: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Dyslexia-friendly"
 msgstr "דיסלעקסיע פֿרײַנדלעך"
 
@@ -1416,15 +1285,15 @@ msgstr "רעדאַקטירן אויסגעקליבענע קאַרטל"
 msgid "Edit view"
 msgstr "רעדאַקטירן בליק"
 
-#: src/components/SettingsDialog.tsx:962
+#: src/components/SettingsDialog.tsx:966
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:941
+#: src/components/SettingsDialog.tsx:945
 msgid "Effects detail"
 msgstr "עפעקט פרטים"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:237
 msgid "Eject"
 msgstr "אַרויסשליידערן"
 
@@ -1444,8 +1313,8 @@ msgstr "בליצפּאָסט־קאָד"
 msgid "EMERG JETT"
 msgstr "נויטפֿאַל אַראָפּוואַרף"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Emergency jettison (hold)"
 msgstr "נויטפֿאַל אַראָפּוואַרף (האַלט)"
 
@@ -1453,8 +1322,8 @@ msgstr "נויטפֿאַל אַראָפּוואַרף (האַלט)"
 msgid "empty"
 msgstr "ליידיק"
 
-#: src/components/MissionSetup.tsx:271
-#: src/components/MissionSetup.tsx:282
+#: src/components/MissionSetup.tsx:276
+#: src/components/MissionSetup.tsx:287
 msgid "Empty pylon"
 msgstr "ליידיקער פּילאָן"
 
@@ -1462,15 +1331,15 @@ msgstr "ליידיקער פּילאָן"
 msgid "ENGAGED"
 msgstr "איך אַטאַקיר"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1008
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:592
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,7 +1351,7 @@ msgstr "גיט אַרײַן דעם קאָד פֿון אײַער בליצפּאָ
 msgid "Enter your authenticator code"
 msgstr "גיט אַרײַן אײַער אויטענטיפֿיקאַטאָר־קאָד"
 
-#: src/components/MissionSetup.tsx:1059
+#: src/components/MissionSetup.tsx:1084
 msgid "Environment"
 msgstr "סבֿיבֿה"
 
@@ -1517,16 +1386,16 @@ msgstr "אויסשפּרייטן"
 msgid "Expand sidebar"
 msgstr "פֿאַרברייטערן זײַטלאַסט"
 
-#: src/components/SettingsDialog.tsx:402
+#: src/components/SettingsDialog.tsx:406
 msgid "Export"
 msgstr "עקספּאָרט"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Extend flaps"
 msgstr "פֿלאַפּס אַרויס"
 
-#: src/components/SettingsDialog.tsx:933
+#: src/components/SettingsDialog.tsx:937
 msgid "Exterior detail"
 msgstr "אויסערלעכער פּרט"
 
@@ -1534,29 +1403,21 @@ msgstr "אויסערלעכער פּרט"
 msgid "External URL"
 msgstr "אינדרויסנדיקער URL"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:131
+#: ../../../lib/web/src/lib/preference-utils.ts:124
 msgid "Extra large"
 msgstr "עקסטרא גרויס"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1335
 msgid "F/A-18C Hornet"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:473
 msgid "F/A-18C reference"
 msgstr "F/A-18C רעפֿערענץ"
 
-#: src/components/MissionSetup.tsx:1243
+#: src/components/MissionSetup.tsx:1268
 msgid "F/A-18C Strike Fighter"
 msgstr ""
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "ניט געלונגען צוצוגעבן קאָנטע"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "ניט געלונגען צוצוגעבן טאַג"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
@@ -1592,11 +1453,11 @@ msgstr "ניט געלונגען צו לאָדן"
 msgid "Failed to load history"
 msgstr "ניט געלונגען צו לאָדן היסטאָריע"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load image"
 msgstr "נישט געקאָנט לאָדן דאָס בילד"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:340
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
 msgid "Failed to load video"
 msgstr "נישט געקאָנט לאָדן דעם ווידעאָ"
 
@@ -1604,17 +1465,9 @@ msgstr "נישט געקאָנט לאָדן דעם ווידעאָ"
 msgid "Failed to post comment"
 msgstr "ניט געלונגען צו פּאָסטן קאָמענטאַר"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "ניט געלונגען צו אַראָפּנעמען קאָנטע"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "דורכפֿאַל צו רופֿן צוריק RSS צוטריט"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "ניט געלונגען צו שיקן פֿאַרזיכערונג־קאָד"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1642,10 +1495,6 @@ msgstr "דער קאַמף גייט אָן"
 msgid "Files"
 msgstr "פֿײַלן"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "פֿילטער..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "פארטיק מאכן דעם אריבערטראג פון דיין קאנטע"
@@ -1658,12 +1507,12 @@ msgstr "געענדיקט"
 msgid "fire"
 msgstr "שיסן"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Fire weapon"
 msgstr "שיסן מיטן וואָפֿן"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:840
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1695,11 +1544,11 @@ msgstr "פלאַך"
 msgid "Flew into the sea"
 msgstr "אַרײַנגעפֿלויגן אין ים"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:98
 msgid "Flight"
 msgstr "פֿלי"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1126
 msgid "Flight Assists"
 msgstr ""
 
@@ -1707,11 +1556,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "פלי־קערן דורכגעפאלן"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:986
 msgid "Flight Profile"
 msgstr ""
 
@@ -1719,16 +1568,12 @@ msgstr ""
 msgid "Flights"
 msgstr "פֿליען"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "שווימענדיק"
-
 #: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "געפֿלויגן"
 
-#: src/components/MissionSetup.tsx:1288
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1360
 msgid "Fly"
 msgstr "פֿליען"
 
@@ -1736,12 +1581,12 @@ msgstr "פֿליען"
 msgid "Fly again"
 msgstr "פֿלי ווידער"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1002
 msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:998
 msgid "Free flight"
 msgstr "פֿרייער פֿלי"
 
@@ -1760,9 +1605,8 @@ msgstr "פֿון"
 #: ../../../lib/web/src/lib/preference-utils.ts:89
 #: ../../../lib/web/src/lib/preference-utils.ts:99
 #: ../../../lib/web/src/lib/preference-utils.ts:110
-#: ../../../lib/web/src/lib/preference-utils.ts:119
-#: ../../../lib/web/src/lib/preference-utils.ts:127
-#: ../../../lib/web/src/lib/preference-utils.ts:138
+#: ../../../lib/web/src/lib/preference-utils.ts:120
+#: ../../../lib/web/src/lib/preference-utils.ts:131
 msgid "From theme"
 msgstr "פֿון טעמע"
 
@@ -1786,28 +1630,24 @@ msgstr "ברענשטאָף רינען"
 msgid "FUEL LO"
 msgstr "ווייניק ברענשטאָף"
 
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:232
 msgid "Fuel probe"
 msgstr "ברענשטאָף זאָנד"
 
-#: src/components/MissionSetup.tsx:269
+#: src/components/MissionSetup.tsx:274
 msgid "Fuel tank"
 msgstr "ברענשטאָף טאַנק"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "פֿולער אויסשטעל"
 
 #: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:251
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:258
 msgid "Fuselage"
 msgstr "גוף פונעם עראָפּלאַן"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Gain"
 msgstr "פֿאַרשטאַרקונג"
 
@@ -1819,45 +1659,24 @@ msgstr "געצייג"
 msgid "GEAR"
 msgstr "שאַסי"
 
-#: src/components/SettingsDialog.tsx:1126
+#: src/components/SettingsDialog.tsx:1130
 msgid "General"
 msgstr "אַלגעמיין"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "צוריק"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "גיין צום ערשטן בלאַט"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "גיין צום לעצטן בלאַט"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "גיין צום ווײַטערדיקן בלאַט"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "גיין צו זייט {pageNumber}"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "גיין צום פֿריִערדיקן בלאַט"
-
-#: src/components/SettingsDialog.tsx:1130
+#: src/components/SettingsDialog.tsx:1134
 msgid "Graphics"
 msgstr "גראַפֿיק"
 
-#: src/components/SettingsDialog.tsx:893
+#: src/components/SettingsDialog.tsx:897
 msgid "Graphics Preset"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:401
 msgid "Gross weight"
 msgstr "גאַנצע וואָג"
 
@@ -1878,7 +1697,7 @@ msgstr "גרופּע: {0}"
 msgid "GUN"
 msgstr "קאַנאָן"
 
-#: src/components/MissionSetup.tsx:288
+#: src/components/MissionSetup.tsx:293
 msgid "Gun only"
 msgstr "בלויז האַרמאַטן"
 
@@ -1887,35 +1706,27 @@ msgstr "בלויז האַרמאַטן"
 msgid "Guns only"
 msgstr "בלויז האַרמאַטן"
 
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1285
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "האַרדוואַרע גראַפֿיק פֿאַרגיכערונג איז אויסגעשאַלטן — קוקט די בלעטערער־שטעלונגען אָדער גראַפֿיק־דרײַווערס."
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head"
 msgstr "קאָפּ"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:865
 msgid "Head tracking"
 msgstr "קאָפּ־נאָכשפּירונג"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/MissionSetup.tsx:409
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "באַהאַלטן"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "באַהאַלטן פּאַראָל"
-
-#: src/components/SettingsDialog.tsx:885
+#: src/components/SettingsDialog.tsx:889
 msgid "High"
 msgstr "הויך"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1111
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
@@ -1945,11 +1756,11 @@ msgstr "האַק"
 msgid "Hot"
 msgstr "הייס"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:241
 msgid "HUD altitude source"
 msgstr "HUD הייך־מקור"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:242
 msgid "HUD declutter"
 msgstr "HUD פֿאַרפּשוטערן"
 
@@ -1958,7 +1769,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:318
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
 msgid "Image viewer: {0}"
 msgstr "בילד־ווײַזער: {0}"
 
@@ -1966,16 +1777,16 @@ msgstr "בילד־ווײַזער: {0}"
 msgid "Imperial"
 msgstr "אימפּעריאַל"
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:410
 msgid "Import"
 msgstr "אימפּאָרט"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1220
 msgid "In air"
 msgstr "אין דער לופֿט"
 
-#: ../../../lib/web/src/features/access/types.ts:42
+#: ../../../lib/web/src/features/access/types.ts:36
 msgid "Including anonymous users"
 msgstr "אַרײַנגערעכנט אַנאָנימע באַניצער"
 
@@ -1987,39 +1798,27 @@ msgstr "ראשי־תיבות אַװאַטאַר"
 msgid "Initials avatar for {name}"
 msgstr "ראשי־תיבות אַװאַטאַר פֿאַר {name}"
 
-#: src/components/SettingsDialog.tsx:368
+#: src/components/SettingsDialog.tsx:372
 msgid "Input Hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "אַרײַנגעשטעלט"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "אינטערעסן"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:387
 msgid "Internal fuel"
 msgstr "אינערלעכער ברענשטאָף"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "ניט גילטיקע דאַטע"
 
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "אומגילטיקער טאַג: בלױז אותיות, ציפֿערן, פּראָבלען, טירעס און שטריכן (מאַקסימום 50 שריפֿטצײכנס)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "ניט גילטיקער פֿאַרזיכערונג־קאָד"
-
-#: src/components/SettingsDialog.tsx:414
+#: src/components/SettingsDialog.tsx:418
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "אומפֿאַרוואונדבאַר"
@@ -2028,7 +1827,7 @@ msgstr "אומפֿאַרוואונדבאַר"
 msgid "INVULNERABLE"
 msgstr "אומפֿאַרלעצלעך"
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1137
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "אומפֿאַרלעצלעך (נאָר מענטשלעכע שפּילערס)"
@@ -2037,13 +1836,13 @@ msgstr "אומפֿאַרלעצלעך (נאָר מענטשלעכע שפּילער
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "עס װײַזט אױס אַז די זײַט װאָס איר זוכט <0/>עקזיסטירט נישט אָדער איז אַװעקגענומען געװאָרן."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jammer"
 msgstr "שטערער"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Jettison tanks"
 msgstr "וואַרף אַראָפּ די טאַנקען"
 
@@ -2055,8 +1854,8 @@ msgstr "אַראָפּוואַרף: לאַנדונג-רעדער"
 msgid "Join"
 msgstr "זיך אָנשליסן"
 
-#: src/components/MissionSetup.tsx:817
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:842
+#: src/components/MissionSetup.tsx:1320
 msgid "Join server"
 msgstr "זיך צוטשעפּען צו סערווער"
 
@@ -2065,7 +1864,7 @@ msgid "JOINED"
 msgstr "האָט זיך אָנגעשלאָסן"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1230
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "צווייקאַמף"
@@ -2074,11 +1873,11 @@ msgstr "צווייקאַמף"
 msgid "Joust — 1v1, first kill wins"
 msgstr "דועל — 1v1, ווער עס שיסט אַראָפּ צוערשט געווינט"
 
-#: src/components/MissionSetup.tsx:974
+#: src/components/MissionSetup.tsx:999
 msgid "Joust against bot"
 msgstr "דועל קעגן באָט"
 
-#: src/components/SettingsDialog.tsx:1138
+#: src/components/SettingsDialog.tsx:1142
 msgid "Joystick"
 msgstr "דזשויסטיק"
 
@@ -2094,7 +1893,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "קלאַוויאַטור־קורצוועגן"
 
-#: src/components/SettingsDialog.tsx:1142
+#: src/components/SettingsDialog.tsx:1146
 msgid "Keys"
 msgstr "קלאַווישן"
 
@@ -2123,13 +1922,13 @@ msgstr "ל מאָטאָר פֿײַער"
 msgid "L GEAR"
 msgstr "ל שאַסי"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Landing gear"
 msgstr "לאַנדונג-געצייג"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:103
-#: ../../../lib/web/src/lib/preference-utils.ts:130
+#: ../../../lib/web/src/lib/preference-utils.ts:123
 msgid "Large"
 msgstr "גרויס"
 
@@ -2137,12 +1936,12 @@ msgstr "גרויס"
 msgid "LATE"
 msgstr "שפּעט"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:422
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Launch (catapult)"
 msgstr "לאַנצירן (קאַטאַפּולט)"
 
@@ -2150,7 +1949,6 @@ msgstr "לאַנצירן (קאַטאַפּולט)"
 msgid "launch / target"
 msgstr "שטאַרט / ציל"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "אויסשטעל"
@@ -2159,12 +1957,7 @@ msgstr "אויסשטעל"
 msgid "lb"
 msgstr "lb"
 
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "לערן מער"
-
-#: src/components/MissionSetup.tsx:913
+#: src/components/MissionSetup.tsx:938
 msgid "Leave server"
 msgstr "פֿאַרלאָזן סערווער"
 
@@ -2176,16 +1969,12 @@ msgstr "פֿאַרלאָזט"
 msgid "LEFT"
 msgstr "איז אַוועק"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "פֿון לינקס צו רעכטס"
-
-#: src/components/MissionSetup.tsx:249
-#: src/components/MissionSetup.tsx:250
+#: src/components/MissionSetup.tsx:254
+#: src/components/MissionSetup.tsx:255
 msgid "Left wing"
 msgstr "לינקער פליגל"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:253
 msgid "Left wingtip"
 msgstr "שפּיץ פונעם לינקן פליגל"
 
@@ -2197,8 +1986,6 @@ msgstr "נאָר אותיות, ציפֿערן, ליידיקע ערטער און 
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "גלײַך אויף 1200, רעדער אַראָפּ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "ליכטיק"
@@ -2207,8 +1994,8 @@ msgstr "ליכטיק"
 msgid "lights"
 msgstr "ליכטער"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:235
 msgid "Lights"
 msgstr "ליכטער"
 
@@ -2249,8 +2036,6 @@ msgstr "לאָדן דורכגעפֿאַלן"
 msgid "Loading..."
 msgstr "לאָדט..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2268,39 +2053,39 @@ msgstr "אַרויסגעקומען בהצלחה"
 msgid "Logging out…"
 msgstr "אַרויסקומען…"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:116
 msgid "Look"
 msgstr "קוק"
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:846
 msgid "Look / orbit"
 msgstr "קוק / אָרביט"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look at target"
 msgstr "קוק אויף ציל"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:188
 msgid "Look down"
 msgstr "קוק אַראָפּ"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:189
 msgid "Look left"
 msgstr "קוק לינקס"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look right"
 msgstr "קוק רעכטס"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:187
 msgid "Look up"
 msgstr "קוק אַרויף"
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Low"
 msgstr "נידעריק"
 
-#: src/components/MissionSetup.tsx:1088
+#: src/components/MissionSetup.tsx:1113
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2310,13 +2095,9 @@ msgstr "נידעריקער סטראַטוס"
 msgid "M to close"
 msgstr "M צו פֿאַרמאַכן"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
+#: ../../../lib/web/src/components/notification-category-button.tsx:127
 msgid "Manage categories"
 msgstr "פֿאַרוואַלטן קאַטעגאָריעס"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "פֿאַרװאַלט אײַערע פֿאַרבונדענע קאָנטעס פֿאַר מעלדונגען און סערװיסן."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
@@ -2326,26 +2107,25 @@ msgstr "מאַנואַל"
 msgid "map"
 msgstr "מאַפּע"
 
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:243
 msgid "Map"
 msgstr "מאַפּע"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "צייכענען אַלץ ווי געלייענט"
 
-#: src/components/SettingsDialog.tsx:607
+#: src/components/SettingsDialog.tsx:611
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:622
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:587
-#: src/components/SettingsDialog.tsx:614
+#: src/components/SettingsDialog.tsx:591
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Volume"
 msgstr ""
 
@@ -2353,11 +2133,11 @@ msgstr ""
 msgid "Match type"
 msgstr "סאָרט מאַטש"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:933
 msgid "Matches"
 msgstr "מאַטשן"
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Max fidelity"
 msgstr ""
 
@@ -2370,7 +2150,7 @@ msgid "MCP server"
 msgstr "MCP סערװער"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:888
 msgid "Medium"
 msgstr "מיטל"
 
@@ -2379,8 +2159,8 @@ msgid "menu"
 msgstr "מעניו"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:190
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:246
 msgid "Menu"
 msgstr "מעניו"
 
@@ -2388,7 +2168,7 @@ msgstr "מעניו"
 msgid "Merge — fight on at the pass"
 msgstr "צונויפֿקום — דער קאַמף הייבט זיך אָן בײַם פֿאַרבײַגיין"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1014
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2400,7 +2180,7 @@ msgstr "בריוו"
 msgid "Message everyone"
 msgstr "שרײַב אַלעמען"
 
-#: src/components/MissionSetup.tsx:741
+#: src/components/MissionSetup.tsx:766
 msgid "Message players on this server"
 msgstr "שיק אַ מעלדונג צו די שפּילערס אויף דעם סערווער"
 
@@ -2412,7 +2192,7 @@ msgstr "שרײַב דײַן מאַנשאַפֿט"
 msgid "Metric"
 msgstr "מעטריש"
 
-#: src/components/MissionSetup.tsx:1087
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2422,7 +2202,7 @@ msgstr "מיטלער סטראַטוס"
 msgid "Midair collision"
 msgstr "צונויפֿשטויס אין דער לופֿט"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:607
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "מאַפּע פֿון מידוויי אַטאָל — די בילדער אַנטהאַלטן מאָדיפֿיצירטע <0>Copernicus Sentinel-2</0> דאַטן (2026); די פֿליפֿעלד־געאָמעטריע (לאַנדונג־באַן, טאַקסי־וועגן, אַפּראָנען) © <1>OpenStreetMap</1> בײַשטײַערער, ליצענצירט אונטער <2>ODbL</2>; ברעג־ און ריף־דאַטן פֿון <3>NOAA NCCOS</3> (עפֿנטלעכער דאָמען)."
 
@@ -2434,7 +2214,7 @@ msgstr "מינימאַלע לענג"
 msgid "MISSILE"
 msgstr "ראַקעטע"
 
-#: src/components/MissionSetup.tsx:579
+#: src/components/MissionSetup.tsx:584
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ראַקעטע־מאָדעל <0>“AIM-120C AMRAAM”</0> פֿון <1>Pippa</1> (Sketchfab), ליצענצירט אונטער <2>CC BY 4.0</2>. געענדערט: איבערגעמאָסטן, איבערגעדרייט און צענטרירט פֿאַרן אַרײַנשטעלן."
 
@@ -2464,11 +2244,11 @@ msgstr "מאָנטיק"
 msgid "More options"
 msgstr "מער אָפּציעס"
 
-#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1320
 msgid "Multiplayer dogfights"
 msgstr ""
 
@@ -2493,7 +2273,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "נאָמען מוז זײַן 1000 כאַראַקטערן אָדער ווייניקער"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:313
 msgid "Network error"
 msgstr "נעץ פֿעלער"
 
@@ -2507,12 +2287,12 @@ msgstr "נײַ"
 msgid "New game"
 msgstr "נײַ שפּיל"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:527
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:532
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
 msgid "Next image"
 msgstr "ווײַטערדיק בילד"
 
-#: src/components/MissionSetup.tsx:1072
+#: src/components/MissionSetup.tsx:1097
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2534,11 +2314,7 @@ msgstr "נאָך קיין אַקטיוויטעט"
 msgid "No comments yet"
 msgstr "נאָך קיין באַמערקונגען"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "קיין פֿאַרבונדענע קאָנטעס"
-
-#: src/components/SettingsDialog.tsx:692
+#: src/components/SettingsDialog.tsx:696
 msgid "No control matches “{query}”."
 msgstr ""
 
@@ -2562,7 +2338,7 @@ msgstr "קיין גרופּעס פֿאַראַן"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "קיין עלעמענט טיפּן קענען נאָך ניט זײַן באַשאַפֿן. באַשאַף די נייטיקע עלטערן עלעמענטן ערשט."
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "קיין דזשויסטיק ניט דערקענט — דריקט אַבי וועלכן קנאָפּ אויף אים כּדי אים אויפֿצוּוועקן."
 
@@ -2570,15 +2346,11 @@ msgstr "קיין דזשויסטיק ניט דערקענט — דריקט אַב�
 msgid "No matching objects"
 msgstr "קיין שטימענדיקע אָביעקטן"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "נאָך קײן מעלדונגען"
-
 #: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "נישטאָ קיין אָפֿענע מאַטשן — שאַף איינעם."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "קיין מענטשן ניט געפֿונען"
@@ -2587,18 +2359,12 @@ msgstr "קיין מענטשן ניט געפֿונען"
 msgid "No places found"
 msgstr "קיין ערטער ניט געפֿונען"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "קיין פּראָפֿיל"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "קײן רעזולטאַטן נישט געפֿונען"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "קיין רעזולטאַטן ניט געפֿונען."
 
@@ -2620,11 +2386,11 @@ msgstr "קיין ציל נישטא"
 msgid "No time zone found."
 msgstr "קיין צײַט זאָנע ניט געפֿונען."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:104
+#: ../../../lib/web/src/components/notification-category-button.tsx:106
 msgid "No topic record yet — try again after the next notification."
 msgstr "נאָך קיין טעמע רעקאָרד — פּרוּוו ווידער נאָך דער ווײַטערדיקער מעלדונג."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "קיין אומגעלייענטע מעלדונגען"
 
@@ -2636,7 +2402,7 @@ msgstr "קיין באַניצערס ניט געפֿונען"
 msgid "No views"
 msgstr "קיין קוקן"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "נישטאָ קיין וועלט־סערווער."
@@ -2645,7 +2411,7 @@ msgstr "נישטאָ קיין וועלט־סערווער."
 msgid "NO-GRADE"
 msgstr "אָן צייכן"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:413
 msgid "Nominal"
 msgstr ""
 
@@ -2662,16 +2428,15 @@ msgstr ""
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: ../../../lib/web/src/lib/preference-utils.ts:120
-#: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1084
-#: src/components/SettingsDialog.tsx:468
-#: src/components/SettingsDialog.tsx:544
-#: src/components/SettingsDialog.tsx:817
+#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:1109
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:821
 msgid "None"
 msgstr "קיינס"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:129
+#: ../../../lib/web/src/lib/preference-utils.ts:122
 msgid "Normal"
 msgstr "נארמאל"
 
@@ -2679,7 +2444,7 @@ msgstr "נארמאל"
 msgid "NOSE GEAR"
 msgstr "נאָז שאַסי"
 
-#: src/components/SettingsDialog.tsx:304
+#: src/components/SettingsDialog.tsx:308
 msgid "Not a joystick profile"
 msgstr "דאָס איז נישט קיין דזשויסטיק פּראָפֿיל"
 
@@ -2696,25 +2461,17 @@ msgstr "ניט געשטעלט"
 msgid "Nothing found"
 msgstr "גאָרניט ניט געפֿונען"
 
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:743
 msgid "Nothing yet — say hello."
 msgstr "נאָך גאָרנישט — זאָג שלום."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "מעלדונגען"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "מעלדונגען: {0}"
 
-#: src/components/MissionSetup.tsx:1002
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1214
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "אָנהייבער"
@@ -2725,7 +2482,7 @@ msgstr "אָנהייבער"
 msgid "Number"
 msgstr "נומער"
 
-#: src/components/SettingsDialog.tsx:949
+#: src/components/SettingsDialog.tsx:953
 msgid "Ocean detail"
 msgstr "אָקעאַן-פּרט"
 
@@ -2741,13 +2498,13 @@ msgstr "OK"
 msgid "On"
 msgstr "אָן"
 
-#: src/components/MissionSetup.tsx:1026
-#: src/components/MissionSetup.tsx:1197
+#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:1222
 msgid "On carrier"
 msgstr "אויפֿן טרעגער"
 
-#: src/components/MissionSetup.tsx:1025
-#: src/components/MissionSetup.tsx:1196
+#: src/components/MissionSetup.tsx:1050
+#: src/components/MissionSetup.tsx:1221
 msgid "On runway"
 msgstr "אויפֿן לאַנדבאַן"
 
@@ -2763,11 +2520,6 @@ msgstr "עפֿן"
 msgid "Open — anyone may join or leave"
 msgstr "אָפֿן — יעדער קען זיך אָנשליסן אָדער אַוועקגיין"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "עפֿן קאָנטע אַקציעס"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2782,11 +2534,6 @@ msgstr "עפֿן מעניו"
 msgid "Open navigation"
 msgstr "עפֿן נאַוויגאַציע"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "עפֿן נאַוויגאַציע מעניו"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2795,11 +2542,6 @@ msgstr "עפֿן אָפּציע אַקציעס"
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "עפֿן אויסגעקליבן קאַרטל"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "עפֿן טעמע אײַנשטעלונגען"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2833,8 +2575,8 @@ msgstr "אַרומקרײַז"
 msgid "Other"
 msgstr "אַנדער"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:209
 msgid "Override G limit"
 msgstr "אַריבער דעם G-גרענעץ"
 
@@ -2850,16 +2592,11 @@ msgstr "בליק פארשלאסן"
 msgid "PADLOCK OFF"
 msgstr "בליק פריי"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "זײַט {currentPage} פֿון {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "עלטער"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:208
 msgid "Parking brake"
 msgstr "פּאַרק-בראָמז"
 
@@ -2883,23 +2620,19 @@ msgstr "מוסטער (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:883
+#: src/components/SettingsDialog.tsx:887
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "קלײַבט אױס אַ דאַטע"
-
-#: src/components/MissionSetup.tsx:664
+#: src/components/MissionSetup.tsx:675
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "פּילאָט"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1190
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1215
+#: src/components/MissionSetup.tsx:1274
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "פּילאָט"
@@ -2908,7 +2641,7 @@ msgstr "פּילאָט"
 msgid "PILOT DOWN"
 msgstr "פּילאָט געהרגעט"
 
-#: src/components/SettingsDialog.tsx:1030
+#: src/components/SettingsDialog.tsx:1034
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2920,15 +2653,15 @@ msgstr "פּילאָט געהרגעט"
 msgid "pitch"
 msgstr "נײַג"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:111
 msgid "Pitch"
 msgstr "פּיטש"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:199
 msgid "Pitch down"
 msgstr "פּיטש אַראָפּ"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:198
 msgid "Pitch up"
 msgstr "פּיטש אַרויף"
 
@@ -2942,7 +2675,7 @@ msgstr "שפּילער"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:89
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:314
 msgid "Please check your internet connection and try again."
 msgstr "זײַט אַזוי גוט קאָנטראָלירט אײַער אינטערנעץ פֿאַרבינדונג און פּרוּווט נאָך אַ מאָל."
 
@@ -2966,7 +2699,7 @@ msgstr "פּאָסטן"
 msgid "Posts and comments"
 msgstr "פּאָסטן און באַמערקונגען"
 
-#: src/components/SettingsDialog.tsx:797
+#: src/components/SettingsDialog.tsx:801
 msgid "Press a key…"
 msgstr "דריקט אַ קלאַוויש…"
 
@@ -2974,12 +2707,12 @@ msgstr "דריקט אַ קלאַוויש…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "דריקט Enter צו פֿליִען"
 
-#: src/components/SettingsDialog.tsx:567
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:511
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:516
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:509
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
 msgid "Previous image"
 msgstr "פֿריִערדיק בילד"
 
@@ -2992,12 +2725,8 @@ msgstr "פּריוואַטקײַט"
 msgid "Processing…"
 msgstr "פּראָצעסירונג…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "פּראָפֿיל"
-
-#: src/components/SettingsDialog.tsx:290
-#: src/components/SettingsDialog.tsx:302
+#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:306
 msgid "Profile saved"
 msgstr "פּראָפֿיל אויפֿגעהיט"
 
@@ -3005,8 +2734,8 @@ msgstr "פּראָפֿיל אויפֿגעהיט"
 msgid "Project members"
 msgstr "פּראָיעקט־מיטגלידער"
 
-#: src/components/MissionSetup.tsx:844
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:887
 msgid "Public servers"
 msgstr "עפֿנטלעכע סערווערס"
 
@@ -3030,8 +2759,8 @@ msgstr "ר מאָטאָר פֿײַער"
 msgid "R GEAR"
 msgstr "ר שאַסי"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Radar silent"
 msgstr "ראַדאַר שטיל"
 
@@ -3047,7 +2776,7 @@ msgstr "פארבינד ווידער דיינע קאנטעס אויף דעם סע
 msgid "Re-register your passkeys on this server"
 msgstr "רעגיסטרירט איבער אייערע צוטריט שליסלען אויף דעם סערווער"
 
-#: src/components/MissionSetup.tsx:1279
+#: src/components/MissionSetup.tsx:1304
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3055,11 +2784,10 @@ msgstr ""
 msgid "REARMED"
 msgstr "ווידער באַוואָפֿנט"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:848
 msgid "Recent"
 msgstr "לעצטנס"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "רעקאָמענדירט"
@@ -3068,7 +2796,7 @@ msgstr "רעקאָמענדירט"
 msgid "Reconnecting ({retries})..."
 msgstr "פֿאַרבינדט װידער ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1055
+#: src/components/SettingsDialog.tsx:1059
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3097,7 +2825,7 @@ msgstr "רעדירעקטירן צו לאָגן."
 msgid "Reduce interest"
 msgstr "פֿאַרמינער אינטערעס"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:467
 msgid "Reference"
 msgstr "רעפֿערענץ"
 
@@ -3125,7 +2853,6 @@ msgstr "רעלאַטיוו אין 24 שעה, אַנדערש אַבסאָלוט"
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "אַראָפּנעמען"
 
@@ -3154,7 +2881,7 @@ msgstr "אַראָפּנעמען צוטריט?"
 msgid "Remove interest"
 msgstr "אַראָפּנעמען אינטערעס"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "אַראָפּנעמען עלעמענט"
 
@@ -3176,11 +2903,11 @@ msgstr "איבערטויפֿן זײַל"
 msgid "Rename this board column"
 msgstr "איבערטויפֿן די ברעט זײַל"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:641
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "רענדערינג דורך <0>three.js</0> (MIT ליצענץ)."
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:922
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3202,38 +2929,27 @@ msgstr "נייטיק"
 msgid "Resend email"
 msgstr "שיק די בליצפּאָסט נאָך אַ מאָל"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1113
+#: src/components/SettingsDialog.tsx:1117
 msgid "Reset"
 msgstr "צוריקזעצן"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "שטעלט צוריק {title}"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "צוריקזעצן אַלע אײַנשטעלונגען צו פֿאַרשטעלונג ווערטן"
-
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Reset master caution"
 msgstr "באַנײַען הויפּט־װאָרענונג"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Reset trim"
 msgstr "טרים צוריקשטעלן"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
-#: src/components/SettingsDialog.tsx:841
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:845
 msgid "Reset view"
 msgstr "צוריקשטעלן דעם בליק"
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:927
 msgid "Resolution"
 msgstr "אויפֿלייזונג"
 
@@ -3257,8 +2973,8 @@ msgstr "רעזולטאַט"
 msgid "Resume"
 msgstr "פֿאָרזעצן"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Retract flaps"
 msgstr "פֿלאַפּס אַרײַן"
 
@@ -3266,7 +2982,7 @@ msgstr "פֿלאַפּס אַרײַן"
 msgid "Retry"
 msgstr "פּרוּווט נאָך אַ מאָל"
 
-#: src/components/SettingsDialog.tsx:486
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "פֿאַרקערט"
 
@@ -3282,16 +2998,12 @@ msgstr "רופֿט צוריק צוטריט"
 msgid "Revoke RSS access?"
 msgstr "אַנולירן RSS צוטריט?"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "רעכטס צו לינקס"
-
-#: src/components/MissionSetup.tsx:254
-#: src/components/MissionSetup.tsx:255
+#: src/components/MissionSetup.tsx:259
+#: src/components/MissionSetup.tsx:260
 msgid "Right wing"
 msgstr "רעכטער פליגל"
 
-#: src/components/MissionSetup.tsx:256
+#: src/components/MissionSetup.tsx:261
 msgid "Right wingtip"
 msgstr "שפּיץ פונעם רעכטן פליגל"
 
@@ -3299,15 +3011,15 @@ msgstr "שפּיץ פונעם רעכטן פליגל"
 msgid "roll"
 msgstr "ראָל"
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:112
 msgid "Roll"
 msgstr "ראָל"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:200
 msgid "Roll left"
 msgstr "ראָל לינקס"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Roll right"
 msgstr "ראָל רעכטס"
 
@@ -3319,10 +3031,6 @@ msgstr "רייען"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "רייען גרופּירן לויט"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "רייען פּער זײַטל"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3352,7 +3060,7 @@ msgstr "שבת"
 msgid "Save"
 msgstr "היט אויף"
 
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:482
 msgid "Sea level"
 msgstr "ים־שפּיגל"
 
@@ -3363,8 +3071,8 @@ msgstr "ים־שפּיגל"
 msgid "Search"
 msgstr "זוך"
 
-#: src/components/SettingsDialog.tsx:667
-#: src/components/SettingsDialog.tsx:668
+#: src/components/SettingsDialog.tsx:671
+#: src/components/SettingsDialog.tsx:672
 msgid "Search controls"
 msgstr ""
 
@@ -3408,12 +3116,10 @@ msgstr "זוך, קוק, און סאָרטיר דעם קוק."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "זוך..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3422,11 +3128,6 @@ msgstr "זוכן..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "קלײַב"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "קלײַבט אױס {0}"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3444,10 +3145,6 @@ msgstr "קלײַב אַ באַניצער, גרופּע, אָדער אַנדער 
 msgid "Select access rule"
 msgstr "קלײַב צוטריט כּלל"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "קלײַבט אױס אַ קאָנטע"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "קלײַב קאָנטע טיפּ"
@@ -3455,10 +3152,6 @@ msgstr "קלײַב קאָנטע טיפּ"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "קלײַב גרופּע"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "קלײַב אויסלייג־סטיל"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3476,38 +3169,22 @@ msgstr "קלײַבט אױס אַ מענטש..."
 msgid "Select previous card"
 msgstr "קלײַב פֿריִערדיקע קאַרטל"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "קלײַב זײַטנשטאַנג־סטיל"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "קלײַב זײַטל־ריכטונג"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "קלײַב טעמע־פּרעפֿערענץ"
-
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Select weapon"
 msgstr "קלײַב אויס וואַפֿן"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "קלײַב..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "אויסגעקליבן"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
 msgid "Selected: <0>{0}</0>"
 msgstr "אויסגעקליבן: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:773
 msgid "Send"
 msgstr "שיקן"
 
@@ -3528,7 +3205,7 @@ msgstr "שיק בליצפּאָסט"
 msgid "Send message"
 msgstr "שיק אַ מעלדונג"
 
-#: ../../../lib/web/src/lib/preference-utils.ts:140
+#: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Serif"
 msgstr "סעריף"
 
@@ -3537,12 +3214,12 @@ msgstr "סעריף"
 msgid "Server"
 msgstr "סערווער"
 
-#: src/components/MissionSetup.tsx:713
+#: src/components/MissionSetup.tsx:728
 msgid "Server chat"
 msgstr "סערווער־שמועס"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:270
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:296
 msgid "Server error"
 msgstr "סערווער פֿעלער"
 
@@ -3560,11 +3237,11 @@ msgstr "סערווער לויפֿט v{0}, איר האָט v{version}"
 msgid "SESSION ENDED"
 msgstr "סעסיע פֿאַרענדיקט"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:220
 msgid "Session expired. Please log in again."
 msgstr "די סעסיע איז אויסגעגאַנגען. ביטע לאָגט זיך ווידער אַרײַן."
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Set"
 msgstr "שטעלן"
 
@@ -3576,13 +3253,13 @@ msgstr "שטעל אָנהייב און ציל"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:464
-#: src/components/MissionSetup.tsx:1296
-#: src/components/SettingsDialog.tsx:1096
-#: src/components/SettingsDialog.tsx:1123
+#: src/components/MissionSetup.tsx:1321
+#: src/components/SettingsDialog.tsx:1100
+#: src/components/SettingsDialog.tsx:1127
 msgid "Settings"
 msgstr "אײַנשטעלונגען"
 
-#: src/components/SettingsDialog.tsx:980
+#: src/components/SettingsDialog.tsx:984
 msgid "Shadows"
 msgstr "שאָטנס"
 
@@ -3594,10 +3271,6 @@ msgstr "ווײַז קלאַסן"
 msgid "Show fields"
 msgstr "ווײַז פֿעלדער"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "ווײַזן פּאַראָל"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "ווײַז דעם הילף"
@@ -3606,9 +3279,7 @@ msgstr "ווײַז דעם הילף"
 msgid "Showing {totalShown} of {total}"
 msgstr "ווײַזן {totalShown} פֿון {total}"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "זײַטנשטאַנג"
 
@@ -3626,16 +3297,12 @@ msgstr "ארויסמעלדן זיך..."
 msgid "Single line of text only"
 msgstr "בלויז איין שורה טעקסט"
 
-#: src/components/MissionSetup.tsx:446
+#: src/components/MissionSetup.tsx:451
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "בעסטע שטײַגונג מיט אײן מאָטאָר (Vyse, נאָכברענער)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "שפּרינג צו הויפּט"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
-#: ../../../lib/web/src/lib/preference-utils.ts:128
+#: ../../../lib/web/src/lib/preference-utils.ts:121
 msgid "Small"
 msgstr "קליין"
 
@@ -3643,15 +3310,15 @@ msgstr "קליין"
 msgid "Sort"
 msgstr "סאָרטיר"
 
-#: src/components/MissionSetup.tsx:1299
+#: src/components/MissionSetup.tsx:1324
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1050
+#: src/components/SettingsDialog.tsx:1054
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1134
+#: src/components/SettingsDialog.tsx:1138
 msgid "Sound"
 msgstr "קלאַנג"
 
@@ -3679,13 +3346,13 @@ msgstr "לופֿ.בר"
 msgid "speed brake"
 msgstr "לופֿטברעמז"
 
-#: src/components/SettingsDialog.tsx:111
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:206
 msgid "Speed brake"
 msgstr "לופֿטברעמז"
 
-#: src/components/MissionSetup.tsx:503
+#: src/components/MissionSetup.tsx:508
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "גיכקײטן אין KCAS, װי אַ באַרייך פֿון גרינג (מינימאַלער ברענשטאָף, אָן לאַסט) ביז שװער (מאַקסימאַלער ברוטאָ־װאָג). די דאַטן זײַנען עקספּערימענטעל אַרויסגעפֿונען געװאָרן אינעם שפּיל. אַלע אונטערשיידן פֿונעם עכטן עראָפּלאַן שפּיגלען אָפּ די טעותן אינעם סימולאַטאָרס פֿלי־מאָדעל."
 
@@ -3693,11 +3360,11 @@ msgstr "גיכקײטן אין KCAS, װי אַ באַרייך פֿון גרינג
 msgid "SPLASH"
 msgstr "ציל אַראָפּגעשאָסן"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:456
 msgid "Stall, clean (Vs1)"
 msgstr "הייב־פֿאַרלוסט, ריין (Vs1)"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Stall, landing config (Vs0)"
 msgstr "הייב־פֿאַרלוסט, לאַנדונג־סטעלונג (Vs0)"
 
@@ -3709,15 +3376,11 @@ msgstr "אָנהייבן"
 msgid "Start the discussion by adding the first comment."
 msgstr "הייב אָן די דיסקוסיע מיטן צולייגן דעם ערשטן קאָמענטאַר."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "אָבער בלײַב צוגעבונדן!"
-
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:447
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "שטײַלסטע שטײַגונג (Vx, 100% שטופּקראַפֿט)"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:448
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "שטײַלסטע שטײַגונג (Vx, נאָכברענער)"
 
@@ -3739,7 +3402,6 @@ msgstr "געב אונטער ענטפֿער"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "אַבאָנירן"
@@ -3748,8 +3410,8 @@ msgstr "אַבאָנירן"
 msgid "Sunday"
 msgstr "זונטיק"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1217
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "איבערמענטשלעך"
@@ -3759,20 +3421,14 @@ msgid "Switch to view 1-9"
 msgstr "ביט איבער צו ראַם 1-9"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
-#: ../../../lib/web/src/lib/preference-utils.ts:139
+#: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
 msgstr "סיסטעם"
 
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "טאַקטישע מאַפּע"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "טאַג"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3791,11 +3447,11 @@ msgstr "טאַגן"
 msgid "TALLY"
 msgstr "איך זע דעם שׂונא"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:992
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1319
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3815,10 +3471,6 @@ msgstr "מאַנשאַפֿטן"
 #: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "מאַנשאַפֿטן — רויט קעגן בלוי"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "מאַנשאַפֿטן/אַפּן"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3862,19 +3514,7 @@ msgstr "דער פֿאַרלאַנגטער אינהאַלט איז נישט גע�
 msgid "The server returned a web page instead of data."
 msgstr "דער סערװער האָט צוריקגעגעבן אַ וועב-בלאַט אַנשטאָט דאַטן."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "די וועבזײַטל איז דערווײַל נישט צוטריטלעך."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "טעמע"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "טעמע־אײַנשטעלונגען"
-
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1283
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "דער בלעטערער שטיצט נישט WebGL 2, דעריבער קען די שפּיל נישט לויפֿן — פּרוּווט אַן אַנדער בלעטערער."
 
@@ -3882,29 +3522,25 @@ msgstr "דער בלעטערער שטיצט נישט WebGL 2, דעריבער קע
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "דער לאָבי שיקט אײַער שפּיל־פֿאַרבינדונג צו אַן אַנדער האָסט ({redirectHost}). גייט װײַטער נאָר אױב איר טרױט דעם דאָזיקן סערװער."
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1287
 msgid "This machine may be too slow for smooth flight."
 msgstr "די מאַשין קען זײַן צו פּאַמעלעך פֿאַר אַ גלאַטן פֿלי."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "די דאָזיקע זײַט איז נאָך נישט געשאַפֿן געוואָרן."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
 msgstr "גאַז"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:114
 msgid "Throttle"
 msgstr "גאַז"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Throttle down"
 msgstr "גאַז אַראָפּ"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:204
 msgid "Throttle up"
 msgstr "גאַז אַרויף"
 
@@ -3912,7 +3548,7 @@ msgstr "גאַז אַרויף"
 msgid "Thursday"
 msgstr "דאָנערשטיק"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:455
 msgid "Tightest sustained turn speed"
 msgstr "ענגסטע אָנגעהאַלטענע דריי־גיכקײט"
 
@@ -3924,22 +3560,13 @@ msgstr "קער"
 msgid "Time"
 msgstr "צײַט"
 
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1090
 msgid "Time of day"
 msgstr "צייט פֿון טאָג"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:220
 msgid "To"
 msgstr "צו"
-
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "ביט זײַלן"
-
-#: ../../../lib/web/src/components/layout/right-panel.tsx:233
-#: ../../../lib/web/src/components/layout/right-panel.tsx:236
-msgid "Toggle right panel"
-msgstr "טאָגלען רעכט פּאַנעל"
 
 #: ../../../lib/web/src/components/layout/nav-group.tsx:365
 #: ../../../lib/web/src/components/layout/nav-group.tsx:372
@@ -3948,20 +3575,15 @@ msgstr "טאָגלען רעכט פּאַנעל"
 msgid "Toggle section"
 msgstr "עפֿן/פֿאַרמאַך אָפּטייל"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "טאָגלען זייט באַר"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "ביט זײַטנשטאַנג"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "ביט טעמע"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3980,7 +3602,7 @@ msgstr "צו פֿיל בקשות"
 msgid "Top"
 msgstr "אויבן"
 
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:996
 msgid "Tracers"
 msgstr "טרײַסערס"
 
@@ -3992,42 +3614,40 @@ msgstr "רײַזנדיק"
 msgid "trim"
 msgstr "טרים"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:99
 msgid "Trim"
 msgstr "טרים"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:117
 msgid "Trim hat"
 msgstr "טרים-הוט"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim nose down"
 msgstr "טרים: נאָז אַראָפּ"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim nose up"
 msgstr "טרים: נאָז אַרויף"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Trim roll left"
 msgstr "טרים: קײַקל לינקס"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim roll right"
 msgstr "טרים: קײַקל רעכטס"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "פּרוּווט באַאַרבעטן אײַערע זוך־אויסדרוקן"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "פּרוּווט נאָך אַ מאָל"
 
@@ -4056,11 +3676,11 @@ msgstr "טיפּט צו זוכן באַניצערס"
 msgid "Type to search..."
 msgstr "טיפּט צו זוכן..."
 
-#: src/components/SettingsDialog.tsx:886
+#: src/components/SettingsDialog.tsx:890
 msgid "Ultra"
 msgstr "אולטראַ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:292
 msgid "Unable to connect to remote server"
 msgstr "ניט געקענט פֿאַרבינדן צום ווײַטן סערווער"
 
@@ -4069,7 +3689,7 @@ msgstr "ניט געקענט פֿאַרבינדן צום ווײַטן סערוו�
 msgid "Unable to redirect to login. Please try again."
 msgstr "קאָן נישט רעדירעקטירן צו אַרײַנמעלדונג. פּרוּווט נאָך אַ מאָל."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "אומצוגעטיילט"
 
@@ -4081,13 +3701,13 @@ msgstr "נישט אויטאָריזירטער צוטריט"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Uncage seeker"
 msgstr "באַפֿרײַען זוכער"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Undesignate target"
 msgstr "אָפּזאָגן ציל־באַצייכענונג"
 
@@ -4108,23 +3728,23 @@ msgstr "אומבאַקאַנט"
 msgid "Unlimited"
 msgstr "אומבאַגרענעצט"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "אומבאַגרענעצטע אַמוניציע"
 
-#: src/components/MissionSetup.tsx:1118
+#: src/components/MissionSetup.tsx:1143
 msgid "Unlimited ammunition (all players)"
 msgstr "אומבאַגרענעצטע אַמוניציע (אַלע שפּילער)"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "אומבאַגרענעצטער ברענשטאָף"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1149
 msgid "Unlimited fuel (all players)"
 msgstr "אומבאַגרענעצטער ברענשטאָף (אַלע שפּילער)"
 
@@ -4137,10 +3757,6 @@ msgstr "אַבאַבאָנירן"
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
 msgid "Untitled"
 msgstr "אָן קעפּל"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "אומפֿאַריפֿיצירט"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
@@ -4170,16 +3786,7 @@ msgstr "באַניצער"
 msgid "Verification code"
 msgstr "פֿאַריפֿיקאַציע־קאָד"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "פֿאַריפֿיקאַציע־קאָד געשיקט"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "פֿאַריפֿיקאַציע דורכגעפֿאַלן"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "פֿאַריפֿיצירן"
@@ -4188,7 +3795,7 @@ msgstr "פֿאַריפֿיצירן"
 msgid "Verify email address"
 msgstr "פֿאַריפֿיצירן אי־מייל אַדרעס"
 
-#: src/components/MissionSetup.tsx:493
+#: src/components/MissionSetup.tsx:498
 msgid "Vertical"
 msgstr "סענקרעכט"
 
@@ -4201,7 +3808,7 @@ msgid "Video thumbnail"
 msgstr "ווידעאָ־טאַמבניל"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:315
 msgid "Video viewer: {0}"
 msgstr "ווידעאָ־ווײַזער: {0}"
 
@@ -4209,17 +3816,12 @@ msgstr "ווידעאָ־ווײַזער: {0}"
 msgid "view"
 msgstr "בליק"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:102
 msgid "View"
 msgstr "בליק"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "זע אַלץ"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "זע אַלע נאָטיפֿיקאַציעס"
 
@@ -4227,7 +3829,7 @@ msgstr "זע אַלע נאָטיפֿיקאַציעס"
 msgid "View controls"
 msgstr "בליק־קאָנטראָלן"
 
-#: src/components/SettingsDialog.tsx:840
+#: src/components/SettingsDialog.tsx:844
 msgid "Views"
 msgstr "בליקן"
 
@@ -4253,24 +3855,16 @@ msgstr "ברעך אָפּ די לאַנדונג"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "מיר האָבן געשיקט אַ באַשטעטיקונג־קאָד צו <0>{0}</0>. גיט אײַן דעם קאָד אונטן צו באַשטעטיקן אײַער בליצפּאָסט־אַדרעס."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "מיר וועלן זײַן צוריק אָנלײַן באַלד."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "מיר װעלן אײַך מעלדן װען עפּעס װיכטיקס טרעפֿט זיך."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "וואָפֿן"
 
-#: src/components/SettingsDialog.tsx:114
+#: src/components/SettingsDialog.tsx:118
 msgid "Weapon select hat"
 msgstr "וואָפֿן־אויסקלײַב הוט"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:100
 msgid "Weapons"
 msgstr "וואָפֿן"
 
@@ -4278,25 +3872,21 @@ msgstr "וואָפֿן"
 msgid "Weather"
 msgstr "וועטער"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "וועבזײַטל איז אונטער פֿאַרריכטונג!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "מיטוואָך"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:207
 msgid "Wheel brakes"
 msgstr "ראָד ברעמזן"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:593
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:234
 msgid "Wing fold"
 msgstr "פֿליגל פֿאַלטן"
 
@@ -4308,7 +3898,7 @@ msgstr "געווינט"
 msgid "World server"
 msgstr "וועלט־סערווער"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:721
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "דער וועלט־סערווער איז נישט צו דערגרייכן"
@@ -4317,17 +3907,17 @@ msgstr "דער וועלט־סערווער איז נישט צו דערגרייכ�
 msgid "yaw"
 msgstr "דריי"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:113
 msgid "Yaw"
 msgstr "יאָ"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Yaw left"
 msgstr "יאָ לינקס"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Yaw right"
 msgstr "יאָ רעכטס"
 
@@ -4338,14 +3928,6 @@ msgstr "דו"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "איר האָט נישט קיין צוטריט צו דעם אָפּטייל."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "איר האָט נישט די נײטיקע דערלױבעניש <0/>צו זען דעם רעסורס."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "איר האָט אַלץ געזען!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
@@ -4371,14 +3953,14 @@ msgstr "דײַן טעקסט און צוגעלייגטע טעקעס וועלן פ
 msgid "Your text will be lost."
 msgstr "אײַער טעקסט װעט פֿאַרלוירן װערן."
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:119
 msgid "Zoom"
 msgstr "זום"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Zoom in"
 msgstr "זום אַרײַן"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Zoom out"
 msgstr "זום אַרויס"
