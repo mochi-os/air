@@ -6,7 +6,8 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { audio_gesture } from '../game/audio'
 import { createFileRoute } from '@tanstack/react-router'
-import { shellSetTitle, useShellImmersive } from '@mochi/web'
+import { LazyBoundary, shellSetTitle, toast, useShellImmersive } from '@mochi/web'
+import { useLingui } from '@lingui/react/macro'
 import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
 // Type-only, so the statement is erased at build. Keep it that way: a VALUE
@@ -18,8 +19,23 @@ import { preload } from '../game/preload'
 // The engine and three.js are by far the largest chunk air ships (1,094 kB
 // raw). Keep it lazy: imported statically it lands in the MENU's chunk. It is
 // warmed in the same effect that starts the asset downloads.
+//
+// engine records whether the chunk itself arrived. The boundary further down
+// catches any render error in the canvas subtree, not only a missing module,
+// and the two want different words: one never started, the other stopped.
+let engine: 'pending' | 'ready' | 'failed' = 'pending'
+
 const GameCanvas = lazy(() =>
-  import('../components/GameCanvas').then((m) => ({ default: m.GameCanvas }))
+  import('../components/GameCanvas').then(
+    (m) => {
+      engine = 'ready'
+      return { default: m.GameCanvas }
+    },
+    (error) => {
+      engine = 'failed'
+      throw error
+    }
+  )
 )
 
 // The Settings tabs are COMPONENT state, not a route: inside the shell iframe
@@ -39,7 +55,10 @@ function useTabTitle() {
     // The same idea for the engine's own chunk, now that it is lazy: fetched
     // AFTER the menu has painted rather than before, so it costs the first
     // render nothing and is warm by the time Fly is pressed.
-    void import('../components/GameCanvas')
+    // Caught, not bare: a warm-up nobody is waiting on still reports an
+    // unhandled rejection when the fetch drops, and the lazy() above records
+    // the same failure for the boundary that does act on it.
+    void import('../components/GameCanvas').catch(() => {})
   }, [])
 }
 
@@ -56,6 +75,7 @@ function exitFullscreen() {
 // alive; Escape pauses it and overlays the menu (Resume / Restart). "In flight"
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
+  const { t } = useLingui()
   const [config, setConfig] = useMissionConfig()
   const [join, setJoin] = useState<NetJoin | null>(null)
   const fly =
@@ -92,38 +112,58 @@ function Index() {
   return (
     <>
       {started && (
-        <Suspense fallback={<div className='fixed inset-0 z-20 bg-[#0a1412]' />}>
-          <GameCanvas
-            key={gameKey}
-            config={config}
-            join={join}
-            onReady={(h) => {
-              gameRef.current = h
-            }}
-            onExit={() => {
-              // The mission is OVER, not suspended: exit_match has written the
-              // flight to the log and closed any transport, so leaving
-              // `started` true offers Resume on a torn-down session and
-              // collides the next sortie's record. The crash path ends through
-              // onOver.
-              setStarted(false)
-              leaveFlight()
-            }}
-            onConfigChange={setConfig}
-            onConfig={(partial) => {
-              // Engine-side setting changes (per-view zoom, the DDI view's
-              // remembered display) merge into the same persisted config the
-              // menu owns — one store, one save path.
-              setConfig({ ...config, ...partial })
-            }}
-            onAgain={() => {
-              // Fly again after the mission ended at a crash (#240) or Restart
-              // from the pause menu: a fresh mount, same setup.
-              setGameKey((k) => k + 1)
-              enterFlight()
-            }}
-          />
-        </Suspense>
+        // The engine arrives over the network, so a dropped connection throws
+        // where the Suspense fallback below cannot help. Unguarded that reaches
+        // the router's error component, which replaces the whole app and takes
+        // the menu with it.
+        <LazyBoundary
+          onFailure={() => {
+            // The chunk IS the mission, so there is nothing to fly and nothing
+            // to show. Hand the player back to the menu instead of a blank
+            // screen. lazy() keeps a rejected payload for the life of the page,
+            // so pressing Fly again cannot recover it and only a reload can.
+            setStarted(false)
+            leaveFlight()
+            toast.error(
+              engine === 'failed'
+                ? t`The game could not be loaded. Reload the page to try again.`
+                : t`The mission stopped. Reload the page to try again.`
+            )
+          }}
+        >
+          <Suspense fallback={<div className='fixed inset-0 z-20 bg-[#0a1412]' />}>
+            <GameCanvas
+              key={gameKey}
+              config={config}
+              join={join}
+              onReady={(h) => {
+                gameRef.current = h
+              }}
+              onExit={() => {
+                // The mission is OVER, not suspended: exit_match has written the
+                // flight to the log and closed any transport, so leaving
+                // `started` true offers Resume on a torn-down session and
+                // collides the next sortie's record. The crash path ends through
+                // onOver.
+                setStarted(false)
+                leaveFlight()
+              }}
+              onConfigChange={setConfig}
+              onConfig={(partial) => {
+                // Engine-side setting changes (per-view zoom, the DDI view's
+                // remembered display) merge into the same persisted config the
+                // menu owns — one store, one save path.
+                setConfig({ ...config, ...partial })
+              }}
+              onAgain={() => {
+                // Fly again after the mission ended at a crash (#240) or Restart
+                // from the pause menu: a fresh mount, same setup.
+                setGameKey((k) => k + 1)
+                enterFlight()
+              }}
+            />
+          </Suspense>
+        </LazyBoundary>
       )}
       {menuOpen && (
         <MissionSetup
