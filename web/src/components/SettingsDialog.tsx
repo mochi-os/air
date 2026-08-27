@@ -70,6 +70,11 @@ function useGamepads(): PadState[] {
   const [pads, setPads] = useState<PadState[]>([])
   useEffect(() => {
     const timer = setInterval(() => {
+      // Nobody is watching the axis meters this drives while the tab is
+      // minimised or in the background, and the pads cannot be moved there
+      // either. Browsers already throttle a hidden tab's timers to about one a
+      // second, so this drops that last poll rather than the full 8 Hz.
+      if (document.hidden) return
       const raw = navigator.getGamepads ? navigator.getGamepads() : []
       const list: PadState[] = []
       for (const p of raw) {
