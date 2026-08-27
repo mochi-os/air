@@ -37,6 +37,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
   getErrorMessage,
+  LazyBoundary,
   useFormat,
   useShellStorage,
 } from '@mochi/web'
@@ -302,9 +303,15 @@ function Armament({
   return (
     <div className='space-y-3.5'>
       <div className='relative overflow-hidden rounded-lg border border-border bg-[#060c0b] p-1.5 shadow-inner'>
-        <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
-          <LoadoutPreview stores={loadout} />
-        </Suspense>
+        {/* The preview is an enhancement, so a chunk that cannot be fetched
+            leaves the dialog standing without it, exactly as a machine with no
+            WebGL 2 already does. The empty box holds the panel's height so
+            nothing below it jumps. */}
+        <LazyBoundary fallback={<div className='aspect-[29/10] w-full' />}>
+          <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
+            <LoadoutPreview stores={loadout} />
+          </Suspense>
+        </LazyBoundary>
       </div>
 
       <div className='flex flex-wrap gap-2'>
