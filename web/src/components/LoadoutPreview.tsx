@@ -56,7 +56,13 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
     }
     racks = (await load(stores, renderer)).scene
     amraam = normalize_round((await load(round, renderer)).scene)
-  })()
+  })().catch((error) => {
+    // A failed download must not be kept. preload.ts already drops its own
+    // entry so the next open refetches; holding the rejected promise here
+    // would defeat that for the rest of the session.
+    loading = null
+    throw error
+  })
   return loading
 }
 
@@ -197,6 +203,7 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
   const state = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; jet: THREE.Group; wrap: THREE.Group } | null>(null)
   const wanted = useRef(stores)
   wanted.current = stores
+  const shape = JSON.stringify(normalize(stores))
 
   useEffect(() => {
     const host = mount.current
@@ -219,35 +226,55 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     renderer.domElement.style.height = height + 'px'
     renderer.domElement.dataset.preview = 'loadout'
     host.appendChild(renderer.domElement)
-    void fetch_models(renderer).then(() => {
-      if (gone || !airframe) return
-      const scene = new THREE.Scene()
-      scene.add(new THREE.HemisphereLight(0xdfe8f2, 0x54595e, 2.4))
-      const sun = new THREE.DirectionalLight(0xffffff, 2.2)
-      sun.position.set(3, 4, 2)
-      scene.add(sun)
-      const jet = airframe.clone(true)
-      // Normalize head-on: centre the model and face the nose at the camera
-      // (the raw scene needs the same +90 yaw the engine applies).
-      const box = new THREE.Box3().setFromObject(jet)
-      const size = box.getSize(new THREE.Vector3())
-      const centre = box.getCenter(new THREE.Vector3())
-      jet.position.set(-centre.x, -centre.y, -centre.z)
-      const wrap = new THREE.Group()
-      wrap.add(jet)
-      wrap.rotation.y = Math.PI / 2
-      wrap.scale.setScalar(10 / Math.max(size.x, size.y, size.z, 1e-3))
-      scene.add(wrap)
-      const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)
-      state.current = { renderer, scene, camera, jet, wrap }
-      dress(jet, FULLEST)
-      frame(camera, wrap, width / height)
-      dress(jet, wanted.current)
-      renderer.render(scene, camera)
-    })
+    let settled = false
+    void fetch_models(renderer)
+      // A failed download still has to hand the context back: an unhandled
+      // rejection would skip the body below, leave settled false, and the
+      // cleanup would then keep the context live for the rest of the session.
+      .catch(() => {})
+      .then(() => {
+        settled = true
+        // Closed before the models arrived: the cleanup below already ran and had
+        // to leave the context alone, so release it here instead. dispose() does
+        // not touch the extension registry, so this still reaches it.
+        if (gone) return void renderer.forceContextLoss()
+        // All three, not the airframe alone: a run that parsed the jet and
+        // then failed on the stores would otherwise draw a bare jet and frame
+        // the camera against it, which reads as an empty loadout rather than a
+        // preview that could not be built.
+        if (!airframe || !racks || !amraam) return
+        const scene = new THREE.Scene()
+        scene.add(new THREE.HemisphereLight(0xdfe8f2, 0x54595e, 2.4))
+        const sun = new THREE.DirectionalLight(0xffffff, 2.2)
+        sun.position.set(3, 4, 2)
+        scene.add(sun)
+        const jet = airframe.clone(true)
+        // Normalize head-on: centre the model and face the nose at the camera
+        // (the raw scene needs the same +90 yaw the engine applies).
+        const box = new THREE.Box3().setFromObject(jet)
+        const size = box.getSize(new THREE.Vector3())
+        const centre = box.getCenter(new THREE.Vector3())
+        jet.position.set(-centre.x, -centre.y, -centre.z)
+        const wrap = new THREE.Group()
+        wrap.add(jet)
+        wrap.rotation.y = Math.PI / 2
+        wrap.scale.setScalar(10 / Math.max(size.x, size.y, size.z, 1e-3))
+        scene.add(wrap)
+        const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)
+        state.current = { renderer, scene, camera, jet, wrap }
+        dress(jet, FULLEST)
+        frame(camera, wrap, width / height)
+        dress(jet, wanted.current)
+        renderer.render(scene, camera)
+      })
     return () => {
       gone = true
       state.current = null
+      // dispose() does NOT hand the context back, and a page is allowed about
+      // sixteen live ones before the browser force-loses the OLDEST, which once
+      // the player is flying is the game's. forceContextLoss first, the order
+      // three's own TextureUtils uses.
+      if (settled) renderer.forceContextLoss()
       renderer.dispose()
       renderer.domElement.remove()
     }
@@ -256,9 +283,9 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
   useEffect(() => {
     const s = state.current
     if (!s) return
-    dress(s.jet, stores)
+    dress(s.jet, wanted.current)
     s.renderer.render(s.scene, s.camera) // the camera stays where FULLEST framed it — the jet never moves
-  }, [stores])
+  }, [shape])
 
   return <div ref={mount} className='aspect-[29/10] w-full overflow-hidden' />
 }
