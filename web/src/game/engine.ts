@@ -3573,7 +3573,7 @@ function call_the_ball(){
 	const clara=(()=>{ if(!carrier_ols) return true; const s=ols_dev(ownship.pos,carrier_ols);
 		return Math.abs(Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI)>4 || s.dev<-1; })();
 	const ball=clara?translate("CLARA"):translate("BALL");
-	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff");
+	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); // i18n-format-ok: the ball call is radio phraseology, spoken the same way in every locale
 	hint(HINT.ball); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 // The flight hints (#70): carrier recovery coaching through the comms area —
 // amber, no callsign, so advice never reads as radio. Every number is sourced
@@ -4187,6 +4187,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
+if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
@@ -5444,7 +5445,10 @@ function launch_zone(){
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
 		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} },
 		WORLD_WRAP);
-	if(zone) zone.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+	if(zone){ zone.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+		const tof=zone.range/(Math.max(ownship.speed,150)+650);   // rough round time of flight: launch speed plus the motor's gain — steering-dot precision, not fusing precision
+		const tvx=t.velx??t.fwd.x*t.speed, tvy=t.vely??t.fwd.y*t.speed, tvz=t.velz??t.fwd.z*t.speed;
+		zone.lead={x:t.pos.x+tvx*tof,y:t.pos.y+tvy*tof,z:t.pos.z+tvz*tof}; }
 	return zone; }
 // shoot_cue: null, "steady" (Rmax..Rne) or "flash" (inside Rne — the shot
 // the target cannot outrun). Inside Rmin the breakaway X replaces it.
@@ -5494,6 +5498,19 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 		if(z.max>0&&z.range<=z.aero){   // the maximum-aspect digit: tens of degrees of turn the shot survives
 			const aspect=z.range<=z.escape?18:Math.round(18*THREE.MathUtils.clamp((z.max-z.range)/Math.max(1,z.max-z.escape),0,1));
 			hctx.fillText("A "+aspect,sx-46,top-6); } }
+	// ASE circle and steering dot: pre-launch lead steering, as the real jet
+	// flies the shot — the dot is the lead intercept direction off the nose,
+	// centred in the circle means the launch spends no missile energy turning.
+	// The dot pegs at the rim edge-out when the lead point is far off axis.
+	if(z&&z.lead&&(ownship.amraam|0)>0){ const R=3.2*ppdv;
+		const to=new THREE.Vector3(wrap_axis(z.lead.x-ownship.pos.x),z.lead.y-ownship.pos.y,wrap_axis(z.lead.z-ownship.pos.z)).normalize();
+		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert());
+		let dxp=0, dyp=0;
+		if(cs.z<-1e-4){ dxp=Math.atan2(cs.x,-cs.z)*57.29578*ppdv; dyp=-Math.atan2(cs.y,-cs.z)*57.29578*ppdv; }
+		else { const sd=Math.hypot(cs.x,cs.y)||1; dxp=cs.x/sd*R*2; dyp=-cs.y/sd*R*2; }
+		const d=Math.hypot(dxp,dyp); if(d>R*1.35){ dxp*=R*1.35/d; dyp*=R*1.35/d; }
+		hctx.beginPath(); hctx.arc(cx,cy,R,0,Math.PI*2); hctx.stroke();
+		hctx.beginPath(); hctx.arc(cx+dxp,cy+dyp,3.5,0,Math.PI*2); hctx.fill(); }
 	const cue=shoot_cue(z);
 	if(cue) hud_cue=cue;   // the radar cue's own words: steady / flash / break
 	if(cue==="break"){ hctx.strokeStyle=AM; hctx.lineWidth=3; const r=28;   // breakaway X: too close to shoot
@@ -5667,11 +5684,17 @@ function draw_hud(){
 	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
 	// approach.
 	fpm=proj_dir(ownship.vel_dir);
-	let fpm_limited=false;
+	let fpm_limited=false, fpm_true=null;
 	if(fpm){ const dx=fpm[0]-bore[0], dy=fpm[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd;
-		if(r>rmax){ fpm=[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax]; fpm_limited=true; }
+		if(r>rmax){ fpm_true=fpm; fpm=[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax]; fpm_limited=true; }
 		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
-			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); } }
+			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
+		// Ghost velocity vector: when the marker cages, the real jet keeps a
+		// ghost at the TRUE flight path — losing it exactly at high crab and
+		// alpha, where it is most displaced, is how a caged marker flies you
+		// into the ground. Dashed and steady, while the caged one flashes.
+		if(fpm_true){ hctx.strokeStyle=GR; hctx.setLineDash([3,3]); hctx.beginPath(); hctx.arc(fpm_true[0],fpm_true[1],6,0,Math.PI*2);
+			hctx.moveTo(fpm_true[0]-6,fpm_true[1]); hctx.lineTo(fpm_true[0]-14,fpm_true[1]); hctx.moveTo(fpm_true[0]+6,fpm_true[1]); hctx.lineTo(fpm_true[0]+14,fpm_true[1]); hctx.moveTo(fpm_true[0],fpm_true[1]-6); hctx.lineTo(fpm_true[0],fpm_true[1]-12); hctx.stroke(); hctx.setLineDash([]); } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
@@ -5876,9 +5899,9 @@ function draw_hud(){
 		if(radar){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
 		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
 
-	// ---- vertical velocity above the altitude box (NAV master mode only, per NATOPS) ----
+	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"){ hctx.font="13px monospace"; hctx.textAlign="left";   // "only displayed in the NAV master mode" — NATOPS 2.13.4.8 item 12; not on the reject list, so it survives REJ 1/2
+	if(master==="nav"||pa){ hctx.font="13px monospace"; hctx.textAlign="left";   // NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
 		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+2,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
@@ -5921,6 +5944,10 @@ function draw_hud(){
 		else if(master==="120c"){ hctx.fillText("120C "+(cheat("ammunition")?"\u221e":Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),bxl,ly); }
 		else hctx.fillText("NAV",bxl,ly); }
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
+
+	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
+	if(!cheat("fuel")&&((ownship.fuel??0)+(ownship.external??0))*2.20462<fuel_state.bingo&&(sim_time*2)%2<1){
+		hctx.font="600 17px monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
 	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
