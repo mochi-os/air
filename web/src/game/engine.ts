@@ -4188,6 +4188,10 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
+if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
+	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
+	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
+	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
@@ -4824,12 +4828,27 @@ function fly_player(dt){
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
 			const sink=-(ownship.vely??0);   // m/s down
-			// Gear up, the low-altitude warning triggers on ground closure - about six
-			// seconds from impact at the current sink, floored at 300 ft and capped at
-			// the 5,000 ft training hard deck - since a fixed bug is the wrong shape for
-			// a fast dive. Gear down it stays the 250 ft call.
-			const dirty=(ownship.gearTarget??0)>0.5&&agl<250&&sink>2;
-			const closure=(ownship.gearTarget??0)<=0.5&&sink>10&&agl<Math.min(5000,Math.max(300,sink*3.28084*6));
+			// Gear down it is the 250 ft call — the descent is declared
+			// deliberate. gearTarget is the RETRACTION target (0 = down, 1 =
+			// up, as the spawn and the gear horn read it): the old branches
+			// were keyed backwards, so a gear-up fight only ever had the 250
+			// ft call — one second of warning at the crash flight's sink.
+			const dirty=(ownship.gearTarget??0)<=0.5&&agl<250&&sink>2;
+			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
+			// a second of pilot reaction, the roll to wings-level, then a 4 g
+			// pull — deliberately milder than the jet's limit, so the call errs
+			// early — consumed against the altitude available. The old rule
+			// (six seconds of current sink, capped at the 5,000 ft hard deck)
+			// fired at 4,400 ft in a 530 kt 67-degree slice whose recovery
+			// already needed 5,200: a time-of-sink rule cannot lead a steep,
+			// accelerating dive, and the pilot heard it with the arithmetic
+			// already lost.
+			const closure=(()=>{ if((ownship.gearTarget??0)<=0.5||sink<=10) return false;
+				const speed=Math.max(ownship.speed,50), steep=Math.min(sink/speed,1), level=Math.sqrt(1-steep*steep);
+				const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level);
+				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
+				const required=sink*1.0+sink*(upright/Math.PI)+pull;
+				return agl/3.28084<Math.max(91,required); })();
 			law_active=(dirty||closure)&&!ownship.grounded&&!ownship.launching&&crash_t<=0;
 			if(law_armed&&law_active) { audio_law(); }   // repeats while below the index (#47) — it played once and went silent for the rest of the descent
 			else if(agl>400&&!law_active) law_armed=true; }
