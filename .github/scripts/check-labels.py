@@ -153,9 +153,17 @@ def main():
         print("No labels/en.conf; nothing to check.")
         return 0
     en = parse(LABELS / "en.conf")
+    # A regional catalogue whose parent is present falls through to it key by
+    # key (core's language_fallbacks strips subtags), so it is allowed to carry
+    # only what differs - a verbatim copy of the parent overrides nothing and
+    # pins this locale to a wording the parent may later change. Deliberately
+    # narrow: zh-hans and zh-hant have no zh.conf, so they stay fully gated.
+    # Mirrors conf_inherits in claude/scripts/i18n_glossary.py.
+    present = {c.stem for c in LABELS.glob("*.conf")}
+    inherits = {loc for loc in present if "-" in loc and loc.rsplit("-", 1)[0] in present}
     failures = {}
     for conf in sorted(LABELS.glob("*.conf")):
-        if conf.stem in OVERLAY:
+        if conf.stem in OVERLAY or conf.stem in inherits:
             continue
         translated = parse(conf)
         missing = []
