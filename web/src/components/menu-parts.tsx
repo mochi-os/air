@@ -27,6 +27,7 @@ export function SliderRow({
   suffix,
   decimals = 0,
   tight,
+  disabled,
   onChange,
 }: {
   label: ReactNode
@@ -37,11 +38,12 @@ export function SliderRow({
   suffix?: string
   decimals?: number
   tight?: boolean // trim the vertical padding where the row sits in a dense stack (the armament column)
+  disabled?: boolean
   onChange: (value: number) => void
 }) {
   const display = (decimals ? value.toFixed(decimals) : String(value)) + (suffix ?? '')
   return (
-    <div className={tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}>
+    <div className={`${tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}${disabled ? ' opacity-50' : ''}`}>
       <div className='flex items-center justify-between text-sm'>
         <Label className='text-card-foreground font-medium'>{label}</Label>
         <span
@@ -56,6 +58,7 @@ export function SliderRow({
         min={min}
         max={max}
         step={step}
+        disabled={disabled}
         onChange={(e) => onChange(parseFloat(e.currentTarget.value))}
       />
     </div>

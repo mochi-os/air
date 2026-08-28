@@ -123,8 +123,9 @@ def database_upgrade(version):
 			mochi.db.execute("alter table matches add column cheated integer not null default 0")
 
 def config_load(a):
-	if not a.user:
-		return {"data": {"config": {}}}
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
 	config = {}
 	for row in mochi.db.rows("select name, value from settings"):
 		config[row["name"]] = json.decode(row["value"], None)
@@ -132,17 +133,21 @@ def config_load(a):
 
 # config_save() -> {"data": {"saved": bool}}: upsert each posted key (newer `updated` wins; stale writes rejected).
 def config_save(a):
-	if not a.user:
-		return {"data": {"saved": False}}
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
 	# Require a matching identity: a debounced client save firing after an in-place
 	# account switch, or before config/load, would otherwise write another
 	# account's edits here. Empty is refused too - the client always sends its
-	# loaded identity.
+	# loaded identity. 409, not 403: the caller is allowed to save, but the
+	# account it loaded under is no longer the session's.
 	if a.input("identity", "") != a.user.identity.id:
-		return {"data": {"saved": False}}
+		a.error.label(409, "errors.identity_changed")
+		return
 	config = json.decode(a.input("config", ""), None)
 	if type(config) != "dict":
-		return {"data": {"saved": False}}
+		a.error.label(400, "errors.invalid_request")
+		return
 	now = mochi.time.now()
 	for name in config:
 		mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated where excluded.updated >= settings.updated", name, json.encode(config[name]), now)
@@ -158,11 +163,13 @@ def whole(a, name):
 # match_record() -> {"data": {"stored": bool}}: store this player's own view of a finished multiplayer match.
 def match_record(a):
 	if not a.user:
-		return {"data": {"stored": False}}
+		a.error.label(401, "errors.not_logged_in")
+		return
 	world = a.input("world", "")[:256]
 	session = a.input("session", "")[:64]
 	if not world or not session:
-		return {"data": {"stored": False}}
+		a.error.label(400, "errors.missing_field")
+		return
 	# `on conflict do nothing` on the (world, session, started) index is the
 	# race-free dedup (#191); whether our own id landed tells the caller if this
 	# was the first record.
@@ -180,7 +187,8 @@ def match_record(a):
 # client formats dates and maps mode/reason to labels.
 def match_list(a):
 	if not a.user:
-		return {"data": {"matches": []}}
+		a.error.label(401, "errors.not_logged_in")
+		return
 	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, size, pinned from matches order by started desc limit 50")
 	# Totals span every row, not the fifty listed, and include cheated flights (a
 	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /

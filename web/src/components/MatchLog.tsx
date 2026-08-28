@@ -9,7 +9,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { ArrowDown, ArrowUp, ChevronsUpDown, CircleAlert, Download, History, ShieldAlert } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronsUpDown, CircleAlert, Download, History, Pin, PinOff, ShieldAlert } from 'lucide-react'
 import { EmptyState, getErrorMessage, shellSaveBlob, toast, useFormat } from '@mochi/web'
 import {
   Select,
@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from '@mochi/web/components/ui/table'
-import { log, recording_load, type MatchRow, type MatchTotals } from '../game/net'
+import { log, recording_load, recording_pin, type MatchRow, type MatchTotals } from '../game/net'
 import { Button } from '@mochi/web/components/ui/button'
 
 // Replay is the in-memory recording the engine still holds for this session's
@@ -440,6 +440,54 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                   >
                     <Download className='size-4' />
                     <Trans>Recording</Trans>
+                  </Button>
+                ) : null}
+                {m.recording ? (
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    // A toggle names the CONTROL and lets aria-pressed carry
+                    // the state, so the label stays "Pin" either way - the
+                    // standard pattern, and it reuses a string the other apps
+                    // already have translated.
+                    aria-pressed={m.pinned === 1}
+                    aria-label={t`Pin`}
+                    title={t`Pin`}
+                    // A pinned recording stays visible: which flights are
+                    // exempt is state worth seeing without hovering every row.
+                    // Unpinned, it follows the download button's reveal.
+                    className={
+                      m.pinned === 1
+                        ? 'ml-1'
+                        : 'ml-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
+                    }
+                    onClick={() =>
+                      void (async () => {
+                        const wanted = m.pinned !== 1
+                        // Optimistic: the row flips at once, and reverts if the
+                        // server disagrees. recording_pin returns what it
+                        // actually stored, or null when the call failed.
+                        const apply = (value: number) =>
+                          setMatches((rows) =>
+                            rows
+                              ? rows.map((r) =>
+                                  r.session === m.session && r.started === m.started ? { ...r, pinned: value } : r
+                                )
+                              : rows
+                          )
+                        apply(wanted ? 1 : 0)
+                        const stored = await recording_pin(m.session, m.started, wanted)
+                        if (stored === null) {
+                          apply(wanted ? 0 : 1)
+                          toast.error(t`Could not change the recording`)
+                          return
+                        }
+                        apply(stored ? 1 : 0)
+                      })()
+                    }
+                  >
+                    {m.pinned === 1 ? <PinOff className='size-4' /> : <Pin className='size-4' />}
                   </Button>
                 ) : null}
               </TableCell>

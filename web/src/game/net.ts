@@ -922,11 +922,18 @@ export async function recording_load(id: string): Promise<string | null> {
   }
 }
 
-export async function recording_pin(session: string, started: number, pinned: boolean): Promise<void> {
+// Returns what the server stored, or null if the call failed - the caller
+// toggles optimistically and needs to know whether to keep the new state.
+export async function recording_pin(session: string, started: number, pinned: boolean): Promise<boolean | null> {
   try {
-    await client.post('-/recording/pin', { session, started: String(started), pinned: String(pinned) })
+    const res = (await client.post('-/recording/pin', {
+      session,
+      started: String(started),
+      pinned: String(pinned),
+    })) as { data?: { pinned?: boolean } }
+    return res?.data?.pinned ?? null
   } catch {
-    /* best effort */
+    return null
   }
 }
 
