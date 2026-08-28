@@ -27,20 +27,10 @@ def database_create():
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 
 # attachment_export() -> list | None: the rows core's attachment store held for
-# this user and app, each with "file" (stored filename, "" for a remote row) -
-# from the transition bridge if core still has one, else core's export file.
-# None when the store cannot be read; a missing export file means no rows.
+# this user and app, each with "file" (stored filename, "" for a remote row),
+# from the export file core wrote before dropping its own store. None when the
+# export cannot be read; a missing export file means no rows.
 def attachment_export():
-	if hasattr(mochi, "attachment") and hasattr(mochi.attachment, "export"):
-		rows = mochi.attachment.export()
-		if rows == None:
-			return None
-		result = []
-		for row in rows:
-			row = dict(row)
-			row["file"] = mochi.attachment.path(row["id"]) or ""
-			result.append(row)
-		return result
 	if not mochi.file.exists("attachments.json"):
 		return []
 	rows = json.decode(str(mochi.file.read("attachments.json") or ""), None)
