@@ -48,6 +48,7 @@ export interface Round {
   closure?: number // relative speed at detonation, m/s
   when?: number // exact sim time of the fuse, s (the frame grid is ~9 Hz)
   off?: { ahead: number; above: number; right: number } // target -> burst in the target's body frame
+  judged?: number // the miss as the damage core measured it, metres (#85) — disagreement with burst is a client/core position split
   fate?: string // written once, on the last sample: fuse / energy / life / ocean / lost / battery
   killed?: boolean // the fuse's verdict, when it fused
 }
@@ -58,6 +59,10 @@ export interface Round {
 export interface Flight {
   aoa?: number // degrees
   g?: number // load factor
+  gear?: number // gear position, 0 down .. 1 up (#86)
+  flaps?: number // flap SELECT: 0 auto, 1 half, 2 full (#86) — the FCS configuration, not the surface
+  trim?: number // pitch trim (#86)
+  lateral?: number // roll stick input, dev builds (#86)
   tas?: number // true airspeed, m/s
   ias?: number // indicated/calibrated airspeed, m/s
   mach?: number
@@ -147,6 +152,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
   const counted = new Map<number, number>() // last written round count, per object
   const battled = new Map<number, string>() // last written battle channels, per object
   const armed = new Map<number, number>() // last written missiles count, per object
+  const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
   const cued = new Map<number, string>() // last written cue, per object
   const countered = new Map<number, number>() // last written flares, per object
   const bloomed = new Map<number, number>() // last written chaff, per object
@@ -200,6 +206,16 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         }
         if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
         if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`
+        if (d.lateral !== undefined) line += `,Lateral=${round(d.lateral, 3)}`
+        // Configuration (#86): holds for minutes, steps at the moments an
+        // approach debrief needs — which pitch law the FCS was flying.
+        if (d.gear !== undefined || d.flaps !== undefined || d.trim !== undefined) {
+          const state = `${round(d.gear ?? 1, 2)}|${d.flaps ?? 0}|${round(d.trim ?? 0, 3)}`
+          if (landed.get(o.id) !== state) {
+            landed.set(o.id, state)
+            line += `,Gear=${round(d.gear ?? 1, 2)},Flaps=${d.flaps ?? 0},Trim=${round(d.trim ?? 0, 3)}`
+          }
+        }
         // Missiles and the cue are delta-suppressed like the rounds: the count
         // steps at a launch, the cue at the moments the HUD's advice changed.
         if (d.missiles !== undefined && armed.get(o.id) !== d.missiles) {
@@ -251,6 +267,10 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         if (r.burst !== undefined) {
           guide += `,Burst=${round(r.burst, 1)},Closure=${round(r.closure ?? 0, 0)},When=${round(r.when ?? 0, 2)}`
           if (r.off) guide += `,Off=${round(r.off.ahead, 1)}|${round(r.off.above, 1)}|${round(r.off.right, 1)}`
+          // Judged (#85): the miss as the damage core measured it. Burst is the
+          // client's continuous CPA; a fusing where the two disagree is the
+          // client/core position split that let a 2.0 m detonation do nothing.
+          if (r.judged !== undefined) guide += `,Judged=${round(r.judged, 1)}`
         }
         if (guided.get(o.id) !== guide) {
           guided.set(o.id, guide)

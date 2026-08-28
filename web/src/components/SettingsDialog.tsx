@@ -35,6 +35,7 @@ import {
 } from '@mochi/web/components/ui/select'
 import { Button } from '@mochi/web/components/ui/button'
 import { Label } from '@mochi/web/components/ui/label'
+import { Slider } from '@mochi/web/components/ui/slider'
 import {
   DEFAULT_CONFIG,
   GRAPHICS_PRESETS,
@@ -603,59 +604,56 @@ function SoundPanel({
   set: (key: string, value: MissionConfig[string]) => void
 }) {
   const volume = { ...DEFAULT_CONFIG.volume, ...((config.volume ?? {}) as Record<string, number>) }
+  const sound = config.sound !== false
   return (
     <div className='space-y-4'>
       <SwitchRow
         id='sound'
-        label={<Trans>Master audio output</Trans>}
-        checked={config.sound !== false}
+        label={<Trans>Enable sound</Trans>}
+        checked={sound}
         onChange={(v) => set('sound', v)}
       />
 
-      <section>
-        
-          <SectionLabel>
-            <Trans>Master volume</Trans>
-          </SectionLabel>
-        
-        <div>
+      <SectionLabel>
+        <Trans>Master volume</Trans>
+      </SectionLabel>
+      <div className={`flex items-center gap-4 p-3${sound ? '' : ' opacity-50'}`}>
+        <Slider
+          value={volume.master}
+          min={0}
+          max={100}
+          step={5}
+          disabled={!sound}
+          className='flex-1'
+          onChange={(e) => set('volume', { ...volume, master: parseFloat(e.currentTarget.value) })}
+        />
+        <span
+          className='text-foreground bg-muted rounded border border-border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
+          style={{ fontFamily: 'var(--air-mono)' }}
+        >
+          {volume.master}%
+        </span>
+      </div>
+
+      <SectionLabel>
+        <Trans>Volumes</Trans>
+      </SectionLabel>
+      <div className='grid gap-3 sm:grid-cols-2'>
+        {VOLUME_ROWS.filter((r) => r.id !== 'master').map(({ id, label }) => (
           <SliderRow
-            label={<Trans>Master bus</Trans>}
-            value={volume.master}
+            key={id}
+            label={label}
+            value={volume[id]}
             min={0}
             max={100}
             step={5}
             decimals={0}
             suffix='%'
-            onChange={(v) => set('volume', { ...volume, master: v })}
+            disabled={!sound}
+            onChange={(v) => set('volume', { ...volume, [id]: v })}
           />
-        </div>
-      </section>
-
-      <section>
-        
-          <SectionLabel>
-            <Trans>Audio channels</Trans>
-          </SectionLabel>
-        
-        <div>
-          <div className='grid gap-3 sm:grid-cols-2'>
-            {VOLUME_ROWS.filter((r) => r.id !== 'master').map(({ id, label }) => (
-              <SliderRow
-                key={id}
-                label={label}
-                value={volume[id]}
-                min={0}
-                max={100}
-                step={5}
-                decimals={0}
-                suffix='%'
-                onChange={(v) => set('volume', { ...volume, [id]: v })}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
     </div>
   )
 }
