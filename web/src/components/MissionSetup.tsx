@@ -37,6 +37,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
   getErrorMessage,
+  LazyBoundary,
+  useFormat,
   useShellStorage,
 } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
@@ -219,6 +221,10 @@ function Armament({
   onFuel: (fuel: number) => void
   onPreset: (stores: Record<string, StationSlot>, fuel: number) => void
 }) {
+  // Through the app's formatter, not the browser's: the flight log and the
+  // server list already group their numbers on the account's locale, and this
+  // was the last screen in air printing a raw one.
+  const { formatNumber } = useFormat()
   const read = () => {
     const raw = flight_catalog('fa18c')
     return raw ? resolve(raw) : null
@@ -289,9 +295,15 @@ function Armament({
   return (
     <div className='space-y-2.5'>
       <div className='mx-auto w-full max-w-[340px]'>
-        <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
-          <LoadoutPreview stores={loadout} />
-        </Suspense>
+        {/* The preview is an enhancement, so a chunk that cannot be fetched
+            leaves the dialog standing without it, exactly as a machine with no
+            WebGL 2 already does. The empty box holds the panel's height so
+            nothing below it jumps. */}
+        <LazyBoundary fallback={<div className='aspect-[29/10] w-full' />}>
+          <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
+            <LoadoutPreview stores={loadout} />
+          </Suspense>
+        </LazyBoundary>
       </div>
 
       <div className='flex flex-wrap gap-2'>
@@ -371,7 +383,7 @@ function Armament({
           {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
           <Trans>Gross weight</Trans>{' '}
           <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
-            {gross} lb
+            {formatNumber(gross)} lb
           </span>
           {/* The asymmetry rides in brackets on the gross-weight line: it is a
               property of the same loadout, and its own line read as a second
@@ -385,7 +397,7 @@ function Armament({
                   Asymmetrie must stay capitalised where English asymmetry does not. */}
               <Trans>asymmetry</Trans>{' '}
               <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
-                {moment} ft·lb
+                {formatNumber(moment)} ft·lb
               </span>
               {')'}
             </>
@@ -393,13 +405,13 @@ function Armament({
           {gross > LAUNCH && (
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
-              <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
+              <Trans>{formatNumber(gross - LAUNCH)} lb over maximum launch weight</Trans>
             </div>
           )}
           {catapult && moment > CATAPULT && (
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
-              <Trans>{moment - CATAPULT} ft·lb over the catapult asymmetry limit</Trans>
+              <Trans>{formatNumber(moment - CATAPULT)} ft·lb over the catapult asymmetry limit</Trans>
             </div>
           )}
         </div>
@@ -654,12 +666,19 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const cursor = useRef(0)
   const lineRef = useRef<HTMLInputElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
+  // Whether the reader is parked on the newest line. Recorded when they SCROLL,
+  // never when a line lands: appending to a box that is already at the bottom
+  // moves the bottom away from an unchanged scrollTop and fires no scroll
+  // event, so the same measurement taken from the effect reads as "scrolled up"
+  // on any burst longer than the slack.
+  const stuck = useRef(true)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
   useEffect(() => {
     cursor.current = 0
     setLounge([])
+    stuck.current = true // a different server is a different room: start at its newest line
     let alive = true
     const pull = async () => {
       try {
@@ -681,7 +700,9 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   }, [address])
 
   useEffect(() => {
-    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight })
+    if (!stuck.current) return // reading back through the room: a new line must not drag the view off it
+    const box = boxRef.current
+    box?.scrollTo({ top: box.scrollHeight })
   }, [lounge])
 
   const say = async () => {
@@ -690,6 +711,10 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
     if (lineRef.current) lineRef.current.value = ''
     try {
       await world_say(address, name, words)
+      // Pinned once the line is actually in the room: saying something is
+      // asking to be shown it, but a send that failed must not drag the reader
+      // off what they had scrolled back to.
+      stuck.current = true
       const reply = await world_chat(address, cursor.current)
       cursor.current = reply.sequence
       if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
@@ -706,7 +731,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       <div className='text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase'>
         <Trans>Server chat</Trans>
       </div>
-      <div ref={boxRef} className='flex-1 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-card p-2.5 text-sm'>
+      <div
+        ref={boxRef}
+        // A row's worth of slack, deliberately: 24px is a full line at text-sm,
+        // so a reader within one line of the newest still counts as parked on
+        // it, and scrollTop lands fractional at some zoom levels.
+        onScroll={(e) => {
+          const box = e.currentTarget
+          stuck.current = box.scrollHeight - box.scrollTop - box.clientHeight < 24
+        }}
+        className='flex-1 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-card p-2.5 text-sm'
+      >
         {lounge.length === 0 && (
           <div className='text-muted-foreground text-xs'>
             {up ? <Trans>Nothing yet — say hello.</Trans> : <Trans>No world server.</Trans>}

@@ -41,7 +41,7 @@ msgstr "{0, plural, one {# Treffer eingesteckt} other {# Treffer eingesteckt}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:753
 msgid "{0} created “{1}”"
 msgstr "{0} hat „{1}“ erstellt"
 
@@ -50,13 +50,13 @@ msgstr "{0} hat „{1}“ erstellt"
 msgid "{0} flying"
 msgstr "{0} in der Luft"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:402
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:414
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb über der Asymmetriegrenze des Katapults"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:396
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:408
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb über dem maximalen Startgewicht"
 
@@ -67,13 +67,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} von {1} Flügen"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:772
+#: src/components/SettingsDialog.tsx:777
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} war bereits belegt, und diese Steuerung ist jetzt ungebunden."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:768
+#: src/components/SettingsDialog.tsx:773
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} lag auf {1}, was jetzt ungebunden ist."
 
@@ -153,7 +153,7 @@ msgstr "SEIL 1"
 msgid "12 hours"
 msgstr "12 Stunden"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:462
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -169,7 +169,7 @@ msgstr "24 Stunden"
 msgid "3 WIRE"
 msgstr "SEIL 3"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:465
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -193,19 +193,19 @@ msgstr "Zugriffsebene"
 msgid "Account type"
 msgstr "Kontotyp"
 
-#: src/components/MissionSetup.tsx:991
-#: src/components/MissionSetup.tsx:1158
+#: src/components/MissionSetup.tsx:1026
+#: src/components/MissionSetup.tsx:1193
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "Ass"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Acquire target"
 msgstr "Ziel aufschalten"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquisition mode"
 msgstr "Aufschaltmodus"
 
@@ -283,7 +283,7 @@ msgstr "Ansicht hinzufügen"
 msgid "Adding..."
 msgstr "Wird hinzugefügt ..."
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1009
 msgid "Afterburner"
 msgstr "Nachbrenner"
 
@@ -291,15 +291,15 @@ msgstr "Nachbrenner"
 msgid "AI"
 msgstr "KI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:102
 msgid "Aircraft"
 msgstr "Flugzeug"
 
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:538
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Flugzeugträger <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> von <1>Muhamad Mirza Arrafi</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu skaliert, neu ausgerichtet, bis zur Wasserlinie abgesenkt und für das Web vereinfacht."
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:514
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Flugzeugmodell <0>“F/A-18C Hornet”</0> von <1>CreadorDeMu</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu ausgerichtet und neu skaliert, ungenutzte Texturdaten entfernt, Außenlasten in eine separate Datei ausgelagert, ein Mesh der Verkleidung gespiegelt."
 
@@ -349,12 +349,12 @@ msgstr "Alle angemeldeten Personen"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Alles, was diesen Feed abonniert hat, empfängt ihn nicht mehr. Danach können Sie eine neue URL kopieren."
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Approach power (ATC)"
 msgstr "Anflugleistung (ATC)"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:435
 msgid "Approach, on-speed (Vapp)"
 msgstr "Anflug, auf Sollgeschwindigkeit (Vapp)"
 
@@ -375,8 +375,8 @@ msgstr "Möchten Sie diesen Kommentar wirklich löschen? Dadurch werden auch all
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Möchten Sie sich wirklich abmelden? Sie müssen sich erneut anmelden, um auf Ihr Konto zuzugreifen."
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Arrestor hook"
 msgstr "Fanghaken"
 
@@ -384,7 +384,7 @@ msgstr "Fanghaken"
 msgid "Ascending"
 msgstr "Aufsteigend"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:398
 msgid "asymmetry"
 msgstr "Asymmetrie"
 
@@ -396,7 +396,7 @@ msgstr "Kommentardateien anhängen"
 msgid "Attach reply files"
 msgstr "Antwortdateien anhängen"
 
-#: src/components/SettingsDialog.tsx:633
+#: src/components/SettingsDialog.tsx:638
 msgid "Audio channels"
 msgstr "Audiokanäle"
 
@@ -421,12 +421,12 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar für {name}"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:473
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "Achse {i}"
 
-#: src/components/SettingsDialog.tsx:422
+#: src/components/SettingsDialog.tsx:427
 msgid "Axis calibration and mapping"
 msgstr "Achsenkalibrierung und -zuordnung"
 
@@ -444,7 +444,7 @@ msgstr "Zurück"
 msgid "Back to home"
 msgstr "Zurück zur Startseite"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1018
 msgid "Bandit"
 msgstr "Bandit"
 
@@ -456,23 +456,23 @@ msgstr "Banner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "UNTER 250 — FAHRWERK UND KLAPPEN"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:426
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Bester Steigflug (Vy, 100% Schub)"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:427
 msgid "Best climb (Vy, afterburner)"
 msgstr "Bester Steigflug (Vy, Nachbrenner)"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:429
 msgid "Best glide (engines out)"
 msgstr "Bester Gleitflug (Triebwerke aus)"
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:431
 msgid "Best sustained turn speed"
 msgstr "Beste stationäre Kurvengeschwindigkeit"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:595
 msgid "Betty and RWR alerts"
 msgstr "Betty- und RWR-Warnungen"
 
@@ -543,12 +543,12 @@ msgstr "ABKURVEN WENN BEREIT"
 msgid "Browser notifications"
 msgstr "Browser-Benachrichtigungen"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:549
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "Knopf {i}"
 
-#: src/components/SettingsDialog.tsx:514
+#: src/components/SettingsDialog.tsx:519
 msgid "Button mappings"
 msgstr "Tastenbelegungen"
 
@@ -556,7 +556,7 @@ msgstr "Tastenbelegungen"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — Waffen frei ab Start"
 
-#: src/components/MissionSetup.tsx:977
+#: src/components/MissionSetup.tsx:1012
 msgid "BVR, fight's on from the start"
 msgstr "BVR, Waffen frei ab Start"
 
@@ -565,15 +565,15 @@ msgid "CALL THE BALL"
 msgstr "BALL MELDEN"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1056
+#: src/components/SettingsDialog.tsx:1061
 msgid "Callsign"
 msgstr "Rufzeichen"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:859
 msgid "Camera distance"
 msgstr "Kameraabstand"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Camera unavailable"
 msgstr "Kamera nicht verfügbar"
 
@@ -594,7 +594,7 @@ msgstr "Kamera nicht verfügbar"
 #: src/components/GameCanvas.tsx:549
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -606,11 +606,11 @@ msgstr "Kommentar abbrechen"
 msgid "Cancel reply"
 msgstr "Antwort abbrechen"
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:593
 msgid "Cannons and ordnance"
 msgstr "Bordkanonen und Munition"
 
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:231
 msgid "Canopy"
 msgstr "Kabinenhaube"
 
@@ -619,35 +619,35 @@ msgstr "Kabinenhaube"
 msgid "Caption"
 msgstr "Bildunterschrift"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:594
 msgid "Carrier and ambient"
 msgstr "Träger und Umgebung"
 
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1200
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1014
+#: src/components/MissionSetup.tsx:1049
 msgid "Case I (day)"
 msgstr "Fall I (Tag)"
 
-#: src/components/MissionSetup.tsx:1166
+#: src/components/MissionSetup.tsx:1201
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1050
 msgid "Case II (weather)"
 msgstr "Fall II (Wetter)"
 
-#: src/components/MissionSetup.tsx:1167
+#: src/components/MissionSetup.tsx:1202
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1051
 msgid "Case III (night)"
 msgstr "Fall III (Nacht)"
 
-#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1059
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -655,7 +655,7 @@ msgstr "Katapult"
 msgid "Category for these notifications"
 msgstr "Kategorie für diese Benachrichtigungen"
 
-#: src/components/MissionSetup.tsx:244
+#: src/components/MissionSetup.tsx:250
 msgid "Centerline"
 msgstr "Mittellinie"
 
@@ -676,16 +676,16 @@ msgstr "Verfolgeransicht:"
 msgid "chat"
 msgstr "chatten"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:242
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:243
 msgid "Chat to everyone"
 msgstr "Chat an alle"
 
 #: src/components/MatchLog.tsx:365
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:1115
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Cheats"
@@ -716,7 +716,7 @@ msgstr "Sprache auswählen"
 #: src/components/MatchLog.tsx:323
 #: src/components/MatchLog.tsx:379
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:683
+#: src/components/SettingsDialog.tsx:688
 msgid "Clear"
 msgstr "Leeren"
 
@@ -766,7 +766,7 @@ msgstr "Suche schließen"
 msgid "closer"
 msgstr "näher"
 
-#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1095
 msgid "Clouds"
 msgstr "Wolken"
 
@@ -816,7 +816,7 @@ msgstr "Kommentaraktionen"
 msgid "Comments"
 msgstr "Kommentare"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:104
 msgid "Communication"
 msgstr "Kommunikation"
 
@@ -837,11 +837,11 @@ msgstr "Ansichtseinstellungen konfigurieren"
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:919
 msgid "Connect"
 msgstr "Verbinden"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:906
 msgid "Connect to private server"
 msgstr "Mit privatem Server verbinden"
 
@@ -894,7 +894,7 @@ msgstr "In die Zwischenablage kopiert"
 msgid "Copy"
 msgstr "Kopieren"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:430
 msgid "Corner speed (best instant turn)"
 msgstr "Eckgeschwindigkeit (beste Momentankurve)"
 
@@ -910,7 +910,7 @@ msgstr "Dieses Dokument konnte nicht geladen werden. Bitte versuchen Sie es spä
 msgid "Could not load your flights"
 msgstr "Ihre Flüge konnten nicht geladen werden"
 
-#: src/components/SettingsDialog.tsx:288
+#: src/components/SettingsDialog.tsx:293
 msgid "Could not save the profile"
 msgstr "Profil konnte nicht gespeichert werden"
 
@@ -919,7 +919,7 @@ msgstr "Profil konnte nicht gespeichert werden"
 msgid "Could not save the recording"
 msgstr "Aufzeichnung konnte nicht gespeichert werden"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:725
 msgid "Could not send the message"
 msgstr "Die Nachricht konnte nicht gesendet werden"
 
@@ -939,8 +939,8 @@ msgstr "Die erneute Authentifizierung konnte nicht gestartet werden. Bitte versu
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Verifizierung mit diesem Konto fehlgeschlagen. Bitte versuchen Sie es erneut."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Countermeasures"
 msgstr "Gegenmaßnahmen"
 
@@ -973,8 +973,8 @@ msgstr "Erstellen und fliegen"
 msgid "Create match"
 msgstr "Match erstellen"
 
-#: src/components/MissionSetup.tsx:1233
-#: src/components/MissionSetup.tsx:1254
+#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1289
 msgid "Create mission"
 msgstr "Mission erstellen"
 
@@ -992,12 +992,12 @@ msgstr "Erstellt"
 msgid "Creating..."
 msgstr "Wird erstellt ..."
 
-#: src/components/MissionSetup.tsx:491
-#: src/components/MissionSetup.tsx:497
+#: src/components/MissionSetup.tsx:503
+#: src/components/MissionSetup.tsx:509
 msgid "Credits"
 msgstr "Mitwirkende"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1015,8 +1015,8 @@ msgstr "Benutzerdefiniert"
 msgid "CUT"
 msgstr "GEFÄHRLICH"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Cycle view"
 msgstr "Ansicht wechseln"
 
@@ -1033,7 +1033,7 @@ msgstr "Datenkonflikt"
 msgid "Date"
 msgstr "Datum"
 
-#: src/components/MissionSetup.tsx:1053
+#: src/components/MissionSetup.tsx:1088
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Tag"
@@ -1105,7 +1105,7 @@ msgstr "Ansicht löschen"
 msgid "Delete your account on the old server"
 msgstr "Konto auf dem alten Server löschen"
 
-#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1038
 msgid "Departure / Recovery"
 msgstr "Start / Landung"
 
@@ -1121,7 +1121,7 @@ msgstr "Beschreibung"
 msgid "Destroyed by fire"
 msgstr "Durch Brand zerstört"
 
-#: src/components/SettingsDialog.tsx:929
+#: src/components/SettingsDialog.tsx:934
 msgid "Detail"
 msgstr "Details"
 
@@ -1129,8 +1129,8 @@ msgstr "Details"
 msgid "Details Panel"
 msgstr "Detailbereich"
 
-#: src/components/SettingsDialog.tsx:502
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "Erkennen"
 
@@ -1165,7 +1165,7 @@ msgstr "Verwerfen"
 msgid "Discard draft?"
 msgstr "Entwurf verwerfen?"
 
-#: src/components/SettingsDialog.tsx:388
+#: src/components/SettingsDialog.tsx:393
 msgid "disconnected"
 msgstr "getrennt"
 
@@ -1177,13 +1177,13 @@ msgstr "Getrennt"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1211
-#: src/components/SettingsDialog.tsx:778
+#: src/components/MissionSetup.tsx:1246
+#: src/components/SettingsDialog.tsx:783
 msgid "Dismiss"
 msgstr "Schließen"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Display repeater"
 msgstr "Anzeigen-Repeater"
 
@@ -1191,13 +1191,13 @@ msgstr "Anzeigen-Repeater"
 msgid "Displays the mobile sidebar."
 msgstr "Zeigt die mobile Seitenleiste an."
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:995
 msgid "Distance LOD"
 msgstr "Entfernungs-LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1160
+#: src/components/SettingsDialog.tsx:1165
 msgid "Done"
 msgstr "Fertig"
 
@@ -1231,7 +1231,7 @@ msgstr "Dupliziert"
 msgid "Duration"
 msgstr "Dauer"
 
-#: src/components/SettingsDialog.tsx:983
+#: src/components/SettingsDialog.tsx:988
 msgid "Dynamic resolution"
 msgstr "Dynamische Auflösung"
 
@@ -1282,15 +1282,15 @@ msgstr "Ausgewählte Karte bearbeiten"
 msgid "Edit view"
 msgstr "Ansicht bearbeiten"
 
-#: src/components/SettingsDialog.tsx:975
+#: src/components/SettingsDialog.tsx:980
 msgid "Effects"
 msgstr "Effekte"
 
-#: src/components/SettingsDialog.tsx:953
+#: src/components/SettingsDialog.tsx:958
 msgid "Effects detail"
 msgstr "Effektdetails"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:235
 msgid "Eject"
 msgstr "Schleudersitz"
 
@@ -1310,8 +1310,8 @@ msgstr "E-Mail-Code"
 msgid "EMERG JETT"
 msgstr "NOTABWURF"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Emergency jettison (hold)"
 msgstr "Notabwurf (halten)"
 
@@ -1319,8 +1319,8 @@ msgstr "Notabwurf (halten)"
 msgid "empty"
 msgstr "leer"
 
-#: src/components/MissionSetup.tsx:263
-#: src/components/MissionSetup.tsx:274
+#: src/components/MissionSetup.tsx:269
+#: src/components/MissionSetup.tsx:280
 msgid "Empty pylon"
 msgstr "Leerer Pylon"
 
@@ -1328,11 +1328,11 @@ msgstr "Leerer Pylon"
 msgid "ENGAGED"
 msgstr "GREIFE AN"
 
-#: src/components/MissionSetup.tsx:970
+#: src/components/MissionSetup.tsx:1005
 msgid "Engagement"
 msgstr "Gefecht"
 
-#: src/components/SettingsDialog.tsx:586
+#: src/components/SettingsDialog.tsx:591
 msgid "Engine and afterburner"
 msgstr "Triebwerk und Nachbrenner"
 
@@ -1367,20 +1367,20 @@ msgstr "Ausklappen"
 msgid "Expand sidebar"
 msgstr "Seitenleiste erweitern"
 
-#: src/components/MissionSetup.tsx:573
+#: src/components/MissionSetup.tsx:585
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Explosionsanimation <0>“Explosion02HD”</0> von <1>Unity Technologies</1> (Unity Labs VFX-Bildsequenzen), veröffentlicht unter <2>CC0</2>. Bearbeitet: für das Web neu komprimiert."
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:411
 msgid "Export"
 msgstr "Exportieren"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Extend flaps"
 msgstr "Klappen ausfahren"
 
-#: src/components/SettingsDialog.tsx:945
+#: src/components/SettingsDialog.tsx:950
 msgid "Exterior detail"
 msgstr "Außendetails"
 
@@ -1392,7 +1392,7 @@ msgstr "Externe URL"
 msgid "Extra large"
 msgstr "Extra groß"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:450
 msgid "F/A-18C reference"
 msgstr "F/A-18C-Referenz"
 
@@ -1484,12 +1484,12 @@ msgstr "Beendet"
 msgid "fire"
 msgstr "feuern"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Fire weapon"
 msgstr "Waffe abfeuern"
 
-#: src/components/SettingsDialog.tsx:846
+#: src/components/SettingsDialog.tsx:851
 msgid "Fixed flight keys"
 msgstr "Feste Flugtasten"
 
@@ -1521,7 +1521,7 @@ msgstr "Flach"
 msgid "Flew into the sea"
 msgstr "Ins Meer geflogen"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Flight"
 msgstr "Flug"
 
@@ -1529,11 +1529,11 @@ msgstr "Flug"
 msgid "FLIGHT CORE FAILED"
 msgstr "FLUGKERN FEHLGESCHLAGEN"
 
-#: src/components/SettingsDialog.tsx:1098
+#: src/components/SettingsDialog.tsx:1103
 msgid "Flight hints"
 msgstr "Flughinweise"
 
-#: src/components/MissionSetup.tsx:1238
+#: src/components/MissionSetup.tsx:1273
 msgid "Flight log"
 msgstr "Flugbuch"
 
@@ -1545,8 +1545,8 @@ msgstr "Flüge"
 msgid "Flown"
 msgstr "Geflogen"
 
-#: src/components/MissionSetup.tsx:1227
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1302
 msgid "Fly"
 msgstr "Fliegen"
 
@@ -1554,12 +1554,12 @@ msgstr "Fliegen"
 msgid "Fly again"
 msgstr "Erneut fliegen"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1023
 msgid "Framerate counter"
 msgstr "Bildratenanzeige"
 
 #: src/components/MatchLog.tsx:148
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:995
 msgid "Free flight"
 msgstr "Freier Flug"
 
@@ -1603,11 +1603,11 @@ msgstr "TANKLECK"
 msgid "FUEL LO"
 msgstr "TREIBSTOFF NIEDRIG"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:230
 msgid "Fuel probe"
 msgstr "Tanksonde"
 
-#: src/components/MissionSetup.tsx:261
+#: src/components/MissionSetup.tsx:267
 msgid "Fuel tank"
 msgstr "Kraftstofftank"
 
@@ -1615,12 +1615,12 @@ msgstr "Kraftstofftank"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:243
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:249
+#: src/components/MissionSetup.tsx:251
 msgid "Fuselage"
 msgstr "Rumpf"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Gain"
 msgstr "Verstärkung"
 
@@ -1632,7 +1632,7 @@ msgstr "Fahrwerk"
 msgid "GEAR"
 msgstr "FAHRWERK"
 
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1174
 msgid "General"
 msgstr "Allgemein"
 
@@ -1641,15 +1641,15 @@ msgstr "Allgemein"
 msgid "Go back"
 msgstr "Zurück"
 
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1178
 msgid "Graphics"
 msgstr "Grafik"
 
-#: src/components/SettingsDialog.tsx:905
+#: src/components/SettingsDialog.tsx:910
 msgid "Graphics preset"
 msgstr "Grafik-Voreinstellung"
 
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:384
 msgid "Gross weight"
 msgstr "Gesamtgewicht"
 
@@ -1670,7 +1670,7 @@ msgstr "Gruppe: {0}"
 msgid "GUN"
 msgstr "KANONE"
 
-#: src/components/MissionSetup.tsx:280
+#: src/components/MissionSetup.tsx:286
 msgid "Gun only"
 msgstr "Nur Bordkanone"
 
@@ -1679,29 +1679,29 @@ msgstr "Nur Bordkanone"
 msgid "Guns only"
 msgstr "Nur Bordkanone"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1241
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Die Hardware-Grafikbeschleunigung ist aus — prüfen Sie Browsereinstellungen oder Grafiktreiber."
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head"
 msgstr "Kopf"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head tracking"
 msgstr "Kopfverfolgung"
 
-#: src/components/SettingsDialog.tsx:896
+#: src/components/SettingsDialog.tsx:901
 msgid "High"
 msgstr "Hoch"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "Hoher Stratus"
 
-#: src/components/SettingsDialog.tsx:1089
+#: src/components/SettingsDialog.tsx:1094
 msgid "Hints"
 msgstr "Hinweise"
 
@@ -1728,11 +1728,11 @@ msgstr "HAKEN"
 msgid "Hot"
 msgstr "Heiß"
 
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:239
 msgid "HUD altitude source"
 msgstr "HUD-Höhenquelle"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:240
 msgid "HUD declutter"
 msgstr "HUD-Declutter"
 
@@ -1749,12 +1749,12 @@ msgstr "Bildbetrachter: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:410
+#: src/components/SettingsDialog.tsx:415
 msgid "Import"
 msgstr "Importieren"
 
-#: src/components/MissionSetup.tsx:1011
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1197
 msgid "In air"
 msgstr "In der Luft"
 
@@ -1770,7 +1770,7 @@ msgstr "Initialen-Avatar"
 msgid "Initials avatar for {name}"
 msgstr "Initialen-Avatar für {name}"
 
-#: src/components/SettingsDialog.tsx:366
+#: src/components/SettingsDialog.tsx:371
 msgid "Input hardware"
 msgstr "Eingabehardware"
 
@@ -1778,7 +1778,7 @@ msgstr "Eingabehardware"
 msgid "Interests"
 msgstr "Interessen"
 
-#: src/components/MissionSetup.tsx:365
+#: src/components/MissionSetup.tsx:377
 msgid "Internal fuel"
 msgstr "Interner Kraftstoff"
 
@@ -1786,7 +1786,7 @@ msgstr "Interner Kraftstoff"
 msgid "Invalid date"
 msgstr "Ungültiges Datum"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Unverwundbar"
@@ -1795,7 +1795,7 @@ msgstr "Unverwundbar"
 msgid "INVULNERABLE"
 msgstr "UNVERWUNDBAR"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Unverwundbar (nur menschliche Spieler)"
@@ -1804,13 +1804,13 @@ msgstr "Unverwundbar (nur menschliche Spieler)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Die gesuchte Seite <0/>existiert nicht oder wurde entfernt."
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Jammer"
 msgstr "Störsender"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Jettison tanks"
 msgstr "Tanks abwerfen"
 
@@ -1822,8 +1822,8 @@ msgstr "ABWURF: FAHRWERK"
 msgid "Join"
 msgstr "Beitreten"
 
-#: src/components/MissionSetup.tsx:811
-#: src/components/MissionSetup.tsx:1234
+#: src/components/MissionSetup.tsx:846
+#: src/components/MissionSetup.tsx:1269
 msgid "Join server"
 msgstr "Server beitreten"
 
@@ -1832,7 +1832,7 @@ msgid "JOINED"
 msgstr "IST BEIGETRETEN"
 
 #: src/components/MatchLog.tsx:146
-#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1207
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Joust"
@@ -1841,11 +1841,11 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, der erste Abschuss gewinnt"
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:996
 msgid "Joust against bot"
 msgstr "Duell gegen Bot"
 
-#: src/components/SettingsDialog.tsx:1181
+#: src/components/SettingsDialog.tsx:1186
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1861,7 +1861,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Tastenkürzel"
 
-#: src/components/SettingsDialog.tsx:1185
+#: src/components/SettingsDialog.tsx:1190
 msgid "Keys"
 msgstr "Tasten"
 
@@ -1890,8 +1890,8 @@ msgstr "L TRW BRAND"
 msgid "L GEAR"
 msgstr "FAHRWERK L"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Landing gear"
 msgstr "Fahrwerk"
 
@@ -1904,8 +1904,8 @@ msgstr "Groß"
 msgid "LATE"
 msgstr "SPÄT"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Launch (catapult)"
 msgstr "Start (Katapult)"
 
@@ -1921,7 +1921,7 @@ msgstr "Layout"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:940
 msgid "Leave server"
 msgstr "Server verlassen"
 
@@ -1933,12 +1933,12 @@ msgstr "Verlassen"
 msgid "LEFT"
 msgstr "HAT DAS SPIEL VERLASSEN"
 
-#: src/components/MissionSetup.tsx:241
-#: src/components/MissionSetup.tsx:242
+#: src/components/MissionSetup.tsx:247
+#: src/components/MissionSetup.tsx:248
 msgid "Left wing"
 msgstr "Linke Tragfläche"
 
-#: src/components/MissionSetup.tsx:240
+#: src/components/MissionSetup.tsx:246
 msgid "Left wingtip"
 msgstr "Linke Flügelspitze"
 
@@ -1958,8 +1958,8 @@ msgstr "Hell"
 msgid "lights"
 msgstr "beleuchtung"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:233
 msgid "Lights"
 msgstr "Beleuchtung"
 
@@ -2021,39 +2021,39 @@ msgstr "Erfolgreich abgemeldet"
 msgid "Logging out…"
 msgstr "Abmelden …"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:114
 msgid "Look"
 msgstr "Blick"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:858
 msgid "Look / orbit"
 msgstr "Blick / Orbit"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:189
 msgid "Look at target"
 msgstr "Ziel ansehen"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:186
 msgid "Look down"
 msgstr "Blick nach unten"
 
-#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:187
 msgid "Look left"
 msgstr "Blick nach links"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:188
 msgid "Look right"
 msgstr "Blick nach rechts"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:185
 msgid "Look up"
 msgstr "Blick nach oben"
 
-#: src/components/SettingsDialog.tsx:894
+#: src/components/SettingsDialog.tsx:899
 msgid "Low"
 msgstr "Niedrig"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1105
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2075,7 +2075,7 @@ msgstr "Manuell"
 msgid "map"
 msgstr "karte"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:241
 msgid "Map"
 msgstr "Karte"
 
@@ -2084,16 +2084,16 @@ msgstr "Karte"
 msgid "Mark all as read"
 msgstr "Alle als gelesen markieren"
 
-#: src/components/SettingsDialog.tsx:605
+#: src/components/SettingsDialog.tsx:610
 msgid "Master audio output"
 msgstr "Master-Audioausgang"
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:623
 msgid "Master bus"
 msgstr "Masterbus"
 
-#: src/components/SettingsDialog.tsx:585
-#: src/components/SettingsDialog.tsx:613
+#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:618
 msgid "Master volume"
 msgstr "Gesamtlautstärke"
 
@@ -2101,7 +2101,7 @@ msgstr "Gesamtlautstärke"
 msgid "Match type"
 msgstr "Match-Typ"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:935
 msgid "Matches"
 msgstr "Partien"
 
@@ -2114,7 +2114,7 @@ msgid "MCP server"
 msgstr "MCP-Server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:895
+#: src/components/SettingsDialog.tsx:900
 msgid "Medium"
 msgstr "Mittel"
 
@@ -2123,8 +2123,8 @@ msgid "menu"
 msgstr "menü"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:244
 msgid "Menu"
 msgstr "Menü"
 
@@ -2140,7 +2140,7 @@ msgstr "Nachricht"
 msgid "Message everyone"
 msgstr "Nachricht an alle"
 
-#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:770
 msgid "Message players on this server"
 msgstr "Nachricht an die Spieler auf diesem Server senden"
 
@@ -2152,7 +2152,7 @@ msgstr "Nachricht an dein Team"
 msgid "Metric"
 msgstr "Metrisch"
 
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2162,7 +2162,7 @@ msgstr "Mittlerer Stratus"
 msgid "Midair collision"
 msgstr "Kollision in der Luft"
 
-#: src/components/MissionSetup.tsx:596
+#: src/components/MissionSetup.tsx:608
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Karte des Midway-Atolls — die Bilddaten enthalten modifizierte <0>Copernicus Sentinel-2</0>-Daten (2026); Flugplatzgeometrie (Start- und Landebahn, Rollwege, Vorfelder) © <1>OpenStreetMap</1>-Mitwirkende, lizenziert unter <2>ODbL</2>; Küsten- und Riffdaten von <3>NOAA NCCOS</3> (gemeinfrei)."
 
@@ -2174,7 +2174,7 @@ msgstr "Mindestlänge"
 msgid "MISSILE"
 msgstr "RAKETE"
 
-#: src/components/MissionSetup.tsx:550
+#: src/components/MissionSetup.tsx:562
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Raketenmodell <0>“AIM-120C AMRAAM”</0> von <1>Pippa</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu skaliert, neu ausgerichtet und für die Platzierung zentriert."
 
@@ -2204,7 +2204,7 @@ msgstr "Montag"
 msgid "More options"
 msgstr "Weitere Optionen"
 
-#: src/components/SettingsDialog.tsx:502
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr "Bewegen…"
 
@@ -2248,7 +2248,7 @@ msgstr "Neues Spiel"
 msgid "Next image"
 msgstr "Nächstes Bild"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1089
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2270,7 +2270,7 @@ msgstr "Noch keine Aktivität"
 msgid "No comments yet"
 msgstr "Noch keine Kommentare"
 
-#: src/components/SettingsDialog.tsx:698
+#: src/components/SettingsDialog.tsx:703
 msgid "No control matches “{query}”."
 msgstr "Keine Steuerung passt zu „{query}“."
 
@@ -2294,7 +2294,7 @@ msgstr "Keine Gruppen verfügbar"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Es können noch keine Elementtypen erstellt werden. Erstellen Sie zunächst die erforderlichen übergeordneten Elemente."
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:403
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kein Joystick erkannt — zum Aufwecken einen beliebigen Knopf darauf drücken."
 
@@ -2358,7 +2358,7 @@ msgstr "Keine Nutzer gefunden"
 msgid "No views"
 msgstr "Keine Ansichten"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:747
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Kein Weltserver."
@@ -2380,11 +2380,11 @@ msgstr "KEINE WERTUNG"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: src/components/MissionSetup.tsx:276
-#: src/components/MissionSetup.tsx:1066
-#: src/components/SettingsDialog.tsx:467
-#: src/components/SettingsDialog.tsx:543
-#: src/components/SettingsDialog.tsx:826
+#: src/components/MissionSetup.tsx:282
+#: src/components/MissionSetup.tsx:1101
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:831
 msgid "None"
 msgstr "Keine"
 
@@ -2396,7 +2396,7 @@ msgstr "Normal"
 msgid "NOSE GEAR"
 msgstr "BUGFAHRWERK"
 
-#: src/components/SettingsDialog.tsx:301
+#: src/components/SettingsDialog.tsx:306
 msgid "Not a joystick profile"
 msgstr "Kein Joystick-Profil"
 
@@ -2413,7 +2413,7 @@ msgstr "Nicht festgelegt"
 msgid "Nothing found"
 msgstr "Nichts gefunden"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:747
 msgid "Nothing yet — say hello."
 msgstr "Noch nichts – sag Hallo."
 
@@ -2422,8 +2422,8 @@ msgstr "Noch nichts – sag Hallo."
 msgid "Notifications: {0}"
 msgstr "Benachrichtigungen: {0}"
 
-#: src/components/MissionSetup.tsx:989
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1191
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Anfänger"
@@ -2434,7 +2434,7 @@ msgstr "Anfänger"
 msgid "Number"
 msgstr "Zahl"
 
-#: src/components/SettingsDialog.tsx:961
+#: src/components/SettingsDialog.tsx:966
 msgid "Ocean detail"
 msgstr "Ozeandetails"
 
@@ -2450,13 +2450,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Ein"
 
-#: src/components/MissionSetup.tsx:1013
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1048
+#: src/components/MissionSetup.tsx:1199
 msgid "On carrier"
 msgstr "Auf dem Träger"
 
-#: src/components/MissionSetup.tsx:1012
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:1198
 msgid "On runway"
 msgstr "Auf der Startbahn"
 
@@ -2527,8 +2527,8 @@ msgstr "umkreisen"
 msgid "Other"
 msgstr "Sonstige"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:207
 msgid "Override G limit"
 msgstr "G-Limit übersteuern"
 
@@ -2548,7 +2548,7 @@ msgstr "PADLOCK AUS"
 msgid "Parent"
 msgstr "Übergeordnet"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:206
 msgid "Parking brake"
 msgstr "Parkbremse"
 
@@ -2572,14 +2572,14 @@ msgstr "Muster (Regex)"
 msgid "Paused"
 msgstr "Pausiert"
 
-#: src/components/MissionSetup.tsx:658
+#: src/components/MissionSetup.tsx:676
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "Pilot"
 
-#: src/components/MissionSetup.tsx:990
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1192
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Pilot"
@@ -2588,7 +2588,7 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOT GEFALLEN"
 
-#: src/components/SettingsDialog.tsx:1051
+#: src/components/SettingsDialog.tsx:1056
 msgid "Pilot identity"
 msgstr "Pilotenidentität"
 
@@ -2600,15 +2600,15 @@ msgstr "Pilot getötet"
 msgid "pitch"
 msgstr "nicken"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:109
 msgid "Pitch"
 msgstr "Nicken"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:197
 msgid "Pitch down"
 msgstr "Nicken nach unten"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:196
 msgid "Pitch up"
 msgstr "Nicken nach oben"
 
@@ -2646,7 +2646,7 @@ msgstr "Beiträge"
 msgid "Posts and comments"
 msgstr "Beiträge und Kommentare"
 
-#: src/components/SettingsDialog.tsx:806
+#: src/components/SettingsDialog.tsx:811
 msgid "Press a key…"
 msgstr "Taste drücken…"
 
@@ -2654,7 +2654,7 @@ msgstr "Taste drücken…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ENTER DRÜCKEN ZUM STARTEN"
 
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr "Drücken…"
 
@@ -2672,8 +2672,8 @@ msgstr "Datenschutz"
 msgid "Processing…"
 msgstr "Wird verarbeitet…"
 
-#: src/components/SettingsDialog.tsx:287
-#: src/components/SettingsDialog.tsx:299
+#: src/components/SettingsDialog.tsx:292
+#: src/components/SettingsDialog.tsx:304
 msgid "Profile saved"
 msgstr "Profil gespeichert"
 
@@ -2681,8 +2681,8 @@ msgstr "Profil gespeichert"
 msgid "Project members"
 msgstr "Projektmitglieder"
 
-#: src/components/MissionSetup.tsx:838
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:891
 msgid "Public servers"
 msgstr "Öffentliche Server"
 
@@ -2706,8 +2706,8 @@ msgstr "R TRW BRAND"
 msgid "R GEAR"
 msgstr "FAHRWERK R"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Radar silent"
 msgstr "Radar stumm"
 
@@ -2727,7 +2727,7 @@ msgstr "Registrieren Sie Ihre Passkeys auf diesem Server erneut"
 msgid "REARMED"
 msgstr "AUFMUNITIONIERT"
 
-#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:852
 msgid "Recent"
 msgstr "Zuletzt"
 
@@ -2739,12 +2739,12 @@ msgstr "Empfohlen"
 msgid "Reconnecting ({retries})..."
 msgstr "Verbindung wird wiederhergestellt ({retries}) …"
 
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1085
 msgid "Record flights"
 msgstr "Flüge aufzeichnen"
 
 #: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1073
+#: src/components/SettingsDialog.tsx:1078
 msgid "Recording"
 msgstr "Aufzeichnung"
 
@@ -2769,7 +2769,7 @@ msgstr "Weiterleitung zur Anmeldung."
 msgid "Reduce interest"
 msgstr "Interesse reduzieren"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:444
 msgid "Reference"
 msgstr "Referenz"
 
@@ -2847,7 +2847,7 @@ msgstr "Spalte umbenennen"
 msgid "Rename this board column"
 msgstr "Diese Board-Spalte umbenennen"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:642
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering durch <0>three.js</0> (MIT-Lizenz)."
 
@@ -2869,27 +2869,27 @@ msgstr "Erforderlich"
 msgid "Resend email"
 msgstr "E-Mail erneut senden"
 
-#: src/components/SettingsDialog.tsx:1156
+#: src/components/SettingsDialog.tsx:1161
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Reset master caution"
 msgstr "Hauptwarnung zurücksetzen"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Reset trim"
 msgstr "Trimmung zurücksetzen"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
-#: src/components/SettingsDialog.tsx:852
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:857
 msgid "Reset view"
 msgstr "Ansicht zurücksetzen"
 
-#: src/components/SettingsDialog.tsx:935
+#: src/components/SettingsDialog.tsx:940
 msgid "Resolution"
 msgstr "Auflösung"
 
@@ -2913,8 +2913,8 @@ msgstr "Ergebnis"
 msgid "Resume"
 msgstr "Fortsetzen"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Retract flaps"
 msgstr "Klappen einfahren"
 
@@ -2922,7 +2922,7 @@ msgstr "Klappen einfahren"
 msgid "Retry"
 msgstr "Erneut versuchen"
 
-#: src/components/SettingsDialog.tsx:485
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "Invertiert"
 
@@ -2938,12 +2938,12 @@ msgstr "Zugriff widerrufen"
 msgid "Revoke RSS access?"
 msgstr "RSS-Zugriff widerrufen?"
 
-#: src/components/MissionSetup.tsx:246
-#: src/components/MissionSetup.tsx:247
+#: src/components/MissionSetup.tsx:252
+#: src/components/MissionSetup.tsx:253
 msgid "Right wing"
 msgstr "Rechte Tragfläche"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:254
 msgid "Right wingtip"
 msgstr "Rechte Flügelspitze"
 
@@ -2951,15 +2951,15 @@ msgstr "Rechte Flügelspitze"
 msgid "roll"
 msgstr "rollen"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:110
 msgid "Roll"
 msgstr "Rollen"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:198
 msgid "Roll left"
 msgstr "Rollen nach links"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:199
 msgid "Roll right"
 msgstr "Rollen nach rechts"
 
@@ -3000,7 +3000,7 @@ msgstr "Samstag"
 msgid "Save"
 msgstr "Speichern"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:459
 msgid "Sea level"
 msgstr "Meeresspiegel"
 
@@ -3011,8 +3011,8 @@ msgstr "Meeresspiegel"
 msgid "Search"
 msgstr "Suchen"
 
-#: src/components/SettingsDialog.tsx:674
-#: src/components/SettingsDialog.tsx:675
+#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:680
 msgid "Search controls"
 msgstr "Steuerungen suchen"
 
@@ -3109,8 +3109,8 @@ msgstr "Person auswählen …"
 msgid "Select previous card"
 msgstr "Vorherige Karte auswählen"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Select weapon"
 msgstr "Waffe wählen"
 
@@ -3124,7 +3124,7 @@ msgstr "Auswählen..."
 msgid "Selected: <0>{0}</0>"
 msgstr "Ausgewählt: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:777
 msgid "Send"
 msgstr "Senden"
 
@@ -3154,7 +3154,7 @@ msgstr "Serife"
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:732
 msgid "Server chat"
 msgstr "Server-Chat"
 
@@ -3181,7 +3181,7 @@ msgstr "SITZUNG BEENDET"
 msgid "Session expired. Please log in again."
 msgstr "Sitzung abgelaufen. Bitte melden Sie sich erneut an."
 
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Set"
 msgstr "Festlegen"
 
@@ -3193,13 +3193,13 @@ msgstr "Ausgangspunkt und Ziel festlegen"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
-#: src/components/MissionSetup.tsx:1235
-#: src/components/SettingsDialog.tsx:1139
-#: src/components/SettingsDialog.tsx:1166
+#: src/components/MissionSetup.tsx:1270
+#: src/components/SettingsDialog.tsx:1144
+#: src/components/SettingsDialog.tsx:1171
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:1002
 msgid "Shadows"
 msgstr "Schatten"
 
@@ -3237,7 +3237,7 @@ msgstr "Abmeldung läuft..."
 msgid "Single line of text only"
 msgstr "Nur einzeilige Texteingabe"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:428
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Bester Steigflug mit einem Triebwerk (Vyse, Nachbrenner)"
 
@@ -3250,7 +3250,7 @@ msgstr "Klein"
 msgid "Sort"
 msgstr "Sortieren"
 
-#: src/components/SettingsDialog.tsx:1177
+#: src/components/SettingsDialog.tsx:1182
 msgid "Sound"
 msgstr "Ton"
 
@@ -3278,13 +3278,13 @@ msgstr "BREMSKL"
 msgid "speed brake"
 msgstr "Bremsklappe"
 
-#: src/components/SettingsDialog.tsx:108
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:204
 msgid "Speed brake"
 msgstr "Bremsklappe"
 
-#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:485
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Geschwindigkeiten in KCAS, als Bereich von leicht (minimaler Kraftstoff, keine Außenlasten) bis schwer (maximales Gesamtgewicht). Daten experimentell im Spiel ermittelt. Abweichungen vom realen Flugzeug spiegeln Fehler im Flugmodell des Simulators wider."
 
@@ -3292,11 +3292,11 @@ msgstr "Geschwindigkeiten in KCAS, als Bereich von leicht (minimaler Kraftstoff,
 msgid "SPLASH"
 msgstr "ABSCHUSS"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
 msgstr "Strömungsabriss, sauber (Vs1)"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:434
 msgid "Stall, landing config (Vs0)"
 msgstr "Strömungsabriss, Landekonfiguration (Vs0)"
 
@@ -3308,11 +3308,11 @@ msgstr "Start"
 msgid "Start the discussion by adding the first comment."
 msgstr "Beginnen Sie die Diskussion mit dem ersten Kommentar."
 
-#: src/components/MissionSetup.tsx:412
+#: src/components/MissionSetup.tsx:424
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Steilster Steigflug (Vx, 100% Schub)"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:425
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Steilster Steigflug (Vx, Nachbrenner)"
 
@@ -3342,8 +3342,8 @@ msgstr "Abonnieren"
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: src/components/MissionSetup.tsx:992
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1194
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Übermenschlich"
@@ -3379,7 +3379,7 @@ msgstr "Tags"
 msgid "TALLY"
 msgstr "FEIND IN SICHT"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:989
 msgid "Task"
 msgstr "Aufgabe"
 
@@ -3422,9 +3422,17 @@ msgstr "Das konnte nicht gesendet werden. Die Dateien sind möglicherweise zu gr
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Das war zu groß zum Hochladen. Entferne oder verkleinere Dateien und versuche es erneut."
 
+#: src/routes/index.tsx:132
+msgid "The game could not be loaded. Reload the page to try again."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "Das Match läuft hinter diesem Menü weiter."
+
+#: src/routes/index.tsx:133
+msgid "The mission stopped."
+msgstr ""
 
 #: src/components/GameCanvas.tsx:544
 msgid "The mission will restart. The current flight will not be saved."
@@ -3438,7 +3446,7 @@ msgstr "Der angeforderte Inhalt wurde nicht gefunden."
 msgid "The server returned a web page instead of data."
 msgstr "Der Server hat eine Webseite statt Daten zurückgegeben."
 
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:1239
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Dieser Browser unterstützt kein WebGL 2, das Spiel kann daher nicht laufen — versuchen Sie einen anderen Browser."
 
@@ -3446,7 +3454,7 @@ msgstr "Dieser Browser unterstützt kein WebGL 2, das Spiel kann daher nicht lau
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Diese Lobby leitet deine Spielverbindung an einen anderen Host ({redirectHost}) weiter. Fahre nur fort, wenn du diesem Server vertraust."
 
-#: src/components/MissionSetup.tsx:1208
+#: src/components/MissionSetup.tsx:1243
 msgid "This machine may be too slow for smooth flight."
 msgstr "Diese Maschine ist für flüssigen Flug möglicherweise zu langsam."
 
@@ -3454,17 +3462,17 @@ msgstr "Diese Maschine ist für flüssigen Flug möglicherweise zu langsam."
 msgid "throttle"
 msgstr "schub"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:112
 msgid "Throttle"
 msgstr "Schub"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Throttle down"
 msgstr "Schub verringern"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Throttle up"
 msgstr "Schub erhöhen"
 
@@ -3472,7 +3480,7 @@ msgstr "Schub erhöhen"
 msgid "Thursday"
 msgstr "Donnerstag"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:432
 msgid "Tightest sustained turn speed"
 msgstr "Engste stationäre Kurvengeschwindigkeit"
 
@@ -3484,7 +3492,7 @@ msgstr "neigen"
 msgid "Time"
 msgstr "Zeit"
 
-#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:1082
 msgid "Time of day"
 msgstr "Tageszeit"
 
@@ -3526,7 +3534,7 @@ msgstr "Zu viele Anfragen"
 msgid "Top"
 msgstr "Oben"
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1016
 msgid "Tracers"
 msgstr "Leuchtspur"
 
@@ -3538,31 +3546,31 @@ msgstr "Unterwegs"
 msgid "trim"
 msgstr "Trimmung"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:100
 msgid "Trim"
 msgstr "Trimmung"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:115
 msgid "Trim hat"
 msgstr "Trimmschalter"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim nose down"
 msgstr "Trimmung: Nase tief"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim nose up"
 msgstr "Trimmung: Nase hoch"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim roll left"
 msgstr "Trimmung: Rollen links"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim roll right"
 msgstr "Trimmung: Rollen rechts"
 
@@ -3600,7 +3608,7 @@ msgstr "Tippen, um Benutzer zu suchen"
 msgid "Type to search..."
 msgstr "Tippen, um zu suchen..."
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:902
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3625,13 +3633,13 @@ msgstr "Nicht zugelassener Zugriff"
 msgid "Unavailable"
 msgstr "Nicht verfügbar"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Uncage seeker"
 msgstr "Suchkopf entriegeln"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Undesignate target"
 msgstr "Zielauswahl aufheben"
 
@@ -3652,23 +3660,23 @@ msgstr "Unbekannt"
 msgid "Unlimited"
 msgstr "Unbegrenzt"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Unbegrenzte Munition"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1128
 msgid "Unlimited ammunition (all players)"
 msgstr "Unbegrenzte Munition (alle Spieler)"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Unbegrenzter Treibstoff"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1135
 msgid "Unlimited fuel (all players)"
 msgstr "Unbegrenzter Treibstoff (alle Spieler)"
 
@@ -3719,7 +3727,7 @@ msgstr "Verifizieren"
 msgid "Verify email address"
 msgstr "E-Mail-Adresse verifizieren"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:475
 msgid "Vertical"
 msgstr "Senkrecht"
 
@@ -3740,7 +3748,7 @@ msgstr "Videobetrachter: {0}"
 msgid "view"
 msgstr "ansicht"
 
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:103
 msgid "View"
 msgstr "Ansicht"
 
@@ -3753,7 +3761,7 @@ msgstr "Alle Benachrichtigungen anzeigen"
 msgid "View controls"
 msgstr "Ansichtssteuerungen"
 
-#: src/components/SettingsDialog.tsx:851
+#: src/components/SettingsDialog.tsx:856
 msgid "Views"
 msgstr "Aufrufe"
 
@@ -3783,12 +3791,12 @@ msgstr "Wir haben einen Bestätigungscode an <0>{0}</0> gesendet. Geben Sie den 
 msgid "weapon"
 msgstr "Waffe"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:116
 msgid "Weapon select hat"
 msgstr "Waffenwahlschalter"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:101
 msgid "Weapons"
 msgstr "Waffen"
 
@@ -3800,17 +3808,17 @@ msgstr "Wetter"
 msgid "Wednesday"
 msgstr "Mittwoch"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:205
 msgid "Wheel brakes"
 msgstr "Radbremsen"
 
-#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:592
 msgid "Wind and cockpit airframe"
 msgstr "Wind und Flugzeugzelle"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:232
 msgid "Wing fold"
 msgstr "Flügelfaltung"
 
@@ -3822,12 +3830,12 @@ msgstr "GEWINNT"
 msgid "World server"
 msgstr "Weltserver"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:725
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "Weltserver nicht erreichbar"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:1011
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, Waffen frei beim Passieren"
 
@@ -3835,17 +3843,17 @@ msgstr "WVR, Waffen frei beim Passieren"
 msgid "yaw"
 msgstr "gieren"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:111
 msgid "Yaw"
 msgstr "Gieren"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Yaw left"
 msgstr "Gieren nach links"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Yaw right"
 msgstr "Gieren nach rechts"
 
@@ -3881,14 +3889,14 @@ msgstr "Dein Text und deine Anhänge gehen verloren."
 msgid "Your text will be lost."
 msgstr "Dein Text geht verloren."
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:117
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:190
 msgid "Zoom in"
 msgstr "Heranzoomen"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:191
 msgid "Zoom out"
 msgstr "Herauszoomen"
