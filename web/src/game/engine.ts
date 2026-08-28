@@ -3611,13 +3611,22 @@ const HINT={
 };
 const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
 let hinted={};
+// The pattern's roll-out headings (#90), from the live ship: the wake is the
+// hull course, the downwind its reciprocal, and the groove the angled deck's
+// landing line. Three digits, as the brief reads them.
+function compass(dx,dz){ return String(Math.round((Math.atan2(dx,-dz)*180/Math.PI+360)%360)||360).padStart(3,"0")+"\u00b0"; }
+function ship_course(){ return compass(CARRIER_C,-CARRIER_S); }
+function ship_downwind(){ return compass(-CARRIER_C,CARRIER_S); }
+function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat); return compass(b.x-a.x,b.z-a.z); }
 let hint_rows=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight
-function hint(key){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
+function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
 	// One row where it fits; the longer teachings wrap at clause marks to at
 	// most two. The slot never fades, so there is no clock to outrun.
-	// Translation later happens per full line, before the split.
+	// Translation later happens per full line, before the split. `text`
+	// overrides the display for hints that carry live numbers (the roll-out
+	// headings, #90) while the constant stays the dedup key.
 	const rows=[]; let line="";
-	for(const part of translate(key).split("; ")){
+	for(const part of translate(text??key).split("; ")){
 		const next=line?line+"; "+part:part;
 		if(next.length<=78){ line=next; continue; }
 		if(line) rows.push(line+";");
@@ -3641,13 +3650,13 @@ function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
 		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
 		if(along>-1400&&fdot>0.3&&!hinted[HINT.brk]) hint(HINT.side);   // drawing level with the ship, still inbound
 		if(range<950) hint(HINT.brk);
-		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll);   // the nose has come around downwind
+		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll,"Roll out downwind: "+ship_downwind()+", beside the ship 0.9 to 1.1 NM out");   // the nose has come around downwind
 		if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.form);
 		if(down) hint(HINT.donut);
 		if(down&&feet<750&&fdot<-0.5&&range>1000) hint(HINT.wing);
 		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
-		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty);
+		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty,"The 45: 325-375'; straighten into the groove, "+ship_groove()+", look for the ball, fly the ball with power");
 	}
 	if(st==="case2"&&range<5*1852) hint(HINT.needle);
 	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
@@ -3655,7 +3664,7 @@ function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
 		if(marshal.commenced) hint(HINT.push);
 		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
 		if(marshal.platform) hint(HINT.level);
-		if(marshal.dirty) hint(HINT.gate);
+		if(marshal.dirty) hint(HINT.gate,"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM; final bearing "+ship_groove());
 		if(range<3.2*1852) hint(HINT.check);
 	}
 }
@@ -5176,7 +5185,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false };
-		hint(HINT.wake); }   // side follows at its position — one hint at a time in the slot
+		hint(HINT.wake,"Case I: fly up the ship's wake: "+ship_course()+", 800', 350 knots"); }   // side follows at its position — one hint at a time in the slot
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
@@ -5188,7 +5197,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R));   // attitude = on-speed alpha over the level path (pre-core fallback)
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false };   // Case II starts configured on the final bearing: only the ball remains
-		hint(HINT.final); }   // needle follows a mile in — one hint at a time in the slot
+		hint(HINT.final,"Case II: level on final: "+ship_groove()+", 1200', gear and flaps down; hold on-speed at 8.1 alpha, near 140 knots"); }   // needle follows a mile in — one hint at a time in the slot
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
