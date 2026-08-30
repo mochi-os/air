@@ -20,8 +20,8 @@ const buses: Partial<Record<Bus, GainNode>> = {}
 const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weapons: 1, environment: 1, alerts: 1 }
 // one-shot routing
 const SHOT_BUS: Record<string, Bus> = {
-  gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons', flyby: 'weapons',
-  hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft',
+  gun: 'weapons', gunspin: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons', flyby: 'weapons',
+  hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft', pump: 'aircraft', lock: 'aircraft', door: 'aircraft',
   caution: 'alerts', warning: 'alerts', horn: 'alerts', law: 'alerts',
 }
 function bus(name: Bus): GainNode {
@@ -57,6 +57,18 @@ let deck: Voice | null = null
 
 // Pre-rendered one-shot buffers.
 const shots: Record<string, AudioBuffer> = {}
+let ecs: { gain: GainNode } | null = null
+let ecsOn = false
+let gunFiring = false
+let plant: GainNode | null = null
+let interior: GainNode | null = null
+let exterior: GainNode | null = null
+let exteriorPan: PannerNode | null = null
+let crackle: { gain: GainNode } | null = null
+let sea: { gain: GainNode } | null = null
+let outsideView = false
+let seaOn = false
+const heat = new Map<string, boolean>()
 let gunLoop: AudioBufferSourceNode | null = null
 
 // A long looping noise buffer shared by every noise-based voice.
@@ -78,8 +90,8 @@ export function audio_gesture(): void {
 
 // audio_state reports the context's live condition for the developer probe
 // (#55): whether it exists, whether it is running, and the enable flag.
-export function audio_state(): { context: string; enabled: boolean } {
-  return { context: context ? context.state : 'none', enabled }
+export function audio_state(): { context: string; enabled: boolean; ecs: boolean; gun: boolean; outside: boolean; hot: number; sea: boolean } {
+  return { context: context ? context.state : 'none', enabled, ecs: ecsOn, gun: gunFiring, outside: outsideView, hot: [...heat.values()].filter(Boolean).length, sea: seaOn }
 }
 
 let lastEnable: boolean | null = null
@@ -137,6 +149,25 @@ function build(): void {
   noiseBuffer = noise(2.0, false)
   brownBuffer = noise(2.0, true)
 
+  // The powerplant group (#88 audit): engines, burner and the external
+  // crackle feed one node, which reaches the engine bus through the interior
+  // path (the cockpit's close, smooth balance) or the exterior panner (the
+  // chase and flypast perspective — panned and distance-faded, where the
+  // burner crackles). audio_view crossfades them.
+  plant = c.createGain()
+  interior = c.createGain()
+  interior.gain.value = 1
+  plant.connect(interior).connect(bus('engine'))
+  exteriorPan = c.createPanner()
+  exteriorPan.panningModel = 'equalpower'
+  exteriorPan.distanceModel = 'inverse'
+  exteriorPan.refDistance = 40
+  exteriorPan.rolloffFactor = 0.6
+  exteriorPan.maxDistance = 4000
+  exterior = c.createGain()
+  exterior.gain.value = 0
+  plant.connect(exteriorPan).connect(exterior).connect(bus('engine'))
+
   // Two turbofans. A jet's voice is NOISE, not a note (a pitched sawtooth here
   // read as a lawnmower): deep exhaust rumble + a mid "tearing" hiss that opens
   // with spool, and only a thin, distant compressor whine far up top — two
@@ -144,7 +175,7 @@ function build(): void {
   for (let e = 0; e < 2; e++) {
     const gain = c.createGain()
     gain.gain.value = 0
-    gain.connect(bus('engine'))
+    gain.connect(plant)
     const rumble = c.createBiquadFilter()
     rumble.type = 'lowpass'
     rumble.frequency.value = 140
@@ -174,6 +205,20 @@ function build(): void {
     engines.push({ whine, second, whineGain, rumble, hiss, hissGain, gain })
   }
 
+  // ECS: the environmental control system's steady air roar — the loudest
+  // constant sound in a real fighter cockpit, engine start to shutdown. A
+  // floor, not a feature: presence the dead-silent cockpit was missing.
+  {
+    const gain = c.createGain()
+    gain.gain.value = 0
+    const filter = c.createBiquadFilter()
+    filter.type = 'bandpass'
+    filter.frequency.value = 1400
+    filter.Q.value = 0.4
+    looper(noiseBuffer).connect(filter).connect(gain).connect(bus('aircraft'))
+    ecs = { gain }
+  }
+
   // Afterburner: heavy brown rumble.
   {
     const gain = c.createGain()
@@ -182,8 +227,44 @@ function build(): void {
     const filter = c.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = 160
-    source.connect(filter).connect(gain).connect(bus('engine'))
+    source.connect(filter).connect(gain).connect(plant)
     burner = { gain }
+  }
+
+  // The burner's EXTERNAL voice: the sputtering crackle that famously never
+  // reaches the cockpit — sparse pops over a rough floor, gated by reheat and
+  // the outside view.
+  {
+    const buffer = c.createBuffer(1, Math.floor(c.sampleRate * 2), c.sampleRate)
+    const d = buffer.getChannelData(0)
+    let low = 0
+    let pop = 0
+    for (let i = 0; i < d.length; i++) {
+      const white = Math.random() * 2 - 1
+      low = (low + 0.04 * white) / 1.04
+      if (Math.random() < 0.002) pop = 0.9 + Math.random() * 0.5
+      pop *= 0.995
+      d[i] = low * 1.6 + white * pop
+    }
+    const gain = c.createGain()
+    gain.gain.value = 0
+    const filter = c.createBiquadFilter()
+    filter.type = 'lowpass'
+    filter.frequency.value = 1600
+    looper(buffer).connect(filter).connect(gain).connect(plant)
+    crackle = { gain }
+  }
+
+  // Sea and wind over the deck: the parked carrier was silent.
+  {
+    const gain = c.createGain()
+    gain.gain.value = 0
+    const filter = c.createBiquadFilter()
+    filter.type = 'bandpass'
+    filter.frequency.value = 450
+    filter.Q.value = 0.5
+    looper(brownBuffer).connect(filter).connect(gain).connect(bus('environment'))
+    sea = { gain }
   }
 
   // The Sidewinder tone: a near-sine carrier amplitude-chopped by the reticle
@@ -360,13 +441,27 @@ async function bake(): Promise<void> {
   const decay = (i: number, rate: number, t: number) => Math.exp(-i / (rate * t))
 
   // M61 burr: 100 rounds/s — each round a 3 ms crack over a 140 Hz thump.
+  // The M61 from inside: at 6,000 rpm the repetition fuses into one deep
+  // tearing roar felt through the airframe — a 100 Hz pulse comb over heavy
+  // noise with a rumble riding it, not fifty countable pops.
   shots.gun = await render(0.5, (d, r) => {
-    for (let shot = 0; shot < 50; shot++) {
-      const at = Math.floor((shot / 100) * r)
-      for (let i = 0; i < r * 0.008 && at + i < d.length; i++) {
-        d[at + i] += (Math.random() * 2 - 1) * decay(i, r, 0.002) * 0.9
-        d[at + i] += Math.sin((i / r) * 2 * Math.PI * 140) * decay(i, r, 0.005) * 0.7
-      }
+    let low = 0
+    for (let i = 0; i < d.length; i++) {
+      const white = Math.random() * 2 - 1
+      low = (low + 0.06 * white) / 1.06
+      const comb = 0.55 + 0.45 * Math.max(0, Math.sin((i / r) * 2 * Math.PI * 100))
+      d[i] = (low * 2.6 + white * 0.35) * comb * 0.75 + Math.sin((i / r) * 2 * Math.PI * 100) * 0.18
+    }
+  })
+  // Trigger release: the rotary cluster winds down — a falling whir under a
+  // fading rumble.
+  shots.gunspin = await render(0.7, (d, r) => {
+    let phase = 0
+    for (let i = 0; i < d.length; i++) {
+      const f = 95 - 65 * (i / d.length)
+      phase += (2 * Math.PI * f) / r
+      const comb = 0.5 + 0.5 * Math.max(0, Math.sin(phase))
+      d[i] = ((Math.random() * 2 - 1) * 0.3 + Math.sin((i / r) * 2 * Math.PI * 55) * 0.25) * comb * decay(i, r, 0.35)
     }
   })
   // Rounds striking us: a metallic clank cluster.
@@ -426,11 +521,18 @@ async function bake(): Promise<void> {
     }
     clunk(2.3, 55, 1.1)
   })
-  // Trap: wire twang and a tyre-screech decaying under deceleration.
+  // Trap: from the cockpit an arrestment is deceleration — airframe groan in
+  // waves and a rattling tyre screech — not a wire's guitar string.
   shots.trap = await render(1.6, (d, r) => {
+    let low = 0
+    let phase = 0
     for (let i = 0; i < d.length; i++) {
-      d[i] += Math.sin((i / r) * 2 * Math.PI * (190 - 60 * (i / d.length))) * decay(i, r, 0.35) * 0.5
-      if (i < r * 1.1) d[i] += (Math.random() * 2 - 1) * (0.4 + 0.3 * Math.sin((i / r) * 2 * Math.PI * 13)) * decay(i, r, 0.4) * 0.5
+      const white = Math.random() * 2 - 1
+      low = (low + 0.05 * white) / 1.05
+      phase += (2 * Math.PI * (85 - 35 * (i / d.length))) / r
+      const groan = Math.sin(phase) * (0.55 + 0.45 * Math.sin((i / r) * 2 * Math.PI * 7.3))
+      d[i] = low * 3.0 * decay(i, r, 0.5) + groan * decay(i, r, 0.3) * 0.28
+      if (i < r * 1.1) d[i] += white * (0.3 + 0.25 * Math.sin((i / r) * 2 * Math.PI * 13)) * decay(i, r, 0.4) * 0.5
     }
   })
   // Touchdown: a thump and a tyre chirp.
@@ -445,6 +547,34 @@ async function bake(): Promise<void> {
     for (let i = 0; i < d.length; i++) {
       const f = 420 - 90 * (i / d.length)
       d[i] = (Math.sin((i / r) * 2 * Math.PI * f) + 0.3 * Math.sin((i / r) * 2 * Math.PI * f * 2.01)) * 0.09
+    }
+  })
+  // Gear cycle (#88): the hydraulic pump pulse repeated through the transit,
+  // the hard downlock thunk (played three times, staggered — nose and mains
+  // lock at different moments), and the softer double door thump that ends a
+  // retraction. Up and down genuinely differ in the real jet.
+  shots.pump = await render(0.55, (d, r) => {
+    for (let i = 0; i < d.length; i++) {
+      const env = Math.min(1, i / (r * 0.05)) * decay(i, r, 0.4)
+      const hum = Math.sin((i / r) * 2 * Math.PI * 84) * 0.5 + Math.sin((i / r) * 2 * Math.PI * 173) * 0.35
+      d[i] = (hum + (Math.random() * 2 - 1) * 0.22) * env * 0.24 // the transit pump was inaudible under the engine floor (#88 mix audit)
+    }
+  })
+  shots.lock = await render(0.28, (d, r) => {
+    let low = 0
+    for (let i = 0; i < d.length; i++) {
+      const white = Math.random() * 2 - 1
+      low = (low + 0.09 * white) / 1.09
+      d[i] = low * 5.2 * decay(i, r, 0.05) + Math.sin((i / r) * 2 * Math.PI * 62) * decay(i, r, 0.09) * 0.5
+    }
+  })
+  shots.door = await render(0.34, (d, r) => {
+    let low = 0
+    for (let i = 0; i < d.length; i++) {
+      const white = Math.random() * 2 - 1
+      low = (low + 0.07 * white) / 1.07
+      const second = i > r * 0.16 ? decay(i - r * 0.16, r, 0.05) : 0
+      d[i] = low * (2.6 * decay(i, r, 0.05) + 2.0 * second)
     }
   })
   // Ejection: canopy bang, rocket roar, wind tail.
@@ -501,7 +631,37 @@ async function bake(): Promise<void> {
 }
 
 // play a named one-shot at a volume, optionally lowpassed (distance dulling).
+// playAt: a one-shot with a POSITION — the panner contributes direction only
+// (rolloff zero), so the hand-shaped distance curves (#66) keep the loudness.
+function playAt(name: string, volume: number, x: number, y: number, z: number, lowpass?: number, delay?: number): void {
+  const log = (globalThis as any).dev_sounds
+  if (log) log.push(name)
+  if (!context || !master || !shots[name] || context.state !== 'running') return
+  const source = context.createBufferSource()
+  source.buffer = shots[name]
+  const gain = context.createGain()
+  gain.gain.value = volume
+  const panner = context.createPanner()
+  panner.panningModel = 'equalpower'
+  panner.distanceModel = 'inverse'
+  panner.refDistance = 100
+  panner.rolloffFactor = 0
+  panner.positionX.value = x
+  panner.positionY.value = y
+  panner.positionZ.value = z
+  const out = SHOT_BUS[name] ? bus(SHOT_BUS[name]) : (master as GainNode)
+  if (lowpass) {
+    const filter = context.createBiquadFilter()
+    filter.type = 'lowpass'
+    filter.frequency.value = lowpass
+    source.connect(filter).connect(gain).connect(panner).connect(out)
+  } else source.connect(gain).connect(panner).connect(out)
+  source.start(now() + (delay || 0))
+}
+
 function play(name: string, volume: number, lowpass?: number, delay?: number): void {
+  const log = (globalThis as any).dev_sounds
+  if (log) log.push(name) // armed by probes: headless Chrome never grants the user activation an AudioContext needs, so the intent is the testable surface
   if (!context || !master || !shots[name] || context.state !== 'running') return
   const source = context.createBufferSource()
   source.buffer = shots[name]
@@ -526,9 +686,17 @@ export function audio_frame(state: {
   speed: number // airspeed m/s
   alpha: number // deg
   wow: boolean
+  drag?: number // gear extension 0..1: the hung gear's rough wind roar (#88)
   burn: number // max fire intensity 0..1
   harm: [number, number] // per-engine thrust loss (dying engines fade and detune)
 }): void {
+  seaOn = state.wow && state.speed < 30
+  const running = state.spool > 0.05
+  if (running !== ecsOn) {
+    ecsOn = running
+    const log = (globalThis as any).dev_sounds
+    if (log) log.push(running ? 'ecs' : 'ecs-off') // the intent surface for headless probes, like play()
+  }
   if (!context || context.state !== 'running') return
   const t = now()
   for (let e = 0; e < 2; e++) {
@@ -546,23 +714,55 @@ export function audio_frame(state: {
   burner?.gain.gain.setTargetAtTime(0.5 * state.stage, t, smooth)
   if (wind) {
     const v = Math.min(1, state.speed / 320)
-    wind.filter.frequency.setTargetAtTime(200 + 2600 * v, t, smooth)
-    wind.gain.gain.setTargetAtTime(0.28 * v * v, t, smooth)
+    const rough = state.drag ?? 0 // hung gear: louder, lower, rougher airstream
+    wind.filter.frequency.setTargetAtTime((200 + 2600 * v) * (1 - 0.25 * rough), t, smooth)
+    wind.gain.gain.setTargetAtTime((0.28 + 0.4 * rough) * v * v, t, smooth)
   }
   buffet?.gain.gain.setTargetAtTime(Math.max(0, Math.min(1, (state.alpha - 14) / 12)) * 0.9, t, smooth)
+  ecs?.gain.gain.setTargetAtTime(ecsOn && !outsideView ? 0.045 + 0.02 * state.spool : 0, t, 1.2) // interior-only: the air-conditioning does not follow the camera outside
+  crackle?.gain.gain.setTargetAtTime(outsideView ? 0.5 * state.stage : 0, t, smooth)
+  sea?.gain.gain.setTargetAtTime(seaOn ? 0.06 : 0, t, 1.5)
   fire?.gain.gain.setTargetAtTime(0.7 * state.burn, t, smooth)
   deck?.gain.gain.setTargetAtTime(state.wow ? 0.12 : 0, t, 0.4)
 }
 
 // The gun loops while held: restartable half-second burr segments.
+// audio_view: chase and flypast hear the jet from OUTSIDE — the interior
+// balance fades, the exterior panner carries the plant from the airframe's
+// position (panned and distance-faded past a fixed flypast camera), the
+// burner crackles, and the ECS stays behind in the cockpit.
+export function audio_view(outside: boolean, x: number, y: number, z: number): void {
+  if (outside !== outsideView) {
+    outsideView = outside
+    const log = (globalThis as any).dev_sounds
+    if (log) log.push(outside ? 'outside' : 'inside')
+  }
+  if (!context || context.state !== 'running') return
+  const t = now()
+  interior?.gain.setTargetAtTime(outside ? 0 : 1, t, 0.15)
+  exterior?.gain.setTargetAtTime(outside ? 1 : 0, t, 0.15)
+  if (exteriorPan) {
+    exteriorPan.positionX.setTargetAtTime(x, t, smooth)
+    exteriorPan.positionY.setTargetAtTime(y, t, smooth)
+    exteriorPan.positionZ.setTargetAtTime(z, t, smooth)
+  }
+}
+
 export function audio_gun(firing: boolean): void {
+  if (firing !== gunFiring) {
+    gunFiring = firing
+    if (firing) {
+      const log = (globalThis as any).dev_sounds
+      if (log) log.push('gunloop')
+    } else play('gunspin', 0.5) // the cluster winds down on release
+  }
   if (!context || context.state !== 'running') return
   if (firing && !gunLoop && shots.gun) {
     gunLoop = context.createBufferSource()
     gunLoop.buffer = shots.gun
     gunLoop.loop = true
     const gain = context.createGain()
-    gain.gain.value = 0.6
+    gain.gain.value = 1.0 // the M61 dominates: it measured quieter than a caution beep (#88 mix audit)
     gunLoop.connect(gain).connect(bus('weapons'))
     gunLoop.start()
   } else if (!firing && gunLoop) {
@@ -579,33 +779,52 @@ export function audio_hit(count: number): void {
 // sharp CRACK and a felt thump through the airframe; by 600 m it is a dull
 // thud at the edge of the cockpit ambient, and beyond that nothing survives
 // canopy, engines and helmet. Sound is slow, so it arrives late.
-export function audio_explosion(distance: number): void {
+export function audio_explosion(distance: number, x?: number, y?: number, z?: number): void {
   if (distance > 700) return
   const range = Math.max(0, Math.min(1, 1 - distance / 700))
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
   // toward the raw buffer inside 150 m and dulls fast beyond it.
   const crack = Math.max(0, Math.min(1, 1 - distance / 150))
-  play('explosion', 0.3 + 0.7 * range * range, 500 + 7500 * crack + 2500 * range * range, distance / 343)
+  if (x !== undefined) playAt('explosion', 0.4 + 1.0 * range * range, x, y as number, z as number, 500 + 7500 * crack + 2500 * range * range, distance / 343)
+  else play('explosion', 0.4 + 1.0 * range * range, 500 + 7500 * crack + 2500 * range * range, distance / 343)
   if (crack > 0) play('hit', 0.5 * crack, undefined, distance / 343) // the blast overpressure felt through the structure, on the same channel as taking rounds
 }
 
 export function audio_launch(): void {
-  play('launch', 0.7)
+  play('launch', 1.0)
 }
 export function audio_flare(): void {
   play('flare', 0.35)
 }
 export function audio_catapult(): void {
-  play('catapult', 0.9)
+  play('catapult', 1.3) // the stroke measured 15 dB under the LAW beep — the most violent event in naval aviation was the quietest (#88 mix audit)
 }
 export function audio_trap(): void {
-  play('trap', 0.85)
+  play('trap', 1.1)
 }
 export function audio_touchdown(): void {
-  play('touchdown', 0.7)
+  play('touchdown', 0.85)
 }
 export function audio_servo(): void {
   play('servo', 0.5)
+}
+let pumpAt = -1
+// The transit's hydraulic pump, repeated horn-style while the gear travels.
+export function audio_gear(travel: boolean): void {
+  if (!travel) return
+  const t = context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
+  if (pumpAt < 0 || t - pumpAt > 0.48) {
+    pumpAt = t
+    play('pump', 0.9)
+  }
+}
+export function audio_gearlock(): void {
+  play('lock', 0.8)
+  play('lock', 0.7, undefined, 0.13)
+  play('lock', 0.75, undefined, 0.27) // nose and mains home at staggered moments
+}
+export function audio_geardoor(): void {
+  play('door', 1.1)
 }
 export function audio_eject(): void {
   play('eject', 1.0)
@@ -635,11 +854,13 @@ export function audio_departure(yawing: number, steady: boolean): void {
 // growl louder, higher and angrier as the shot improves, in both states.
 // audio_flyby (#80): an enemy round passing close without fusing. distance is
 // the closest approach in metres; a burning motor arrives louder and brighter.
-export function audio_flyby(distance: number, burning: boolean): void {
+export function audio_flyby(distance: number, burning: boolean, x?: number, y?: number, z?: number): void {
   const range = Math.max(0, Math.min(1, 1 - distance / 200))
   if (range <= 0) return
   const crack = Math.max(0, Math.min(1, 1 - distance / 60))
-  play('flyby', (0.25 + 0.75 * range * range) * (burning ? 1.25 : 1), 900 + 9000 * crack + 2000 * range, distance / 343)
+  const volume = (0.25 + 0.75 * range * range) * (burning ? 1.25 : 1)
+  if (x !== undefined) playAt('flyby', volume, x, y as number, z as number, 900 + 9000 * crack + 2000 * range, distance / 343)
+  else play('flyby', volume, 900 + 9000 * crack + 2000 * range, distance / 343)
 }
 
 export function audio_seeker(state: number, strength = 0): void {
@@ -723,10 +944,14 @@ interface Distant {
   gain: GainNode
   panner: PannerNode
   filter: BiquadFilterNode
+  range?: number
+  passAt?: number
 }
+const hearer = { x: 0, y: 0, z: 0 }
 const distants = new Map<string, Distant>()
 
 export function audio_remote(key: string, x: number, y: number, z: number, closure: number, reheat: boolean): void {
+  heat.set(key, reheat) // the ledger a probe can read: which contacts are audibly in reheat
   if (!context || !master || context.state !== 'running') return
   let d = distants.get(key)
   if (!d) {
@@ -752,12 +977,22 @@ export function audio_remote(key: string, x: number, y: number, z: number, closu
   d.panner.positionX.setTargetAtTime(x, t, smooth)
   d.panner.positionY.setTargetAtTime(y, t, smooth)
   d.panner.positionZ.setTargetAtTime(z, t, smooth)
+  // A close pass: the moment the range starts opening after closing inside
+  // 180 m at real closure, the passer gets the same near-pass roar a missile
+  // earned in #80 — the Doppler hum alone undersold a jet tearing past.
+  const range = Math.hypot(x - hearer.x, y - hearer.y, z - hearer.z)
+  if (d.range !== undefined && range > d.range && d.range < 180 && closure > 80 && t - (d.passAt ?? -9) > 5) {
+    d.passAt = t
+    audio_flyby(d.range, reheat, x, y, z)
+  }
+  d.range = range
   const doppler = Math.max(0.7, Math.min(1.3, 1 + closure / 343))
   d.filter.frequency.setTargetAtTime((reheat ? 900 : 600) * doppler, t, smooth)   // Doppler bends the roar's colour — noise has no pitch to bend
   d.gain.gain.setTargetAtTime(reheat ? 0.75 : 0.5, t, smooth)
 }
 
 export function audio_remote_drop(key: string): void {
+  heat.delete(key)
   const d = distants.get(key)
   if (!d) return
   d.gain.gain.value = 0
@@ -770,6 +1005,9 @@ export function audio_listener(x: number, y: number, z: number, fx: number, fy: 
   if (!context || context.state !== 'running') return
   const l = context.listener
   const t = now()
+  hearer.x = x
+  hearer.y = y
+  hearer.z = z
   if (l.positionX) {
     l.positionX.setTargetAtTime(x, t, smooth)
     l.positionY.setTargetAtTime(y, t, smooth)

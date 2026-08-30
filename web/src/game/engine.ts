@@ -30,7 +30,7 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -2685,7 +2685,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	if(m.enemy && !m.heard && m.flew>1){   // the near pass (#80): an enemy round crossing its distance minimum to the ownship close aboard is HEARD — the only cue a passive heater gives that it just missed
 		const fx=wrap_axis(m.px-ownship.pos.x), fy=m.py-ownship.pos.y, fz=wrap_axis(m.pz-ownship.pos.z);
 		const span=Math.hypot(fx,fy,fz);
-		if(m.neared!==undefined && span>m.neared && m.neared<200){ m.heard=true; audio_flyby(m.neared, m.burn>0); }
+		if(m.neared!==undefined && span>m.neared && m.neared<200){ m.heard=true; audio_flyby(m.neared, m.burn>0, m.px, m.py, m.pz); }
 		m.neared=m.neared===undefined?span:Math.min(m.neared,span); }
 	if(m.py<=0){ m.active=false; m.mesh.visible=false; post("ocean"); continue; }
 	if(m.burn>0){ m.smoke_acc+=dt; while(m.smoke_acc>0.02){ m.smoke_acc-=0.02; if(!trail_puff(m.px-m.vx*0.01,m.py-m.vy*0.01,m.pz-m.vz*0.01)) break; } }
@@ -3724,11 +3724,11 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
-		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
+		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; audio_servo(); notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
+		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; audio_servo(); notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
-		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
+		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
 		if(ch===key_of("dump")){ fuel_dump=!fuel_dump; notice("FUEL DUMP "+(fuel_dump?"ON":"OFF")); }   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")){ secured[0]=!secured[0]; notice(secured[0]?"L ENG SECURED":"L ENG RELIGHT"); }   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -4115,7 +4115,7 @@ let mission_done=false;   // SP: the crash ended the mission — the world holds
 let mission_zero=0;       // sim_time at mission start, for the outcome line's clock
 let on_over=null;         // app callback: the mission ended with a result
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
-const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
+const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:undefined as number|undefined};   // one-shot edge detection (#73)
 // Master caution/warning (#47): the caution set is built in the sim step, keyed
 // and view-independent; the tone, the glareshield lamp and the HUD stack all
 // read it. NATOPS 2.17.2.1: the tone fires on any new caution key, the light
@@ -4196,7 +4196,17 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
+if(DEV_MODE) (globalThis as any).dev_audio=function(){ return audio_state(); };   // dev (#88): the continuous voices' state — the transitions log to dev_sounds, the standing state reads here
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
+if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
+	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;
+	const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+	return { x:+ownship.pos.x.toFixed(1), z:+ownship.pos.z.toFixed(1), alt:+(ownship.pos.y*3.28084).toFixed(0), hdg:+hdg.toFixed(1), bank:+bank.toFixed(1),
+		kcas:+((ownship.cas??ownship.speed)*1.94384).toFixed(0), vy:+(ownship.vely??0).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),
+		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2),
+		grounded:!!ownship.grounded, trapped:!!ownship.trapped, crash:crash_t>0,
+		line:{ ax:+a.x.toFixed(1), az:+a.z.toFixed(1), bx:+b.x.toFixed(1), bz:+b.z.toFixed(1), deck:+(CARRIER.deckY||20).toFixed(1) } };
+};   // dev (#89): the navigation picture the scripted circuit/approach probes fly against — position, heading, bank, configuration, and the landing line's world geometry (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
@@ -4346,7 +4356,7 @@ function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ con
 	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
 	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
-	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
+	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z),x,y,z);   // the burst arrives from its direction (#88 audit)
 	const water=kind==="water"||(kind===undefined&&y<2); transient_blast(x,y,z,water);
 	// Two stages (#239): a fast-swelling fireball sooting into a slower dark
 	// cloud, plus shed wreckage on its own ballistic arcs. With the flipbook
@@ -4814,7 +4824,7 @@ function fly_player(dt){
 		if(has_enemy&&bandit.group.visible){ const rdx=bandit.pos.x-ownship.pos.x, rdy=bandit.pos.y-ownship.pos.y, rdz=bandit.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
-			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, false); }
+			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, (bandit.reheat??0)>0.3); }   // the bandit's roar carries its burner (#88 audit): its plume state is a core mechanic and it was hardcoded cold
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
 		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire"); }   // the fuel fire's fuse ran out
@@ -4829,12 +4839,19 @@ function fly_player(dt){
 	{ // audio (#73): continuous voices track the core; edges fire one-shots
 		const harmL=last_out?last_out[STATE.engine_harm]:0, harmR=last_out?last_out[STATE.engine_harm+1]:0;
 		audio_frame({ spool:ownship.spool||0, stage:ownship.stage||0, speed:ownship.speed||0, alpha:ownship.aoa||0,
-			wow:!!ownship.grounded, burn:Math.max(own_burn[0],own_burn[1],own_burning?1:0), harm:[harmL,harmR] });
+			wow:!!ownship.grounded, burn:Math.max(own_burn[0],own_burn[1],own_burning?1:0), harm:[harmL,harmR], drag:1-(ownship.gear??1) });
 		audio_gun(!!(input.guns&&!ownship.launching&&(ownship.gear??0)>0.98&&ownship.rounds>0));
+		audio_view(cfg.view==="chase"||cfg.view==="flypast", ownship.pos.x, ownship.pos.y, ownship.pos.z);   // outside views hear the jet from out there (#88 audit)
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
+		{ const gear=ownship.gear??1;   // retraction fraction: 1 stowed, 0 down and locked
+			if(audio_prev.gear!==undefined&&!ownship.grounded){
+				audio_gear(gear>0.03&&gear<0.97);   // the pump cycles for the whole transit, not the keypress (#88)
+				if(gear<=0.03&&audio_prev.gear>0.03) audio_gearlock();   // three staggered downlock thunks
+				if(gear>=0.97&&audio_prev.gear<0.97) audio_geardoor(); }   // the doors close over the stowed gear
+			audio_prev.gear=gear; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
 			const sink=-(ownship.vely??0);   // m/s down
 			// Gear down it is the 250 ft call — the descent is declared
