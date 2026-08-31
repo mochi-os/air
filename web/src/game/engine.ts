@@ -3608,8 +3608,26 @@ const HINT={
 	ball:"PADDLES calls the ball here; answer looking at the lens, then fly the ball all the way to touchdown",
 	wave:"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck",
 	bolt:"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind",
+	// The runway set (#91): field pattern coaching in the same voice. Numbers
+	// from the same doctrine family — HALF flap takeoff and FULL flap landing
+	// per NATOPS, the 600' field pattern, on-speed 8.1 alpha ashore as afloat.
+	// "Rotate at 140" rests on the measured minimum liftoff of 116-119 KCAS
+	// (TestRotateFlap): the model's rotation is tail-authority-limited and
+	// nearly weight-flat, so one honest number beats a fitted fiction.
+	lineup:"Half flaps, trim set; run up to military power, brakes off",
+	rotate:"Rotate at 140 knots: smoothly to 8° nose up",
+	cleanup:"Positive rate: gear up; flaps to auto passing 250 knots",
+	depart:"Climb out on runway heading at 350 knots",
+	initial:"Initial: over the runway at 800' and 350 knots",
+	downwind:"Roll out downwind, a mile abeam the runway",
+	dirty:"Below 250 knots: gear, full flaps; descend to 600' and slow to on-speed",
+	numbers:"Abeam the numbers at 600': bank 27-30°, start down at 200-300 FPM",
+	papi:"Final: the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point",
+	rollout:"Touchdown: throttle idle; hold the nose at 10° to aerobrake, lower it at 100 knots and brake",
+	around:"Go around: full power, boards in, wings level, climb straight ahead to 600'",
 };
 const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
+const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.ninety,HINT.papi,HINT.rollout,HINT.around];   // the field circuit (#91): re-armed by a go-around, so a touch-and-go session is coached every pattern
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
 // hull course, the downwind its reciprocal, and the groove the angled deck's
@@ -3638,12 +3656,51 @@ function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=
 	if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); for(const row of rows) log.push(String(row)); }   // the probes keep reading hints here, as they did when hints rode comm()
 }
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
-function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
+function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
+// The field's roll-out headings, from the airfield the map built — the #90
+// convention: three digits, as the brief reads them.
+function runway_heading(){ const ap=airports[0]; return ap?compass(ap.dir.x,ap.dir.z):"000°"; }
+function runway_reciprocal(){ const ap=airports[0]; return ap?compass(-ap.dir.x,-ap.dir.z):"000°"; }
+// hints_runway (#91): the field analogue of the carrier coaching below — the
+// same fuzzy windows against the runway's own frame. The takeoff set runs for
+// runway starts; the arrival set arms for any non-carrier mission inside 6 NM
+// of the field below 3,000', which is how a free flight practises circuits.
+function hints_runway(st){
+	const ap=airports[0]; if(!ap) return;
+	const rx=wrap_axis(ownship.pos.x-ap.start.x), rz=wrap_axis(ownship.pos.z-ap.start.z);
+	const hx=ap.dir.x, hz=ap.dir.z;
+	const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz), range=Math.hypot(rx,rz);
+	const feet=(ownship.pos.y-ap.sy)*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
+	const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the runway, -1 downwind
+	if(on_ground()){
+		if(hinted[HINT.papi]&&ownship.speed>35){ hint(HINT.rollout); return; }
+		if(st!=="runway"||hinted[HINT.rollout]) return;
+		if(ownship.speed<4&&over_runway(ownship.pos)) hint(HINT.lineup,"Runway "+runway_heading()+": half flaps, trim set; run up to military power, brakes off");
+		if(hinted[HINT.lineup]&&kt>110) hint(HINT.rotate);
+		return;
+	}
+	if(hinted[HINT.rotate]&&!hinted[HINT.cleanup]&&feet>40) hint(HINT.cleanup);
+	if(hinted[HINT.cleanup]&&kt>280) hint(HINT.depart,"Climb out on runway heading "+runway_heading()+" at 350 knots");
+	// The go-around: power back on, low and slow in the landing configuration —
+	// and the circuit re-arms so the next pattern is coached again.
+	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around); runway_recoach(); return; }
+	if(range>6*1852||feet>3000) return;
+	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
+	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
+	if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
+	if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.dirty);
+	if(hinted[HINT.dirty]&&down) hint(HINT.donut);
+	if(down&&fdot<-0.5&&along<300&&along>-1800&&lateral>900&&lateral<3200) hint(HINT.numbers);
+	if(hinted[HINT.numbers]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
+	if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.papi,"Final: runway heading "+runway_heading()+"; the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point");
+}
+function hints_watch(){ if(cfg.hints===false||!running) return;
 	const st=mission_start();
-	if(st!=="case1"&&st!=="case2"&&st!=="case3") return;
+	if(st!=="case1"&&st!=="case2"&&st!=="case3"){ hints_runway(st); return; }
+	if(on_ground()) return;
 	const rx=wrap_axis(ownship.pos.x-CARRIER.x), rz=wrap_axis(ownship.pos.z-CARRIER.z);
 	const range=Math.hypot(rx,rz);
-	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)>0.5;
+	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
 	if(st==="case1"){
 		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
 		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
@@ -4390,6 +4447,8 @@ if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition
 	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
 if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownship,null); };   // #83: audition the motor trail — a ballistic 9M off the rail
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
+if(DEV_MODE) (globalThis as any).dev_place=function(x,y,z,dx,dz,speed){ flight_level(+x,+y,+z,+dx,+dz,+speed,(ownship.fuel??2450)); };   // #91 probe: relocate to a pattern station in trimmed level flight
+if(DEV_MODE) (globalThis as any).dev_field=function(){ const ap=airports[0]; return ap?{x:ap.start.x,y:ap.sy,z:ap.start.z,dx:ap.dir.x,dz:ap.dir.z}:null; };   // #91 probe: the airfield frame the runway hints fly against
 const spawn_report={burst:0,soot:0};   // cumulative explosion spawn counts — the pool total also carries debris micro-trail wisps (~60/s after a burst), so sequencing is only measurable from exact counters (#92)
 if(DEV_MODE) (globalThis as any).dev_spawns=function(){ return {...spawn_report}; };
 const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
