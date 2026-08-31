@@ -4349,10 +4349,14 @@ function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 		for(let i=0;i<2;i++){ const mesh=new THREE.Mesh(boom_geo,boom_material(t));
 			const size=(i?15:11)+Math.random()*4; mesh.position.set(x,y+1,z); mesh.scale.setScalar(size); scene.add(mesh);
 			transient_fx.push({mesh,age:0,life:i?1.15:.9,boom:true,size,roll:Math.random()*Math.PI*2,stagger:i?-1.5:0}); } }); }
-function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life;
+function update_transient_fx(dt){
+	for(let i=soot_queue.length-1;i>=0;i--) if(sim_time>=soot_queue[i].at){ const q=soot_queue.splice(i,1)[0]; soot_burst(q.x,q.y,q.z); }
+	for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life;
 	if(t>=1){ if(f.mesh){ scene.remove(f.mesh); f.mesh.material.dispose(); if(!f.boom) f.mesh.geometry.dispose(); } if(f.light) scene.remove(f.light); transient_fx.splice(i,1); continue; }
 	if(f.boom){ f.mesh.material.uniforms.frame.value=Math.max(0,t*25+(f.stagger||0)); f.mesh.material.uniforms.fade.value=t>.75?(1-t)*4:1;
-		f.mesh.scale.setScalar(f.size*(1+.5*t)); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
+		const reach=camera.position.distanceTo(f.mesh.position);
+		const least=Math.min(reach,4000)*0.0227;   // never under ~1.3° of sky out to 4 km: a kill reads as a fireball, not a dot (#92) — the close audition is untouched, and past 4 km it shrinks honestly
+		f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),least)); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
 	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
 	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
@@ -4364,7 +4368,10 @@ function explosion_at(x,y,z,kind){
 	// parallax a flat card cannot give; low quality has no flipbook and keeps
 	// the full count.
 	const nf=(water||(cfg.effects_quality??2)<1)?14:5;
-	for(let i=0;i<nf+22;i++){ const k=pool_spawn(smoke); if(k<0) break;
+	const burst=water?nf+22:nf;   // an air burst's soot arrives LATE (soot_burst): spawned with the fireball, 22 synchronized dark billboards curtained the flipbook for its entire second (#92)
+	if(!water) soot_queue.push({x,y,z,at:sim_time+0.7});
+	for(let i=0;i<burst;i++){ const k=pool_spawn(smoke); if(k<0) break;
+	spawn_report.burst++;
 	const fire=i<nf, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
 	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
@@ -4383,6 +4390,19 @@ if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition
 	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
 if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownship,null); };   // #83: audition the motor trail — a ballistic 9M off the rail
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
+const spawn_report={burst:0,soot:0};   // cumulative explosion spawn counts — the pool total also carries debris micro-trail wisps (~60/s after a burst), so sequencing is only measurable from exact counters (#92)
+if(DEV_MODE) (globalThis as any).dev_spawns=function(){ return {...spawn_report}; };
+const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
+function soot_burst(x,y,z){
+	for(let i=0;i<9;i++){ const k=pool_spawn(smoke); if(k<0) break;
+		spawn_report.soot++;
+		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=2+Math.random()*10;
+		smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
+		smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.7+4; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
+		smoke.ttl[k]=smoke.life[k]=3.0+Math.random()*3.5;
+		smoke.sz[k]=0.3+Math.random()*0.4; smoke.gr[k]=0.45+Math.random()*0.35;   // a drifting smudge in mixed tones and sizes, not a synchronized cauliflower
+		const tone=0.10+Math.random()*0.12;
+		smoke.r[k]=tone*1.1; smoke.g[k]=tone; smoke.b[k]=tone*0.95; } }
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
