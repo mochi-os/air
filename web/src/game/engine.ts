@@ -4449,6 +4449,8 @@ if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownsh
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
 if(DEV_MODE) (globalThis as any).dev_place=function(x,y,z,dx,dz,speed){ flight_level(+x,+y,+z,+dx,+dz,+speed,(ownship.fuel??2450)); };   // #91 probe: relocate to a pattern station in trimmed level flight
 if(DEV_MODE) (globalThis as any).dev_field=function(){ const ap=airports[0]; return ap?{x:ap.start.x,y:ap.sy,z:ap.start.z,dx:ap.dir.x,dz:ap.dir.z}:null; };   // #91 probe: the airfield frame the runway hints fly against
+let paint_force=-1;   // #102: -1 = the brain's own radar; 0/1/2 force the SP bandit's emitter, so RWR/jammer cockpit-truth probes stop depending on when the doctrine chooses to lock
+if(DEV_MODE) (globalThis as any).dev_paint=function(mode){ paint_force=[0,1,2].includes(+mode)?+mode:-1; return paint_force; };
 const spawn_report={burst:0,soot:0};   // cumulative explosion spawn counts — the pool total also carries debris micro-trail wisps (~60/s after a burst), so sequencing is only measurable from exact counters (#92)
 if(DEV_MODE) (globalThis as any).dev_spawns=function(){ return {...spawn_report}; };
 const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
@@ -6330,7 +6332,8 @@ function radar_step(dt){ if(!running) return;
 		else{   // geometry-derived fallback: a wasm core from before the report
 		const dx=wrap_axis(ownship.pos.x-bandit.pos.x), dy=ownship.pos.y-bandit.pos.y, dz=wrap_axis(ownship.pos.z-bandit.pos.z);
 		const d=Math.hypot(dx,dy,dz)||1;
-		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } } }
+		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; }
+		if(paint_force>=0) bandit_emitter=paint_force; } }   // #102: the forced emitter, so cockpit-truth probes are decoupled from doctrine timing (dev-only; -1 in normal play)
 // ---- RWR (#28): the receiving end of every emitter #30 created. The builder
 // applies the one rule the model cannot see - an STT on someone else is
 // excluded - and the model does the periodic-paint listening. Audio: one chirp
