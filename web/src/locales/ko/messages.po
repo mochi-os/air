@@ -46,7 +46,7 @@ msgid "{0} created “{1}”"
 msgstr "{0}님이 “{1}”을(를) 만들었습니다"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:339
+#: src/components/Multiplayer.tsx:342
 msgid "{0} flying"
 msgstr "{0}명 비행 중"
 
@@ -62,24 +62,24 @@ msgstr "최대 발진 중량 {0} lb 초과"
 
 #. placeholder {0}: ordered.length
 #. placeholder {1}: matches.length
-#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:333
 msgid "{0} of {1} flights"
 msgstr "{1}회 중 {0}회 비행"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:779
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0}은(는) 이미 사용 중이어서 해당 조작의 할당이 해제되었습니다."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:771
+#: src/components/SettingsDialog.tsx:775
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0}은(는) {1}에 있었으며 이제 할당이 해제되었습니다."
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:570
+#: src/components/Multiplayer.tsx:582
 msgid "{0}/{1} players"
 msgstr "{0}/{1}명"
 
@@ -107,7 +107,7 @@ msgstr "{entityLabel} 이름"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} 이름은 필수입니다"
 
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}의 매치"
 
@@ -115,7 +115,7 @@ msgstr "{name}의 매치"
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName}이(가) 무승부를 제안했습니다"
 
-#: src/components/Multiplayer.tsx:532
+#: src/components/Multiplayer.tsx:544
 msgid "{placed} of {limit} bots"
 msgstr "봇 {limit}대 중 {placed}대"
 
@@ -195,17 +195,17 @@ msgstr "계정 유형"
 
 #: src/components/MissionSetup.tsx:1026
 #: src/components/MissionSetup.tsx:1193
-#: src/components/Multiplayer.tsx:505
+#: src/components/Multiplayer.tsx:517
 msgid "Ace"
 msgstr "에이스"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquire target"
 msgstr "표적 획득"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Acquisition mode"
 msgstr "포착 모드"
 
@@ -283,7 +283,7 @@ msgstr "뷰 추가"
 msgid "Adding..."
 msgstr "추가 중..."
 
-#: src/components/SettingsDialog.tsx:1007
+#: src/components/SettingsDialog.tsx:1011
 msgid "Afterburner"
 msgstr "애프터버너"
 
@@ -303,11 +303,11 @@ msgstr "항공모함 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "항공기 모델 <0>“F/A-18C Hornet”</0>, 제작 <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2>에 따라 라이선스됨. 수정됨: 방향 재정렬 및 크기 재조정, 사용하지 않는 텍스처 데이터 제거, 외부 장착물을 별도 파일로 분리, 슈라우드 메시 하나를 미러링."
 
-#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:298
 msgid "All modes"
 msgstr "모든 모드"
 
-#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:315
 msgid "All servers"
 msgstr "모든 서버"
 
@@ -328,7 +328,7 @@ msgstr "오류가 발생했습니다"
 msgid "An unexpected error occurred"
 msgstr "예기치 않은 오류가 발생했습니다"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Anchored sides"
 msgstr "고정 진영"
 
@@ -349,8 +349,8 @@ msgstr "로그인한 모든 사람"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "이 피드를 구독 중인 모든 것이 수신을 중단합니다. 이후에 새 URL을 복사할 수 있습니다."
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:234
 msgid "Approach power (ATC)"
 msgstr "접근 출력 (ATC)"
 
@@ -375,8 +375,8 @@ msgstr "이 댓글을 삭제할까요? 모든 답글도 함께 삭제돼요."
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "로그아웃할까요? 계정에 다시 접근하려면 다시 로그인해야 해요."
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:233
 msgid "Arrestor hook"
 msgstr "어레스팅 후크"
 
@@ -417,12 +417,12 @@ msgstr "아바타"
 msgid "Avatar for {name}"
 msgstr "{name}의 아바타"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:479
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:483
 msgid "Axis {i}"
 msgstr "축 {i}"
 
-#: src/components/SettingsDialog.tsx:428
+#: src/components/SettingsDialog.tsx:432
 msgid "Axis calibration and mapping"
 msgstr "축 보정 및 매핑"
 
@@ -468,7 +468,7 @@ msgstr "최적 활공 (엔진 정지)"
 msgid "Best sustained turn speed"
 msgstr "최적 지속 선회 속도"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:600
 msgid "Betty and RWR alerts"
 msgstr "Betty 및 RWR 경보"
 
@@ -490,11 +490,11 @@ msgstr "신뢰할 수 없는 링크로의 이동이 차단되었어요"
 msgid "Blocks"
 msgstr "차단"
 
-#: src/components/Multiplayer.tsx:622
+#: src/components/Multiplayer.tsx:634
 msgid "Blue"
 msgstr "파랑"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Blue bots"
 msgstr "파랑 봇"
 
@@ -515,7 +515,7 @@ msgstr "관심도 부스트"
 msgid "Border colour"
 msgstr "테두리 색상"
 
-#: src/components/Multiplayer.tsx:482
+#: src/components/Multiplayer.tsx:494
 msgid "Bots"
 msgstr "봇"
 
@@ -539,16 +539,16 @@ msgstr "준비되면 브레이크"
 msgid "Browser notifications"
 msgstr "브라우저 알림"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:555
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:559
 msgid "Button {i}"
 msgstr "버튼 {i}"
 
-#: src/components/SettingsDialog.tsx:520
+#: src/components/SettingsDialog.tsx:524
 msgid "Button mappings"
 msgstr "버튼 매핑"
 
-#: src/components/Multiplayer.tsx:432
+#: src/components/Multiplayer.tsx:444
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — 시작부터 무기 자유"
 
@@ -560,16 +560,16 @@ msgstr "BVR, 시작부터 무기 자유"
 msgid "CALL THE BALL"
 msgstr "볼 콜"
 
-#: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1059
+#: src/components/Multiplayer.tsx:326
+#: src/components/SettingsDialog.tsx:1063
 msgid "Callsign"
 msgstr "콜사인"
 
-#: src/components/SettingsDialog.tsx:857
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera distance"
 msgstr "카메라 거리"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Camera unavailable"
 msgstr "카메라를 사용할 수 없음"
 
@@ -588,9 +588,9 @@ msgstr "카메라를 사용할 수 없음"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:549
-#: src/components/Multiplayer.tsx:294
-#: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:821
+#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:611
+#: src/components/SettingsDialog.tsx:825
 msgid "Cancel"
 msgstr "취소"
 
@@ -602,11 +602,11 @@ msgstr "댓글 취소"
 msgid "Cancel reply"
 msgstr "답글 취소"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:598
 msgid "Cannons and ordnance"
 msgstr "기관포 및 탄약"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Canopy"
 msgstr "캐노피"
 
@@ -615,7 +615,7 @@ msgstr "캐노피"
 msgid "Caption"
 msgstr "캡션"
 
-#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:599
 msgid "Carrier and ambient"
 msgstr "항공모함 및 환경음"
 
@@ -672,17 +672,17 @@ msgstr "추적 시점:"
 msgid "chat"
 msgstr "채팅"
 
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:247
 msgid "Chat"
 msgstr "채팅"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:248
 msgid "Chat to everyone"
 msgstr "전체 채팅"
 
-#: src/components/MatchLog.tsx:365
+#: src/components/MatchLog.tsx:370
 #: src/components/MissionSetup.tsx:1115
-#: src/components/Multiplayer.tsx:446
+#: src/components/Multiplayer.tsx:458
 msgid "Cheats"
 msgstr "치트"
 
@@ -698,8 +698,8 @@ msgstr "체크리스트"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "사이드바에서 게임을 선택하거나 새로 시작하세요."
 
-#: ../../../lib/web/src/components/language-picker.tsx:264
-#: ../../../lib/web/src/components/language-picker.tsx:271
+#: ../../../lib/web/src/components/language-picker.tsx:267
+#: ../../../lib/web/src/components/language-picker.tsx:274
 msgid "Choose language"
 msgstr "언어 선택"
 
@@ -709,10 +709,10 @@ msgstr "언어 선택"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/MatchLog.tsx:323
-#: src/components/MatchLog.tsx:379
-#: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:686
+#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:384
+#: src/components/Multiplayer.tsx:396
+#: src/components/SettingsDialog.tsx:690
 msgid "Clear"
 msgstr "지우기"
 
@@ -849,7 +849,7 @@ msgstr "연결됨"
 msgid "Connecting..."
 msgstr "연결 중..."
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:345
 msgid "Connecting…"
 msgstr "연결 중…"
 
@@ -870,7 +870,7 @@ msgid "Contextual information and details."
 msgstr "맥락 정보 및 세부 사항."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:306
 msgid "Continue"
 msgstr "계속"
 
@@ -894,11 +894,11 @@ msgstr "복사"
 msgid "Corner speed (best instant turn)"
 msgstr "코너 속도 (최적 순간 선회)"
 
-#: src/components/MatchLog.tsx:483
+#: src/components/MatchLog.tsx:488
 msgid "Could not change the recording"
 msgstr "기록을 변경할 수 없습니다"
 
-#: src/components/Multiplayer.tsx:250
+#: src/components/Multiplayer.tsx:253
 msgid "Could not create the match"
 msgstr "매치를 만들지 못했습니다"
 
@@ -906,16 +906,16 @@ msgstr "매치를 만들지 못했습니다"
 msgid "Could not load this document. Please try again later."
 msgstr "이 문서를 불러올 수 없었습니다. 잠시 후 다시 시도해 주세요."
 
-#: src/components/MatchLog.tsx:168
+#: src/components/MatchLog.tsx:173
 msgid "Could not load your flights"
 msgstr "비행을 불러올 수 없습니다"
 
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:298
 msgid "Could not save the profile"
 msgstr "프로필을 저장할 수 없습니다"
 
-#: src/components/MatchLog.tsx:430
-#: src/components/MatchLog.tsx:436
+#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:441
 msgid "Could not save the recording"
 msgstr "기록을 저장하지 못했습니다"
 
@@ -939,8 +939,8 @@ msgstr "재인증을 시작할 수 없습니다. 다시 시도해 주세요."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "해당 계정으로 인증하지 못했습니다. 다시 시도해 주세요."
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Countermeasures"
 msgstr "대응 수단"
 
@@ -965,11 +965,11 @@ msgstr "생성"
 msgid "Create {0}"
 msgstr "{0} 만들기"
 
-#: src/components/Multiplayer.tsx:542
+#: src/components/Multiplayer.tsx:554
 msgid "Create and fly"
 msgstr "만들고 출격"
 
-#: src/components/Multiplayer.tsx:357
+#: src/components/Multiplayer.tsx:369
 msgid "Create match"
 msgstr "매치 만들기"
 
@@ -999,7 +999,7 @@ msgstr "크레딧"
 
 #: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:397
 msgid "Cumulus"
 msgstr "적운"
 
@@ -1015,8 +1015,8 @@ msgstr "사용자 지정"
 msgid "CUT"
 msgstr "위험"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:241
 msgid "Cycle view"
 msgstr "시점 전환"
 
@@ -1029,17 +1029,17 @@ msgid "Data conflict"
 msgstr "데이터 충돌"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchLog.tsx:341
+#: src/components/MatchLog.tsx:346
 msgid "Date"
 msgstr "날짜"
 
 #: src/components/MissionSetup.tsx:1088
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:392
 msgid "Day"
 msgstr "낮"
 
-#: src/components/MatchLog.tsx:274
-#: src/components/MatchLog.tsx:359
+#: src/components/MatchLog.tsx:279
+#: src/components/MatchLog.tsx:364
 msgid "Deaths"
 msgstr "데스"
 
@@ -1121,7 +1121,7 @@ msgstr "설명"
 msgid "Destroyed by fire"
 msgstr "화재로 파괴됨"
 
-#: src/components/SettingsDialog.tsx:932
+#: src/components/SettingsDialog.tsx:936
 msgid "Detail"
 msgstr "디테일"
 
@@ -1129,12 +1129,12 @@ msgstr "디테일"
 msgid "Details Panel"
 msgstr "세부 정보 패널"
 
-#: src/components/SettingsDialog.tsx:508
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:576
 msgid "Detect"
 msgstr "감지"
 
-#: ../../../lib/web/src/components/language-picker.tsx:240
+#: ../../../lib/web/src/components/language-picker.tsx:243
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
 #: ../../../lib/web/src/lib/preference-utils.ts:23
@@ -1145,7 +1145,7 @@ msgstr "감지"
 msgid "Detect from web browser"
 msgstr "웹 브라우저에서 감지"
 
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:286
 msgid "Different game host"
 msgstr "다른 게임 호스트"
 
@@ -1165,25 +1165,25 @@ msgstr "버리기"
 msgid "Discard draft?"
 msgstr "초안을 버릴까요?"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "disconnected"
 msgstr "연결 끊김"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:155
+#: src/components/MatchLog.tsx:160
 msgid "Disconnected"
 msgstr "연결 끊김"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:781
+#: src/components/SettingsDialog.tsx:785
 msgid "Dismiss"
 msgstr "닫기"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:243
 msgid "Display repeater"
 msgstr "디스플레이 리피터"
 
@@ -1191,13 +1191,13 @@ msgstr "디스플레이 리피터"
 msgid "Displays the mobile sidebar."
 msgstr "모바일 사이드바를 표시해요."
 
-#: src/components/SettingsDialog.tsx:993
+#: src/components/SettingsDialog.tsx:997
 msgid "Distance LOD"
 msgstr "거리 LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1167
 msgid "Done"
 msgstr "완료"
 
@@ -1219,7 +1219,7 @@ msgstr "다운윈드 600피트"
 msgid "Drag"
 msgstr "드래그"
 
-#: src/components/Multiplayer.tsx:502
+#: src/components/Multiplayer.tsx:514
 msgid "Drone"
 msgstr "드론"
 
@@ -1227,11 +1227,11 @@ msgstr "드론"
 msgid "Duplicates"
 msgstr "중복"
 
-#: src/components/MatchLog.tsx:344
+#: src/components/MatchLog.tsx:349
 msgid "Duration"
 msgstr "기간"
 
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Dynamic resolution"
 msgstr "동적 해상도"
 
@@ -1282,15 +1282,15 @@ msgstr "선택한 카드 편집"
 msgid "Edit view"
 msgstr "뷰 편집"
 
-#: src/components/SettingsDialog.tsx:978
+#: src/components/SettingsDialog.tsx:982
 msgid "Effects"
 msgstr "효과"
 
-#: src/components/SettingsDialog.tsx:956
+#: src/components/SettingsDialog.tsx:960
 msgid "Effects detail"
 msgstr "효과 상세"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:240
 msgid "Eject"
 msgstr "사출"
 
@@ -1310,12 +1310,12 @@ msgstr "이메일 코드"
 msgid "EMERG JETT"
 msgstr "비상 투하"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Emergency jettison (hold)"
 msgstr "비상 투하(길게 누름)"
 
-#: src/components/Multiplayer.tsx:569
+#: src/components/Multiplayer.tsx:581
 msgid "empty"
 msgstr "비어 있음"
 
@@ -1324,7 +1324,7 @@ msgstr "비어 있음"
 msgid "Empty pylon"
 msgstr "빈 파일런"
 
-#: src/components/SettingsDialog.tsx:612
+#: src/components/SettingsDialog.tsx:616
 msgid "Enable sound"
 msgstr "소리 켜기"
 
@@ -1336,7 +1336,7 @@ msgstr "교전 개시"
 msgid "Engagement"
 msgstr "교전"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Engine and afterburner"
 msgstr "엔진 및 애프터버너"
 
@@ -1375,16 +1375,16 @@ msgstr "사이드바 펼치기"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "폭발 애니메이션 <0>“Explosion02HD”</0>, 제작 <1>Unity Technologies</1>(Unity Labs VFX 이미지 시퀀스), <2>CC0</2>로 공개. 수정: 웹용으로 재압축."
 
-#: src/components/SettingsDialog.tsx:412
+#: src/components/SettingsDialog.tsx:416
 msgid "Export"
 msgstr "내보내기"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Extend flaps"
 msgstr "플랩 전개"
 
-#: src/components/SettingsDialog.tsx:948
+#: src/components/SettingsDialog.tsx:952
 msgid "Exterior detail"
 msgstr "외부 디테일"
 
@@ -1480,7 +1480,7 @@ msgstr "파일"
 msgid "Finish moving your account"
 msgstr "계정 이전 완료"
 
-#: src/components/MatchLog.tsx:156
+#: src/components/MatchLog.tsx:161
 msgid "Finished"
 msgstr "종료"
 
@@ -1488,12 +1488,12 @@ msgstr "종료"
 msgid "fire"
 msgstr "발사"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Fire weapon"
 msgstr "무기 발사"
 
-#: src/components/SettingsDialog.tsx:849
+#: src/components/SettingsDialog.tsx:853
 msgid "Fixed flight keys"
 msgstr "고정 비행 키"
 
@@ -1533,7 +1533,7 @@ msgstr "비행"
 msgid "FLIGHT CORE FAILED"
 msgstr "비행 코어 실패"
 
-#: src/components/SettingsDialog.tsx:1101
+#: src/components/SettingsDialog.tsx:1105
 msgid "Flight hints"
 msgstr "비행 힌트"
 
@@ -1541,11 +1541,11 @@ msgstr "비행 힌트"
 msgid "Flight log"
 msgstr "비행 일지"
 
-#: src/components/MatchLog.tsx:265
+#: src/components/MatchLog.tsx:270
 msgid "Flights"
 msgstr "비행 수"
 
-#: src/components/MatchLog.tsx:157
+#: src/components/MatchLog.tsx:162
 msgid "Flown"
 msgstr "비행"
 
@@ -1558,11 +1558,11 @@ msgstr "비행"
 msgid "Fly again"
 msgstr "다시 비행하기"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1025
 msgid "Framerate counter"
 msgstr "프레임 카운터"
 
-#: src/components/MatchLog.tsx:148
+#: src/components/MatchLog.tsx:153
 #: src/components/MissionSetup.tsx:995
 msgid "Free flight"
 msgstr "자유 비행"
@@ -1587,7 +1587,7 @@ msgstr "보낸이"
 msgid "From theme"
 msgstr "테마에서"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "Fuel"
 msgstr "연료"
 
@@ -1607,7 +1607,7 @@ msgstr "연료 누출"
 msgid "FUEL LO"
 msgstr "연료 부족"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "Fuel probe"
 msgstr "급유 프로브"
 
@@ -1615,7 +1615,7 @@ msgstr "급유 프로브"
 msgid "Fuel tank"
 msgstr "연료 탱크"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/MatchLog.tsx:150
 msgid "Furball"
 msgstr "난투"
 
@@ -1624,7 +1624,7 @@ msgstr "난투"
 msgid "Fuselage"
 msgstr "동체"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Gain"
 msgstr "게인"
 
@@ -1636,7 +1636,7 @@ msgstr "기어"
 msgid "GEAR"
 msgstr "기어"
 
-#: src/components/SettingsDialog.tsx:1172
+#: src/components/SettingsDialog.tsx:1176
 msgid "General"
 msgstr "일반"
 
@@ -1645,11 +1645,11 @@ msgstr "일반"
 msgid "Go back"
 msgstr "뒤로"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1180
 msgid "Graphics"
 msgstr "그래픽"
 
-#: src/components/SettingsDialog.tsx:908
+#: src/components/SettingsDialog.tsx:912
 msgid "Graphics preset"
 msgstr "그래픽 프리셋"
 
@@ -1679,7 +1679,7 @@ msgid "Gun only"
 msgstr "기관포만"
 
 #: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:414
 msgid "Guns only"
 msgstr "기관포만"
 
@@ -1687,25 +1687,25 @@ msgstr "기관포만"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "하드웨어 그래픽 가속이 꺼져 있습니다 — 브라우저 설정이나 그래픽 드라이버를 확인하세요."
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head"
 msgstr "헤드"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head tracking"
 msgstr "헤드 트래킹"
 
-#: src/components/SettingsDialog.tsx:899
+#: src/components/SettingsDialog.tsx:903
 msgid "High"
 msgstr "높음"
 
 #: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:398
 msgid "High stratus"
 msgstr "높은 층운"
 
-#: src/components/SettingsDialog.tsx:1092
+#: src/components/SettingsDialog.tsx:1096
 msgid "Hints"
 msgstr "힌트"
 
@@ -1732,11 +1732,11 @@ msgstr "훅"
 msgid "Hot"
 msgstr "인기"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "HUD altitude source"
 msgstr "HUD 고도 소스"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "HUD declutter"
 msgstr "HUD 간소화"
 
@@ -1753,7 +1753,7 @@ msgstr "이미지 뷰어: {0}"
 msgid "Imperial"
 msgstr "야드파운드법"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:420
 msgid "Import"
 msgstr "가져오기"
 
@@ -1774,7 +1774,7 @@ msgstr "이니셜 아바타"
 msgid "Initials avatar for {name}"
 msgstr "{name}의 이니셜 아바타"
 
-#: src/components/SettingsDialog.tsx:372
+#: src/components/SettingsDialog.tsx:376
 msgid "Input hardware"
 msgstr "입력 장치"
 
@@ -1800,7 +1800,7 @@ msgid "INVULNERABLE"
 msgstr "무적"
 
 #: src/components/MissionSetup.tsx:1121
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:467
 msgid "Invulnerable (human players only)"
 msgstr "무적 (인간 플레이어만)"
 
@@ -1808,13 +1808,13 @@ msgstr "무적 (인간 플레이어만)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "찾으시는 페이지가 <0/>존재하지 않거나 삭제된 것 같아요."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Jammer"
 msgstr "재머"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Jettison tanks"
 msgstr "탱크 투하"
 
@@ -1822,7 +1822,7 @@ msgstr "탱크 투하"
 msgid "JETTISON: GEAR"
 msgstr "투하: 착륙장치"
 
-#: src/components/Multiplayer.tsx:634
+#: src/components/Multiplayer.tsx:646
 msgid "Join"
 msgstr "참가하기"
 
@@ -1835,13 +1835,13 @@ msgstr "서버 참가"
 msgid "JOINED"
 msgstr "참가"
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:151
 #: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Joust"
 msgstr "정면 대결"
 
-#: src/components/Multiplayer.tsx:371
+#: src/components/Multiplayer.tsx:383
 msgid "Joust — 1v1, first kill wins"
 msgstr "결투 — 1v1, 먼저 격추하면 승리"
 
@@ -1849,7 +1849,7 @@ msgstr "결투 — 1v1, 먼저 격추하면 승리"
 msgid "Joust against bot"
 msgstr "결투 봇 상대"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1188
 msgid "Joystick"
 msgstr "조이스틱"
 
@@ -1857,7 +1857,7 @@ msgstr "조이스틱"
 msgid "Just now"
 msgstr "방금"
 
-#: src/components/MatchLog.tsx:277
+#: src/components/MatchLog.tsx:282
 msgid "K/D"
 msgstr "K/D"
 
@@ -1865,7 +1865,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "키보드 단축키"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1192
 msgid "Keys"
 msgstr "키"
 
@@ -1873,12 +1873,12 @@ msgstr "키"
 msgid "KILL"
 msgstr "격추"
 
-#: src/components/MatchLog.tsx:159
+#: src/components/MatchLog.tsx:164
 msgid "Killed"
 msgstr "피격추"
 
-#: src/components/MatchLog.tsx:271
-#: src/components/MatchLog.tsx:356
+#: src/components/MatchLog.tsx:276
+#: src/components/MatchLog.tsx:361
 msgid "Kills"
 msgstr "격추"
 
@@ -1894,8 +1894,8 @@ msgstr "좌 엔진 화재"
 msgid "L GEAR"
 msgstr "좌 기어"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:232
 msgid "Landing gear"
 msgstr "착륙 장치"
 
@@ -1908,8 +1908,8 @@ msgstr "크게"
 msgid "LATE"
 msgstr "늦음"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
 
@@ -1921,7 +1921,7 @@ msgstr "발진 / 포착"
 msgid "Layout"
 msgstr "레이아웃"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "lb"
 msgstr "lb"
 
@@ -1929,7 +1929,7 @@ msgstr "lb"
 msgid "Leave server"
 msgstr "서버 나가기"
 
-#: src/components/MatchLog.tsx:154
+#: src/components/MatchLog.tsx:159
 msgid "Left"
 msgstr "나감"
 
@@ -1962,8 +1962,8 @@ msgstr "라이트"
 msgid "lights"
 msgstr "등화"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:238
 msgid "Lights"
 msgstr "등화"
 
@@ -2029,37 +2029,37 @@ msgstr "로그아웃 중…"
 msgid "Look"
 msgstr "보기"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:860
 msgid "Look / orbit"
 msgstr "시점 / 회전"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Look at target"
 msgstr "표적 보기"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look down"
 msgstr "아래 보기"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Look left"
 msgstr "왼쪽 보기"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Look right"
 msgstr "오른쪽 보기"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look up"
 msgstr "위 보기"
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:901
 msgid "Low"
 msgstr "낮음"
 
 #: src/components/MissionSetup.tsx:1105
 #: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:400
 msgid "Low stratus"
 msgstr "낮은 층운"
 
@@ -2079,7 +2079,7 @@ msgstr "수동"
 msgid "map"
 msgstr "지도"
 
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:246
 msgid "Map"
 msgstr "지도"
 
@@ -2088,12 +2088,12 @@ msgstr "지도"
 msgid "Mark all as read"
 msgstr "모두 읽음으로 표시"
 
-#: src/components/SettingsDialog.tsx:591
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:622
 msgid "Master volume"
 msgstr "마스터 볼륨"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:379
 msgid "Match type"
 msgstr "매치 유형"
 
@@ -2110,7 +2110,7 @@ msgid "MCP server"
 msgstr "MCP 서버"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:902
 msgid "Medium"
 msgstr "보통"
 
@@ -2119,12 +2119,12 @@ msgid "menu"
 msgstr "메뉴"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:193
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:249
 msgid "Menu"
 msgstr "메뉴"
 
-#: src/components/Multiplayer.tsx:431
+#: src/components/Multiplayer.tsx:443
 msgid "Merge — fight on at the pass"
 msgstr "머지 — 교차 시 전투 개시"
 
@@ -2150,7 +2150,7 @@ msgstr "측정 항목"
 
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 msgid "Mid stratus"
 msgstr "중간 층운"
 
@@ -2182,8 +2182,8 @@ msgstr "임무 종료"
 msgid "Mochi web"
 msgstr "Mochi 웹"
 
-#: src/components/MatchLog.tsx:288
-#: src/components/MatchLog.tsx:350
+#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:355
 msgid "Mode"
 msgstr "모드"
 
@@ -2200,11 +2200,11 @@ msgstr "월요일"
 msgid "More options"
 msgstr "추가 옵션"
 
-#: src/components/SettingsDialog.tsx:508
+#: src/components/SettingsDialog.tsx:512
 msgid "Move…"
 msgstr "움직이세요…"
 
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:262
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "멀티플레이어에는 WebTransport가 필요하지만 이 브라우저는 아직 지원하지 않습니다."
 
@@ -2246,7 +2246,7 @@ msgstr "다음 이미지"
 
 #: src/components/MissionSetup.tsx:1089
 #: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:393
 msgid "Night"
 msgstr "밤"
 
@@ -2266,15 +2266,15 @@ msgstr "아직 활동이 없어요"
 msgid "No comments yet"
 msgstr "아직 댓글이 없어요"
 
-#: src/components/SettingsDialog.tsx:701
+#: src/components/SettingsDialog.tsx:705
 msgid "No control matches “{query}”."
 msgstr "“{query}”과(와) 일치하는 조작이 없습니다."
 
-#: src/components/MatchLog.tsx:377
+#: src/components/MatchLog.tsx:382
 msgid "No flight matches these filters."
 msgstr "이 필터와 일치하는 비행이 없습니다."
 
-#: src/components/MatchLog.tsx:207
+#: src/components/MatchLog.tsx:212
 msgid "No flights yet"
 msgstr "아직 비행이 없어요"
 
@@ -2290,7 +2290,7 @@ msgstr "이용 가능한 그룹이 없어요"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "아직 항목 유형을 만들 수 없어요. 먼저 필요한 상위 항목을 만들어 주세요."
 
-#: src/components/SettingsDialog.tsx:404
+#: src/components/SettingsDialog.tsx:408
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "조이스틱이 감지되지 않았어요 — 아무 버튼이나 눌러 깨워 주세요."
 
@@ -2298,7 +2298,7 @@ msgstr "조이스틱이 감지되지 않았어요 — 아무 버튼이나 눌러
 msgid "No matching objects"
 msgstr "일치하는 객체가 없어요"
 
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No open matches — create one."
 msgstr "오픈 매치가 없습니다. 하나 만들어 보세요."
 
@@ -2355,7 +2355,7 @@ msgid "No views"
 msgstr "조회수가 없어요"
 
 #: src/components/MissionSetup.tsx:747
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No world server."
 msgstr "월드 서버가 없습니다."
 
@@ -2378,9 +2378,9 @@ msgstr "등급 없음"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:473
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:829
+#: src/components/SettingsDialog.tsx:477
+#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:833
 msgid "None"
 msgstr "없음"
 
@@ -2392,7 +2392,7 @@ msgstr "기본"
 msgid "NOSE GEAR"
 msgstr "전방 기어"
 
-#: src/components/SettingsDialog.tsx:307
+#: src/components/SettingsDialog.tsx:311
 msgid "Not a joystick profile"
 msgstr "조이스틱 프로필이 아닙니다"
 
@@ -2420,7 +2420,7 @@ msgstr "알림: {0}"
 
 #: src/components/MissionSetup.tsx:1024
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:503
+#: src/components/Multiplayer.tsx:515
 msgid "Novice"
 msgstr "초보"
 
@@ -2430,7 +2430,7 @@ msgstr "초보"
 msgid "Number"
 msgstr "숫자"
 
-#: src/components/SettingsDialog.tsx:964
+#: src/components/SettingsDialog.tsx:968
 msgid "Ocean detail"
 msgstr "바다 디테일"
 
@@ -2460,11 +2460,11 @@ msgstr "활주로"
 msgid "Oops! Page Not Found!"
 msgstr "이런! 페이지를 찾을 수 없어요!"
 
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Open"
 msgstr "열기"
 
-#: src/components/Multiplayer.tsx:370
+#: src/components/Multiplayer.tsx:382
 msgid "Open — anyone may join or leave"
 msgstr "오픈 — 누구나 참가하거나 나갈 수 있음"
 
@@ -2523,8 +2523,8 @@ msgstr "선회"
 msgid "Other"
 msgstr "기타"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:212
 msgid "Override G limit"
 msgstr "G 한계 해제"
 
@@ -2544,7 +2544,7 @@ msgstr "패드록 해제"
 msgid "Parent"
 msgstr "상위"
 
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:211
 msgid "Parking brake"
 msgstr "주차 브레이크"
 
@@ -2569,14 +2569,14 @@ msgid "Paused"
 msgstr "일시 정지됨"
 
 #: src/components/MissionSetup.tsx:676
-#: src/components/Multiplayer.tsx:150
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:331
 msgid "pilot"
 msgstr "파일럿"
 
 #: src/components/MissionSetup.tsx:1025
 #: src/components/MissionSetup.tsx:1192
-#: src/components/Multiplayer.tsx:504
+#: src/components/Multiplayer.tsx:516
 msgid "Pilot"
 msgstr "파일럿"
 
@@ -2584,7 +2584,7 @@ msgstr "파일럿"
 msgid "PILOT DOWN"
 msgstr "조종사 사망"
 
-#: src/components/SettingsDialog.tsx:1054
+#: src/components/SettingsDialog.tsx:1058
 msgid "Pilot identity"
 msgstr "파일럿 정보"
 
@@ -2592,8 +2592,8 @@ msgstr "파일럿 정보"
 msgid "Pilot killed"
 msgstr "조종사 사망"
 
-#: src/components/MatchLog.tsx:455
-#: src/components/MatchLog.tsx:456
+#: src/components/MatchLog.tsx:460
+#: src/components/MatchLog.tsx:461
 msgid "Pin"
 msgstr "고정"
 
@@ -2605,11 +2605,11 @@ msgstr "피치"
 msgid "Pitch"
 msgstr "피치"
 
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:202
 msgid "Pitch down"
 msgstr "기수 내리기"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Pitch up"
 msgstr "기수 올리기"
 
@@ -2617,7 +2617,7 @@ msgstr "기수 올리기"
 msgid "PLATFORM"
 msgstr "플랫폼"
 
-#: src/components/MatchLog.tsx:353
+#: src/components/MatchLog.tsx:358
 msgid "Players"
 msgstr "플레이어 수"
 
@@ -2647,7 +2647,7 @@ msgstr "게시물"
 msgid "Posts and comments"
 msgstr "게시물 및 댓글"
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Press a key…"
 msgstr "키를 누르세요…"
 
@@ -2655,7 +2655,7 @@ msgstr "키를 누르세요…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ENTER로 발진"
 
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:576
 msgid "Press…"
 msgstr "누르세요…"
 
@@ -2673,8 +2673,8 @@ msgstr "개인정보"
 msgid "Processing…"
 msgstr "처리 중…"
 
-#: src/components/SettingsDialog.tsx:293
-#: src/components/SettingsDialog.tsx:305
+#: src/components/SettingsDialog.tsx:297
+#: src/components/SettingsDialog.tsx:309
 msgid "Profile saved"
 msgstr "프로필이 저장되었어요"
 
@@ -2707,8 +2707,8 @@ msgstr "우 엔진 화재"
 msgid "R GEAR"
 msgstr "우 기어"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Radar silent"
 msgstr "레이더 침묵"
 
@@ -2740,24 +2740,24 @@ msgstr "추천됨"
 msgid "Reconnecting ({retries})..."
 msgstr "다시 연결하는 중 ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1083
+#: src/components/SettingsDialog.tsx:1087
 msgid "Record flights"
 msgstr "비행 기록"
 
-#: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1076
+#: src/components/MatchLog.tsx:447
+#: src/components/SettingsDialog.tsx:1080
 msgid "Recording"
 msgstr "기록"
 
-#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:440
 msgid "Recording saved"
 msgstr "기록을 저장했습니다"
 
-#: src/components/Multiplayer.tsx:612
+#: src/components/Multiplayer.tsx:624
 msgid "Red"
 msgstr "빨강"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Red bots"
 msgstr "빨강 봇"
 
@@ -2774,7 +2774,7 @@ msgstr "관심사 줄이기"
 msgid "Reference"
 msgstr "참조"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:359
 msgid "Refresh"
 msgstr "새로고침"
 
@@ -2870,27 +2870,27 @@ msgstr "필수"
 msgid "Resend email"
 msgstr "이메일 다시 보내기"
 
-#: src/components/SettingsDialog.tsx:1159
+#: src/components/SettingsDialog.tsx:1163
 msgid "Reset"
 msgstr "재설정"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Reset master caution"
 msgstr "마스터 코션 재설정"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Reset trim"
 msgstr "트림 초기화"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:238
-#: src/components/SettingsDialog.tsx:855
+#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:859
 msgid "Reset view"
 msgstr "시점 초기화"
 
-#: src/components/SettingsDialog.tsx:938
+#: src/components/SettingsDialog.tsx:942
 msgid "Resolution"
 msgstr "해결"
 
@@ -2906,7 +2906,7 @@ msgstr "미션 재시작"
 msgid "Restart mission?"
 msgstr "미션을 재시작할까요?"
 
-#: src/components/MatchLog.tsx:362
+#: src/components/MatchLog.tsx:367
 msgid "Result"
 msgstr "결과"
 
@@ -2914,8 +2914,8 @@ msgstr "결과"
 msgid "Resume"
 msgstr "재개"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Retract flaps"
 msgstr "플랩 수납"
 
@@ -2923,7 +2923,7 @@ msgstr "플랩 수납"
 msgid "Retry"
 msgstr "다시 시도"
 
-#: src/components/SettingsDialog.tsx:491
+#: src/components/SettingsDialog.tsx:495
 msgid "Reversed"
 msgstr "반전"
 
@@ -2956,11 +2956,11 @@ msgstr "롤"
 msgid "Roll"
 msgstr "롤"
 
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:203
 msgid "Roll left"
 msgstr "왼쪽 롤"
 
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:204
 msgid "Roll right"
 msgstr "오른쪽 롤"
 
@@ -3012,8 +3012,8 @@ msgstr "해수면"
 msgid "Search"
 msgstr "검색"
 
-#: src/components/SettingsDialog.tsx:677
-#: src/components/SettingsDialog.tsx:678
+#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:682
 msgid "Search controls"
 msgstr "조작 검색"
 
@@ -3110,8 +3110,8 @@ msgstr "사람 선택..."
 msgid "Select previous card"
 msgstr "이전 카드 선택"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Select weapon"
 msgstr "무기 선택"
 
@@ -3150,8 +3150,8 @@ msgstr "메시지 보내기"
 msgid "Serif"
 msgstr "세리프"
 
-#: src/components/MatchLog.tsx:305
-#: src/components/MatchLog.tsx:347
+#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:352
 msgid "Server"
 msgstr "서버"
 
@@ -3182,7 +3182,7 @@ msgstr "세션 종료"
 msgid "Session expired. Please log in again."
 msgstr "세션이 만료되었습니다. 다시 로그인해 주세요."
 
-#: src/components/SettingsDialog.tsx:821
+#: src/components/SettingsDialog.tsx:825
 msgid "Set"
 msgstr "지정"
 
@@ -3195,12 +3195,12 @@ msgstr "출발지와 도착지 설정"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1142
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1146
+#: src/components/SettingsDialog.tsx:1173
 msgid "Settings"
 msgstr "설정"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1004
 msgid "Shadows"
 msgstr "그림자"
 
@@ -3251,7 +3251,7 @@ msgstr "작게"
 msgid "Sort"
 msgstr "정렬"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1184
 msgid "Sound"
 msgstr "소리"
 
@@ -3263,7 +3263,7 @@ msgstr "소스"
 msgid "Spaced"
 msgstr "간격"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Spaced spawns"
 msgstr "간격 리스폰"
 
@@ -3280,8 +3280,8 @@ msgid "speed brake"
 msgstr "감속판"
 
 #: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:209
 msgid "Speed brake"
 msgstr "감속판"
 
@@ -3301,7 +3301,7 @@ msgstr "실속, 클린 형상 (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "실속, 착륙 형상 (Vs0)"
 
-#: src/components/Multiplayer.tsx:427
+#: src/components/Multiplayer.tsx:439
 msgid "Start"
 msgstr "시작"
 
@@ -3345,7 +3345,7 @@ msgstr "일요일"
 
 #: src/components/MissionSetup.tsx:1027
 #: src/components/MissionSetup.tsx:1194
-#: src/components/Multiplayer.tsx:506
+#: src/components/Multiplayer.tsx:518
 msgid "Superhuman"
 msgstr "초인"
 
@@ -3392,12 +3392,12 @@ msgstr "팀"
 msgid "TEAM"
 msgstr "팀"
 
-#: src/components/MatchLog.tsx:147
-#: src/components/Multiplayer.tsx:568
+#: src/components/MatchLog.tsx:152
+#: src/components/Multiplayer.tsx:580
 msgid "Teams"
 msgstr "팀전"
 
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 msgid "Teams — red versus blue"
 msgstr "팀전 — 빨강 대 파랑"
 
@@ -3451,7 +3451,7 @@ msgstr "서버가 데이터 대신 웹 페이지를 반환했습니다."
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "이 브라우저는 WebGL 2를 지원하지 않아 게임을 실행할 수 없습니다 — 다른 브라우저를 사용해 보세요."
 
-#: src/components/Multiplayer.tsx:286
+#: src/components/Multiplayer.tsx:289
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "이 로비가 게임 연결을 다른 호스트({redirectHost})로 전환하고 있습니다. 이 서버를 신뢰하는 경우에만 계속하세요."
 
@@ -3467,13 +3467,13 @@ msgstr "스로틀"
 msgid "Throttle"
 msgstr "스로틀"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:208
 msgid "Throttle down"
 msgstr "스로틀 감소"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:207
 msgid "Throttle up"
 msgstr "스로틀 증가"
 
@@ -3489,7 +3489,7 @@ msgstr "최소 반경 지속 선회 속도"
 msgid "tilt"
 msgstr "기울이기"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:273
 msgid "Time"
 msgstr "시간"
 
@@ -3535,7 +3535,7 @@ msgstr "요청이 너무 많음"
 msgid "Top"
 msgstr "위"
 
-#: src/components/SettingsDialog.tsx:1014
+#: src/components/SettingsDialog.tsx:1018
 msgid "Tracers"
 msgstr "예광탄"
 
@@ -3555,23 +3555,23 @@ msgstr "트림"
 msgid "Trim hat"
 msgstr "트림 해트"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Trim nose down"
 msgstr "트림: 기수 내림"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim nose up"
 msgstr "트림: 기수 올림"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Trim roll left"
 msgstr "트림: 좌측 롤"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Trim roll right"
 msgstr "트림: 우측 롤"
 
@@ -3609,7 +3609,7 @@ msgstr "입력하여 사용자 검색"
 msgid "Type to search..."
 msgstr "입력하여 검색..."
 
-#: src/components/SettingsDialog.tsx:900
+#: src/components/SettingsDialog.tsx:904
 msgid "Ultra"
 msgstr "울트라"
 
@@ -3634,13 +3634,13 @@ msgstr "허용되지 않은 접근"
 msgid "Unavailable"
 msgstr "사용할 수 없음"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Uncage seeker"
 msgstr "시커 해제"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Undesignate target"
 msgstr "표적 지정 해제"
 
@@ -3657,13 +3657,13 @@ msgstr "미국"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: src/components/Multiplayer.tsx:404
+#: src/components/Multiplayer.tsx:416
 msgid "Unlimited"
 msgstr "무제한"
 
 #: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:465
+#: src/components/Multiplayer.tsx:477
 msgid "Unlimited ammunition"
 msgstr "무한 탄약"
 
@@ -3673,7 +3673,7 @@ msgstr "무한 탄약 (모든 플레이어)"
 
 #: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:92
-#: src/components/Multiplayer.tsx:475
+#: src/components/Multiplayer.tsx:487
 msgid "Unlimited fuel"
 msgstr "무한 연료"
 
@@ -3732,7 +3732,7 @@ msgstr "이메일 주소 확인"
 msgid "Vertical"
 msgstr "수직"
 
-#: src/components/MatchLog.tsx:158
+#: src/components/MatchLog.tsx:163
 msgid "Victory"
 msgstr "승리"
 
@@ -3762,11 +3762,11 @@ msgstr "모든 알림 보기"
 msgid "View controls"
 msgstr "보기 컨트롤"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:858
 msgid "Views"
 msgstr "조회수"
 
-#: src/components/SettingsDialog.tsx:639
+#: src/components/SettingsDialog.tsx:643
 msgid "Volumes"
 msgstr "음량"
 
@@ -3800,12 +3800,12 @@ msgstr "무기"
 msgid "Weapon select hat"
 msgstr "무기 선택 햇"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:411
 #: src/components/SettingsDialog.tsx:102
 msgid "Weapons"
 msgstr "무장"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:389
 msgid "Weather"
 msgstr "날씨"
 
@@ -3813,17 +3813,17 @@ msgstr "날씨"
 msgid "Wednesday"
 msgstr "수요일"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:210
 msgid "Wheel brakes"
 msgstr "바퀴 브레이크"
 
-#: src/components/SettingsDialog.tsx:593
+#: src/components/SettingsDialog.tsx:597
 msgid "Wind and cockpit airframe"
 msgstr "바람 및 기체 소음"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:237
 msgid "Wing fold"
 msgstr "날개 접기"
 
@@ -3831,12 +3831,12 @@ msgstr "날개 접기"
 msgid "WINS"
 msgstr "승리"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:315
 msgid "World server"
 msgstr "월드 서버"
 
 #: src/components/MissionSetup.tsx:725
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
 
@@ -3852,13 +3852,13 @@ msgstr "요"
 msgid "Yaw"
 msgstr "요"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Yaw left"
 msgstr "왼쪽 요"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:206
 msgid "Yaw right"
 msgstr "오른쪽 요"
 
@@ -3878,11 +3878,11 @@ msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 �
 msgid "Your attachments will be lost."
 msgstr "첨부 파일이 사라집니다."
 
-#: src/components/MatchLog.tsx:208
+#: src/components/MatchLog.tsx:213
 msgid "Your flights appear here once you've flown one."
 msgstr "비행을 한 번 하면 여기에 표시돼요."
 
-#: src/components/Multiplayer.tsx:563
+#: src/components/Multiplayer.tsx:575
 msgid "your offer"
 msgstr "내 모집"
 
@@ -3898,10 +3898,10 @@ msgstr "작성한 내용이 사라져요."
 msgid "Zoom"
 msgstr "줌"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:195
 msgid "Zoom in"
 msgstr "확대"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:196
 msgid "Zoom out"
 msgstr "축소"

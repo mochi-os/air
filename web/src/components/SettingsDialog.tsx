@@ -128,11 +128,15 @@ function AxisMeter({ live }: { live: number }) {
         <div className='bg-foreground/30 absolute top-0 bottom-0 left-1/2 z-10 w-0.5' />
         <div className='bg-foreground/15 absolute top-0 bottom-0 left-1/4 w-px' />
         <div className='bg-foreground/15 absolute top-0 bottom-0 left-3/4 w-px' />
+        {/* The fill spans the track and is placed with a transform, never with
+            left/width: those are layout properties, and the pad poll (120 ms)
+            would cost a layout and a paint per tick on up to eleven meters at
+            once. translateX is a percentage of the track, scaleX grows from the
+            left edge, and both stay on the compositor. */}
         <div
-          className='absolute top-0 bottom-0 rounded transition-all duration-75'
+          className='absolute top-0 bottom-0 left-0 w-full origin-left rounded transition-transform duration-75'
           style={{
-            left: `${50 + Math.min(0, live) * 50}%`,
-            width: `${Math.abs(live) * 50}%`,
+            transform: `translateX(${50 + Math.min(0, live) * 50}%) scaleX(${Math.abs(live) / 2})`,
             background: 'var(--air-accent)',
           }}
         />
@@ -442,9 +446,9 @@ function JoystickPanel({
                   (LEVERS.has(id) ? (
                     <div className='bg-muted relative h-2 min-w-16 flex-1 overflow-hidden rounded border border-border'>
                       <div
-                        className='absolute top-0 bottom-0 left-0 rounded transition-all duration-75'
+                        className='absolute top-0 bottom-0 left-0 w-full origin-left rounded transition-transform duration-75'
                         style={{
-                          width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%`,
+                          transform: `scaleX(${((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2})`,
                           background: 'var(--air-accent)',
                         }}
                       />
