@@ -46,7 +46,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} је направио „{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:339
+#: src/components/Multiplayer.tsx:342
 msgid "{0} flying"
 msgstr "{0} у лету"
 
@@ -62,24 +62,24 @@ msgstr "{0} lb изнад максималне тежине лансирања"
 
 #. placeholder {0}: ordered.length
 #. placeholder {1}: matches.length
-#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:333
 msgid "{0} of {1} flights"
 msgstr "{0} од {1} летова"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:779
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} је већ било заузето и та контрола сада није додељена."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:771
+#: src/components/SettingsDialog.tsx:775
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} је било на {1}, што сада није додељено."
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:570
+#: src/components/Multiplayer.tsx:582
 msgid "{0}/{1} players"
 msgstr "{0}/{1} играча"
 
@@ -107,7 +107,7 @@ msgstr "Назив {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Назив за {entityLabel} је обавезан"
 
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Меч играча {name}"
 
@@ -115,7 +115,7 @@ msgstr "Меч играча {name}"
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} је понудио нерешено"
 
-#: src/components/Multiplayer.tsx:532
+#: src/components/Multiplayer.tsx:544
 msgid "{placed} of {limit} bots"
 msgstr "{placed} од {limit} ботова"
 
@@ -195,17 +195,17 @@ msgstr "Тип налога"
 
 #: src/components/MissionSetup.tsx:1026
 #: src/components/MissionSetup.tsx:1193
-#: src/components/Multiplayer.tsx:505
+#: src/components/Multiplayer.tsx:517
 msgid "Ace"
 msgstr "Ас"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquire target"
 msgstr "Закључај мету"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Acquisition mode"
 msgstr "Режим захвата"
 
@@ -283,7 +283,7 @@ msgstr "Додај приказ"
 msgid "Adding..."
 msgstr "Додавање..."
 
-#: src/components/SettingsDialog.tsx:1007
+#: src/components/SettingsDialog.tsx:1011
 msgid "Afterburner"
 msgstr "Допунско сагоревање"
 
@@ -303,11 +303,11 @@ msgstr "Носач авиона <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Модел авиона <0>“F/A-18C Hornet”</0> од <1>CreadorDeMu</1> (Sketchfab), лиценцирано под <2>CC BY 4.0</2>. Измењено: промењена оријентација и размера, уклоњени некоришћени подаци текстура, спољни подвесни терети издвојени у засебну датотеку, једна мрежа кожуха огледално пресликана."
 
-#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:298
 msgid "All modes"
 msgstr "Сви режими"
 
-#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:315
 msgid "All servers"
 msgstr "Сви сервери"
 
@@ -328,7 +328,7 @@ msgstr "Дошло је до грешке"
 msgid "An unexpected error occurred"
 msgstr "Дошло је до неочекиване грешке"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Anchored sides"
 msgstr "Усидрене стране"
 
@@ -349,8 +349,8 @@ msgstr "Свако ко је пријављен"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Све што је претплаћено на овај извор престаће да га прима. Затим можете копирати нови URL."
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:234
 msgid "Approach power (ATC)"
 msgstr "Снага при прилазу (ATC)"
 
@@ -375,8 +375,8 @@ msgstr "Да ли сте сигурни да желите да обришете 
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Да ли сте сигурни да желите да се одјавите? Мораћете поново да се пријавите да приступите свом налогу."
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:233
 msgid "Arrestor hook"
 msgstr "Кука за заустављање"
 
@@ -417,12 +417,12 @@ msgstr "Аватар"
 msgid "Avatar for {name}"
 msgstr "Аватар за {name}"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:479
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:483
 msgid "Axis {i}"
 msgstr "Оса {i}"
 
-#: src/components/SettingsDialog.tsx:428
+#: src/components/SettingsDialog.tsx:432
 msgid "Axis calibration and mapping"
 msgstr "Калибрација и мапирање оса"
 
@@ -468,7 +468,7 @@ msgstr "Најбоље једрење (мотори угашени)"
 msgid "Best sustained turn speed"
 msgstr "Брзина најбољег одрживог заокрета"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:600
 msgid "Betty and RWR alerts"
 msgstr "Упозорења Betty и RWR"
 
@@ -490,11 +490,11 @@ msgstr "Блокирана навигација на непоуздану вез
 msgid "Blocks"
 msgstr "Блокови"
 
-#: src/components/Multiplayer.tsx:622
+#: src/components/Multiplayer.tsx:634
 msgid "Blue"
 msgstr "Плави"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Blue bots"
 msgstr "Плави ботови"
 
@@ -515,7 +515,7 @@ msgstr "Појачај интересовање"
 msgid "Border colour"
 msgstr "Боја ивице"
 
-#: src/components/Multiplayer.tsx:482
+#: src/components/Multiplayer.tsx:494
 msgid "Bots"
 msgstr "Ботови"
 
@@ -539,16 +539,16 @@ msgstr "СКРЕНИ КАД СИ СПРЕМАН"
 msgid "Browser notifications"
 msgstr "Обавештења прегледача"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:555
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:559
 msgid "Button {i}"
 msgstr "Дугме {i}"
 
-#: src/components/SettingsDialog.tsx:520
+#: src/components/SettingsDialog.tsx:524
 msgid "Button mappings"
 msgstr "Мапирање дугмади"
 
-#: src/components/Multiplayer.tsx:432
+#: src/components/Multiplayer.tsx:444
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — оружје слободно од почетка"
 
@@ -560,16 +560,16 @@ msgstr "BVR, оружје слободно од почетка"
 msgid "CALL THE BALL"
 msgstr "ЈАВИ ЛОПТУ"
 
-#: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1059
+#: src/components/Multiplayer.tsx:326
+#: src/components/SettingsDialog.tsx:1063
 msgid "Callsign"
 msgstr "Позивни знак"
 
-#: src/components/SettingsDialog.tsx:857
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera distance"
 msgstr "Удаљеност камере"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Camera unavailable"
 msgstr "Камера није доступна"
 
@@ -588,9 +588,9 @@ msgstr "Камера није доступна"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:549
-#: src/components/Multiplayer.tsx:294
-#: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:821
+#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:611
+#: src/components/SettingsDialog.tsx:825
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -602,11 +602,11 @@ msgstr "Откажи коментар"
 msgid "Cancel reply"
 msgstr "Откажи одговор"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:598
 msgid "Cannons and ordnance"
 msgstr "Топови и убојна средства"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Canopy"
 msgstr "Поклопац кабине"
 
@@ -615,7 +615,7 @@ msgstr "Поклопац кабине"
 msgid "Caption"
 msgstr "Натпис"
 
-#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:599
 msgid "Carrier and ambient"
 msgstr "Носач и амбијент"
 
@@ -672,17 +672,17 @@ msgstr "Поглед праћења:"
 msgid "chat"
 msgstr "чет"
 
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:247
 msgid "Chat"
 msgstr "Разговор"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:248
 msgid "Chat to everyone"
 msgstr "Чет са свима"
 
-#: src/components/MatchLog.tsx:365
+#: src/components/MatchLog.tsx:370
 #: src/components/MissionSetup.tsx:1115
-#: src/components/Multiplayer.tsx:446
+#: src/components/Multiplayer.tsx:458
 msgid "Cheats"
 msgstr "Читови"
 
@@ -698,8 +698,8 @@ msgstr "Чек-листа"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Изаберите игру из бочне траке или започните нову."
 
-#: ../../../lib/web/src/components/language-picker.tsx:264
-#: ../../../lib/web/src/components/language-picker.tsx:271
+#: ../../../lib/web/src/components/language-picker.tsx:267
+#: ../../../lib/web/src/components/language-picker.tsx:274
 msgid "Choose language"
 msgstr "Изаберите језик"
 
@@ -709,10 +709,10 @@ msgstr "Изаберите језик"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/MatchLog.tsx:323
-#: src/components/MatchLog.tsx:379
-#: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:686
+#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:384
+#: src/components/Multiplayer.tsx:396
+#: src/components/SettingsDialog.tsx:690
 msgid "Clear"
 msgstr "Очисти"
 
@@ -849,7 +849,7 @@ msgstr "Повезано"
 msgid "Connecting..."
 msgstr "Повезивање..."
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:345
 msgid "Connecting…"
 msgstr "Повезивање…"
 
@@ -870,7 +870,7 @@ msgid "Contextual information and details."
 msgstr "Контекстуалне информације и детаљи."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:306
 msgid "Continue"
 msgstr "Настави"
 
@@ -894,11 +894,11 @@ msgstr "Копирај"
 msgid "Corner speed (best instant turn)"
 msgstr "Угаона брзина (најбољи тренутни заокрет)"
 
-#: src/components/MatchLog.tsx:483
+#: src/components/MatchLog.tsx:488
 msgid "Could not change the recording"
 msgstr "Снимак није могуће променити"
 
-#: src/components/Multiplayer.tsx:250
+#: src/components/Multiplayer.tsx:253
 msgid "Could not create the match"
 msgstr "Није могуће направити меч"
 
@@ -906,16 +906,16 @@ msgstr "Није могуће направити меч"
 msgid "Could not load this document. Please try again later."
 msgstr "Није могуће учитати овај документ. Покушајте поново касније."
 
-#: src/components/MatchLog.tsx:168
+#: src/components/MatchLog.tsx:173
 msgid "Could not load your flights"
 msgstr "Није могуће учитати ваше летове"
 
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:298
 msgid "Could not save the profile"
 msgstr "Профил није могао да се сачува"
 
-#: src/components/MatchLog.tsx:430
-#: src/components/MatchLog.tsx:436
+#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:441
 msgid "Could not save the recording"
 msgstr "Није могуће сачувати снимак"
 
@@ -939,8 +939,8 @@ msgstr "Поновна потврда идентитета није могла �
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Није било могуће извршити проверу са тим налогом. Покушајте поново."
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Countermeasures"
 msgstr "Противмере"
 
@@ -965,11 +965,11 @@ msgstr "Креирај"
 msgid "Create {0}"
 msgstr "Направи {0}"
 
-#: src/components/Multiplayer.tsx:542
+#: src/components/Multiplayer.tsx:554
 msgid "Create and fly"
 msgstr "Направи и полети"
 
-#: src/components/Multiplayer.tsx:357
+#: src/components/Multiplayer.tsx:369
 msgid "Create match"
 msgstr "Направи меч"
 
@@ -999,7 +999,7 @@ msgstr "Заслуге"
 
 #: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:397
 msgid "Cumulus"
 msgstr "Кумулус"
 
@@ -1015,8 +1015,8 @@ msgstr "Прилагођено"
 msgid "CUT"
 msgstr "ОПАСНО"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:241
 msgid "Cycle view"
 msgstr "Промени поглед"
 
@@ -1029,17 +1029,17 @@ msgid "Data conflict"
 msgstr "Конфликт података"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchLog.tsx:341
+#: src/components/MatchLog.tsx:346
 msgid "Date"
 msgstr "Датум"
 
 #: src/components/MissionSetup.tsx:1088
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:392
 msgid "Day"
 msgstr "Дан"
 
-#: src/components/MatchLog.tsx:274
-#: src/components/MatchLog.tsx:359
+#: src/components/MatchLog.tsx:279
+#: src/components/MatchLog.tsx:364
 msgid "Deaths"
 msgstr "Смрти"
 
@@ -1121,7 +1121,7 @@ msgstr "Опис"
 msgid "Destroyed by fire"
 msgstr "Уништен у пожару"
 
-#: src/components/SettingsDialog.tsx:932
+#: src/components/SettingsDialog.tsx:936
 msgid "Detail"
 msgstr "Детаљи"
 
@@ -1129,12 +1129,12 @@ msgstr "Детаљи"
 msgid "Details Panel"
 msgstr "Панел детаља"
 
-#: src/components/SettingsDialog.tsx:508
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:576
 msgid "Detect"
 msgstr "Откриј"
 
-#: ../../../lib/web/src/components/language-picker.tsx:240
+#: ../../../lib/web/src/components/language-picker.tsx:243
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
 #: ../../../lib/web/src/lib/preference-utils.ts:23
@@ -1145,7 +1145,7 @@ msgstr "Откриј"
 msgid "Detect from web browser"
 msgstr "Препознај из веб прегледача"
 
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:286
 msgid "Different game host"
 msgstr "Други домаћин игре"
 
@@ -1165,25 +1165,25 @@ msgstr "Одбаци"
 msgid "Discard draft?"
 msgstr "Одбацити нацрт?"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "disconnected"
 msgstr "није повезан"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:155
+#: src/components/MatchLog.tsx:160
 msgid "Disconnected"
 msgstr "Није повезано"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:781
+#: src/components/SettingsDialog.tsx:785
 msgid "Dismiss"
 msgstr "Одбаци"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:243
 msgid "Display repeater"
 msgstr "Понављач екрана"
 
@@ -1191,13 +1191,13 @@ msgstr "Понављач екрана"
 msgid "Displays the mobile sidebar."
 msgstr "Приказује мобилну бочну траку."
 
-#: src/components/SettingsDialog.tsx:993
+#: src/components/SettingsDialog.tsx:997
 msgid "Distance LOD"
 msgstr "LOD удаљености"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1167
 msgid "Done"
 msgstr "Готово"
 
@@ -1219,7 +1219,7 @@ msgstr "НИЗ ВЕТАР 600 СТОПА"
 msgid "Drag"
 msgstr "Превуци"
 
-#: src/components/Multiplayer.tsx:502
+#: src/components/Multiplayer.tsx:514
 msgid "Drone"
 msgstr "Дрон"
 
@@ -1227,11 +1227,11 @@ msgstr "Дрон"
 msgid "Duplicates"
 msgstr "Дупликати"
 
-#: src/components/MatchLog.tsx:344
+#: src/components/MatchLog.tsx:349
 msgid "Duration"
 msgstr "Трајање"
 
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Dynamic resolution"
 msgstr "Динамичка резолуција"
 
@@ -1282,15 +1282,15 @@ msgstr "Уреди изабрану картицу"
 msgid "Edit view"
 msgstr "Уреди приказ"
 
-#: src/components/SettingsDialog.tsx:978
+#: src/components/SettingsDialog.tsx:982
 msgid "Effects"
 msgstr "Ефекти"
 
-#: src/components/SettingsDialog.tsx:956
+#: src/components/SettingsDialog.tsx:960
 msgid "Effects detail"
 msgstr "Детаљи ефеката"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:240
 msgid "Eject"
 msgstr "Катапултирање"
 
@@ -1310,12 +1310,12 @@ msgstr "Код е-поште"
 msgid "EMERG JETT"
 msgstr "ХИТНО ОДБАЦИВАЊЕ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Emergency jettison (hold)"
 msgstr "Хитно одбацивање (држи)"
 
-#: src/components/Multiplayer.tsx:569
+#: src/components/Multiplayer.tsx:581
 msgid "empty"
 msgstr "празно"
 
@@ -1324,7 +1324,7 @@ msgstr "празно"
 msgid "Empty pylon"
 msgstr "Празан пилон"
 
-#: src/components/SettingsDialog.tsx:612
+#: src/components/SettingsDialog.tsx:616
 msgid "Enable sound"
 msgstr "Укључи звук"
 
@@ -1336,7 +1336,7 @@ msgstr "НАПАДАМ"
 msgid "Engagement"
 msgstr "Окршај"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Engine and afterburner"
 msgstr "Мотор и форсаж"
 
@@ -1375,16 +1375,16 @@ msgstr "Прошири бочну траку"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Анимација експлозије <0>“Explosion02HD”</0> од <1>Unity Technologies</1> (Unity Labs VFX секвенце слика), објављена под <2>CC0</2>. Измењено: поново компресована за веб."
 
-#: src/components/SettingsDialog.tsx:412
+#: src/components/SettingsDialog.tsx:416
 msgid "Export"
 msgstr "Извези"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Extend flaps"
 msgstr "Закрилца напоље"
 
-#: src/components/SettingsDialog.tsx:948
+#: src/components/SettingsDialog.tsx:952
 msgid "Exterior detail"
 msgstr "Детаљи спољашњости"
 
@@ -1480,7 +1480,7 @@ msgstr "Датотеке"
 msgid "Finish moving your account"
 msgstr "Завршите премештање налога"
 
-#: src/components/MatchLog.tsx:156
+#: src/components/MatchLog.tsx:161
 msgid "Finished"
 msgstr "Завршено"
 
@@ -1488,12 +1488,12 @@ msgstr "Завршено"
 msgid "fire"
 msgstr "паљба"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Fire weapon"
 msgstr "Отвори ватру"
 
-#: src/components/SettingsDialog.tsx:849
+#: src/components/SettingsDialog.tsx:853
 msgid "Fixed flight keys"
 msgstr "Фиксни тастери лета"
 
@@ -1533,7 +1533,7 @@ msgstr "Лет"
 msgid "FLIGHT CORE FAILED"
 msgstr "ОТКАЗ ЛЕТНОГ ЈЕЗГРА"
 
-#: src/components/SettingsDialog.tsx:1101
+#: src/components/SettingsDialog.tsx:1105
 msgid "Flight hints"
 msgstr "Савети за лет"
 
@@ -1541,11 +1541,11 @@ msgstr "Савети за лет"
 msgid "Flight log"
 msgstr "Дневник летова"
 
-#: src/components/MatchLog.tsx:265
+#: src/components/MatchLog.tsx:270
 msgid "Flights"
 msgstr "Летови"
 
-#: src/components/MatchLog.tsx:157
+#: src/components/MatchLog.tsx:162
 msgid "Flown"
 msgstr "Одлетано"
 
@@ -1558,11 +1558,11 @@ msgstr "Полети"
 msgid "Fly again"
 msgstr "Лети поново"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1025
 msgid "Framerate counter"
 msgstr "Бројач кадрова"
 
-#: src/components/MatchLog.tsx:148
+#: src/components/MatchLog.tsx:153
 #: src/components/MissionSetup.tsx:995
 msgid "Free flight"
 msgstr "Слободан лет"
@@ -1587,7 +1587,7 @@ msgstr "Од"
 msgid "From theme"
 msgstr "Из теме"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "Fuel"
 msgstr "Гориво"
 
@@ -1607,7 +1607,7 @@ msgstr "ЦУРЕЊЕ ГОРИВА"
 msgid "FUEL LO"
 msgstr "МАЛО ГОРИВА"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "Fuel probe"
 msgstr "Сонда за гориво"
 
@@ -1615,7 +1615,7 @@ msgstr "Сонда за гориво"
 msgid "Fuel tank"
 msgstr "Резервоар горива"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/MatchLog.tsx:150
 msgid "Furball"
 msgstr "Furball"
 
@@ -1624,7 +1624,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Труп"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Gain"
 msgstr "Појачање"
 
@@ -1636,7 +1636,7 @@ msgstr "Стајни трап"
 msgid "GEAR"
 msgstr "ШАСИЈА"
 
-#: src/components/SettingsDialog.tsx:1172
+#: src/components/SettingsDialog.tsx:1176
 msgid "General"
 msgstr "Опште"
 
@@ -1645,11 +1645,11 @@ msgstr "Опште"
 msgid "Go back"
 msgstr "Назад"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1180
 msgid "Graphics"
 msgstr "Графика"
 
-#: src/components/SettingsDialog.tsx:908
+#: src/components/SettingsDialog.tsx:912
 msgid "Graphics preset"
 msgstr "Графички пресет"
 
@@ -1679,7 +1679,7 @@ msgid "Gun only"
 msgstr "Само топови"
 
 #: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:414
 msgid "Guns only"
 msgstr "Само топови"
 
@@ -1687,25 +1687,25 @@ msgstr "Само топови"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Хардверско убрзање графике је искључено — проверите подешавања прегледача или графичке драјвере."
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head"
 msgstr "Глава"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head tracking"
 msgstr "Праћење главе"
 
-#: src/components/SettingsDialog.tsx:899
+#: src/components/SettingsDialog.tsx:903
 msgid "High"
 msgstr "Висок"
 
 #: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:398
 msgid "High stratus"
 msgstr "Високи стратус"
 
-#: src/components/SettingsDialog.tsx:1092
+#: src/components/SettingsDialog.tsx:1096
 msgid "Hints"
 msgstr "Савети"
 
@@ -1732,11 +1732,11 @@ msgstr "КУКА"
 msgid "Hot"
 msgstr "Популарно"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "HUD altitude source"
 msgstr "Извор висине HUD-а"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "HUD declutter"
 msgstr "Поједностављење HUD-а"
 
@@ -1753,7 +1753,7 @@ msgstr "Прегледач слика: {0}"
 msgid "Imperial"
 msgstr "Империјалне"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:420
 msgid "Import"
 msgstr "Увези"
 
@@ -1774,7 +1774,7 @@ msgstr "Аватар са иницијалима"
 msgid "Initials avatar for {name}"
 msgstr "Аватар са иницијалима за {name}"
 
-#: src/components/SettingsDialog.tsx:372
+#: src/components/SettingsDialog.tsx:376
 msgid "Input hardware"
 msgstr "Улазни хардвер"
 
@@ -1800,7 +1800,7 @@ msgid "INVULNERABLE"
 msgstr "НЕРАЊИВ"
 
 #: src/components/MissionSetup.tsx:1121
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:467
 msgid "Invulnerable (human players only)"
 msgstr "Нерањив (само за људске играче)"
 
@@ -1808,13 +1808,13 @@ msgstr "Нерањив (само за људске играче)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Изгледа да страница коју тражите <0/>не постоји или је уклоњена."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Jammer"
 msgstr "Ометач"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Jettison tanks"
 msgstr "Одбаци резервоаре"
 
@@ -1822,7 +1822,7 @@ msgstr "Одбаци резервоаре"
 msgid "JETTISON: GEAR"
 msgstr "ОДБАЦИВАЊЕ: СТАЈНИ ТРАП"
 
-#: src/components/Multiplayer.tsx:634
+#: src/components/Multiplayer.tsx:646
 msgid "Join"
 msgstr "Придружи се"
 
@@ -1835,13 +1835,13 @@ msgstr "Придружи се серверу"
 msgid "JOINED"
 msgstr "СЕ ПРИДРУЖИО"
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:151
 #: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Joust"
 msgstr "Двобој"
 
-#: src/components/Multiplayer.tsx:371
+#: src/components/Multiplayer.tsx:383
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуел — 1v1, прво обарање побеђује"
 
@@ -1849,7 +1849,7 @@ msgstr "Дуел — 1v1, прво обарање побеђује"
 msgid "Joust against bot"
 msgstr "Дуел против бота"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1188
 msgid "Joystick"
 msgstr "Џојстик"
 
@@ -1857,7 +1857,7 @@ msgstr "Џојстик"
 msgid "Just now"
 msgstr "Управо сада"
 
-#: src/components/MatchLog.tsx:277
+#: src/components/MatchLog.tsx:282
 msgid "K/D"
 msgstr "K/D"
 
@@ -1865,7 +1865,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Пречице на тастатури"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1192
 msgid "Keys"
 msgstr "Тастери"
 
@@ -1873,12 +1873,12 @@ msgstr "Тастери"
 msgid "KILL"
 msgstr "ОБАРАЊЕ"
 
-#: src/components/MatchLog.tsx:159
+#: src/components/MatchLog.tsx:164
 msgid "Killed"
 msgstr "Убијен"
 
-#: src/components/MatchLog.tsx:271
-#: src/components/MatchLog.tsx:356
+#: src/components/MatchLog.tsx:276
+#: src/components/MatchLog.tsx:361
 msgid "Kills"
 msgstr "Убиства"
 
@@ -1894,8 +1894,8 @@ msgstr "ПОЖАР Л МОТ"
 msgid "L GEAR"
 msgstr "Л ШАСИЈА"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:232
 msgid "Landing gear"
 msgstr "Стајни трап"
 
@@ -1908,8 +1908,8 @@ msgstr "Велико"
 msgid "LATE"
 msgstr "КАСНО"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
 msgid "Launch (catapult)"
 msgstr "Лансирање (катапулт)"
 
@@ -1921,7 +1921,7 @@ msgstr "старт / мета"
 msgid "Layout"
 msgstr "Распоред"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "lb"
 msgstr "lb"
 
@@ -1929,7 +1929,7 @@ msgstr "lb"
 msgid "Leave server"
 msgstr "Напусти сервер"
 
-#: src/components/MatchLog.tsx:154
+#: src/components/MatchLog.tsx:159
 msgid "Left"
 msgstr "Напустио"
 
@@ -1962,8 +1962,8 @@ msgstr "Светло"
 msgid "lights"
 msgstr "светла"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:238
 msgid "Lights"
 msgstr "Светла"
 
@@ -2029,37 +2029,37 @@ msgstr "Одјављивање…"
 msgid "Look"
 msgstr "Поглед"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:860
 msgid "Look / orbit"
 msgstr "Поглед / кружење"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Look at target"
 msgstr "Гледај мету"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look down"
 msgstr "Поглед доле"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Look left"
 msgstr "Поглед лево"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Look right"
 msgstr "Поглед десно"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look up"
 msgstr "Поглед горе"
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:901
 msgid "Low"
 msgstr "Низак"
 
 #: src/components/MissionSetup.tsx:1105
 #: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:400
 msgid "Low stratus"
 msgstr "Ниски стратус"
 
@@ -2079,7 +2079,7 @@ msgstr "Ручно"
 msgid "map"
 msgstr "мапа"
 
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:246
 msgid "Map"
 msgstr "Мапа"
 
@@ -2088,12 +2088,12 @@ msgstr "Мапа"
 msgid "Mark all as read"
 msgstr "Означи све као прочитано"
 
-#: src/components/SettingsDialog.tsx:591
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:622
 msgid "Master volume"
 msgstr "Главна јачина звука"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:379
 msgid "Match type"
 msgstr "Тип меча"
 
@@ -2110,7 +2110,7 @@ msgid "MCP server"
 msgstr "MCP сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:902
 msgid "Medium"
 msgstr "Средње"
 
@@ -2119,12 +2119,12 @@ msgid "menu"
 msgstr "мени"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:193
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:249
 msgid "Menu"
 msgstr "Мени"
 
-#: src/components/Multiplayer.tsx:431
+#: src/components/Multiplayer.tsx:443
 msgid "Merge — fight on at the pass"
 msgstr "Спајање — борба почиње при сусрету"
 
@@ -2150,7 +2150,7 @@ msgstr "Метричке"
 
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 msgid "Mid stratus"
 msgstr "Средњи стратус"
 
@@ -2182,8 +2182,8 @@ msgstr "Мисија завршена"
 msgid "Mochi web"
 msgstr "Mochi веб"
 
-#: src/components/MatchLog.tsx:288
-#: src/components/MatchLog.tsx:350
+#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:355
 msgid "Mode"
 msgstr "Режим"
 
@@ -2200,11 +2200,11 @@ msgstr "Понедељак"
 msgid "More options"
 msgstr "Још опција"
 
-#: src/components/SettingsDialog.tsx:508
+#: src/components/SettingsDialog.tsx:512
 msgid "Move…"
 msgstr "Померите…"
 
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:262
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Мултиплејер захтева WebTransport, који овај прегледач још увек не подржава."
 
@@ -2246,7 +2246,7 @@ msgstr "Следећа слика"
 
 #: src/components/MissionSetup.tsx:1089
 #: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:393
 msgid "Night"
 msgstr "Ноћ"
 
@@ -2266,15 +2266,15 @@ msgstr "Још нема активности"
 msgid "No comments yet"
 msgstr "Још нема коментара"
 
-#: src/components/SettingsDialog.tsx:701
+#: src/components/SettingsDialog.tsx:705
 msgid "No control matches “{query}”."
 msgstr "Ниједна контрола не одговара „{query}”."
 
-#: src/components/MatchLog.tsx:377
+#: src/components/MatchLog.tsx:382
 msgid "No flight matches these filters."
 msgstr "Ниједан лет не одговара овим филтерима."
 
-#: src/components/MatchLog.tsx:207
+#: src/components/MatchLog.tsx:212
 msgid "No flights yet"
 msgstr "Још нема летова"
 
@@ -2290,7 +2290,7 @@ msgstr "Нема доступних група"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Још се не могу креирати типови ставки. Прво креирајте потребне родитељске ставке."
 
-#: src/components/SettingsDialog.tsx:404
+#: src/components/SettingsDialog.tsx:408
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Није откривен ниједан џојстик — притисните било које дугме на њему да га пробудите."
 
@@ -2298,7 +2298,7 @@ msgstr "Није откривен ниједан џојстик — притис
 msgid "No matching objects"
 msgstr "Нема одговарајућих објеката"
 
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No open matches — create one."
 msgstr "Нема отворених мечева — направи један."
 
@@ -2355,7 +2355,7 @@ msgid "No views"
 msgstr "Нема прегледа"
 
 #: src/components/MissionSetup.tsx:747
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No world server."
 msgstr "Нема сервера света."
 
@@ -2378,9 +2378,9 @@ msgstr "БЕЗ ОЦЕНЕ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:473
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:829
+#: src/components/SettingsDialog.tsx:477
+#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:833
 msgid "None"
 msgstr "Ништа"
 
@@ -2392,7 +2392,7 @@ msgstr "Нормално"
 msgid "NOSE GEAR"
 msgstr "НОС ШАСИЈА"
 
-#: src/components/SettingsDialog.tsx:307
+#: src/components/SettingsDialog.tsx:311
 msgid "Not a joystick profile"
 msgstr "Није профил џојстика"
 
@@ -2420,7 +2420,7 @@ msgstr "Обавештења: {0}"
 
 #: src/components/MissionSetup.tsx:1024
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:503
+#: src/components/Multiplayer.tsx:515
 msgid "Novice"
 msgstr "Почетник"
 
@@ -2430,7 +2430,7 @@ msgstr "Почетник"
 msgid "Number"
 msgstr "Број"
 
-#: src/components/SettingsDialog.tsx:964
+#: src/components/SettingsDialog.tsx:968
 msgid "Ocean detail"
 msgstr "Детаљи океана"
 
@@ -2460,11 +2460,11 @@ msgstr "На писти"
 msgid "Oops! Page Not Found!"
 msgstr "Упс! Страница није пронађена!"
 
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Open"
 msgstr "Отворено"
 
-#: src/components/Multiplayer.tsx:370
+#: src/components/Multiplayer.tsx:382
 msgid "Open — anyone may join or leave"
 msgstr "Отворен — свако може да се придружи или изађе"
 
@@ -2523,8 +2523,8 @@ msgstr "кружење"
 msgid "Other"
 msgstr "Друго"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:212
 msgid "Override G limit"
 msgstr "Премошћење G-лимита"
 
@@ -2544,7 +2544,7 @@ msgstr "ПОГЛЕД СЛОБОДАН"
 msgid "Parent"
 msgstr "Родитељ"
 
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:211
 msgid "Parking brake"
 msgstr "Паркинг кочница"
 
@@ -2569,14 +2569,14 @@ msgid "Paused"
 msgstr "Паузирано"
 
 #: src/components/MissionSetup.tsx:676
-#: src/components/Multiplayer.tsx:150
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:331
 msgid "pilot"
 msgstr "пилот"
 
 #: src/components/MissionSetup.tsx:1025
 #: src/components/MissionSetup.tsx:1192
-#: src/components/Multiplayer.tsx:504
+#: src/components/Multiplayer.tsx:516
 msgid "Pilot"
 msgstr "Пилот"
 
@@ -2584,7 +2584,7 @@ msgstr "Пилот"
 msgid "PILOT DOWN"
 msgstr "ПИЛОТ ПОГИНУО"
 
-#: src/components/SettingsDialog.tsx:1054
+#: src/components/SettingsDialog.tsx:1058
 msgid "Pilot identity"
 msgstr "Идентитет пилота"
 
@@ -2592,8 +2592,8 @@ msgstr "Идентитет пилота"
 msgid "Pilot killed"
 msgstr "Пилот погинуо"
 
-#: src/components/MatchLog.tsx:455
-#: src/components/MatchLog.tsx:456
+#: src/components/MatchLog.tsx:460
+#: src/components/MatchLog.tsx:461
 msgid "Pin"
 msgstr "Закачи"
 
@@ -2605,11 +2605,11 @@ msgstr "пропињање"
 msgid "Pitch"
 msgstr "Пропињање"
 
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:202
 msgid "Pitch down"
 msgstr "Пропињање надоле"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Pitch up"
 msgstr "Пропињање нагоре"
 
@@ -2617,7 +2617,7 @@ msgstr "Пропињање нагоре"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchLog.tsx:353
+#: src/components/MatchLog.tsx:358
 msgid "Players"
 msgstr "Играчи"
 
@@ -2647,7 +2647,7 @@ msgstr "Постови"
 msgid "Posts and comments"
 msgstr "Постови и коментари"
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Press a key…"
 msgstr "Притисните тастер…"
 
@@ -2655,7 +2655,7 @@ msgstr "Притисните тастер…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ПРИТИСНИ ENTER ЗА ПОЛЕТАЊЕ"
 
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:576
 msgid "Press…"
 msgstr "Притисните…"
 
@@ -2673,8 +2673,8 @@ msgstr "Приватност"
 msgid "Processing…"
 msgstr "Обрада…"
 
-#: src/components/SettingsDialog.tsx:293
-#: src/components/SettingsDialog.tsx:305
+#: src/components/SettingsDialog.tsx:297
+#: src/components/SettingsDialog.tsx:309
 msgid "Profile saved"
 msgstr "Профил сачуван"
 
@@ -2707,8 +2707,8 @@ msgstr "ПОЖАР Д МОТ"
 msgid "R GEAR"
 msgstr "Д ШАСИЈА"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Radar silent"
 msgstr "Радарска тишина"
 
@@ -2740,24 +2740,24 @@ msgstr "Препоручено"
 msgid "Reconnecting ({retries})..."
 msgstr "Поновно повезивање ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1083
+#: src/components/SettingsDialog.tsx:1087
 msgid "Record flights"
 msgstr "Снимај летове"
 
-#: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1076
+#: src/components/MatchLog.tsx:447
+#: src/components/SettingsDialog.tsx:1080
 msgid "Recording"
 msgstr "Снимање"
 
-#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:440
 msgid "Recording saved"
 msgstr "Снимак је сачуван"
 
-#: src/components/Multiplayer.tsx:612
+#: src/components/Multiplayer.tsx:624
 msgid "Red"
 msgstr "Црвени"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Red bots"
 msgstr "Црвени ботови"
 
@@ -2774,7 +2774,7 @@ msgstr "Смањи интересовање"
 msgid "Reference"
 msgstr "Референца"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:359
 msgid "Refresh"
 msgstr "Освежи"
 
@@ -2870,27 +2870,27 @@ msgstr "Обавезно"
 msgid "Resend email"
 msgstr "Поново пошаљи имејл"
 
-#: src/components/SettingsDialog.tsx:1159
+#: src/components/SettingsDialog.tsx:1163
 msgid "Reset"
 msgstr "Ресетуј"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Reset master caution"
 msgstr "Ресетуј главно упозорење"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Reset trim"
 msgstr "Поништи трим"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:238
-#: src/components/SettingsDialog.tsx:855
+#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:859
 msgid "Reset view"
 msgstr "Поништи приказ"
 
-#: src/components/SettingsDialog.tsx:938
+#: src/components/SettingsDialog.tsx:942
 msgid "Resolution"
 msgstr "Резолуција"
 
@@ -2906,7 +2906,7 @@ msgstr "Поново покрени мисију"
 msgid "Restart mission?"
 msgstr "Поново покренути мисију?"
 
-#: src/components/MatchLog.tsx:362
+#: src/components/MatchLog.tsx:367
 msgid "Result"
 msgstr "Резултат"
 
@@ -2914,8 +2914,8 @@ msgstr "Резултат"
 msgid "Resume"
 msgstr "Настави"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Retract flaps"
 msgstr "Закрилца унутра"
 
@@ -2923,7 +2923,7 @@ msgstr "Закрилца унутра"
 msgid "Retry"
 msgstr "Покушај поново"
 
-#: src/components/SettingsDialog.tsx:491
+#: src/components/SettingsDialog.tsx:495
 msgid "Reversed"
 msgstr "Обрнуто"
 
@@ -2956,11 +2956,11 @@ msgstr "ваљање"
 msgid "Roll"
 msgstr "Ваљање"
 
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:203
 msgid "Roll left"
 msgstr "Ваљање улево"
 
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:204
 msgid "Roll right"
 msgstr "Ваљање удесно"
 
@@ -3012,8 +3012,8 @@ msgstr "Ниво мора"
 msgid "Search"
 msgstr "Претражи"
 
-#: src/components/SettingsDialog.tsx:677
-#: src/components/SettingsDialog.tsx:678
+#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:682
 msgid "Search controls"
 msgstr "Претражи контроле"
 
@@ -3110,8 +3110,8 @@ msgstr "Изаберите особу..."
 msgid "Select previous card"
 msgstr "Изабери претходну картицу"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Select weapon"
 msgstr "Изабери оружје"
 
@@ -3150,8 +3150,8 @@ msgstr "Пошаљи поруку"
 msgid "Serif"
 msgstr "Сериф"
 
-#: src/components/MatchLog.tsx:305
-#: src/components/MatchLog.tsx:347
+#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:352
 msgid "Server"
 msgstr "Сервер"
 
@@ -3182,7 +3182,7 @@ msgstr "СЕСИЈА ЗАВРШЕНА"
 msgid "Session expired. Please log in again."
 msgstr "Сесија је истекла. Пријавите се поново."
 
-#: src/components/SettingsDialog.tsx:821
+#: src/components/SettingsDialog.tsx:825
 msgid "Set"
 msgstr "Постави"
 
@@ -3195,12 +3195,12 @@ msgstr "Постави полазиште и одредиште"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1142
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1146
+#: src/components/SettingsDialog.tsx:1173
 msgid "Settings"
 msgstr "Поставке"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1004
 msgid "Shadows"
 msgstr "Сенке"
 
@@ -3251,7 +3251,7 @@ msgstr "Мало"
 msgid "Sort"
 msgstr "Сортирај"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1184
 msgid "Sound"
 msgstr "Звук"
 
@@ -3263,7 +3263,7 @@ msgstr "Извори"
 msgid "Spaced"
 msgstr "Размакнуто"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Spaced spawns"
 msgstr "Размакнута појављивања"
 
@@ -3280,8 +3280,8 @@ msgid "speed brake"
 msgstr "ваздушна кочница"
 
 #: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:209
 msgid "Speed brake"
 msgstr "Ваздушна кочница"
 
@@ -3301,7 +3301,7 @@ msgstr "Превлачење, чиста конфигурација (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Превлачење, слетна конфигурација (Vs0)"
 
-#: src/components/Multiplayer.tsx:427
+#: src/components/Multiplayer.tsx:439
 msgid "Start"
 msgstr "Почни"
 
@@ -3345,7 +3345,7 @@ msgstr "Недеља"
 
 #: src/components/MissionSetup.tsx:1027
 #: src/components/MissionSetup.tsx:1194
-#: src/components/Multiplayer.tsx:506
+#: src/components/Multiplayer.tsx:518
 msgid "Superhuman"
 msgstr "Натчовечански"
 
@@ -3392,12 +3392,12 @@ msgstr "Тим"
 msgid "TEAM"
 msgstr "ТИМ"
 
-#: src/components/MatchLog.tsx:147
-#: src/components/Multiplayer.tsx:568
+#: src/components/MatchLog.tsx:152
+#: src/components/Multiplayer.tsx:580
 msgid "Teams"
 msgstr "Тимови"
 
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 msgid "Teams — red versus blue"
 msgstr "Тимови — црвени против плавих"
 
@@ -3451,7 +3451,7 @@ msgstr "Сервер је вратио веб страницу уместо по
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Овај прегледач не подржава WebGL 2, па игра не може да ради — пробајте други прегледач."
 
-#: src/components/Multiplayer.tsx:286
+#: src/components/Multiplayer.tsx:289
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Овај лоби шаље вашу игровну везу другом домаћину ({redirectHost}). Наставите само ако верујете овом серверу."
 
@@ -3467,13 +3467,13 @@ msgstr "гас"
 msgid "Throttle"
 msgstr "Гас"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:208
 msgid "Throttle down"
 msgstr "Смањи гас"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:207
 msgid "Throttle up"
 msgstr "Додај гас"
 
@@ -3489,7 +3489,7 @@ msgstr "Брзина најтешњег одрживог заокрета"
 msgid "tilt"
 msgstr "нагињање"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:273
 msgid "Time"
 msgstr "Време"
 
@@ -3535,7 +3535,7 @@ msgstr "Превише захтева"
 msgid "Top"
 msgstr "Врх"
 
-#: src/components/SettingsDialog.tsx:1014
+#: src/components/SettingsDialog.tsx:1018
 msgid "Tracers"
 msgstr "Трасери"
 
@@ -3555,23 +3555,23 @@ msgstr "Трим"
 msgid "Trim hat"
 msgstr "Трим капица"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Trim nose down"
 msgstr "Трим: нос доле"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim nose up"
 msgstr "Трим: нос горе"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Trim roll left"
 msgstr "Трим: ваљање лево"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Trim roll right"
 msgstr "Трим: ваљање десно"
 
@@ -3609,7 +3609,7 @@ msgstr "Куцај да би тражио кориснике"
 msgid "Type to search..."
 msgstr "Куцај да би тражио..."
 
-#: src/components/SettingsDialog.tsx:900
+#: src/components/SettingsDialog.tsx:904
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -3634,13 +3634,13 @@ msgstr "Неовлашћен приступ"
 msgid "Unavailable"
 msgstr "Недоступно"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Uncage seeker"
 msgstr "Ослободи трагач"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Undesignate target"
 msgstr "Поништи означавање циља"
 
@@ -3657,13 +3657,13 @@ msgstr "Сједињене Америчке Државе"
 msgid "Unknown"
 msgstr "Непознато"
 
-#: src/components/Multiplayer.tsx:404
+#: src/components/Multiplayer.tsx:416
 msgid "Unlimited"
 msgstr "Неограничено"
 
 #: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:465
+#: src/components/Multiplayer.tsx:477
 msgid "Unlimited ammunition"
 msgstr "Неограничена муниција"
 
@@ -3673,7 +3673,7 @@ msgstr "Неограничена муниција (сви играчи)"
 
 #: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:92
-#: src/components/Multiplayer.tsx:475
+#: src/components/Multiplayer.tsx:487
 msgid "Unlimited fuel"
 msgstr "Неограничено гориво"
 
@@ -3732,7 +3732,7 @@ msgstr "Верификуј адресу е-поште"
 msgid "Vertical"
 msgstr "Вертикално"
 
-#: src/components/MatchLog.tsx:158
+#: src/components/MatchLog.tsx:163
 msgid "Victory"
 msgstr "Победа"
 
@@ -3762,11 +3762,11 @@ msgstr "Прикажи сва обавештења"
 msgid "View controls"
 msgstr "Контроле приказа"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:858
 msgid "Views"
 msgstr "Прегледи"
 
-#: src/components/SettingsDialog.tsx:639
+#: src/components/SettingsDialog.tsx:643
 msgid "Volumes"
 msgstr "Јачине звука"
 
@@ -3800,12 +3800,12 @@ msgstr "оружје"
 msgid "Weapon select hat"
 msgstr "Капица за избор оружја"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:411
 #: src/components/SettingsDialog.tsx:102
 msgid "Weapons"
 msgstr "Оружје"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:389
 msgid "Weather"
 msgstr "Време"
 
@@ -3813,17 +3813,17 @@ msgstr "Време"
 msgid "Wednesday"
 msgstr "Среда"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:210
 msgid "Wheel brakes"
 msgstr "Кочнице точкова"
 
-#: src/components/SettingsDialog.tsx:593
+#: src/components/SettingsDialog.tsx:597
 msgid "Wind and cockpit airframe"
 msgstr "Ветар и структура авиона"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:237
 msgid "Wing fold"
 msgstr "Склапање крила"
 
@@ -3831,12 +3831,12 @@ msgstr "Склапање крила"
 msgid "WINS"
 msgstr "ПОБЕЂУЈЕ"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:315
 msgid "World server"
 msgstr "Сервер света"
 
 #: src/components/MissionSetup.tsx:725
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server not reachable"
 msgstr "Сервер света није доступан"
 
@@ -3852,13 +3852,13 @@ msgstr "скретање"
 msgid "Yaw"
 msgstr "Скретање"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Yaw left"
 msgstr "Скретање улево"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:206
 msgid "Yaw right"
 msgstr "Скретање удесно"
 
@@ -3878,11 +3878,11 @@ msgstr "Ваш налог је премештен овде са {source}. Све
 msgid "Your attachments will be lost."
 msgstr "Ваши прилози ће бити изгубљени."
 
-#: src/components/MatchLog.tsx:208
+#: src/components/MatchLog.tsx:213
 msgid "Your flights appear here once you've flown one."
 msgstr "Ваши летови појавиће се овде када одлетите први."
 
-#: src/components/Multiplayer.tsx:563
+#: src/components/Multiplayer.tsx:575
 msgid "your offer"
 msgstr "ваша понуда"
 
@@ -3898,10 +3898,10 @@ msgstr "Ваш текст ће бити изгубљен."
 msgid "Zoom"
 msgstr "Зум"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:195
 msgid "Zoom in"
 msgstr "Приближи"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:196
 msgid "Zoom out"
 msgstr "Удаљи"

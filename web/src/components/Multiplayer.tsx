@@ -124,6 +124,9 @@ export function Multiplayer({
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [making, setMaking] = useState(false)
+  // Refresh's own pending flag, not the poll's: the 5 s tick must never spin
+  // the button under a reader who did not press it.
+  const [refreshing, setRefreshing] = useState(false)
   const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
@@ -342,8 +345,17 @@ export function Multiplayer({
           <span>{error || <Trans>Connecting…</Trans>}</span>
         )}
         <div className='flex gap-2'>
-          <Button type='button' variant='outline' size='sm' onClick={() => void refresh()}>
-            <RefreshCw className='size-4' />
+          <Button
+            type='button'
+            variant='outline'
+            size='sm'
+            disabled={refreshing}
+            onClick={() => {
+              setRefreshing(true)
+              void refresh().finally(() => setRefreshing(false))
+            }}
+          >
+            <RefreshCw className={`size-4${refreshing ? ' animate-spin' : ''}`} />
             <Trans>Refresh</Trans>
           </Button>
           <Button
