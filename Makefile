@@ -36,7 +36,7 @@ release: web/dist/index.html
 	# tagging here runs before that commit, so the tag named the one before it.
 
 deploy:
-	../../test/claude/deploy.sh $(APP)
+	../../claude/scripts/deploy.sh $(APP)
 
 commit:
 	git add -A && git commit -m "$(VERSION)" || true
