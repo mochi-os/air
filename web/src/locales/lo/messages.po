@@ -14,19 +14,19 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:215
+#: ../../../lib/web/src/lib/error-normalizer.ts:219
 msgid "Please check your internet connection and try again."
 msgstr "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:301
-msgid " or "
-msgstr " ຫຼື "
+#~ msgid " or "
+#~ msgstr " ຫຼື "
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:190
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:189
 msgid "(edited)"
 msgstr "(ແກ້ໄຂແລ້ວ)"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:174
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:173
 msgid "(expand)"
 msgstr "(ຂະຫຍາຍ)"
 
@@ -38,6 +38,16 @@ msgstr "[ບໍ່ໄດ້ຕັ້ງຄ່າ]"
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {ຖືກຍິງ # ນັດ}}"
+
+#. placeholder {0}: displayInfo.count
+#: ../../../lib/web/src/components/person-picker.tsx:257
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, other {# ເລືອກແລ້ວ}}"
+
+#. placeholder {0}: countDeepChildren(object.id)
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
+msgid "{0, plural, one {+# nested} other {+# nested}}"
+msgstr "{0, plural, other {+# ຊັ້ນຍ່ອຍ}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
@@ -99,13 +109,13 @@ msgstr "{count, plural, one {#ນທ} other {#ນທ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ອທ} other {#ອທ}}"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:176
 msgid "{entityLabel} name"
 msgstr "ຊື່ {entityLabel}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
-msgid "{entityLabel} name is required"
-msgstr "ຕ້ອງມີຊື່ {entityLabel}"
+#~ msgid "{entityLabel} name is required"
+#~ msgstr "ຕ້ອງມີຊື່ {entityLabel}"
 
 #: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
@@ -124,26 +134,29 @@ msgstr "{placed} ຈາກ {limit} ບອດ"
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} ຈາກ {totalLabel}"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:530
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:531
 msgid "{totalCount, plural, one {# item} other {# items}}"
 msgstr "{totalCount, plural, other {# ລາຍການ}}"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
+msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
+msgstr "{totalDescendants, plural, other {+# ຕອບກັບເພີ່ມເຕີມ}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {ເປີດເມນູ (ການແຈ້ງເຕືອນທີ່ຍັງບໍ່ໄດ້ອ່ານ # ລາຍການ)}}"
 
-#. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:418
-msgid "+{0} nested"
-msgstr "+{0} ຊ້ອນກັນ"
+#~ msgid "+{0} nested"
+#~ msgstr "+{0} ຊ້ອນກັນ"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
-msgid "+{totalDescendants} more replies"
-msgstr "+{totalDescendants} ການຕອບກັບເພີ່ມເຕີມ"
+#~ msgid "+{totalDescendants} more replies"
+#~ msgstr "+{totalDescendants} ການຕອບກັບເພີ່ມເຕີມ"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
-msgid "1 reply"
-msgstr "1 ການຕອບກັບ"
+#~ msgid "1 reply"
+#~ msgstr "1 ການຕອບກັບ"
 
 #: src/components/GameCanvas.tsx:65
 msgid "1 WIRE"
@@ -181,7 +194,8 @@ msgstr "ສົມບູນ (ວັນທີ ແລະ ເວລາ)"
 msgid "Accept"
 msgstr "ຍອມຮັບ"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:60
+#: ../../../lib/web/src/features/errors/access-denied-error.tsx:16
+#: ../../../lib/web/src/features/errors/general-error.tsx:58
 msgid "Access denied"
 msgstr "ປະຕິເສດການເຂົ້າເຖິງ"
 
@@ -209,13 +223,13 @@ msgstr "ລັອກເປົ້າໝາຍ"
 msgid "Acquisition mode"
 msgstr "ໂໝດຈັບເປົ້າໝາຍ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:758
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
 msgstr "ເພີ່ມ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:312
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:314
 msgid "Add a comment..."
 msgstr "ເພີ່ມຄຳເຫັນ..."
 
@@ -223,7 +237,7 @@ msgstr "ເພີ່ມຄຳເຫັນ..."
 msgid "Add a new account"
 msgstr "ເພີ່ມບັນຊີໃໝ່"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:110
 msgid "Add a new field to this class"
 msgstr "ເພີ່ມຊ່ອງຂໍ້ມູນໃໝ່ໃຫ້ກັບຄລາສນີ້"
 
@@ -239,16 +253,16 @@ msgstr "ເພີ່ມບັນຊີ"
 msgid "Add caption"
 msgstr "ເພີ່ມຄຳບັນຍາຍ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:728
 msgid "Add checklist item"
 msgstr "ເພີ່ມລາຍການກວດສອບ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:235
 msgid "Add field"
 msgstr "ເພີ່ມຊ່ອງຂໍ້ມູນ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:746
 msgid "Add item..."
 msgstr "ເພີ່ມລາຍການ..."
 
@@ -256,15 +270,15 @@ msgstr "ເພີ່ມລາຍການ..."
 msgid "Add link"
 msgstr "ເພີ່ມລິ້ງ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:91
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:191
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:217
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:295
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:92
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:193
 msgid "Add option"
 msgstr "ເພີ່ມຕົວເລືອກ"
 
-#: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/post-tags.tsx:138
 msgid "Add tag..."
 msgstr "ເພີ່ມແທັກ..."
 
@@ -272,8 +286,8 @@ msgstr "ເພີ່ມແທັກ..."
 msgid "Add to existing notifications"
 msgstr "ເພີ່ມໃສ່ການແຈ້ງເຕືອນທີ່ມີຢູ່"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:258
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:513
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:261
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -311,12 +325,15 @@ msgstr "ທຸກໂໝດ"
 msgid "All servers"
 msgstr "ທຸກເຊີບເວີ"
 
-#. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
-msgid "Allow anyone to search for {0}"
-msgstr "ອະນຸຍາດໃຫ້ໃຜກໍໄດ້ຄົ້ນຫາ {0}"
+#~ msgid "Allow anyone to search for {0}"
+#~ msgstr "ອະນຸຍາດໃຫ້ໃຜກໍໄດ້ຄົ້ນຫາ {0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:87
+msgid "Allow anyone to search for {entityLabel}"
+msgstr "ອະນຸຍາດໃຫ້ທຸກຄົນຄົ້ນຫາ {entityLabel}"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:229
 msgid "Allow sort by"
 msgstr "ອະນຸຍາດການຈັດລຽງຕາມ"
 
@@ -325,6 +342,7 @@ msgid "An error occurred"
 msgstr "ເກີດຂໍ້ຜິດພາດ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:266
+#: ../../../lib/web/src/lib/error-normalizer.ts:11
 msgid "An unexpected error occurred"
 msgstr "ເກີດຂໍ້ຜິດພາດທີ່ບໍ່ຄາດຄິດ"
 
@@ -359,11 +377,11 @@ msgid "Approach, on-speed (Vapp)"
 msgstr "ການເຂົ້າຮ່ອນ, ຄວາມໄວທີ່ຖືກຕ້ອງ (Vapp)"
 
 #. placeholder {0}: deleteTarget?.name
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:313
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:316
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການລົບ \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:629
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:631
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
 msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການລົບຖັນ \"{name}\"? ນີ້ບໍ່ສາມາດຍົກເລີກໄດ້."
 
@@ -388,11 +406,11 @@ msgstr "ຈາກໜ້ອຍຫາຫຼາຍ"
 msgid "asymmetry"
 msgstr "ຄວາມບໍ່ສົມດຸນ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:427
+#: ../../../lib/web/src/components/comment-composer.tsx:430
 msgid "Attach comment files"
 msgstr "ແນບໄຟລ໌ຄຳເຫັນ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:426
+#: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Attach reply files"
 msgstr "ແນບໄຟລ໌ຕອບກັບ"
 
@@ -401,7 +419,7 @@ msgstr "ແນບໄຟລ໌ຕອບກັບ"
 msgid "Authenticated users"
 msgstr "ຜູ້ໃຊ້ທີ່ຢືນຢັນແລ້ວ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:318
+#: ../../../lib/web/src/components/step-up-dialog.tsx:306
 msgid "Authenticator code"
 msgstr "ລະຫັດ authenticator"
 
@@ -409,11 +427,11 @@ msgstr "ລະຫັດ authenticator"
 msgid "Available keyboard shortcuts"
 msgstr "ປຸ່ມລັດແປ້ນພິມທີ່ມີຢູ່"
 
-#: ../../../lib/web/src/components/entity-avatar.tsx:99
+#: ../../../lib/web/src/components/entity-avatar.tsx:98
 msgid "Avatar"
 msgstr "ອະວາຕາ"
 
-#: ../../../lib/web/src/components/entity-avatar.tsx:99
+#: ../../../lib/web/src/components/entity-avatar.tsx:98
 msgid "Avatar for {name}"
 msgstr "ອະວາຕາສຳລັບ {name}"
 
@@ -430,13 +448,13 @@ msgstr "ການປັບທຽບ ແລະການກຳນົດແກນ"
 msgid "back"
 msgstr "ກັບຄືນ"
 
-#: ../../../lib/web/src/components/place-picker.tsx:156
+#: ../../../lib/web/src/components/place-picker.tsx:142
 #: src/routes/log.tsx:30
 msgid "Back"
 msgstr "ກັບຄືນ"
 
+#: ../../../lib/web/src/features/errors/access-denied-error.tsx:27
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "ກັບໄປໜ້າຫຼັກ"
 
@@ -481,8 +499,8 @@ msgstr "ນ້ຳມັນເຊື້ອໄຟບິງໂກ"
 msgid "Blocked by"
 msgstr "ຖືກບລັອກໂດຍ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:238
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:248
 msgid "Blocked navigation to untrusted link"
 msgstr "ບລັອກການນຳທາງໄປຫາລິ້ງທີ່ບໍ່ເຊື່ອຖື"
 
@@ -498,7 +516,7 @@ msgstr "ສີຟ້າ"
 msgid "Blue bots"
 msgstr "ບອດສີຟ້າ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:315
 msgid "Board"
 msgstr "ກະດານ"
 
@@ -506,12 +524,12 @@ msgstr "ກະດານ"
 msgid "BOLTER"
 msgstr "BOLTER"
 
-#: ../../../lib/web/src/components/post-tags.tsx:180
-#: ../../../lib/web/src/components/post-tags.tsx:192
+#: ../../../lib/web/src/components/post-tags.tsx:194
+#: ../../../lib/web/src/components/post-tags.tsx:206
 msgid "Boost interest"
 msgstr "ເພີ່ມຄວາມສົນໃຈ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:399
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:402
 msgid "Border colour"
 msgstr "ສີຂອບ"
 
@@ -574,15 +592,15 @@ msgid "Camera unavailable"
 msgstr "ບໍ່ມີກ້ອງຖ່າຍຮູບ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:426
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:616
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:211
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:166
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:183
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:185
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:366
-#: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
-#: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
+#: ../../../lib/web/src/components/step-up-dialog.tsx:354
+#: ../../../lib/web/src/components/travelling-picker.tsx:288
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:251
+#: ../../../lib/web/src/components/ui/editable-field-row.tsx:136
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
@@ -594,11 +612,11 @@ msgstr "ບໍ່ມີກ້ອງຖ່າຍຮູບ"
 msgid "Cancel"
 msgstr "ຍົກເລີກ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:427
+#: ../../../lib/web/src/components/comment-composer.tsx:430
 msgid "Cancel comment"
 msgstr "ຍົກເລີກຄຳເຫັນ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:426
+#: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Cancel reply"
 msgstr "ຍົກເລີກການຕອບກັບ"
 
@@ -664,6 +682,14 @@ msgstr "ຊາຟ"
 msgid "Change notification category"
 msgstr "ປ່ຽນໝວດໝູ່ການແຈ້ງເຕືອນ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:62
+msgid "Changed"
+msgstr "ປ່ຽນແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:62
+msgid "Changed {field}"
+msgstr "ປ່ຽນ {field} ແລ້ວ"
+
 #: src/components/GameCanvas.tsx:576
 msgid "Chase view:"
 msgstr "ມຸມໄລ່ຕາມ:"
@@ -686,11 +712,11 @@ msgstr "ແຊັດຫາທຸກຄົນ"
 msgid "Cheats"
 msgstr "ສູດໂກງ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:12
 msgid "Checkbox"
 msgstr "ກ່ອງໝາຍ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:13
 msgid "Checklist"
 msgstr "ລາຍການກວດສອບ"
 
@@ -698,17 +724,17 @@ msgstr "ລາຍການກວດສອບ"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "ເລືອກເກມຈາກແຖບຂ້າງ ຫຼື ເລີ່ມຕົ້ນອັນໃໝ່."
 
-#: ../../../lib/web/src/components/language-picker.tsx:264
-#: ../../../lib/web/src/components/language-picker.tsx:271
+#: ../../../lib/web/src/components/language-picker.tsx:267
+#: ../../../lib/web/src/components/language-picker.tsx:274
 msgid "Choose language"
 msgstr "ເລືອກພາສາ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
-#: ../../../lib/web/src/components/travelling-picker.tsx:164
-#: ../../../lib/web/src/components/travelling-picker.tsx:170
-#: ../../../lib/web/src/components/travelling-picker.tsx:231
-#: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: ../../../lib/web/src/components/travelling-picker.tsx:145
+#: ../../../lib/web/src/components/travelling-picker.tsx:151
+#: ../../../lib/web/src/components/travelling-picker.tsx:212
+#: ../../../lib/web/src/components/travelling-picker.tsx:218
 #: src/components/MatchLog.tsx:323
 #: src/components/MatchLog.tsx:379
 #: src/components/Multiplayer.tsx:384
@@ -724,19 +750,19 @@ msgstr "ລ້າງທັງໝົດ"
 msgid "Clear search"
 msgstr "ລ້າງການຄົ້ນຫາ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:468
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:471
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:479
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "ປິດ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:263
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:267
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:117
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:266
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:270
 msgid "Close dialog"
 msgstr "ປິດໂຕ້ຕອບ"
 
@@ -777,16 +803,16 @@ msgstr "ຍຸບ"
 msgid "Collapse sidebar"
 msgstr "ຫຍໍ້ແຖບຂ້າງ"
 
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:146
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:148
 msgid "Colour"
 msgstr "ສີ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:539
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:540
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:545
 msgid "Column actions"
 msgstr "ການກະທຳຖັນ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:347
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:350
 msgid "Columns group by"
 msgstr "ຖັນຈັດກຸ່ມຕາມ"
 
@@ -807,8 +833,8 @@ msgstr "ເລີ່ມຕົ້ນ"
 msgid "Comment actions"
 msgstr "ການກະທຳຄຳເຫັນ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:431
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:442
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
 msgid "Comments"
 msgstr "ຄຳເຫັນ"
 
@@ -820,16 +846,16 @@ msgstr "ການສື່ສານ"
 msgid "Compact"
 msgstr "ຫຍໍ້"
 
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:95
 msgid "Configure option settings"
 msgstr "ກຳນົດຄ່າການຕັ້ງຄ່າຕົວເລືອກ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:259
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:262
 msgid "Configure view settings"
 msgstr "ກຳນົດຄ່າການຕັ້ງຄ່າມຸມມອງ"
 
-#: ../../../lib/web/src/components/place-picker.tsx:160
-#: ../../../lib/web/src/components/travelling-picker.tsx:316
+#: ../../../lib/web/src/components/place-picker.tsx:146
+#: ../../../lib/web/src/components/travelling-picker.tsx:296
 msgid "Confirm"
 msgstr "ຢືນຢັນ"
 
@@ -861,7 +887,7 @@ msgstr "ການເຊື່ອມຕໍ່ລົ້ມເຫຼວ"
 msgid "Content not found."
 msgstr "ບໍ່ພົບເນື້ອຫາ."
 
-#: ../../../lib/web/src/lib/query-client.ts:78
+#: ../../../lib/web/src/lib/query-client.ts:73
 msgid "Content not modified"
 msgstr "ເນື້ອຫາບໍ່ໄດ້ຖືກແກ້ໄຂ"
 
@@ -874,7 +900,7 @@ msgstr "ຂໍ້ມູນຕາມບໍລິບົດ ແລະ ລາຍລ�
 msgid "Continue"
 msgstr "ຕໍ່"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:355
+#: ../../../lib/web/src/components/step-up-dialog.tsx:343
 msgid "Continue with {label}"
 msgstr "ສືບຕໍ່ດ້ວຍ {label}"
 
@@ -923,19 +949,19 @@ msgstr "ບໍ່ສາມາດບັນທຶກໄຟລ໌ການບິນ
 msgid "Could not send the message"
 msgstr "ບໍ່ສາມາດສົ່ງຂໍ້ຄວາມໄດ້"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
 msgid "Couldn't load notifications"
 msgstr "ບໍ່ສາມາດໂຫຼດການແຈ້ງເຕືອນໄດ້"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:182
+#: ../../../lib/web/src/components/step-up-dialog.tsx:170
 msgid "Couldn't send the code. Please try again."
 msgstr "ບໍ່ສາມາດສົ່ງລະຫັດໄດ້. ກະລຸນາລອງອີກຄັ້ງ."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:124
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "ບໍ່ສາມາດເລີ່ມການຢືນຢັນຕົວຕົນຄືນໃໝ່ໄດ້. ກະລຸນາລອງອີກຄັ້ງ."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:224
+#: ../../../lib/web/src/components/step-up-dialog.tsx:212
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ບໍ່ສາມາດຢືນຢັນດ້ວຍບັນຊີນັ້ນໄດ້. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ."
 
@@ -952,18 +978,21 @@ msgstr "ເຮືອບິນຕົກ"
 msgid "CRASHED"
 msgstr "ຕົກແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:550
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:689
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:491
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:656
-#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:675
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:551
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:691
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:513
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
 msgid "Create"
 msgstr "ສ້າງ"
 
-#. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
-msgid "Create {0}"
-msgstr "ສ້າງ {0}"
+#~ msgid "Create {0}"
+#~ msgstr "ສ້າງ {0}"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:146
+msgid "Create {entityLabel}"
+msgstr "ສ້າງ {entityLabel}"
 
 #: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
@@ -982,13 +1011,18 @@ msgstr "ສ້າງພາລະກິດ"
 msgid "Create new item"
 msgstr "ສ້າງລາຍການໃໝ່"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:54
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:492
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:495
 msgid "Created"
 msgstr "ສ້າງແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:656
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:54
+msgid "Created {field}"
+msgstr "ສ້າງ {field} ແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:260
 msgid "Creating..."
 msgstr "ກຳລັງສ້າງ..."
 
@@ -1003,10 +1037,11 @@ msgstr "ຜູ້ມີສ່ວນຮ່ວມ"
 msgid "Cumulus"
 msgstr "ເມກກ້ອນ"
 
-#: ../../../lib/web/src/components/map-view.tsx:217
+#: ../../../lib/web/src/components/map-view.tsx:249
 msgid "Current location"
 msgstr "ຕຳແໜ່ງປັດຈຸບັນ"
 
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:132
 #: ../../../lib/web/src/components/colour-picker.tsx:265
 msgid "Custom"
 msgstr "ກຳນົດເອງ"
@@ -1028,7 +1063,7 @@ msgstr "ມືດ"
 msgid "Data conflict"
 msgstr "ຂໍ້ມູນຂັດແຍ່ງກັນ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:14
 #: src/components/MatchLog.tsx:341
 msgid "Date"
 msgstr "ວັນທີ"
@@ -1051,31 +1086,35 @@ msgstr "ບັນທຶກຕຳແໜ່ງດາດຟ້າແລ້ວ"
 msgid "Decline"
 msgstr "ປະຕິເສດ"
 
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:129
+msgid "Default"
+msgstr "ຄ່າເລີ່ມຕົ້ນ"
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "ບັນຊີ AI ເລີ່ມຕົ້ນ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:479
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:482
 msgid "Default sort"
 msgstr "ການຈັດລຽງເລີ່ມຕົ້ນ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:569
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:630
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:570
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:280
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:323
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:198
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:203
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:252
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:314
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
 msgid "Delete"
 msgstr "ລົບ"
 
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:312
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:315
 msgid "Delete attachment"
 msgstr "ລົບໄຟລ໌ແນບ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:630
 msgid "Delete column"
 msgstr "ລົບຖັນ"
 
@@ -1083,27 +1122,35 @@ msgstr "ລົບຖັນ"
 msgid "Delete comment"
 msgstr "ລົບຄຳເຫັນ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:304
 msgid "Delete field"
 msgstr "ລົບຊ່ອງຂໍ້ມູນ"
 
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:116
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:117
 msgid "Delete option"
 msgstr "ລົບຕົວເລືອກ"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:282
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:287
 msgid "Delete option {0}"
 msgstr "ລົບຕົວເລືອກ {0}"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:284
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:287
 msgid "Delete view"
 msgstr "ລົບມຸມມອງ"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:109
+#: ../../../lib/web/src/components/restore-banner.tsx:95
 msgid "Delete your account on the old server"
 msgstr "ລຶບບັນຊີຂອງທ່ານໃນເຊີຟເວີເກົ່າ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:58
+msgid "Deleted"
+msgstr "ລຶບແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:58
+msgid "Deleted {field}"
+msgstr "ລຶບ {field} ແລ້ວ"
 
 #: src/components/MissionSetup.tsx:1038
 msgid "Departure / Recovery"
@@ -1113,7 +1160,7 @@ msgstr "ບິນຂຶ້ນ / ລົງຈອດ"
 msgid "Descending"
 msgstr "ຈາກຫຼາຍຫາໜ້ອຍ"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
 msgid "Description"
 msgstr "ລາຍລະອຽດ"
 
@@ -1134,7 +1181,7 @@ msgstr "ແຜງລາຍລະອຽດ"
 msgid "Detect"
 msgstr "ກວດຫາ"
 
-#: ../../../lib/web/src/components/language-picker.tsx:240
+#: ../../../lib/web/src/components/language-picker.tsx:243
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
 #: ../../../lib/web/src/lib/preference-utils.ts:23
@@ -1149,7 +1196,7 @@ msgstr "ກວດຫາຈາກຕົວທ່ອງເວັບ"
 msgid "Different game host"
 msgstr "ເຊີບເວີເກມອື່ນ"
 
-#: ../../../lib/web/src/components/person-picker.tsx:214
+#: ../../../lib/web/src/components/person-picker.tsx:190
 msgid "Directory"
 msgstr "ໄດເລກທໍຣີ"
 
@@ -1175,8 +1222,8 @@ msgstr "ຕັດການເຊື່ອມຕໍ່ແລ້ວ"
 msgid "Disconnected"
 msgstr "ຕັດການເຊື່ອມຕໍ່ແລ້ວ"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:88
-#: ../../../lib/web/src/components/restore-banner.tsx:94
+#: ../../../lib/web/src/components/restore-banner.tsx:74
+#: ../../../lib/web/src/components/restore-banner.tsx:80
 #: src/components/MissionSetup.tsx:1246
 #: src/components/SettingsDialog.tsx:781
 msgid "Dismiss"
@@ -1195,19 +1242,24 @@ msgstr "ສະແດງແຖບຂ້າງມືຖື."
 msgid "Distance LOD"
 msgstr "LOD ໄລຍະທາງ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:111
+msgid "Does not match the required pattern"
+msgstr "ບໍ່ກົງກັບຮູບແບບທີ່ຕ້ອງການ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1163
 msgid "Done"
 msgstr "ສຳເລັດແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:452
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:462
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:243
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
 msgid "Download"
 msgstr "ດາວໂຫຼດ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:98
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:149
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:100
 msgid "Download failed"
 msgstr "ດາວໂຫຼດບໍ່ສຳເລັດ"
 
@@ -1248,7 +1300,7 @@ msgstr "ໄວ"
 msgid "Edit"
 msgstr "ແກ້ໄຂ"
 
-#: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
+#: ../../../lib/web/src/components/ui/editable-field-row.tsx:158
 msgid "Edit {label}"
 msgstr "ແກ້ໄຂ {label}"
 
@@ -1256,21 +1308,21 @@ msgstr "ແກ້ໄຂ {label}"
 msgid "Edit caption"
 msgstr "ແກ້ໄຂຄຳບັນຍາຍ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:140
 msgid "Edit field"
 msgstr "ແກ້ໄຂຊ່ອງ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:141
 msgid "Edit field settings"
 msgstr "ແກ້ໄຂການຕັ້ງຄ່າຊ່ອງ"
 
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:91
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:92
 msgid "Edit option"
 msgstr "ແກ້ໄຂຕົວເລືອກ"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:267
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:272
 msgid "Edit option {0}"
 msgstr "ແກ້ໄຂຕົວເລືອກ {0}"
 
@@ -1278,7 +1330,7 @@ msgstr "ແກ້ໄຂຕົວເລືອກ {0}"
 msgid "Edit selected card"
 msgstr "ແກ້ໄຂບັດທີ່ເລືອກ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:258
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:261
 msgid "Edit view"
 msgstr "ແກ້ໄຂມຸມມອງ"
 
@@ -1302,7 +1354,7 @@ msgstr "ດີດຕົວອອກແລ້ວ"
 msgid "Email"
 msgstr "ອີເມວ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:292
+#: ../../../lib/web/src/components/step-up-dialog.tsx:280
 msgid "Email code"
 msgstr "ລະຫັດອີເມວ"
 
@@ -1340,11 +1392,11 @@ msgstr "ການສູ້ຮົບ"
 msgid "Engine and afterburner"
 msgstr "ເຄື່ອງຈັກ ແລະການເຜົາໄໝ້ເສີມ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:302
+#: ../../../lib/web/src/components/step-up-dialog.tsx:290
 msgid "Enter the code from your email"
 msgstr "ປ້ອນລະຫັດຈາກອີເມວຂອງທ່ານ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:327
+#: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Enter your authenticator code"
 msgstr "ໃສ່ລະຫັດ authenticator ຂອງທ່ານ"
 
@@ -1400,6 +1452,10 @@ msgstr "ໃຫຍ່ພິເສດ"
 msgid "F/A-18C reference"
 msgstr "ຄ່າອ້າງອີງ F/A-18C"
 
+#: ../../../lib/web/src/hooks/use-accounts.ts:213
+msgid "Failed to add account"
+msgstr "ເພີ່ມບັນຊີລົ້ມເຫຼວ"
+
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
 msgid "Failed to copy"
@@ -1414,7 +1470,7 @@ msgstr "ສ້າງລິ້ງລົ້ມເຫຼວ"
 msgid "Failed to delete attachment"
 msgstr "ລຶບໄຟລ໌ແນບລົ້ມເຫຼວ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:191
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:192
 msgid "Failed to delete comment"
 msgstr "ລຶບຄຳເຫັນລົ້ມເຫຼວ"
 
@@ -1434,23 +1490,35 @@ msgstr "ໂຫຼດລົ້ມເຫຼວ"
 msgid "Failed to load history"
 msgstr "ໂຫຼດປະຫວັດລົ້ມເຫຼວ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
 msgid "Failed to load image"
 msgstr "ໂຫຼດຮູບພາບບໍ່ສຳເລັດ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:213
+msgid "Failed to load prompts"
+msgstr "ໂຫຼດ prompt ລົ້ມເຫຼວ"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
 msgid "Failed to load video"
 msgstr "ໂຫຼດວິດີໂອບໍ່ສຳເລັດ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:154
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:155
 msgid "Failed to post comment"
 msgstr "ໂພສຄຳເຫັນລົ້ມເຫຼວ"
+
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:90
+msgid "Failed to reset prompt"
+msgstr "ຣີເຊັດ prompt ລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "ຖອນການເຂົ້າເຖິງ RSS ບໍ່ສຳເລັດ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:111
+msgid "Failed to save prompt"
+msgstr "ບັນທຶກ prompt ລົ້ມເຫຼວ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
 msgid "Failed to update comment"
 msgstr "ອັບເດດຄຳເຫັນລົ້ມເຫຼວ"
 
@@ -1470,13 +1538,13 @@ msgstr "FCS"
 msgid "FIGHT'S ON"
 msgstr "ການຕໍ່ສູ້ເລີ່ມແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:589
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:155
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:175
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:611
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:160
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:180
 msgid "Files"
 msgstr "ໄຟລ໌"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:97
+#: ../../../lib/web/src/components/restore-banner.tsx:83
 msgid "Finish moving your account"
 msgstr "ສຳເລັດການຍ້າຍບັນຊີ"
 
@@ -1497,7 +1565,7 @@ msgstr "ຍິງອາວຸດ"
 msgid "Fixed flight keys"
 msgstr "ປຸ່ມການບິນຄົງທີ່"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Flags"
 msgstr "ທຸງ"
 
@@ -1571,11 +1639,11 @@ msgstr "ການບິນອິດສະຫຼະ"
 msgid "Friday"
 msgstr "ວັນສຸກ"
 
-#: ../../../lib/web/src/components/person-picker.tsx:207
+#: ../../../lib/web/src/components/person-picker.tsx:183
 msgid "Friends"
 msgstr "ໝູ່"
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:153
+#: ../../../lib/web/src/components/travelling-picker.tsx:134
 msgid "From"
 msgstr "ຈາກ"
 
@@ -1640,8 +1708,8 @@ msgstr "ລໍ້"
 msgid "General"
 msgstr "ທົ່ວໄປ"
 
+#: ../../../lib/web/src/features/errors/access-denied-error.tsx:25
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "ກັບໄປ"
 
@@ -1661,7 +1729,7 @@ msgstr "ນໍ້າໜັກລວມ"
 msgid "Group"
 msgstr "ກຸ່ມ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:347
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:350
 msgid "Group by"
 msgstr "ຈັດກຸ່ມຕາມ"
 
@@ -1715,8 +1783,8 @@ msgstr "ປະຫວັດ"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:185
-#: ../../../lib/web/src/components/layout/top-bar.tsx:71
-#: ../../../lib/web/src/components/layout/top-bar.tsx:100
+#: ../../../lib/web/src/components/layout/top-bar.tsx:86
+#: ../../../lib/web/src/components/layout/top-bar.tsx:115
 msgid "Home"
 msgstr "ໜ້າຫຼັກ"
 
@@ -1740,12 +1808,12 @@ msgstr "ແຫຼ່ງຄວາມສູງ HUD"
 msgid "HUD declutter"
 msgstr "ຫຼຸດລາຍລະອຽດ HUD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:156
 msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
 msgid "Image viewer: {0}"
 msgstr "ຕົວເບິ່ງຮູບພາບ: {0}"
 
@@ -1778,6 +1846,10 @@ msgstr "ອະວາຕາຕົວອັກສອນຫຍໍ້ສຳລັບ
 msgid "Input hardware"
 msgstr "ອຸປະກອນປ້ອນຂໍ້ມູນ"
 
+#: ../../../lib/web/src/components/post-tags.tsx:168
+msgid "Interest {weight}"
+msgstr "ຄວາມສົນໃຈ {weight}"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "ຄວາມສົນໃຈ"
@@ -1786,7 +1858,7 @@ msgstr "ຄວາມສົນໃຈ"
 msgid "Internal fuel"
 msgstr "ນໍ້າມັນພາຍໃນ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:591
 msgid "Invalid date"
 msgstr "ວັນທີ່ບໍ່ຖືກຕ້ອງ"
 
@@ -1917,7 +1989,7 @@ msgstr "ການປ່ອຍຕົວ (ກາຕາປຸນ)"
 msgid "launch / target"
 msgstr "ບິນຂຶ້ນ / ເປົ້າໝາຍ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:309
 msgid "Layout"
 msgstr "ຮູບແບບ"
 
@@ -1947,8 +2019,12 @@ msgid "Left wingtip"
 msgstr "ປາຍປີກຊ້າຍ"
 
 #: ../../../lib/web/src/components/post-tags.tsx:72
-msgid "Letters, numbers, spaces, and hyphens only"
-msgstr "ສະເພາະຕົວອັກສອນ ຕົວເລກ ຍະຫວ່າງ ແລະ ຂີດກາງ"
+#~ msgid "Letters, numbers, spaces, and hyphens only"
+#~ msgstr "ສະເພາະຕົວອັກສອນ ຕົວເລກ ຍະຫວ່າງ ແລະ ຂີດກາງ"
+
+#: ../../../lib/web/src/components/post-tags.tsx:73
+msgid "Letters, numbers, spaces, hyphens, and slashes only"
+msgstr "ໃຊ້ໄດ້ສະເພາະຕົວອັກສອນ ຕົວເລກ ຍະຫວ່າງ ຂີດກາງ ແລະ ຂີດຂວາງ"
 
 #: src/components/GameCanvas.tsx:117
 msgid "LEVEL AT 1200, DIRTY UP"
@@ -1979,11 +2055,11 @@ msgstr "ລິ້ງ"
 msgid "Links"
 msgstr "ລິ້ງ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:321
 msgid "List"
 msgstr "ລາຍຊື່"
 
-#: ../../../lib/web/src/components/ui/load-more.tsx:35
+#: ../../../lib/web/src/components/ui/load-more.tsx:39
 msgid "Load more"
 msgstr "ໂຫຼດເພີ່ມ"
 
@@ -1999,7 +2075,7 @@ msgstr "ກຳລັງໂຫຼດເນື້ອຫາ…"
 msgid "LOADING FAILED"
 msgstr "ການໂຫຼດລົ້ມເຫຼວ"
 
-#: ../../../lib/web/src/components/ui/load-more.tsx:35
+#: ../../../lib/web/src/components/ui/load-more.tsx:39
 #: ../../../lib/web/src/features/document/document-page.tsx:88
 msgid "Loading..."
 msgstr "ກຳລັງໂຫຼດ..."
@@ -2083,8 +2159,8 @@ msgstr "ແຜນທີ່"
 msgid "Map"
 msgstr "ແຜນທີ່"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:203
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:210
 msgid "Mark all as read"
 msgstr "ໝາຍທັງໝົດເປັນອ່ານແລ້ວ"
 
@@ -2101,7 +2177,7 @@ msgstr "ປະເພດແມັດ"
 msgid "Matches"
 msgstr "ການແຂ່ງຂັນ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:202
 msgid "Maximum length"
 msgstr "ຄວາມຍາວສູງສຸດ"
 
@@ -2113,6 +2189,10 @@ msgstr "ເຊີບເວີ MCP"
 #: src/components/SettingsDialog.tsx:898
 msgid "Medium"
 msgstr "ກາງ"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:377
+msgid "Members"
+msgstr "ສະມາຊິກ"
 
 #: src/components/GameCanvas.tsx:151
 msgid "menu"
@@ -2162,7 +2242,7 @@ msgstr "ຊົນກັນກາງອາກາດ"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ແຜນທີ່ເກາະ Midway Atoll — ຮູບພາບປະກອບມີຂໍ້ມູນ <0>Copernicus Sentinel-2</0> ທີ່ຖືກດັດແກ້ (2026); ຮູບຊົງຂອງສະໜາມບິນ (ທາງແລ່ນ, ທາງຂັບເຄື່ອນ, ລານຈອດ) © ຜູ້ປະກອບສ່ວນ <1>OpenStreetMap</1>, ອະນຸຍາດພາຍໃຕ້ <2>ODbL</2>; ຂໍ້ມູນແຄມຝັ່ງ ແລະ ແນວປະກາລັງ ຈາກ <3>NOAA NCCOS</3> (ສາທາລະນະສົມບັດ)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:191
 msgid "Minimum length"
 msgstr "ຄວາມຍາວຕ່ຳສຸດ"
 
@@ -2204,32 +2284,48 @@ msgstr "ຕົວເລືອກເພີ່ມເຕີມ"
 msgid "Move…"
 msgstr "ຂະຫຍັບ…"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:60
+msgid "Moved"
+msgstr "ຍ້າຍແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:60
+msgid "Moved {field}"
+msgstr "ຍ້າຍ {field} ແລ້ວ"
+
 #: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ການຫຼິ້ນຫຼາຍຄົນຕ້ອງການ WebTransport ເຊິ່ງບຣາວເຊີນີ້ຍັງບໍ່ຮອງຮັບເທື່ອ."
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:600
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:125
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:293
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:122
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:601
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:145
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:126
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:296
 msgid "Name"
 msgstr "ຊື່"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
-msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
-msgstr "ຊື່ບໍ່ສາມາດມີວົງເລັບແຫຼມ, ແບັກສະແລດ, ເຄື່ອງໝາຍຈຸດຄ້ຳ, ເຄື່ອງໝາຍຄຳເວົ້າ ຫຼື ແບັກຕິກ"
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:104
+msgid "Name cannot contain < or > characters"
+msgstr "ຊື່ບໍ່ສາມາດມີຕົວອັກສອນ < ຫຼື >"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+#~ msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+#~ msgstr "ຊື່ບໍ່ສາມາດມີວົງເລັບແຫຼມ, ແບັກສະແລດ, ເຄື່ອງໝາຍຈຸດຄ້ຳ, ເຄື່ອງໝາຍຄຳເວົ້າ ຫຼື ແບັກຕິກ"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:101
+msgid "Name is required"
+msgstr "ຕ້ອງການຊື່"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name must be 1000 characters or less"
 msgstr "ຊື່ຕ້ອງມີ 1000 ຕົວອັກສອນຫຼືໜ້ອຍກວ່າ"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/features/errors/general-error.tsx:51
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:313
 msgid "Network error"
 msgstr "ຂໍ້ຜິດພາດເຄືອຂ່າຍ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:476
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:498
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "ໃໝ່"
@@ -2239,8 +2335,8 @@ msgstr "ໃໝ່"
 msgid "New game"
 msgstr "ເກມໃໝ່"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:536
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:541
 msgid "Next image"
 msgstr "ຮູບຕໍ່ໄປ"
 
@@ -2250,7 +2346,7 @@ msgstr "ຮູບຕໍ່ໄປ"
 msgid "Night"
 msgstr "ກາງຄືນ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:555
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:577
 msgid "No {parentClassNames} to add to"
 msgstr "ບໍ່ມີ {parentClassNames} ໃຫ້ເພີ່ມເຂົ້າ"
 
@@ -2258,11 +2354,11 @@ msgstr "ບໍ່ມີ {parentClassNames} ໃຫ້ເພີ່ມເຂົ້�
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "ບໍ່ມີກົດການເຂົ້າເຖິງທີ່ຕັ້ງຄ່າໄວ້. ເພີ່ມກົດເພື່ອຄວບຄຸມຜູ້ທີ່ສາມາດເຂົ້າເຖິງຊັບພະຍາກອນນີ້."
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:74
 msgid "No activity yet"
 msgstr "ຍັງບໍ່ມີກິດຈະກຳ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:322
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:324
 msgid "No comments yet"
 msgstr "ຍັງບໍ່ມີຄຳເຫັນ"
 
@@ -2286,7 +2382,7 @@ msgstr "ຍັງບໍ່ມີເກມ"
 msgid "No groups available"
 msgstr "ບໍ່ມີກຸ່ມທີ່ມີຢູ່"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:522
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:544
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ຍັງບໍ່ສາມາດສ້າງປະເພດລາຍການໄດ້. ສ້າງລາຍການແມ່ທີ່ຕ້ອງການກ່ອນ."
 
@@ -2302,27 +2398,27 @@ msgstr "ບໍ່ມີວັດຖຸທີ່ກົງກັນ"
 msgid "No open matches — create one."
 msgstr "ບໍ່ມີແມັດທີ່ເປີດຢູ່ — ສ້າງອັນໃໝ່."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
-#: ../../../lib/web/src/components/person-picker.tsx:84
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:382
+#: ../../../lib/web/src/components/person-picker.tsx:71
 msgid "No people found"
 msgstr "ບໍ່ພົບຄົນ"
 
-#: ../../../lib/web/src/components/place-picker.tsx:133
+#: ../../../lib/web/src/components/place-picker.tsx:120
 msgid "No places found"
 msgstr "ບໍ່ພົບສະຖານທີ່"
 
-#: ../../../lib/web/src/components/inline-entity-search.tsx:64
+#: ../../../lib/web/src/components/inline-entity-search.tsx:65
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "ບໍ່ພົບຜົນລັບ"
 
-#: ../../../lib/web/src/components/command-menu.tsx:55
+#: ../../../lib/web/src/components/command-menu.tsx:57
 msgid "No results found."
 msgstr "ບໍ່ພົບຜົນ."
 
 #: ../../../lib/web/src/components/entity/entity-board-container.tsx:824
 #: ../../../lib/web/src/components/entity/entity-board-container.tsx:869
-#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:336
 msgid "No status"
 msgstr "ບໍ່ມີສະຖານະ"
 
@@ -2342,7 +2438,7 @@ msgstr "ບໍ່ພົບເຂດເວລາ."
 msgid "No topic record yet — try again after the next notification."
 msgstr "ຍັງບໍ່ມີບັນທຶກຫົວຂໍ້ — ລອງໃໝ່ຫຼັງຈາກການແຈ້ງເຕືອນຄັ້ງຕໍ່ໄປ."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:135
 msgid "No unread notifications"
 msgstr "ບໍ່ມີການແຈ້ງເຕືອນທີ່ບໍ່ໄດ້ອ່ານ"
 
@@ -2364,17 +2460,17 @@ msgid "NO-GRADE"
 msgstr "ບໍ່ມີຄະແນນ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:538
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:541
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:545
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:359
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:382
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:560
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:563
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:412
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:415
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:488
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
-#: ../../../lib/web/src/components/person-picker.tsx:350
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/person-picker.tsx:326
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
@@ -2397,15 +2493,15 @@ msgid "Not a joystick profile"
 msgstr "ບໍ່ແມ່ນໂປຣໄຟລ໌ຈອຍສະຕິກ"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
-#: ../../../lib/web/src/features/errors/general-error.tsx:67
+#: ../../../lib/web/src/features/errors/general-error.tsx:65
 msgid "Not found"
 msgstr "ບໍ່ພົບ"
 
-#: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
+#: ../../../lib/web/src/components/ui/editable-field-row.tsx:150
 msgid "Not set"
 msgstr "ບໍ່ໄດ້ຕັ້ງຄ່າ"
 
-#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:671
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
 msgid "Nothing found"
 msgstr "ບໍ່ພົບຫຍັງ"
 
@@ -2414,7 +2510,7 @@ msgid "Nothing yet — say hello."
 msgstr "ຍັງບໍ່ມີຫຍັງເທື່ອ ລອງທັກທາຍກັນເບິ່ງ"
 
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:196
 msgid "Notifications: {0}"
 msgstr "ການແຈ້ງເຕືອນ: {0}"
 
@@ -2424,9 +2520,9 @@ msgstr "ການແຈ້ງເຕືອນ: {0}"
 msgid "Novice"
 msgstr "ຜູ້ເລີ່ມຕົ້ນ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:493
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:15
 msgid "Number"
 msgstr "ຕົວເລກ"
 
@@ -2468,8 +2564,8 @@ msgstr "ເປີດ"
 msgid "Open — anyone may join or leave"
 msgstr "ເປີດ — ໃຜກໍເຂົ້າຮ່ວມ ຫຼື ອອກໄດ້"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:199
-#: ../../../lib/web/src/components/layout/nav-group.tsx:204
+#: ../../../lib/web/src/components/layout/nav-group.tsx:227
+#: ../../../lib/web/src/components/layout/nav-group.tsx:232
 msgid "Open actions"
 msgstr "ເປີດການກະທຳ"
 
@@ -2477,13 +2573,13 @@ msgstr "ເປີດການກະທຳ"
 msgid "Open menu"
 msgstr "ເປີດເມນູ"
 
-#: ../../../lib/web/src/components/layout/top-bar.tsx:63
-#: ../../../lib/web/src/components/layout/top-bar.tsx:68
+#: ../../../lib/web/src/components/layout/top-bar.tsx:78
+#: ../../../lib/web/src/components/layout/top-bar.tsx:83
 msgid "Open navigation"
 msgstr "ເປີດການນຳທາງ"
 
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:106
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:112
 msgid "Open option actions"
 msgstr "ເປີດການກະທຳຕົວເລືອກ"
 
@@ -2491,8 +2587,8 @@ msgstr "ເປີດການກະທຳຕົວເລືອກ"
 msgid "Open selected card"
 msgstr "ເປີດກາດທີ່ເລືອກ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:277
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:282
 msgid "Open view actions"
 msgstr "ເປີດການກະທຳມຸມມອງ"
 
@@ -2501,13 +2597,13 @@ msgstr "ເປີດການກະທຳມຸມມອງ"
 msgid "Open view controls"
 msgstr "ເປີດການຄວບຄຸມມຸມມອງ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:155
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:202
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:157
 msgid "Option name"
 msgstr "ຊື່ຕົວເລືອກ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:170
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:244
 msgid "Options"
 msgstr "ຕົວເລືອກ"
 
@@ -2540,7 +2636,7 @@ msgstr "ລັອກສາຍຕາ"
 msgid "PADLOCK OFF"
 msgstr "ສາຍຕາອິດສະລະ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:552
 msgid "Parent"
 msgstr "ແມ່"
 
@@ -2548,25 +2644,29 @@ msgstr "ແມ່"
 msgid "Parking brake"
 msgstr "ເບຣກຈອດ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:337
+#: ../../../lib/web/src/components/step-up-dialog.tsx:325
 msgid "Passkey"
 msgstr "Passkey"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:207
+#: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "Passkey verification failed. Please try again."
 msgstr "ການຢືນຢັນ passkey ລົ້ມເຫລວ. ກະລຸນາລອງອີກຄັ້ງ."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:146
+#: ../../../lib/web/src/components/restore-banner.tsx:132
 msgid "Passkeys"
 msgstr "ກະແຈຜ່ານ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:213
 msgid "Pattern (regex)"
 msgstr "ຮູບແບບ (regex)"
 
 #: src/components/GameCanvas.tsx:364
 msgid "Paused"
 msgstr "ຢຸດຊົ່ວຄາວ"
+
+#: ../../../lib/web/src/components/person-picker.tsx:176
+msgid "People"
+msgstr "ຄົນ"
 
 #: src/components/MissionSetup.tsx:676
 #: src/components/Multiplayer.tsx:150
@@ -2622,20 +2722,20 @@ msgid "Players"
 msgstr "ຜູ້ຫຼິ້ນ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:89
-#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/features/errors/general-error.tsx:52
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:314
 msgid "Please check your internet connection and try again."
 msgstr "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
 
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
-msgid "Please log in with the appropriate credentials <0/> to access this resource."
-msgstr "ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍຂໍ້ມູນປະຈຳຕົວທີ່ເໝາະສົມ <0/> ເພື່ອເຂົ້າເຖິງຊັບພະຍາກອນນີ້."
+#~ msgid "Please log in with the appropriate credentials <0/> to access this resource."
+#~ msgstr "ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍຂໍ້ມູນປະຈຳຕົວທີ່ເໝາະສົມ <0/> ເພື່ອເຂົ້າເຖິງຊັບພະຍາກອນນີ້."
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:83
+#: ../../../lib/web/src/features/errors/general-error.tsx:81
 msgid "Please try again."
 msgstr "ກະລຸນາລອງໃໝ່."
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:75
+#: ../../../lib/web/src/features/errors/general-error.tsx:73
 msgid "Please wait a moment and try again."
 msgstr "ກະລຸນາລໍຖ້າຈັກໜ້ອຍ ແລ້ວລອງໃໝ່ອີກຄັ້ງ."
 
@@ -2659,8 +2759,8 @@ msgstr "ກົດ ENTER ເພື່ອບິນຂຶ້ນ"
 msgid "Press…"
 msgstr "ກົດ…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:509
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:520
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
 msgid "Previous image"
 msgstr "ຮູບກ່ອນໜ້າ"
 
@@ -2679,8 +2779,12 @@ msgid "Profile saved"
 msgstr "ບັນທຶກໂປຣໄຟລ໌ແລ້ວ"
 
 #: ../../../lib/web/src/components/person-picker.tsx:200
-msgid "Project members"
-msgstr "ສະມາຊິກໂຄງການ"
+#~ msgid "Project members"
+#~ msgstr "ສະມາຊິກໂຄງການ"
+
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
+msgid "Prompt saved"
+msgstr "ບັນທຶກ prompt ແລ້ວ"
 
 #: src/components/MissionSetup.tsx:873
 #: src/components/MissionSetup.tsx:891
@@ -2716,11 +2820,11 @@ msgstr "ເຣດາມິດງຽບ"
 msgid "Raised"
 msgstr "ຍົກສູງ"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:118
+#: ../../../lib/web/src/components/restore-banner.tsx:104
 msgid "Re-link your accounts on this server"
 msgstr "ເຊື່ອມໂຍງບັນຊີຂອງທ່ານຄືນໃໝ່ໃນເຊີຟເວີນີ້"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:140
+#: ../../../lib/web/src/components/restore-banner.tsx:126
 msgid "Re-register your passkeys on this server"
 msgstr "ລົງທະບຽນກະແຈຜ່ານຂອງທ່ານຄືນໃໝ່ໃນເຄື່ອງແມ່ຂ່າຍນີ້"
 
@@ -2761,12 +2865,12 @@ msgstr "ສີແດງ"
 msgid "Red bots"
 msgstr "ບອດສີແດງ"
 
-#: ../../../lib/web/src/components/layout/authenticated-layout.tsx:136
+#: ../../../lib/web/src/components/layout/authenticated-layout.tsx:135
 msgid "Redirecting to login."
 msgstr "ກຳລັງປ່ຽນເສັ້ນທາງໄປຫາການເຂົ້າສູ່ລະບົບ."
 
-#: ../../../lib/web/src/components/post-tags.tsx:200
-#: ../../../lib/web/src/components/post-tags.tsx:212
+#: ../../../lib/web/src/components/post-tags.tsx:214
+#: ../../../lib/web/src/components/post-tags.tsx:226
 msgid "Reduce interest"
 msgstr "ຫຼຸດດອກເບ້ຍ"
 
@@ -2794,9 +2898,17 @@ msgstr "ສຳພັດ (5m, 3h, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "ສຳພັດພາຍໃນ 24 ຊົ່ວໂມງ, ຖ້າບໍ່ດັ່ງນັ້ນສົມບູນ"
 
+#: ../../../lib/web/src/components/post-tags.tsx:166
+msgid "Relevance {relevance}"
+msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}"
+
+#: ../../../lib/web/src/components/post-tags.tsx:164
+msgid "Relevance {relevance}, interest {weight}"
+msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}, ຄວາມສົນໃຈ {weight}"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx:285
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:192
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 msgid "Remove"
 msgstr "ລຶບອອກ"
@@ -2821,12 +2933,12 @@ msgstr "ລຶບກົດການເຂົ້າເຖິງສຳລັບ \"
 msgid "Remove access?"
 msgstr "ລຶບການເຂົ້າເຖິງ?"
 
-#: ../../../lib/web/src/components/post-tags.tsx:220
-#: ../../../lib/web/src/components/post-tags.tsx:232
+#: ../../../lib/web/src/components/post-tags.tsx:234
+#: ../../../lib/web/src/components/post-tags.tsx:246
 msgid "Remove interest"
 msgstr "ລຶບຄວາມສົນໃຈ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
 msgid "Remove item"
 msgstr "ລຶບລາຍການ"
 
@@ -2835,16 +2947,16 @@ msgstr "ລຶບລາຍການ"
 msgid "Remove link"
 msgstr "ລຶບລິ້ງ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:561
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:618
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:562
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:620
 msgid "Rename"
 msgstr "ປ່ຽນຊື່"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:596
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:597
 msgid "Rename column"
 msgstr "ປ່ຽນຊື່ຄໍລຳ"
 
-#: ../../../lib/web/src/components/entity/entity-board-column.tsx:597
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:598
 msgid "Rename this board column"
 msgstr "ປ່ຽນຊື່ຄໍລຳກະດານນີ້"
 
@@ -2862,11 +2974,11 @@ msgstr "ຕອບ"
 msgid "Reply to {0}..."
 msgstr "ຕອບ {0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:228
 msgid "Required"
 msgstr "ຕ້ອງການ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:370
+#: ../../../lib/web/src/components/step-up-dialog.tsx:358
 msgid "Resend email"
 msgstr "ສົ່ງອີເມວອີກຄັ້ງ"
 
@@ -2964,12 +3076,12 @@ msgstr "ອຽງຊ້າຍ"
 msgid "Roll right"
 msgstr "ອຽງຂວາ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:152
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:172
 msgid "Rows"
 msgstr "ແຖວ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:376
 msgid "Rows group by"
 msgstr "ແຖວຈັດກຸ່ມຕາມ"
 
@@ -2993,13 +3105,18 @@ msgstr "ກຳລັງເຕັມທີ່"
 msgid "Saturday"
 msgstr "ວັນເສົາ"
 
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
-#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:170
-#: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
+#: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
 #: ../../../lib/web/src/components/ui/secret-field.tsx:79
 msgid "Save"
 msgstr "ບັນທຶກ"
+
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
+msgid "Saving..."
+msgstr "ກຳລັງບັນທຶກ..."
 
 #: src/components/MissionSetup.tsx:459
 msgid "Sea level"
@@ -3008,7 +3125,7 @@ msgstr "ລະດັບນ້ຳທະເລ"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:175
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
-#: ../../../lib/web/src/components/search.tsx:18
+#: ../../../lib/web/src/components/search.tsx:17
 msgid "Search"
 msgstr "ຄົ້ນຫາ"
 
@@ -3021,19 +3138,19 @@ msgstr "ຄົ້ນຫາການຄວບຄຸມ"
 msgid "Search for a command to run..."
 msgstr "ຄົ້ນຫາຄຳສັ່ງເພື່ອແລ່ນ..."
 
-#: ../../../lib/web/src/components/place-picker.tsx:86
+#: ../../../lib/web/src/components/place-picker.tsx:73
 msgid "Search for a place"
 msgstr "ຄົ້ນຫາສະຖານທີ່"
 
-#: ../../../lib/web/src/components/place-picker.tsx:50
+#: ../../../lib/web/src/components/place-picker.tsx:37
 msgid "Search for a place..."
 msgstr "ຄົ້ນຫາສະຖານທີ່..."
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:250
+#: ../../../lib/web/src/components/travelling-picker.tsx:231
 msgid "Search for destination..."
 msgstr "ຄົ້ນຫາປາຍທາງ..."
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:183
+#: ../../../lib/web/src/components/travelling-picker.tsx:164
 msgid "Search for origin..."
 msgstr "ຄົ້ນຫາຕົ້ນທາງ..."
 
@@ -3055,8 +3172,8 @@ msgstr "ຄົ້ນຫາ, ເບິ່ງ, ແລະຈັດລຽງມຸ�
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:179
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
-#: ../../../lib/web/src/components/inline-entity-search.tsx:63
-#: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/inline-entity-search.tsx:64
+#: ../../../lib/web/src/components/person-picker.tsx:300
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "ຄົ້ນຫາ..."
@@ -3066,11 +3183,11 @@ msgstr "ຄົ້ນຫາ..."
 msgid "Searching..."
 msgstr "ກຳລັງຄົ້ນຫາ..."
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:16
 msgid "Select"
 msgstr "ເລືອກ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:359
 msgid "Select a field"
 msgstr "ເລືອກຊ່ອງ"
 
@@ -3094,7 +3211,7 @@ msgstr "ເລືອກປະເພດບັນຊີ"
 msgid "Select group"
 msgstr "ເລືອກກຸ່ມ"
 
-#: ../../../lib/web/src/components/place-picker.tsx:49
+#: ../../../lib/web/src/components/place-picker.tsx:36
 msgid "Select location"
 msgstr "ເລືອກສະຖານທີ່"
 
@@ -3102,7 +3219,7 @@ msgstr "ເລືອກສະຖານທີ່"
 msgid "Select next card"
 msgstr "ເລືອກບັດຖັດໄປ"
 
-#: ../../../lib/web/src/components/person-picker.tsx:83
+#: ../../../lib/web/src/components/person-picker.tsx:70
 msgid "Select person..."
 msgstr "ເລືອກບຸກຄົນ..."
 
@@ -3115,8 +3232,8 @@ msgstr "ເລືອກບັດກ່ອນໜ້າ"
 msgid "Select weapon"
 msgstr "ເລືອກອາວຸດ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:289
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:381
 msgid "Select..."
 msgstr "ເລືອກ..."
 
@@ -3137,7 +3254,7 @@ msgstr "ສົ່ງອີກຄັ້ງ"
 msgid "Send chat"
 msgstr "ສົ່ງຂໍ້ຄວາມ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:310
+#: ../../../lib/web/src/components/step-up-dialog.tsx:298
 msgid "Send email"
 msgstr "ສົ່ງອີເມວ"
 
@@ -3186,7 +3303,7 @@ msgstr "ເຊສຊັນໝົດອາຍຸແລ້ວ. ກະລຸນາ�
 msgid "Set"
 msgstr "ຕັ້ງ"
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:147
+#: ../../../lib/web/src/components/travelling-picker.tsx:128
 msgid "Set origin and destination"
 msgstr "ຕັ້ງຕົ້ນທາງແລະປາຍທາງ"
 
@@ -3204,11 +3321,11 @@ msgstr "ການຕັ້ງຄ່າ"
 msgid "Shadows"
 msgstr "ເງົາ"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:327
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:330
 msgid "Show classes"
 msgstr "ສະແດງ classes"
 
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:428
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:431
 msgid "Show fields"
 msgstr "ສະແດງ fields"
 
@@ -3216,7 +3333,7 @@ msgstr "ສະແດງ fields"
 msgid "Show this help"
 msgstr "ສະແດງວິທີໃຊ້ນີ້"
 
-#: ../../../lib/web/src/components/ui/load-more.tsx:39
+#: ../../../lib/web/src/components/ui/load-more.tsx:43
 msgid "Showing {totalShown} of {total}"
 msgstr "ກຳລັງສະແດງ {totalShown} ຈາກ {total}"
 
@@ -3224,17 +3341,21 @@ msgstr "ກຳລັງສະແດງ {totalShown} ຈາກ {total}"
 msgid "Sidebar"
 msgstr "ແຖບຂ້າງ"
 
+#: ../../../lib/web/src/features/errors/access-denied-error.tsx:18
+msgid "Sign in with an account that has access <0/> to this resource."
+msgstr "ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີທີ່ມີສິດເຂົ້າເຖິງ <0/> ຊັບພະຍາກອນນີ້."
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:131
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:137
 msgid "Sign out"
 msgstr "ອອກຈາກລະບົບ"
 
-#: ../../../lib/web/src/components/layout/authenticated-layout.tsx:134
+#: ../../../lib/web/src/components/layout/authenticated-layout.tsx:133
 msgid "Signing out..."
 msgstr "ກຳລັງອອກຈາກລະບົບ..."
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:183
 msgid "Single line of text only"
 msgstr "ບັນທັດດຽວຂອງຂໍ້ຄວາມເທົ່ານັ້ນ"
 
@@ -3305,7 +3426,7 @@ msgstr "ຊະງັກ, ຮູບແບບລົງຈອດ (Vs0)"
 msgid "Start"
 msgstr "ເລີ່ມ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:323
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:325
 msgid "Start the discussion by adding the first comment."
 msgstr "ເລີ່ມການສົນທະນາໂດຍການເພີ່ມຄຳເຫັນທຳອິດ."
 
@@ -3325,16 +3446,16 @@ msgstr "ໂຄງສ້າງ"
 msgid "Subject"
 msgstr "ຫົວຂໍ້"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:427
+#: ../../../lib/web/src/components/comment-composer.tsx:430
 msgid "Submit comment"
 msgstr "ສົ່ງຄຳເຫັນ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:426
+#: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Submit reply"
 msgstr "ສົ່ງການຕອບກັບ"
 
-#: ../../../lib/web/src/components/inline-entity-search.tsx:66
-#: ../../../lib/web/src/components/recommended-entities.tsx:58
+#: ../../../lib/web/src/components/inline-entity-search.tsx:67
+#: ../../../lib/web/src/components/recommended-entities.tsx:59
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "ສະໝັກສະມາຊິກ"
@@ -3363,16 +3484,16 @@ msgstr "ລະບົບ"
 msgid "TACTICAL MAP"
 msgstr "ແຜນທີ່ຍຸດທະວິທີ"
 
-#: ../../../lib/web/src/components/post-tags.tsx:76
+#: ../../../lib/web/src/components/post-tags.tsx:77
 msgid "Tag already exists"
 msgstr "Tag ມີຢູ່ແລ້ວ"
 
-#: ../../../lib/web/src/components/post-tags.tsx:68
+#: ../../../lib/web/src/components/post-tags.tsx:69
 msgid "Tag must be 50 characters or less"
 msgstr "ແທັກຕ້ອງມີບໍ່ເກີນ 50 ຕົວອັກສອນ"
 
-#: ../../../lib/web/src/components/post-tags.tsx:101
-#: ../../../lib/web/src/components/post-tags.tsx:115
+#: ../../../lib/web/src/components/post-tags.tsx:102
+#: ../../../lib/web/src/components/post-tags.tsx:116
 msgid "Tags"
 msgstr "ແທັກ"
 
@@ -3406,11 +3527,11 @@ msgstr "ທີມ — ສີແດງ ປະທະ ສີຟ້າ"
 msgid "Terms and conditions"
 msgstr "ຂໍ້ກຳນົດແລະເງື່ອນໄຂ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:17
 msgid "Text"
 msgstr "ຂໍ້ຄວາມ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:193
+#: ../../../lib/web/src/components/step-up-dialog.tsx:181
 msgid "That code is incorrect or has expired."
 msgstr "ລະຫັດນັ້ນບໍ່ຖືກຕ້ອງ ຫຼື ໝົດອາຍຸແລ້ວ."
 
@@ -3439,7 +3560,7 @@ msgstr "ພາລະກິດຢຸດແລ້ວ."
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "ພາລະກິດຈະເລີ່ມໃໝ່. ການບິນປັດຈຸບັນຈະບໍ່ຖືກບັນທຶກ."
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:68
+#: ../../../lib/web/src/features/errors/general-error.tsx:66
 msgid "The requested content could not be found."
 msgstr "ບໍ່ພົບເນື້ອຫາທີ່ຮ້ອງຂໍ."
 
@@ -3497,26 +3618,28 @@ msgstr "ເວລາ"
 msgid "Time of day"
 msgstr "ເວລາຂອງມື້"
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:220
+#: ../../../lib/web/src/components/travelling-picker.tsx:201
 msgid "To"
 msgstr "ໄປ"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:365
-#: ../../../lib/web/src/components/layout/nav-group.tsx:372
-#: ../../../lib/web/src/components/layout/nav-group.tsx:490
-#: ../../../lib/web/src/components/layout/nav-group.tsx:497
+#: ../../../lib/web/src/components/layout/nav-group.tsx:393
+#: ../../../lib/web/src/components/layout/nav-group.tsx:400
+#: ../../../lib/web/src/components/layout/nav-group.tsx:522
+#: ../../../lib/web/src/components/layout/nav-group.tsx:529
 msgid "Toggle section"
 msgstr "ສະຫຼັບພາກສ່ວນ"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx:337
 #: ../../../lib/web/src/components/ui/sidebar.tsx:340
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle sidebar"
 msgstr "ສະຫຼັບແຖບດ້ານຂ້າງ"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx:352
 #: ../../../lib/web/src/components/ui/sidebar.tsx:355
-msgid "Toggle Sidebar"
-msgstr "ສະຫຼັບແຖບຂ້າງ"
+#~ msgid "Toggle Sidebar"
+#~ msgstr "ສະຫຼັບແຖບຂ້າງ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3527,7 +3650,7 @@ msgstr "ສະຫຼັບຕົວເລືອກການເບິ່ງ"
 msgid "Toggle watched filter"
 msgstr "ສະຫຼັບຕົວກອງທີ່ເບິ່ງ"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:74
+#: ../../../lib/web/src/features/errors/general-error.tsx:72
 msgid "Too many requests"
 msgstr "ມີຄຳຮ້ອງຂໍຫຼາຍເກີນໄປ"
 
@@ -3539,7 +3662,7 @@ msgstr "ເທິງ"
 msgid "Tracers"
 msgstr "ກະສຸນສ່ອງແສງ"
 
-#: ../../../lib/web/src/components/travelling-picker.tsx:145
+#: ../../../lib/web/src/components/travelling-picker.tsx:126
 msgid "Travelling"
 msgstr "ການເດີນທາງ"
 
@@ -3579,8 +3702,8 @@ msgstr "ທຣິມ: ອຽງຂວາ"
 msgid "Try adjusting your search terms"
 msgstr "ລອງປັບປ່ຽນຄຳຄົ້ນຫາຂອງທ່ານ"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:140
-#: ../../../lib/web/src/features/errors/general-error.tsx:180
+#: ../../../lib/web/src/features/errors/general-error.tsx:138
+#: ../../../lib/web/src/features/errors/general-error.tsx:178
 msgid "Try again"
 msgstr "ລອງອີກຄັ້ງ"
 
@@ -3588,12 +3711,12 @@ msgstr "ລອງອີກຄັ້ງ"
 msgid "Tuesday"
 msgstr "ວັນອັງຄານ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:134
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:166
 msgid "Type"
 msgstr "ປະເພດ"
 
-#: ../../../lib/web/src/components/command-menu.tsx:52
+#: ../../../lib/web/src/components/command-menu.tsx:54
 msgid "Type a command or search..."
 msgstr "ພິມຄຳສັ່ງຫຼືຄົ້ນຫາ..."
 
@@ -3617,8 +3740,8 @@ msgstr "ສູງສຸດ"
 msgid "Unable to connect to remote server"
 msgstr "ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບເຊີບເວີໄລຍະໄກໄດ້"
 
-#: ../../../lib/web/src/lib/auth-manager.ts:92
-#: ../../../lib/web/src/lib/auth-manager.ts:104
+#: ../../../lib/web/src/lib/auth-manager.ts:89
+#: ../../../lib/web/src/lib/auth-manager.ts:101
 msgid "Unable to redirect to login. Please try again."
 msgstr "ບໍ່ສາມາດປ່ຽນເສັ້ນທາງໄປຫາການເຂົ້າສູ່ລະບົບ. ກະລຸນາລອງອີກຄັ້ງ."
 
@@ -3627,8 +3750,8 @@ msgid "Unassigned"
 msgstr "ບໍ່ໄດ້ມອບໝາຍ"
 
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
-msgid "Unauthorized Access"
-msgstr "ການເຂົ້າເຖິງທີ່ບໍ່ໄດ້ຮັບອະນຸຍາດ"
+#~ msgid "Unauthorized Access"
+#~ msgstr "ການເຂົ້າເຖິງທີ່ບໍ່ໄດ້ຮັບອະນຸຍາດ"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
@@ -3645,7 +3768,7 @@ msgid "Undesignate target"
 msgstr "ຍົກເລີກການກຳນົດເປົ້າໝາຍ"
 
 #: ../../../lib/web/src/lib/request.ts:133
-#: ../../../lib/web/src/lib/request.ts:206
+#: ../../../lib/web/src/lib/request.ts:209
 msgid "Unexpected API error"
 msgstr "ຄວາມຜິດພາດ API ທີ່ບໍ່ຄາດຄິດ"
 
@@ -3653,6 +3776,11 @@ msgstr "ຄວາມຜິດພາດ API ທີ່ບໍ່ຄາດຄິດ"
 msgid "United States"
 msgstr "ສະຫະລັດອາເມລິກາ"
 
+#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
+#: ../../../lib/web/src/components/tree-row.tsx:219
+#: ../../../lib/web/src/components/tree-row.tsx:373
+#: ../../../lib/web/src/components/tree-table-header.tsx:70
 #: ../../../lib/web/src/features/accounts/types.ts:29
 msgid "Unknown"
 msgstr "ບໍ່ຮູ້ຈັກ"
@@ -3685,19 +3813,24 @@ msgstr "ນ້ຳມັນບໍ່ຈຳກັດ (ຜູ້ຫຼິ້ນທ�
 msgid "Unsubscribe"
 msgstr "ຍົກເລີກການສະໝັກສະມາຊິກ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:285
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:299
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
 msgid "Untitled"
 msgstr "ບໍ່ມີຊື່"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:56
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
 msgid "Updated"
 msgstr "ອັບເດດແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:639
-#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:301
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:56
+msgid "Updated {field}"
+msgstr "ອັບເດດ {field} ແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:661
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:304
 msgid "Upload"
 msgstr "ອັບໂຫຼດ"
 
@@ -3705,21 +3838,25 @@ msgstr "ອັບໂຫຼດ"
 msgid "Upload progress"
 msgstr "ຄວາມຄືບໜ້າການອັບໂຫລດ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:341
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Use your passkey"
 msgstr "ໃຊ້ passkey ຂອງທ່ານ"
 
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:112
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts:18
 msgid "User"
 msgstr "ຜູ້ໃຊ້"
+
+#: ../../../lib/web/src/components/ai-prompts-editor.tsx:159
+msgid "Variables: {variables}"
+msgstr "ຕົວແປ: {variables}"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "ລະຫັດການຢືນຢັນ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:391
+#: ../../../lib/web/src/components/step-up-dialog.tsx:379
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ຢືນຢັນ"
@@ -3736,12 +3873,12 @@ msgstr "ແນວຕັ້ງ"
 msgid "Victory"
 msgstr "ຊະນະ"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:95
+#: ../../../lib/web/src/components/attachment-gallery.tsx:96
 msgid "Video thumbnail"
 msgstr "ຮູບຫຍໍ້ວິດີໂອ"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:315
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:326
 msgid "Video viewer: {0}"
 msgstr "ຕົວເບິ່ງວິດີໂອ: {0}"
 
@@ -3753,8 +3890,8 @@ msgstr "ມຸມມອງ"
 msgid "View"
 msgstr "ເບິ່ງ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:216
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:224
 msgid "View all notifications"
 msgstr "ເບິ່ງການແຈ້ງເຕືອນທັງໝົດ"
 
@@ -3866,11 +4003,11 @@ msgstr "ຫັນຫົວຂວາ"
 msgid "YOU"
 msgstr "ເຈົ້າ"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:61
+#: ../../../lib/web/src/features/errors/general-error.tsx:59
 msgid "You do not have access to this section."
 msgstr "ທ່ານບໍ່ມີສິດເຂົ້າເຖິງພາກສ່ວນນີ້."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:100
+#: ../../../lib/web/src/components/restore-banner.tsx:86
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "ບັນຊີຂອງທ່ານໄດ້ຍ້າຍມາທີ່ນີ້ຈາກ {source}. ຈົນກວ່າທ່ານຈະລຶບມັນທີ່ນັ້ນ, ຂໍ້ຄວາມ ແລະ ການແຈ້ງເຕືອນອາດຈະໄປຮອດທັງສອງເຊີຟເວີ, ບາງເນື້ອຫາຂອງທ່ານຍັງຄົງໃຫ້ບໍລິການຈາກເຊີຟເວີເກົ່າ, ແລະ ຜູ້ຕິດຕາມອາດຈະໃຊ້ເວລາສອງສາມນາທີເພື່ອຊອກຫາທ່ານທີ່ນີ້."
 
