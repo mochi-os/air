@@ -52,7 +52,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} heeft “{1}” aangemaakt"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:339
+#: src/components/Multiplayer.tsx:342
 msgid "{0} flying"
 msgstr "{0} in de lucht"
 
@@ -68,24 +68,24 @@ msgstr "{0} lb boven het maximale lanceergewicht"
 
 #. placeholder {0}: ordered.length
 #. placeholder {1}: matches.length
-#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:333
 msgid "{0} of {1} flights"
 msgstr "{0} van {1} vluchten"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:779
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} was al bezet, en die besturing is nu niet meer gekoppeld."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:771
+#: src/components/SettingsDialog.tsx:775
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} stond op {1}, dat nu niet meer gekoppeld is."
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:570
+#: src/components/Multiplayer.tsx:582
 msgid "{0}/{1} players"
 msgstr "{0}/{1} spelers"
 
@@ -109,7 +109,7 @@ msgstr "{count, plural, one {#w} other {#w}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel}-naam"
 
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Match van {name}"
 
@@ -117,7 +117,7 @@ msgstr "Match van {name}"
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} bood remise aan"
 
-#: src/components/Multiplayer.tsx:532
+#: src/components/Multiplayer.tsx:544
 msgid "{placed} of {limit} bots"
 msgstr "{placed} van {limit} bots"
 
@@ -193,19 +193,23 @@ msgstr "Accounttype"
 
 #: src/components/MissionSetup.tsx:1026
 #: src/components/MissionSetup.tsx:1193
-#: src/components/Multiplayer.tsx:505
+#: src/components/Multiplayer.tsx:517
 msgid "Ace"
 msgstr "Aas"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquire target"
 msgstr "Doel vergrendelen"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Acquisition mode"
 msgstr "Acquisitiemodus"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+msgid "Activity"
+msgstr "Activiteit"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:758
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
@@ -250,7 +254,7 @@ msgstr "Veld toevoegen"
 msgid "Add item..."
 msgstr "Item toevoegen..."
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:314
 msgid "Add link"
 msgstr "Link toevoegen"
 
@@ -281,7 +285,7 @@ msgstr "Weergave toevoegen"
 msgid "Adding..."
 msgstr "Toevoegen..."
 
-#: src/components/SettingsDialog.tsx:1007
+#: src/components/SettingsDialog.tsx:1011
 msgid "Afterburner"
 msgstr "Naverbrander"
 
@@ -301,11 +305,11 @@ msgstr "Vliegdekschip <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> door <1>Mu
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Vliegtuigmodel <0>“F/A-18C Hornet”</0> door <1>CreadorDeMu</1> (Sketchfab), gelicentieerd onder <2>CC BY 4.0</2>. Gewijzigd: heroriënteerd en herschaald, ongebruikte textuurdata verwijderd, externe ladingen afgesplitst naar een apart bestand, één mantel-mesh gespiegeld."
 
-#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:298
 msgid "All modes"
 msgstr "Alle modi"
 
-#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:315
 msgid "All servers"
 msgstr "Alle servers"
 
@@ -326,7 +330,7 @@ msgstr "Er is een fout opgetreden"
 msgid "An unexpected error occurred"
 msgstr "Er is een onverwachte fout opgetreden"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Anchored sides"
 msgstr "Verankerde kanten"
 
@@ -347,8 +351,8 @@ msgstr "Iedereen die is ingelogd"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Alles wat op deze feed is geabonneerd, ontvangt deze niet meer. Je kunt daarna een nieuwe URL kopiëren."
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:234
 msgid "Approach power (ATC)"
 msgstr "Naderingsvermogen (ATC)"
 
@@ -360,6 +364,10 @@ msgstr "Nadering, op snelheid (Vapp)"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:316
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Weet je zeker dat je \"{0}\" wilt verwijderen?"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+msgstr "Weet je zeker dat je \"{title}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt."
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:631
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
@@ -373,8 +381,16 @@ msgstr "Weet je zeker dat je deze reactie wilt verwijderen? Hiermee worden ook a
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Weet je zeker dat je wilt uitloggen? Je moet opnieuw inloggen om toegang te krijgen tot je account."
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:39
+msgid "Are you sure you want to resign?"
+msgstr "Weet je zeker dat je wilt opgeven?"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:38
+msgid "Are you sure you want to resign? {opponentName} will win the game."
+msgstr "Weet je zeker dat je wilt opgeven? {opponentName} wint de partij."
+
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:233
 msgid "Arrestor hook"
 msgstr "Vanghaak"
 
@@ -415,12 +431,12 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar voor {name}"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:479
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:483
 msgid "Axis {i}"
 msgstr "As {i}"
 
-#: src/components/SettingsDialog.tsx:428
+#: src/components/SettingsDialog.tsx:432
 msgid "Axis calibration and mapping"
 msgstr "Kalibratie en toewijzing van assen"
 
@@ -442,9 +458,18 @@ msgstr "Terug naar start"
 msgid "Bandit"
 msgstr "Bandiet"
 
+#: ../../../lib/web/src/components/banner-section.tsx:80
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner"
+
+#: ../../../lib/web/src/components/banner-section.tsx:69
+msgid "Banner removed"
+msgstr "Banner verwijderd"
+
+#: ../../../lib/web/src/components/banner-section.tsx:69
+msgid "Banner updated"
+msgstr "Banner bijgewerkt"
 
 #: src/components/GameCanvas.tsx:120
 msgid "BELOW 250 — GEAR AND FLAPS"
@@ -466,7 +491,7 @@ msgstr "Beste glijvlucht (motoren uit)"
 msgid "Best sustained turn speed"
 msgstr "Beste aanhoudende bochtsnelheid"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:600
 msgid "Betty and RWR alerts"
 msgstr "Betty- en RWR-waarschuwingen"
 
@@ -474,8 +499,8 @@ msgstr "Betty- en RWR-waarschuwingen"
 msgid "BINGO FUEL"
 msgstr "BINGO BRANDSTOF"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:72
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:209
 msgid "Blocked by"
 msgstr "Geblokkeerd door"
 
@@ -484,15 +509,15 @@ msgstr "Geblokkeerd door"
 msgid "Blocked navigation to untrusted link"
 msgstr "Navigatie naar niet-vertrouwde link geblokkeerd"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:70
 msgid "Blocks"
 msgstr "Blokkeert"
 
-#: src/components/Multiplayer.tsx:622
+#: src/components/Multiplayer.tsx:634
 msgid "Blue"
 msgstr "Blauw"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Blue bots"
 msgstr "Blauwe bots"
 
@@ -513,7 +538,7 @@ msgstr "Interesse versterken"
 msgid "Border colour"
 msgstr "Randkleur"
 
-#: src/components/Multiplayer.tsx:482
+#: src/components/Multiplayer.tsx:494
 msgid "Bots"
 msgstr "Bots"
 
@@ -537,16 +562,16 @@ msgstr "DRAAI WANNEER GEREED"
 msgid "Browser notifications"
 msgstr "Browsermeldingen"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:555
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:559
 msgid "Button {i}"
 msgstr "Knop {i}"
 
-#: src/components/SettingsDialog.tsx:520
+#: src/components/SettingsDialog.tsx:524
 msgid "Button mappings"
 msgstr "Knoptoewijzingen"
 
-#: src/components/Multiplayer.tsx:432
+#: src/components/Multiplayer.tsx:444
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — wapens vrij vanaf de start"
 
@@ -558,12 +583,12 @@ msgstr "BVR, wapens vrij vanaf de start"
 msgid "CALL THE BALL"
 msgstr "MELD DE BAL"
 
-#: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1059
+#: src/components/Multiplayer.tsx:326
+#: src/components/SettingsDialog.tsx:1063
 msgid "Callsign"
 msgstr "Roepnaam"
 
-#: src/components/SettingsDialog.tsx:857
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera distance"
 msgstr "Camera-afstand"
 
@@ -572,7 +597,7 @@ msgid "Camera permission denied"
 msgstr "Cameramachtiging geweigerd"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Camera unavailable"
 msgstr "Camera niet beschikbaar"
 
@@ -591,9 +616,9 @@ msgstr "Camera niet beschikbaar"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:549
-#: src/components/Multiplayer.tsx:294
-#: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:821
+#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:611
+#: src/components/SettingsDialog.tsx:825
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -611,11 +636,11 @@ msgstr "Antwoord annuleren"
 msgid "Cancelled"
 msgstr "Geannuleerd"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:598
 msgid "Cannons and ordnance"
 msgstr "Kanonnen en munitie"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Canopy"
 msgstr "Cockpitkap"
 
@@ -624,7 +649,7 @@ msgstr "Cockpitkap"
 msgid "Caption"
 msgstr "Bijschrift"
 
-#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:599
 msgid "Carrier and ambient"
 msgstr "Vliegdekschip en omgeving"
 
@@ -689,17 +714,17 @@ msgstr "Achtervolgingsweergave:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:247
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:248
 msgid "Chat to everyone"
 msgstr "Chat naar iedereen"
 
-#: src/components/MatchLog.tsx:365
+#: src/components/MatchLog.tsx:370
 #: src/components/MissionSetup.tsx:1115
-#: src/components/Multiplayer.tsx:446
+#: src/components/Multiplayer.tsx:458
 msgid "Cheats"
 msgstr "Cheats"
 
@@ -720,16 +745,17 @@ msgstr "Kies een game in de zijbalk of start een nieuw spel."
 msgid "Choose language"
 msgstr "Kies taal"
 
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
 #: ../../../lib/web/src/components/travelling-picker.tsx:151
 #: ../../../lib/web/src/components/travelling-picker.tsx:212
 #: ../../../lib/web/src/components/travelling-picker.tsx:218
-#: src/components/MatchLog.tsx:323
-#: src/components/MatchLog.tsx:379
-#: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:686
+#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:384
+#: src/components/Multiplayer.tsx:396
+#: src/components/SettingsDialog.tsx:690
 msgid "Clear"
 msgstr "Wissen"
 
@@ -741,8 +767,8 @@ msgstr "Alles wissen"
 msgid "Clear search"
 msgstr "Zoekopdracht wissen"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:517
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:522
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
@@ -829,6 +855,11 @@ msgstr "Reactieacties"
 msgid "Comments"
 msgstr "Reacties"
 
+#. placeholder {0}: data.comment_count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+msgid "Comments ({0})"
+msgstr "Reacties ({0})"
+
 #: src/components/SettingsDialog.tsx:105
 msgid "Communication"
 msgstr "Communicatie"
@@ -866,7 +897,7 @@ msgstr "Verbonden"
 msgid "Connecting..."
 msgstr "Verbinden..."
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:345
 msgid "Connecting…"
 msgstr "Verbinden…"
 
@@ -887,7 +918,7 @@ msgid "Contextual information and details."
 msgstr "Contextuele informatie en details."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:306
 msgid "Continue"
 msgstr "Doorgaan"
 
@@ -911,11 +942,11 @@ msgstr "Kopiëren"
 msgid "Corner speed (best instant turn)"
 msgstr "Hoekpuntsnelheid (beste directe bocht)"
 
-#: src/components/MatchLog.tsx:483
+#: src/components/MatchLog.tsx:488
 msgid "Could not change the recording"
 msgstr "De opname kon niet worden gewijzigd"
 
-#: src/components/Multiplayer.tsx:250
+#: src/components/Multiplayer.tsx:253
 msgid "Could not create the match"
 msgstr "Kon de match niet aanmaken"
 
@@ -923,16 +954,16 @@ msgstr "Kon de match niet aanmaken"
 msgid "Could not load this document. Please try again later."
 msgstr "Kan dit document niet laden. Probeer het later opnieuw."
 
-#: src/components/MatchLog.tsx:168
+#: src/components/MatchLog.tsx:173
 msgid "Could not load your flights"
 msgstr "Kan je vluchten niet laden"
 
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:298
 msgid "Could not save the profile"
 msgstr "Kon het profiel niet opslaan"
 
-#: src/components/MatchLog.tsx:430
-#: src/components/MatchLog.tsx:436
+#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:441
 msgid "Could not save the recording"
 msgstr "Kon de opname niet opslaan"
 
@@ -956,8 +987,8 @@ msgstr "Kon de herauthenticatie niet starten. Probeer het opnieuw."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Kan niet verifiëren met dat account. Probeer het opnieuw."
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Countermeasures"
 msgstr "Tegenmaatregelen"
 
@@ -971,8 +1002,8 @@ msgstr "NEERGESTORT"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:551
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:691
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:513
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:507
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:676
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
 msgid "Create"
 msgstr "Aanmaken"
@@ -981,11 +1012,11 @@ msgstr "Aanmaken"
 msgid "Create {entityLabel}"
 msgstr "{entityLabel} maken"
 
-#: src/components/Multiplayer.tsx:542
+#: src/components/Multiplayer.tsx:554
 msgid "Create and fly"
 msgstr "Aanmaken en vliegen"
 
-#: src/components/Multiplayer.tsx:357
+#: src/components/Multiplayer.tsx:369
 msgid "Create match"
 msgstr "Match aanmaken"
 
@@ -1008,7 +1039,7 @@ msgstr "Aangemaakt"
 msgid "Created {field}"
 msgstr "{field} aangemaakt"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:676
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:260
 msgid "Creating..."
 msgstr "Aanmaken..."
@@ -1020,7 +1051,7 @@ msgstr "Credits"
 
 #: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:397
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -1037,8 +1068,8 @@ msgstr "Aangepast"
 msgid "CUT"
 msgstr "GEVAARLIJK"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:241
 msgid "Cycle view"
 msgstr "Weergave wisselen"
 
@@ -1051,17 +1082,17 @@ msgid "Data conflict"
 msgstr "Gegevensconflict"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts:14
-#: src/components/MatchLog.tsx:341
+#: src/components/MatchLog.tsx:346
 msgid "Date"
 msgstr "Datum"
 
 #: src/components/MissionSetup.tsx:1088
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:392
 msgid "Day"
 msgstr "Dag"
 
-#: src/components/MatchLog.tsx:274
-#: src/components/MatchLog.tsx:359
+#: src/components/MatchLog.tsx:279
+#: src/components/MatchLog.tsx:364
 msgid "Deaths"
 msgstr "Doden"
 
@@ -1094,6 +1125,8 @@ msgstr "Standaardsortering"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -1112,6 +1145,16 @@ msgstr "Reactie verwijderen"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:304
 msgid "Delete field"
 msgstr "Veld verwijderen"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:69
+msgid "Delete game?"
+msgstr "Spel verwijderen?"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+msgid "Delete item"
+msgstr "Item verwijderen"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:117
 msgid "Delete option"
@@ -1139,6 +1182,10 @@ msgstr "Verwijderd"
 msgid "Deleted {field}"
 msgstr "{field} verwijderd"
 
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:75
+msgid "Deleting..."
+msgstr "Verwijderen..."
+
 #: src/components/MissionSetup.tsx:1038
 msgid "Departure / Recovery"
 msgstr "Vertrek / landing"
@@ -1155,7 +1202,7 @@ msgstr "Beschrijving"
 msgid "Destroyed by fire"
 msgstr "Door brand verwoest"
 
-#: src/components/SettingsDialog.tsx:932
+#: src/components/SettingsDialog.tsx:936
 msgid "Detail"
 msgstr "Detailniveau"
 
@@ -1163,8 +1210,8 @@ msgstr "Detailniveau"
 msgid "Details Panel"
 msgstr "Detailspaneel"
 
-#: src/components/SettingsDialog.tsx:508
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:576
 msgid "Detect"
 msgstr "Detecteren"
 
@@ -1179,7 +1226,7 @@ msgstr "Detecteren"
 msgid "Detect from web browser"
 msgstr "Detecteren via webbrowser"
 
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:286
 msgid "Different game host"
 msgstr "Andere gamehost"
 
@@ -1199,25 +1246,25 @@ msgstr "Verwerpen"
 msgid "Discard draft?"
 msgstr "Concept verwerpen?"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "disconnected"
 msgstr "losgekoppeld"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:155
+#: src/components/MatchLog.tsx:160
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:781
+#: src/components/SettingsDialog.tsx:785
 msgid "Dismiss"
 msgstr "Sluiten"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:243
 msgid "Display repeater"
 msgstr "Schermrepeater"
 
@@ -1225,7 +1272,7 @@ msgstr "Schermrepeater"
 msgid "Displays the mobile sidebar."
 msgstr "Toont de mobiele zijbalk."
 
-#: src/components/SettingsDialog.tsx:993
+#: src/components/SettingsDialog.tsx:997
 msgid "Distance LOD"
 msgstr "Afstand-LOD"
 
@@ -1234,8 +1281,9 @@ msgid "Does not match the required pattern"
 msgstr "Komt niet overeen met het vereiste patroon"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1167
 msgid "Done"
 msgstr "Klaar"
 
@@ -1258,19 +1306,19 @@ msgstr "BENEDENWINDS 600 VOET"
 msgid "Drag"
 msgstr "Slepen"
 
-#: src/components/Multiplayer.tsx:502
+#: src/components/Multiplayer.tsx:514
 msgid "Drone"
 msgstr "Drone"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:71
 msgid "Duplicates"
 msgstr "Dupliceert"
 
-#: src/components/MatchLog.tsx:344
+#: src/components/MatchLog.tsx:349
 msgid "Duration"
 msgstr "Duur"
 
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Dynamic resolution"
 msgstr "Dynamische resolutie"
 
@@ -1321,15 +1369,15 @@ msgstr "Geselecteerde kaart bewerken"
 msgid "Edit view"
 msgstr "Weergave bewerken"
 
-#: src/components/SettingsDialog.tsx:978
+#: src/components/SettingsDialog.tsx:982
 msgid "Effects"
 msgstr "Effecten"
 
-#: src/components/SettingsDialog.tsx:956
+#: src/components/SettingsDialog.tsx:960
 msgid "Effects detail"
 msgstr "Effectdetail"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:240
 msgid "Eject"
 msgstr "Schietstoel"
 
@@ -1349,12 +1397,12 @@ msgstr "E-mailcode"
 msgid "EMERG JETT"
 msgstr "NOODAFWORP"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Emergency jettison (hold)"
 msgstr "Noodafworp (vasthouden)"
 
-#: src/components/Multiplayer.tsx:569
+#: src/components/Multiplayer.tsx:581
 msgid "empty"
 msgstr "leeg"
 
@@ -1363,7 +1411,7 @@ msgstr "leeg"
 msgid "Empty pylon"
 msgstr "Lege pylon"
 
-#: src/components/SettingsDialog.tsx:612
+#: src/components/SettingsDialog.tsx:616
 msgid "Enable sound"
 msgstr "Geluid inschakelen"
 
@@ -1375,9 +1423,13 @@ msgstr "IK VAL AAN"
 msgid "Engagement"
 msgstr "Gevecht"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Engine and afterburner"
 msgstr "Motor en naverbrander"
+
+#: ../../../lib/web/src/components/banner-section.tsx:88
+msgid "Enter banner text (markdown supported)..."
+msgstr "Voer bannertekst in (markdown ondersteund)..."
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:290
 msgid "Enter the code from your email"
@@ -1386,6 +1438,10 @@ msgstr "Voer de code uit je e-mail in"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Enter your authenticator code"
 msgstr "Voer je authenticatorcode in"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+msgid "Error"
+msgstr "Fout"
 
 #: src/components/GameCanvas.tsx:337
 msgid "Everyone"
@@ -1414,16 +1470,16 @@ msgstr "Zijbalk uitklappen"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Explosie-animatie <0>“Explosion02HD”</0> door <1>Unity Technologies</1> (Unity Labs VFX-beeldsequenties), uitgebracht onder <2>CC0</2>. Gewijzigd: opnieuw gecomprimeerd voor het web."
 
-#: src/components/SettingsDialog.tsx:412
+#: src/components/SettingsDialog.tsx:416
 msgid "Export"
 msgstr "Exporteren"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Extend flaps"
 msgstr "Kleppen uit"
 
-#: src/components/SettingsDialog.tsx:948
+#: src/components/SettingsDialog.tsx:952
 msgid "Exterior detail"
 msgstr "Exterieurdetail"
 
@@ -1448,10 +1504,14 @@ msgstr "Account toevoegen mislukt"
 msgid "Failed to copy"
 msgstr "Kopiëren mislukt"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:131
 #: ../../../lib/web/src/components/options-menu.tsx:98
 msgid "Failed to create link"
 msgstr "Link aanmaken mislukt"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:303
+msgid "Failed to delete"
+msgstr "Verwijderen mislukt"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:130
 msgid "Failed to delete attachment"
@@ -1461,7 +1521,7 @@ msgstr "Bijlage verwijderen mislukt"
 msgid "Failed to delete comment"
 msgstr "Reactie verwijderen mislukt"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:153
 msgid "Failed to delete link"
 msgstr "Link verwijderen mislukt"
 
@@ -1481,6 +1541,11 @@ msgstr "Geschiedenis laden mislukt"
 msgid "Failed to load image"
 msgstr "Kan afbeelding niet laden"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+msgid "Failed to load item"
+msgstr "Item laden mislukt"
+
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:213
 msgid "Failed to load prompts"
 msgstr "Prompts laden mislukt"
@@ -1488,6 +1553,10 @@ msgstr "Prompts laden mislukt"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "Kan video niet laden"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:317
+msgid "Failed to move"
+msgstr "Verplaatsen mislukt"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:155
 msgid "Failed to post comment"
@@ -1501,13 +1570,25 @@ msgstr "Prompt resetten mislukt"
 msgid "Failed to revoke RSS access"
 msgstr "Kan RSS-toegang niet intrekken"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:273
+msgid "Failed to save"
+msgstr "Opslaan mislukt"
+
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:111
 msgid "Failed to save prompt"
 msgstr "Prompt opslaan mislukt"
 
+#: ../../../lib/web/src/components/banner-section.tsx:71
+msgid "Failed to update banner"
+msgstr "Banner bijwerken mislukt"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
 msgid "Failed to update comment"
 msgstr "Reactie bijwerken mislukt"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:288
+msgid "Failed to update watching"
+msgstr "Kan volgen niet bijwerken"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:114
 msgid "Failed to upload attachment"
@@ -1525,7 +1606,7 @@ msgstr "FCS"
 msgid "FIGHT'S ON"
 msgstr "HET GEVECHT IS BEGONNEN"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:611
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:605
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:160
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:180
 msgid "Files"
@@ -1535,7 +1616,7 @@ msgstr "Bestanden"
 msgid "Finish moving your account"
 msgstr "Voltooi het verplaatsen van uw account"
 
-#: src/components/MatchLog.tsx:156
+#: src/components/MatchLog.tsx:161
 msgid "Finished"
 msgstr "Voltooid"
 
@@ -1543,12 +1624,12 @@ msgstr "Voltooid"
 msgid "fire"
 msgstr "vuren"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Fire weapon"
 msgstr "Wapen afvuren"
 
-#: src/components/SettingsDialog.tsx:849
+#: src/components/SettingsDialog.tsx:853
 msgid "Fixed flight keys"
 msgstr "Vaste vluchttoetsen"
 
@@ -1588,7 +1669,7 @@ msgstr "Vlucht"
 msgid "FLIGHT CORE FAILED"
 msgstr "VLUCHTKERN MISLUKT"
 
-#: src/components/SettingsDialog.tsx:1101
+#: src/components/SettingsDialog.tsx:1105
 msgid "Flight hints"
 msgstr "Vluchthints"
 
@@ -1596,11 +1677,11 @@ msgstr "Vluchthints"
 msgid "Flight log"
 msgstr "Vluchtlogboek"
 
-#: src/components/MatchLog.tsx:265
+#: src/components/MatchLog.tsx:270
 msgid "Flights"
 msgstr "Vluchten"
 
-#: src/components/MatchLog.tsx:157
+#: src/components/MatchLog.tsx:162
 msgid "Flown"
 msgstr "Gevlogen"
 
@@ -1613,11 +1694,11 @@ msgstr "Vliegen"
 msgid "Fly again"
 msgstr "Opnieuw vliegen"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1025
 msgid "Framerate counter"
 msgstr "Framerate-teller"
 
-#: src/components/MatchLog.tsx:148
+#: src/components/MatchLog.tsx:153
 #: src/components/MissionSetup.tsx:995
 msgid "Free flight"
 msgstr "Vrije vlucht"
@@ -1642,7 +1723,7 @@ msgstr "Van"
 msgid "From theme"
 msgstr "Van thema"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "Fuel"
 msgstr "Brandstof"
 
@@ -1662,7 +1743,7 @@ msgstr "BRANDSTOFLEK"
 msgid "FUEL LO"
 msgstr "BRANDSTOF LAAG"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "Fuel probe"
 msgstr "Brandstofsonde"
 
@@ -1670,7 +1751,7 @@ msgstr "Brandstofsonde"
 msgid "Fuel tank"
 msgstr "Brandstoftank"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/MatchLog.tsx:150
 msgid "Furball"
 msgstr "Furball"
 
@@ -1679,7 +1760,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Romp"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Gain"
 msgstr "Versterking"
 
@@ -1691,7 +1772,7 @@ msgstr "onderstel"
 msgid "GEAR"
 msgstr "GESTEL"
 
-#: src/components/SettingsDialog.tsx:1172
+#: src/components/SettingsDialog.tsx:1176
 msgid "General"
 msgstr "Algemeen"
 
@@ -1700,11 +1781,11 @@ msgstr "Algemeen"
 msgid "Go back"
 msgstr "Terug"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1180
 msgid "Graphics"
 msgstr "Graphics"
 
-#: src/components/SettingsDialog.tsx:908
+#: src/components/SettingsDialog.tsx:912
 msgid "Graphics preset"
 msgstr "Graphics-voorinstelling"
 
@@ -1734,7 +1815,7 @@ msgid "Gun only"
 msgstr "Alleen kanonnen"
 
 #: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:414
 msgid "Guns only"
 msgstr "Alleen kanonnen"
 
@@ -1742,25 +1823,25 @@ msgstr "Alleen kanonnen"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardwarematige grafische versnelling staat uit — controleer browserinstellingen of grafische stuurprogramma's."
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head"
 msgstr "Hoofd"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head tracking"
 msgstr "Hoofdtracking"
 
-#: src/components/SettingsDialog.tsx:899
+#: src/components/SettingsDialog.tsx:903
 msgid "High"
 msgstr "Hoog"
 
 #: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:398
 msgid "High stratus"
 msgstr "Hoge stratus"
 
-#: src/components/SettingsDialog.tsx:1092
+#: src/components/SettingsDialog.tsx:1096
 msgid "Hints"
 msgstr "Hints"
 
@@ -1787,11 +1868,11 @@ msgstr "HAAK"
 msgid "Hot"
 msgstr "Populair"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "HUD altitude source"
 msgstr "HUD-hoogtebron"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "HUD declutter"
 msgstr "HUD vereenvoudigen"
 
@@ -1808,7 +1889,7 @@ msgstr "Afbeeldingsviewer: {0}"
 msgid "Imperial"
 msgstr "Imperiaal"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:420
 msgid "Import"
 msgstr "Importeren"
 
@@ -1829,7 +1910,7 @@ msgstr "Initialen-avatar"
 msgid "Initials avatar for {name}"
 msgstr "Initialen-avatar voor {name}"
 
-#: src/components/SettingsDialog.tsx:372
+#: src/components/SettingsDialog.tsx:376
 msgid "Input hardware"
 msgstr "Invoerhardware"
 
@@ -1859,7 +1940,7 @@ msgid "INVULNERABLE"
 msgstr "ONKWETSBAAR"
 
 #: src/components/MissionSetup.tsx:1121
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:467
 msgid "Invulnerable (human players only)"
 msgstr "Onkwetsbaar (alleen menselijke spelers)"
 
@@ -1867,13 +1948,17 @@ msgstr "Onkwetsbaar (alleen menselijke spelers)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Het lijkt erop dat de pagina die je zoekt <0/>niet bestaat of is verwijderd."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
-msgid "Jammer"
-msgstr "Stoorzender"
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+msgid "Item details"
+msgstr "Itemdetails"
 
 #: src/components/SettingsDialog.tsx:172
 #: src/components/SettingsDialog.tsx:223
+msgid "Jammer"
+msgstr "Stoorzender"
+
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Jettison tanks"
 msgstr "Tanks afwerpen"
 
@@ -1881,7 +1966,7 @@ msgstr "Tanks afwerpen"
 msgid "JETTISON: GEAR"
 msgstr "AFWORP: LANDINGSGESTEL"
 
-#: src/components/Multiplayer.tsx:634
+#: src/components/Multiplayer.tsx:646
 msgid "Join"
 msgstr "Meedoen"
 
@@ -1894,13 +1979,13 @@ msgstr "Deelnemen aan server"
 msgid "JOINED"
 msgstr "DOET MEE"
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:151
 #: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Joust"
 msgstr "Steekspel"
 
-#: src/components/Multiplayer.tsx:371
+#: src/components/Multiplayer.tsx:383
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, eerste kill wint"
 
@@ -1908,7 +1993,7 @@ msgstr "Duel — 1v1, eerste kill wint"
 msgid "Joust against bot"
 msgstr "Duel tegen bot"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1188
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1916,7 +2001,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Zojuist"
 
-#: src/components/MatchLog.tsx:277
+#: src/components/MatchLog.tsx:282
 msgid "K/D"
 msgstr "K/D"
 
@@ -1924,7 +2009,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Sneltoetsen"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1192
 msgid "Keys"
 msgstr "Toetsen"
 
@@ -1932,12 +2017,12 @@ msgstr "Toetsen"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchLog.tsx:159
+#: src/components/MatchLog.tsx:164
 msgid "Killed"
 msgstr "Neergehaald"
 
-#: src/components/MatchLog.tsx:271
-#: src/components/MatchLog.tsx:356
+#: src/components/MatchLog.tsx:276
+#: src/components/MatchLog.tsx:361
 msgid "Kills"
 msgstr "Neerhalingen"
 
@@ -1953,8 +2038,8 @@ msgstr "BRAND L MOTOR"
 msgid "L GEAR"
 msgstr "L WIEL"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:232
 msgid "Landing gear"
 msgstr "Landingsgestel"
 
@@ -1967,8 +2052,8 @@ msgstr "Groot"
 msgid "LATE"
 msgstr "LAAT"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
 msgid "Launch (catapult)"
 msgstr "Lancering (katapult)"
 
@@ -1980,7 +2065,7 @@ msgstr "start / doel"
 msgid "Layout"
 msgstr "Lay-out"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "lb"
 msgstr "lb"
 
@@ -1988,7 +2073,7 @@ msgstr "lb"
 msgid "Leave server"
 msgstr "Server verlaten"
 
-#: src/components/MatchLog.tsx:154
+#: src/components/MatchLog.tsx:159
 msgid "Left"
 msgstr "Verlaten"
 
@@ -2021,8 +2106,8 @@ msgstr "Licht"
 msgid "lights"
 msgstr "verlichting"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:238
 msgid "Lights"
 msgstr "Verlichting"
 
@@ -2034,7 +2119,7 @@ msgstr "LICHTEN"
 msgid "Link"
 msgstr "Link"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:273
 msgid "Links"
 msgstr "Links"
 
@@ -2057,6 +2142,14 @@ msgstr "Inhoud laden…"
 #: src/components/GameCanvas.tsx:81
 msgid "LOADING FAILED"
 msgstr "LADEN MISLUKT"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+msgid "Loading item"
+msgstr "Item laden"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+msgid "Loading item details"
+msgstr "Itemdetails laden"
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:39
 #: ../../../lib/web/src/features/document/document-page.tsx:88
@@ -2088,37 +2181,37 @@ msgstr "Bezig met uitloggen…"
 msgid "Look"
 msgstr "Kijken"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:860
 msgid "Look / orbit"
 msgstr "Kijken / draaien"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Look at target"
 msgstr "Kijk naar doel"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look down"
 msgstr "Omlaag kijken"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Look left"
 msgstr "Naar links kijken"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Look right"
 msgstr "Naar rechts kijken"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look up"
 msgstr "Omhoog kijken"
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:901
 msgid "Low"
 msgstr "Laag"
 
 #: src/components/MissionSetup.tsx:1105
 #: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:400
 msgid "Low stratus"
 msgstr "Lage stratus"
 
@@ -2138,7 +2231,7 @@ msgstr "Handmatig"
 msgid "map"
 msgstr "kaart"
 
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:246
 msgid "Map"
 msgstr "Kaart"
 
@@ -2147,12 +2240,12 @@ msgstr "Kaart"
 msgid "Mark all as read"
 msgstr "Alles als gelezen markeren"
 
-#: src/components/SettingsDialog.tsx:591
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:622
 msgid "Master volume"
 msgstr "Hoofdvolume"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:379
 msgid "Match type"
 msgstr "Matchtype"
 
@@ -2169,7 +2262,7 @@ msgid "MCP server"
 msgstr "MCP-server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:902
 msgid "Medium"
 msgstr "Gemiddeld"
 
@@ -2182,12 +2275,12 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:193
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:249
 msgid "Menu"
 msgstr "Menu"
 
-#: src/components/Multiplayer.tsx:431
+#: src/components/Multiplayer.tsx:443
 msgid "Merge — fight on at the pass"
 msgstr "Merge — gevecht begint bij het passeren"
 
@@ -2217,7 +2310,7 @@ msgstr "Microfoonmachtiging geweigerd"
 
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 msgid "Mid stratus"
 msgstr "Middelhoge stratus"
 
@@ -2249,8 +2342,8 @@ msgstr "Missie voorbij"
 msgid "Mochi web"
 msgstr "Mochi-web"
 
-#: src/components/MatchLog.tsx:288
-#: src/components/MatchLog.tsx:350
+#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:355
 msgid "Mode"
 msgstr "Modus"
 
@@ -2267,7 +2360,7 @@ msgstr "Maandag"
 msgid "More options"
 msgstr "Meer opties"
 
-#: src/components/SettingsDialog.tsx:508
+#: src/components/SettingsDialog.tsx:512
 msgid "Move…"
 msgstr "Beweeg…"
 
@@ -2279,7 +2372,7 @@ msgstr "Verplaatst"
 msgid "Moved {field}"
 msgstr "{field} verplaatst"
 
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:262
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer vereist WebTransport, dat deze browser nog niet ondersteunt."
 
@@ -2308,7 +2401,7 @@ msgstr "Naam mag maximaal 1000 tekens bevatten"
 msgid "Network error"
 msgstr "Netwerkfout"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:498
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:492
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Nieuw"
@@ -2325,11 +2418,11 @@ msgstr "Volgende afbeelding"
 
 #: src/components/MissionSetup.tsx:1089
 #: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:393
 msgid "Night"
 msgstr "Nacht"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:577
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:571
 msgid "No {parentClassNames} to add to"
 msgstr "Geen {parentClassNames} om aan toe te voegen"
 
@@ -2345,15 +2438,15 @@ msgstr "Nog geen activiteit"
 msgid "No comments yet"
 msgstr "Nog geen reacties"
 
-#: src/components/SettingsDialog.tsx:701
+#: src/components/SettingsDialog.tsx:705
 msgid "No control matches “{query}”."
 msgstr "Geen besturing komt overeen met “{query}”."
 
-#: src/components/MatchLog.tsx:377
+#: src/components/MatchLog.tsx:382
 msgid "No flight matches these filters."
 msgstr "Geen vlucht komt overeen met deze filters."
 
-#: src/components/MatchLog.tsx:207
+#: src/components/MatchLog.tsx:212
 msgid "No flights yet"
 msgstr "Nog geen vluchten"
 
@@ -2365,19 +2458,19 @@ msgstr "Nog geen spellen"
 msgid "No groups available"
 msgstr "Geen groepen beschikbaar"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:544
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:538
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Er kunnen nog geen itemtypen worden aangemaakt. Maak eerst de vereiste bovenliggende items aan."
 
-#: src/components/SettingsDialog.tsx:404
+#: src/components/SettingsDialog.tsx:408
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Geen joystick gedetecteerd — druk op een willekeurige knop erop om hem wakker te maken."
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:354
 msgid "No matching objects"
 msgstr "Geen overeenkomende objecten"
 
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No open matches — create one."
 msgstr "Geen open matches — maak er een aan."
 
@@ -2434,7 +2527,7 @@ msgid "No views"
 msgstr "Geen weergaven"
 
 #: src/components/MissionSetup.tsx:747
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No world server."
 msgstr "Geen wereldserver."
 
@@ -2443,9 +2536,13 @@ msgid "NO-GRADE"
 msgstr "GEEN CIJFER"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:560
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:563
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2457,9 +2554,9 @@ msgstr "GEEN CIJFER"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:473
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:829
+#: src/components/SettingsDialog.tsx:477
+#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:833
 msgid "None"
 msgstr "Geen"
 
@@ -2471,7 +2568,7 @@ msgstr "Normaal"
 msgid "NOSE GEAR"
 msgstr "NEUSWIEL"
 
-#: src/components/SettingsDialog.tsx:307
+#: src/components/SettingsDialog.tsx:311
 msgid "Not a joystick profile"
 msgstr "Geen joystickprofiel"
 
@@ -2499,7 +2596,7 @@ msgstr "Meldingen: {0}"
 
 #: src/components/MissionSetup.tsx:1024
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:503
+#: src/components/Multiplayer.tsx:515
 msgid "Novice"
 msgstr "Beginner"
 
@@ -2509,7 +2606,7 @@ msgstr "Beginner"
 msgid "Number"
 msgstr "Nummer"
 
-#: src/components/SettingsDialog.tsx:964
+#: src/components/SettingsDialog.tsx:968
 msgid "Ocean detail"
 msgstr "Oceaandetail"
 
@@ -2539,11 +2636,11 @@ msgstr "Op startbaan"
 msgid "Oops! Page Not Found!"
 msgstr "Oeps! Pagina niet gevonden!"
 
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Open"
 msgstr "Open"
 
-#: src/components/Multiplayer.tsx:370
+#: src/components/Multiplayer.tsx:382
 msgid "Open — anyone may join or leave"
 msgstr "Open — iedereen mag meedoen of vertrekken"
 
@@ -2602,8 +2699,8 @@ msgstr "draaien"
 msgid "Other"
 msgstr "Overig"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:212
 msgid "Override G limit"
 msgstr "G-limiet negeren"
 
@@ -2619,11 +2716,13 @@ msgstr "PADLOCK"
 msgid "PADLOCK OFF"
 msgstr "PADLOCK UIT"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:552
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
 msgid "Parent"
 msgstr "Bovenliggend"
 
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:211
 msgid "Parking brake"
 msgstr "Parkeerrem"
 
@@ -2657,14 +2756,14 @@ msgid "People"
 msgstr "Mensen"
 
 #: src/components/MissionSetup.tsx:676
-#: src/components/Multiplayer.tsx:150
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:331
 msgid "pilot"
 msgstr "piloot"
 
 #: src/components/MissionSetup.tsx:1025
 #: src/components/MissionSetup.tsx:1192
-#: src/components/Multiplayer.tsx:504
+#: src/components/Multiplayer.tsx:516
 msgid "Pilot"
 msgstr "Piloot"
 
@@ -2672,7 +2771,7 @@ msgstr "Piloot"
 msgid "PILOT DOWN"
 msgstr "PILOOT GEDOOD"
 
-#: src/components/SettingsDialog.tsx:1054
+#: src/components/SettingsDialog.tsx:1058
 msgid "Pilot identity"
 msgstr "Pilootidentiteit"
 
@@ -2680,8 +2779,8 @@ msgstr "Pilootidentiteit"
 msgid "Pilot killed"
 msgstr "Piloot gedood"
 
-#: src/components/MatchLog.tsx:455
-#: src/components/MatchLog.tsx:456
+#: src/components/MatchLog.tsx:460
+#: src/components/MatchLog.tsx:461
 msgid "Pin"
 msgstr "Vastmaken"
 
@@ -2693,11 +2792,11 @@ msgstr "stampen"
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:202
 msgid "Pitch down"
 msgstr "Pitch omlaag"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Pitch up"
 msgstr "Pitch omhoog"
 
@@ -2705,7 +2804,7 @@ msgstr "Pitch omhoog"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchLog.tsx:353
+#: src/components/MatchLog.tsx:358
 msgid "Players"
 msgstr "Spelers"
 
@@ -2731,7 +2830,7 @@ msgstr "Posts"
 msgid "Posts and comments"
 msgstr "Posts en reacties"
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Press a key…"
 msgstr "Druk op een toets…"
 
@@ -2739,7 +2838,7 @@ msgstr "Druk op een toets…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "DRUK OP ENTER OM TE LANCEREN"
 
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:576
 msgid "Press…"
 msgstr "Druk…"
 
@@ -2757,14 +2856,18 @@ msgstr "Privacy"
 msgid "Processing…"
 msgstr "Verwerken…"
 
-#: src/components/SettingsDialog.tsx:293
-#: src/components/SettingsDialog.tsx:305
+#: src/components/SettingsDialog.tsx:297
+#: src/components/SettingsDialog.tsx:309
 msgid "Profile saved"
 msgstr "Profiel opgeslagen"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
 msgstr "Prompt opgeslagen"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+msgid "Properties"
+msgstr "Eigenschappen"
 
 #: src/components/MissionSetup.tsx:873
 #: src/components/MissionSetup.tsx:891
@@ -2791,8 +2894,8 @@ msgstr "BRAND R MOTOR"
 msgid "R GEAR"
 msgstr "R WIEL"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Radar silent"
 msgstr "Radar stil"
 
@@ -2824,12 +2927,12 @@ msgstr "Aanbevolen"
 msgid "Reconnecting ({retries})..."
 msgstr "Opnieuw verbinden ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1083
+#: src/components/SettingsDialog.tsx:1087
 msgid "Record flights"
 msgstr "Vluchten opnemen"
 
-#: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1076
+#: src/components/MatchLog.tsx:447
+#: src/components/SettingsDialog.tsx:1080
 msgid "Recording"
 msgstr "Opname"
 
@@ -2841,15 +2944,15 @@ msgstr "Opname mislukt. Probeer het opnieuw."
 msgid "Recording produced no audio"
 msgstr "De opname bevat geen audio"
 
-#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:440
 msgid "Recording saved"
 msgstr "Opname opgeslagen"
 
-#: src/components/Multiplayer.tsx:612
+#: src/components/Multiplayer.tsx:624
 msgid "Red"
 msgstr "Rood"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Red bots"
 msgstr "Rode bots"
 
@@ -2866,7 +2969,7 @@ msgstr "Interesse verminderen"
 msgid "Reference"
 msgstr "Referentie"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:359
 msgid "Refresh"
 msgstr "Vernieuwen"
 
@@ -2874,7 +2977,7 @@ msgstr "Vernieuwen"
 msgid "REJOINING"
 msgstr "SLUIT WEER AAN"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:69
 msgid "Relates"
 msgstr "Heeft betrekking op"
 
@@ -2930,8 +3033,8 @@ msgstr "Interesse verwijderen"
 msgid "Remove item"
 msgstr "Item verwijderen"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:298
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:303
 msgid "Remove link"
 msgstr "Koppeling verwijderen"
 
@@ -2970,27 +3073,39 @@ msgstr "Verplicht"
 msgid "Resend email"
 msgstr "E-mail opnieuw verzenden"
 
-#: src/components/SettingsDialog.tsx:1159
+#: src/components/SettingsDialog.tsx:1163
 msgid "Reset"
 msgstr "Resetten"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Reset master caution"
 msgstr "Hoofdwaarschuwing resetten"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Reset trim"
 msgstr "Trim terugzetten"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:238
-#: src/components/SettingsDialog.tsx:855
+#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:859
 msgid "Reset view"
 msgstr "Beeld herstellen"
 
-#: src/components/SettingsDialog.tsx:938
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:48
+msgid "Resign"
+msgstr "Opgeven"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:35
+msgid "Resign game?"
+msgstr "Spel opgeven?"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:45
+msgid "Resigning..."
+msgstr "Bezig met opgeven..."
+
+#: src/components/SettingsDialog.tsx:942
 msgid "Resolution"
 msgstr "Oplossing"
 
@@ -3006,7 +3121,7 @@ msgstr "Missie herstarten"
 msgid "Restart mission?"
 msgstr "Missie herstarten?"
 
-#: src/components/MatchLog.tsx:362
+#: src/components/MatchLog.tsx:367
 msgid "Result"
 msgstr "Resultaat"
 
@@ -3014,8 +3129,8 @@ msgstr "Resultaat"
 msgid "Resume"
 msgstr "Hervatten"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Retract flaps"
 msgstr "Kleppen in"
 
@@ -3023,7 +3138,7 @@ msgstr "Kleppen in"
 msgid "Retry"
 msgstr "Opnieuw proberen"
 
-#: src/components/SettingsDialog.tsx:491
+#: src/components/SettingsDialog.tsx:495
 msgid "Reversed"
 msgstr "Omgekeerd"
 
@@ -3056,11 +3171,11 @@ msgstr "rollen"
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:203
 msgid "Roll left"
 msgstr "Naar links rollen"
 
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:204
 msgid "Roll right"
 msgstr "Naar rechts rollen"
 
@@ -3095,6 +3210,7 @@ msgstr "Zaterdag"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
+#: ../../../lib/web/src/components/banner-section.tsx:99
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3117,8 +3233,8 @@ msgstr "Zeeniveau"
 msgid "Search"
 msgstr "Zoeken"
 
-#: src/components/SettingsDialog.tsx:677
-#: src/components/SettingsDialog.tsx:678
+#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:682
 msgid "Search controls"
 msgstr "Besturing zoeken"
 
@@ -3142,7 +3258,7 @@ msgstr "Zoek een bestemming..."
 msgid "Search for origin..."
 msgstr "Zoek een vertrekpunt..."
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:331
 msgid "Search objects..."
 msgstr "Zoek objecten..."
 
@@ -3215,8 +3331,8 @@ msgstr "Persoon selecteren..."
 msgid "Select previous card"
 msgstr "Vorige kaart selecteren"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Select weapon"
 msgstr "Wapen kiezen"
 
@@ -3255,8 +3371,8 @@ msgstr "Bericht versturen"
 msgid "Serif"
 msgstr "Schreefletter"
 
-#: src/components/MatchLog.tsx:305
-#: src/components/MatchLog.tsx:347
+#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:352
 msgid "Server"
 msgstr "Server"
 
@@ -3287,7 +3403,7 @@ msgstr "SESSIE BEËINDIGD"
 msgid "Session expired. Please log in again."
 msgstr "Sessie verlopen. Log opnieuw in."
 
-#: src/components/SettingsDialog.tsx:821
+#: src/components/SettingsDialog.tsx:825
 msgid "Set"
 msgstr "Instellen"
 
@@ -3300,12 +3416,12 @@ msgstr "Vertrek en bestemming instellen"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1142
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1146
+#: src/components/SettingsDialog.tsx:1173
 msgid "Settings"
 msgstr "Instellingen"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1004
 msgid "Shadows"
 msgstr "Schaduwen"
 
@@ -3360,7 +3476,7 @@ msgstr "Klein"
 msgid "Sort"
 msgstr "Sorteren"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1184
 msgid "Sound"
 msgstr "Geluid"
 
@@ -3372,7 +3488,7 @@ msgstr "Bronnen"
 msgid "Spaced"
 msgstr "Gespreid"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Spaced spawns"
 msgstr "Gespreide starts"
 
@@ -3389,8 +3505,8 @@ msgid "speed brake"
 msgstr "luchtrem"
 
 #: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:209
 msgid "Speed brake"
 msgstr "Luchtrem"
 
@@ -3410,7 +3526,7 @@ msgstr "Overtrek, schoon (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Overtrek, landingsconfiguratie (Vs0)"
 
-#: src/components/Multiplayer.tsx:427
+#: src/components/Multiplayer.tsx:439
 msgid "Start"
 msgstr "Start"
 
@@ -3425,6 +3541,11 @@ msgstr "Steilste klim (Vx, 100% stuwkracht)"
 #: src/components/MissionSetup.tsx:425
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Steilste klim (Vx, naverbrander)"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+msgid "Stop watching"
+msgstr "Stoppen met volgen"
 
 #: src/components/GameCanvas.tsx:59
 msgid "STRUCTURE"
@@ -3454,7 +3575,7 @@ msgstr "Zondag"
 
 #: src/components/MissionSetup.tsx:1027
 #: src/components/MissionSetup.tsx:1194
-#: src/components/Multiplayer.tsx:506
+#: src/components/Multiplayer.tsx:518
 msgid "Superhuman"
 msgstr "Bovenmenselijk"
 
@@ -3501,12 +3622,12 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchLog.tsx:147
-#: src/components/Multiplayer.tsx:568
+#: src/components/MatchLog.tsx:152
+#: src/components/Multiplayer.tsx:580
 msgid "Teams"
 msgstr "Teams"
 
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 msgid "Teams — red versus blue"
 msgstr "Teams — rood tegen blauw"
 
@@ -3580,13 +3701,17 @@ msgstr "Deze app mag uw passkey niet gebruiken. Sta dit toe in Instellingen, ond
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Deze browser ondersteunt geen WebGL 2, dus het spel kan niet draaien — probeer een andere browser."
 
-#: src/components/Multiplayer.tsx:286
+#: src/components/Multiplayer.tsx:289
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Deze lobby stuurt je gameverbinding door naar een andere host ({redirectHost}). Ga alleen verder als je deze server vertrouwt."
 
 #: src/components/MissionSetup.tsx:1243
 msgid "This machine may be too slow for smooth flight."
 msgstr "Deze machine is mogelijk te traag voor soepel vliegen."
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:70
+msgid "This permanently deletes the game and its chat. This cannot be undone."
+msgstr "Hierdoor worden het spel en de bijbehorende chat permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3596,13 +3721,13 @@ msgstr "gas"
 msgid "Throttle"
 msgstr "Gas"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:208
 msgid "Throttle down"
 msgstr "Minder gas"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:207
 msgid "Throttle up"
 msgstr "Meer gas"
 
@@ -3618,7 +3743,7 @@ msgstr "Krapste aanhoudende bochtsnelheid"
 msgid "tilt"
 msgstr "kantelen"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:273
 msgid "Time"
 msgstr "Tijd"
 
@@ -3661,7 +3786,7 @@ msgstr "Te veel verzoeken"
 msgid "Top"
 msgstr "Boven"
 
-#: src/components/SettingsDialog.tsx:1014
+#: src/components/SettingsDialog.tsx:1018
 msgid "Tracers"
 msgstr "Lichtspoor"
 
@@ -3681,23 +3806,23 @@ msgstr "Trim"
 msgid "Trim hat"
 msgstr "Trim-hoedje"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Trim nose down"
 msgstr "Trim: neus omlaag"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim nose up"
 msgstr "Trim: neus omhoog"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Trim roll left"
 msgstr "Trim: rol links"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Trim roll right"
 msgstr "Trim: rol rechts"
 
@@ -3735,7 +3860,7 @@ msgstr "Typ om gebruikers te zoeken"
 msgid "Type to search..."
 msgstr "Typ om te zoeken..."
 
-#: src/components/SettingsDialog.tsx:900
+#: src/components/SettingsDialog.tsx:904
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3756,13 +3881,13 @@ msgstr "Niet toegewezen"
 msgid "Unavailable"
 msgstr "Niet beschikbaar"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Uncage seeker"
 msgstr "Zoekkop ontgrendelen"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Undesignate target"
 msgstr "Doelaanwijzing opheffen"
 
@@ -3784,13 +3909,13 @@ msgstr "Verenigde Staten"
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: src/components/Multiplayer.tsx:404
+#: src/components/Multiplayer.tsx:416
 msgid "Unlimited"
 msgstr "Onbeperkt"
 
 #: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:465
+#: src/components/Multiplayer.tsx:477
 msgid "Unlimited ammunition"
 msgstr "Onbeperkte munitie"
 
@@ -3800,7 +3925,7 @@ msgstr "Onbeperkte munitie (alle spelers)"
 
 #: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:92
-#: src/components/Multiplayer.tsx:475
+#: src/components/Multiplayer.tsx:487
 msgid "Unlimited fuel"
 msgstr "Onbeperkte brandstof"
 
@@ -3812,9 +3937,8 @@ msgstr "Onbeperkte brandstof (alle spelers)"
 msgid "Unsubscribe"
 msgstr "Abonnement opzeggen"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:299
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:178
+#: ../../../lib/web/src/lib/entity-title.ts:40
 msgid "Untitled"
 msgstr "Naamloos"
 
@@ -3828,7 +3952,7 @@ msgstr "Bijgewerkt"
 msgid "Updated {field}"
 msgstr "{field} bijgewerkt"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:661
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:655
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:304
 msgid "Upload"
 msgstr "Uploaden"
@@ -3868,7 +3992,7 @@ msgstr "E-mailadres verifiëren"
 msgid "Vertical"
 msgstr "Verticaal"
 
-#: src/components/MatchLog.tsx:158
+#: src/components/MatchLog.tsx:163
 msgid "Victory"
 msgstr "Overwinning"
 
@@ -3894,11 +4018,15 @@ msgstr "Bekijken"
 msgid "View all notifications"
 msgstr "Alle meldingen bekijken"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+msgid "View and edit item details"
+msgstr "Itemgegevens bekijken en bewerken"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:170
 msgid "View controls"
 msgstr "Weergavebediening"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:858
 msgid "Views"
 msgstr "Weergaven"
 
@@ -3906,13 +4034,18 @@ msgstr "Weergaven"
 msgid "Voice recording is not supported in this browser"
 msgstr "Spraakopname wordt niet ondersteund in deze browser"
 
-#: src/components/SettingsDialog.tsx:639
+#: src/components/SettingsDialog.tsx:643
 msgid "Volumes"
 msgstr "Volumes"
 
 #: src/components/GameCanvas.tsx:41
 msgid "WAITING FOR OPPONENT"
 msgstr "WACHTEN OP TEGENSTANDER"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+msgid "Watch"
+msgstr "Volgen"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:269
 #: ../../../lib/web/src/components/filter-bar.tsx:35
@@ -3940,12 +4073,12 @@ msgstr "wapen"
 msgid "Weapon select hat"
 msgstr "Wapenkeuzehoed"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:411
 #: src/components/SettingsDialog.tsx:102
 msgid "Weapons"
 msgstr "Wapens"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:389
 msgid "Weather"
 msgstr "Weer"
 
@@ -3953,17 +4086,17 @@ msgstr "Weer"
 msgid "Wednesday"
 msgstr "Woensdag"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:210
 msgid "Wheel brakes"
 msgstr "Wielremmen"
 
-#: src/components/SettingsDialog.tsx:593
+#: src/components/SettingsDialog.tsx:597
 msgid "Wind and cockpit airframe"
 msgstr "Wind en vliegtuigromp"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:237
 msgid "Wing fold"
 msgstr "Vleugels invouwen"
 
@@ -3971,12 +4104,12 @@ msgstr "Vleugels invouwen"
 msgid "WINS"
 msgstr "WINT"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:315
 msgid "World server"
 msgstr "Wereldserver"
 
 #: src/components/MissionSetup.tsx:725
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server not reachable"
 msgstr "Wereldserver niet bereikbaar"
 
@@ -3992,13 +4125,13 @@ msgstr "gieren"
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Yaw left"
 msgstr "Naar links gieren"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:206
 msgid "Yaw right"
 msgstr "Naar rechts gieren"
 
@@ -4018,11 +4151,11 @@ msgstr "Uw account is hier naartoe verplaatst van {source}. Totdat u het daar ve
 msgid "Your attachments will be lost."
 msgstr "Je bijlagen gaan verloren."
 
-#: src/components/MatchLog.tsx:208
+#: src/components/MatchLog.tsx:213
 msgid "Your flights appear here once you've flown one."
 msgstr "Je vluchten verschijnen hier zodra je er een hebt gevlogen."
 
-#: src/components/Multiplayer.tsx:563
+#: src/components/Multiplayer.tsx:575
 msgid "your offer"
 msgstr "jouw aanbod"
 
@@ -4038,10 +4171,10 @@ msgstr "Je tekst gaat verloren."
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:195
 msgid "Zoom in"
 msgstr "Inzoomen"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:196
 msgid "Zoom out"
 msgstr "Uitzoomen"

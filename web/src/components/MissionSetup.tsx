@@ -444,7 +444,7 @@ function ReferenceDialog() {
           <Trans>Reference</Trans>
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-2xl'>
+      <DialogContent className='sm:max-w-2xl' aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>
             <Trans>F/A-18C reference</Trans>
@@ -503,7 +503,7 @@ function CreditsDialog() {
           <Trans>Credits</Trans>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>
             <Trans>Credits</Trans>

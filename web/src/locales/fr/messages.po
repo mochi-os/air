@@ -52,7 +52,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} a créé « {1} »"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:339
+#: src/components/Multiplayer.tsx:342
 msgid "{0} flying"
 msgstr "{0} en vol"
 
@@ -68,24 +68,24 @@ msgstr "{0} lb au-dessus de la masse maximale de lancement"
 
 #. placeholder {0}: ordered.length
 #. placeholder {1}: matches.length
-#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:333
 msgid "{0} of {1} flights"
 msgstr "{0} vols sur {1}"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:779
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} était déjà pris, et cette commande n’est plus attribuée."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:771
+#: src/components/SettingsDialog.tsx:775
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} était sur {1}, qui n’est plus attribué."
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:570
+#: src/components/Multiplayer.tsx:582
 msgid "{0}/{1} players"
 msgstr "{0}/{1} joueurs"
 
@@ -109,7 +109,7 @@ msgstr "{count, plural, one {#sem} other {#sem}}"
 msgid "{entityLabel} name"
 msgstr "Nom du {entityLabel}"
 
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Partie de {name}"
 
@@ -117,7 +117,7 @@ msgstr "Partie de {name}"
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} a proposé la nulle"
 
-#: src/components/Multiplayer.tsx:532
+#: src/components/Multiplayer.tsx:544
 msgid "{placed} of {limit} bots"
 msgstr "{placed} bots sur {limit}"
 
@@ -193,19 +193,23 @@ msgstr "Type de compte"
 
 #: src/components/MissionSetup.tsx:1026
 #: src/components/MissionSetup.tsx:1193
-#: src/components/Multiplayer.tsx:505
+#: src/components/Multiplayer.tsx:517
 msgid "Ace"
 msgstr "As"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquire target"
 msgstr "Acquisition de cible"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Acquisition mode"
 msgstr "Mode d'acquisition"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+msgid "Activity"
+msgstr "Activité"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:758
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
@@ -250,7 +254,7 @@ msgstr "Ajouter un champ"
 msgid "Add item..."
 msgstr "Ajouter un élément…"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:314
 msgid "Add link"
 msgstr "Ajouter un lien"
 
@@ -281,7 +285,7 @@ msgstr "Ajouter une vue"
 msgid "Adding..."
 msgstr "Ajout en cours…"
 
-#: src/components/SettingsDialog.tsx:1007
+#: src/components/SettingsDialog.tsx:1011
 msgid "Afterburner"
 msgstr "Postcombustion"
 
@@ -301,11 +305,11 @@ msgstr "Porte-avions <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> par <1>Muha
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modèle d’avion <0>“F/A-18C Hornet”</0> par <1>CreadorDeMu</1> (Sketchfab), sous licence <2>CC BY 4.0</2>. Modifié : réorienté et redimensionné, données de texture inutilisées supprimées, emports externes séparés dans un fichier distinct, un maillage de carénage mis en miroir."
 
-#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:298
 msgid "All modes"
 msgstr "Tous les modes"
 
-#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:315
 msgid "All servers"
 msgstr "Tous les serveurs"
 
@@ -326,7 +330,7 @@ msgstr "Une erreur s'est produite"
 msgid "An unexpected error occurred"
 msgstr "Une erreur inattendue s'est produite"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Anchored sides"
 msgstr "Camps ancrés"
 
@@ -347,8 +351,8 @@ msgstr "Toute personne connectée"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Tout ce qui est abonné à ce flux cessera de le recevoir. Vous pourrez copier une nouvelle URL ensuite."
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:234
 msgid "Approach power (ATC)"
 msgstr "Puissance d'approche (ATC)"
 
@@ -360,6 +364,10 @@ msgstr "Approche, à la vitesse cible (Vapp)"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:316
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Voulez-vous vraiment supprimer « {0} » ?"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+msgstr "Voulez-vous vraiment supprimer « {title} » ? Cette action est irréversible."
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:631
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
@@ -373,8 +381,16 @@ msgstr "Voulez-vous vraiment supprimer ce commentaire ? Toutes les réponses ser
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Voulez-vous vraiment vous déconnecter ? Vous devrez vous reconnecter pour accéder à votre compte."
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:39
+msgid "Are you sure you want to resign?"
+msgstr "Voulez-vous vraiment abandonner ?"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:38
+msgid "Are you sure you want to resign? {opponentName} will win the game."
+msgstr "Êtes-vous sûr de vouloir abandonner ? {opponentName} gagnera la partie."
+
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:233
 msgid "Arrestor hook"
 msgstr "Crosse d'appontage"
 
@@ -415,12 +431,12 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar de {name}"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:479
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:483
 msgid "Axis {i}"
 msgstr "Axe {i}"
 
-#: src/components/SettingsDialog.tsx:428
+#: src/components/SettingsDialog.tsx:432
 msgid "Axis calibration and mapping"
 msgstr "Étalonnage et affectation des axes"
 
@@ -442,9 +458,18 @@ msgstr "Retour à l’accueil"
 msgid "Bandit"
 msgstr "Bandit"
 
+#: ../../../lib/web/src/components/banner-section.tsx:80
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Bannière"
+
+#: ../../../lib/web/src/components/banner-section.tsx:69
+msgid "Banner removed"
+msgstr "Bannière supprimée"
+
+#: ../../../lib/web/src/components/banner-section.tsx:69
+msgid "Banner updated"
+msgstr "Bannière mise à jour"
 
 #: src/components/GameCanvas.tsx:120
 msgid "BELOW 250 — GEAR AND FLAPS"
@@ -466,7 +491,7 @@ msgstr "Meilleur plané (moteurs coupés)"
 msgid "Best sustained turn speed"
 msgstr "Meilleure vitesse de virage soutenu"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:600
 msgid "Betty and RWR alerts"
 msgstr "Alertes Betty et RWR"
 
@@ -474,8 +499,8 @@ msgstr "Alertes Betty et RWR"
 msgid "BINGO FUEL"
 msgstr "BINGO CARBURANT"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:72
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:209
 msgid "Blocked by"
 msgstr "Bloqué par"
 
@@ -484,15 +509,15 @@ msgstr "Bloqué par"
 msgid "Blocked navigation to untrusted link"
 msgstr "Navigation vers un lien non fiable bloquée"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:70
 msgid "Blocks"
 msgstr "Bloque"
 
-#: src/components/Multiplayer.tsx:622
+#: src/components/Multiplayer.tsx:634
 msgid "Blue"
 msgstr "Bleu"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Blue bots"
 msgstr "Bots bleus"
 
@@ -513,7 +538,7 @@ msgstr "Augmenter l'intérêt"
 msgid "Border colour"
 msgstr "Couleur de la bordure"
 
-#: src/components/Multiplayer.tsx:482
+#: src/components/Multiplayer.tsx:494
 msgid "Bots"
 msgstr "Bots"
 
@@ -537,16 +562,16 @@ msgstr "VIRAGE QUAND PRÊT"
 msgid "Browser notifications"
 msgstr "Notifications du navigateur"
 
-#: src/components/SettingsDialog.tsx:351
-#: src/components/SettingsDialog.tsx:555
+#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:559
 msgid "Button {i}"
 msgstr "Bouton {i}"
 
-#: src/components/SettingsDialog.tsx:520
+#: src/components/SettingsDialog.tsx:524
 msgid "Button mappings"
 msgstr "Affectations des boutons"
 
-#: src/components/Multiplayer.tsx:432
+#: src/components/Multiplayer.tsx:444
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — tir libre dès le départ"
 
@@ -558,12 +583,12 @@ msgstr "BVR, tir libre dès le départ"
 msgid "CALL THE BALL"
 msgstr "ANNONCEZ LA BALLE"
 
-#: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1059
+#: src/components/Multiplayer.tsx:326
+#: src/components/SettingsDialog.tsx:1063
 msgid "Callsign"
 msgstr "Indicatif"
 
-#: src/components/SettingsDialog.tsx:857
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera distance"
 msgstr "Distance de la caméra"
 
@@ -572,7 +597,7 @@ msgid "Camera permission denied"
 msgstr "Autorisation de la caméra refusée"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Camera unavailable"
 msgstr "Caméra indisponible"
 
@@ -591,9 +616,9 @@ msgstr "Caméra indisponible"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:549
-#: src/components/Multiplayer.tsx:294
-#: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:821
+#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:611
+#: src/components/SettingsDialog.tsx:825
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -611,11 +636,11 @@ msgstr "Annuler la réponse"
 msgid "Cancelled"
 msgstr "Annulé"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:598
 msgid "Cannons and ordnance"
 msgstr "Canons et munitions"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Canopy"
 msgstr "Verrière"
 
@@ -624,7 +649,7 @@ msgstr "Verrière"
 msgid "Caption"
 msgstr "Légende"
 
-#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:599
 msgid "Carrier and ambient"
 msgstr "Porte-avions et ambiance"
 
@@ -689,17 +714,17 @@ msgstr "Vue de poursuite :"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:247
 msgid "Chat"
 msgstr "Messagerie"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:248
 msgid "Chat to everyone"
 msgstr "Chat à tous"
 
-#: src/components/MatchLog.tsx:365
+#: src/components/MatchLog.tsx:370
 #: src/components/MissionSetup.tsx:1115
-#: src/components/Multiplayer.tsx:446
+#: src/components/Multiplayer.tsx:458
 msgid "Cheats"
 msgstr "Triche"
 
@@ -720,16 +745,17 @@ msgstr "Choisissez une partie dans la barre latérale ou commencez-en une nouvel
 msgid "Choose language"
 msgstr "Choisir la langue"
 
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
 #: ../../../lib/web/src/components/travelling-picker.tsx:151
 #: ../../../lib/web/src/components/travelling-picker.tsx:212
 #: ../../../lib/web/src/components/travelling-picker.tsx:218
-#: src/components/MatchLog.tsx:323
-#: src/components/MatchLog.tsx:379
-#: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:686
+#: src/components/MatchLog.tsx:328
+#: src/components/MatchLog.tsx:384
+#: src/components/Multiplayer.tsx:396
+#: src/components/SettingsDialog.tsx:690
 msgid "Clear"
 msgstr "Effacer"
 
@@ -741,8 +767,8 @@ msgstr "Tout effacer"
 msgid "Clear search"
 msgstr "Effacer la recherche"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:517
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:522
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
@@ -829,6 +855,11 @@ msgstr "Actions du commentaire"
 msgid "Comments"
 msgstr "Commentaires"
 
+#. placeholder {0}: data.comment_count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+msgid "Comments ({0})"
+msgstr "Commentaires ({0})"
+
 #: src/components/SettingsDialog.tsx:105
 msgid "Communication"
 msgstr "Communication"
@@ -866,7 +897,7 @@ msgstr "Connecté"
 msgid "Connecting..."
 msgstr "Connexion..."
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:345
 msgid "Connecting…"
 msgstr "Connexion…"
 
@@ -887,7 +918,7 @@ msgid "Contextual information and details."
 msgstr "Informations contextuelles et détails."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:306
 msgid "Continue"
 msgstr "Continuer"
 
@@ -911,11 +942,11 @@ msgstr "Copier"
 msgid "Corner speed (best instant turn)"
 msgstr "Vitesse de coin (meilleur virage instantané)"
 
-#: src/components/MatchLog.tsx:483
+#: src/components/MatchLog.tsx:488
 msgid "Could not change the recording"
 msgstr "Impossible de modifier l'enregistrement"
 
-#: src/components/Multiplayer.tsx:250
+#: src/components/Multiplayer.tsx:253
 msgid "Could not create the match"
 msgstr "Impossible de créer le match"
 
@@ -923,16 +954,16 @@ msgstr "Impossible de créer le match"
 msgid "Could not load this document. Please try again later."
 msgstr "Impossible de charger ce document. Veuillez réessayer plus tard."
 
-#: src/components/MatchLog.tsx:168
+#: src/components/MatchLog.tsx:173
 msgid "Could not load your flights"
 msgstr "Impossible de charger vos vols"
 
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:298
 msgid "Could not save the profile"
 msgstr "Impossible d'enregistrer le profil"
 
-#: src/components/MatchLog.tsx:430
-#: src/components/MatchLog.tsx:436
+#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:441
 msgid "Could not save the recording"
 msgstr "Impossible de sauvegarder l’enregistrement"
 
@@ -956,8 +987,8 @@ msgstr "Impossible de démarrer la réauthentification. Veuillez réessayer."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Impossible de vérifier avec ce compte. Veuillez réessayer."
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Countermeasures"
 msgstr "Contre-mesures"
 
@@ -971,8 +1002,8 @@ msgstr "ÉCRASÉ"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:551
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:691
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:513
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:507
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:676
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
 msgid "Create"
 msgstr "Créer"
@@ -981,11 +1012,11 @@ msgstr "Créer"
 msgid "Create {entityLabel}"
 msgstr "Créer {entityLabel}"
 
-#: src/components/Multiplayer.tsx:542
+#: src/components/Multiplayer.tsx:554
 msgid "Create and fly"
 msgstr "Créer et voler"
 
-#: src/components/Multiplayer.tsx:357
+#: src/components/Multiplayer.tsx:369
 msgid "Create match"
 msgstr "Créer un match"
 
@@ -1008,7 +1039,7 @@ msgstr "Créé"
 msgid "Created {field}"
 msgstr "{field} créé"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:682
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:676
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:260
 msgid "Creating..."
 msgstr "Création..."
@@ -1020,7 +1051,7 @@ msgstr "Crédits"
 
 #: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:397
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -1037,8 +1068,8 @@ msgstr "Personnalisé"
 msgid "CUT"
 msgstr "DANGEREUX"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:241
 msgid "Cycle view"
 msgstr "Changer de vue"
 
@@ -1051,17 +1082,17 @@ msgid "Data conflict"
 msgstr "Conflit de données"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts:14
-#: src/components/MatchLog.tsx:341
+#: src/components/MatchLog.tsx:346
 msgid "Date"
 msgstr "Date"
 
 #: src/components/MissionSetup.tsx:1088
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:392
 msgid "Day"
 msgstr "Jour"
 
-#: src/components/MatchLog.tsx:274
-#: src/components/MatchLog.tsx:359
+#: src/components/MatchLog.tsx:279
+#: src/components/MatchLog.tsx:364
 msgid "Deaths"
 msgstr "Morts"
 
@@ -1094,6 +1125,8 @@ msgstr "Tri par défaut"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1112,6 +1145,16 @@ msgstr "Supprimer le commentaire"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:304
 msgid "Delete field"
 msgstr "Supprimer le champ"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:69
+msgid "Delete game?"
+msgstr "Supprimer la partie ?"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+msgid "Delete item"
+msgstr "Supprimer l'élément"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:117
 msgid "Delete option"
@@ -1139,6 +1182,10 @@ msgstr "Supprimé"
 msgid "Deleted {field}"
 msgstr "{field} supprimé"
 
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:75
+msgid "Deleting..."
+msgstr "Suppression..."
+
 #: src/components/MissionSetup.tsx:1038
 msgid "Departure / Recovery"
 msgstr "Catapultage / Appontage"
@@ -1155,7 +1202,7 @@ msgstr "Description"
 msgid "Destroyed by fire"
 msgstr "Détruit par un incendie"
 
-#: src/components/SettingsDialog.tsx:932
+#: src/components/SettingsDialog.tsx:936
 msgid "Detail"
 msgstr "Détail"
 
@@ -1163,8 +1210,8 @@ msgstr "Détail"
 msgid "Details Panel"
 msgstr "Panneau des détails"
 
-#: src/components/SettingsDialog.tsx:508
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:576
 msgid "Detect"
 msgstr "Détecter"
 
@@ -1179,7 +1226,7 @@ msgstr "Détecter"
 msgid "Detect from web browser"
 msgstr "Détecter depuis le navigateur web"
 
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:286
 msgid "Different game host"
 msgstr "Hôte de jeu différent"
 
@@ -1199,25 +1246,25 @@ msgstr "Abandonner"
 msgid "Discard draft?"
 msgstr "Abandonner le brouillon ?"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:398
 msgid "disconnected"
 msgstr "déconnecté"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:155
+#: src/components/MatchLog.tsx:160
 msgid "Disconnected"
 msgstr "Déconnecté"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:781
+#: src/components/SettingsDialog.tsx:785
 msgid "Dismiss"
 msgstr "Ignorer"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:243
 msgid "Display repeater"
 msgstr "Répétiteur d'affichage"
 
@@ -1225,7 +1272,7 @@ msgstr "Répétiteur d'affichage"
 msgid "Displays the mobile sidebar."
 msgstr "Affiche la barre latérale mobile."
 
-#: src/components/SettingsDialog.tsx:993
+#: src/components/SettingsDialog.tsx:997
 msgid "Distance LOD"
 msgstr "LOD de distance"
 
@@ -1234,8 +1281,9 @@ msgid "Does not match the required pattern"
 msgstr "Ne correspond pas au motif requis"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1167
 msgid "Done"
 msgstr "Terminé"
 
@@ -1258,19 +1306,19 @@ msgstr "VENT ARRIÈRE 600 PIEDS"
 msgid "Drag"
 msgstr "Glisser"
 
-#: src/components/Multiplayer.tsx:502
+#: src/components/Multiplayer.tsx:514
 msgid "Drone"
 msgstr "Drone"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:71
 msgid "Duplicates"
 msgstr "Duplique"
 
-#: src/components/MatchLog.tsx:344
+#: src/components/MatchLog.tsx:349
 msgid "Duration"
 msgstr "Durée"
 
-#: src/components/SettingsDialog.tsx:986
+#: src/components/SettingsDialog.tsx:990
 msgid "Dynamic resolution"
 msgstr "Résolution dynamique"
 
@@ -1321,15 +1369,15 @@ msgstr "Modifier la carte sélectionnée"
 msgid "Edit view"
 msgstr "Modifier la vue"
 
-#: src/components/SettingsDialog.tsx:978
+#: src/components/SettingsDialog.tsx:982
 msgid "Effects"
 msgstr "Effets"
 
-#: src/components/SettingsDialog.tsx:956
+#: src/components/SettingsDialog.tsx:960
 msgid "Effects detail"
 msgstr "Détail des effets"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:240
 msgid "Eject"
 msgstr "Éjection"
 
@@ -1349,12 +1397,12 @@ msgstr "Code par e-mail"
 msgid "EMERG JETT"
 msgstr "LARGAGE D'URGENCE"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Emergency jettison (hold)"
 msgstr "Largage d'urgence (maintenir)"
 
-#: src/components/Multiplayer.tsx:569
+#: src/components/Multiplayer.tsx:581
 msgid "empty"
 msgstr "vide"
 
@@ -1363,7 +1411,7 @@ msgstr "vide"
 msgid "Empty pylon"
 msgstr "Pylône vide"
 
-#: src/components/SettingsDialog.tsx:612
+#: src/components/SettingsDialog.tsx:616
 msgid "Enable sound"
 msgstr "Activer le son"
 
@@ -1375,9 +1423,13 @@ msgstr "ENGAGÉ"
 msgid "Engagement"
 msgstr "Engagement"
 
-#: src/components/SettingsDialog.tsx:592
+#: src/components/SettingsDialog.tsx:596
 msgid "Engine and afterburner"
 msgstr "Moteur et postcombustion"
+
+#: ../../../lib/web/src/components/banner-section.tsx:88
+msgid "Enter banner text (markdown supported)..."
+msgstr "Entrez le texte de la bannière (markdown pris en charge)…"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:290
 msgid "Enter the code from your email"
@@ -1386,6 +1438,10 @@ msgstr "Saisissez le code reçu par e-mail"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Enter your authenticator code"
 msgstr "Saisissez le code de votre application d'authentification"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+msgid "Error"
+msgstr "Erreur"
 
 #: src/components/GameCanvas.tsx:337
 msgid "Everyone"
@@ -1414,16 +1470,16 @@ msgstr "Développer la barre latérale"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Animation d'explosion <0>“Explosion02HD”</0> par <1>Unity Technologies</1> (séquences d'images VFX d'Unity Labs), publiée sous <2>CC0</2>. Modifié : recompressée pour le web."
 
-#: src/components/SettingsDialog.tsx:412
+#: src/components/SettingsDialog.tsx:416
 msgid "Export"
 msgstr "Exporter"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:230
 msgid "Extend flaps"
 msgstr "Sortir les volets"
 
-#: src/components/SettingsDialog.tsx:948
+#: src/components/SettingsDialog.tsx:952
 msgid "Exterior detail"
 msgstr "Détail extérieur"
 
@@ -1448,10 +1504,14 @@ msgstr "Échec de l'ajout du compte"
 msgid "Failed to copy"
 msgstr "Échec de la copie"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:131
 #: ../../../lib/web/src/components/options-menu.tsx:98
 msgid "Failed to create link"
 msgstr "Échec de la création du lien"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:303
+msgid "Failed to delete"
+msgstr "Échec de la suppression"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:130
 msgid "Failed to delete attachment"
@@ -1461,7 +1521,7 @@ msgstr "Échec de la suppression de la pièce jointe"
 msgid "Failed to delete comment"
 msgstr "Échec de la suppression du commentaire"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:153
 msgid "Failed to delete link"
 msgstr "Échec de la suppression du lien"
 
@@ -1481,6 +1541,11 @@ msgstr "Échec du chargement de l'historique"
 msgid "Failed to load image"
 msgstr "Échec du chargement de l'image"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+msgid "Failed to load item"
+msgstr "Échec du chargement de l'élément"
+
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:213
 msgid "Failed to load prompts"
 msgstr "Échec du chargement des invites"
@@ -1488,6 +1553,10 @@ msgstr "Échec du chargement des invites"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "Échec du chargement de la vidéo"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:317
+msgid "Failed to move"
+msgstr "Échec du déplacement"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:155
 msgid "Failed to post comment"
@@ -1501,13 +1570,25 @@ msgstr "Échec de la réinitialisation de l'invite"
 msgid "Failed to revoke RSS access"
 msgstr "Échec de la révocation de l'accès RSS"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:273
+msgid "Failed to save"
+msgstr "Échec de l'enregistrement"
+
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:111
 msgid "Failed to save prompt"
 msgstr "Échec de l'enregistrement de l'invite"
 
+#: ../../../lib/web/src/components/banner-section.tsx:71
+msgid "Failed to update banner"
+msgstr "Échec de la mise à jour de la bannière"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
 msgid "Failed to update comment"
 msgstr "Échec de la mise à jour du commentaire"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:288
+msgid "Failed to update watching"
+msgstr "Échec de la mise à jour du suivi"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:114
 msgid "Failed to upload attachment"
@@ -1525,7 +1606,7 @@ msgstr "CDVE"
 msgid "FIGHT'S ON"
 msgstr "LE COMBAT COMMENCE"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:611
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:605
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:160
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:180
 msgid "Files"
@@ -1535,7 +1616,7 @@ msgstr "Fichiers"
 msgid "Finish moving your account"
 msgstr "Terminez de déplacer votre compte"
 
-#: src/components/MatchLog.tsx:156
+#: src/components/MatchLog.tsx:161
 msgid "Finished"
 msgstr "Terminée"
 
@@ -1543,12 +1624,12 @@ msgstr "Terminée"
 msgid "fire"
 msgstr "tirer"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Fire weapon"
 msgstr "Tir de l'arme"
 
-#: src/components/SettingsDialog.tsx:849
+#: src/components/SettingsDialog.tsx:853
 msgid "Fixed flight keys"
 msgstr "Touches de vol fixes"
 
@@ -1588,7 +1669,7 @@ msgstr "Vol"
 msgid "FLIGHT CORE FAILED"
 msgstr "ÉCHEC DU NOYAU DE VOL"
 
-#: src/components/SettingsDialog.tsx:1101
+#: src/components/SettingsDialog.tsx:1105
 msgid "Flight hints"
 msgstr "Conseils de vol"
 
@@ -1596,11 +1677,11 @@ msgstr "Conseils de vol"
 msgid "Flight log"
 msgstr "Carnet de vol"
 
-#: src/components/MatchLog.tsx:265
+#: src/components/MatchLog.tsx:270
 msgid "Flights"
 msgstr "Vols"
 
-#: src/components/MatchLog.tsx:157
+#: src/components/MatchLog.tsx:162
 msgid "Flown"
 msgstr "Volé"
 
@@ -1613,11 +1694,11 @@ msgstr "Voler"
 msgid "Fly again"
 msgstr "Voler à nouveau"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1025
 msgid "Framerate counter"
 msgstr "Compteur d’images par seconde"
 
-#: src/components/MatchLog.tsx:148
+#: src/components/MatchLog.tsx:153
 #: src/components/MissionSetup.tsx:995
 msgid "Free flight"
 msgstr "Vol libre"
@@ -1642,7 +1723,7 @@ msgstr "De"
 msgid "From theme"
 msgstr "Du thème"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "Fuel"
 msgstr "Carburant"
 
@@ -1662,7 +1743,7 @@ msgstr "FUITE CARBU"
 msgid "FUEL LO"
 msgstr "CARBURANT BAS"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "Fuel probe"
 msgstr "Perche de ravitaillement"
 
@@ -1670,7 +1751,7 @@ msgstr "Perche de ravitaillement"
 msgid "Fuel tank"
 msgstr "Réservoir de carburant"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/MatchLog.tsx:150
 msgid "Furball"
 msgstr "Furball"
 
@@ -1679,7 +1760,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Fuselage"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Gain"
 msgstr "Gain"
 
@@ -1691,7 +1772,7 @@ msgstr "train"
 msgid "GEAR"
 msgstr "TRAIN"
 
-#: src/components/SettingsDialog.tsx:1172
+#: src/components/SettingsDialog.tsx:1176
 msgid "General"
 msgstr "Général"
 
@@ -1700,11 +1781,11 @@ msgstr "Général"
 msgid "Go back"
 msgstr "Retour"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1180
 msgid "Graphics"
 msgstr "Graphismes"
 
-#: src/components/SettingsDialog.tsx:908
+#: src/components/SettingsDialog.tsx:912
 msgid "Graphics preset"
 msgstr "Préréglage graphique"
 
@@ -1734,7 +1815,7 @@ msgid "Gun only"
 msgstr "Canons seulement"
 
 #: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:414
 msgid "Guns only"
 msgstr "Canons seulement"
 
@@ -1742,25 +1823,25 @@ msgstr "Canons seulement"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "L'accélération graphique matérielle est désactivée — vérifiez les réglages du navigateur ou les pilotes graphiques."
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head"
 msgstr "Tête"
 
-#: src/components/SettingsDialog.tsx:875
+#: src/components/SettingsDialog.tsx:879
 msgid "Head tracking"
 msgstr "Suivi de tête"
 
-#: src/components/SettingsDialog.tsx:899
+#: src/components/SettingsDialog.tsx:903
 msgid "High"
 msgstr "Élevé"
 
 #: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:398
 msgid "High stratus"
 msgstr "Stratus haut"
 
-#: src/components/SettingsDialog.tsx:1092
+#: src/components/SettingsDialog.tsx:1096
 msgid "Hints"
 msgstr "Conseils"
 
@@ -1787,11 +1868,11 @@ msgstr "CROSSE"
 msgid "Hot"
 msgstr "Populaire"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:244
 msgid "HUD altitude source"
 msgstr "Source d'altitude du HUD"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:245
 msgid "HUD declutter"
 msgstr "Simplification du HUD"
 
@@ -1808,7 +1889,7 @@ msgstr "Visionneuse d'images : {0}"
 msgid "Imperial"
 msgstr "Impérial"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:420
 msgid "Import"
 msgstr "Importer"
 
@@ -1829,7 +1910,7 @@ msgstr "Avatar avec initiales"
 msgid "Initials avatar for {name}"
 msgstr "Avatar avec initiales de {name}"
 
-#: src/components/SettingsDialog.tsx:372
+#: src/components/SettingsDialog.tsx:376
 msgid "Input hardware"
 msgstr "Périphériques d’entrée"
 
@@ -1859,7 +1940,7 @@ msgid "INVULNERABLE"
 msgstr "INVULNÉRABLE"
 
 #: src/components/MissionSetup.tsx:1121
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:467
 msgid "Invulnerable (human players only)"
 msgstr "Invulnérable (joueurs humains uniquement)"
 
@@ -1867,13 +1948,17 @@ msgstr "Invulnérable (joueurs humains uniquement)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Il semble que la page que vous recherchez <0/>n'existe pas ou a été supprimée."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
-msgid "Jammer"
-msgstr "Brouilleur"
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+msgid "Item details"
+msgstr "Détails de l'élément"
 
 #: src/components/SettingsDialog.tsx:172
 #: src/components/SettingsDialog.tsx:223
+msgid "Jammer"
+msgstr "Brouilleur"
+
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Jettison tanks"
 msgstr "Larguer les réservoirs"
 
@@ -1881,7 +1966,7 @@ msgstr "Larguer les réservoirs"
 msgid "JETTISON: GEAR"
 msgstr "LARGAGE : TRAIN"
 
-#: src/components/Multiplayer.tsx:634
+#: src/components/Multiplayer.tsx:646
 msgid "Join"
 msgstr "Rejoindre"
 
@@ -1894,13 +1979,13 @@ msgstr "Rejoindre un serveur"
 msgid "JOINED"
 msgstr "A REJOINT LA PARTIE"
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:151
 #: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Joust"
 msgstr "Joute"
 
-#: src/components/Multiplayer.tsx:371
+#: src/components/Multiplayer.tsx:383
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, le premier kill l'emporte"
 
@@ -1908,7 +1993,7 @@ msgstr "Duel — 1v1, le premier kill l'emporte"
 msgid "Joust against bot"
 msgstr "Duel contre le bot"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1188
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1916,7 +2001,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "À l'instant"
 
-#: src/components/MatchLog.tsx:277
+#: src/components/MatchLog.tsx:282
 msgid "K/D"
 msgstr "K/D"
 
@@ -1924,7 +2009,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1192
 msgid "Keys"
 msgstr "Touches"
 
@@ -1932,12 +2017,12 @@ msgstr "Touches"
 msgid "KILL"
 msgstr "ÉLIMINATION"
 
-#: src/components/MatchLog.tsx:159
+#: src/components/MatchLog.tsx:164
 msgid "Killed"
 msgstr "Éliminé"
 
-#: src/components/MatchLog.tsx:271
-#: src/components/MatchLog.tsx:356
+#: src/components/MatchLog.tsx:276
+#: src/components/MatchLog.tsx:361
 msgid "Kills"
 msgstr "Éliminations"
 
@@ -1953,8 +2038,8 @@ msgstr "FEU MOT G"
 msgid "L GEAR"
 msgstr "TRAIN G"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:232
 msgid "Landing gear"
 msgstr "Train d'atterrissage"
 
@@ -1967,8 +2052,8 @@ msgstr "Grand"
 msgid "LATE"
 msgstr "EN RETARD"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:239
 msgid "Launch (catapult)"
 msgstr "Lancement (catapulte)"
 
@@ -1980,7 +2065,7 @@ msgstr "catapultage / ciblage"
 msgid "Layout"
 msgstr "Disposition"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "lb"
 msgstr "lb"
 
@@ -1988,7 +2073,7 @@ msgstr "lb"
 msgid "Leave server"
 msgstr "Quitter le serveur"
 
-#: src/components/MatchLog.tsx:154
+#: src/components/MatchLog.tsx:159
 msgid "Left"
 msgstr "A quitté"
 
@@ -2021,8 +2106,8 @@ msgstr "Clair"
 msgid "lights"
 msgstr "feux"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:238
 msgid "Lights"
 msgstr "Feux"
 
@@ -2034,7 +2119,7 @@ msgstr "FEUX"
 msgid "Link"
 msgstr "Lien"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:273
 msgid "Links"
 msgstr "Liens"
 
@@ -2057,6 +2142,14 @@ msgstr "Chargement du contenu…"
 #: src/components/GameCanvas.tsx:81
 msgid "LOADING FAILED"
 msgstr "ÉCHEC DE CHARGEMENT"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+msgid "Loading item"
+msgstr "Chargement de l'élément"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+msgid "Loading item details"
+msgstr "Chargement des détails de l'élément"
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:39
 #: ../../../lib/web/src/features/document/document-page.tsx:88
@@ -2088,37 +2181,37 @@ msgstr "Déconnexion en cours…"
 msgid "Look"
 msgstr "Regarder"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:860
 msgid "Look / orbit"
 msgstr "Vue / orbite"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Look at target"
 msgstr "Regarder la cible"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Look down"
 msgstr "Regarder en bas"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Look left"
 msgstr "Regarder à gauche"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Look right"
 msgstr "Regarder à droite"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:190
 msgid "Look up"
 msgstr "Regarder en haut"
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:901
 msgid "Low"
 msgstr "Bas"
 
 #: src/components/MissionSetup.tsx:1105
 #: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:400
 msgid "Low stratus"
 msgstr "Stratus bas"
 
@@ -2138,7 +2231,7 @@ msgstr "Manuel"
 msgid "map"
 msgstr "carte"
 
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:246
 msgid "Map"
 msgstr "Carte"
 
@@ -2147,12 +2240,12 @@ msgstr "Carte"
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: src/components/SettingsDialog.tsx:591
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:595
+#: src/components/SettingsDialog.tsx:622
 msgid "Master volume"
 msgstr "Volume principal"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:379
 msgid "Match type"
 msgstr "Type de match"
 
@@ -2169,7 +2262,7 @@ msgid "MCP server"
 msgstr "Serveur MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:902
 msgid "Medium"
 msgstr "Moyen"
 
@@ -2182,12 +2275,12 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:193
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:249
 msgid "Menu"
 msgstr "Menu"
 
-#: src/components/Multiplayer.tsx:431
+#: src/components/Multiplayer.tsx:443
 msgid "Merge — fight on at the pass"
 msgstr "Merge — combat engagé au croisement"
 
@@ -2217,7 +2310,7 @@ msgstr "Autorisation du microphone refusée"
 
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 msgid "Mid stratus"
 msgstr "Stratus moyen"
 
@@ -2249,8 +2342,8 @@ msgstr "Mission terminée"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchLog.tsx:288
-#: src/components/MatchLog.tsx:350
+#: src/components/MatchLog.tsx:293
+#: src/components/MatchLog.tsx:355
 msgid "Mode"
 msgstr "Mode"
 
@@ -2267,7 +2360,7 @@ msgstr "Lundi"
 msgid "More options"
 msgstr "Plus d'options"
 
-#: src/components/SettingsDialog.tsx:508
+#: src/components/SettingsDialog.tsx:512
 msgid "Move…"
 msgstr "Bougez…"
 
@@ -2279,7 +2372,7 @@ msgstr "Déplacé"
 msgid "Moved {field}"
 msgstr "{field} déplacé"
 
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:262
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Le multijoueur nécessite WebTransport, que ce navigateur ne prend pas encore en charge."
 
@@ -2308,7 +2401,7 @@ msgstr "Le nom doit comporter 1000 caractères ou moins"
 msgid "Network error"
 msgstr "Erreur réseau"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:498
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:492
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Nouveau"
@@ -2325,11 +2418,11 @@ msgstr "Image suivante"
 
 #: src/components/MissionSetup.tsx:1089
 #: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:393
 msgid "Night"
 msgstr "Nuit"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:577
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:571
 msgid "No {parentClassNames} to add to"
 msgstr "Aucun {parentClassNames} auquel ajouter"
 
@@ -2345,15 +2438,15 @@ msgstr "Aucune activité pour le moment"
 msgid "No comments yet"
 msgstr "Aucun commentaire pour le moment"
 
-#: src/components/SettingsDialog.tsx:701
+#: src/components/SettingsDialog.tsx:705
 msgid "No control matches “{query}”."
 msgstr "Aucune commande ne correspond à « {query} »."
 
-#: src/components/MatchLog.tsx:377
+#: src/components/MatchLog.tsx:382
 msgid "No flight matches these filters."
 msgstr "Aucun vol ne correspond à ces filtres."
 
-#: src/components/MatchLog.tsx:207
+#: src/components/MatchLog.tsx:212
 msgid "No flights yet"
 msgstr "Aucun vol pour le moment"
 
@@ -2365,19 +2458,19 @@ msgstr "Aucune partie pour le moment"
 msgid "No groups available"
 msgstr "Aucun groupe disponible"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:544
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:538
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Aucun type d'élément ne peut encore être créé. Créez d'abord les éléments parents requis."
 
-#: src/components/SettingsDialog.tsx:404
+#: src/components/SettingsDialog.tsx:408
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Aucun joystick détecté — appuyez sur n'importe quel bouton pour le réveiller."
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:354
 msgid "No matching objects"
 msgstr "Aucun objet correspondant"
 
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No open matches — create one."
 msgstr "Aucun match ouvert — créez-en un."
 
@@ -2434,7 +2527,7 @@ msgid "No views"
 msgstr "Aucune vue"
 
 #: src/components/MissionSetup.tsx:747
-#: src/components/Multiplayer.tsx:551
+#: src/components/Multiplayer.tsx:563
 msgid "No world server."
 msgstr "Aucun serveur de monde."
 
@@ -2443,9 +2536,13 @@ msgid "NO-GRADE"
 msgstr "NON NOTÉ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:560
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:563
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2457,9 +2554,9 @@ msgstr "NON NOTÉ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:473
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:829
+#: src/components/SettingsDialog.tsx:477
+#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:833
 msgid "None"
 msgstr "Aucun"
 
@@ -2471,7 +2568,7 @@ msgstr "Normal"
 msgid "NOSE GEAR"
 msgstr "TRAIN AV"
 
-#: src/components/SettingsDialog.tsx:307
+#: src/components/SettingsDialog.tsx:311
 msgid "Not a joystick profile"
 msgstr "Ce n'est pas un profil de joystick"
 
@@ -2499,7 +2596,7 @@ msgstr "Notifications : {0}"
 
 #: src/components/MissionSetup.tsx:1024
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:503
+#: src/components/Multiplayer.tsx:515
 msgid "Novice"
 msgstr "Débutant"
 
@@ -2509,7 +2606,7 @@ msgstr "Débutant"
 msgid "Number"
 msgstr "Nombre"
 
-#: src/components/SettingsDialog.tsx:964
+#: src/components/SettingsDialog.tsx:968
 msgid "Ocean detail"
 msgstr "Détail de l'océan"
 
@@ -2539,11 +2636,11 @@ msgstr "Sur la piste"
 msgid "Oops! Page Not Found!"
 msgstr "Oups ! Page introuvable !"
 
-#: src/components/Multiplayer.tsx:568
+#: src/components/Multiplayer.tsx:580
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/components/Multiplayer.tsx:370
+#: src/components/Multiplayer.tsx:382
 msgid "Open — anyone may join or leave"
 msgstr "Ouvert — tout le monde peut rejoindre ou quitter"
 
@@ -2602,8 +2699,8 @@ msgstr "orbite"
 msgid "Other"
 msgstr "Autre"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:212
 msgid "Override G limit"
 msgstr "Outrepasser la limite de g"
 
@@ -2619,11 +2716,13 @@ msgstr "PADLOCK"
 msgid "PADLOCK OFF"
 msgstr "PADLOCK DÉSACTIVÉ"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:552
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
 msgid "Parent"
 msgstr "Parent"
 
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:211
 msgid "Parking brake"
 msgstr "Frein de parc"
 
@@ -2657,14 +2756,14 @@ msgid "People"
 msgstr "Personnes"
 
 #: src/components/MissionSetup.tsx:676
-#: src/components/Multiplayer.tsx:150
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:331
 msgid "pilot"
 msgstr "pilote"
 
 #: src/components/MissionSetup.tsx:1025
 #: src/components/MissionSetup.tsx:1192
-#: src/components/Multiplayer.tsx:504
+#: src/components/Multiplayer.tsx:516
 msgid "Pilot"
 msgstr "Pilote"
 
@@ -2672,7 +2771,7 @@ msgstr "Pilote"
 msgid "PILOT DOWN"
 msgstr "PILOTE TUÉ"
 
-#: src/components/SettingsDialog.tsx:1054
+#: src/components/SettingsDialog.tsx:1058
 msgid "Pilot identity"
 msgstr "Identité du pilote"
 
@@ -2680,8 +2779,8 @@ msgstr "Identité du pilote"
 msgid "Pilot killed"
 msgstr "Pilote tué"
 
-#: src/components/MatchLog.tsx:455
-#: src/components/MatchLog.tsx:456
+#: src/components/MatchLog.tsx:460
+#: src/components/MatchLog.tsx:461
 msgid "Pin"
 msgstr "Épingler"
 
@@ -2693,11 +2792,11 @@ msgstr "tangage"
 msgid "Pitch"
 msgstr "Tangage"
 
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:202
 msgid "Pitch down"
 msgstr "Tangage vers le bas"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Pitch up"
 msgstr "Tangage vers le haut"
 
@@ -2705,7 +2804,7 @@ msgstr "Tangage vers le haut"
 msgid "PLATFORM"
 msgstr "PALIER"
 
-#: src/components/MatchLog.tsx:353
+#: src/components/MatchLog.tsx:358
 msgid "Players"
 msgstr "Joueurs"
 
@@ -2731,7 +2830,7 @@ msgstr "Publications"
 msgid "Posts and comments"
 msgstr "Publications et commentaires"
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:813
 msgid "Press a key…"
 msgstr "Appuyez sur une touche…"
 
@@ -2739,7 +2838,7 @@ msgstr "Appuyez sur une touche…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "APPUYEZ SUR ENTRÉE POUR DÉCOLLER"
 
-#: src/components/SettingsDialog.tsx:572
+#: src/components/SettingsDialog.tsx:576
 msgid "Press…"
 msgstr "Appuyez…"
 
@@ -2757,14 +2856,18 @@ msgstr "Confidentialité"
 msgid "Processing…"
 msgstr "Traitement…"
 
-#: src/components/SettingsDialog.tsx:293
-#: src/components/SettingsDialog.tsx:305
+#: src/components/SettingsDialog.tsx:297
+#: src/components/SettingsDialog.tsx:309
 msgid "Profile saved"
 msgstr "Profil enregistré"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
 msgstr "Invite enregistrée"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+msgid "Properties"
+msgstr "Propriétés"
 
 #: src/components/MissionSetup.tsx:873
 #: src/components/MissionSetup.tsx:891
@@ -2791,8 +2894,8 @@ msgstr "FEU MOT D"
 msgid "R GEAR"
 msgstr "TRAIN D"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Radar silent"
 msgstr "Radar silencieux"
 
@@ -2824,12 +2927,12 @@ msgstr "Recommandé"
 msgid "Reconnecting ({retries})..."
 msgstr "Reconnexion ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1083
+#: src/components/SettingsDialog.tsx:1087
 msgid "Record flights"
 msgstr "Enregistrer les vols"
 
-#: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1076
+#: src/components/MatchLog.tsx:447
+#: src/components/SettingsDialog.tsx:1080
 msgid "Recording"
 msgstr "Enregistrement"
 
@@ -2841,15 +2944,15 @@ msgstr "Échec de l'enregistrement. Veuillez réessayer."
 msgid "Recording produced no audio"
 msgstr "L'enregistrement n'a produit aucun son"
 
-#: src/components/MatchLog.tsx:435
+#: src/components/MatchLog.tsx:440
 msgid "Recording saved"
 msgstr "Enregistrement sauvegardé"
 
-#: src/components/Multiplayer.tsx:612
+#: src/components/Multiplayer.tsx:624
 msgid "Red"
 msgstr "Rouge"
 
-#: src/components/Multiplayer.tsx:496
+#: src/components/Multiplayer.tsx:508
 msgid "Red bots"
 msgstr "Bots rouges"
 
@@ -2866,7 +2969,7 @@ msgstr "Réduire l'intérêt"
 msgid "Reference"
 msgstr "Référence"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:359
 msgid "Refresh"
 msgstr "Actualiser"
 
@@ -2874,7 +2977,7 @@ msgstr "Actualiser"
 msgid "REJOINING"
 msgstr "JE RALLIE"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:69
 msgid "Relates"
 msgstr "Se rapporte à"
 
@@ -2930,8 +3033,8 @@ msgstr "Supprimer l'intérêt"
 msgid "Remove item"
 msgstr "Supprimer l'élément"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:298
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:303
 msgid "Remove link"
 msgstr "Supprimer le lien"
 
@@ -2970,27 +3073,39 @@ msgstr "Requis"
 msgid "Resend email"
 msgstr "Renvoyer l'e-mail"
 
-#: src/components/SettingsDialog.tsx:1159
+#: src/components/SettingsDialog.tsx:1163
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Reset master caution"
 msgstr "Réinitialiser l'alarme principale"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Reset trim"
 msgstr "Réinitialiser le compensateur"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:238
-#: src/components/SettingsDialog.tsx:855
+#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:859
 msgid "Reset view"
 msgstr "Réinitialiser la vue"
 
-#: src/components/SettingsDialog.tsx:938
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:48
+msgid "Resign"
+msgstr "Abandonner"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:35
+msgid "Resign game?"
+msgstr "Abandonner la partie ?"
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:45
+msgid "Resigning..."
+msgstr "Abandon..."
+
+#: src/components/SettingsDialog.tsx:942
 msgid "Resolution"
 msgstr "Résolution"
 
@@ -3006,7 +3121,7 @@ msgstr "Redémarrer la mission"
 msgid "Restart mission?"
 msgstr "Redémarrer la mission ?"
 
-#: src/components/MatchLog.tsx:362
+#: src/components/MatchLog.tsx:367
 msgid "Result"
 msgstr "Résultat"
 
@@ -3014,8 +3129,8 @@ msgstr "Résultat"
 msgid "Resume"
 msgstr "Reprendre"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:231
 msgid "Retract flaps"
 msgstr "Rentrer les volets"
 
@@ -3023,7 +3138,7 @@ msgstr "Rentrer les volets"
 msgid "Retry"
 msgstr "Réessayer"
 
-#: src/components/SettingsDialog.tsx:491
+#: src/components/SettingsDialog.tsx:495
 msgid "Reversed"
 msgstr "Inversé"
 
@@ -3056,11 +3171,11 @@ msgstr "roulis"
 msgid "Roll"
 msgstr "Roulis"
 
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:203
 msgid "Roll left"
 msgstr "Roulis à gauche"
 
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:204
 msgid "Roll right"
 msgstr "Roulis à droite"
 
@@ -3095,6 +3210,7 @@ msgstr "Samedi"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
+#: ../../../lib/web/src/components/banner-section.tsx:99
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3117,8 +3233,8 @@ msgstr "Niveau de la mer"
 msgid "Search"
 msgstr "Rechercher"
 
-#: src/components/SettingsDialog.tsx:677
-#: src/components/SettingsDialog.tsx:678
+#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:682
 msgid "Search controls"
 msgstr "Rechercher des commandes"
 
@@ -3142,7 +3258,7 @@ msgstr "Rechercher une destination…"
 msgid "Search for origin..."
 msgstr "Rechercher une origine…"
 
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:331
 msgid "Search objects..."
 msgstr "Rechercher des objets…"
 
@@ -3215,8 +3331,8 @@ msgstr "Sélectionner une personne..."
 msgid "Select previous card"
 msgstr "Sélectionner la carte précédente"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Select weapon"
 msgstr "Sélectionner l'arme"
 
@@ -3255,8 +3371,8 @@ msgstr "Envoyer un message"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchLog.tsx:305
-#: src/components/MatchLog.tsx:347
+#: src/components/MatchLog.tsx:310
+#: src/components/MatchLog.tsx:352
 msgid "Server"
 msgstr "Serveur"
 
@@ -3287,7 +3403,7 @@ msgstr "SESSION TERMINÉE"
 msgid "Session expired. Please log in again."
 msgstr "Session expirée. Veuillez vous reconnecter."
 
-#: src/components/SettingsDialog.tsx:821
+#: src/components/SettingsDialog.tsx:825
 msgid "Set"
 msgstr "Définir"
 
@@ -3300,12 +3416,12 @@ msgstr "Définir l'origine et la destination"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1142
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1146
+#: src/components/SettingsDialog.tsx:1173
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1004
 msgid "Shadows"
 msgstr "Ombres"
 
@@ -3360,7 +3476,7 @@ msgstr "Petit"
 msgid "Sort"
 msgstr "Trier"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1184
 msgid "Sound"
 msgstr "Son"
 
@@ -3372,7 +3488,7 @@ msgstr "Sources"
 msgid "Spaced"
 msgstr "Espacé"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:450
 msgid "Spaced spawns"
 msgstr "Réapparitions espacées"
 
@@ -3389,8 +3505,8 @@ msgid "speed brake"
 msgstr "aérofrein"
 
 #: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:209
 msgid "Speed brake"
 msgstr "Aérofrein"
 
@@ -3410,7 +3526,7 @@ msgstr "Décrochage, lisse (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Décrochage, configuration d'atterrissage (Vs0)"
 
-#: src/components/Multiplayer.tsx:427
+#: src/components/Multiplayer.tsx:439
 msgid "Start"
 msgstr "Démarrer"
 
@@ -3425,6 +3541,11 @@ msgstr "Montée la plus raide (Vx, 100% de poussée)"
 #: src/components/MissionSetup.tsx:425
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Montée la plus raide (Vx, postcombustion)"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+msgid "Stop watching"
+msgstr "Arrêter de suivre"
 
 #: src/components/GameCanvas.tsx:59
 msgid "STRUCTURE"
@@ -3454,7 +3575,7 @@ msgstr "Dimanche"
 
 #: src/components/MissionSetup.tsx:1027
 #: src/components/MissionSetup.tsx:1194
-#: src/components/Multiplayer.tsx:506
+#: src/components/Multiplayer.tsx:518
 msgid "Superhuman"
 msgstr "Surhumain"
 
@@ -3501,12 +3622,12 @@ msgstr "Équipe"
 msgid "TEAM"
 msgstr "ÉQUIPE"
 
-#: src/components/MatchLog.tsx:147
-#: src/components/Multiplayer.tsx:568
+#: src/components/MatchLog.tsx:152
+#: src/components/Multiplayer.tsx:580
 msgid "Teams"
 msgstr "Équipes"
 
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 msgid "Teams — red versus blue"
 msgstr "Équipes — rouge contre bleu"
 
@@ -3580,13 +3701,17 @@ msgstr "Cette application n'est pas autorisée à utiliser votre clé d'accès. 
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Ce navigateur ne prend pas en charge WebGL 2, le jeu ne peut donc pas fonctionner — essayez un autre navigateur."
 
-#: src/components/Multiplayer.tsx:286
+#: src/components/Multiplayer.tsx:289
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Ce salon envoie votre connexion de jeu vers un hôte différent ({redirectHost}). Ne continuez que si vous faites confiance à ce serveur."
 
 #: src/components/MissionSetup.tsx:1243
 msgid "This machine may be too slow for smooth flight."
 msgstr "Cette machine est peut-être trop lente pour un vol fluide."
+
+#: ../../../lib/web/src/components/game/game-end-dialogs.tsx:70
+msgid "This permanently deletes the game and its chat. This cannot be undone."
+msgstr "Cette action supprime définitivement la partie et son chat. Cette action est irréversible."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3596,13 +3721,13 @@ msgstr "gaz"
 msgid "Throttle"
 msgstr "Manette des gaz"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:208
 msgid "Throttle down"
 msgstr "Réduire les gaz"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:207
 msgid "Throttle up"
 msgstr "Augmenter les gaz"
 
@@ -3618,7 +3743,7 @@ msgstr "Vitesse de virage soutenu le plus serré"
 msgid "tilt"
 msgstr "inclinaison"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:273
 msgid "Time"
 msgstr "Temps"
 
@@ -3661,7 +3786,7 @@ msgstr "Trop de requêtes"
 msgid "Top"
 msgstr "Meilleur"
 
-#: src/components/SettingsDialog.tsx:1014
+#: src/components/SettingsDialog.tsx:1018
 msgid "Tracers"
 msgstr "Traçantes"
 
@@ -3681,23 +3806,23 @@ msgstr "Compensateur"
 msgid "Trim hat"
 msgstr "Chapeau de compensateur"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Trim nose down"
 msgstr "Compensateur : à piquer"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Trim nose up"
 msgstr "Compensateur : à cabrer"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Trim roll left"
 msgstr "Compensateur : roulis à gauche"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Trim roll right"
 msgstr "Compensateur : roulis à droite"
 
@@ -3735,7 +3860,7 @@ msgstr "Tapez pour rechercher des utilisateurs"
 msgid "Type to search..."
 msgstr "Tapez pour rechercher…"
 
-#: src/components/SettingsDialog.tsx:900
+#: src/components/SettingsDialog.tsx:904
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3756,13 +3881,13 @@ msgstr "Non assigné"
 msgid "Unavailable"
 msgstr "Indisponible"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Uncage seeker"
 msgstr "Libérer l'autodirecteur"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Undesignate target"
 msgstr "Annuler la désignation"
 
@@ -3784,13 +3909,13 @@ msgstr "États-Unis"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: src/components/Multiplayer.tsx:404
+#: src/components/Multiplayer.tsx:416
 msgid "Unlimited"
 msgstr "Illimité"
 
 #: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:465
+#: src/components/Multiplayer.tsx:477
 msgid "Unlimited ammunition"
 msgstr "Munitions illimitées"
 
@@ -3800,7 +3925,7 @@ msgstr "Munitions illimitées (tous les joueurs)"
 
 #: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:92
-#: src/components/Multiplayer.tsx:475
+#: src/components/Multiplayer.tsx:487
 msgid "Unlimited fuel"
 msgstr "Carburant illimité"
 
@@ -3812,9 +3937,8 @@ msgstr "Carburant illimité (tous les joueurs)"
 msgid "Unsubscribe"
 msgstr "Se désabonner"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:299
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
-#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:178
+#: ../../../lib/web/src/lib/entity-title.ts:40
 msgid "Untitled"
 msgstr "Sans titre"
 
@@ -3828,7 +3952,7 @@ msgstr "Mis à jour"
 msgid "Updated {field}"
 msgstr "{field} mis à jour"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:661
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:655
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:304
 msgid "Upload"
 msgstr "Téléverser"
@@ -3868,7 +3992,7 @@ msgstr "Vérifier l'adresse e-mail"
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/components/MatchLog.tsx:158
+#: src/components/MatchLog.tsx:163
 msgid "Victory"
 msgstr "Victoire"
 
@@ -3894,11 +4018,15 @@ msgstr "Vue"
 msgid "View all notifications"
 msgstr "Voir toutes les notifications"
 
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+msgid "View and edit item details"
+msgstr "Voir et modifier les détails de l'élément"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:170
 msgid "View controls"
 msgstr "Contrôles de la vue"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:858
 msgid "Views"
 msgstr "Vues"
 
@@ -3906,13 +4034,18 @@ msgstr "Vues"
 msgid "Voice recording is not supported in this browser"
 msgstr "L'enregistrement vocal n'est pas pris en charge par ce navigateur"
 
-#: src/components/SettingsDialog.tsx:639
+#: src/components/SettingsDialog.tsx:643
 msgid "Volumes"
 msgstr "Volumes"
 
 #: src/components/GameCanvas.tsx:41
 msgid "WAITING FOR OPPONENT"
 msgstr "EN ATTENTE DE L'ADVERSAIRE"
+
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+msgid "Watch"
+msgstr "Suivre"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:269
 #: ../../../lib/web/src/components/filter-bar.tsx:35
@@ -3940,12 +4073,12 @@ msgstr "arme"
 msgid "Weapon select hat"
 msgstr "Chapeau de sélection d'arme"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:411
 #: src/components/SettingsDialog.tsx:102
 msgid "Weapons"
 msgstr "Armes"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:389
 msgid "Weather"
 msgstr "Météo"
 
@@ -3953,17 +4086,17 @@ msgstr "Météo"
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:210
 msgid "Wheel brakes"
 msgstr "Freins de roue"
 
-#: src/components/SettingsDialog.tsx:593
+#: src/components/SettingsDialog.tsx:597
 msgid "Wind and cockpit airframe"
 msgstr "Vent et cellule du cockpit"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:237
 msgid "Wing fold"
 msgstr "Repliage des ailes"
 
@@ -3971,12 +4104,12 @@ msgstr "Repliage des ailes"
 msgid "WINS"
 msgstr "GAGNE"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:315
 msgid "World server"
 msgstr "Serveur de monde"
 
 #: src/components/MissionSetup.tsx:725
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server not reachable"
 msgstr "Serveur de monde injoignable"
 
@@ -3992,13 +4125,13 @@ msgstr "lacet"
 msgid "Yaw"
 msgstr "Lacet"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:205
 msgid "Yaw left"
 msgstr "Lacet à gauche"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:206
 msgid "Yaw right"
 msgstr "Lacet à droite"
 
@@ -4018,11 +4151,11 @@ msgstr "Votre compte a été déplacé ici depuis {source}. Tant que vous ne le 
 msgid "Your attachments will be lost."
 msgstr "Vos pièces jointes seront perdues."
 
-#: src/components/MatchLog.tsx:208
+#: src/components/MatchLog.tsx:213
 msgid "Your flights appear here once you've flown one."
 msgstr "Vos vols apparaîtront ici une fois que vous en aurez effectué un."
 
-#: src/components/Multiplayer.tsx:563
+#: src/components/Multiplayer.tsx:575
 msgid "your offer"
 msgstr "votre offre"
 
@@ -4038,10 +4171,10 @@ msgstr "Votre texte sera perdu."
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:195
 msgid "Zoom in"
 msgstr "Zoom avant"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:196
 msgid "Zoom out"
 msgstr "Zoom arrière"
