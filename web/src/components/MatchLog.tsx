@@ -7,7 +7,7 @@
 // career summary aggregated SERVER-side over all of them and a table of the
 // fifty most recent. Raw mode/reason enums are mapped to labels before display.
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { ArrowDown, ArrowUp, ChevronsUpDown, CircleAlert, Download, History, Pin, PinOff, ShieldAlert } from 'lucide-react'
 import { EmptyState, getErrorMessage, shellSaveBlob, toast, useFormat } from '@mochi/web'
@@ -115,7 +115,12 @@ function SortHead({
 
 export function MatchLog({ recording }: { recording?: () => Replay | null }) {
   const { t } = useLingui()
-  const replay = recording?.() ?? null
+  // Rendering the buffered flight costs 25-75 ms for a 5-20 minute sortie, and
+  // the accessor rebuilds the whole ACMI string every call. The log only needs
+  // it twice - to decide whether a row carries a Recording button, and to hand
+  // over the text when one is pressed - so it is read once per mount rather
+  // than on every filter, sort and hover.
+  const replay = useMemo(() => recording?.() ?? null, [recording])
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
   const [totals, setTotals] = useState<MatchTotals | null>(null)

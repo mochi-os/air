@@ -172,6 +172,11 @@ export function MenuDialog({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
+        // No DialogDescription anywhere in this app: an explanatory line under
+        // a dialog title is exactly what the client removed across the estate.
+        // Saying so explicitly is what stops Radix warning on every open; the
+        // alternative it suggests is to write the sentence back.
+        aria-describedby={undefined}
         onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
         className={`${
           wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'
