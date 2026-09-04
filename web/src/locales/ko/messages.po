@@ -18,10 +18,6 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:301
-#~ msgid " or "
-#~ msgstr " 또는 "
-
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:189
 msgid "(edited)"
 msgstr "(편집됨)"
@@ -40,7 +36,7 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {#발 피탄}}"
 
 #. placeholder {0}: displayInfo.count
-#: ../../../lib/web/src/components/person-picker.tsx:257
+#: ../../../lib/web/src/components/person-picker.tsx:260
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# 선택됨} other {# 선택됨}}"
 
@@ -93,29 +89,25 @@ msgstr "{0}은(는) {1}에 있었으며 이제 할당이 해제되었습니다."
 msgid "{0}/{1} players"
 msgstr "{0}/{1}명"
 
-#: ../../../lib/web/src/lib/locale-format.ts:176
+#: ../../../lib/web/src/lib/locale-format.ts:191
 msgid "{count, plural, one {#d} other {#d}}"
 msgstr "{count, plural, one {#일} other {#일}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:172
+#: ../../../lib/web/src/lib/locale-format.ts:187
 msgid "{count, plural, one {#h} other {#h}}"
 msgstr "{count, plural, one {#시간} other {#시간}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:168
+#: ../../../lib/web/src/lib/locale-format.ts:183
 msgid "{count, plural, one {#m} other {#m}}"
 msgstr "{count, plural, one {#분} other {#분}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:180
+#: ../../../lib/web/src/lib/locale-format.ts:195
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#주} other {#주}}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:176
 msgid "{entityLabel} name"
 msgstr "{entityLabel} 이름"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
-#~ msgid "{entityLabel} name is required"
-#~ msgstr "{entityLabel} 이름은 필수입니다"
 
 #: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
@@ -146,18 +138,6 @@ msgstr "{totalDescendants, plural, one {답글 #개} other {답글 +#개 더}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {메뉴 열기(읽지 않은 알림 #개)} other {메뉴 열기(읽지 않은 알림 #개)}}"
 
-#: ../../../lib/web/src/components/entity/entity-board-card.tsx:418
-#~ msgid "+{0} nested"
-#~ msgstr "+{0}개 중첩"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
-#~ msgid "+{totalDescendants} more replies"
-#~ msgstr "답글 +{totalDescendants}개"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
-#~ msgid "1 reply"
-#~ msgstr "답글 1개"
-
 #: src/components/GameCanvas.tsx:65
 msgid "1 WIRE"
 msgstr "1번 와이어"
@@ -185,6 +165,10 @@ msgstr "3번 와이어"
 #: src/components/MissionSetup.tsx:465
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:35
+msgid "A recording is already in progress."
+msgstr "이미 녹음이 진행 중입니다."
 
 #: ../../../lib/web/src/lib/preference-utils.ts:46
 msgid "Absolute (date and time)"
@@ -324,10 +308,6 @@ msgstr "모든 모드"
 #: src/components/MatchLog.tsx:310
 msgid "All servers"
 msgstr "모든 서버"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
-#~ msgid "Allow anyone to search for {0}"
-#~ msgstr "누구나 {0}을(를) 검색할 수 있도록 허용"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:87
 msgid "Allow anyone to search for {entityLabel}"
@@ -587,6 +567,11 @@ msgstr "콜사인"
 msgid "Camera distance"
 msgstr "카메라 거리"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:48
+msgid "Camera permission denied"
+msgstr "카메라 권한이 거부되었습니다"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:56
 #: src/components/SettingsDialog.tsx:875
 msgid "Camera unavailable"
 msgstr "카메라를 사용할 수 없음"
@@ -619,6 +604,12 @@ msgstr "댓글 취소"
 #: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Cancel reply"
 msgstr "답글 취소"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:24
+#: ../../../lib/web/src/lib/shell-errors.ts:37
+#: ../../../lib/web/src/lib/shell-errors.ts:52
+msgid "Cancelled"
+msgstr "취소됨"
 
 #: src/components/SettingsDialog.tsx:594
 msgid "Cannons and ordnance"
@@ -753,8 +744,8 @@ msgstr "검색 지우기"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:479
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "닫기"
@@ -833,8 +824,8 @@ msgstr "접근 개시"
 msgid "Comment actions"
 msgstr "댓글 작업"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:442
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:455
 msgid "Comments"
 msgstr "댓글"
 
@@ -986,10 +977,6 @@ msgstr "추락"
 msgid "Create"
 msgstr "생성"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
-#~ msgid "Create {0}"
-#~ msgstr "{0} 만들기"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:146
 msgid "Create {entityLabel}"
 msgstr "{entityLabel} 만들기"
@@ -1140,7 +1127,7 @@ msgstr "옵션 {0} 삭제"
 msgid "Delete view"
 msgstr "뷰 삭제"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:95
+#: ../../../lib/web/src/components/restore-banner.tsx:101
 msgid "Delete your account on the old server"
 msgstr "이전 서버에서 계정 삭제"
 
@@ -1196,7 +1183,7 @@ msgstr "웹 브라우저에서 감지"
 msgid "Different game host"
 msgstr "다른 게임 호스트"
 
-#: ../../../lib/web/src/components/person-picker.tsx:190
+#: ../../../lib/web/src/components/person-picker.tsx:193
 msgid "Directory"
 msgstr "디렉터리"
 
@@ -1222,8 +1209,8 @@ msgstr "연결 끊김"
 msgid "Disconnected"
 msgstr "연결 끊김"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:74
 #: ../../../lib/web/src/components/restore-banner.tsx:80
+#: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
 #: src/components/SettingsDialog.tsx:781
 msgid "Dismiss"
@@ -1253,8 +1240,8 @@ msgid "Done"
 msgstr "완료"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:243
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:474
 msgid "Download"
 msgstr "다운로드"
 
@@ -1490,7 +1477,7 @@ msgstr "불러오기에 실패했어요"
 msgid "Failed to load history"
 msgstr "기록 불러오기에 실패했어요"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load image"
 msgstr "이미지를 불러오지 못했어요"
 
@@ -1498,7 +1485,7 @@ msgstr "이미지를 불러오지 못했어요"
 msgid "Failed to load prompts"
 msgstr "프롬프트 불러오기에 실패했어요"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "동영상을 불러오지 못했어요"
 
@@ -1544,7 +1531,7 @@ msgstr "전투 개시"
 msgid "Files"
 msgstr "파일"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:83
+#: ../../../lib/web/src/components/restore-banner.tsx:89
 msgid "Finish moving your account"
 msgstr "계정 이전 완료"
 
@@ -1639,7 +1626,7 @@ msgstr "자유 비행"
 msgid "Friday"
 msgstr "금요일"
 
-#: ../../../lib/web/src/components/person-picker.tsx:183
+#: ../../../lib/web/src/components/person-picker.tsx:186
 msgid "Friends"
 msgstr "친구"
 
@@ -1813,7 +1800,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:328
 msgid "Image viewer: {0}"
 msgstr "이미지 뷰어: {0}"
 
@@ -1925,7 +1912,7 @@ msgstr "결투 봇 상대"
 msgid "Joystick"
 msgstr "조이스틱"
 
-#: ../../../lib/web/src/lib/locale-format.ts:165
+#: ../../../lib/web/src/lib/locale-format.ts:180
 msgid "Just now"
 msgstr "방금"
 
@@ -2017,10 +2004,6 @@ msgstr "왼쪽 날개"
 #: src/components/MissionSetup.tsx:246
 msgid "Left wingtip"
 msgstr "왼쪽 날개 끝"
-
-#: ../../../lib/web/src/components/post-tags.tsx:72
-#~ msgid "Letters, numbers, spaces, and hyphens only"
-#~ msgstr "문자, 숫자, 공백, 하이픈만 가능해요"
 
 #: ../../../lib/web/src/components/post-tags.tsx:73
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
@@ -2228,6 +2211,10 @@ msgstr "팀에게 메시지 보내기"
 msgid "Metric"
 msgstr "측정 항목"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:31
+msgid "Microphone permission denied"
+msgstr "마이크 권한이 거부되었습니다"
+
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
@@ -2308,10 +2295,6 @@ msgstr "이름"
 msgid "Name cannot contain < or > characters"
 msgstr "이름에는 < 또는 > 문자를 사용할 수 없어요"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
-#~ msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
-#~ msgstr "이름에는 꺾쇠괄호, 백슬래시, 세미콜론, 따옴표, 백틱을 사용할 수 없습니다"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:101
 msgid "Name is required"
 msgstr "이름은 필수예요"
@@ -2335,8 +2318,8 @@ msgstr "새로 만들기"
 msgid "New game"
 msgstr "새 게임"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:536
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:541
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:537
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:542
 msgid "Next image"
 msgstr "다음 이미지"
 
@@ -2470,7 +2453,7 @@ msgstr "등급 없음"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
-#: ../../../lib/web/src/components/person-picker.tsx:326
+#: ../../../lib/web/src/components/person-picker.tsx:329
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
@@ -2649,12 +2632,17 @@ msgid "Passkey"
 msgstr "패스키"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/lib/shell-errors.ts:26
 msgid "Passkey verification failed. Please try again."
 msgstr "패스키 인증에 실패했습니다. 다시 시도해 주세요."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:132
+#: ../../../lib/web/src/components/restore-banner.tsx:138
 msgid "Passkeys"
 msgstr "패스키"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:19
+msgid "Passkeys are not available in this browser"
+msgstr "이 브라우저에서는 패스키를 사용할 수 없습니다"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:213
 msgid "Pattern (regex)"
@@ -2664,7 +2652,7 @@ msgstr "패턴 (정규식)"
 msgid "Paused"
 msgstr "일시 정지됨"
 
-#: ../../../lib/web/src/components/person-picker.tsx:176
+#: ../../../lib/web/src/components/person-picker.tsx:179
 msgid "People"
 msgstr "사람"
 
@@ -2727,10 +2715,6 @@ msgstr "플레이어 수"
 msgid "Please check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
-#~ msgid "Please log in with the appropriate credentials <0/> to access this resource."
-#~ msgstr "이 리소스에 접근하려면 <0/> 적절한 자격 증명으로 로그인해 주세요."
-
 #: ../../../lib/web/src/features/errors/general-error.tsx:81
 msgid "Please try again."
 msgstr "다시 시도해 주세요."
@@ -2759,8 +2743,8 @@ msgstr "ENTER로 발진"
 msgid "Press…"
 msgstr "누르세요…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:520
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:521
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:526
 msgid "Previous image"
 msgstr "이전 이미지"
 
@@ -2777,10 +2761,6 @@ msgstr "처리 중…"
 #: src/components/SettingsDialog.tsx:305
 msgid "Profile saved"
 msgstr "프로필이 저장되었어요"
-
-#: ../../../lib/web/src/components/person-picker.tsx:200
-#~ msgid "Project members"
-#~ msgstr "프로젝트 멤버"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
@@ -2820,11 +2800,11 @@ msgstr "레이더 침묵"
 msgid "Raised"
 msgstr "돌출"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:104
+#: ../../../lib/web/src/components/restore-banner.tsx:110
 msgid "Re-link your accounts on this server"
 msgstr "이 서버에서 계정 다시 연결"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:126
+#: ../../../lib/web/src/components/restore-banner.tsx:132
 msgid "Re-register your passkeys on this server"
 msgstr "이 서버에서 패스키를 다시 등록하세요"
 
@@ -2852,6 +2832,14 @@ msgstr "비행 기록"
 #: src/components/SettingsDialog.tsx:1076
 msgid "Recording"
 msgstr "기록"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:43
+msgid "Recording failed. Please try again."
+msgstr "녹음에 실패했습니다. 다시 시도하세요."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:39
+msgid "Recording produced no audio"
+msgstr "녹음에 소리가 없습니다"
 
 #: src/components/MatchLog.tsx:435
 msgid "Recording saved"
@@ -3173,7 +3161,7 @@ msgstr "이 화면을 검색, 관찰하고 정렬해요."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:179
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/person-picker.tsx:300
+#: ../../../lib/web/src/components/person-picker.tsx:303
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "검색..."
@@ -3544,6 +3532,14 @@ msgstr "보낼 수 없습니다. 파일이 너무 크거나 연결이 실패했�
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "업로드하기에 너무 컸습니다. 파일을 제거하거나 줄인 후 다시 시도하세요."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:50
+msgid "The camera is already in use"
+msgstr "카메라가 이미 사용 중입니다"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:54
+msgid "The camera request was not answered"
+msgstr "카메라 요청에 응답이 없었습니다"
+
 #: src/routes/index.tsx:132
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "게임을 불러올 수 없습니다. 다시 시도하려면 페이지를 새로 고치세요."
@@ -3551,6 +3547,10 @@ msgstr "게임을 불러올 수 없습니다. 다시 시도하려면 페이지�
 #: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "메뉴가 열려 있어도 매치는 계속 진행됩니다."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:41
+msgid "The microphone request was not answered"
+msgstr "마이크 요청에 응답이 없었습니다"
 
 #: src/routes/index.tsx:133
 msgid "The mission stopped."
@@ -3560,6 +3560,10 @@ msgstr "미션이 중단되었습니다."
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "미션이 재시작됩니다. 현재 비행은 저장되지 않습니다."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:21
+msgid "The passkey request was not answered"
+msgstr "패스키 요청에 응답이 없었습니다"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:66
 msgid "The requested content could not be found."
 msgstr "요청한 콘텐츠를 찾을 수 없습니다."
@@ -3567,6 +3571,10 @@ msgstr "요청한 콘텐츠를 찾을 수 없습니다."
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:152
 msgid "The server returned a web page instead of data."
 msgstr "서버가 데이터 대신 웹 페이지를 반환했습니다."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:17
+msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
+msgstr "이 앱은 패스키를 사용할 수 없습니다. 설정의 권한에서 허용하세요."
 
 #: src/components/MissionSetup.tsx:1239
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -3635,11 +3643,6 @@ msgstr "섹션 전환"
 #: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle sidebar"
 msgstr "사이드바 토글"
-
-#: ../../../lib/web/src/components/ui/sidebar.tsx:352
-#: ../../../lib/web/src/components/ui/sidebar.tsx:355
-#~ msgid "Toggle Sidebar"
-#~ msgstr "사이드바 전환"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3748,10 +3751,6 @@ msgstr "로그인으로 리디렉션할 수 없어요. 다시 시도해 주세�
 #: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "할당되지 않음"
-
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
-#~ msgid "Unauthorized Access"
-#~ msgstr "허용되지 않은 접근"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
@@ -3878,7 +3877,7 @@ msgid "Video thumbnail"
 msgstr "동영상 미리보기 이미지"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:326
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
 msgid "Video viewer: {0}"
 msgstr "동영상 뷰어: {0}"
 
@@ -3902,6 +3901,10 @@ msgstr "보기 컨트롤"
 #: src/components/SettingsDialog.tsx:854
 msgid "Views"
 msgstr "조회수"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:33
+msgid "Voice recording is not supported in this browser"
+msgstr "이 브라우저에서는 음성 녹음이 지원되지 않습니다"
 
 #: src/components/SettingsDialog.tsx:639
 msgid "Volumes"
@@ -4007,7 +4010,7 @@ msgstr "본기"
 msgid "You do not have access to this section."
 msgstr "이 섹션에 대한 접근 권한이 없습니다."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:86
+#: ../../../lib/web/src/components/restore-banner.tsx:92
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 삭제할 때까지 메시지와 알림이 두 서버 모두에 전달될 수 있으며, 일부 콘텐츠는 이전 서버에서 계속 제공되고 팔로워가 이곳에서 나를 찾는 데 몇 분이 걸릴 수 있습니다."
 
