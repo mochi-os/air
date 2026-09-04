@@ -26,18 +26,6 @@ def database_create():
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 
-# attachment_export() -> list | None: the rows core's attachment store held for
-# this user and app, each with "file" (stored filename, "" for a remote row),
-# from the export file core wrote before dropping its own store. None when the
-# export cannot be read; a missing export file means no rows.
-def attachment_export():
-	if not mochi.file.exists("attachments.json"):
-		return []
-	rows = json.decode(str(mochi.file.read("attachments.json") or ""), None)
-	if type(rows) != "list":
-		return None
-	return rows
-
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
@@ -58,9 +46,6 @@ def database_upgrade(version):
 		files = {}
 		if rows:
 			exported = attachment_export()
-			if exported == None:
-				mochi.db.abort("attachment store unavailable")
-				return
 			for att in exported:
 				files[att.get("id", "")] = att.get("file", "")
 		for row in rows:
