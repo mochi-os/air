@@ -12,7 +12,11 @@ RELEASE = ../../release
 # plain pnpm there rather than failing on a path outside this repo.
 SAFE_PNPM = $(abspath ../../claude/scripts/safe-pnpm.sh)
 
-all: web/dist/index.html
+all: vendor web/dist/index.html
+
+vendor:
+	mkdir -p lib
+	ln -sf ../../../lib/starlark/attachments.star lib/attachments.star
 
 wasm: web/src/assets/flight.wasm
 
@@ -29,9 +33,9 @@ web/src/assets/flight.wasm: $(shell find ../../world/games/air ../../world/wasm 
 	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/air/web/src/assets/flight.wasm ./wasm
 	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/src/assets/
 
-release: web/dist/index.html
+release: vendor web/dist/index.html
 	rm -f $(RELEASE)/$(APP)_*.zip
-	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star labels web/dist
+	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star lib labels web/dist
 	# Tagged by claude/scripts/commit.sh when the version bump is committed:
 	# tagging here runs before that commit, so the tag named the one before it.
 

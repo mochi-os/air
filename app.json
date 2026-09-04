@@ -10,7 +10,7 @@
 	"paths": ["air"],
 
 	"architecture": {"engine": "starlark", "version": 4},
-	"execute": ["air.star"],
+	"execute": ["lib/attachments.star", "air.star"],
 
 	"require": {"version": {"minimum": "0.4.228"}},
 
