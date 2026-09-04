@@ -18,10 +18,6 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Comprueba tu conexión a internet e inténtalo de nuevo."
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:301
-#~ msgid " or "
-#~ msgstr " o "
-
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:189
 msgid "(edited)"
 msgstr "(editado)"
@@ -40,7 +36,7 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# impacto recibido} many {# de impactos recibidos} other {# impactos recibidos}}"
 
 #. placeholder {0}: displayInfo.count
-#: ../../../lib/web/src/components/person-picker.tsx:257
+#: ../../../lib/web/src/components/person-picker.tsx:260
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# seleccionado} other {# seleccionados}}"
 
@@ -93,29 +89,25 @@ msgstr "{0} estaba en {1}, que ahora está sin asignar."
 msgid "{0}/{1} players"
 msgstr "{0}/{1} jugadores"
 
-#: ../../../lib/web/src/lib/locale-format.ts:176
+#: ../../../lib/web/src/lib/locale-format.ts:191
 msgid "{count, plural, one {#d} other {#d}}"
 msgstr "{count, plural, one {#d} other {#d}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:172
+#: ../../../lib/web/src/lib/locale-format.ts:187
 msgid "{count, plural, one {#h} other {#h}}"
 msgstr "{count, plural, one {#h} other {#h}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:168
+#: ../../../lib/web/src/lib/locale-format.ts:183
 msgid "{count, plural, one {#m} other {#m}}"
 msgstr "{count, plural, one {#min} other {#min}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:180
+#: ../../../lib/web/src/lib/locale-format.ts:195
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#sem} other {#sem}}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:176
 msgid "{entityLabel} name"
 msgstr "Nombre de {entityLabel}"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
-#~ msgid "{entityLabel} name is required"
-#~ msgstr "El nombre de {entityLabel} es obligatorio"
 
 #: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
@@ -146,18 +138,6 @@ msgstr "{totalDescendants, plural, one {# respuesta} other {+# respuestas más}}
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Abrir menú (# notificación sin leer)} other {Abrir menú (# notificaciones sin leer)}}"
 
-#: ../../../lib/web/src/components/entity/entity-board-card.tsx:418
-#~ msgid "+{0} nested"
-#~ msgstr "+{0} anidados"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
-#~ msgid "+{totalDescendants} more replies"
-#~ msgstr "+{totalDescendants} respuestas más"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
-#~ msgid "1 reply"
-#~ msgstr "1 respuesta"
-
 #: src/components/GameCanvas.tsx:65
 msgid "1 WIRE"
 msgstr "CABLE 1"
@@ -185,6 +165,10 @@ msgstr "CABLE 3"
 #: src/components/MissionSetup.tsx:465
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:35
+msgid "A recording is already in progress."
+msgstr "Ya hay una grabación en curso."
 
 #: ../../../lib/web/src/lib/preference-utils.ts:46
 msgid "Absolute (date and time)"
@@ -324,10 +308,6 @@ msgstr "Todos los modos"
 #: src/components/MatchLog.tsx:310
 msgid "All servers"
 msgstr "Todos los servidores"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
-#~ msgid "Allow anyone to search for {0}"
-#~ msgstr "Permitir que cualquiera busque {0}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:87
 msgid "Allow anyone to search for {entityLabel}"
@@ -587,6 +567,11 @@ msgstr "Indicativo"
 msgid "Camera distance"
 msgstr "Distancia de la cámara"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:48
+msgid "Camera permission denied"
+msgstr "Permiso de cámara denegado"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:56
 #: src/components/SettingsDialog.tsx:875
 msgid "Camera unavailable"
 msgstr "Cámara no disponible"
@@ -619,6 +604,12 @@ msgstr "Cancelar comentario"
 #: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Cancel reply"
 msgstr "Cancelar respuesta"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:24
+#: ../../../lib/web/src/lib/shell-errors.ts:37
+#: ../../../lib/web/src/lib/shell-errors.ts:52
+msgid "Cancelled"
+msgstr "Cancelado"
 
 #: src/components/SettingsDialog.tsx:594
 msgid "Cannons and ordnance"
@@ -753,8 +744,8 @@ msgstr "Borrar búsqueda"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:479
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Cerrar"
@@ -833,8 +824,8 @@ msgstr "INICIANDO"
 msgid "Comment actions"
 msgstr "Acciones del comentario"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:442
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:455
 msgid "Comments"
 msgstr "Comentarios"
 
@@ -986,10 +977,6 @@ msgstr "ESTRELLADO"
 msgid "Create"
 msgstr "Crear"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
-#~ msgid "Create {0}"
-#~ msgstr "Crear {0}"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:146
 msgid "Create {entityLabel}"
 msgstr "Crear {entityLabel}"
@@ -1140,7 +1127,7 @@ msgstr "Eliminar opción {0}"
 msgid "Delete view"
 msgstr "Eliminar vista"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:95
+#: ../../../lib/web/src/components/restore-banner.tsx:101
 msgid "Delete your account on the old server"
 msgstr "Elimina tu cuenta en el servidor antiguo"
 
@@ -1196,7 +1183,7 @@ msgstr "Detectar desde el navegador web"
 msgid "Different game host"
 msgstr "Host de juego diferente"
 
-#: ../../../lib/web/src/components/person-picker.tsx:190
+#: ../../../lib/web/src/components/person-picker.tsx:193
 msgid "Directory"
 msgstr "Directorio"
 
@@ -1222,8 +1209,8 @@ msgstr "desconectado"
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:74
 #: ../../../lib/web/src/components/restore-banner.tsx:80
+#: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
 #: src/components/SettingsDialog.tsx:781
 msgid "Dismiss"
@@ -1253,8 +1240,8 @@ msgid "Done"
 msgstr "Hecho"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:243
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:474
 msgid "Download"
 msgstr "Descargar"
 
@@ -1490,7 +1477,7 @@ msgstr "Error al cargar"
 msgid "Failed to load history"
 msgstr "Error al cargar el historial"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load image"
 msgstr "No se pudo cargar la imagen"
 
@@ -1498,7 +1485,7 @@ msgstr "No se pudo cargar la imagen"
 msgid "Failed to load prompts"
 msgstr "Error al cargar los prompts"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "No se pudo cargar el vídeo"
 
@@ -1544,7 +1531,7 @@ msgstr "EMPIEZA EL COMBATE"
 msgid "Files"
 msgstr "Archivos"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:83
+#: ../../../lib/web/src/components/restore-banner.tsx:89
 msgid "Finish moving your account"
 msgstr "Termina de mover tu cuenta"
 
@@ -1639,7 +1626,7 @@ msgstr "Vuelo libre"
 msgid "Friday"
 msgstr "Viernes"
 
-#: ../../../lib/web/src/components/person-picker.tsx:183
+#: ../../../lib/web/src/components/person-picker.tsx:186
 msgid "Friends"
 msgstr "Amigos"
 
@@ -1813,7 +1800,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:328
 msgid "Image viewer: {0}"
 msgstr "Visor de imágenes: {0}"
 
@@ -1925,7 +1912,7 @@ msgstr "Duelo contra el bot"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: ../../../lib/web/src/lib/locale-format.ts:165
+#: ../../../lib/web/src/lib/locale-format.ts:180
 msgid "Just now"
 msgstr "Ahora mismo"
 
@@ -2017,10 +2004,6 @@ msgstr "Ala izquierda"
 #: src/components/MissionSetup.tsx:246
 msgid "Left wingtip"
 msgstr "Punta del ala izquierda"
-
-#: ../../../lib/web/src/components/post-tags.tsx:72
-#~ msgid "Letters, numbers, spaces, and hyphens only"
-#~ msgstr "Solo letras, números, espacios y guiones"
 
 #: ../../../lib/web/src/components/post-tags.tsx:73
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
@@ -2228,6 +2211,10 @@ msgstr "Escribe a tu equipo"
 msgid "Metric"
 msgstr "Métrico"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:31
+msgid "Microphone permission denied"
+msgstr "Permiso de micrófono denegado"
+
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
@@ -2308,10 +2295,6 @@ msgstr "Nombre"
 msgid "Name cannot contain < or > characters"
 msgstr "El nombre no puede contener los caracteres < o >"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
-#~ msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
-#~ msgstr "El nombre no puede contener corchetes angulares, barra invertida, punto y coma, comillas ni comillas invertidas"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:101
 msgid "Name is required"
 msgstr "El nombre es obligatorio"
@@ -2335,8 +2318,8 @@ msgstr "Nuevo"
 msgid "New game"
 msgstr "Nueva partida"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:536
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:541
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:537
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:542
 msgid "Next image"
 msgstr "Siguiente imagen"
 
@@ -2470,7 +2453,7 @@ msgstr "SIN NOTA"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
-#: ../../../lib/web/src/components/person-picker.tsx:326
+#: ../../../lib/web/src/components/person-picker.tsx:329
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
@@ -2649,12 +2632,17 @@ msgid "Passkey"
 msgstr "Clave de acceso"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/lib/shell-errors.ts:26
 msgid "Passkey verification failed. Please try again."
 msgstr "La verificación con la clave de acceso ha fallado. Inténtalo de nuevo."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:132
+#: ../../../lib/web/src/components/restore-banner.tsx:138
 msgid "Passkeys"
 msgstr "Claves de acceso"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:19
+msgid "Passkeys are not available in this browser"
+msgstr "Las claves de acceso no están disponibles en este navegador"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:213
 msgid "Pattern (regex)"
@@ -2664,7 +2652,7 @@ msgstr "Patrón (regex)"
 msgid "Paused"
 msgstr "En pausa"
 
-#: ../../../lib/web/src/components/person-picker.tsx:176
+#: ../../../lib/web/src/components/person-picker.tsx:179
 msgid "People"
 msgstr "Personas"
 
@@ -2727,10 +2715,6 @@ msgstr "Jugadores"
 msgid "Please check your internet connection and try again."
 msgstr "Comprueba tu conexión a internet e inténtalo de nuevo."
 
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
-#~ msgid "Please log in with the appropriate credentials <0/> to access this resource."
-#~ msgstr "Inicia sesión con las credenciales adecuadas <0/> para acceder a este recurso."
-
 #: ../../../lib/web/src/features/errors/general-error.tsx:81
 msgid "Please try again."
 msgstr "Inténtalo de nuevo."
@@ -2759,8 +2743,8 @@ msgstr "PULSA INTRO PARA DESPEGAR"
 msgid "Press…"
 msgstr "Pulsa…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:520
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:521
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:526
 msgid "Previous image"
 msgstr "Imagen anterior"
 
@@ -2777,10 +2761,6 @@ msgstr "Procesando…"
 #: src/components/SettingsDialog.tsx:305
 msgid "Profile saved"
 msgstr "Perfil guardado"
-
-#: ../../../lib/web/src/components/person-picker.tsx:200
-#~ msgid "Project members"
-#~ msgstr "Miembros del proyecto"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
@@ -2820,11 +2800,11 @@ msgstr "Silencio de radar"
 msgid "Raised"
 msgstr "Elevada"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:104
+#: ../../../lib/web/src/components/restore-banner.tsx:110
 msgid "Re-link your accounts on this server"
 msgstr "Vuelve a vincular tus cuentas en este servidor"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:126
+#: ../../../lib/web/src/components/restore-banner.tsx:132
 msgid "Re-register your passkeys on this server"
 msgstr "Vuelve a registrar tus llaves de acceso en este servidor"
 
@@ -2852,6 +2832,14 @@ msgstr "Grabar vuelos"
 #: src/components/SettingsDialog.tsx:1076
 msgid "Recording"
 msgstr "Grabación"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:43
+msgid "Recording failed. Please try again."
+msgstr "La grabación falló. Inténtalo de nuevo."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:39
+msgid "Recording produced no audio"
+msgstr "La grabación no produjo audio"
 
 #: src/components/MatchLog.tsx:435
 msgid "Recording saved"
@@ -3173,7 +3161,7 @@ msgstr "Busca, observa y ordena esta vista."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:179
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/person-picker.tsx:300
+#: ../../../lib/web/src/components/person-picker.tsx:303
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Buscar..."
@@ -3544,6 +3532,14 @@ msgstr "No se pudo enviar. Puede que los archivos sean demasiado grandes o que l
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Era demasiado grande para subir. Elimina o reduce archivos e inténtalo de nuevo."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:50
+msgid "The camera is already in use"
+msgstr "La cámara ya está en uso"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:54
+msgid "The camera request was not answered"
+msgstr "La solicitud de cámara no recibió respuesta"
+
 #: src/routes/index.tsx:132
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "No se pudo cargar el juego. Recarga la página para volver a intentarlo."
@@ -3551,6 +3547,10 @@ msgstr "No se pudo cargar el juego. Recarga la página para volver a intentarlo.
 #: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "La partida continúa detrás de este menú."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:41
+msgid "The microphone request was not answered"
+msgstr "La solicitud de micrófono no recibió respuesta"
 
 #: src/routes/index.tsx:133
 msgid "The mission stopped."
@@ -3560,6 +3560,10 @@ msgstr "La misión se detuvo."
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "La misión se reiniciará. El vuelo actual no se guardará."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:21
+msgid "The passkey request was not answered"
+msgstr "La solicitud de clave de acceso no recibió respuesta"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:66
 msgid "The requested content could not be found."
 msgstr "No se ha podido encontrar el contenido solicitado."
@@ -3567,6 +3571,10 @@ msgstr "No se ha podido encontrar el contenido solicitado."
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:152
 msgid "The server returned a web page instead of data."
 msgstr "El servidor devolvió una página web en lugar de datos."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:17
+msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
+msgstr "Esta aplicación no puede usar tu clave de acceso. Permítelo en Configuración, en Permisos."
 
 #: src/components/MissionSetup.tsx:1239
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -3635,11 +3643,6 @@ msgstr "Alternar sección"
 #: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle sidebar"
 msgstr "Alternar barra lateral"
-
-#: ../../../lib/web/src/components/ui/sidebar.tsx:352
-#: ../../../lib/web/src/components/ui/sidebar.tsx:355
-#~ msgid "Toggle Sidebar"
-#~ msgstr "Alternar barra lateral"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3748,10 +3751,6 @@ msgstr "No se ha podido redirigir al inicio de sesión. Inténtalo de nuevo."
 #: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "Sin asignar"
-
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
-#~ msgid "Unauthorized Access"
-#~ msgstr "Acceso no permitido"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
@@ -3878,7 +3877,7 @@ msgid "Video thumbnail"
 msgstr "Miniatura del vídeo"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:326
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
 msgid "Video viewer: {0}"
 msgstr "Visor de vídeos: {0}"
 
@@ -3902,6 +3901,10 @@ msgstr "Ver controles"
 #: src/components/SettingsDialog.tsx:854
 msgid "Views"
 msgstr "Vistas"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:33
+msgid "Voice recording is not supported in this browser"
+msgstr "La grabación de voz no es compatible con este navegador"
 
 #: src/components/SettingsDialog.tsx:639
 msgid "Volumes"
@@ -4007,7 +4010,7 @@ msgstr "TÚ"
 msgid "You do not have access to this section."
 msgstr "No tienes acceso a esta sección."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:86
+#: ../../../lib/web/src/components/restore-banner.tsx:92
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tu cuenta fue trasladada aquí desde {source}. Hasta que la elimines allí, los mensajes y notificaciones pueden llegar a ambos servidores, parte de tu contenido seguirá siendo servido desde el servidor antiguo y tus seguidores pueden tardar unos minutos en encontrarte aquí."
 

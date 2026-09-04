@@ -18,10 +18,6 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Athugaðu nettenginguna og reyndu aftur."
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:301
-#~ msgid " or "
-#~ msgstr " eða "
-
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:189
 msgid "(edited)"
 msgstr "(breytt)"
@@ -40,7 +36,7 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Varð fyrir # skoti} other {Varð fyrir # skotum}}"
 
 #. placeholder {0}: displayInfo.count
-#: ../../../lib/web/src/components/person-picker.tsx:257
+#: ../../../lib/web/src/components/person-picker.tsx:260
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# valið} other {# valin}}"
 
@@ -93,29 +89,25 @@ msgstr "{0} var á {1}, sem er nú óbundið."
 msgid "{0}/{1} players"
 msgstr "{0}/{1} leikmenn"
 
-#: ../../../lib/web/src/lib/locale-format.ts:176
+#: ../../../lib/web/src/lib/locale-format.ts:191
 msgid "{count, plural, one {#d} other {#d}}"
 msgstr "{count, plural, one {#d} other {#d}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:172
+#: ../../../lib/web/src/lib/locale-format.ts:187
 msgid "{count, plural, one {#h} other {#h}}"
 msgstr "{count, plural, one {#klst} other {#klst}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:168
+#: ../../../lib/web/src/lib/locale-format.ts:183
 msgid "{count, plural, one {#m} other {#m}}"
 msgstr "{count, plural, one {#mín} other {#mín}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:180
+#: ../../../lib/web/src/lib/locale-format.ts:195
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#v} other {#v}}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:176
 msgid "{entityLabel} name"
 msgstr "Nafn {entityLabel}"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
-#~ msgid "{entityLabel} name is required"
-#~ msgstr "{entityLabel}-heiti er nauðsynlegt"
 
 #: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
@@ -146,18 +138,6 @@ msgstr "{totalDescendants, plural, one {# svar} other {+# fleiri svör}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Opna valmynd (# ólesin tilkynning)} other {Opna valmynd (# ólesnar tilkynningar)}}"
 
-#: ../../../lib/web/src/components/entity/entity-board-card.tsx:418
-#~ msgid "+{0} nested"
-#~ msgstr "+{0} hreiðruð"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
-#~ msgid "+{totalDescendants} more replies"
-#~ msgstr "+{totalDescendants} fleiri svör"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
-#~ msgid "1 reply"
-#~ msgstr "1 svar"
-
 #: src/components/GameCanvas.tsx:65
 msgid "1 WIRE"
 msgstr "VÍR 1"
@@ -185,6 +165,10 @@ msgstr "VÍR 3"
 #: src/components/MissionSetup.tsx:465
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:35
+msgid "A recording is already in progress."
+msgstr "Upptaka er þegar í gangi."
 
 #: ../../../lib/web/src/lib/preference-utils.ts:46
 msgid "Absolute (date and time)"
@@ -324,10 +308,6 @@ msgstr "Allar stillingar"
 #: src/components/MatchLog.tsx:310
 msgid "All servers"
 msgstr "Allir netþjónar"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
-#~ msgid "Allow anyone to search for {0}"
-#~ msgstr "Leyfa öllum að leita að {0}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:87
 msgid "Allow anyone to search for {entityLabel}"
@@ -587,6 +567,11 @@ msgstr "Kallmerki"
 msgid "Camera distance"
 msgstr "Fjarlægð myndavélar"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:48
+msgid "Camera permission denied"
+msgstr "Myndavélarheimild hafnað"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:56
 #: src/components/SettingsDialog.tsx:875
 msgid "Camera unavailable"
 msgstr "Myndavél ekki tiltæk"
@@ -619,6 +604,12 @@ msgstr "Hætta við athugasemd"
 #: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Cancel reply"
 msgstr "Hætta við svar"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:24
+#: ../../../lib/web/src/lib/shell-errors.ts:37
+#: ../../../lib/web/src/lib/shell-errors.ts:52
+msgid "Cancelled"
+msgstr "Hætt við"
 
 #: src/components/SettingsDialog.tsx:594
 msgid "Cannons and ordnance"
@@ -753,8 +744,8 @@ msgstr "Hreinsa leit"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:479
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Loka"
@@ -833,8 +824,8 @@ msgstr "HEF AÐFLUG"
 msgid "Comment actions"
 msgstr "Aðgerðir athugasemdar"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:442
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:455
 msgid "Comments"
 msgstr "Athugasemdir"
 
@@ -986,10 +977,6 @@ msgstr "HRAPAÐI"
 msgid "Create"
 msgstr "Búa til"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
-#~ msgid "Create {0}"
-#~ msgstr "Búa til {0}"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:146
 msgid "Create {entityLabel}"
 msgstr "Búa til {entityLabel}"
@@ -1140,7 +1127,7 @@ msgstr "Eyða valkosti {0}"
 msgid "Delete view"
 msgstr "Eyða sýn"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:95
+#: ../../../lib/web/src/components/restore-banner.tsx:101
 msgid "Delete your account on the old server"
 msgstr "Eyddu reikningnum þínum á gamla þjóninum"
 
@@ -1196,7 +1183,7 @@ msgstr "Greina út frá vafra"
 msgid "Different game host"
 msgstr "Annar leikjahýsill"
 
-#: ../../../lib/web/src/components/person-picker.tsx:190
+#: ../../../lib/web/src/components/person-picker.tsx:193
 msgid "Directory"
 msgstr "Skrá"
 
@@ -1222,8 +1209,8 @@ msgstr "aftengdur"
 msgid "Disconnected"
 msgstr "Aftengt"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:74
 #: ../../../lib/web/src/components/restore-banner.tsx:80
+#: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
 #: src/components/SettingsDialog.tsx:781
 msgid "Dismiss"
@@ -1253,8 +1240,8 @@ msgid "Done"
 msgstr "Lokið"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:243
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:474
 msgid "Download"
 msgstr "Hlaða niður"
 
@@ -1490,7 +1477,7 @@ msgstr "Tókst ekki að hlaða"
 msgid "Failed to load history"
 msgstr "Tókst ekki að hlaða sögu"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load image"
 msgstr "Ekki tókst að hlaða mynd"
 
@@ -1498,7 +1485,7 @@ msgstr "Ekki tókst að hlaða mynd"
 msgid "Failed to load prompts"
 msgstr "Tókst ekki að hlaða kvaðningar"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "Ekki tókst að hlaða myndskeið"
 
@@ -1544,7 +1531,7 @@ msgstr "BARDAGINN ER HAFINN"
 msgid "Files"
 msgstr "Skrár"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:83
+#: ../../../lib/web/src/components/restore-banner.tsx:89
 msgid "Finish moving your account"
 msgstr "Kláraðu að færa reikninginn þinn"
 
@@ -1639,7 +1626,7 @@ msgstr "Frjálst flug"
 msgid "Friday"
 msgstr "Föstudagur"
 
-#: ../../../lib/web/src/components/person-picker.tsx:183
+#: ../../../lib/web/src/components/person-picker.tsx:186
 msgid "Friends"
 msgstr "Vinir"
 
@@ -1813,7 +1800,7 @@ msgid "ID"
 msgstr "Auðkenni"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:328
 msgid "Image viewer: {0}"
 msgstr "Myndaskoðari: {0}"
 
@@ -1925,7 +1912,7 @@ msgstr "Einvígi gegn vélmenni"
 msgid "Joystick"
 msgstr "Stýripinni"
 
-#: ../../../lib/web/src/lib/locale-format.ts:165
+#: ../../../lib/web/src/lib/locale-format.ts:180
 msgid "Just now"
 msgstr "Rétt í þessu"
 
@@ -2017,10 +2004,6 @@ msgstr "Vinstri vængur"
 #: src/components/MissionSetup.tsx:246
 msgid "Left wingtip"
 msgstr "Vinstri vængbroddur"
-
-#: ../../../lib/web/src/components/post-tags.tsx:72
-#~ msgid "Letters, numbers, spaces, and hyphens only"
-#~ msgstr "Aðeins bókstafir, tölur, bil og bandstrik"
 
 #: ../../../lib/web/src/components/post-tags.tsx:73
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
@@ -2228,6 +2211,10 @@ msgstr "Sendu skilaboð á liðið þitt"
 msgid "Metric"
 msgstr "Mæling"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:31
+msgid "Microphone permission denied"
+msgstr "Heimild fyrir hljóðnema hafnað"
+
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
@@ -2308,10 +2295,6 @@ msgstr "Nafn"
 msgid "Name cannot contain < or > characters"
 msgstr "Nafn má ekki innihalda stafi < eða >"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
-#~ msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
-#~ msgstr "Heitið má ekki innihalda hornklofa, öfugt skástrik, semíkommu, gæsalappir eða öfug úrfellingarmerki"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:101
 msgid "Name is required"
 msgstr "Nafn er nauðsynlegt"
@@ -2335,8 +2318,8 @@ msgstr "Nýtt"
 msgid "New game"
 msgstr "Nýr leikur"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:536
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:541
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:537
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:542
 msgid "Next image"
 msgstr "Næsta mynd"
 
@@ -2470,7 +2453,7 @@ msgstr "ENGIN EINKUNN"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
-#: ../../../lib/web/src/components/person-picker.tsx:326
+#: ../../../lib/web/src/components/person-picker.tsx:329
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
@@ -2649,12 +2632,17 @@ msgid "Passkey"
 msgstr "Aðgangslykill"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/lib/shell-errors.ts:26
 msgid "Passkey verification failed. Please try again."
 msgstr "Staðfesting aðgangslykils mistókst. Reyndu aftur."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:132
+#: ../../../lib/web/src/components/restore-banner.tsx:138
 msgid "Passkeys"
 msgstr "Aðgangslyklar"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:19
+msgid "Passkeys are not available in this browser"
+msgstr "Aðgangslyklar eru ekki tiltækir í þessum vafra"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:213
 msgid "Pattern (regex)"
@@ -2664,7 +2652,7 @@ msgstr "Mynstur (regex)"
 msgid "Paused"
 msgstr "Í hléi"
 
-#: ../../../lib/web/src/components/person-picker.tsx:176
+#: ../../../lib/web/src/components/person-picker.tsx:179
 msgid "People"
 msgstr "Fólk"
 
@@ -2727,10 +2715,6 @@ msgstr "Leikmenn"
 msgid "Please check your internet connection and try again."
 msgstr "Athugaðu nettenginguna og reyndu aftur."
 
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
-#~ msgid "Please log in with the appropriate credentials <0/> to access this resource."
-#~ msgstr "Skráðu þig inn með viðeigandi auðkennum <0/> til að fá aðgang að þessu efni."
-
 #: ../../../lib/web/src/features/errors/general-error.tsx:81
 msgid "Please try again."
 msgstr "Reyndu aftur."
@@ -2759,8 +2743,8 @@ msgstr "ÝTTU Á ENTER TIL FLUGTAKS"
 msgid "Press…"
 msgstr "Ýttu…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:520
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:521
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:526
 msgid "Previous image"
 msgstr "Fyrri mynd"
 
@@ -2777,10 +2761,6 @@ msgstr "Í vinnslu…"
 #: src/components/SettingsDialog.tsx:305
 msgid "Profile saved"
 msgstr "Síða vistuð"
-
-#: ../../../lib/web/src/components/person-picker.tsx:200
-#~ msgid "Project members"
-#~ msgstr "Meðlimir verkefnis"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
@@ -2820,11 +2800,11 @@ msgstr "Ratsjárþögn"
 msgid "Raised"
 msgstr "Upphækkað"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:104
+#: ../../../lib/web/src/components/restore-banner.tsx:110
 msgid "Re-link your accounts on this server"
 msgstr "Tengdu reikninga þína aftur á þessum þjóni"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:126
+#: ../../../lib/web/src/components/restore-banner.tsx:132
 msgid "Re-register your passkeys on this server"
 msgstr "Skráðu aðgangslyklana þína aftur á þessum netþjóni"
 
@@ -2852,6 +2832,14 @@ msgstr "Taka upp flug"
 #: src/components/SettingsDialog.tsx:1076
 msgid "Recording"
 msgstr "Upptaka"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:43
+msgid "Recording failed. Please try again."
+msgstr "Upptaka mistókst. Reyndu aftur."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:39
+msgid "Recording produced no audio"
+msgstr "Upptakan innihélt ekkert hljóð"
 
 #: src/components/MatchLog.tsx:435
 msgid "Recording saved"
@@ -3173,7 +3161,7 @@ msgstr "Leita, fylgjast með og raða þessari sýn."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:179
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/person-picker.tsx:300
+#: ../../../lib/web/src/components/person-picker.tsx:303
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Leita..."
@@ -3544,6 +3532,14 @@ msgstr "Ekki tókst að senda. Skrárnar gætu verið of stórar eða tengingin 
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Það var of stórt til að hlaða upp. Fjarlægðu eða minnkaðu skrár og reyndu aftur."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:50
+msgid "The camera is already in use"
+msgstr "Myndavélin er þegar í notkun"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:54
+msgid "The camera request was not answered"
+msgstr "Myndavélarbeiðninni var ekki svarað"
+
 #: src/routes/index.tsx:132
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ekki tókst að hlaða leiknum. Endurhladdu síðuna til að reyna aftur."
@@ -3551,6 +3547,10 @@ msgstr "Ekki tókst að hlaða leiknum. Endurhladdu síðuna til að reyna aftur
 #: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "Leikurinn heldur áfram á bak við þessa valmynd."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:41
+msgid "The microphone request was not answered"
+msgstr "Hljóðnemabeiðninni var ekki svarað"
 
 #: src/routes/index.tsx:133
 msgid "The mission stopped."
@@ -3560,6 +3560,10 @@ msgstr "Verkefnið stöðvaðist."
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Verkefnið endurræsist. Núverandi flug verður ekki vistað."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:21
+msgid "The passkey request was not answered"
+msgstr "Aðgangslykilsbeiðninni var ekki svarað"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:66
 msgid "The requested content could not be found."
 msgstr "Umbeðið efni fannst ekki."
@@ -3567,6 +3571,10 @@ msgstr "Umbeðið efni fannst ekki."
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:152
 msgid "The server returned a web page instead of data."
 msgstr "Þjónninn skilaði vefsíðu í stað gagna."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:17
+msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
+msgstr "Þetta forrit má ekki nota aðgangslykilinn þinn. Leyfðu það í Stillingum, undir Heimildir."
 
 #: src/components/MissionSetup.tsx:1239
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -3635,11 +3643,6 @@ msgstr "Víxla hluta"
 #: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle sidebar"
 msgstr "Skipta hliðarstiku"
-
-#: ../../../lib/web/src/components/ui/sidebar.tsx:352
-#: ../../../lib/web/src/components/ui/sidebar.tsx:355
-#~ msgid "Toggle Sidebar"
-#~ msgstr "Skipta um hliðarstiku"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3748,10 +3751,6 @@ msgstr "Ekki tókst að endurbeina á innskráningu. Reyndu aftur."
 #: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "Ekki úthlutað"
-
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
-#~ msgid "Unauthorized Access"
-#~ msgstr "Óheimill aðgangur"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
@@ -3878,7 +3877,7 @@ msgid "Video thumbnail"
 msgstr "Smámynd myndbands"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:326
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
 msgid "Video viewer: {0}"
 msgstr "Myndskeiðaskoðari: {0}"
 
@@ -3902,6 +3901,10 @@ msgstr "Skoða stjórntæki"
 #: src/components/SettingsDialog.tsx:854
 msgid "Views"
 msgstr "Áhorf"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:33
+msgid "Voice recording is not supported in this browser"
+msgstr "Talupptaka er ekki studd í þessum vafra"
 
 #: src/components/SettingsDialog.tsx:639
 msgid "Volumes"
@@ -4007,7 +4010,7 @@ msgstr "ÞÚ"
 msgid "You do not have access to this section."
 msgstr "Þú hefur ekki aðgang að þessum hluta."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:86
+#: ../../../lib/web/src/components/restore-banner.tsx:92
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Reikningurinn þinn var fluttur hingað frá {source}. Þar til þú eyðir honum þar, geta skilaboð og tilkynningar náð til beggja þjóna, hluti af efni þínu heldur áfram að vera þjónað af gamla þjóninum og fylgjendur gætu þurft nokkrar mínútur að finna þig hér."
 

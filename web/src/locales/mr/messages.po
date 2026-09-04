@@ -18,10 +18,6 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा."
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:301
-#~ msgid " or "
-#~ msgstr " किंवा "
-
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:189
 msgid "(edited)"
 msgstr "(संपादित)"
@@ -40,7 +36,7 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# गोळी लागली} other {# गोळ्या लागल्या}}"
 
 #. placeholder {0}: displayInfo.count
-#: ../../../lib/web/src/components/person-picker.tsx:257
+#: ../../../lib/web/src/components/person-picker.tsx:260
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# निवडले} other {# निवडले}}"
 
@@ -93,29 +89,25 @@ msgstr "{0} हे {1} वर होते, जे आता जोडलेल�
 msgid "{0}/{1} players"
 msgstr "{0}/{1} खेळाडू"
 
-#: ../../../lib/web/src/lib/locale-format.ts:176
+#: ../../../lib/web/src/lib/locale-format.ts:191
 msgid "{count, plural, one {#d} other {#d}}"
 msgstr "{count, plural, one {#दि} other {#दि}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:172
+#: ../../../lib/web/src/lib/locale-format.ts:187
 msgid "{count, plural, one {#h} other {#h}}"
 msgstr "{count, plural, one {#ता} other {#ता}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:168
+#: ../../../lib/web/src/lib/locale-format.ts:183
 msgid "{count, plural, one {#m} other {#m}}"
 msgstr "{count, plural, one {#मि} other {#मि}}"
 
-#: ../../../lib/web/src/lib/locale-format.ts:180
+#: ../../../lib/web/src/lib/locale-format.ts:195
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#आठ} other {#आठ}}"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:176
 msgid "{entityLabel} name"
 msgstr "{entityLabel} नाव"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
-#~ msgid "{entityLabel} name is required"
-#~ msgstr "{entityLabel} नाव आवश्यक आहे"
 
 #: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
@@ -146,18 +138,6 @@ msgstr "{totalDescendants, plural, one {# प्रतिसाद} other {+# �
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {मेनू उघडा (# न वाचलेली सूचना)} other {मेनू उघडा (# न वाचलेल्या सूचना)}}"
 
-#: ../../../lib/web/src/components/entity/entity-board-card.tsx:418
-#~ msgid "+{0} nested"
-#~ msgstr "+{0} नेस्टेड"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
-#~ msgid "+{totalDescendants} more replies"
-#~ msgstr "+{totalDescendants} आणखी उत्तरे"
-
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
-#~ msgid "1 reply"
-#~ msgstr "1 उत्तर"
-
 #: src/components/GameCanvas.tsx:65
 msgid "1 WIRE"
 msgstr "तार 1"
@@ -185,6 +165,10 @@ msgstr "तार 3"
 #: src/components/MissionSetup.tsx:465
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:35
+msgid "A recording is already in progress."
+msgstr "एक रेकॉर्डिंग आधीच सुरू आहे."
 
 #: ../../../lib/web/src/lib/preference-utils.ts:46
 msgid "Absolute (date and time)"
@@ -324,10 +308,6 @@ msgstr "सर्व मोड"
 #: src/components/MatchLog.tsx:310
 msgid "All servers"
 msgstr "सर्व सर्व्हर"
-
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
-#~ msgid "Allow anyone to search for {0}"
-#~ msgstr "कोणालाही {0} शोधण्याची परवानगी द्या"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:87
 msgid "Allow anyone to search for {entityLabel}"
@@ -587,6 +567,11 @@ msgstr "कॉलसाइन"
 msgid "Camera distance"
 msgstr "कॅमेरा अंतर"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:48
+msgid "Camera permission denied"
+msgstr "कॅमेरा परवानगी नाकारली"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:56
 #: src/components/SettingsDialog.tsx:875
 msgid "Camera unavailable"
 msgstr "कॅमेरा उपलब्ध नाही"
@@ -619,6 +604,12 @@ msgstr "टिप्पणी रद्द करा"
 #: ../../../lib/web/src/components/comment-composer.tsx:429
 msgid "Cancel reply"
 msgstr "उत्तर रद्द करा"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:24
+#: ../../../lib/web/src/lib/shell-errors.ts:37
+#: ../../../lib/web/src/lib/shell-errors.ts:52
+msgid "Cancelled"
+msgstr "रद्द केले"
 
 #: src/components/SettingsDialog.tsx:594
 msgid "Cannons and ordnance"
@@ -753,8 +744,8 @@ msgstr "शोध साफ करा"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:528
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:479
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:480
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:483
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "बंद करा"
@@ -833,8 +824,8 @@ msgstr "सुरू करतोय"
 msgid "Comment actions"
 msgstr "टिप्पणी क्रिया"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:442
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:454
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:443
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:455
 msgid "Comments"
 msgstr "टिप्पण्या"
 
@@ -986,10 +977,6 @@ msgstr "कोसळले"
 msgid "Create"
 msgstr "तयार करा"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
-#~ msgid "Create {0}"
-#~ msgstr "{0} तयार करा"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:146
 msgid "Create {entityLabel}"
 msgstr "{entityLabel} तयार करा"
@@ -1140,7 +1127,7 @@ msgstr "पर्याय {0} हटवा"
 msgid "Delete view"
 msgstr "दृश्य हटवा"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:95
+#: ../../../lib/web/src/components/restore-banner.tsx:101
 msgid "Delete your account on the old server"
 msgstr "जुन्या सर्व्हरवरील तुमचे खाते हटवा"
 
@@ -1196,7 +1183,7 @@ msgstr "वेब ब्राउझरमधून शोधा"
 msgid "Different game host"
 msgstr "वेगळा गेम सर्व्हर"
 
-#: ../../../lib/web/src/components/person-picker.tsx:190
+#: ../../../lib/web/src/components/person-picker.tsx:193
 msgid "Directory"
 msgstr "निर्देशिका"
 
@@ -1222,8 +1209,8 @@ msgstr "डिस्कनेक्ट झाले"
 msgid "Disconnected"
 msgstr "डिस्कनेक्ट केले"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:74
 #: ../../../lib/web/src/components/restore-banner.tsx:80
+#: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
 #: src/components/SettingsDialog.tsx:781
 msgid "Dismiss"
@@ -1253,8 +1240,8 @@ msgid "Done"
 msgstr "पूर्ण"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:243
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:473
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:464
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:474
 msgid "Download"
 msgstr "डाउनलोड"
 
@@ -1490,7 +1477,7 @@ msgstr "लोड करण्यात अयशस्वी"
 msgid "Failed to load history"
 msgstr "इतिहास लोड करण्यात अयशस्वी"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load image"
 msgstr "प्रतिमा लोड करण्यात अयशस्वी"
 
@@ -1498,7 +1485,7 @@ msgstr "प्रतिमा लोड करण्यात अयशस्व
 msgid "Failed to load prompts"
 msgstr "प्रॉम्प्ट लोड करण्यात अयशस्वी"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:349
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:350
 msgid "Failed to load video"
 msgstr "व्हिडिओ लोड करण्यात अयशस्वी"
 
@@ -1544,7 +1531,7 @@ msgstr "लढाई सुरू"
 msgid "Files"
 msgstr "फायली"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:83
+#: ../../../lib/web/src/components/restore-banner.tsx:89
 msgid "Finish moving your account"
 msgstr "खाते हलवणे पूर्ण करा"
 
@@ -1639,7 +1626,7 @@ msgstr "मुक्त उड्डाण"
 msgid "Friday"
 msgstr "शुक्रवार"
 
-#: ../../../lib/web/src/components/person-picker.tsx:183
+#: ../../../lib/web/src/components/person-picker.tsx:186
 msgid "Friends"
 msgstr "मित्र"
 
@@ -1813,7 +1800,7 @@ msgid "ID"
 msgstr "आयडी"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:328
 msgid "Image viewer: {0}"
 msgstr "प्रतिमा दर्शक: {0}"
 
@@ -1925,7 +1912,7 @@ msgstr "द्वंद्वयुद्ध बॉटविरुद्ध"
 msgid "Joystick"
 msgstr "जॉयस्टिक"
 
-#: ../../../lib/web/src/lib/locale-format.ts:165
+#: ../../../lib/web/src/lib/locale-format.ts:180
 msgid "Just now"
 msgstr "आत्ताच"
 
@@ -2017,10 +2004,6 @@ msgstr "डावा पंख"
 #: src/components/MissionSetup.tsx:246
 msgid "Left wingtip"
 msgstr "डाव्या पंखाचे टोक"
-
-#: ../../../lib/web/src/components/post-tags.tsx:72
-#~ msgid "Letters, numbers, spaces, and hyphens only"
-#~ msgstr "फक्त अक्षरे, अंक, स्पेस आणि हायफन"
 
 #: ../../../lib/web/src/components/post-tags.tsx:73
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
@@ -2228,6 +2211,10 @@ msgstr "तुमच्या टीमला मेसेज करा"
 msgid "Metric"
 msgstr "मेट्रिक"
 
+#: ../../../lib/web/src/lib/shell-errors.ts:31
+msgid "Microphone permission denied"
+msgstr "मायक्रोफोन परवानगी नाकारली"
+
 #: src/components/MissionSetup.tsx:1104
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
@@ -2308,10 +2295,6 @@ msgstr "नाव"
 msgid "Name cannot contain < or > characters"
 msgstr "नावात < किंवा > अक्षरे असू शकत नाहीत"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
-#~ msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
-#~ msgstr "नावात कोन कंस, बॅकस्लॅश, अर्धविराम, अवतरणचिन्हे किंवा बॅकटिक असू शकत नाहीत"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:101
 msgid "Name is required"
 msgstr "नाव आवश्यक आहे"
@@ -2335,8 +2318,8 @@ msgstr "नवीन"
 msgid "New game"
 msgstr "नवीन गेम"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:536
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:541
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:537
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:542
 msgid "Next image"
 msgstr "पुढील इमेज"
 
@@ -2470,7 +2453,7 @@ msgstr "ग्रेड नाही"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
-#: ../../../lib/web/src/components/person-picker.tsx:326
+#: ../../../lib/web/src/components/person-picker.tsx:329
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
@@ -2649,12 +2632,17 @@ msgid "Passkey"
 msgstr "पासकी"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/lib/shell-errors.ts:26
 msgid "Passkey verification failed. Please try again."
 msgstr "पासकी पडताळणी अयशस्वी झाली. कृपया पुन्हा प्रयत्न करा."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:132
+#: ../../../lib/web/src/components/restore-banner.tsx:138
 msgid "Passkeys"
 msgstr "पासकीज"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:19
+msgid "Passkeys are not available in this browser"
+msgstr "या ब्राउझरमध्ये पासकीज उपलब्ध नाहीत"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:213
 msgid "Pattern (regex)"
@@ -2664,7 +2652,7 @@ msgstr "नमुना (regex)"
 msgid "Paused"
 msgstr "विरामित"
 
-#: ../../../lib/web/src/components/person-picker.tsx:176
+#: ../../../lib/web/src/components/person-picker.tsx:179
 msgid "People"
 msgstr "लोक"
 
@@ -2727,10 +2715,6 @@ msgstr "खेळाडू"
 msgid "Please check your internet connection and try again."
 msgstr "कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा."
 
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
-#~ msgid "Please log in with the appropriate credentials <0/> to access this resource."
-#~ msgstr "या संसाधनात प्रवेश करण्यासाठी <0/> कृपया योग्य क्रेडेन्शियलसह लॉग इन करा."
-
 #: ../../../lib/web/src/features/errors/general-error.tsx:81
 msgid "Please try again."
 msgstr "कृपया पुन्हा प्रयत्न करा."
@@ -2759,8 +2743,8 @@ msgstr "उड्डाणासाठी ENTER दाबा"
 msgid "Press…"
 msgstr "दाबा…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:520
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:525
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:521
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:526
 msgid "Previous image"
 msgstr "मागील इमेज"
 
@@ -2777,10 +2761,6 @@ msgstr "प्रक्रिया करत आहे…"
 #: src/components/SettingsDialog.tsx:305
 msgid "Profile saved"
 msgstr "प्रोफाइल जतन केले"
-
-#: ../../../lib/web/src/components/person-picker.tsx:200
-#~ msgid "Project members"
-#~ msgstr "प्रकल्प सदस्य"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:108
 msgid "Prompt saved"
@@ -2820,11 +2800,11 @@ msgstr "रडार शांत"
 msgid "Raised"
 msgstr "उंचावलेले"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:104
+#: ../../../lib/web/src/components/restore-banner.tsx:110
 msgid "Re-link your accounts on this server"
 msgstr "या सर्व्हरवर तुमची खाती पुन्हा जोडा"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:126
+#: ../../../lib/web/src/components/restore-banner.tsx:132
 msgid "Re-register your passkeys on this server"
 msgstr "या सर्व्हरवर तुमच्या पासकी पुन्हा नोंदवा"
 
@@ -2852,6 +2832,14 @@ msgstr "उड्डाणे रेकॉर्ड करा"
 #: src/components/SettingsDialog.tsx:1076
 msgid "Recording"
 msgstr "रेकॉर्डिंग"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:43
+msgid "Recording failed. Please try again."
+msgstr "रेकॉर्डिंग अयशस्वी झाले. कृपया पुन्हा प्रयत्न करा."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:39
+msgid "Recording produced no audio"
+msgstr "रेकॉर्डिंगमध्ये आवाज नाही"
 
 #: src/components/MatchLog.tsx:435
 msgid "Recording saved"
@@ -3173,7 +3161,7 @@ msgstr "हे दृश्य शोधा, पहा, आणि क्रम�
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:179
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/person-picker.tsx:300
+#: ../../../lib/web/src/components/person-picker.tsx:303
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "शोधा..."
@@ -3544,6 +3532,14 @@ msgstr "पाठवता आले नाही. फाइली खूप म
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "अपलोड करण्यासाठी खूप मोठे होते. फाइली काढा किंवा लहान करा आणि पुन्हा प्रयत्न करा."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:50
+msgid "The camera is already in use"
+msgstr "कॅमेरा आधीच वापरात आहे"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:54
+msgid "The camera request was not answered"
+msgstr "कॅमेरा विनंतीला उत्तर मिळाले नाही"
+
 #: src/routes/index.tsx:132
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "गेम लोड होऊ शकला नाही. पुन्हा प्रयत्न करण्यासाठी पेज पुन्हा लोड करा."
@@ -3551,6 +3547,10 @@ msgstr "गेम लोड होऊ शकला नाही. पुन्ह
 #: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "या मेनूमागे सामना सुरू राहतो."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:41
+msgid "The microphone request was not answered"
+msgstr "मायक्रोफोन विनंतीला उत्तर मिळाले नाही"
 
 #: src/routes/index.tsx:133
 msgid "The mission stopped."
@@ -3560,6 +3560,10 @@ msgstr "मिशन थांबले."
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "मोहीम पुन्हा सुरू होईल. सध्याचे उड्डाण जतन केले जाणार नाही."
 
+#: ../../../lib/web/src/lib/shell-errors.ts:21
+msgid "The passkey request was not answered"
+msgstr "पासकी विनंतीला उत्तर मिळाले नाही"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:66
 msgid "The requested content could not be found."
 msgstr "विनंती केलेली सामग्री आढळली नाही."
@@ -3567,6 +3571,10 @@ msgstr "विनंती केलेली सामग्री आढळल
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:152
 msgid "The server returned a web page instead of data."
 msgstr "सर्व्हरने डेटाऐवजी वेब पृष्ठ परत केले."
+
+#: ../../../lib/web/src/lib/shell-errors.ts:17
+msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
+msgstr "या ॲपला तुमची पासकी वापरण्याची परवानगी नाही. सेटिंग्जमध्ये, परवानग्या अंतर्गत त्याला परवानगी द्या."
 
 #: src/components/MissionSetup.tsx:1239
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -3635,11 +3643,6 @@ msgstr "विभाग टॉगल करा"
 #: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle sidebar"
 msgstr "साइडबार टॉगल करा"
-
-#: ../../../lib/web/src/components/ui/sidebar.tsx:352
-#: ../../../lib/web/src/components/ui/sidebar.tsx:355
-#~ msgid "Toggle Sidebar"
-#~ msgstr "साइडबार टॉगल करा"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3748,10 +3751,6 @@ msgstr "लॉगिनवर रीडायरेक्ट करण्या�
 #: ../../../lib/web/src/components/notification-category-button.tsx:114
 msgid "Unassigned"
 msgstr "नियुक्त न केलेले"
-
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
-#~ msgid "Unauthorized Access"
-#~ msgstr "अनधिकृत अॅक्सेस"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
@@ -3878,7 +3877,7 @@ msgid "Video thumbnail"
 msgstr "व्हिडिओ थंबनेल"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:326
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:327
 msgid "Video viewer: {0}"
 msgstr "व्हिडिओ दर्शक: {0}"
 
@@ -3902,6 +3901,10 @@ msgstr "नियंत्रणे पहा"
 #: src/components/SettingsDialog.tsx:854
 msgid "Views"
 msgstr "व्ह्यूज"
+
+#: ../../../lib/web/src/lib/shell-errors.ts:33
+msgid "Voice recording is not supported in this browser"
+msgstr "या ब्राउझरमध्ये व्हॉइस रेकॉर्डिंग समर्थित नाही"
 
 #: src/components/SettingsDialog.tsx:639
 msgid "Volumes"
@@ -4007,7 +4010,7 @@ msgstr "तुम्ही"
 msgid "You do not have access to this section."
 msgstr "तुम्हाला या विभागात प्रवेश नाही."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:86
+#: ../../../lib/web/src/components/restore-banner.tsx:92
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "तुमचे खाते {source} वरून येथे हलवले गेले. जोपर्यंत तुम्ही ते तेथे हटवत नाही, तोपर्यंत संदेश आणि सूचना दोन्ही सर्व्हरपर्यंत पोहोचू शकतात, तुमचा काही मजकूर जुन्या सर्व्हरवरून सर्व्ह होत राहतो आणि अनुयायांना येथे तुम्हाला शोधण्यास काही मिनिटे लागू शकतात."
 
