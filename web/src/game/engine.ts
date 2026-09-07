@@ -2550,7 +2550,9 @@ function step_amraam(m,dt){
 			const wx=wrap_axis(m.px-truth.position.x), wy=m.py-truth.position.y, wz=wrap_axis(m.pz-truth.position.z);
 			m.burst=m.least; m.closure=Math.hypot(truth.velocity.x-m.vx,truth.velocity.y-m.vy,truth.velocity.z-m.vz);
 			m.off=(prey&&prey.fwd&&prey.up&&prey.right)?{ ahead:wx*prey.fwd.x+wy*prey.fwd.y+wz*prey.fwd.z, above:wx*prey.up.x+wy*prey.up.y+wz*prey.up.z, right:wx*prey.right.x+wy*prey.right.y+wz*prey.right.z }:undefined; }
-		if(m.enemy){ if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=own.judged; m.spot=own.spot; }   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
+		if(m.enemy){ if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=own.judged; m.spot=own.spot;
+				if(DEV_MODE){ m.mask=own.mask; m.killed=own.kill; }
+				if(own.kill) crash_ownship("missile"); }   // #85: the radar round carried the same asymmetry as the heater — the bandit branch below destroys on the verdict, the ownship branch dropped it   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
 			explosion_at(m.px,m.py,m.pz); }
 		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=verdict.judged;   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
@@ -2620,7 +2622,16 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 					m.judged=own.judged; m.spot=own.spot;   // #85: the miss and target position as the wasm measured them
 					if(DEV_MODE){ m.mask=own.mask; m.killed=own.kill; }   // #85: record the ENEMY round's verdict too. The bandit branch below has always done this; this one never did, so every enemy round read killed=false whatever the core decided — a diagnostic that could only ever confirm a suspicion, which is the worst kind
 					// Fragments in OUR jet feel like gun hits: flash and thud per strike (#62)
-					if(own.impacts.length){ hit_flash=Math.min(1,hit_flash+0.2*own.impacts.length); audio_hit(Math.min(own.impacts.length,4)); } }
+					if(own.impacts.length){ hit_flash=Math.min(1,hit_flash+0.2*own.impacts.length); audio_hit(Math.min(own.impacts.length,4)); }
+					// #85: HONOUR THE VERDICT. The core returns kill for a burst inside its
+					// certainty radius, and until now nothing on the ownship side read it —
+					// the bandit branch below has always called bandit_destroy("verdict"),
+					// so a 2 m burst killed the bandit and left the player flying. The
+					// player then died only if the written damage happened to start a fire
+					// or fly them into the sea, which is exactly what recording 01a0461021ec
+					// shows: two rounds at 2.0 and 10.9 m for nothing. Measured live at
+					// 2.3-3.9 m the core said kill every time and the jet flew on.
+					if(own.kill) crash_ownship("missile"); }
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
