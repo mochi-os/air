@@ -73,7 +73,8 @@ export interface Flight {
   struck?: number // cumulative rounds taken
   burning?: boolean // an engine or fuel fire is alight
   thrust?: number // thrust fraction lost, 0..1
-  wing?: number // structural element loss, summed
+  structure?: number // whole-airframe element loss, summed: what a hit counter reads
+  wing?: number // wing loss the aero flies: what a performance claim rests on
   leak?: number // fuel loss, kg/s
   fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe
   stick?: number // control-law channels: developer builds only
@@ -196,6 +197,11 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
           if (d.struck !== undefined) battle += `,Struck=${Math.round(d.struck)}`
           if (d.burning !== undefined) battle += `,Burning=${d.burning ? 1 : 0}`
           if (d.thrust !== undefined) battle += `,Thrust=${round(d.thrust, 2)}`
+          // Structure is the whole-airframe element total; Wing is the
+          // aero-relevant wing loss the flight model actually flies. These were
+          // one channel named `Wing` carrying the total (#103), which is what
+          // made a fight's damage impossible to attribute from the recording.
+          if (d.structure !== undefined) battle += `,Structure=${round(d.structure, 2)}`
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
           if (d.fate !== undefined) battle += `,Fate=${d.fate}`

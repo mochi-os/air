@@ -4117,7 +4117,7 @@ function recording_sample(){
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
-				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}),
+				structure:bandit.harm.wreck||0, wing:bandit.harm.wing||0, ...(bandit.fate?{fate:bandit.fate}:{}),   // #103: the element TOTAL and the aero-relevant wing loss are different numbers, and only the total used to be recorded — under the name Wing, which is what made a fight's damage unattributable
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
 				missiles:Math.max(0,(bandit.msl??magazine())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
 				...(bandit_locked?{lock:1}:{}), ...(bandit_brain?{target:1}:{}),   // the brain bandit only ever fights the ownship

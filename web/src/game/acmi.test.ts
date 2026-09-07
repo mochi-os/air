@@ -212,6 +212,33 @@ it('battle channels are delta-suppressed and the fate is written once', () => {
   expect(text.split('\n').filter((l) => l.includes('Fate=pilot'))).toHaveLength(1)
 })
 
+// #103: the whole-airframe element total and the wing loss the aero flies are
+// different numbers. They used to be one channel, named Wing, carrying the
+// total — so a recording could show heavy damage while saying nothing about
+// whether the wing the flight model reads was touched, and the 2026-09-06
+// joust could not be attributed from its recording alone.
+it('records the structural total and the wing loss as separate channels', () => {
+  const at = (time: number, structure: number, wing: number): Sample => ({
+    time,
+    objects: [
+      {
+        id: 2, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+        name: 'FA-18C', label: 'Bandit', colour: 'Red', kind: 'Air+FixedWing',
+        data: { struck: 0, structure, wing },
+      },
+    ],
+  })
+  const lines = acmi([at(0, 0, 0), at(0.1, 8.71, 0), at(0.2, 9.21, 0.6)], new Date(0), 't').split('\n')
+  expect(lines.filter((l) => l.includes('Structure=8.71'))).toHaveLength(1)
+  expect(lines.filter((l) => l.includes('Structure=9.21'))).toHaveLength(1)
+  expect(lines.filter((l) => l.includes('Wing=0.6'))).toHaveLength(1)
+  // The heavily-damaged sample with an untouched wing must say so: that is the
+  // distinction one channel could not express.
+  const wounded = lines.find((l) => l.includes('Structure=8.71'))
+  expect(wounded).toContain('Wing=0')
+  expect(wounded).not.toContain('Wing=8.71')
+})
+
 // Missiles are their own objects and the ownship carries the HUD's cue and
 // its stores count (#33 debrief). Before this a fight won with six 9Ms
 // recorded two structural wounds on the bandit and nothing else, and the
