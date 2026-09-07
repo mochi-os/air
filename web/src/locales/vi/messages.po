@@ -30,6 +30,11 @@ msgstr "(mở rộng)"
 msgid "[not set]"
 msgstr "[chưa đặt]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# kết quả} other {# kết quả}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Khóa mục tiêu"
 msgid "Acquisition mode"
 msgstr "Chế độ bắt mục tiêu"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Hoạt động"
 
@@ -365,7 +370,7 @@ msgstr "Tiếp cận, đúng tốc độ (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Bạn có chắc muốn xóa \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác."
 
@@ -402,11 +407,11 @@ msgstr "Tăng dần"
 msgid "asymmetry"
 msgstr "bất đối xứng"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Đính kèm tệp bình luận"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Đính kèm tệp phản hồi"
 
@@ -458,16 +463,16 @@ msgstr "Về trang chủ"
 msgid "Bandit"
 msgstr "Máy bay địch"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Biểu ngữ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Đã xóa banner"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Đã cập nhật banner"
 
@@ -622,11 +627,11 @@ msgstr "Camera không khả dụng"
 msgid "Cancel"
 msgstr "Hủy"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Hủy bình luận"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Hủy phản hồi"
 
@@ -745,7 +750,7 @@ msgstr "Chọn một ván chơi ở thanh bên hoặc bắt đầu ván mới."
 msgid "Choose language"
 msgstr "Chọn ngôn ngữ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Thao tác bình luận"
 msgid "Comments"
 msgstr "Bình luận"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Bình luận ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Sắp xếp mặc định"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Xóa"
@@ -1150,9 +1155,9 @@ msgstr "Xóa trường"
 msgid "Delete game?"
 msgstr "Xóa trận đấu?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Xóa mục"
 
@@ -1238,11 +1243,11 @@ msgstr "Danh bạ"
 msgid "DIRTY UP"
 msgstr "HẠ CÀNG"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Hủy bỏ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Hủy bản nháp?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Không khớp với mẫu bắt buộc"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Giao chiến"
 msgid "Engine and afterburner"
 msgstr "Động cơ và buồng đốt sau"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Nhập nội dung biểu ngữ (hỗ trợ markdown)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Nhập mã từ email của bạn"
 msgid "Enter your authenticator code"
 msgstr "Nhập mã từ ứng dụng xác thực của bạn"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Lỗi"
 
@@ -1533,7 +1538,11 @@ msgstr "Không lấy token RSS được"
 msgid "Failed to load"
 msgstr "Không tải được"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Không tải được biểu ngữ"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Không tải lịch sử được"
 
@@ -1541,8 +1550,8 @@ msgstr "Không tải lịch sử được"
 msgid "Failed to load image"
 msgstr "Không tải được hình ảnh"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Không tải mục được"
 
@@ -1578,7 +1587,7 @@ msgstr "Không lưu được"
 msgid "Failed to save prompt"
 msgstr "Không lưu lời nhắc được"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Không cập nhật biểu ngữ được"
 
@@ -1845,7 +1854,7 @@ msgstr "Mây tầng cao"
 msgid "Hints"
 msgstr "Gợi ý"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Lịch sử"
 
@@ -1948,7 +1957,7 @@ msgstr "Bất tử (chỉ người chơi thật)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Có vẻ như trang bạn đang tìm <0/>không tồn tại hoặc đã bị xóa."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Chi tiết mục"
 
@@ -2143,11 +2152,11 @@ msgstr "Đang tải nội dung…"
 msgid "LOADING FAILED"
 msgstr "TẢI THẤT BẠI"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Đang tải mục"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Đang tải chi tiết mục"
 
@@ -2539,10 +2548,10 @@ msgstr "KHÔNG XẾP LOẠI"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "TẦM NHÌN TỰ DO"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Cha"
 
@@ -2865,7 +2874,7 @@ msgstr "Đã lưu hồ sơ"
 msgid "Prompt saved"
 msgstr "Đã lưu prompt"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Thuộc tính"
 
@@ -3210,7 +3219,7 @@ msgstr "Thứ bảy"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Lấy độ cao dốc nhất (Vx, 100% lực đẩy)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Lấy độ cao dốc nhất (Vx, buồng đốt tăng lực)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Ngừng theo dõi"
 
@@ -3555,11 +3564,11 @@ msgstr "KẾT CẤU"
 msgid "Subject"
 msgstr "Tiêu đề"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Gửi bình luận"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Gửi trả lời"
 
@@ -3583,7 +3592,7 @@ msgstr "Siêu phàm"
 msgid "Switch to view 1-9"
 msgstr "Chuyển sang chế độ xem 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Lỗi API không mong muốn"
 msgid "United States"
 msgstr "Hoa Kỳ"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Xem"
 msgid "View all notifications"
 msgstr "Xem tất cả thông báo"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Xem và chỉnh sửa chi tiết mục"
 
@@ -4042,8 +4051,8 @@ msgstr "Âm lượng"
 msgid "WAITING FOR OPPONENT"
 msgstr "ĐANG CHỜ ĐỐI THỦ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Theo dõi"
 
@@ -4147,7 +4156,7 @@ msgstr "Bạn không có quyền truy cập vào phần này."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tài khoản của bạn đã được chuyển đến đây từ {source}. Cho đến khi bạn xóa nó ở đó, tin nhắn và thông báo có thể đến cả hai máy chủ, một số nội dung của bạn vẫn được phục vụ từ máy chủ cũ và người theo dõi có thể mất vài phút để tìm thấy bạn ở đây."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Tệp đính kèm của bạn sẽ bị mất."
 
@@ -4159,11 +4168,11 @@ msgstr "Các chuyến bay của bạn sẽ xuất hiện ở đây sau khi bạn
 msgid "your offer"
 msgstr "lời mời của bạn"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Văn bản và tệp đính kèm của bạn sẽ bị mất."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Nội dung của bạn sẽ bị mất."
 

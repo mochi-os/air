@@ -30,6 +30,11 @@ msgstr "(ವಿಸ್ತರಿಸಿ)"
 msgid "[not set]"
 msgstr "[ಸಜ್ಜುಗೊಳಿಸಿಲ್ಲ]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# ಫಲಿತಾಂಶ} other {# ಫಲಿತಾಂಶಗಳು}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "ಗುರಿ ಲಾಕ್ ಮಾಡಿ"
 msgid "Acquisition mode"
 msgstr "ಗುರಿ ಹಿಡಿತ ಮೋಡ್"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "ಚಟುವಟಿಕೆ"
 
@@ -365,7 +370,7 @@ msgstr "ಸಮೀಪನ, ಸರಿಯಾದ ವೇಗದಲ್ಲಿ (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "\"{0}\" ಅನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "\"{title}\" ಅನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ? ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದು ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
 
@@ -402,11 +407,11 @@ msgstr "ಆರೋಹಣ"
 msgid "asymmetry"
 msgstr "ಅಸಮಮಿತಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "ಕಾಮೆಂಟ್ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿ"
 
@@ -458,16 +463,16 @@ msgstr "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 msgid "Bandit"
 msgstr "ಶತ್ರು ವಿಮಾನ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "ಬ್ಯಾನರ್"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "ಬ್ಯಾನರ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "ಬ್ಯಾನರ್ ನವೀಕರಿಸಲಾಗಿದೆ"
 
@@ -622,11 +627,11 @@ msgstr "ಕ್ಯಾಮೆರಾ ಲಭ್ಯವಿಲ್ಲ"
 msgid "Cancel"
 msgstr "ರದ್ದುಮಾಡಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "ಕಾಮೆಂಟ್ ರದ್ದುಮಾಡಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ರದ್ದುಮಾಡಿ"
 
@@ -745,7 +750,7 @@ msgstr "ಸೈಡ್‌ಬಾರ್‌ನಿಂದ ಆಟವನ್ನು ಆಯ�
 msgid "Choose language"
 msgstr "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "ಕಾಮೆಂಟ್ ಕ್ರಿಯೆಗಳು"
 msgid "Comments"
 msgstr "ಕಾಮೆಂಟ್‌ಗಳು"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "ಕಾಮೆಂಟ್‌ಗಳು ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "ಡೀಫಾಲ್ಟ್ ವಿಂಗಡಣೆ"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "ಅಳಿಸಿ"
@@ -1150,9 +1155,9 @@ msgstr "ಫೀಲ್ಡ್ ಅಳಿಸಿ"
 msgid "Delete game?"
 msgstr "ಆಟವನ್ನು ಅಳಿಸಬೇಕೆ?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "ಐಟಂ ಅಳಿಸಿ"
 
@@ -1238,11 +1243,11 @@ msgstr "ಡೈರೆಕ್ಟರಿ"
 msgid "DIRTY UP"
 msgstr "ಗೇರ್ ಇಳಿಸಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "ಕರಡನ್ನು ತಿರಸ್ಕರಿಸಬೇಕೇ?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "ಅಗತ್ಯವಿರುವ ಮಾದರಿಗೆ ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "ಕದನ"
 msgid "Engine and afterburner"
 msgstr "ಎಂಜಿನ್ ಮತ್ತು ಆಫ್ಟರ್‌ಬರ್ನರ್"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "ಬ್ಯಾನರ್ ಪಠ್ಯ ನಮೂದಿಸಿ (ಮಾರ್ಕ್‌ಡೌನ್ ಬೆಂಬಲಿತ)..."
 
@@ -1439,7 +1444,7 @@ msgstr "ನಿಮ್ಮ ಇಮೇಲ್‌ನಿಂದ ಕೋಡ್ ನಮೂದ
 msgid "Enter your authenticator code"
 msgstr "ನಿಮ್ಮ authenticator ಕೋಡ್ ನಮೂದಿಸಿ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "ದೋಷ"
 
@@ -1533,7 +1538,11 @@ msgstr "RSS ಟೋಕನ್ ಪಡೆಯಲು ವಿಫಲವಾಗಿದೆ"
 msgid "Failed to load"
 msgstr "ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "ಬ್ಯಾನರ್ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "ಇತಿಹಾಸ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
@@ -1541,8 +1550,8 @@ msgstr "ಇತಿಹಾಸ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿ
 msgid "Failed to load image"
 msgstr "ಚಿತ್ರವನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "ಐಟಂ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
@@ -1578,7 +1587,7 @@ msgstr "ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
 msgid "Failed to save prompt"
 msgstr "ಪ್ರಾಂಪ್ಟ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "ಬ್ಯಾನರ್ ಅಪ್‌ಡೇಟ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
@@ -1845,7 +1854,7 @@ msgstr "ಎತ್ತರದ ಸ್ಟ್ರಾಟಸ್"
 msgid "Hints"
 msgstr "ಸುಳಿವುಗಳು"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "ಇತಿಹಾಸ"
 
@@ -1948,7 +1957,7 @@ msgstr "ಅವೇಧನೀಯ (ಮಾನವ ಆಟಗಾರರಿಗೆ ಮಾ�
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "ನೀವು ಹುಡುಕುತ್ತಿರುವ ಪುಟ <0/>ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವಾ ತೆಗೆದುಹಾಕಲಾಗಿದೆ ಎಂದು ತೋರುತ್ತದೆ."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "ಐಟಂ ವಿವರಗಳು"
 
@@ -2143,11 +2152,11 @@ msgstr "ವಿಷಯ ಲೋಡ್ ಆಗುತ್ತಿದೆ…"
 msgid "LOADING FAILED"
 msgstr "ಲೋಡ್ ವಿಫಲವಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "ಐಟಂ ಲೋಡ್ ಆಗುತ್ತಿದೆ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "ಐಟಂ ವಿವರಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ"
 
@@ -2539,10 +2548,10 @@ msgstr "ಗ್ರೇಡ್ ಇಲ್ಲ"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "ನೋಟ ಮುಕ್ತ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "ಪೋಷಕ"
 
@@ -2865,7 +2874,7 @@ msgstr "ಪ್ರೊಫೈಲ್ ಉಳಿಸಲಾಗಿದೆ"
 msgid "Prompt saved"
 msgstr "ಪ್ರಾಂಪ್ಟ್ ಉಳಿಸಲಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "ಗುಣಲಕ್ಷಣಗಳು"
 
@@ -3210,7 +3219,7 @@ msgstr "ಶನಿವಾರ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "ಅತ್ಯಂತ ಕಡಿದಾದ ಏರಿಕೆ (Vx, 100% ನೂ�
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "ಅತ್ಯಂತ ಕಡಿದಾದ ಏರಿಕೆ (Vx, ಆಫ್ಟರ್‌ಬರ್ನರ್)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "ವೀಕ್ಷಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ"
 
@@ -3555,11 +3564,11 @@ msgstr "ರಚನೆ"
 msgid "Subject"
 msgstr "ವಿಷಯ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "ಕಾಮೆಂಟ್ ಸಲ್ಲಿಸಿ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "ಉತ್ತರ ಸಲ್ಲಿಸಿ"
 
@@ -3583,7 +3592,7 @@ msgstr "ಅತಿಮಾನವ"
 msgid "Switch to view 1-9"
 msgstr "ವೀಕ್ಷಣೆ 1-9 ಗೆ ಬದಲಾಯಿಸಿ"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "ಅನಿರೀಕ್ಷಿತ API ದೋಷ"
 msgid "United States"
 msgstr "ಯುನೈಟೆಡ್ ಸ್ಟೇಟ್ಸ್"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "ವೀಕ್ಷಿಸಿ"
 msgid "View all notifications"
 msgstr "ಎಲ್ಲಾ ನೋಟಿಫಿಕೇಶನ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "ಐಟಂ ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ಸಂಪಾದಿಸಿ"
 
@@ -4042,8 +4051,8 @@ msgstr "ವಾಲ್ಯೂಮ್‌ಗಳು"
 msgid "WAITING FOR OPPONENT"
 msgstr "ಎದುರಾಳಿಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "ವೀಕ್ಷಿಸಿ"
 
@@ -4147,7 +4156,7 @@ msgstr "ಈ ವಿಭಾಗಕ್ಕೆ ನಿಮಗೆ ಪ್ರವೇಶವಿ
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು {source} ನಿಂದ ಇಲ್ಲಿಗೆ ವರ್ಗಾಯಿಸಲಾಗಿದೆ. ಅಲ್ಲಿ ಅದನ್ನು ಅಳಿಸುವವರೆಗೆ, ಸಂದೇಶಗಳು ಮತ್ತು ಅಧಿಸೂಚನೆಗಳು ಎರಡೂ ಸರ್ವರ್‌ಗಳಿಗೆ ತಲುಪಬಹುದು, ನಿಮ್ಮ ಕೆಲವು ವಿಷಯಗಳು ಹಳೆಯ ಸರ್ವರ್‌ನಿಂದ ಮಾತ್ರ ಒದಗಿಸಲ್ಪಡುತ್ತಿರಬಹುದು, ಮತ್ತು ಅನುಯಾಯಿಗಳು ನಿಮ್ಮನ್ನು ಇಲ್ಲಿ ಹುಡುಕಲು ಕೆಲವು ನಿಮಿಷಗಳು ಬೇಕಾಗಬಹುದು."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "ನಿಮ್ಮ ಲಗತ್ತುಗಳು ಕಳೆದುಹೋಗುತ್ತವೆ."
 
@@ -4159,11 +4168,11 @@ msgstr "ನೀವು ಒಂದು ಹಾರಾಟ ಮಾಡಿದ ನಂತರ �
 msgid "your offer"
 msgstr "ನಿಮ್ಮ ಕೊಡುಗೆ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "ನಿಮ್ಮ ಪಠ್ಯ ಮತ್ತು ಲಗತ್ತುಗಳು ಕಳೆದುಹೋಗುತ್ತವೆ."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "ನಿಮ್ಮ ಪಠ್ಯ ಕಳೆದುಹೋಗುತ್ತದೆ."
 

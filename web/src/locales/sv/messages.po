@@ -30,6 +30,11 @@ msgstr "(visa mer)"
 msgid "[not set]"
 msgstr "[ej angivet]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# resultat} other {# resultat}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Lås mål"
 msgid "Acquisition mode"
 msgstr "Målfångningsläge"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Aktivitet"
 
@@ -365,7 +370,7 @@ msgstr "Inflygning, på rätt hastighet (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Är du säker på att du vill ta bort \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Är du säker på att du vill ta bort \"{title}\"? Denna åtgärd kan inte ångras."
 
@@ -402,11 +407,11 @@ msgstr "Stigande"
 msgid "asymmetry"
 msgstr "asymmetri"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Bifoga kommentarfiler"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Bifoga svarsfiler"
 
@@ -458,16 +463,16 @@ msgstr "Tillbaka till start"
 msgid "Bandit"
 msgstr "Bandit"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Banner borttagen"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Banner uppdaterad"
 
@@ -622,11 +627,11 @@ msgstr "Kameran är inte tillgänglig"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Avbryt kommentar"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Avbryt svar"
 
@@ -745,7 +750,7 @@ msgstr "Välj ett spel från sidofältet eller starta ett nytt."
 msgid "Choose language"
 msgstr "Välj språk"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Kommentarsåtgärder"
 msgid "Comments"
 msgstr "Kommentarer"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Kommentarer ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Standardsortering"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Ta bort"
@@ -1150,9 +1155,9 @@ msgstr "Ta bort fält"
 msgid "Delete game?"
 msgstr "Ta bort partiet?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Ta bort objekt"
 
@@ -1238,11 +1243,11 @@ msgstr "Katalog"
 msgid "DIRTY UP"
 msgstr "STÄLL NED"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Kasta"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Kasta utkastet?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Matchar inte det obligatoriska mönstret"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Strid"
 msgid "Engine and afterburner"
 msgstr "Motor och efterbrännkammare"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Ange bannertext (markdown stöds)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Ange koden från ditt e-postmeddelande"
 msgid "Enter your authenticator code"
 msgstr "Ange din autentiseringskod"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Fel"
 
@@ -1533,7 +1538,11 @@ msgstr "Kunde inte hämta RSS-token"
 msgid "Failed to load"
 msgstr "Kunde inte läsa in"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Det gick inte att läsa in bannern"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Kunde inte läsa in historik"
 
@@ -1541,8 +1550,8 @@ msgstr "Kunde inte läsa in historik"
 msgid "Failed to load image"
 msgstr "Det gick inte att läsa in bilden"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Kunde inte läsa in objekt"
 
@@ -1578,7 +1587,7 @@ msgstr "Kunde inte spara"
 msgid "Failed to save prompt"
 msgstr "Kunde inte spara uppmaning"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Kunde inte uppdatera banner"
 
@@ -1845,7 +1854,7 @@ msgstr "Hög stratus"
 msgid "Hints"
 msgstr "Tips"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Historik"
 
@@ -1948,7 +1957,7 @@ msgstr "Osårbar (endast mänskliga spelare)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Det verkar som att sidan du letar efter <0/>inte finns eller har tagits bort."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Objektsdetaljer"
 
@@ -2143,11 +2152,11 @@ msgstr "Läser in innehåll…"
 msgid "LOADING FAILED"
 msgstr "INLÄSNINGEN MISSLYCKADES"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Läser in objekt"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Läser in objektsdetaljer"
 
@@ -2539,10 +2548,10 @@ msgstr "INGET BETYG"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "PADLOCK AV"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Överordnad"
 
@@ -2865,7 +2874,7 @@ msgstr "Profil sparad"
 msgid "Prompt saved"
 msgstr "Prompt sparad"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Egenskaper"
 
@@ -3210,7 +3219,7 @@ msgstr "Lördag"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Brantaste stigning (Vx, 100% dragkraft)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Brantaste stigning (Vx, efterbrännkammare)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Sluta bevaka"
 
@@ -3555,11 +3564,11 @@ msgstr "STRUKTUR"
 msgid "Subject"
 msgstr "Ämne"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Skicka kommentar"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Skicka svar"
 
@@ -3583,7 +3592,7 @@ msgstr "Övermänsklig"
 msgid "Switch to view 1-9"
 msgstr "Växla till vy 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Oväntat API-fel"
 msgid "United States"
 msgstr "USA"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Visa"
 msgid "View all notifications"
 msgstr "Visa alla aviseringar"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Visa och redigera artikeldetaljer"
 
@@ -4042,8 +4051,8 @@ msgstr "Volymer"
 msgid "WAITING FOR OPPONENT"
 msgstr "VÄNTAR PÅ MOTSTÅNDARE"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Bevaka"
 
@@ -4147,7 +4156,7 @@ msgstr "Du har inte åtkomst till det här avsnittet."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ditt konto flyttades hit från {source}. Tills du tar bort det där kan meddelanden och notiser nå båda servrarna, en del av ditt innehåll fortsätter att levereras från den gamla servern och följare kan behöva några minuter för att hitta dig här."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Dina bilagor går förlorade."
 
@@ -4159,11 +4168,11 @@ msgstr "Dina flygningar visas här när du har flugit en."
 msgid "your offer"
 msgstr "ditt erbjudande"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Din text och dina bilagor går förlorade."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Din text kommer att försvinna."
 

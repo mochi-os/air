@@ -30,6 +30,11 @@ msgstr "(razširi)"
 msgid "[not set]"
 msgstr "[ni nastavljeno]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# rezultat} two {# rezultata} few {# rezultati} other {# rezultatov}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Zakleni cilj"
 msgid "Acquisition mode"
 msgstr "Način zajema"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Aktivnost"
 
@@ -365,7 +370,7 @@ msgstr "Prilet, prava hitrost (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Ali ste prepričani, da želite izbrisati \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Ali ste prepričani, da želite izbrisati \"{title}\"? Tega dejanja ni mogoče razveljaviti."
 
@@ -402,11 +407,11 @@ msgstr "Naraščajoče"
 msgid "asymmetry"
 msgstr "asimetrija"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Priloži datoteke komentarja"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Priloži datoteke odgovora"
 
@@ -458,16 +463,16 @@ msgstr "Nazaj na začetek"
 msgid "Bandit"
 msgstr "Bandit"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Pasica"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Pasica odstranjena"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Pasica posodobljena"
 
@@ -622,11 +627,11 @@ msgstr "Kamera ni na voljo"
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Prekliči komentar"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Prekliči odgovor"
 
@@ -745,7 +750,7 @@ msgstr "Izberite igro iz stranske vrstice ali začnite novo."
 msgid "Choose language"
 msgstr "Izberite jezik"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Dejanja komentarja"
 msgid "Comments"
 msgstr "Komentarji"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Komentarji ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Privzeto razvrščanje"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Izbriši"
@@ -1150,9 +1155,9 @@ msgstr "Izbriši polje"
 msgid "Delete game?"
 msgstr "Izbriši igro?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Izbriši element"
 
@@ -1238,11 +1243,11 @@ msgstr "Imenik"
 msgid "DIRTY UP"
 msgstr "SPUSTI PODVOZJE"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Zavrzi"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Zavržem osnutek?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Ne ustreza zahtevanemu vzorcu"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Spopad"
 msgid "Engine and afterburner"
 msgstr "Motor in dodatno zgorevanje"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Vnesite besedilo pasice (markdown podprt)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Vnesite kodo iz e-pošte"
 msgid "Enter your authenticator code"
 msgstr "Vnesite kodo iz aplikacije za preverjanje"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Napaka"
 
@@ -1533,7 +1538,11 @@ msgstr "Neuspešno pridobivanje RSS žetona"
 msgid "Failed to load"
 msgstr "Nalaganje ni uspelo"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Pasice ni bilo mogoče naložiti"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Neuspešno nalaganje zgodovine"
 
@@ -1541,8 +1550,8 @@ msgstr "Neuspešno nalaganje zgodovine"
 msgid "Failed to load image"
 msgstr "Slike ni bilo mogoče naložiti"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Neuspešno nalaganje elementa"
 
@@ -1578,7 +1587,7 @@ msgstr "Shranjevanje ni uspelo"
 msgid "Failed to save prompt"
 msgstr "Neuspešno shranjevanje poziva"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Neuspešna posodobitev pasice"
 
@@ -1845,7 +1854,7 @@ msgstr "Visoki stratus"
 msgid "Hints"
 msgstr "Namigi"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Zgodovina"
 
@@ -1948,7 +1957,7 @@ msgstr "Neranljivost (samo človeški igralci)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Videti je, da stran, ki jo iščete, <0/>ne obstaja ali je bila odstranjena."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Podrobnosti elementa"
 
@@ -2143,11 +2152,11 @@ msgstr "Nalaganje vsebine…"
 msgid "LOADING FAILED"
 msgstr "NALAGANJE NI USPELO"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Nalaganje elementa"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Nalaganje podrobnosti elementa"
 
@@ -2539,10 +2548,10 @@ msgstr "BREZ OCENE"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "POGLED PROST"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Nadrejeno"
 
@@ -2865,7 +2874,7 @@ msgstr "Profil shranjen"
 msgid "Prompt saved"
 msgstr "Poziv shranjen"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Lastnosti"
 
@@ -3210,7 +3219,7 @@ msgstr "Sobota"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Najstrmejše vzpenjanje (Vx, 100% potiska)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Najstrmejše vzpenjanje (Vx, dodatno zgorevanje)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Prenehaj spremljati"
 
@@ -3555,11 +3564,11 @@ msgstr "STRUKTURA"
 msgid "Subject"
 msgstr "Zadeva"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Pošlji komentar"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Pošlji odgovor"
 
@@ -3583,7 +3592,7 @@ msgstr "Nadčloveški"
 msgid "Switch to view 1-9"
 msgstr "Preklopi na pogled 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Nepričakovana napaka API"
 msgid "United States"
 msgstr "Združene države"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Pogled"
 msgid "View all notifications"
 msgstr "Prikaži vsa obvestila"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Prikaži in uredi podrobnosti elementa"
 
@@ -4042,8 +4051,8 @@ msgstr "Glasnosti"
 msgid "WAITING FOR OPPONENT"
 msgstr "ČAKANJE NA NASPROTNIKA"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Spremljaj"
 
@@ -4147,7 +4156,7 @@ msgstr "Nimate dostopa do tega razdelka."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Vaš račun je bil preseljen sem iz {source}. Dokler ga tam ne izbrišete, sporočila in obvestila morda dosežejo oba strežnika, del vaše vsebine se še naprej streže s starega strežnika in sledilci bodo morda potrebovali nekaj minut, da vas najdejo tukaj."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Vaše priloge bodo izgubljene."
 
@@ -4159,11 +4168,11 @@ msgstr "Vaši leti se prikažejo tukaj, ko opravite prvega."
 msgid "your offer"
 msgstr "vaša ponudba"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Vaše besedilo in priloge bodo izgubljeni."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Vaše besedilo bo izgubljeno."
 

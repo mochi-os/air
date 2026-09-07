@@ -30,6 +30,11 @@ msgstr "(leathnaigh)"
 msgid "[not set]"
 msgstr "[gan socrú]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# thoradh} two {# thoradh} few {# thoradh} many {# dtoradh} other {# toradh}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Aimsigh sprioc"
 msgid "Acquisition mode"
 msgstr "Mód gabhála"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Gníomhaíocht"
 
@@ -365,7 +370,7 @@ msgstr "Teacht isteach, ar an luas ceart (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "An bhfuil tú cinnte gur mian leat \"{0}\" a scriosadh?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "An bhfuil tú cinnte gur mian leat \"{title}\" a scriosadh? Ní féidir an gníomh seo a chealú."
 
@@ -402,11 +407,11 @@ msgstr "Ardaitheach"
 msgid "asymmetry"
 msgstr "neamhshiméadracht"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Ceangail comhaid nóta tráchta"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Ceangail comhaid freagra"
 
@@ -458,16 +463,16 @@ msgstr "Ar ais go baile"
 msgid "Bandit"
 msgstr "Namhaid"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Meirge"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Meirge bainte"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Meirge nuashonraithe"
 
@@ -622,11 +627,11 @@ msgstr "Ceamara ar fáil"
 msgid "Cancel"
 msgstr "Cealaigh"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Cealaigh nóta tráchta"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Cealaigh freagra"
 
@@ -745,7 +750,7 @@ msgstr "Roghnaigh cluiche ón mbarra taoibh nó tosaigh ceann nua."
 msgid "Choose language"
 msgstr "Roghnaigh teanga"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Gníomhartha tráchta"
 msgid "Comments"
 msgstr "Nótaí tráchta"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Nótaí tráchta ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Sórtáil réamhshocraithe"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Scrios"
@@ -1150,9 +1155,9 @@ msgstr "Scrios réimse"
 msgid "Delete game?"
 msgstr "Scrios an cluiche?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Scrios mír"
 
@@ -1238,11 +1243,11 @@ msgstr "Eolaire"
 msgid "DIRTY UP"
 msgstr "FEARAS SÍOS"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Cuir i leataobh"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "An gcuirfear an dréacht i leataobh?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Ní mheaitseálann sé an patrún riachtanach"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Comhrac"
 msgid "Engine and afterburner"
 msgstr "Inneall agus iardhódóir"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Iontráil téacs meirge (tacaíonn markdown)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Cuir isteach an cód ó do ríomhphost"
 msgid "Enter your authenticator code"
 msgstr "Cuir isteach cód d'aip fhíordheimhnithe"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Earráid"
 
@@ -1533,7 +1538,11 @@ msgstr "Theip ar chomhartha RSS a fháil"
 msgid "Failed to load"
 msgstr "Theip ar luchtú"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Theip ar an meirge a lódáil"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Theip ar luchtú staire"
 
@@ -1541,8 +1550,8 @@ msgstr "Theip ar luchtú staire"
 msgid "Failed to load image"
 msgstr "Theip ar an íomhá a lódáil"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Theip ar luchtú míre"
 
@@ -1578,7 +1587,7 @@ msgstr "Theip ar shábháil"
 msgid "Failed to save prompt"
 msgstr "Theip ar shábháil leide"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Theip ar nuashonrú meirge"
 
@@ -1845,7 +1854,7 @@ msgstr "Stratus ard"
 msgid "Hints"
 msgstr "Leideanna"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Stair"
 
@@ -1948,7 +1957,7 @@ msgstr "Doghonta (imreoirí daonna amháin)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Dealraíonn sé nach bhfuil an leathanach atá á lorg agat <0/>ann nó gur baineadh é."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Sonraí na míre"
 
@@ -2143,11 +2152,11 @@ msgstr "Ábhar á luchtú…"
 msgid "LOADING FAILED"
 msgstr "THEIP AR AN LUCHTÚ"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Mír á luchtú"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Sonraí na míre á luchtú"
 
@@ -2539,10 +2548,10 @@ msgstr "GAN GHRÁD"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "AMHARC SAOR"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Tuismitheoir"
 
@@ -2865,7 +2874,7 @@ msgstr "Próifíl sábháilte"
 msgid "Prompt saved"
 msgstr "Leid sábháilte"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Airíonna"
 
@@ -3210,7 +3219,7 @@ msgstr "Dé Sathairn"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "An dreapadh is géire (Vx, 100% sá)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "An dreapadh is géire (Vx, iardhódóir)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Stop ag faire"
 
@@ -3555,11 +3564,11 @@ msgstr "STRUCHTÚR"
 msgid "Subject"
 msgstr "Ábhar"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Cuir nóta tráchta isteach"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Cuir freagra isteach"
 
@@ -3583,7 +3592,7 @@ msgstr "Osdhaonna"
 msgid "Switch to view 1-9"
 msgstr "Athraigh go radharc 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Earráid API gan choinne"
 msgid "United States"
 msgstr "Stáit Aontaithe"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Féach"
 msgid "View all notifications"
 msgstr "Féach ar gach fógra"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Féach ar shonraí na míre agus cuir in eagar iad"
 
@@ -4042,8 +4051,8 @@ msgstr "Airde fuaime"
 msgid "WAITING FOR OPPONENT"
 msgstr "AG FANACHT LE CÉILE COMHRAIC"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Faire"
 
@@ -4147,7 +4156,7 @@ msgstr "Níl rochtain agat ar an rannán seo."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Aistríodh do chuntas anseo ó {source}. Go dtí go scriosann tú é ansin, d'fhéadfadh teachtaireachtaí agus fógraí an dá fhreastalaí a bhaint amach, leanann roinnt de d'ábhar á sheirbheáil ón sean-fhreastalaí, agus d'fhéadfadh sé cúpla nóiméad a thógáil ar do lucht leanúna tú a aimsiú anseo."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Caillfear do cheangaltáin."
 
@@ -4159,11 +4168,11 @@ msgstr "Taispeánfar d'eitiltí anseo tar éis duit ceann a eitilt."
 msgid "your offer"
 msgstr "do thairiscint"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Caillfear do théacs agus do cheangaltáin."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Caillfear do théacs."
 

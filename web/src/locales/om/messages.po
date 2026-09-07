@@ -30,6 +30,11 @@ msgstr "(babal'isi)"
 msgid "[not set]"
 msgstr "[hin qindoofne]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {bu'aa #} other {bu'aalee #}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Galma qabadhu"
 msgid "Acquisition mode"
 msgstr "Haala qabannaa"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Sochii"
 
@@ -365,7 +370,7 @@ msgstr "Dhiyaachuu, saffisa sirrii (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "\"{0}\" haquu mirkanaa'oo dha?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "\"{title}\" haquu mirkanaa'oo dha? Tarkaanfiin kun deebi'uu hin danda'u."
 
@@ -402,11 +407,11 @@ msgstr "Ol kaʼaa"
 msgid "asymmetry"
 msgstr "madaallii dhabuu"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Faayiloota yaadaa hidhi"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Faayiloota deebii hidhi"
 
@@ -458,16 +463,16 @@ msgstr "Gara mana deebi’uu"
 msgid "Bandit"
 msgstr "Xiyyaara diinaa"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Bannerii"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Banneriin haqame"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Banneriin haaromfame"
 
@@ -622,11 +627,11 @@ msgstr "Kaameraan hin argamu"
 msgid "Cancel"
 msgstr "Haquu"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Yaada haquu"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Deebii haquu"
 
@@ -745,7 +750,7 @@ msgstr "Cinaa keessaa tapha filadhu ykn haaraa eegali."
 msgid "Choose language"
 msgstr "Afaan filadhu"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Gocha yaadaa"
 msgid "Comments"
 msgstr "Yaadawwan"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Yaadawwan ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Tartiiba idilee"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Haqi"
@@ -1150,9 +1155,9 @@ msgstr "Dirree haqi"
 msgid "Delete game?"
 msgstr "Taphicha haqi?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Wanta haqi"
 
@@ -1238,11 +1243,11 @@ msgstr "Galmee"
 msgid "DIRTY UP"
 msgstr "KOOFIYAA GADI BUUSI"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Gati"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Wixinee gatuu?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Boca barbaachisu wajjin wal hin simu"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Lola"
 msgid "Engine and afterburner"
 msgstr "Moottora fi Afterburner"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Barreeffama dabballee galchi (markdown deeggarama)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Koodii imeelii kee irraa galchi"
 msgid "Enter your authenticator code"
 msgstr "Koodii mirkaneessaa kee galchi"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Dogoggora"
 
@@ -1533,7 +1538,11 @@ msgstr "Mallattoo RSS argachuu hin dandeenye"
 msgid "Failed to load"
 msgstr "Fe'achuu hin dandeenye"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Banner fe'uu hin dandeenye"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Seenaa fe'achuu hin dandeenye"
 
@@ -1541,8 +1550,8 @@ msgstr "Seenaa fe'achuu hin dandeenye"
 msgid "Failed to load image"
 msgstr "Fakkii fe'uu hin dandeenye"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Iddoo fe'achuu hin dandeenye"
 
@@ -1578,7 +1587,7 @@ msgstr "Olkaa'uu hin dandeenye"
 msgid "Failed to save prompt"
 msgstr "Boorsa olkaa'uu hin dandeenye"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Dabballaa toattaachuu hin dandeenye"
 
@@ -1845,7 +1854,7 @@ msgstr "Istraatasii ol'aanaa"
 msgid "Hints"
 msgstr "Gorsa"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Seenaa"
 
@@ -1948,7 +1957,7 @@ msgstr "Kan hin miidhamne (taphattoota namaa qofa)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Fuulli ati barbaadaa jirtu <0/>hin jiru yookaan haqameera fakkaata."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Bal'ina iddoo"
 
@@ -2143,11 +2152,11 @@ msgstr "Qabiyyee fe’aa jira…"
 msgid "LOADING FAILED"
 msgstr "FE'UUN HIN MILKOOFNE"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Iddoo fe'aa jiraa"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Bal'ina iddoo fe'aa jiraa"
 
@@ -2539,10 +2548,10 @@ msgstr "QABXII HIN JIRU"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "ILAALCHA BILISA"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Maatii"
 
@@ -2865,7 +2874,7 @@ msgstr "Piroofaayiliin olkaa'ame"
 msgid "Prompt saved"
 msgstr "Gaaffii olkaa'ame"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Qabeenyaalee"
 
@@ -3210,7 +3219,7 @@ msgstr "Sanbata"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Ol-ba'uu golee guddaa (Vx, dhiibbaa 100%)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Ol-ba'uu golee guddaa (Vx, afterburner)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Daawwannaa dhaabsisi"
 
@@ -3555,11 +3564,11 @@ msgstr "CAASAA"
 msgid "Subject"
 msgstr "Mata duree"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Yaada galchaa"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Deebii galchaa"
 
@@ -3583,7 +3592,7 @@ msgstr "Nama caalu"
 msgid "Switch to view 1-9"
 msgstr "Gara argaa 1-9 jijjiiri"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Dogoggora API hin eegamne"
 msgid "United States"
 msgstr "Yunaaytid Isteeths"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Daawwadhu"
 msgid "View all notifications"
 msgstr "Beeksisa hunda daawwadhu"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Bal'ina wantichaa daawwadhu fi sirreessi"
 
@@ -4042,8 +4051,8 @@ msgstr "Sadarkaa sagalee"
 msgid "WAITING FOR OPPONENT"
 msgstr "MORKATAA EEGAA JIRA"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Daawwadhu"
 
@@ -4147,7 +4156,7 @@ msgstr "Kutaa kanaaf dhaqqabummaa hin qabdu."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Akkaawuntiin kee {source} irraa as fidame. Achitti haqtee hanga fixtutti, ergaawwan fi beeksisawwan sarvara lamaaniyyuu ga'uu danda'u, qabeenyi kee tokko tokko sarvaraa durii irraa tajaajilamu itti fufa, fi hordoftonni si argachuu dhaaf daqiiqaawwan muraasa fudhachuu danda'u."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Miiltoowwan kee ni badu."
 
@@ -4159,11 +4168,11 @@ msgstr "Balaliiwwan kee erga tokko balaliitee as ni mul'atu."
 msgid "your offer"
 msgstr "dhiyeessa kee"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Barreeffamnii fi miiltoowwan kee ni badu."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Barreeffamni kee ni bada."
 

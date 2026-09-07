@@ -30,6 +30,11 @@ msgstr "(expandeix)"
 msgid "[not set]"
 msgstr "[no definit]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# resultat} other {# resultats}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Fixar objectiu"
 msgid "Acquisition mode"
 msgstr "Mode d'adquisició"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Activitat"
 
@@ -365,7 +370,7 @@ msgstr "Aproximació, a velocitat (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Segur que vols suprimir «{0}»?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Segur que vols suprimir «{title}»? Aquesta acció no es pot desfer."
 
@@ -402,11 +407,11 @@ msgstr "Ascendent"
 msgid "asymmetry"
 msgstr "asimetria"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Adjunta fitxers de comentari"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Adjunta fitxers de resposta"
 
@@ -458,16 +463,16 @@ msgstr "Torna a l’inici"
 msgid "Bandit"
 msgstr "Bandit"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Bàner"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Bàner eliminat"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Bàner actualitzat"
 
@@ -622,11 +627,11 @@ msgstr "Càmera no disponible"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Cancel·la el comentari"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Cancel·la la resposta"
 
@@ -745,7 +750,7 @@ msgstr "Tria una partida de la barra lateral o inicia'n una de nova."
 msgid "Choose language"
 msgstr "Tria l'idioma"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Accions del comentari"
 msgid "Comments"
 msgstr "Comentaris"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Comentaris ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Ordre per defecte"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Suprimeix"
@@ -1150,9 +1155,9 @@ msgstr "Suprimeix el camp"
 msgid "Delete game?"
 msgstr "Vols suprimir la partida?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Suprimeix l'element"
 
@@ -1238,11 +1243,11 @@ msgstr "Directori"
 msgid "DIRTY UP"
 msgstr "TREN ABAIX"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Descarta"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Vols descartar l'esborrany?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "No coincideix amb el patró requerit"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Enfrontament"
 msgid "Engine and afterburner"
 msgstr "Motor i postcombustió"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Introdueix el text del bàner (admet markdown)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Introduïu el codi del vostre correu electrònic"
 msgid "Enter your authenticator code"
 msgstr "Introduïu el codi de l'autenticador"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Error"
 
@@ -1533,7 +1538,11 @@ msgstr "No s'ha pogut obtenir el testimoni RSS"
 msgid "Failed to load"
 msgstr "No s'ha pogut carregar"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "No s'ha pogut carregar el bàner"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "No s'ha pogut carregar l'historial"
 
@@ -1541,8 +1550,8 @@ msgstr "No s'ha pogut carregar l'historial"
 msgid "Failed to load image"
 msgstr "No s'ha pogut carregar la imatge"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "No s'ha pogut carregar l'element"
 
@@ -1578,7 +1587,7 @@ msgstr "No s'ha pogut desar"
 msgid "Failed to save prompt"
 msgstr "No s'ha pogut desar l'indicador"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "No s'ha pogut actualitzar el bàner"
 
@@ -1845,7 +1854,7 @@ msgstr "Estrats alts"
 msgid "Hints"
 msgstr "Consells"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Historial"
 
@@ -1948,7 +1957,7 @@ msgstr "Invulnerable (només jugadors humans)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Sembla que la pàgina que cerqueu <0/>no existeix o s'ha eliminat."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Detalls de l'element"
 
@@ -2143,11 +2152,11 @@ msgstr "S'està carregant el contingut…"
 msgid "LOADING FAILED"
 msgstr "CÀRREGA FALLIDA"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "S'està carregant l'element"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "S'estan carregant els detalls de l'element"
 
@@ -2539,10 +2548,10 @@ msgstr "SENSE NOTA"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "PADLOCK DESACTIVAT"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Pare"
 
@@ -2865,7 +2874,7 @@ msgstr "Perfil desat"
 msgid "Prompt saved"
 msgstr "Sol·licitud desada"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Propietats"
 
@@ -3210,7 +3219,7 @@ msgstr "Dissabte"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Ascens més pronunciat (Vx, 100% d'empenta)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Ascens més pronunciat (Vx, postcombustió)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Deixa de seguir"
 
@@ -3555,11 +3564,11 @@ msgstr "ESTRUCTURA"
 msgid "Subject"
 msgstr "Assumpte"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Envia comentari"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Envia resposta"
 
@@ -3583,7 +3592,7 @@ msgstr "Sobrehumà"
 msgid "Switch to view 1-9"
 msgstr "Canvia a la vista 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Error inesperat de l'API"
 msgid "United States"
 msgstr "Estats Units"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Visualitza"
 msgid "View all notifications"
 msgstr "Mostra totes les notificacions"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Visualitza i edita els detalls de l'element"
 
@@ -4042,8 +4051,8 @@ msgstr "Volums"
 msgid "WAITING FOR OPPONENT"
 msgstr "ESPERANT L'ADVERSARI"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Segueix"
 
@@ -4147,7 +4156,7 @@ msgstr "No teniu accés a aquesta secció."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "El vostre compte s'ha mogut aquí des de {source}. Fins que no l'elimineu d'allà, els missatges i les notificacions poden arribar als dos servidors, part del vostre contingut es continuarà servint des de l'antic servidor i els seguidors poden trigar uns minuts a trobar-vos aquí."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Es perdran els fitxers adjunts."
 
@@ -4159,11 +4168,11 @@ msgstr "Els teus vols apareixeran aquí quan n'hagis fet un."
 msgid "your offer"
 msgstr "la teva oferta"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Es perdran el text i els fitxers adjunts."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "El text es perdrà."
 

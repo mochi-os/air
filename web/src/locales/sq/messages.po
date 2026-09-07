@@ -30,6 +30,11 @@ msgstr "(zgjero)"
 msgid "[not set]"
 msgstr "[i pavendosur]"
 
+#. placeholder {0}: visible.length
+#: ../../../lib/web/src/components/inline-entity-search.tsx:179
+msgid "{0, plural, one {# result} other {# results}}"
+msgstr "{0, plural, one {# rezultat} other {# rezultate}}"
+
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
@@ -207,7 +212,7 @@ msgstr "Kap objektivin"
 msgid "Acquisition mode"
 msgstr "Modaliteti i kapjes"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:415
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
 msgid "Activity"
 msgstr "Aktiviteti"
 
@@ -365,7 +370,7 @@ msgstr "Afrimi, në shpejtësinë e duhur (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Je i sigurt që do të fshish \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:671
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Je i sigurt që do të fshish \"{title}\"? Ky veprim nuk mund të zhbëhet."
 
@@ -402,11 +407,11 @@ msgstr "Në rritje"
 msgid "asymmetry"
 msgstr "asimetri"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Attach comment files"
 msgstr "Bashkëngjit skedarë komenti"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Attach reply files"
 msgstr "Bashkëngjit skedarë përgjigjeje"
 
@@ -458,16 +463,16 @@ msgstr "Kthehu në fillim"
 msgid "Bandit"
 msgstr "Bandit"
 
-#: ../../../lib/web/src/components/banner-section.tsx:80
+#: ../../../lib/web/src/components/banner-section.tsx:91
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner-i"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner removed"
 msgstr "Banner-i u hoq"
 
-#: ../../../lib/web/src/components/banner-section.tsx:69
+#: ../../../lib/web/src/components/banner-section.tsx:73
 msgid "Banner updated"
 msgstr "Banner-i u përditësua"
 
@@ -622,11 +627,11 @@ msgstr "Kamera nuk është e disponueshme"
 msgid "Cancel"
 msgstr "Anulo"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Cancel comment"
 msgstr "Anulo komentin"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Cancel reply"
 msgstr "Anulo përgjigjen"
 
@@ -745,7 +750,7 @@ msgstr "Zgjidh një lojë nga ana ose nis një të re."
 msgid "Choose language"
 msgstr "Zgjidh gjuhën"
 
-#: ../../../lib/web/src/components/banner-section.tsx:111
+#: ../../../lib/web/src/components/banner-section.tsx:123
 #: ../../../lib/web/src/components/colour-picker.tsx:274
 #: ../../../lib/web/src/components/colour-picker.tsx:355
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
@@ -855,8 +860,8 @@ msgstr "Veprimet e komentit"
 msgid "Comments"
 msgstr "Komentet"
 
-#. placeholder {0}: data.comment_count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:411
+#. placeholder {0}: data.comments.count || 0
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
 msgid "Comments ({0})"
 msgstr "Komentet ({0})"
 
@@ -1125,7 +1130,7 @@ msgstr "Renditja e parazgjedhur"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:672
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Fshi"
@@ -1150,9 +1155,9 @@ msgstr "Fshi fushën"
 msgid "Delete game?"
 msgstr "Të fshihet loja?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:491
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:670
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
 msgid "Delete item"
 msgstr "Fshi elementin"
 
@@ -1238,11 +1243,11 @@ msgstr "Drejtoria"
 msgid "DIRTY UP"
 msgstr "ULE TRENIN"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:319
 msgid "Discard"
 msgstr "Hidh"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:309
+#: ../../../lib/web/src/components/comment-composer.tsx:317
 msgid "Discard draft?"
 msgstr "Ta hedhësh draftin?"
 
@@ -1281,7 +1286,7 @@ msgid "Does not match the required pattern"
 msgstr "Nuk përputhet me modelin e kërkuar"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:495
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1167
 msgid "Done"
@@ -1427,7 +1432,7 @@ msgstr "Përleshje"
 msgid "Engine and afterburner"
 msgstr "Motori dhe pasdjegësi"
 
-#: ../../../lib/web/src/components/banner-section.tsx:88
+#: ../../../lib/web/src/components/banner-section.tsx:99
 msgid "Enter banner text (markdown supported)..."
 msgstr "Shkruani tekstin e banderolës (markdown i mbështetur)..."
 
@@ -1439,7 +1444,7 @@ msgstr "Vendosni kodin nga email-i juaj"
 msgid "Enter your authenticator code"
 msgstr "Vendosni kodin e aplikacionit të vërtetimit"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:381
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
 msgid "Error"
 msgstr "Gabim"
 
@@ -1533,7 +1538,11 @@ msgstr "Marrja e token RSS dështoi"
 msgid "Failed to load"
 msgstr "Ngarkimi dështoi"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:68
+#: ../../../lib/web/src/components/banner-section.tsx:85
+msgid "Failed to load banner"
+msgstr "Ngarkimi i banderolës dështoi"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx:70
 msgid "Failed to load history"
 msgstr "Ngarkimi i historisë dështoi"
 
@@ -1541,8 +1550,8 @@ msgstr "Ngarkimi i historisë dështoi"
 msgid "Failed to load image"
 msgstr "Ngarkimi i figurës dështoi"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:382
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:385
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
 msgid "Failed to load item"
 msgstr "Ngarkimi i artikullit dështoi"
 
@@ -1578,7 +1587,7 @@ msgstr "Ruajtja dështoi"
 msgid "Failed to save prompt"
 msgstr "Ruajtja e udhëzimit dështoi"
 
-#: ../../../lib/web/src/components/banner-section.tsx:71
+#: ../../../lib/web/src/components/banner-section.tsx:75
 msgid "Failed to update banner"
 msgstr "Përditësimi i banderolës dështoi"
 
@@ -1845,7 +1854,7 @@ msgstr "Stratus i lartë"
 msgid "Hints"
 msgstr "Këshilla"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:61
+#: ../../../lib/web/src/components/audit-timeline.tsx:63
 msgid "History"
 msgstr "Historia"
 
@@ -1948,7 +1957,7 @@ msgstr "I pacenueshëm (vetëm lojtarë njerëz)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Duket se faqja që po kërkoni <0/>nuk ekziston ose është hequr."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:441
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
 msgid "Item details"
 msgstr "Detajet e artikullit"
 
@@ -2143,11 +2152,11 @@ msgstr "Po ngarkohet përmbajtja…"
 msgid "LOADING FAILED"
 msgstr "NGARKIMI DËSHTOI"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:365
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
 msgid "Loading item"
 msgstr "Duke ngarkuar artikullin"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:366
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
 msgid "Loading item details"
 msgstr "Duke ngarkuar detajet e artikullit"
 
@@ -2539,10 +2548,10 @@ msgstr "PA NOTË"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:557
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:570
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:571
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:575
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2717,8 +2726,8 @@ msgid "PADLOCK OFF"
 msgstr "SHIKIMI I LIRË"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:553
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:569
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
 msgid "Parent"
 msgstr "Prindi"
 
@@ -2865,7 +2874,7 @@ msgstr "Profili u ruajt"
 msgid "Prompt saved"
 msgstr "Prompti u ruajt"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:408
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
 msgid "Properties"
 msgstr "Vetitë"
 
@@ -3210,7 +3219,7 @@ msgstr "E shtunë"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx:156
 #: ../../../lib/web/src/components/attachment-composer.tsx:430
-#: ../../../lib/web/src/components/banner-section.tsx:99
+#: ../../../lib/web/src/components/banner-section.tsx:111
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:172
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:126
@@ -3542,8 +3551,8 @@ msgstr "Ngjitja më e pjerrët (Vx, 100% shtytje)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Ngjitja më e pjerrët (Vx, pasdjegie)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Stop watching"
 msgstr "Ndalo shikimin"
 
@@ -3555,11 +3564,11 @@ msgstr "STRUKTURA"
 msgid "Subject"
 msgstr "Subjekti"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:438
 msgid "Submit comment"
 msgstr "Dërgo komentin"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:429
+#: ../../../lib/web/src/components/comment-composer.tsx:437
 msgid "Submit reply"
 msgstr "Dërgo përgjigjen"
 
@@ -3583,7 +3592,7 @@ msgstr "Mbinjerëzor"
 msgid "Switch to view 1-9"
 msgstr "Kalo te pamja 1-9"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:107
+#: ../../../lib/web/src/components/audit-timeline.tsx:109
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 msgid "System"
@@ -3900,7 +3909,7 @@ msgstr "Gabim i papritur i API-t"
 msgid "United States"
 msgstr "Shtetet e Bashkuara"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx:103
+#: ../../../lib/web/src/components/audit-timeline.tsx:105
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:167
 #: ../../../lib/web/src/components/tree-row.tsx:219
 #: ../../../lib/web/src/components/tree-row.tsx:373
@@ -4018,7 +4027,7 @@ msgstr "Shiko"
 msgid "View all notifications"
 msgstr "Shiko të gjitha njoftimet"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:442
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
 msgid "View and edit item details"
 msgstr "Shiko dhe redakto detajet e artikullit"
 
@@ -4042,8 +4051,8 @@ msgstr "Volumet"
 msgid "WAITING FOR OPPONENT"
 msgstr "NË PRITJE TË KUNDËRSHTARIT"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:471
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:476
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
 msgid "Watch"
 msgstr "Shiko"
 
@@ -4147,7 +4156,7 @@ msgstr "Nuk keni qasje në këtë seksion."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Llogaria juaj u zhvendos këtu nga {source}. Derisa ta fshini atje, mesazhet dhe njoftimet mund të arrijnë në të dy serverët, një pjesë e përmbajtjes suaj vazhdon të shërbejë nga serveri i vjetër dhe ndjekësit mund të kenë nevojë për disa minuta që t'ju gjejnë këtu."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:310
 msgid "Your attachments will be lost."
 msgstr "Bashkëngjitjet tuaja do të humbasin."
 
@@ -4159,11 +4168,11 @@ msgstr "Fluturimet tuaja shfaqen këtu pasi të keni bërë një."
 msgid "your offer"
 msgstr "oferta juaj"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:308
 msgid "Your text and attachments will be lost."
 msgstr "Teksti dhe bashkëngjitjet tuaja do të humbasin."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:303
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text will be lost."
 msgstr "Teksti yt do të humbasë."
 
