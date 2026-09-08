@@ -12,6 +12,34 @@
 const params = new URLSearchParams(location.search)
 const active = params.get('developer') === '1' && !!params.get('bench')
 
+// The beacon destination this page is allowed to send to (#131). `benchto` is
+// attacker-controllable -- it comes off the query string of whatever link the
+// user followed -- and the payload carries the user agent, the unmasked GPU
+// string, the frame profile and every page error. A beacon with a string body
+// is text/plain, which is CORS-safelisted, so a cross-origin send succeeds
+// silently with no preflight and no visible failure. Only this page's own
+// origin is accepted. Both sides are resolved through the URL parser rather
+// than read off `location.origin`, which reads as the string "null" in a
+// document with an opaque origin and would then compare equal to itself; a
+// parsed opaque origin instead fails the comparison. A backslash or
+// scheme-relative destination is normalised by the same parser sendBeacon
+// itself would use, so neither smuggles a host past a relative-path test. The
+// destination must also be a network scheme: a `blob:` URL inherits the origin
+// of the document that minted it, so it would otherwise satisfy the origin
+// test while naming nothing that can receive.
+export function beacon(raw: string): string {
+  if (!raw) return ''
+  try {
+    const here = new URL(location.href)
+    const target = new URL(raw, here)
+    if (target.protocol !== 'http:' && target.protocol !== 'https:') return ''
+    if (target.origin !== here.origin) return ''
+    return target.href
+  } catch {
+    return ''
+  }
+}
+
 // The engine sets this to report its resolved knobs (render scale, ssaa, msaa).
 export let bench_state: (() => Record<string, unknown>) | null = null
 export function bench_register(fn: () => Record<string, unknown>): void {
@@ -19,7 +47,7 @@ export function bench_register(fn: () => Record<string, unknown>): void {
 }
 
 if (active) {
-  const to = params.get('benchto') || ''
+  const to = beacon(params.get('benchto') || '')
   const send = (payload: Record<string, unknown>) => {
     const body = JSON.stringify(payload)
     ;(globalThis as { bench_result?: unknown }).bench_result = payload
