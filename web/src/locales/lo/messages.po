@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, other {# ຜົນ}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {ຖືກຍິງ # ນັດ}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} ຈາກ {1} ການບິນ"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ຖືກໃຊ້ໄປແລ້ວ ແລະ ການຄວບຄຸມນັ້ນຕອນນີ້ບໍ່ໄດ້ຜູກໄວ້."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ຢູ່ເທິງ {1} ເຊິ່ງຕອນນີ້ບໍ່ໄດ້ຜູກໄວ້."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, other {+# ຕອບກັບເພີ່ມ�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {ເປີດເມນູ (ການແຈ້ງເຕືອນທີ່ຍັງບໍ່ໄດ້ອ່ານ # ລາຍການ)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "ສາຍ 1"
 
@@ -155,7 +155,7 @@ msgstr "12 ຊົ່ວໂມງ"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "ສາຍ 2"
 
@@ -163,7 +163,7 @@ msgstr "ສາຍ 2"
 msgid "24 hours"
 msgstr "24 ຊົ່ວໂມງ"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "ສາຍ 3"
 
@@ -202,13 +202,13 @@ msgstr "ປະເພດບັນຊີ"
 msgid "Ace"
 msgstr "ຍອດຝີມື"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "ລັອກເປົ້າໝາຍ"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "ໂໝດຈັບເປົ້າໝາຍ"
 
@@ -290,7 +290,7 @@ msgstr "ເພີ່ມມຸມມອງ"
 msgid "Adding..."
 msgstr "ກຳລັງເພີ່ມ..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "ການເຜົາໄໝ້ທ້າຍ"
 
@@ -298,7 +298,7 @@ msgstr "ການເຜົາໄໝ້ທ້າຍ"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "ເຮືອບິນ"
 
@@ -356,8 +356,8 @@ msgstr "ໃຜກໍໄດ້ທີ່ເຂົ້າສູ່ລະບົບ"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "ທຸກຢ່າງທີ່ສະໝັກຮັບຟີດນີ້ຈະຢຸດຮັບມັນ. ທ່ານສາມາດສຳເນົາ URL ໃໝ່ໄດ້ຫຼັງຈາກນັ້ນ."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "ກຳລັງເຂົ້າຈອດ (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການຍອມ
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການຍອມແພ້? {opponentName} ຈະຊະນະເກມ."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "ຕະຂໍຢຸດ"
 
@@ -436,16 +436,16 @@ msgstr "ອະວາຕາ"
 msgid "Avatar for {name}"
 msgstr "ອະວາຕາສຳລັບ {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "ແກນ {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "ການປັບທຽບ ແລະການກຳນົດແກນ"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "ກັບຄືນ"
 
@@ -476,7 +476,7 @@ msgstr "ລົບປ້າຍແລ້ວ"
 msgid "Banner updated"
 msgstr "ອັບເດດປ້າຍແລ້ວ"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ຕ່ຳກວ່າ 250 — ລໍ້ ແລະ ແຜ່ນປີກ"
 
@@ -496,11 +496,11 @@ msgstr "ຮ່ອນດີສຸດ (ເຄື່ອງຈັກດັບ)"
 msgid "Best sustained turn speed"
 msgstr "ຄວາມໄວການລ້ຽວຕໍ່ເນື່ອງທີ່ດີສຸດ"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "ສຽງເຕືອນ Betty ແລະ RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "ນ້ຳມັນເຊື້ອໄຟບິງໂກ"
 
@@ -530,7 +530,7 @@ msgstr "ບອດສີຟ້າ"
 msgid "Board"
 msgstr "ກະດານ"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "ສີຂອບ"
 msgid "Bots"
 msgstr "ຫຸ່ນຍົນ"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "ເບຣກ"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "ລ້ຽວຊ້າຍທັນທີ"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "ລ້ຽວຂວາທັນທີ"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "ລ້ຽວເມື່ອພ້ອມ"
 
@@ -567,12 +567,12 @@ msgstr "ລ້ຽວເມື່ອພ້ອມ"
 msgid "Browser notifications"
 msgstr "ການແຈ້ງເຕືອນຕົວທ່ອງເວັບ"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "ປຸ່ມ {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "ການກຳນົດປຸ່ມ"
 
@@ -584,16 +584,16 @@ msgstr "BVR — ອາວຸດເສລີແຕ່ຕົ້ນ"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, ອາວຸດເສລີແຕ່ຕົ້ນ"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ແຈ້ງບານ"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "ຊື່ເອີ້ນ"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "ໄລຍະຫ່າງກ້ອງ"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "ການອະນຸຍາດກ້ອງຖືກປະຕິເສດ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "ບໍ່ມີກ້ອງຖ່າຍຮູບ"
 
@@ -620,10 +620,10 @@ msgstr "ບໍ່ມີກ້ອງຖ່າຍຮູບ"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "ຍົກເລີກ"
 
@@ -641,20 +641,40 @@ msgstr "ຍົກເລີກການຕອບກັບ"
 msgid "Cancelled"
 msgstr "ຍົກເລີກແລ້ວ"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "ປືນໃຫຍ່ ແລະລູກລະເບີດ"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "ຝາຄອບຫ້ອງນັກບິນ"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ຝາຄອບ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ຝາຄອບປິດ"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ຝາຄອບກຳລັງປິດ"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ຝາຄອບລັອກ"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ຝາຄອບເປີດ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "ຄຳບັນຍາຍ"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "ເຮືອບັນທຸກ ແລະສຽງແວດລ້ອມ"
 
@@ -711,19 +731,19 @@ msgstr "ປ່ຽນແລ້ວ"
 msgid "Changed {field}"
 msgstr "ປ່ຽນ {field} ແລ້ວ"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "ມຸມໄລ່ຕາມ:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "ແຊັດ"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "ແຊັດ"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "ແຊັດຫາທຸກຄົນ"
 
@@ -760,7 +780,7 @@ msgstr "ເລືອກພາສາ"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "ລ້າງ"
 
@@ -806,7 +826,7 @@ msgstr "ປິດ panel / ຍົກເລີກ"
 msgid "Close search"
 msgstr "ປິດການຄົ້ນຫາ"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "ໃກ້ຂຶ້ນ"
 
@@ -846,7 +866,7 @@ msgstr "ສະບາຍ"
 msgid "Command Palette"
 msgstr "ແຜງຄຳສັ່ງ"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ເລີ່ມຕົ້ນ"
 
@@ -865,7 +885,7 @@ msgstr "ຄຳເຫັນ"
 msgid "Comments ({0})"
 msgstr "ຄຳເຫັນ ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "ການສື່ສານ"
 
@@ -906,7 +926,7 @@ msgstr "ກຳລັງເຊື່ອມຕໍ່..."
 msgid "Connecting…"
 msgstr "ກຳລັງເຊື່ອມຕໍ່…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "ການເຊື່ອມຕໍ່ລົ້ມເຫຼວ"
 
@@ -963,7 +983,7 @@ msgstr "ບໍ່ສາມາດໂຫລດເອກະສານນີ້ໄດ
 msgid "Could not load your flights"
 msgstr "ບໍ່ສາມາດໂຫຼດຖ້ຽວບິນຂອງທ່ານໄດ້"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "ບໍ່ສາມາດບັນທຶກໂປຣໄຟລ໌ໄດ້"
 
@@ -992,16 +1012,16 @@ msgstr "ບໍ່ສາມາດເລີ່ມການຢືນຢັນຕົ
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ບໍ່ສາມາດຢືນຢັນດ້ວຍບັນຊີນັ້ນໄດ້. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "ມາດຕະການຕອບໂຕ້"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "ເຮືອບິນຕົກ"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "ຕົກແລ້ວ"
 
@@ -1069,12 +1089,12 @@ msgstr "ຕຳແໜ່ງປັດຈຸບັນ"
 msgid "Custom"
 msgstr "ກຳນົດເອງ"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "ອັນຕະລາຍ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "ສະຫຼັບມຸມມອງ"
 
@@ -1101,7 +1121,7 @@ msgstr "ກາງເວັນ"
 msgid "Deaths"
 msgstr "ຕາຍ"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ບັນທຶກຕຳແໜ່ງດາດຟ້າແລ້ວ"
 
@@ -1203,11 +1223,11 @@ msgstr "ຈາກຫຼາຍຫາໜ້ອຍ"
 msgid "Description"
 msgstr "ລາຍລະອຽດ"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "ຖືກໄຟໄໝ້ທຳລາຍ"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "ລາຍລະອຽດ"
 
@@ -1215,8 +1235,8 @@ msgstr "ລາຍລະອຽດ"
 msgid "Details Panel"
 msgstr "ແຜງລາຍລະອຽດ"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "ກວດຫາ"
 
@@ -1239,7 +1259,7 @@ msgstr "ເຊີບເວີເກມອື່ນ"
 msgid "Directory"
 msgstr "ໄດເລກທໍຣີ"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ລົງລໍ້"
 
@@ -1251,7 +1271,7 @@ msgstr "ຍົກເລີກ"
 msgid "Discard draft?"
 msgstr "ຍົກເລີກສະບັບຮ່າງບໍ?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "ຕັດການເຊື່ອມຕໍ່ແລ້ວ"
 
@@ -1264,12 +1284,12 @@ msgstr "ຕັດການເຊື່ອມຕໍ່ແລ້ວ"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "ປິດ"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "ຕົວເຮັດຊ້ຳໜ້າຈໍ"
 
@@ -1277,7 +1297,7 @@ msgstr "ຕົວເຮັດຊ້ຳໜ້າຈໍ"
 msgid "Displays the mobile sidebar."
 msgstr "ສະແດງແຖບຂ້າງມືຖື."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD ໄລຍະທາງ"
 
@@ -1288,7 +1308,7 @@ msgstr "ບໍ່ກົງກັບຮູບແບບທີ່ຕ້ອງກາ
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "ສຳເລັດແລ້ວ"
 
@@ -1303,11 +1323,11 @@ msgstr "ດາວໂຫຼດ"
 msgid "Download failed"
 msgstr "ດາວໂຫຼດບໍ່ສຳເລັດ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ຕາມລົມ 600 ຟຸດ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "ລາກ"
 
@@ -1323,7 +1343,7 @@ msgstr "ຊ້ຳກັນ"
 msgid "Duration"
 msgstr "ໄລຍະເວລາ"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "ຄວາມລະອຽດແບບໄດນາມິກ"
 
@@ -1331,7 +1351,7 @@ msgstr "ຄວາມລະອຽດແບບໄດນາມິກ"
 msgid "Dyslexia-friendly"
 msgstr "ເຫມາະສຳລັບໂລກອ່ານບໍ່ອອກ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "ໄວ"
 
@@ -1374,19 +1394,19 @@ msgstr "ແກ້ໄຂບັດທີ່ເລືອກ"
 msgid "Edit view"
 msgstr "ແກ້ໄຂມຸມມອງ"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "ເອັຟເຟັກ"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "ລາຍລະອຽດເອັບເຟັກ"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ດີດຕົວອອກ"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "ດີດຕົວອອກແລ້ວ"
 
@@ -1398,12 +1418,12 @@ msgstr "ອີເມວ"
 msgid "Email code"
 msgstr "ລະຫັດອີເມວ"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "ຖິ້ມສຸກເສີນ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "ຖິ້ມສຸກເສີນ (ກົດຄ້າງ)"
 
@@ -1416,11 +1436,11 @@ msgstr "ຫວ່າງ"
 msgid "Empty pylon"
 msgstr "ໄພລອນເປົ່າ"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "ເປີດສຽງ"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "ກຳລັງໂຈມຕີ"
 
@@ -1428,7 +1448,7 @@ msgstr "ກຳລັງໂຈມຕີ"
 msgid "Engagement"
 msgstr "ການສູ້ຮົບ"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "ເຄື່ອງຈັກ ແລະການເຜົາໄໝ້ເສີມ"
 
@@ -1448,15 +1468,15 @@ msgstr "ໃສ່ລະຫັດ authenticator ຂອງທ່ານ"
 msgid "Error"
 msgstr "ຂໍ້ຜິດພາດ"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "ທຸກຄົນ"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "ອອກຈາກການແຂ່ງຂັນ"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "ອອກຈາກພາລະກິດ"
 
@@ -1475,16 +1495,16 @@ msgstr "ຂະຫຍາຍແຖບຂ້າງ"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "ພາບເຄື່ອນໄຫວການລະເບີດ <0>“Explosion02HD”</0> ໂດຍ <1>Unity Technologies</1> (ລຳດັບຮູບພາບ VFX ຂອງ Unity Labs), ເຜີຍແຜ່ພາຍໃຕ້ <2>CC0</2>. ດັດແກ້: ບີບອັດຄືນໃໝ່ສຳລັບເວັບ."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "ສົ່ງອອກ"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "ຟລັບອອກ"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "ລາຍລະອຽດພາຍນອກ"
 
@@ -1603,15 +1623,15 @@ msgstr "ອັບເດດການຕິດຕາມບໍ່ສຳເລັດ
 msgid "Failed to upload attachment"
 msgstr "ອັບໂຫຼດໄຟລ໌ແນບລົ້ມເຫຼວ"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ປານກາງ"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "ການຕໍ່ສູ້ເລີ່ມແລ້ວ"
 
@@ -1629,16 +1649,16 @@ msgstr "ສຳເລັດການຍ້າຍບັນຊີ"
 msgid "Finished"
 msgstr "ຈົບແລ້ວ"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "ຍິງ"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "ຍິງອາວຸດ"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "ປຸ່ມການບິນຄົງທີ່"
 
@@ -1646,15 +1666,15 @@ msgstr "ປຸ່ມການບິນຄົງທີ່"
 msgid "Flags"
 msgstr "ທຸງ"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ເຄື່ອງດັບ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "ຟລັບ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "ພະລຸ"
 
@@ -1666,19 +1686,19 @@ msgstr "ໄຟພະລຸ"
 msgid "Flat"
 msgstr "ຮາບພຽງ"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "ຕົກທະເລ"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "ການບິນ"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "ແກນການບິນລົ້ມເຫລວ"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "ຄຳແນະນຳການບິນ"
 
@@ -1699,11 +1719,11 @@ msgstr "ບິນແລ້ວ"
 msgid "Fly"
 msgstr "ບິນ"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "ບິນອີກຄັ້ງ"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "ຕົວນັບອັດຕາເຟຣມ"
 
@@ -1736,23 +1756,23 @@ msgstr "ຈາກຮູບແບບ"
 msgid "Fuel"
 msgstr "ນ້ຳມັນເຊື້ອໄຟ"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ນ້ຳມັນເຊື້ອໄຟ"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ໄຟນ້ຳມັນ"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ນ້ຳມັນຮົ່ວ"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "ນ້ຳມັນໜ້ອຍ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "ຫົວສູບນໍ້າມັນ"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ລຳຕົວເຮືອບິນ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "ການຂະຫຍາຍ"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "ລໍ້"
 
@@ -1781,7 +1801,7 @@ msgstr "ລໍ້"
 msgid "GEAR"
 msgstr "ລໍ້"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "ທົ່ວໄປ"
 
@@ -1790,11 +1810,11 @@ msgstr "ທົ່ວໄປ"
 msgid "Go back"
 msgstr "ກັບໄປ"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "ກຣາຟິກ"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "ຊຸດຄ່າກຣາຟິກ"
 
@@ -1832,15 +1852,15 @@ msgstr "ປືນໃຫຍ່ເທົ່ານັ້ນ"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ການເລັ່ງກຣາຟິກຮາດແວຖືກປິດ — ກວດເບິ່ງການຕັ້ງຄ່າບຣາວເຊີ ຫຼືໄດຣເວີກຣາຟິກ."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "ຫົວ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "ການຕິດຕາມຫົວ"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "ສູງ"
 
@@ -1850,7 +1870,7 @@ msgstr "ສູງ"
 msgid "High stratus"
 msgstr "ເມກຊັ້ນສູງ"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "ຄຳແນະນຳ"
 
@@ -1865,7 +1885,7 @@ msgstr "ປະຫວັດ"
 msgid "Home"
 msgstr "ໜ້າຫຼັກ"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "ຂໍ"
 
@@ -1877,11 +1897,11 @@ msgstr "ຂໍ"
 msgid "Hot"
 msgstr "ມາແຮງ"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "ແຫຼ່ງຄວາມສູງ HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "ຫຼຸດລາຍລະອຽດ HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "ຕົວເບິ່ງຮູບພາບ: {0}"
 msgid "Imperial"
 msgstr "ອິມພີຣຽລ"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "ນຳເຂົ້າ"
 
@@ -1919,7 +1939,7 @@ msgstr "ອະວາຕາຕົວອັກສອນຫຍໍ້"
 msgid "Initials avatar for {name}"
 msgstr "ອະວາຕາຕົວອັກສອນຫຍໍ້ສຳລັບ {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "ອຸປະກອນປ້ອນຂໍ້ມູນ"
 
@@ -1944,7 +1964,7 @@ msgstr "ວັນທີ່ບໍ່ຖືກຕ້ອງ"
 msgid "Invulnerable"
 msgstr "ບໍ່ບາດເຈັບ"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ອະມະຕະ"
 
@@ -1961,17 +1981,17 @@ msgstr "ເບິ່ງຄືວ່າໜ້າທີ່ທ່ານກຳລັ
 msgid "Item details"
 msgstr "ລາຍລະອຽດລາຍການ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "ເຄື່ອງລົບກວນ"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "ຖິ້ມຖັງ"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ຖິ້ມ: ຂາລົງຈອດ"
 
@@ -1984,7 +2004,7 @@ msgstr "ເຂົ້າຮ່ວມ"
 msgid "Join server"
 msgstr "ເຂົ້າຮ່ວມເຊີບເວີ"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "ເຂົ້າຮ່ວມແລ້ວ"
 
@@ -2002,7 +2022,7 @@ msgstr "ຕໍ່ສູ້ຕົວຕໍ່ຕົວ — 1v1, ຍິງຕົ�
 msgid "Joust against bot"
 msgstr "ຕໍ່ສູ້ຕົວຕໍ່ຕົວ ຕ້ານບອດ"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "ຈອຍສະຕິກ"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ປຸ່ມລັດແປ້ນພິມ"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "ປຸ່ມກົດ"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "ຍິງຕົກ"
 
@@ -2035,20 +2055,20 @@ msgstr "ຖືກຍິງຕົກ"
 msgid "Kills"
 msgstr "ຂ້າ"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "ເຄື່ອງຈັກຊ້າຍ"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ໄຟ ເຄື່ອງຊ້າຍ"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "ລໍ້ຊ້າຍ"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ລໍ້ລົງຈອດ"
 
@@ -2057,16 +2077,16 @@ msgstr "ລໍ້ລົງຈອດ"
 msgid "Large"
 msgstr "ໃຫຍ່"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "ຊ້າ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "ການປ່ອຍຕົວ (ກາຕາປຸນ)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "ບິນຂຶ້ນ / ເປົ້າໝາຍ"
 
@@ -2086,7 +2106,7 @@ msgstr "ອອກຈາກເຊີບເວີ"
 msgid "Left"
 msgstr "ອອກ"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ອອກແລ້ວ"
 
@@ -2103,7 +2123,7 @@ msgstr "ປາຍປີກຊ້າຍ"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "ໃຊ້ໄດ້ສະເພາະຕົວອັກສອນ ຕົວເລກ ຍະຫວ່າງ ຂີດກາງ ແລະ ຂີດຂວາງ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ຮາບພຽງທີ່ 1200, ລໍ້ລົງ"
 
@@ -2111,16 +2131,16 @@ msgstr "ຮາບພຽງທີ່ 1200, ລໍ້ລົງ"
 msgid "Light"
 msgstr "ສະຫວ່າງ"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "ໄຟ"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "ໄຟ"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ໄຟ"
 
@@ -2140,7 +2160,7 @@ msgstr "ລາຍຊື່"
 msgid "Load more"
 msgstr "ໂຫຼດເພີ່ມ"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "ກຳລັງໂຫຼດ"
 
@@ -2148,7 +2168,7 @@ msgstr "ກຳລັງໂຫຼດ"
 msgid "Loading content…"
 msgstr "ກຳລັງໂຫຼດເນື້ອຫາ…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "ການໂຫຼດລົ້ມເຫຼວ"
 
@@ -2186,35 +2206,35 @@ msgstr "ອອກຈາກລະບົບສຳເລັດແລ້ວ"
 msgid "Logging out…"
 msgstr "ກຳລັງອອກຈາກລະບົບ…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "ເບິ່ງ"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "ເບິ່ງ / ໝູນອ້ອມ"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "ເບິ່ງເປົ້າໝາຍ"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "ເບິ່ງລົງລຸ່ມ"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "ເບິ່ງຊ້າຍ"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "ເບິ່ງຂວາ"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "ເບິ່ງຂຶ້ນເທິງ"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "ຕ່ຳ"
 
@@ -2224,7 +2244,7 @@ msgstr "ຕ່ຳ"
 msgid "Low stratus"
 msgstr "ເມກຊັ້ນຕ່ຳ"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M ເພື່ອປິດ"
 
@@ -2236,11 +2256,11 @@ msgstr "ຈັດການໝວດໝູ່"
 msgid "Manual"
 msgstr "ດ້ວຍຕົນເອງ"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "ແຜນທີ່"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "ແຜນທີ່"
 
@@ -2249,8 +2269,8 @@ msgstr "ແຜນທີ່"
 msgid "Mark all as read"
 msgstr "ໝາຍທັງໝົດເປັນອ່ານແລ້ວ"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "ລະດັບສຽງຫຼັກ"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "ເຊີບເວີ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "ກາງ"
 
@@ -2279,13 +2299,13 @@ msgstr "ກາງ"
 msgid "Members"
 msgstr "ສະມາຊິກ"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "ເມນູ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "ເມນູ"
 
@@ -2297,7 +2317,7 @@ msgstr "ພົບກັນ — ການສູ້ຮົບເລີ່ມເມ�
 msgid "Message"
 msgstr "ຂໍ້ຄວາມ"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາທຸກຄົນ"
 
@@ -2305,7 +2325,7 @@ msgstr "ສົ່ງຂໍ້ຄວາມຫາທຸກຄົນ"
 msgid "Message players on this server"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາຜູ້ຫຼິ້ນໃນເຊີບເວີນີ້"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາທີມຂອງທ່ານ"
 
@@ -2323,7 +2343,7 @@ msgstr "ສິດໄມໂຄຣໂຟນຖືກປະຕິເສດ"
 msgid "Mid stratus"
 msgstr "ເມກຊັ້ນກາງ"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "ຊົນກັນກາງອາກາດ"
 
@@ -2335,7 +2355,7 @@ msgstr "ແຜນທີ່ເກາະ Midway Atoll — ຮູບພາບປະ
 msgid "Minimum length"
 msgstr "ຄວາມຍາວຕ່ຳສຸດ"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ລູກສອນໄຟ"
 
@@ -2343,7 +2363,7 @@ msgstr "ລູກສອນໄຟ"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ໂມເດວລູກສອນໄຟ <0>“AIM-120C AMRAAM”</0> ໂດຍ <1>Pippa</1> (Sketchfab) ອະນຸຍາດພາຍໃຕ້ <2>CC BY 4.0</2>. ແກ້ໄຂແລ້ວ: ປັບຂະໜາດໃໝ່ ປັບທິດທາງໃໝ່ ແລະຈັດກາງເພື່ອຕິດຕັ້ງ."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "ພາລະກິດຈົບແລ້ວ"
 
@@ -2369,7 +2389,7 @@ msgstr "ວັນຈັນ"
 msgid "More options"
 msgstr "ຕົວເລືອກເພີ່ມເຕີມ"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "ຂະຫຍັບ…"
 
@@ -2447,7 +2467,7 @@ msgstr "ຍັງບໍ່ມີກິດຈະກຳ"
 msgid "No comments yet"
 msgstr "ຍັງບໍ່ມີຄຳເຫັນ"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "ບໍ່ມີການຄວບຄຸມໃດຕົງກັບ “{query}”."
 
@@ -2471,7 +2491,7 @@ msgstr "ບໍ່ມີກຸ່ມທີ່ມີຢູ່"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ຍັງບໍ່ສາມາດສ້າງປະເພດລາຍການໄດ້. ສ້າງລາຍການແມ່ທີ່ຕ້ອງການກ່ອນ."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ບໍ່ພົບຈອຍສະຕິກ — ກົດປຸ່ມໃດກໍໄດ້ເທິງມັນເພື່ອປຸກມັນ."
 
@@ -2507,11 +2527,11 @@ msgstr "ບໍ່ພົບຜົນ."
 msgid "No status"
 msgstr "ບໍ່ມີສະຖານະ"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ບໍ່ມີຖັງ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "ບໍ່ມີເປົ້າໝາຍ"
 
@@ -2540,7 +2560,7 @@ msgstr "ບໍ່ມີການເບິ່ງ"
 msgid "No world server."
 msgstr "ບໍ່ມີເຊີບເວີໂລກ."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ບໍ່ມີຄະແນນ"
 
@@ -2563,9 +2583,9 @@ msgstr "ບໍ່ມີຄະແນນ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "ບໍ່ມີ"
 
@@ -2573,11 +2593,11 @@ msgstr "ບໍ່ມີ"
 msgid "Normal"
 msgstr "ປົກກະຕິ"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "ລໍ້ໜ້າ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ບໍ່ແມ່ນໂປຣໄຟລ໌ຈອຍສະຕິກ"
 
@@ -2615,7 +2635,7 @@ msgstr "ຜູ້ເລີ່ມຕົ້ນ"
 msgid "Number"
 msgstr "ຕົວເລກ"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "ລາຍລະອຽດມະຫາສະໝຸດ"
 
@@ -2623,7 +2643,7 @@ msgstr "ລາຍລະອຽດມະຫາສະໝຸດ"
 msgid "offline"
 msgstr "ບໍ່ເຊື່ອມຕໍ່"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "ຊື່ຕົວເລືອກ"
 msgid "Options"
 msgstr "ຕົວເລືອກ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "ຫຼື"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "ໝູນອ້ອມ"
 
@@ -2708,8 +2728,8 @@ msgstr "ໝູນອ້ອມ"
 msgid "Other"
 msgstr "ອື່ນໆ"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "ຂ້າມຂີດຈຳກັດ G"
 
@@ -2717,11 +2737,11 @@ msgstr "ຂ້າມຂີດຈຳກັດ G"
 msgid "Owner"
 msgstr "ເຈົ້າຂອງ"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ລັອກສາຍຕາ"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "ສາຍຕາອິດສະລະ"
 
@@ -2731,7 +2751,11 @@ msgstr "ສາຍຕາອິດສະລະ"
 msgid "Parent"
 msgstr "ແມ່"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "ເບຣກຈອດ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "ເບຣກຈອດ"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkeys ບໍ່ສາມາດໃຊ້ໄດ້ໃນບຣາວເ
 msgid "Pattern (regex)"
 msgstr "ຮູບແບບ (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "ຢຸດຊົ່ວຄາວ"
 
@@ -2776,15 +2800,15 @@ msgstr "ນັກບິນ"
 msgid "Pilot"
 msgstr "ນັກບິນ"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "ນັກບິນເສຍຊີວິດ"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "ຕົວຕົນນັກບິນ"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "ນັກບິນເສຍຊີວິດ"
 
@@ -2793,23 +2817,23 @@ msgstr "ນັກບິນເສຍຊີວິດ"
 msgid "Pin"
 msgstr "ປັກໝຸດ"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "ກົ້ມເງີຍ"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "ກົ້ມເງີຍ"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "ຫົວລົງ"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "ຫົວຂຶ້ນ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "ແທ່ນ"
 
@@ -2839,15 +2863,15 @@ msgstr "ໂພສ"
 msgid "Posts and comments"
 msgstr "ໂພສແລະຄຳເຫັນ"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "ກົດປຸ່ມໃດໜຶ່ງ…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ກົດ ENTER ເພື່ອບິນຂຶ້ນ"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "ກົດ…"
 
@@ -2861,12 +2885,24 @@ msgstr "ຮູບກ່ອນໜ້າ"
 msgid "Privacy"
 msgstr "ຄວາມເປັນສ່ວນຕົວ"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ທໍ່ຮັບນ້ຳມັນ"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ທໍ່ເກັບ"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ທໍ່ກາງ"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "ກຳລັງປະມວນຜົນ…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "ບັນທຶກໂປຣໄຟລ໌ແລ້ວ"
 
@@ -2887,24 +2923,24 @@ msgstr "ເຊີບເວີສາທາລະນະ"
 msgid "Push notification"
 msgstr "ການແຈ້ງເຕືອນ push"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ເວລາເຂົ້າຈອດ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "ເຄື່ອງຈັກຂວາ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ໄຟ ເຄື່ອງຂວາ"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "ລໍ້ຂວາ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "ເຣດາມິດງຽບ"
 
@@ -2920,7 +2956,7 @@ msgstr "ເຊື່ອມໂຍງບັນຊີຂອງທ່ານຄືນ
 msgid "Re-register your passkeys on this server"
 msgstr "ລົງທະບຽນກະແຈຜ່ານຂອງທ່ານຄືນໃໝ່ໃນເຄື່ອງແມ່ຂ່າຍນີ້"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ຕິດອາວຸດໃໝ່ແລ້ວ"
 
@@ -2936,12 +2972,12 @@ msgstr "ແນະນຳ"
 msgid "Reconnecting ({retries})..."
 msgstr "ກຳລັງເຊື່ອມຕໍ່ໃໝ່ ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "ບັນທຶກຖ້ຽວບິນ"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "ການບັນທຶກ"
 
@@ -2982,7 +3018,7 @@ msgstr "ຄ່າອ້າງອີງ"
 msgid "Refresh"
 msgstr "ໂຫຼດໃໝ່"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ກັບຄືນຂະບວນ"
 
@@ -3082,23 +3118,23 @@ msgstr "ຕ້ອງການ"
 msgid "Resend email"
 msgstr "ສົ່ງອີເມວອີກຄັ້ງ"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "ຣີເຊັດ"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "ຣີເຊັດຄຳເຕືອນຫຼັກ"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "ຣີເຊັດທຣິມ"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "ຣີເຊັດມຸມມອງ"
 
@@ -3114,19 +3150,19 @@ msgstr "ຍອມແພ້ເກມ?"
 msgid "Resigning..."
 msgstr "ກຳລັງຍອມແພ້..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "ຄວາມລະອຽດ"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "ເລີ່ມໃໝ່"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "ເລີ່ມພາລະກິດໃໝ່"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "ເລີ່ມພາລະກິດໃໝ່ບໍ?"
 
@@ -3134,12 +3170,12 @@ msgstr "ເລີ່ມພາລະກິດໃໝ່ບໍ?"
 msgid "Result"
 msgstr "ຜົນ"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "ສືບຕໍ່"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "ຟລັບເຂົ້າ"
 
@@ -3147,7 +3183,7 @@ msgstr "ຟລັບເຂົ້າ"
 msgid "Retry"
 msgstr "ລອງໃໝ່"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "ປີ້ນກັບ"
 
@@ -3172,19 +3208,19 @@ msgstr "ປີກຂວາ"
 msgid "Right wingtip"
 msgstr "ປາຍປີກຂວາ"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "ກິ້ງ"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "ໝູນຕົວ"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "ອຽງຊ້າຍ"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "ອຽງຂວາ"
 
@@ -3209,7 +3245,7 @@ msgstr "ຟີດ RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "ຄັດລອກ RSS URL ໄປຄລິບບອດແລ້ວ"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "ກຳລັງເຕັມທີ່"
 
@@ -3242,8 +3278,8 @@ msgstr "ລະດັບນ້ຳທະເລ"
 msgid "Search"
 msgstr "ຄົ້ນຫາ"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "ຄົ້ນຫາການຄວບຄຸມ"
 
@@ -3340,8 +3376,8 @@ msgstr "ເລືອກບຸກຄົນ..."
 msgid "Select previous card"
 msgstr "ເລືອກບັດກ່ອນໜ້າ"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "ເລືອກອາວຸດ"
 
@@ -3363,7 +3399,7 @@ msgstr "ສົ່ງ"
 msgid "Send again"
 msgstr "ສົ່ງອີກຄັ້ງ"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "ສົ່ງຂໍ້ຄວາມ"
 
@@ -3404,7 +3440,7 @@ msgstr "ກົດລະບຽບເຊີບເວີ"
 msgid "server runs v{0}, you have v{version}"
 msgstr "ເຊີບເວີແລ່ນ v{0}, ທ່ານມີ v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "ເຊດຊັນສິ້ນສຸດແລ້ວ"
 
@@ -3412,7 +3448,7 @@ msgstr "ເຊດຊັນສິ້ນສຸດແລ້ວ"
 msgid "Session expired. Please log in again."
 msgstr "ເຊສຊັນໝົດອາຍຸແລ້ວ. ກະລຸນາເຂົ້າສູ່ລະບົບອີກຄັ້ງ."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "ຕັ້ງ"
 
@@ -3423,14 +3459,14 @@ msgstr "ຕັ້ງຕົ້ນທາງແລະປາຍທາງ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "ການຕັ້ງຄ່າ"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "ເງົາ"
 
@@ -3485,7 +3521,7 @@ msgstr "ນ້ອຍ"
 msgid "Sort"
 msgstr "ຈັດລຽງ"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "ສຽງ"
 
@@ -3505,17 +3541,17 @@ msgstr "ຈຸດເກີດຫ່າງກັນ"
 msgid "Spacious"
 msgstr "ກວ້າງຂວາງ"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "ບ.ອກ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "ເບຣກອາກາດ"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "ເບຣກອາກາດ"
 
@@ -3523,9 +3559,13 @@ msgstr "ເບຣກອາກາດ"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "ຄວາມໄວເປັນ KCAS, ເປັນຊ່ວງຈາກເບົາ (ນ້ຳມັນຕ່ຳສຸດ, ບໍ່ມີພາລະບັນທຸກ) ຫາໜັກ (ນ້ຳໜັກລວມສູງສຸດ). ຂໍ້ມູນໄດ້ມາຈາກການທົດລອງໃນເກມ. ຄວາມແຕກຕ່າງໃດໆຈາກເຮືອບິນຈິງແມ່ນສະທ້ອນຄວາມຜິດພາດຂອງແບບຈຳລອງການບິນ."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "ຍິງຕົກແລ້ວ"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ກາງປີກ"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "ໄຕ່ລະດັບຊັນສຸດ (Vx, ການເຜົາໄ
 msgid "Stop watching"
 msgstr "ຢຸດການເບິ່ງ"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "ໂຄງສ້າງ"
 
@@ -3598,7 +3638,7 @@ msgstr "ສະຫຼັບໄປເບິ່ງ 1-9"
 msgid "System"
 msgstr "ລະບົບ"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "ແຜນທີ່ຍຸດທະວິທີ"
 
@@ -3615,7 +3655,7 @@ msgstr "ແທັກຕ້ອງມີບໍ່ເກີນ 50 ຕົວອັ�
 msgid "Tags"
 msgstr "ແທັກ"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ເຫັນສັດຕູແລ້ວ"
 
@@ -3623,11 +3663,11 @@ msgstr "ເຫັນສັດຕູແລ້ວ"
 msgid "Task"
 msgstr "ໜ້າວຽກ"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "ທີມ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "ທີມ"
 
@@ -3674,7 +3714,7 @@ msgstr "ຄຳຮ້ອງຂໍກ້ອງບໍ່ໄດ້ຮັບການ
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ບໍ່ສາມາດໂຫຼດເກມໄດ້. ໂຫຼດໜ້ານີ້ຄືນໃໝ່ເພື່ອລອງອີກຄັ້ງ."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "ການແຂ່ງຂັນຍັງດຳເນີນຕໍ່ຢູ່ຫຼັງເມນູນີ້."
 
@@ -3686,7 +3726,7 @@ msgstr "ຄຳຮ້ອງຂໍໄມໂຄຣໂຟນບໍ່ໄດ້ຮັ
 msgid "The mission stopped."
 msgstr "ພາລະກິດຢຸດແລ້ວ."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "ພາລະກິດຈະເລີ່ມໃໝ່. ການບິນປັດຈຸບັນຈະບໍ່ຖືກບັນທຶກ."
 
@@ -3722,21 +3762,21 @@ msgstr "ເຄື່ອງນີ້ອາດຊ້າເກີນໄປສຳລ
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "ການດຳເນີນການນີ້ຈະລົບເກມ ແລະ ການສົນທະນາຂອງມັນຖາວອນ. ບໍ່ສາມາດຍົກເລີກການດຳເນີນການນີ້ໄດ້."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "ຄັນເລັ່ງ"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "ຄັນເລັ່ງ"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "ຫຼຸດຄັນເລັ່ງ"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "ເພີ່ມຄັນເລັ່ງ"
 
@@ -3748,7 +3788,7 @@ msgstr "ວັນພະຫັດ"
 msgid "Tightest sustained turn speed"
 msgstr "ຄວາມໄວການລ້ຽວຕໍ່ເນື່ອງແຄບສຸດ"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "ອຽງ"
 
@@ -3795,7 +3835,7 @@ msgstr "ມີຄຳຮ້ອງຂໍຫຼາຍເກີນໄປ"
 msgid "Top"
 msgstr "ເທິງ"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "ກະສຸນສ່ອງແສງ"
 
@@ -3803,35 +3843,35 @@ msgstr "ກະສຸນສ່ອງແສງ"
 msgid "Travelling"
 msgstr "ການເດີນທາງ"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "ທຣິມ"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "ທຣິມ"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "ໝວກທຣິມ"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ທຣິມ: ດັງລົງ"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ທຣິມ: ດັງຂຶ້ນ"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ທຣິມ: ອຽງຊ້າຍ"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ທຣິມ: ອຽງຂວາ"
 
@@ -3869,7 +3909,7 @@ msgstr "ພິມເພື່ອຄົ້ນຫາຜູ້ໃຊ້"
 msgid "Type to search..."
 msgstr "ພິມເພື່ອຄົ້ນຫາ..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "ສູງສຸດ"
 
@@ -3890,13 +3930,13 @@ msgstr "ບໍ່ໄດ້ມອບໝາຍ"
 msgid "Unavailable"
 msgstr "ບໍ່ມີໃຫ້ບໍລິການ"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "ປົດປ່ອຍຫົວຄົ້ນຫາ"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "ຍົກເລີກການກຳນົດເປົ້າໝາຍ"
 
@@ -4014,11 +4054,11 @@ msgstr "ຮູບຫຍໍ້ວິດີໂອ"
 msgid "Video viewer: {0}"
 msgstr "ຕົວເບິ່ງວິດີໂອ: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "ມຸມມອງ"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "ເບິ່ງ"
 
@@ -4035,7 +4075,7 @@ msgstr "ເບິ່ງແລະແກ້ໄຂລາຍລະອຽດລາຍ
 msgid "View controls"
 msgstr "ການຄວບຄຸມການເບິ່ງ"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "ການເບິ່ງ"
 
@@ -4043,11 +4083,11 @@ msgstr "ການເບິ່ງ"
 msgid "Voice recording is not supported in this browser"
 msgstr "ບຣາວເຊີນີ້ບໍ່ຮອງຮັບການບັນທຶກສຽງ"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "ລະດັບສຽງ"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ກຳລັງລໍຖ້າຄູ່ຕໍ່ສູ້"
 
@@ -4065,7 +4105,7 @@ msgstr "ເບິ່ງແລ້ວ"
 msgid "Watched only"
 msgstr "ເບິ່ງເທົ່ານັ້ນ"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ຍົກເລີກການລົງຈອດ"
 
@@ -4074,16 +4114,16 @@ msgstr "ຍົກເລີກການລົງຈອດ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "ພວກເຮົາໄດ້ສົ່ງລະຫັດຢືນຢັນໄປທີ່ <0>{0}</0>. ປ້ອນລະຫັດຂ້າງລຸ່ມນີ້ເພື່ອຢືນຢັນທີ່ຢູ່ອີເມວຂອງທ່ານ."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "ອາວຸດ"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "ໝວກເລືອກອາວຸດ"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "ອາວຸດ"
 
@@ -4095,21 +4135,37 @@ msgstr "ສະພາບອາກາດ"
 msgid "Wednesday"
 msgstr "ວັນພຸດ"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "ເບຣກລໍ້"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "ລົມ ແລະໂຄງເຮືອບິນ"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "ພັບປີກ"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ປີກ"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ປີກກຳລັງພັບ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ປີກລັອກ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ປີກກຳລັງກາງ"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ຊະນະ"
 
@@ -4126,25 +4182,25 @@ msgstr "ບໍ່ສາມາດເຊື່ອມຕໍ່ຫາເຊີບເ
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, ອາວຸດເສລີເມື່ອຜ່ານກັນ"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "ສ່າຍ"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "ສ່າຍ"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "ຫັນຫົວຊ້າຍ"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "ຫັນຫົວຂວາ"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ເຈົ້າ"
 
@@ -4176,14 +4232,14 @@ msgstr "ຂໍ້ຄວາມ ແລະໄຟລ໌ແນບຂອງທ່າ�
 msgid "Your text will be lost."
 msgstr "ຂໍ້ຄວາມຂອງເຈົ້າຈະຫາຍໄປ."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "ຊູມ"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "ຊູມເຂົ້າ"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "ຊູມອອກ"

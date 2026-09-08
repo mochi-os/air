@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, zero {# canlyniad} one {# canlyniad} two {# ganlyniad} few {# chanlyniad} many {# chanlyniad} other {# canlyniad}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, zero {Derbyniwyd # ergyd} one {Derbyniwyd # ergyd} two {Derbyniwyd # ergyd} few {Derbyniwyd # ergyd} many {Derbyniwyd # ergyd} other {Derbyniwyd # ergyd}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} o {1} hediad"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "Roedd {0} eisoes wedi’i gymryd, ac mae’r rheolydd hwnnw bellach heb ei rwymo."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "Roedd {0} ar {1}, sydd bellach heb ei rwymo."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, zero {# ateb} one {# ateb} two {+# ateb arall
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, zero {Agor y ddewislen (# hysbysiad heb ei ddarllen)} one {Agor y ddewislen (# hysbysiad heb ei ddarllen)} two {Agor y ddewislen (# hysbysiad heb eu darllen)} few {Agor y ddewislen (# hysbysiad heb eu darllen)} many {Agor y ddewislen (# hysbysiad heb eu darllen)} other {Agor y ddewislen (# hysbysiad heb eu darllen)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "CEBL 1"
 
@@ -155,7 +155,7 @@ msgstr "12 awr"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "CEBL 2"
 
@@ -163,7 +163,7 @@ msgstr "CEBL 2"
 msgid "24 hours"
 msgstr "24 awr"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "CEBL 3"
 
@@ -202,13 +202,13 @@ msgstr "Math o gyfrif"
 msgid "Ace"
 msgstr "Âs"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Cloi targed"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Modd caffael"
 
@@ -290,7 +290,7 @@ msgstr "Ychwanegu golwg"
 msgid "Adding..."
 msgstr "Yn ychwanegu..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Ôl-losgydd"
 
@@ -298,7 +298,7 @@ msgstr "Ôl-losgydd"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Awyren"
 
@@ -356,8 +356,8 @@ msgstr "Unrhyw un sydd wedi mewngofnodi"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Bydd unrhyw beth sydd wedi tanysgrifio i'r porthiant hwn yn peidio â'i dderbyn. Gallwch gopïo URL newydd wedyn."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Pŵer dynesu (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Ydych chi'n siŵr eich bod am ymddiswyddo?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Ydych chi'n siŵr eich bod am ymddiswyddo? Bydd {opponentName} yn ennill y gêm."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Bachyn atal"
 
@@ -436,16 +436,16 @@ msgstr "Afatar"
 msgid "Avatar for {name}"
 msgstr "Afatar ar gyfer {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Echelin {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Graddnodi a mapio echelinau"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "yn ôl"
 
@@ -476,7 +476,7 @@ msgstr "Baner wedi'i thynnu"
 msgid "Banner updated"
 msgstr "Baner wedi'i diweddaru"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "O DAN 250 — OLWYNION A FFLAPIAU"
 
@@ -496,11 +496,11 @@ msgstr "Gleidio gorau (peiriannau wedi diffodd)"
 msgid "Best sustained turn speed"
 msgstr "Cyflymder tro parhaus gorau"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Rhybuddion Betty ac RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "BINGO TANWYDD"
 
@@ -530,7 +530,7 @@ msgstr "Botiau glas"
 msgid "Board"
 msgstr "Bwrdd"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "Lliw ymyl"
 msgid "Bots"
 msgstr "Botiau"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "breciau"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "TRO I'R CHWITH"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "TRO I'R DDE"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "TROI PAN YN BAROD"
 
@@ -567,12 +567,12 @@ msgstr "TROI PAN YN BAROD"
 msgid "Browser notifications"
 msgstr "Hysbysiadau porwr"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Botwm {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Mapio botymau"
 
@@ -584,16 +584,16 @@ msgstr "BVR — arfau'n rhydd o'r dechrau"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, arfau'n rhydd o'r dechrau"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "GALWCH Y BÊL"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Arwydd galw"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Pellter y camera"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Gwrthodwyd caniatâd y camera"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Camera ddim ar gael"
 
@@ -620,10 +620,10 @@ msgstr "Camera ddim ar gael"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Canslo"
 
@@ -641,20 +641,40 @@ msgstr "Canslo ateb"
 msgid "Cancelled"
 msgstr "Wedi'i ganslo"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Canonau ac ordnans"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Canopi"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "CANOPI"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "CANOPI AR GAU"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "CANOPI'N CAU"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "CANOPI WEDI'I GLOI"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "CANOPI AR AGOR"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Capsiwn"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Cludwr ac awyrgylch"
 
@@ -711,19 +731,19 @@ msgstr "Newidiwyd"
 msgid "Changed {field}"
 msgstr "Newidiwyd {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Golwg ymlid:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "sgwrs"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Sgwrs"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Sgwrs â phawb"
 
@@ -760,7 +780,7 @@ msgstr "Dewiswch iaith"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Clirio"
 
@@ -806,7 +826,7 @@ msgstr "Cau panel / canslo"
 msgid "Close search"
 msgstr "Cau chwiliad"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "agosach"
 
@@ -846,7 +866,7 @@ msgstr "Cyfforddus"
 msgid "Command Palette"
 msgstr "Palet gorchmynion"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "YN CYCHWYN"
 
@@ -865,7 +885,7 @@ msgstr "Sylwadau"
 msgid "Comments ({0})"
 msgstr "Sylwadau ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Cyfathrebu"
 
@@ -906,7 +926,7 @@ msgstr "Yn cysylltu..."
 msgid "Connecting…"
 msgstr "Wrthi'n cysylltu…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "METHODD Y CYSYLLTIAD"
 
@@ -963,7 +983,7 @@ msgstr "Methwyd llwytho'r ddogfen hon. Rhowch gynnig arni eto yn nes ymlaen."
 msgid "Could not load your flights"
 msgstr "Methwyd llwytho eich hediadau"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Methwyd cadw'r proffil"
 
@@ -992,16 +1012,16 @@ msgstr "Methwyd dechrau ailddilysu. Rhowch gynnig arall arni."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Methwyd dilysu gyda'r cyfrif hwnnw. Rhowch gynnig arall arni."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Gwrthfesurau"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Wedi crashio"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "CWYMPODD"
 
@@ -1069,12 +1089,12 @@ msgstr "Lleoliad presennol"
 msgid "Custom"
 msgstr "Wedi'i addasu"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "PERYGLUS"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Cylchu golwg"
 
@@ -1101,7 +1121,7 @@ msgstr "Dydd"
 msgid "Deaths"
 msgstr "Marwolaethau"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "SAFLE'R DEC WEDI'I GADW"
 
@@ -1203,11 +1223,11 @@ msgstr "Disgynnol"
 msgid "Description"
 msgstr "Disgrifiad"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Dinistriwyd gan dân"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Manylder"
 
@@ -1215,8 +1235,8 @@ msgstr "Manylder"
 msgid "Details Panel"
 msgstr "Panel manylion"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Canfod"
 
@@ -1239,7 +1259,7 @@ msgstr "Gwesteiwr gêm gwahanol"
 msgid "Directory"
 msgstr "Cyfeiriadur"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "GOSTWNG YR OLWYNION"
 
@@ -1251,7 +1271,7 @@ msgstr "Hepgor"
 msgid "Discard draft?"
 msgstr "Hepgor y drafft?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "wedi datgysylltu"
 
@@ -1264,12 +1284,12 @@ msgstr "Wedi datgysylltu"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Diystyru"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Ailadroddwr sgrin"
 
@@ -1277,7 +1297,7 @@ msgstr "Ailadroddwr sgrin"
 msgid "Displays the mobile sidebar."
 msgstr "Yn dangos y bar ochr symudol."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD pellter"
 
@@ -1288,7 +1308,7 @@ msgstr "Nid yw'n cyfateb i'r patrwm gofynnol"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Wedi gorffen"
 
@@ -1303,11 +1323,11 @@ msgstr "Lawrlwytho"
 msgid "Download failed"
 msgstr "Methwyd â lawrlwytho"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "GYDA'R GWYNT 600 TROEDFEDD"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Llusgo"
 
@@ -1323,7 +1343,7 @@ msgstr "Dyblygion"
 msgid "Duration"
 msgstr "Hyd"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Cydraniad deinamig"
 
@@ -1331,7 +1351,7 @@ msgstr "Cydraniad deinamig"
 msgid "Dyslexia-friendly"
 msgstr "Cyfeillgar i ddyslecsia"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "CYNNAR"
 
@@ -1374,19 +1394,19 @@ msgstr "Golygu'r cerdyn dewisedig"
 msgid "Edit view"
 msgstr "Golygu golwg"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Effeithiau"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Manylder effeithiau"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Allfwrw"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "TAFLWYD ALLAN"
 
@@ -1398,12 +1418,12 @@ msgstr "E-bost"
 msgid "Email code"
 msgstr "Cod e-bost"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "GOLLWNG BRYS"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Gollwng brys (dal)"
 
@@ -1416,11 +1436,11 @@ msgstr "gwag"
 msgid "Empty pylon"
 msgstr "Peilon gwag"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Galluogi sain"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "DWI'N YMOSOD"
 
@@ -1428,7 +1448,7 @@ msgstr "DWI'N YMOSOD"
 msgid "Engagement"
 msgstr "Ymladdfa"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Peiriant ac ôl-losgydd"
 
@@ -1448,15 +1468,15 @@ msgstr "Rhowch god eich ap dilysu"
 msgid "Error"
 msgstr "Gwall"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Pawb"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Gadael y gêm"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Gadael y genhadaeth"
 
@@ -1475,16 +1495,16 @@ msgstr "Ehangu'r bar ochr"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Animeiddiad ffrwydrad <0>“Explosion02HD”</0> gan <1>Unity Technologies</1> (dilyniannau delweddau VFX Unity Labs), a ryddhawyd dan <2>CC0</2>. Addaswyd: ailgywasgwyd ar gyfer y we."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Allforio"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Estyn fflapiau"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Manylion allanol"
 
@@ -1603,15 +1623,15 @@ msgstr "Methwyd diweddaru gwylio"
 msgid "Failed to upload attachment"
 msgstr "Methwyd llwytho'r atodiad"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "GWEDDOL"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "I'R GAD"
 
@@ -1629,16 +1649,16 @@ msgstr "Gorffennwch symud eich cyfrif"
 msgid "Finished"
 msgstr "Gorffennwyd"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "tanio"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Tanio arf"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Bysellau hedfan sefydlog"
 
@@ -1646,15 +1666,15 @@ msgstr "Bysellau hedfan sefydlog"
 msgid "Flags"
 msgstr "Baneri"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "DIFFODD"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "fflapiau"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "fflerau"
 
@@ -1666,19 +1686,19 @@ msgstr "FFAGLAU"
 msgid "Flat"
 msgstr "Gwastad"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Hedfanodd i'r môr"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Hedfan"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "METHODD Y CRAIDD HEDFAN"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Awgrymiadau hedfan"
 
@@ -1699,11 +1719,11 @@ msgstr "Hedfanwyd"
 msgid "Fly"
 msgstr "Hedfan"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Hedfan eto"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Rhifydd cyfradd fframiau"
 
@@ -1736,23 +1756,23 @@ msgstr "O'r thema"
 msgid "Fuel"
 msgstr "Tanwydd"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "TANWYDD"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "TÂN TANWYDD"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "GOLLWNG TANWYDD"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "TANWYDD ISEL"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Chwiliedydd tanwydd"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Corff yr awyren"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Cynnydd"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "olwynion"
 
@@ -1781,7 +1801,7 @@ msgstr "olwynion"
 msgid "GEAR"
 msgstr "GÊR"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Cyffredinol"
 
@@ -1790,11 +1810,11 @@ msgstr "Cyffredinol"
 msgid "Go back"
 msgstr "Yn ôl"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Graffeg"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Rhagosodiad graffeg"
 
@@ -1832,15 +1852,15 @@ msgstr "Gynnau'n unig"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Mae cyflymu graffeg caledwedd wedi'i ddiffodd — gwiriwch osodiadau'r porwr neu yrwyr graffeg."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Pen"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Tracio pen"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Uchel"
 
@@ -1850,7 +1870,7 @@ msgstr "Uchel"
 msgid "High stratus"
 msgstr "Stratws uchel"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Awgrymiadau"
 
@@ -1865,7 +1885,7 @@ msgstr "Hanes"
 msgid "Home"
 msgstr "Cartref"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "bachyn"
 
@@ -1877,11 +1897,11 @@ msgstr "BACHYN"
 msgid "Hot"
 msgstr "Poeth"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Ffynhonnell uchder HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Symleiddio'r HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "Gwyliwr delweddau: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Mewnforio"
 
@@ -1919,7 +1939,7 @@ msgstr "Afatar llythrennau blaen"
 msgid "Initials avatar for {name}"
 msgstr "Afatar llythrennau blaen ar gyfer {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Caledwedd mewnbwn"
 
@@ -1944,7 +1964,7 @@ msgstr "Dyddiad annilys"
 msgid "Invulnerable"
 msgstr "Anorchfygol"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ANARCHOLLADWY"
 
@@ -1961,17 +1981,17 @@ msgstr "Mae'n ymddangos nad yw'r dudalen rydych yn chwilio amdani <0/>yn bodoli 
 msgid "Item details"
 msgstr "Manylion yr eitem"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Jamiwr"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Gollwng tanciau"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "GOLLWNG: GÊR GLANIO"
 
@@ -1984,7 +2004,7 @@ msgstr "Ymuno"
 msgid "Join server"
 msgstr "Ymuno â gweinydd"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "WEDI YMUNO"
 
@@ -2002,7 +2022,7 @@ msgstr "Gornest — 1v1, y lladdiad cyntaf sy'n ennill"
 msgid "Joust against bot"
 msgstr "Gornest yn erbyn bot"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Ffon reoli"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Llwybrau byr bysellfwrdd"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Bysellau"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "LLADDIAD"
 
@@ -2035,20 +2055,20 @@ msgstr "Lladdwyd"
 msgid "Kills"
 msgstr "Lladdiadau"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "PEIRIANT CHWITH"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "TÂN PEIR CHWITH"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "OLWYN CHWITH"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Gêr glanio"
 
@@ -2057,16 +2077,16 @@ msgstr "Gêr glanio"
 msgid "Large"
 msgstr "Mawr"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "HWYR"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Lansio (catapwlt)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "lansio / targedu"
 
@@ -2086,7 +2106,7 @@ msgstr "Gadael y gweinydd"
 msgid "Left"
 msgstr "Gadawodd"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "WEDI GADAEL"
 
@@ -2103,7 +2123,7 @@ msgstr "Blaen yr adain chwith"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Llythrennau, rhifau, bylchau, cysylltnodau a slaesau yn unig"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "GWASTAD AR 1200, OLWYNION I LAWR"
 
@@ -2111,16 +2131,16 @@ msgstr "GWASTAD AR 1200, OLWYNION I LAWR"
 msgid "Light"
 msgstr "Golau"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "goleuadau"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Goleuadau"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "GOLEUADAU"
 
@@ -2140,7 +2160,7 @@ msgstr "Rhestr"
 msgid "Load more"
 msgstr "Llwytho mwy"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "YN LLWYTHO"
 
@@ -2148,7 +2168,7 @@ msgstr "YN LLWYTHO"
 msgid "Loading content…"
 msgstr "Yn llwytho cynnwys…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "METHODD Y LLWYTHO"
 
@@ -2186,35 +2206,35 @@ msgstr "Allgofnodwyd yn llwyddiannus"
 msgid "Logging out…"
 msgstr "Yn allgofnodi…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Edrych"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Edrych / cylchdroi"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Edrych ar y targed"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Edrych i lawr"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Edrych i'r chwith"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Edrych i'r dde"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Edrych i fyny"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Isel"
 
@@ -2224,7 +2244,7 @@ msgstr "Isel"
 msgid "Low stratus"
 msgstr "Stratws isel"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M i gau"
 
@@ -2236,11 +2256,11 @@ msgstr "Rheoli categorïau"
 msgid "Manual"
 msgstr "Llawlyfr"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "map"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Map"
 
@@ -2249,8 +2269,8 @@ msgstr "Map"
 msgid "Mark all as read"
 msgstr "Marcio'r cyfan fel wedi'u darllen"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Prif lefel sain"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "Gweinydd MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Canolig"
 
@@ -2279,13 +2299,13 @@ msgstr "Canolig"
 msgid "Members"
 msgstr "Aelodau"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "dewislen"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Dewislen"
 
@@ -2297,7 +2317,7 @@ msgstr "Cyfarfod — ymladd yn dechrau wrth basio"
 msgid "Message"
 msgstr "Neges"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Anfonwch neges at bawb"
 
@@ -2305,7 +2325,7 @@ msgstr "Anfonwch neges at bawb"
 msgid "Message players on this server"
 msgstr "Anfonwch neges at chwaraewyr ar y gweinydd hwn"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Anfonwch neges at eich tîm"
 
@@ -2323,7 +2343,7 @@ msgstr "Gwrthodwyd caniatâd y meicroffon"
 msgid "Mid stratus"
 msgstr "Stratws canolig"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Gwrthdrawiad yn yr awyr"
 
@@ -2335,7 +2355,7 @@ msgstr "Map Atol Midway — mae'r delweddau'n cynnwys data <0>Copernicus Sentine
 msgid "Minimum length"
 msgstr "Hyd lleiaf"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "TAFLEGRYN"
 
@@ -2343,7 +2363,7 @@ msgstr "TAFLEGRYN"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model taflegryn <0>“AIM-120C AMRAAM”</0> gan <1>Pippa</1> (Sketchfab), trwyddedwyd o dan <2>CC BY 4.0</2>. Addaswyd: ailraddio, ailgyfeirio a chanoli ar gyfer gosod."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Cenhadaeth drosodd"
 
@@ -2369,7 +2389,7 @@ msgstr "Dydd Llun"
 msgid "More options"
 msgstr "Rhagor o opsiynau"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Symudwch…"
 
@@ -2447,7 +2467,7 @@ msgstr "Dim gweithgaredd eto"
 msgid "No comments yet"
 msgstr "Dim sylwadau eto"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Nid oes rheolydd yn cyfateb i “{query}”."
 
@@ -2471,7 +2491,7 @@ msgstr "Dim grwpiau ar gael"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Ni ellir creu unrhyw fathau o eitemau eto. Crëwch yr eitemau rhiant gofynnol yn gyntaf."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Heb ganfod ffon reoli — pwyswch unrhyw fotwm arni i'w deffro."
 
@@ -2507,11 +2527,11 @@ msgstr "Heb ddod o hyd i ganlyniadau."
 msgid "No status"
 msgstr "Dim statws"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "DIM TANCIAU"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "DIM TARGED"
 
@@ -2540,7 +2560,7 @@ msgstr "Dim golygiadau"
 msgid "No world server."
 msgstr "Dim gweinydd byd."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "DIM GRADD"
 
@@ -2563,9 +2583,9 @@ msgstr "DIM GRADD"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Dim"
 
@@ -2573,11 +2593,11 @@ msgstr "Dim"
 msgid "Normal"
 msgstr "Arferol"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "OLWYN TRWYN"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Nid proffil ffon reoli mo hwn"
 
@@ -2615,7 +2635,7 @@ msgstr "Dechreuwr"
 msgid "Number"
 msgstr "Rhif"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Manylion y cefnfor"
 
@@ -2623,7 +2643,7 @@ msgstr "Manylion y cefnfor"
 msgid "offline"
 msgstr "all-lein"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Enw'r opsiwn"
 msgid "Options"
 msgstr "Opsiynau"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "neu"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "cylchdroi"
 
@@ -2708,8 +2728,8 @@ msgstr "cylchdroi"
 msgid "Other"
 msgstr "Arall"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Diystyru terfyn G"
 
@@ -2717,11 +2737,11 @@ msgstr "Diystyru terfyn G"
 msgid "Owner"
 msgstr "Perchennog"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "GOLWG AR GLO"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "GOLWG YN RHYDD"
 
@@ -2731,7 +2751,11 @@ msgstr "GOLWG YN RHYDD"
 msgid "Parent"
 msgstr "Rhiant"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "BREC PARCIO"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Brêc parcio"
 
@@ -2756,7 +2780,7 @@ msgstr "Nid yw pasallweddi ar gael yn y porwr hwn"
 msgid "Pattern (regex)"
 msgstr "Patrwm (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Wedi'i seibio"
 
@@ -2776,15 +2800,15 @@ msgstr "peilot"
 msgid "Pilot"
 msgstr "Peilot"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "LLADDWYD Y PEILOT"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Hunaniaeth y peilot"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Lladdwyd y peilot"
 
@@ -2793,23 +2817,23 @@ msgstr "Lladdwyd y peilot"
 msgid "Pin"
 msgstr "Pinio"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "goledd"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Traw"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Trwyn i lawr"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Trwyn i fyny"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "PLATFFORM"
 
@@ -2839,15 +2863,15 @@ msgstr "Postiadau"
 msgid "Posts and comments"
 msgstr "Postiadau a sylwadau"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Pwyswch fysell…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PWYSWCH ENTER I LANSIO"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Pwyswch…"
 
@@ -2861,12 +2885,24 @@ msgstr "Delwedd flaenorol"
 msgid "Privacy"
 msgstr "Preifatrwydd"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "STILEN"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "STILEN I MEWN"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "STILEN ALLAN"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Wrthi'n prosesu…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Proffil wedi'i gadw"
 
@@ -2887,24 +2923,24 @@ msgstr "Gweinyddwyr cyhoeddus"
 msgid "Push notification"
 msgstr "Hysbysiad gwthio"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "AMSER DYNESU"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "PEIRIANT DE"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "TÂN PEIR DE"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "OLWYN DE"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radar tawel"
 
@@ -2920,7 +2956,7 @@ msgstr "Ail-gysylltwch eich cyfrifon ar y gweinydd hwn"
 msgid "Re-register your passkeys on this server"
 msgstr "Ailgofrestrwch eich allweddi mynediad ar y gweinydd hwn"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "AILARFOGWYD"
 
@@ -2936,12 +2972,12 @@ msgstr "Argymhellir"
 msgid "Reconnecting ({retries})..."
 msgstr "Ailgysylltu ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Recordio hediadau"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Recordio"
 
@@ -2982,7 +3018,7 @@ msgstr "Cyfeirnod"
 msgid "Refresh"
 msgstr "Adnewyddu"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "YN AILYMUNO"
 
@@ -3082,23 +3118,23 @@ msgstr "Gofynnol"
 msgid "Resend email"
 msgstr "Ailanfon yr e-bost"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Ailosod"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Ailosod prif rybudd"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Ailosod y trim"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Ailosod yr olwg"
 
@@ -3114,19 +3150,19 @@ msgstr "Ymddiswyddo o'r gêm?"
 msgid "Resigning..."
 msgstr "Yn ymddiswyddo..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Datrysiad"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Ailgychwyn"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Ailgychwyn y genhadaeth"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Ailgychwyn y genhadaeth?"
 
@@ -3134,12 +3170,12 @@ msgstr "Ailgychwyn y genhadaeth?"
 msgid "Result"
 msgstr "Canlyniad"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Ailddechrau"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Tynnu fflapiau"
 
@@ -3147,7 +3183,7 @@ msgstr "Tynnu fflapiau"
 msgid "Retry"
 msgstr "Ail-geisio"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Gwrthdro"
 
@@ -3172,19 +3208,19 @@ msgstr "Adain dde"
 msgid "Right wingtip"
 msgstr "Blaen yr adain dde"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "rholio"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Rholio"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Rholio i'r chwith"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Rholio i'r dde"
 
@@ -3209,7 +3245,7 @@ msgstr "Porthwr RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL RSS wedi'i gopïo i'r clipfwrdd"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "PŴER LLAWN"
 
@@ -3242,8 +3278,8 @@ msgstr "Lefel y môr"
 msgid "Search"
 msgstr "Chwilio"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Chwilio rheolyddion"
 
@@ -3340,8 +3376,8 @@ msgstr "Dewiswch berson..."
 msgid "Select previous card"
 msgstr "Dewis y cerdyn blaenorol"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Dewis arf"
 
@@ -3363,7 +3399,7 @@ msgstr "Anfon"
 msgid "Send again"
 msgstr "Anfon eto"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Anfon neges"
 
@@ -3404,7 +3440,7 @@ msgstr "Rheolau'r gweinydd"
 msgid "server runs v{0}, you have v{version}"
 msgstr "mae'r gweinydd yn rhedeg v{0}, mae gennych v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "SESIWN AR BEN"
 
@@ -3412,7 +3448,7 @@ msgstr "SESIWN AR BEN"
 msgid "Session expired. Please log in again."
 msgstr "Mae'r sesiwn wedi dod i ben. Mewngofnodwch eto."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Gosod"
 
@@ -3423,14 +3459,14 @@ msgstr "Gosod tarddiad a chyrchfan"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Gosodiadau"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Cysgodion"
 
@@ -3485,7 +3521,7 @@ msgstr "Bach"
 msgid "Sort"
 msgstr "Trefnu"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Sain"
 
@@ -3505,17 +3541,17 @@ msgstr "Ymddangosiadau gwasgaredig"
 msgid "Spacious"
 msgstr "Helaeth"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "BR.AER"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "brêc aer"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Brêc aer"
 
@@ -3523,9 +3559,13 @@ msgstr "Brêc aer"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Cyflymderau mewn KCAS, fel ystod o ysgafn (isafswm tanwydd, dim llwythi allanol) i drwm (uchafswm crynswth). Data wedi'i ddeillio'n arbrofol yn y gêm. Mae unrhyw wahaniaethau o'r awyren go iawn yn adlewyrchu gwallau ym model hedfan yr efelychydd."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "TARGED I LAWR"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "LLEDAENU'R ADENYDD"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Dringo serthaf (Vx, ôl-losgydd)"
 msgid "Stop watching"
 msgstr "Stopio gwylio"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "STRWYTHUR"
 
@@ -3598,7 +3638,7 @@ msgstr "Newid i olwg 1-9"
 msgid "System"
 msgstr "System"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "MAP TACTEGOL"
 
@@ -3615,7 +3655,7 @@ msgstr "Rhaid i'r tag fod yn 50 nod neu lai"
 msgid "Tags"
 msgstr "Tagiau"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "GELYN YN Y GOLWG"
 
@@ -3623,11 +3663,11 @@ msgstr "GELYN YN Y GOLWG"
 msgid "Task"
 msgstr "Tasg"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Tîm"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "TÎM"
 
@@ -3674,7 +3714,7 @@ msgstr "Ni chafodd y cais camera ei ateb"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Methwyd llwytho'r gêm. Ail-lwythwch y dudalen i roi cynnig arall arni."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Mae'r gêm yn parhau y tu ôl i'r ddewislen hon."
 
@@ -3686,7 +3726,7 @@ msgstr "Ni chafodd y cais meicroffon ei ateb"
 msgid "The mission stopped."
 msgstr "Stopiodd y genhadaeth."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Bydd y genhadaeth yn ailgychwyn. Ni chaiff yr hediad presennol ei gadw."
 
@@ -3722,21 +3762,21 @@ msgstr "Efallai fod y peiriant hwn yn rhy araf ar gyfer hedfan llyfn."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Bydd hyn yn dileu'r gêm a'i sgwrs yn barhaol. Ni ellir dadwneud hyn."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "sbardun"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Sbardun"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Llai o sbardun"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Mwy o sbardun"
 
@@ -3748,7 +3788,7 @@ msgstr "Dydd Iau"
 msgid "Tightest sustained turn speed"
 msgstr "Cyflymder tro parhaus tynnaf"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "gogwyddo"
 
@@ -3795,7 +3835,7 @@ msgstr "Gormod o geisiadau"
 msgid "Top"
 msgstr "Brig"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Bwledi olrhain"
 
@@ -3803,35 +3843,35 @@ msgstr "Bwledi olrhain"
 msgid "Travelling"
 msgstr "Yn teithio"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Het trim"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: trwyn i lawr"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: trwyn i fyny"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: rholio i'r chwith"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: rholio i'r dde"
 
@@ -3869,7 +3909,7 @@ msgstr "Teipiwch i chwilio defnyddwyr"
 msgid "Type to search..."
 msgstr "Teipiwch i chwilio..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "Heb ei neilltuo"
 msgid "Unavailable"
 msgstr "Ddim ar gael"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Rhyddhau'r ceisiwr"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Dad-ddynodi targed"
 
@@ -4014,11 +4054,11 @@ msgstr "Bawd fideo"
 msgid "Video viewer: {0}"
 msgstr "Gwyliwr fideo: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "golwg"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Gweld"
 
@@ -4035,7 +4075,7 @@ msgstr "Gweld a golygu manylion eitem"
 msgid "View controls"
 msgstr "Rheolaethau golwg"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Golygfeydd"
 
@@ -4043,11 +4083,11 @@ msgstr "Golygfeydd"
 msgid "Voice recording is not supported in this browser"
 msgstr "Nid yw recordio llais yn cael ei gefnogi yn y porwr hwn"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Lefelau sain"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "YN AROS AM WRTHWYNEBYDD"
 
@@ -4065,7 +4105,7 @@ msgstr "Wedi'i wylio"
 msgid "Watched only"
 msgstr "Wedi'i wylio yn unig"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ATAL Y GLANIO"
 
@@ -4074,16 +4114,16 @@ msgstr "ATAL Y GLANIO"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Rydym wedi anfon cod dilysu i <0>{0}</0>. Rhowch y cod isod i ddilysu eich cyfeiriad e-bost."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "arf"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Het dewis arf"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Arfau"
 
@@ -4095,21 +4135,37 @@ msgstr "Tywydd"
 msgid "Wednesday"
 msgstr "Dydd Mercher"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Breciau olwynion"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Gwynt a ffrâm yr awyren"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Plygu adenydd"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ADENYDD"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ADENYDD YN PLYGU"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ADENYDD WEDI'U CLOI"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ADENYDD YN LLEDAENU"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "YN ENNILL"
 
@@ -4126,25 +4182,25 @@ msgstr "Methu cyrraedd y gweinydd byd"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, arfau'n rhydd wrth basio"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "gwyro"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Gwyro i'r chwith"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Gwyro i'r dde"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "CHI"
 
@@ -4176,14 +4232,14 @@ msgstr "Bydd eich testun a'ch atodiadau'n cael eu colli."
 msgid "Your text will be lost."
 msgstr "Bydd eich testun yn cael ei golli."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Chwyddo"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Chwyddo i mewn"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Chwyddo allan"

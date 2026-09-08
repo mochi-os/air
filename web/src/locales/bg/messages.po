@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# резултат} other {# резултата}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# попадение} other {# попадения}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} от {1} полета"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} вече беше заето и това управление сега не е присвоено."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} беше на {1}, което сега не е присвоено."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# отговор} other {+# още от�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Отваряне на менюто (# непрочетено известие)} other {Отваряне на менюто (# непрочетени известия)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -155,7 +155,7 @@ msgstr "12 часа"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -163,7 +163,7 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 часа"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
@@ -202,13 +202,13 @@ msgstr "Тип акаунт"
 msgid "Ace"
 msgstr "Ас"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Прихващане на цел"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Режим на захващане"
 
@@ -290,7 +290,7 @@ msgstr "Добави изглед"
 msgid "Adding..."
 msgstr "Добавяне..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -298,7 +298,7 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "ИИ"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Самолет"
 
@@ -356,8 +356,8 @@ msgstr "Всеки, който е влязъл"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Всичко, абонирано за този канал, ще спре да го получава. След това можете да копирате нов URL адрес."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Мощност при подход (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Сигурни ли сте, че искате да се откажете
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Сигурни ли сте, че искате да се откажете? {opponentName} ще спечели играта."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Спирачна кука"
 
@@ -436,16 +436,16 @@ msgstr "Аватар"
 msgid "Avatar for {name}"
 msgstr "Аватар за {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Ос {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Калибриране и задаване на оси"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "назад"
 
@@ -476,7 +476,7 @@ msgstr "Банерът е премахнат"
 msgid "Banner updated"
 msgstr "Банерът е обновен"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ПОД 250 — КОЛЕСНИК И ЗАКРИЛКИ"
 
@@ -496,11 +496,11 @@ msgstr "Най-добро планиране (двигатели изключе�
 msgid "Best sustained turn speed"
 msgstr "Скорост за най-добър установен завой"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Предупреждения от Betty и RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "БИНГО ГОРИВО"
 
@@ -530,7 +530,7 @@ msgstr "Сини ботове"
 msgid "Board"
 msgstr "Дъска"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "БОЛТЪР"
 
@@ -547,19 +547,19 @@ msgstr "Цвят на рамката"
 msgid "Bots"
 msgstr "Ботове"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "спирачки"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "РЯЗКО НАЛЯВО"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "РЯЗКО НАДЯСНО"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "ЗАВОЙ ПРИ ГОТОВНОСТ"
 
@@ -567,12 +567,12 @@ msgstr "ЗАВОЙ ПРИ ГОТОВНОСТ"
 msgid "Browser notifications"
 msgstr "Известия в браузъра"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Бутон {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Задаване на бутони"
 
@@ -584,16 +584,16 @@ msgstr "BVR — свободна стрелба от старта"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, свободна стрелба от старта"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ОБЯВИ ТОПКАТА"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Позивна"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Разстояние на камерата"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Разрешението за камера е отказано"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Камерата не е достъпна"
 
@@ -620,10 +620,10 @@ msgstr "Камерата не е достъпна"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Отказ"
 
@@ -641,20 +641,40 @@ msgstr "Отказ от отговора"
 msgid "Cancelled"
 msgstr "Отказано"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Оръдия и боеприпаси"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Фенер на кабината"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ФОНАР"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ФОНАР ЗАТВОРЕН"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ФОНАР СЕ ЗАТВАРЯ"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ФОНАР ЗАКЛЮЧЕН"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ФОНАР ОТВОРЕН"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Надпис"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Самолетоносач и околен звук"
 
@@ -711,19 +731,19 @@ msgstr "Променено"
 msgid "Changed {field}"
 msgstr "Променено {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Следящ изглед:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "чат"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Чат"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Чат с всички"
 
@@ -760,7 +780,7 @@ msgstr "Изберете език"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Изчисти"
 
@@ -806,7 +826,7 @@ msgstr "Затвори панела / отказ"
 msgid "Close search"
 msgstr "Затвори търсенето"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "по-близо"
 
@@ -846,7 +866,7 @@ msgstr "Комфортно"
 msgid "Command Palette"
 msgstr "Палитра с команди"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ЗАПОЧВАМ"
 
@@ -865,7 +885,7 @@ msgstr "Коментари"
 msgid "Comments ({0})"
 msgstr "Коментари ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Комуникация"
 
@@ -906,7 +926,7 @@ msgstr "Свързване..."
 msgid "Connecting…"
 msgstr "Свързване…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "НЕУСПЕШНА ВРЪЗКА"
 
@@ -963,7 +983,7 @@ msgstr "Документът не може да бъде зареден. Мол�
 msgid "Could not load your flights"
 msgstr "Полетите ви не можаха да бъдат заредени"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Профилът не можа да бъде запазен"
 
@@ -992,16 +1012,16 @@ msgstr "Повторното удостоверяване не можа да з�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Потвърждаването с този акаунт не бе успешно. Моля, опитайте отново."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Противодействие"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Разби се"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "РАЗБИ СЕ"
 
@@ -1069,12 +1089,12 @@ msgstr "Текущо местоположение"
 msgid "Custom"
 msgstr "Персонализирано"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "ОПАСНО"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Смяна на изгледа"
 
@@ -1101,7 +1121,7 @@ msgstr "Ден"
 msgid "Deaths"
 msgstr "Смъртове"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ПОЗИЦИЯ НА ПАЛУБАТА ЗАПАЗЕНА"
 
@@ -1203,11 +1223,11 @@ msgstr "Низходящ"
 msgid "Description"
 msgstr "Описание"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Унищожен от пожар"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Детайлност"
 
@@ -1215,8 +1235,8 @@ msgstr "Детайлност"
 msgid "Details Panel"
 msgstr "Панел с детайли"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Открий"
 
@@ -1239,7 +1259,7 @@ msgstr "Различен хост на играта"
 msgid "Directory"
 msgstr "Указател"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "СПУСНИ КОЛЕСНИК"
 
@@ -1251,7 +1271,7 @@ msgstr "Отхвърли"
 msgid "Discard draft?"
 msgstr "Да се отхвърли ли черновата?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "изключен"
 
@@ -1264,12 +1284,12 @@ msgstr "Несвързано"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Отхвърли"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Повторител на дисплея"
 
@@ -1277,7 +1297,7 @@ msgstr "Повторител на дисплея"
 msgid "Displays the mobile sidebar."
 msgstr "Показва мобилната странична лента."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD по разстояние"
 
@@ -1288,7 +1308,7 @@ msgstr "Не съответства на изисквания шаблон"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Готово"
 
@@ -1303,11 +1323,11 @@ msgstr "Изтегляне"
 msgid "Download failed"
 msgstr "Изтеглянето е неуспешно"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ПО ВЯТЪРА 600 ФУТА"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Плъзгане"
 
@@ -1323,7 +1343,7 @@ msgstr "Дубликати"
 msgid "Duration"
 msgstr "Продължителност"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Динамична резолюция"
 
@@ -1331,7 +1351,7 @@ msgstr "Динамична резолюция"
 msgid "Dyslexia-friendly"
 msgstr "Подходящ за дислексия"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "РАНО"
 
@@ -1374,19 +1394,19 @@ msgstr "Редактиране на избраната карта"
 msgid "Edit view"
 msgstr "Редактиране на изглед"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Ефекти"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Детайлност на ефектите"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Катапултиране"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "КАТАПУЛТИРА СЕ"
 
@@ -1398,12 +1418,12 @@ msgstr "Имейл"
 msgid "Email code"
 msgstr "Имейл код"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "АВАРИЙНО ИЗХВЪРЛЯНЕ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Аварийно изхвърляне (задръж)"
 
@@ -1416,11 +1436,11 @@ msgstr "празна"
 msgid "Empty pylon"
 msgstr "Празен пилон"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Включване на звука"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "АТАКУВАМ"
 
@@ -1428,7 +1448,7 @@ msgstr "АТАКУВАМ"
 msgid "Engagement"
 msgstr "Бой"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Двигател и форсаж"
 
@@ -1448,15 +1468,15 @@ msgstr "Въведете кода от приложението за удост�
 msgid "Error"
 msgstr "Грешка"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Всички"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Напусни мача"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Изход от мисията"
 
@@ -1475,16 +1495,16 @@ msgstr "Разгъване на страничната лента"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Анимация на експлозия <0>“Explosion02HD”</0> от <1>Unity Technologies</1> (VFX кадрови последователности на Unity Labs), издадена под <2>CC0</2>. Променено: прекомпресирана за уеб."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Експортиране"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Пускане на задкрилки"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Детайлност на екстериора"
 
@@ -1603,15 +1623,15 @@ msgstr "Неуспешно обновяване на следенето"
 msgid "Failed to upload attachment"
 msgstr "Неуспешно качване на прикачен файл"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ЗАДОВОЛИТЕЛНО"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "БОЯТ ЗАПОЧНА"
 
@@ -1629,16 +1649,16 @@ msgstr "Завършете преместването на профила"
 msgid "Finished"
 msgstr "Завършен"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "огън"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Откриване на огън"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Фиксирани полетни клавиши"
 
@@ -1646,15 +1666,15 @@ msgstr "Фиксирани полетни клавиши"
 msgid "Flags"
 msgstr "Флагове"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ЗАГАСВАНЕ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "задкрилки"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "примамки"
 
@@ -1666,19 +1686,19 @@ msgstr "ПРИМАМКИ"
 msgid "Flat"
 msgstr "Плоска"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Заби се в морето"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Полет"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "ГРЕШКА В ПОЛЕТНОТО ЯДРО"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Полетни подсказки"
 
@@ -1699,11 +1719,11 @@ msgstr "Летял"
 msgid "Fly"
 msgstr "Полет"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Лети отново"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Брояч на кадрите"
 
@@ -1736,23 +1756,23 @@ msgstr "От темата"
 msgid "Fuel"
 msgstr "Гориво"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ГОРИВО"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ПОЖАР ГОРИВО"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ТЕЧ ГОРИВО"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "МАЛКО ГОРИВО"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Горивна щанга"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Фюзелаж"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Усилване"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "колесник"
 
@@ -1781,7 +1801,7 @@ msgstr "колесник"
 msgid "GEAR"
 msgstr "ШАСИ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Общи"
 
@@ -1790,11 +1810,11 @@ msgstr "Общи"
 msgid "Go back"
 msgstr "Назад"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Графика"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Графична предварителна настройка"
 
@@ -1832,15 +1852,15 @@ msgstr "Само оръдия"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Хардуерното графично ускорение е изключено — проверете настройките на браузъра или графичните драйвери."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Глава"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Проследяване на главата"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Високо"
 
@@ -1850,7 +1870,7 @@ msgstr "Високо"
 msgid "High stratus"
 msgstr "Високи слоести"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Подсказки"
 
@@ -1865,7 +1885,7 @@ msgstr "История"
 msgid "Home"
 msgstr "Начало"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "кука"
 
@@ -1877,11 +1897,11 @@ msgstr "КУКА"
 msgid "Hot"
 msgstr "Горещо"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Източник на височина за HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Опростяване на HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "Преглед на изображения: {0}"
 msgid "Imperial"
 msgstr "Имперски"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Импортиране"
 
@@ -1919,7 +1939,7 @@ msgstr "Аватар с инициали"
 msgid "Initials avatar for {name}"
 msgstr "Аватар с инициали за {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Входен хардуер"
 
@@ -1944,7 +1964,7 @@ msgstr "Невалидна дата"
 msgid "Invulnerable"
 msgstr "Неуязвим"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "НЕУЯЗВИМОСТ"
 
@@ -1961,17 +1981,17 @@ msgstr "Изглежда, че страницата, която търсите, 
 msgid "Item details"
 msgstr "Подробности за елемента"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Заглушител"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Изхвърляне на резервоарите"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ИЗХВЪРЛЯНЕ: КОЛЕСНИК"
 
@@ -1984,7 +2004,7 @@ msgstr "Присъедини се"
 msgid "Join server"
 msgstr "Присъединяване към сървър"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "СЕ ПРИСЪЕДИНИ"
 
@@ -2002,7 +2022,7 @@ msgstr "Дуел — 1v1, първото сваляне печели"
 msgid "Joust against bot"
 msgstr "Дуел срещу бот"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Джойстик"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Клавишни комбинации"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Клавиши"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "СВАЛЕН"
 
@@ -2035,20 +2055,20 @@ msgstr "Убит"
 msgid "Kills"
 msgstr "Убийства"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "ЛЯВ ДВИГ"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ПОЖАР ЛЯВ ДВИГ"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "Л КОЛЕСНИК"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Колесник"
 
@@ -2057,16 +2077,16 @@ msgstr "Колесник"
 msgid "Large"
 msgstr "Голям"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "КЪСНО"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Изстрелване (катапулта)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "старт / прихващане"
 
@@ -2086,7 +2106,7 @@ msgstr "Напускане на сървъра"
 msgid "Left"
 msgstr "Напусна"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "НАПУСНА"
 
@@ -2103,7 +2123,7 @@ msgstr "Връх на лявото крило"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Само букви, цифри, интервали, тирета и наклонени черти"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "НИВО 1200, КОЛЕСНИК ДОЛУ"
 
@@ -2111,16 +2131,16 @@ msgstr "НИВО 1200, КОЛЕСНИК ДОЛУ"
 msgid "Light"
 msgstr "Светъл"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "светлини"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Светлини"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "СВЕТЛИНИ"
 
@@ -2140,7 +2160,7 @@ msgstr "Списък"
 msgid "Load more"
 msgstr "Зареди още"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "ЗАРЕЖДАНЕ"
 
@@ -2148,7 +2168,7 @@ msgstr "ЗАРЕЖДАНЕ"
 msgid "Loading content…"
 msgstr "Зареждане на съдържанието…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "НЕУСПЕШНО ЗАРЕЖДАНЕ"
 
@@ -2186,35 +2206,35 @@ msgstr "Успешен изход"
 msgid "Logging out…"
 msgstr "Излизане…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Поглед"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Оглед / орбита"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Гледай целта"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Поглед надолу"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Поглед наляво"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Поглед надясно"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Поглед нагоре"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Ниско"
 
@@ -2224,7 +2244,7 @@ msgstr "Ниско"
 msgid "Low stratus"
 msgstr "Ниски слоести"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M за затваряне"
 
@@ -2236,11 +2256,11 @@ msgstr "Управление на категориите"
 msgid "Manual"
 msgstr "Ръчно"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "карта"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Карта"
 
@@ -2249,8 +2269,8 @@ msgstr "Карта"
 msgid "Mark all as read"
 msgstr "Маркирай всички като прочетени"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Обща сила на звука"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP сървър"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Среден"
 
@@ -2279,13 +2299,13 @@ msgstr "Среден"
 msgid "Members"
 msgstr "Членове"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "меню"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Меню"
 
@@ -2297,7 +2317,7 @@ msgstr "Сближаване — боят започва при разминав
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Пиши на всички"
 
@@ -2305,7 +2325,7 @@ msgstr "Пиши на всички"
 msgid "Message players on this server"
 msgstr "Пишете на играчите на този сървър"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Пиши на отбора си"
 
@@ -2323,7 +2343,7 @@ msgstr "Разрешението за микрофон е отказано"
 msgid "Mid stratus"
 msgstr "Средни слоести"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Сблъсък във въздуха"
 
@@ -2335,7 +2355,7 @@ msgstr "Карта на атола Мидуей — изображенията �
 msgid "Minimum length"
 msgstr "Минимална дължина"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "РАКЕТА"
 
@@ -2343,7 +2363,7 @@ msgstr "РАКЕТА"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Модел на ракета <0>“AIM-120C AMRAAM”</0> от <1>Pippa</1> (Sketchfab), лицензиран под <2>CC BY 4.0</2>. Променено: премащабиран, преориентиран и центриран за поставяне."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Мисията приключи"
 
@@ -2369,7 +2389,7 @@ msgstr "Понеделник"
 msgid "More options"
 msgstr "Още опции"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Премести…"
 
@@ -2447,7 +2467,7 @@ msgstr "Все още няма активност"
 msgid "No comments yet"
 msgstr "Все още няма коментари"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Няма управление, което да съответства на „{query}“."
 
@@ -2471,7 +2491,7 @@ msgstr "Няма налични групи"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Все още не може да се създават типове елементи. Първо създайте необходимите родителски елементи."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Не е открит джойстик — натисни произволен бутон на него, за да го събудиш."
 
@@ -2507,11 +2527,11 @@ msgstr "Не са намерени резултати."
 msgid "No status"
 msgstr "Няма състояние"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "НЯМА РЕЗЕРВОАРИ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "НЯМА ЦЕЛ"
 
@@ -2540,7 +2560,7 @@ msgstr "Няма прегледи"
 msgid "No world server."
 msgstr "Няма сървър на света."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "БЕЗ ОЦЕНКА"
 
@@ -2563,9 +2583,9 @@ msgstr "БЕЗ ОЦЕНКА"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Няма"
 
@@ -2573,11 +2593,11 @@ msgstr "Няма"
 msgid "Normal"
 msgstr "Нормален"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "НОС КОЛЕСНИК"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Това не е профил на джойстик"
 
@@ -2615,7 +2635,7 @@ msgstr "Начинаещ"
 msgid "Number"
 msgstr "Номер"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Детайлност на океана"
 
@@ -2623,7 +2643,7 @@ msgstr "Детайлност на океана"
 msgid "offline"
 msgstr "офлайн"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Име на опцията"
 msgid "Options"
 msgstr "Опции"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "орбита"
 
@@ -2708,8 +2728,8 @@ msgstr "орбита"
 msgid "Other"
 msgstr "Друго"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Надхвърляне на G-лимита"
 
@@ -2717,11 +2737,11 @@ msgstr "Надхвърляне на G-лимита"
 msgid "Owner"
 msgstr "Собственик"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ЗАКЛЮЧЕН ПОГЛЕД"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "СВОБОДЕН ПОГЛЕД"
 
@@ -2731,7 +2751,11 @@ msgstr "СВОБОДЕН ПОГЛЕД"
 msgid "Parent"
 msgstr "Родител"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "РЪЧНА СПИРАЧКА"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Ръчна спирачка"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkeys не са налични в този браузър"
 msgid "Pattern (regex)"
 msgstr "Шаблон (регулярен израз)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Спрян"
 
@@ -2776,15 +2800,15 @@ msgstr "пилот"
 msgid "Pilot"
 msgstr "Пилот"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "ПИЛОТЪТ ЗАГИНА"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Самоличност на пилота"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Пилотът е убит"
 
@@ -2793,23 +2817,23 @@ msgstr "Пилотът е убит"
 msgid "Pin"
 msgstr "Закачи"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "тангаж"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Тангаж"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Тангаж надолу"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Тангаж нагоре"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
@@ -2839,15 +2863,15 @@ msgstr "Публикации"
 msgid "Posts and comments"
 msgstr "Публикации и коментари"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Натисни клавиш…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "НАТИСНИ ENTER ЗА ИЗЛИТАНЕ"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Натисни…"
 
@@ -2861,12 +2885,24 @@ msgstr "Предишно изображение"
 msgid "Privacy"
 msgstr "Поверителност"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ЩАНГА"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ЩАНГА ПРИБРАНА"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ЩАНГА ИЗВАДЕНА"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Обработва се…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Профилът е запазен"
 
@@ -2887,24 +2923,24 @@ msgstr "Публични сървъри"
 msgid "Push notification"
 msgstr "Push известие"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ЧАС ЗА ПОДХОД"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "ДЕСЕН ДВИГ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ПОЖАР ДЕСЕН ДВИГ"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "Д КОЛЕСНИК"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Радарно мълчание"
 
@@ -2920,7 +2956,7 @@ msgstr "Свържете отново профилите си на този съ
 msgid "Re-register your passkeys on this server"
 msgstr "Регистрирайте отново ключовете си за достъп на този сървър"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ПРЕВЪОРЪЖЕН"
 
@@ -2936,12 +2972,12 @@ msgstr "Препоръчано"
 msgid "Reconnecting ({retries})..."
 msgstr "Повторно свързване ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Записване на полетите"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Запис"
 
@@ -2982,7 +3018,7 @@ msgstr "Справка"
 msgid "Refresh"
 msgstr "Опресни"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ВРЪЩАМ СЕ В СТРОЯ"
 
@@ -3082,23 +3118,23 @@ msgstr "Задължително"
 msgid "Resend email"
 msgstr "Изпрати имейла отново"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Нулирай"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Нулиране на главното предупреждение"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Нулиране на тримера"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Нулиране на изгледа"
 
@@ -3114,19 +3150,19 @@ msgstr "Да се предадеш ли в играта?"
 msgid "Resigning..."
 msgstr "Предава се..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Резолюция"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Рестарт"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Рестарт на мисията"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Рестарт на мисията?"
 
@@ -3134,12 +3170,12 @@ msgstr "Рестарт на мисията?"
 msgid "Result"
 msgstr "Резултат"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Възобнови"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Прибиране на задкрилки"
 
@@ -3147,7 +3183,7 @@ msgstr "Прибиране на задкрилки"
 msgid "Retry"
 msgstr "Опитай отново"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Обърнато"
 
@@ -3172,19 +3208,19 @@ msgstr "Дясно крило"
 msgid "Right wingtip"
 msgstr "Връх на дясното крило"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "крен"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Крен"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Крен наляво"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Крен надясно"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS емисия"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL е копиран в клипборда"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "ПЪЛНА ГАЗ"
 
@@ -3242,8 +3278,8 @@ msgstr "Морско равнище"
 msgid "Search"
 msgstr "Търсене"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Търсене в управлението"
 
@@ -3340,8 +3376,8 @@ msgstr "Изберете човек..."
 msgid "Select previous card"
 msgstr "Избор на предишна карта"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Избор на оръжие"
 
@@ -3363,7 +3399,7 @@ msgstr "Изпрати"
 msgid "Send again"
 msgstr "Изпрати отново"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Пиши в чата"
 
@@ -3404,7 +3440,7 @@ msgstr "Правила на сървъра"
 msgid "server runs v{0}, you have v{version}"
 msgstr "сървърът работи с v{0}, вие имате v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "СЕСИЯТА ПРИКЛЮЧИ"
 
@@ -3412,7 +3448,7 @@ msgstr "СЕСИЯТА ПРИКЛЮЧИ"
 msgid "Session expired. Please log in again."
 msgstr "Сесията е изтекла. Моля, влезте отново."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Задай"
 
@@ -3423,14 +3459,14 @@ msgstr "Задай начало и край"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Сенки"
 
@@ -3485,7 +3521,7 @@ msgstr "Малък"
 msgid "Sort"
 msgstr "Сортиране"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Звук"
 
@@ -3505,17 +3541,17 @@ msgstr "Раздалечени появи"
 msgid "Spacious"
 msgstr "Просторно"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "В.СП"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "въздушна спирачка"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Въздушна спирачка"
 
@@ -3523,9 +3559,13 @@ msgstr "Въздушна спирачка"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Скоростите са в KCAS, като диапазон от лек (минимално гориво, без външни товари) до тежък (максимална обща маса). Данните са получени експериментално в играта. Всички разлики спрямо реалния самолет отразяват грешки в полетния модел на симулатора."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "ЦЕЛ СВАЛЕНА"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "РАЗГЪНИ КРИЛАТА"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Най-стръмно изкачване (Vx, форсаж)"
 msgid "Stop watching"
 msgstr "Спри да следиш"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "КОНСТРУКЦИЯ"
 
@@ -3598,7 +3638,7 @@ msgstr "Превключи към изглед 1-9"
 msgid "System"
 msgstr "Система"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "ТАКТИЧЕСКА КАРТА"
 
@@ -3615,7 +3655,7 @@ msgstr "Етикетът трябва да е най-много 50 знака"
 msgid "Tags"
 msgstr "Етикети"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ВИЖДАМ ПРОТИВНИКА"
 
@@ -3623,11 +3663,11 @@ msgstr "ВИЖДАМ ПРОТИВНИКА"
 msgid "Task"
 msgstr "Задача"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Екип"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "ОТБОР"
 
@@ -3674,7 +3714,7 @@ msgstr "Заявката за камера остана без отговор"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Играта не можа да се зареди. Презаредете страницата, за да опитате отново."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Мачът продължава зад това меню."
 
@@ -3686,7 +3726,7 @@ msgstr "Заявката за микрофон остана без отгово�
 msgid "The mission stopped."
 msgstr "Мисията спря."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Мисията ще започне отначало. Текущият полет няма да бъде запазен."
 
@@ -3722,21 +3762,21 @@ msgstr "Тази машина може да е твърде бавна за пл
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Това ще изтрие завинаги играта и нейния чат. Това действие не може да бъде отменено."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "тяга"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Тяга"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Намали тягата"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Увеличи тягата"
 
@@ -3748,7 +3788,7 @@ msgstr "Четвъртък"
 msgid "Tightest sustained turn speed"
 msgstr "Скорост за най-тесен установен завой"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "наклон"
 
@@ -3795,7 +3835,7 @@ msgstr "Твърде много заявки"
 msgid "Top"
 msgstr "Най-горе"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Трасиращи"
 
@@ -3803,35 +3843,35 @@ msgstr "Трасиращи"
 msgid "Travelling"
 msgstr "Пътуване"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "тример"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Тример"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Тример-шапка"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Тример: нос надолу"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Тример: нос нагоре"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Тример: крен наляво"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Тример: крен надясно"
 
@@ -3869,7 +3909,7 @@ msgstr "Пишете, за да търсите потребители"
 msgid "Type to search..."
 msgstr "Пишете, за да търсите..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -3890,13 +3930,13 @@ msgstr "Неприсвоено"
 msgid "Unavailable"
 msgstr "Недостъпно"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Освобождаване на търсачката"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Отмяна на посочването на цел"
 
@@ -4014,11 +4054,11 @@ msgstr "Миниатюра на видео"
 msgid "Video viewer: {0}"
 msgstr "Преглед на видео: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "изглед"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Преглед"
 
@@ -4035,7 +4075,7 @@ msgstr "Преглед и редакция на детайлите за елем
 msgid "View controls"
 msgstr "Контроли за изглед"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Прегледи"
 
@@ -4043,11 +4083,11 @@ msgstr "Прегледи"
 msgid "Voice recording is not supported in this browser"
 msgstr "Гласовият запис не се поддържа в този браузър"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Сили на звука"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ИЗЧАКВАНЕ НА ПРОТИВНИК"
 
@@ -4065,7 +4105,7 @@ msgstr "Наблюдавано"
 msgid "Watched only"
 msgstr "Само наблюдавани"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ПРЕКРАТИ КАЦАНЕТО"
 
@@ -4074,16 +4114,16 @@ msgstr "ПРЕКРАТИ КАЦАНЕТО"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Изпратихме код за потвърждение на <0>{0}</0>. Въведете кода по-долу, за да потвърдите имейл адреса си."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "оръжие"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Шапка за избор на оръжие"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Оръжия"
 
@@ -4095,21 +4135,37 @@ msgstr "Време"
 msgid "Wednesday"
 msgstr "Сряда"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Колесни спирачки"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Вятър и планер в кабината"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Сгъване на крилата"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "КРИЛА"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "КРИЛА СЕ СГЪВАТ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "КРИЛА ЗАКЛЮЧЕНИ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "КРИЛА СЕ РАЗГЪВАТ"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ПЕЧЕЛИ"
 
@@ -4126,25 +4182,25 @@ msgstr "Сървърът на света е недостъпен"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, свободна стрелба при разминаването"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "рискание"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Рискание"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Рискане наляво"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Рискане надясно"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ВИЕ"
 
@@ -4176,14 +4232,14 @@ msgstr "Текстът и прикачените файлове ще бъдат 
 msgid "Your text will be lost."
 msgstr "Текстът ви ще бъде загубен."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Зум"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Приближаване"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Отдалечаване"

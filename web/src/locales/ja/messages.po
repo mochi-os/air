@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {#件の結果} other {#件の結果}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {#発被弾}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{1} 件中 {0} 件の飛行"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} はすでに使われていたため、その操作は割り当て解除されました。"
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} は {1} に割り当てられていましたが、解除されました。"
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {#件の返信} other {他に+#件の返�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {メニューを開く（未読の通知 # 件）} other {メニューを開く（未読の通知 # 件）}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "1番ワイヤー"
 
@@ -155,7 +155,7 @@ msgstr "12時間"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "2番ワイヤー"
 
@@ -163,7 +163,7 @@ msgstr "2番ワイヤー"
 msgid "24 hours"
 msgstr "24時間"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "3番ワイヤー"
 
@@ -202,13 +202,13 @@ msgstr "アカウントタイプ"
 msgid "Ace"
 msgstr "エース"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "ターゲット捕捉"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "捕捉モード"
 
@@ -290,7 +290,7 @@ msgstr "ビューを追加"
 msgid "Adding..."
 msgstr "追加中..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "アフターバーナー"
 
@@ -298,7 +298,7 @@ msgstr "アフターバーナー"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "機体"
 
@@ -356,8 +356,8 @@ msgstr "ログインしている全員"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "このフィードを購読しているものはすべて受信しなくなります。あとで新しい URL をコピーできます。"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "進入出力 (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "本当に投了しますか?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "本当に投了しますか?{opponentName}の勝ちになります。"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "アレスティングフック"
 
@@ -436,16 +436,16 @@ msgstr "アバター"
 msgid "Avatar for {name}"
 msgstr "{name} のアバター"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "軸 {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "軸のキャリブレーションと割り当て"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "後退"
 
@@ -476,7 +476,7 @@ msgstr "バナーを削除しました"
 msgid "Banner updated"
 msgstr "バナーを更新しました"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250以下 — ギアとフラップ"
 
@@ -496,11 +496,11 @@ msgstr "最良滑空 (エンジン停止)"
 msgid "Best sustained turn speed"
 msgstr "最良持続旋回速度"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "BettyとRWRの警報"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "ビンゴ燃料"
 
@@ -530,7 +530,7 @@ msgstr "青ボット"
 msgid "Board"
 msgstr "ボード"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "ボルター"
 
@@ -547,19 +547,19 @@ msgstr "枠線の色"
 msgid "Bots"
 msgstr "ボット"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "ブレーキ"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "左ブレイク"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "右ブレイク"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "準備でき次第ブレーク"
 
@@ -567,12 +567,12 @@ msgstr "準備でき次第ブレーク"
 msgid "Browser notifications"
 msgstr "ブラウザ通知"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "ボタン {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "ボタン割り当て"
 
@@ -584,16 +584,16 @@ msgstr "BVR — 開始直後から攻撃自由"
 msgid "BVR, fight's on from the start"
 msgstr "BVR、開始直後から攻撃自由"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ボールをコール"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "コールサイン"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "カメラ距離"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "カメラの権限が拒否されました"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "カメラを利用できません"
 
@@ -620,10 +620,10 @@ msgstr "カメラを利用できません"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -641,20 +641,40 @@ msgstr "返信をキャンセル"
 msgid "Cancelled"
 msgstr "キャンセル済み"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "機関砲と弾薬"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "キャノピー"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "キャノピー"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "キャノピー閉"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "キャノピー閉鎖中"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "キャノピーロック"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "キャノピー開"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "キャプション"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "空母と環境音"
 
@@ -711,19 +731,19 @@ msgstr "変更しました"
 msgid "Changed {field}"
 msgstr "{field}を変更しました"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "追跡視点："
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "チャット"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "チャット"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "全体チャット"
 
@@ -760,7 +780,7 @@ msgstr "言語を選択"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "クリア"
 
@@ -806,7 +826,7 @@ msgstr "パネルを閉じる / キャンセル"
 msgid "Close search"
 msgstr "検索を閉じる"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "近づく"
 
@@ -846,7 +866,7 @@ msgstr "快適"
 msgid "Command Palette"
 msgstr "コマンドパレット"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "進入開始"
 
@@ -865,7 +885,7 @@ msgstr "コメント"
 msgid "Comments ({0})"
 msgstr "コメント ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "通信"
 
@@ -906,7 +926,7 @@ msgstr "接続中..."
 msgid "Connecting…"
 msgstr "接続中…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "接続失敗"
 
@@ -963,7 +983,7 @@ msgstr "このドキュメントを読み込めませんでした。後ほども
 msgid "Could not load your flights"
 msgstr "フライトを読み込めませんでした"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "プロファイルを保存できませんでした"
 
@@ -992,16 +1012,16 @@ msgstr "再認証を開始できませんでした。もう一度お試しくだ
 msgid "Couldn't verify with that account. Please try again."
 msgstr "そのアカウントで確認できませんでした。もう一度お試しください。"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "対抗手段"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "墜落"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "墜落"
 
@@ -1069,12 +1089,12 @@ msgstr "現在地"
 msgid "Custom"
 msgstr "カスタム"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "危険"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "視点切り替え"
 
@@ -1101,7 +1121,7 @@ msgstr "昼"
 msgid "Deaths"
 msgstr "デス"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "デッキ位置を保存しました"
 
@@ -1203,11 +1223,11 @@ msgstr "降順"
 msgid "Description"
 msgstr "説明"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "焼失"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "詳細"
 
@@ -1215,8 +1235,8 @@ msgstr "詳細"
 msgid "Details Panel"
 msgstr "詳細パネル"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "検出"
 
@@ -1239,7 +1259,7 @@ msgstr "別のゲームホスト"
 msgid "Directory"
 msgstr "ディレクトリ"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ギアダウン"
 
@@ -1251,7 +1271,7 @@ msgstr "破棄"
 msgid "Discard draft?"
 msgstr "下書きを破棄しますか？"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "切断"
 
@@ -1264,12 +1284,12 @@ msgstr "切断済み"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "閉じる"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "ディスプレイリピーター"
 
@@ -1277,7 +1297,7 @@ msgstr "ディスプレイリピーター"
 msgid "Displays the mobile sidebar."
 msgstr "モバイルサイドバーを表示します。"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "距離LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "必要なパターンと一致しません"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "完了"
 
@@ -1303,11 +1323,11 @@ msgstr "ダウンロード"
 msgid "Download failed"
 msgstr "ダウンロードに失敗しました"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ダウンウインド 600フィート"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "ドラッグ"
 
@@ -1323,7 +1343,7 @@ msgstr "重複"
 msgid "Duration"
 msgstr "期間"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "動的解像度"
 
@@ -1331,7 +1351,7 @@ msgstr "動的解像度"
 msgid "Dyslexia-friendly"
 msgstr "ディスレクシア対応"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "早い"
 
@@ -1374,19 +1394,19 @@ msgstr "選択中のカードを編集"
 msgid "Edit view"
 msgstr "ビューを編集"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "エフェクト"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "エフェクトの詳細"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "射出"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "射出"
 
@@ -1398,12 +1418,12 @@ msgstr "メールアドレス"
 msgid "Email code"
 msgstr "メールコード"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "緊急投棄"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "緊急投棄（長押し）"
 
@@ -1416,11 +1436,11 @@ msgstr "無人"
 msgid "Empty pylon"
 msgstr "空のパイロン"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "サウンドを有効にする"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "エンゲージ"
 
@@ -1428,7 +1448,7 @@ msgstr "エンゲージ"
 msgid "Engagement"
 msgstr "交戦"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "エンジンとアフターバーナー"
 
@@ -1448,15 +1468,15 @@ msgstr "認証アプリのコードを入力"
 msgid "Error"
 msgstr "エラー"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "全員"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "マッチを退出"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "ミッション終了"
 
@@ -1475,16 +1495,16 @@ msgstr "サイドバーを展開"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "爆発アニメーション <0>“Explosion02HD”</0>（作者 <1>Unity Technologies</1>、Unity Labs VFX 画像シーケンス）、<2>CC0</2> で公開。 変更点：ウェブ向けに再圧縮。"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "エクスポート"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "フラップ展開"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "外観ディテール"
 
@@ -1603,15 +1623,15 @@ msgstr "追跡の更新に失敗しました"
 msgid "Failed to upload attachment"
 msgstr "添付ファイルのアップロードに失敗しました"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "可"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "戦闘開始"
 
@@ -1629,16 +1649,16 @@ msgstr "アカウントの移行を完了する"
 msgid "Finished"
 msgstr "終了"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "射撃"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "兵装発射"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "固定飛行キー"
 
@@ -1646,15 +1666,15 @@ msgstr "固定飛行キー"
 msgid "Flags"
 msgstr "フラグ"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "フレームアウト"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "フラップ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "フレア"
 
@@ -1666,19 +1686,19 @@ msgstr "フレア"
 msgid "Flat"
 msgstr "フラット"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "海面に激突"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "飛行"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "飛行コア障害"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "飛行ヒント"
 
@@ -1699,11 +1719,11 @@ msgstr "飛行"
 msgid "Fly"
 msgstr "飛行"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "もう一度飛ぶ"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "フレームレートカウンター"
 
@@ -1736,23 +1756,23 @@ msgstr "テーマから"
 msgid "Fuel"
 msgstr "燃料"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "燃料"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "燃料火災"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "燃料漏れ"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "燃料低下"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "給油プローブ"
 
@@ -1769,11 +1789,11 @@ msgstr "乱戦"
 msgid "Fuselage"
 msgstr "胴体"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "ゲイン"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "脚"
 
@@ -1781,7 +1801,7 @@ msgstr "脚"
 msgid "GEAR"
 msgstr "脚"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "一般"
 
@@ -1790,11 +1810,11 @@ msgstr "一般"
 msgid "Go back"
 msgstr "戻る"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "グラフィック"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "グラフィックプリセット"
 
@@ -1832,15 +1852,15 @@ msgstr "機関砲のみ"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ハードウェアグラフィックスアクセラレーションがオフです — ブラウザ設定またはグラフィックスドライバを確認してください。"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "ヘッド"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "ヘッドトラッキング"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "高"
 
@@ -1850,7 +1870,7 @@ msgstr "高"
 msgid "High stratus"
 msgstr "層雲（高）"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "ヒント"
 
@@ -1865,7 +1885,7 @@ msgstr "履歴"
 msgid "Home"
 msgstr "ホーム"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "フック"
 
@@ -1877,11 +1897,11 @@ msgstr "フック"
 msgid "Hot"
 msgstr "人気"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD高度ソース"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUDデクラッター"
 
@@ -1898,7 +1918,7 @@ msgstr "画像ビューアー: {0}"
 msgid "Imperial"
 msgstr "ヤード・ポンド法"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "インポート"
 
@@ -1919,7 +1939,7 @@ msgstr "イニシャルのアバター"
 msgid "Initials avatar for {name}"
 msgstr "{name} のイニシャルのアバター"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "入力ハードウェア"
 
@@ -1944,7 +1964,7 @@ msgstr "無効な日付"
 msgid "Invulnerable"
 msgstr "無敵"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "無敵"
 
@@ -1961,17 +1981,17 @@ msgstr "お探しのページは <0/>存在しないか、削除された可能�
 msgid "Item details"
 msgstr "項目の詳細"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "ジャマー"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "タンク投棄"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "投棄：降着装置"
 
@@ -1984,7 +2004,7 @@ msgstr "参加する"
 msgid "Join server"
 msgstr "サーバーに参加"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "参加"
 
@@ -2002,7 +2022,7 @@ msgstr "一騎打ち — 1v1、先に撃墜した方が勝ち"
 msgid "Joust against bot"
 msgstr "一騎打ち ボット戦"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "ジョイスティック"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "キーボードショートカット"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "キー"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "撃墜"
 
@@ -2035,20 +2055,20 @@ msgstr "被撃墜"
 msgid "Kills"
 msgstr "撃墜"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "左エンジン"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "左エンジン火災"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "左脚"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "着陸装置"
 
@@ -2057,16 +2077,16 @@ msgstr "着陸装置"
 msgid "Large"
 msgstr "大"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "遅い"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "発艦 (カタパルト)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "発艦 / 捕捉"
 
@@ -2086,7 +2106,7 @@ msgstr "サーバーから退出"
 msgid "Left"
 msgstr "退出"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "退出"
 
@@ -2103,7 +2123,7 @@ msgstr "左翼端"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "使用できるのは文字、数字、スペース、ハイフン、スラッシュのみです"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200で水平、脚下げ"
 
@@ -2111,16 +2131,16 @@ msgstr "1200で水平、脚下げ"
 msgid "Light"
 msgstr "ライト"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "灯火"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "灯火"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ライト"
 
@@ -2140,7 +2160,7 @@ msgstr "リスト"
 msgid "Load more"
 msgstr "もっと読み込む"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "読み込み中"
 
@@ -2148,7 +2168,7 @@ msgstr "読み込み中"
 msgid "Loading content…"
 msgstr "コンテンツを読み込んでいます…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "読み込み失敗"
 
@@ -2186,35 +2206,35 @@ msgstr "ログアウトしました"
 msgid "Logging out…"
 msgstr "ログアウトしています…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "見る"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "視点 / 旋回"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "目標を見る"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "下を見る"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "左を見る"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "右を見る"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "上を見る"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "低"
 
@@ -2224,7 +2244,7 @@ msgstr "低"
 msgid "Low stratus"
 msgstr "層雲（低）"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M で閉じる"
 
@@ -2236,11 +2256,11 @@ msgstr "カテゴリを管理"
 msgid "Manual"
 msgstr "手動"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "マップ"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "マップ"
 
@@ -2249,8 +2269,8 @@ msgstr "マップ"
 msgid "Mark all as read"
 msgstr "すべて既読にする"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "マスター音量"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP サーバー"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "中"
 
@@ -2279,13 +2299,13 @@ msgstr "中"
 msgid "Members"
 msgstr "メンバー"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "メニュー"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "メニュー"
 
@@ -2297,7 +2317,7 @@ msgstr "マージ — すれ違いで戦闘開始"
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "全員にメッセージ"
 
@@ -2305,7 +2325,7 @@ msgstr "全員にメッセージ"
 msgid "Message players on this server"
 msgstr "このサーバーのプレイヤーにメッセージを送信"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "チームにメッセージ"
 
@@ -2323,7 +2343,7 @@ msgstr "マイクの権限が拒否されました"
 msgid "Mid stratus"
 msgstr "層雲（中）"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "空中衝突"
 
@@ -2335,7 +2355,7 @@ msgstr "ミッドウェー環礁の地図 — 画像には改変された<0>Cope
 msgid "Minimum length"
 msgstr "最小長"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ミサイル"
 
@@ -2343,7 +2363,7 @@ msgstr "ミサイル"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ミサイルモデル <0>“AIM-120C AMRAAM”</0>（作者 <1>Pippa</1>、Sketchfab）、<2>CC BY 4.0</2> ライセンス。 変更点：スケール調整、向きの修正、配置用に中心合わせ。"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "ミッション終了"
 
@@ -2369,7 +2389,7 @@ msgstr "月曜日"
 msgid "More options"
 msgstr "その他のオプション"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "動かしてください…"
 
@@ -2447,7 +2467,7 @@ msgstr "まだアクティビティがありません"
 msgid "No comments yet"
 msgstr "まだコメントがありません"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "「{query}」に一致する操作はありません。"
 
@@ -2471,7 +2491,7 @@ msgstr "利用可能なグループがありません"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "まだ作成可能な項目タイプがありません。必要な親項目を先に作成してください。"
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ジョイスティックが検出されません — いずれかのボタンを押して認識させてください。"
 
@@ -2507,11 +2527,11 @@ msgstr "結果が見つかりません。"
 msgid "No status"
 msgstr "ステータスなし"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "タンクなし"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "目標なし"
 
@@ -2540,7 +2560,7 @@ msgstr "ビューがありません"
 msgid "No world server."
 msgstr "ワールドサーバーがありません。"
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "評価なし"
 
@@ -2563,9 +2583,9 @@ msgstr "評価なし"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "なし"
 
@@ -2573,11 +2593,11 @@ msgstr "なし"
 msgid "Normal"
 msgstr "標準"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "前脚"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ジョイスティックのプロファイルではありません"
 
@@ -2615,7 +2635,7 @@ msgstr "初心者"
 msgid "Number"
 msgstr "数値"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "海洋ディテール"
 
@@ -2623,7 +2643,7 @@ msgstr "海洋ディテール"
 msgid "offline"
 msgstr "オフライン"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "オプション名"
 msgid "Options"
 msgstr "オプション"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "または"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "旋回"
 
@@ -2708,8 +2728,8 @@ msgstr "旋回"
 msgid "Other"
 msgstr "その他"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G制限の解除"
 
@@ -2717,11 +2737,11 @@ msgstr "G制限の解除"
 msgid "Owner"
 msgstr "オーナー"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "パッドロック"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "パッドロック解除"
 
@@ -2731,7 +2751,11 @@ msgstr "パッドロック解除"
 msgid "Parent"
 msgstr "親"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "パーキングブレーキ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "パーキングブレーキ"
 
@@ -2756,7 +2780,7 @@ msgstr "このブラウザではパスキーを利用できません"
 msgid "Pattern (regex)"
 msgstr "パターン (正規表現)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "一時停止"
 
@@ -2776,15 +2800,15 @@ msgstr "パイロット"
 msgid "Pilot"
 msgstr "パイロット"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "パイロット死亡"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "パイロット情報"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "パイロット死亡"
 
@@ -2793,23 +2817,23 @@ msgstr "パイロット死亡"
 msgid "Pin"
 msgstr "ピン留め"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "ピッチ"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "ピッチ"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "ピッチダウン"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "ピッチアップ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "プラットフォーム"
 
@@ -2839,15 +2863,15 @@ msgstr "投稿"
 msgid "Posts and comments"
 msgstr "投稿とコメント"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "キーを押してください…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "エンターで発艦"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "押してください…"
 
@@ -2861,12 +2885,24 @@ msgstr "前の画像"
 msgid "Privacy"
 msgstr "プライバシー"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "プローブ"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "プローブ収納"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "プローブ展開"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "処理中…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "プロフィールを保存しました"
 
@@ -2887,24 +2923,24 @@ msgstr "公開サーバー"
 msgid "Push notification"
 msgstr "プッシュ通知"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "進入時刻"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "右エンジン"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "右エンジン火災"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "右脚"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "レーダー停波"
 
@@ -2920,7 +2956,7 @@ msgstr "このサーバーでアカウントを再リンクする"
 msgid "Re-register your passkeys on this server"
 msgstr "このサーバーでパスキーを再登録してください"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "再武装完了"
 
@@ -2936,12 +2972,12 @@ msgstr "おすすめ"
 msgid "Reconnecting ({retries})..."
 msgstr "再接続中 ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "フライトを記録"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "記録"
 
@@ -2982,7 +3018,7 @@ msgstr "基準"
 msgid "Refresh"
 msgstr "更新"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "編隊復帰"
 
@@ -3082,23 +3118,23 @@ msgstr "必須"
 msgid "Resend email"
 msgstr "メールを再送信"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "リセット"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "マスターコーション リセット"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "トリムのリセット"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "視点のリセット"
 
@@ -3114,19 +3150,19 @@ msgstr "ゲームを投了しますか?"
 msgid "Resigning..."
 msgstr "投了中..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "解決"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "再開始"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "ミッション再開始"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "ミッションを再開始しますか？"
 
@@ -3134,12 +3170,12 @@ msgstr "ミッションを再開始しますか？"
 msgid "Result"
 msgstr "結果"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "再開"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "フラップ収納"
 
@@ -3147,7 +3183,7 @@ msgstr "フラップ収納"
 msgid "Retry"
 msgstr "再試行"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "反転"
 
@@ -3172,19 +3208,19 @@ msgstr "右翼"
 msgid "Right wingtip"
 msgstr "右翼端"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "ロール"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "ロール"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "左ロール"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "右ロール"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS フィード"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL をクリップボードにコピーしました"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "フルスロットル"
 
@@ -3242,8 +3278,8 @@ msgstr "海面"
 msgid "Search"
 msgstr "検索"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "操作を検索"
 
@@ -3340,8 +3376,8 @@ msgstr "人を選択..."
 msgid "Select previous card"
 msgstr "前のカードを選択"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "武器選択"
 
@@ -3363,7 +3399,7 @@ msgstr "送信"
 msgid "Send again"
 msgstr "再送信"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "チャットを送信"
 
@@ -3404,7 +3440,7 @@ msgstr "サーバーのルール"
 msgid "server runs v{0}, you have v{version}"
 msgstr "サーバーは v{0}、あなたは v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "セッション終了"
 
@@ -3412,7 +3448,7 @@ msgstr "セッション終了"
 msgid "Session expired. Please log in again."
 msgstr "セッションの有効期限が切れました。もう一度ログインしてください。"
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "割り当て"
 
@@ -3423,14 +3459,14 @@ msgstr "出発地と目的地を設定"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "設定"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "影"
 
@@ -3485,7 +3521,7 @@ msgstr "小"
 msgid "Sort"
 msgstr "並べ替え"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "サウンド"
 
@@ -3505,17 +3541,17 @@ msgstr "分散リスポーン"
 msgid "Spacious"
 msgstr "ゆったり"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "スピブレ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "スピードブレーキ"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "スピードブレーキ"
 
@@ -3523,9 +3559,13 @@ msgstr "スピードブレーキ"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "速度はKCASで、軽荷（最小燃料、兵装なし）から重荷（最大総重量）までの範囲です。データはゲーム内で実験的に取得しました。実機との差異はシミュレーターの飛行モデルの誤差を反映しています。"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "撃墜"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "主翼展開"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "最急上昇 (Vx, アフターバーナー)"
 msgid "Stop watching"
 msgstr "ウォッチを停止"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "構造"
 
@@ -3598,7 +3638,7 @@ msgstr "ビュー 1〜9 に切り替え"
 msgid "System"
 msgstr "システム"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "戦術マップ"
 
@@ -3615,7 +3655,7 @@ msgstr "タグは50文字以内にしてください"
 msgid "Tags"
 msgstr "タグ"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "敵機視認"
 
@@ -3623,11 +3663,11 @@ msgstr "敵機視認"
 msgid "Task"
 msgstr "タスク"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "チーム"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "チーム"
 
@@ -3674,7 +3714,7 @@ msgstr "カメラの要求に応答がありませんでした"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ゲームを読み込めませんでした。再試行するにはページを再読み込みしてください。"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "メニュー表示中もマッチは進行します。"
 
@@ -3686,7 +3726,7 @@ msgstr "マイクの要求に応答がありませんでした"
 msgid "The mission stopped."
 msgstr "ミッションが停止しました。"
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "ミッションを再開始します。現在のフライトは保存されません。"
 
@@ -3722,21 +3762,21 @@ msgstr "このマシンは滑らかな飛行には遅すぎる可能性があり
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "この操作でゲームとそのチャットが完全に削除されます。この操作は元に戻せません。"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "スロットル"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "スロットル"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "スロットルダウン"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "スロットルアップ"
 
@@ -3748,7 +3788,7 @@ msgstr "木曜日"
 msgid "Tightest sustained turn speed"
 msgstr "最小持続旋回速度"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "チルト"
 
@@ -3795,7 +3835,7 @@ msgstr "リクエストが多すぎます"
 msgid "Top"
 msgstr "トップ"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "曳光弾"
 
@@ -3803,35 +3843,35 @@ msgstr "曳光弾"
 msgid "Travelling"
 msgstr "移動中"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "トリム"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "トリム"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "トリムハット"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "トリム：機首下げ"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "トリム：機首上げ"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "トリム：左ロール"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "トリム：右ロール"
 
@@ -3869,7 +3909,7 @@ msgstr "入力してユーザーを検索"
 msgid "Type to search..."
 msgstr "入力して検索…"
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "ウルトラ"
 
@@ -3890,13 +3930,13 @@ msgstr "未割り当て"
 msgid "Unavailable"
 msgstr "利用不可"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "シーカー解放"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "目標指定解除"
 
@@ -4014,11 +4054,11 @@ msgstr "動画のサムネイル"
 msgid "Video viewer: {0}"
 msgstr "動画ビューアー: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "視点"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "ビュー"
 
@@ -4035,7 +4075,7 @@ msgstr "項目の詳細を表示・編集"
 msgid "View controls"
 msgstr "ビューコントロール"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "ビュー"
 
@@ -4043,11 +4083,11 @@ msgstr "ビュー"
 msgid "Voice recording is not supported in this browser"
 msgstr "このブラウザでは音声録音がサポートされていません"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "音量"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "対戦相手を待っています"
 
@@ -4065,7 +4105,7 @@ msgstr "ウォッチ中"
 msgid "Watched only"
 msgstr "ウォッチ中のみ"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ウェーブオフ"
 
@@ -4074,16 +4114,16 @@ msgstr "ウェーブオフ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "<0>{0}</0> に確認コードを送信しました。メールアドレスを確認するには、下にコードを入力してください。"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "兵装"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "武器選択ハット"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "武装"
 
@@ -4095,21 +4135,37 @@ msgstr "天候"
 msgid "Wednesday"
 msgstr "水曜日"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "車輪ブレーキ"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "風とコックピットの機体音"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "主翼折りたたみ"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "主翼"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "主翼折りたたみ中"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "主翼ロック"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "主翼展開中"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "の勝利"
 
@@ -4126,25 +4182,25 @@ msgstr "ワールドサーバーに接続できません"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR、すれ違いで戦闘開始"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "ヨー"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "ヨー"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "左ヨー"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "右ヨー"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "自機"
 
@@ -4176,14 +4232,14 @@ msgstr "入力したテキストと添付ファイルは失われます。"
 msgid "Your text will be lost."
 msgstr "入力したテキストは失われます。"
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "ズーム"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "ズームイン"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "ズームアウト"

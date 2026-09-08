@@ -36,6 +36,24 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   CHAFF: msg`CHAFF`,
   GEAR: msg`GEAR`,
   HOOK: msg`HOOK`,
+  // The rest of the configuration stack, which sat untranslated beside GEAR and
+  // HOOK while going through the same translate() call (#109). Settled
+  // 2026-09-08: what the pilot SETS is localised; deck code words are not (see
+  // the note further down).
+  PARK: msg`PARK`,
+  PROBE: msg`PROBE`,
+  'PROBE IN': msg`PROBE IN`,
+  'PROBE OUT': msg`PROBE OUT`,
+  CANOPY: msg`CANOPY`,
+  'CANOPY OPEN': msg`CANOPY OPEN`,
+  'CANOPY CLOSED': msg`CANOPY CLOSED`,
+  'CANOPY CLOSING': msg`CANOPY CLOSING`,
+  'CANOPY LOCKED': msg`CANOPY LOCKED`,
+  WINGS: msg`WINGS`,
+  'WINGS FOLDING': msg`WINGS FOLDING`,
+  'WINGS SPREADING': msg`WINGS SPREADING`,
+  'WINGS LOCKED': msg`WINGS LOCKED`,
+  'SPREAD WINGS': msg`SPREAD WINGS`,
   'SPD BK': msg`SPD BK`,
   YOU: msg`YOU`,
   'WAITING FOR OPPONENT': msg`WAITING FOR OPPONENT`,
@@ -87,10 +105,6 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'NO TANKS': msg`NO TANKS`,
   'EMERG JETT': msg`EMERG JETT`,
   'PILOT DOWN': msg`PILOT DOWN`,
-  // The caution-panel annunciators (L ENG FIRE, FUEL LEAK, FCS, STRUCTURE, …)
-  // are deliberately NOT in this catalog: real F/A-18 annunciators read in
-  // English in every operator's cockpit, so they fall through translate()
-  // verbatim — the same policy as the HUD's standard flight symbology.
   WINS: msg`WINS`,
   JOINED: msg`JOINED`,
   LEFT: msg`LEFT`,
@@ -120,9 +134,14 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'BELOW 250 — GEAR AND FLAPS': msg`BELOW 250 — GEAR AND FLAPS`,
   'DIRTY UP': msg`DIRTY UP`,
   'DOWNWIND 600 FEET': msg`DOWNWIND 600 FEET`,
-  // HORNET / BALL / CLARA / AUTO are deliberately absent: the type name and
-  // the ball-call code words are spoken verbatim on every deck, like the
-  // annunciators above — it is the surrounding call that localises.
+  // HORNET / BALL / CLARA / AUTO are deliberately absent, and are the ONLY
+  // deliberate absences: the type name and the ball-call code words are spoken
+  // verbatim on every deck, and it is the surrounding call that localises.
+  // Everything else the HUD passes to translate() belongs in this catalog --
+  // cautions and configuration included (#109/#110). A comment here used to
+  // claim the annunciators were deliberately absent while all four sat eleven
+  // lines above, translated; if a string is meant to read English, leave it out
+  // of translate() rather than out of the catalog, where a miss is silent.
 }
 
 // The in-game help line as actions, not key caps: the caps are read from the

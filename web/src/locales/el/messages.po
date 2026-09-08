@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# αποτέλεσμα} other {# αποτελέσματα}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Δέχτηκε # χτύπημα} other {Δέχτηκε # χτυπήματα}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} από {1} πτήσεις"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "Το {0} ήταν ήδη κατειλημμένο και αυτό το χειριστήριο δεν είναι πλέον αντιστοιχισμένο."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "Το {0} ήταν στο {1}, το οποίο δεν είναι πλέον αντιστοιχισμένο."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# απάντηση} other {+# ακόμα
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Άνοιγμα μενού (# μη αναγνωσμένη ειδοποίηση)} other {Άνοιγμα μενού (# μη αναγνωσμένες ειδοποιήσεις)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 1"
 
@@ -155,7 +155,7 @@ msgstr "12 ώρες"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 2"
 
@@ -163,7 +163,7 @@ msgstr "ΚΑΛΩΔΙΟ 2"
 msgid "24 hours"
 msgstr "24 ώρες"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 3"
 
@@ -202,13 +202,13 @@ msgstr "Τύπος λογαριασμού"
 msgid "Ace"
 msgstr "Άσος"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Κλείδωμα στόχου"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Λειτουργία εγκλωβισμού"
 
@@ -290,7 +290,7 @@ msgstr "Προσθήκη προβολής"
 msgid "Adding..."
 msgstr "Προσθήκη..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Μετάκαυση"
 
@@ -298,7 +298,7 @@ msgstr "Μετάκαυση"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Αεροσκάφος"
 
@@ -356,8 +356,8 @@ msgstr "Οποιοσδήποτε είναι συνδεδεμένος"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Ό,τι είναι εγγεγραμμένο σε αυτήν τη ροή θα σταματήσει να τη λαμβάνει. Μπορείτε να αντιγράψετε μια νέα διεύθυνση URL στη συνέχεια."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Ισχύς προσέγγισης (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Είστε σίγουροι ότι θέλετε να εγκαταλεί�
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Είστε σίγουροι ότι θέλετε να παραιτηθείτε; Ο/Η {opponentName} θα κερδίσει την παρτίδα."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Άγκιστρο ανάσχεσης"
 
@@ -436,16 +436,16 @@ msgstr "Άβαταρ"
 msgid "Avatar for {name}"
 msgstr "Άβαταρ για {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Άξονας {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Βαθμονόμηση και αντιστοίχιση αξόνων"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "πίσω"
 
@@ -476,7 +476,7 @@ msgstr "Το banner αφαιρέθηκε"
 msgid "Banner updated"
 msgstr "Το banner ενημερώθηκε"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ΚΑΤΩ ΑΠΟ 250 — ΣΥΣΤΗΜΑ ΚΑΙ ΠΤΕΡΥΓΙΑ"
 
@@ -496,11 +496,11 @@ msgstr "Βέλτιστη ολίσθηση (σβηστοί κινητήρες)"
 msgid "Best sustained turn speed"
 msgstr "Ταχύτητα βέλτιστης διατηρούμενης στροφής"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Ειδοποιήσεις Betty και RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "ΜΠΙΝΓΚΟ ΚΑΥΣΙΜΟ"
 
@@ -530,7 +530,7 @@ msgstr "Μπλε bots"
 msgid "Board"
 msgstr "Πίνακας"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "ΜΠΟΛΤΕΡ"
 
@@ -547,19 +547,19 @@ msgstr "Χρώμα περιγράμματος"
 msgid "Bots"
 msgstr "Μποτ"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "φρένα"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "ΑΠΟΤΟΜΑ ΑΡΙΣΤΕΡΑ"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "ΑΠΟΤΟΜΑ ΔΕΞΙΑ"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "ΣΤΡΟΦΗ ΟΤΑΝ ΕΤΟΙΜΟΣ"
 
@@ -567,12 +567,12 @@ msgstr "ΣΤΡΟΦΗ ΟΤΑΝ ΕΤΟΙΜΟΣ"
 msgid "Browser notifications"
 msgstr "Ειδοποιήσεις προγράμματος περιήγησης"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Κουμπί {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Αντιστοιχίσεις κουμπιών"
 
@@ -584,16 +584,16 @@ msgstr "BVR — ελεύθερα πυρά από την αρχή"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, ελεύθερα πυρά από την αρχή"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ΑΝΆΦΕΡΕ ΤΗΝ ΜΠΆΛΑ"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Διακριτικό κλήσης"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Απόσταση κάμερας"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Η άδεια κάμερας απορρίφθηκε"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Η κάμερα δεν είναι διαθέσιμη"
 
@@ -620,10 +620,10 @@ msgstr "Η κάμερα δεν είναι διαθέσιμη"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -641,20 +641,40 @@ msgstr "Ακύρωση απάντησης"
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Πυροβόλα και πυρομαχικά"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Θόλος πιλοτηρίου"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ΘΟΛΟΣ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ΘΟΛΟΣ ΚΛΕΙΣΤΟΣ"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ΘΟΛΟΣ ΚΛΕΙΝΕΙ"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ΘΟΛΟΣ ΑΣΦΑΛΙΣΜΕΝΟΣ"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ΘΟΛΟΣ ΑΝΟΙΚΤΟΣ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Λεζάντα"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Αεροπλανοφόρο και περιβάλλον"
 
@@ -711,19 +731,19 @@ msgstr "Άλλαξε"
 msgid "Changed {field}"
 msgstr "Άλλαξε {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Θέα καταδίωξης:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "συνομιλία"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Συνομιλία"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Συνομιλία με όλους"
 
@@ -760,7 +780,7 @@ msgstr "Επιλογή γλώσσας"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Εκκαθάριση"
 
@@ -806,7 +826,7 @@ msgstr "Κλείσιμο πίνακα / ακύρωση"
 msgid "Close search"
 msgstr "Κλείσιμο αναζήτησης"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "πιο κοντά"
 
@@ -846,7 +866,7 @@ msgstr "Άνετο"
 msgid "Command Palette"
 msgstr "Παλέτα εντολών"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ΞΕΚΙΝΏ"
 
@@ -865,7 +885,7 @@ msgstr "Σχόλια"
 msgid "Comments ({0})"
 msgstr "Σχόλια ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Επικοινωνία"
 
@@ -906,7 +926,7 @@ msgstr "Σύνδεση..."
 msgid "Connecting…"
 msgstr "Σύνδεση…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "Η ΣΥΝΔΕΣΗ ΑΠΕΤΥΧΕ"
 
@@ -963,7 +983,7 @@ msgstr "Δεν ήταν δυνατή η φόρτωση αυτού του εγγ�
 msgid "Could not load your flights"
 msgstr "Δεν ήταν δυνατή η φόρτωση των πτήσεών σας"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Δεν ήταν δυνατή η αποθήκευση του προφίλ"
 
@@ -992,16 +1012,16 @@ msgstr "Δεν ήταν δυνατή η έναρξη του εκ νέου ελέ
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Δεν ήταν δυνατή η επαλήθευση με αυτόν τον λογαριασμό. Δοκιμάστε ξανά."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Αντίμετρα"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Συνετρίβη"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "ΣΥΝΕΤΡΙΒΗ"
 
@@ -1069,12 +1089,12 @@ msgstr "Τρέχουσα τοποθεσία"
 msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "ΕΠΙΚΙΝΔΥΝΟ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Εναλλαγή προβολής"
 
@@ -1101,7 +1121,7 @@ msgstr "Ημέρα"
 msgid "Deaths"
 msgstr "Θάνατοι"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ΘΕΣΗ ΚΑΤΑΣΤΡΩΜΑΤΟΣ ΑΠΟΘΗΚΕΥΤΗΚΕ"
 
@@ -1203,11 +1223,11 @@ msgstr "Φθίνουσα"
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Καταστράφηκε από πυρκαγιά"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Λεπτομέρεια"
 
@@ -1215,8 +1235,8 @@ msgstr "Λεπτομέρεια"
 msgid "Details Panel"
 msgstr "Πίνακας λεπτομερειών"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Ανίχνευση"
 
@@ -1239,7 +1259,7 @@ msgstr "Διαφορετικός κεντρικός υπολογιστής πα�
 msgid "Directory"
 msgstr "Κατάλογος"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ΚΑΤΕΒΑΣΕ ΣΥΣΤΗΜΑ"
 
@@ -1251,7 +1271,7 @@ msgstr "Απόρριψη"
 msgid "Discard draft?"
 msgstr "Απόρριψη πρόχειρου;"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "αποσυνδεδεμένο"
 
@@ -1264,12 +1284,12 @@ msgstr "Αποσυνδεδεμένο"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Απόρριψη"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Επαναλήπτης οθόνης"
 
@@ -1277,7 +1297,7 @@ msgstr "Επαναλήπτης οθόνης"
 msgid "Displays the mobile sidebar."
 msgstr "Εμφανίζει την πλευρική μπάρα κινητού."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD απόστασης"
 
@@ -1288,7 +1308,7 @@ msgstr "Δεν ταιριάζει με το απαιτούμενο μοτίβο"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
@@ -1303,11 +1323,11 @@ msgstr "Λήψη"
 msgid "Download failed"
 msgstr "Η λήψη απέτυχε"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ΥΠΗΝΕΜΟ 600 ΠΟΔΙΑ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Σύρσιμο"
 
@@ -1323,7 +1343,7 @@ msgstr "Διπλότυπο"
 msgid "Duration"
 msgstr "Διάρκεια"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Δυναμική ανάλυση"
 
@@ -1331,7 +1351,7 @@ msgstr "Δυναμική ανάλυση"
 msgid "Dyslexia-friendly"
 msgstr "Φιλικό προς δυσλεξία"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "ΝΩΡΊΣ"
 
@@ -1374,19 +1394,19 @@ msgstr "Επεξεργασία επιλεγμένης κάρτας"
 msgid "Edit view"
 msgstr "Επεξεργασία προβολής"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Εφέ"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Λεπτομέρεια εφέ"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Εκτίναξη"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "ΕΚΤΙΝΑΧΘΗΚΕ"
 
@@ -1398,12 +1418,12 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Κωδικός email"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "ΑΠΟΡΡΙΨΗ ΑΝΑΓΚΗΣ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Απόρριψη έκτακτης ανάγκης (κρατήστε)"
 
@@ -1416,11 +1436,11 @@ msgstr "κενή"
 msgid "Empty pylon"
 msgstr "Κενός πυλώνας"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Ενεργοποίηση ήχου"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "ΕΜΠΛΕΚΟΜΑΙ"
 
@@ -1428,7 +1448,7 @@ msgstr "ΕΜΠΛΕΚΟΜΑΙ"
 msgid "Engagement"
 msgstr "Εμπλοκή"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Κινητήρας και μετάκαυση"
 
@@ -1448,15 +1468,15 @@ msgstr "Εισαγάγετε τον κωδικό της εφαρμογής ελ�
 msgid "Error"
 msgstr "Σφάλμα"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Όλοι"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Έξοδος από τον αγώνα"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Έξοδος από αποστολή"
 
@@ -1475,16 +1495,16 @@ msgstr "Επέκταση πλευρικής μπάρας"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Κινούμενη έκρηξη <0>“Explosion02HD”</0> από την <1>Unity Technologies</1> (ακολουθίες εικόνων VFX της Unity Labs), κυκλοφορεί υπό <2>CC0</2>. Τροποποιήθηκε: επανασυμπιέστηκε για το διαδίκτυο."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Εξαγωγή"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Έκταση πτερυγίων"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Λεπτομέρεια εξωτερικού"
 
@@ -1603,15 +1623,15 @@ msgstr "Αποτυχία ενημέρωσης παρακολούθησης"
 msgid "Failed to upload attachment"
 msgstr "Αποτυχία μεταφόρτωσης συνημμένου"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ΜΕΤΡΙΑ"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "Η ΜΑΧΗ ΞΕΚΙΝΑ"
 
@@ -1629,16 +1649,16 @@ msgstr "Ολοκληρώστε τη μεταφορά του λογαριασμο
 msgid "Finished"
 msgstr "Ολοκληρώθηκε"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "πυρ"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Άνοιγμα πυρός"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Σταθερά πλήκτρα πτήσης"
 
@@ -1646,15 +1666,15 @@ msgstr "Σταθερά πλήκτρα πτήσης"
 msgid "Flags"
 msgstr "Σημαίες"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ΣΒΕΣΗ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "πτερύγια"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "φωτοβολίδες"
 
@@ -1666,19 +1686,19 @@ msgstr "ΦΩΤΟΒΟΛΙΔΕΣ"
 msgid "Flat"
 msgstr "Επίπεδη"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Έπεσε στη θάλασσα"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Πτήση"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "ΑΠΟΤΥΧΙΑ ΠΥΡΗΝΑ ΠΤΗΣΗΣ"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Συμβουλές πτήσης"
 
@@ -1699,11 +1719,11 @@ msgstr "Πέταξε"
 msgid "Fly"
 msgstr "Πτήση"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Πέταξε ξανά"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Μετρητής καρέ"
 
@@ -1736,23 +1756,23 @@ msgstr "Από το θέμα"
 msgid "Fuel"
 msgstr "Καύσιμο"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ΚΑΥΣΙΜΟ"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ΦΩΤΙΑ ΚΑΥΣΙΜΟΥ"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ΔΙΑΡΡΟΗ ΚΑΥΣ"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "ΧΑΜΗΛΟ ΚΑΥΣΙΜΟ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Ακροφύσιο ανεφοδιασμού"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Άτρακτος"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Ενίσχυση"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "τροχοί"
 
@@ -1781,7 +1801,7 @@ msgstr "τροχοί"
 msgid "GEAR"
 msgstr "ΣΚΕΛΗ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Γενικά"
 
@@ -1790,11 +1810,11 @@ msgstr "Γενικά"
 msgid "Go back"
 msgstr "Πίσω"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Γραφικά"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Προεπιλογή γραφικών"
 
@@ -1832,15 +1852,15 @@ msgstr "Μόνο πυροβόλα"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Η επιτάχυνση γραφικών υλικού είναι απενεργοποιημένη — ελέγξτε τις ρυθμίσεις του προγράμματος περιήγησης ή τους οδηγούς γραφικών."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Κεφάλι"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Παρακολούθηση κεφαλιού"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Υψηλή"
 
@@ -1850,7 +1870,7 @@ msgstr "Υψηλή"
 msgid "High stratus"
 msgstr "Υψηλά στρώματα"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Συμβουλές"
 
@@ -1865,7 +1885,7 @@ msgstr "Ιστορικό"
 msgid "Home"
 msgstr "Αρχική"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "άγκιστρο"
 
@@ -1877,11 +1897,11 @@ msgstr "ΓΑΝΤΖΟΣ"
 msgid "Hot"
 msgstr "Δημοφιλή"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Πηγή υψομέτρου HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Απλοποίηση HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "Προβολή εικόνας: {0}"
 msgid "Imperial"
 msgstr "Αυτοκρατορικό"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Εισαγωγή"
 
@@ -1919,7 +1939,7 @@ msgstr "Άβαταρ αρχικών"
 msgid "Initials avatar for {name}"
 msgstr "Άβαταρ αρχικών για {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Υλικό εισόδου"
 
@@ -1944,7 +1964,7 @@ msgstr "Μη έγκυρη ημερομηνία"
 msgid "Invulnerable"
 msgstr "Άτρωτος"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ΑΤΡΩΤΟΣ"
 
@@ -1961,17 +1981,17 @@ msgstr "Φαίνεται ότι η σελίδα που αναζητάτε <0/>δ
 msgid "Item details"
 msgstr "Λεπτομέρειες στοιχείου"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Παρεμβολέας"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Απόρριψη δεξαμενών"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ΑΠΟΡΡΙΨΗ: ΣΥΣΤΗΜΑ ΠΡΟΣΓΕΙΩΣΗΣ"
 
@@ -1984,7 +2004,7 @@ msgstr "Συμμετοχή"
 msgid "Join server"
 msgstr "Σύνδεση σε διακομιστή"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "ΜΠΗΚΕ"
 
@@ -2002,7 +2022,7 @@ msgstr "Μονομαχία — 1v1, η πρώτη κατάρριψη κερδί�
 msgid "Joust against bot"
 msgstr "Μονομαχία εναντίον μποτ"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Χειριστήριο"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Πλήκτρα"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "ΚΑΤΑΡΡΙΨΗ"
 
@@ -2035,20 +2055,20 @@ msgstr "Καταρρίφθηκε"
 msgid "Kills"
 msgstr "Καταρρίψεις"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "ΑΡ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ΦΩΤΙΑ ΑΡ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "ΑΡ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Σύστημα προσγείωσης"
 
@@ -2057,16 +2077,16 @@ msgstr "Σύστημα προσγείωσης"
 msgid "Large"
 msgstr "Μεγάλο"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "ΑΡΓΆ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Εκτόξευση (καταπέλτης)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "εκτόξευση / στόχευση"
 
@@ -2086,7 +2106,7 @@ msgstr "Αποχώρηση από διακομιστή"
 msgid "Left"
 msgstr "Αποχώρησε"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ΕΦΥΓΕ"
 
@@ -2103,7 +2123,7 @@ msgstr "Άκρο αριστερής πτέρυγας"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Μόνο γράμματα, αριθμοί, κενά, παύλες και κάθετοι"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ΕΥΘΕΊΑ ΣΤΑ 1200, ΣΎΣΤΗΜΑ ΚΆΤΩ"
 
@@ -2111,16 +2131,16 @@ msgstr "ΕΥΘΕΊΑ ΣΤΑ 1200, ΣΎΣΤΗΜΑ ΚΆΤΩ"
 msgid "Light"
 msgstr "Φωτεινό"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "φώτα"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Φώτα"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ΦΩΤΑ"
 
@@ -2140,7 +2160,7 @@ msgstr "Λίστα"
 msgid "Load more"
 msgstr "Φόρτωση περισσότερων"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "ΦΟΡΤΩΣΗ"
 
@@ -2148,7 +2168,7 @@ msgstr "ΦΟΡΤΩΣΗ"
 msgid "Loading content…"
 msgstr "Φόρτωση περιεχομένου…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "Η ΦΟΡΤΩΣΗ ΑΠΕΤΥΧΕ"
 
@@ -2186,35 +2206,35 @@ msgstr "Επιτυχής αποσύνδεση"
 msgid "Logging out…"
 msgstr "Αποσύνδεση…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Θέαση"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Θέαση / περιστροφή"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Κοίτα τον στόχο"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Θέαση κάτω"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Θέαση αριστερά"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Θέαση δεξιά"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Θέαση πάνω"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Χαμηλή"
 
@@ -2224,7 +2244,7 @@ msgstr "Χαμηλή"
 msgid "Low stratus"
 msgstr "Χαμηλά στρώματα"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M για κλείσιμο"
 
@@ -2236,11 +2256,11 @@ msgstr "Διαχείριση κατηγοριών"
 msgid "Manual"
 msgstr "Χειροκίνητο"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "χάρτης"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Χάρτης"
 
@@ -2249,8 +2269,8 @@ msgstr "Χάρτης"
 msgid "Mark all as read"
 msgstr "Σήμανση όλων ως αναγνωσμένα"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Γενική ένταση ήχου"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "Διακομιστής MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Μεσαίο"
 
@@ -2279,13 +2299,13 @@ msgstr "Μεσαίο"
 msgid "Members"
 msgstr "Μέλη"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "μενού"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Μενού"
 
@@ -2297,7 +2317,7 @@ msgstr "Συνάντηση — η μάχη αρχίζει στο πέρασμα"
 msgid "Message"
 msgstr "Μήνυμα"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Μήνυμα σε όλους"
 
@@ -2305,7 +2325,7 @@ msgstr "Μήνυμα σε όλους"
 msgid "Message players on this server"
 msgstr "Στείλτε μήνυμα στους παίκτες αυτού του διακομιστή"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Μήνυμα στην ομάδα σου"
 
@@ -2323,7 +2343,7 @@ msgstr "Η άδεια μικροφώνου απορρίφθηκε"
 msgid "Mid stratus"
 msgstr "Μεσαία στρώματα"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Σύγκρουση στον αέρα"
 
@@ -2335,7 +2355,7 @@ msgstr "Χάρτης της Ατόλης Μίντγουεϊ — οι εικόν�
 msgid "Minimum length"
 msgstr "Ελάχιστο μήκος"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ΠΥΡΑΥΛΟΣ"
 
@@ -2343,7 +2363,7 @@ msgstr "ΠΥΡΑΥΛΟΣ"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Μοντέλο πυραύλου <0>“AIM-120C AMRAAM”</0> από <1>Pippa</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: νέα κλίμακα, νέος προσανατολισμός και κεντράρισμα για την τοποθέτηση."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Η αποστολή τελείωσε"
 
@@ -2369,7 +2389,7 @@ msgstr "Δευτέρα"
 msgid "More options"
 msgstr "Περισσότερες επιλογές"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Μετακινήστε…"
 
@@ -2447,7 +2467,7 @@ msgstr "Δεν υπάρχει ακόμη δραστηριότητα"
 msgid "No comments yet"
 msgstr "Δεν υπάρχουν ακόμη σχόλια"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Κανένα χειριστήριο δεν ταιριάζει με «{query}»."
 
@@ -2471,7 +2491,7 @@ msgstr "Δεν υπάρχουν διαθέσιμες ομάδες"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Δεν μπορούν να δημιουργηθούν ακόμη τύποι στοιχείων. Δημιουργήστε πρώτα τα απαιτούμενα γονικά στοιχεία."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Δεν εντοπίστηκε χειριστήριο — πατήστε οποιοδήποτε κουμπί του για να ξυπνήσει."
 
@@ -2507,11 +2527,11 @@ msgstr "Δεν βρέθηκαν αποτελέσματα."
 msgid "No status"
 msgstr "Χωρίς κατάσταση"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ΧΩΡΙΣ ΔΕΞΑΜΕΝΕΣ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "ΧΩΡΙΣ ΣΤΟΧΟ"
 
@@ -2540,7 +2560,7 @@ msgstr "Χωρίς προβολές"
 msgid "No world server."
 msgstr "Δεν υπάρχει διακομιστής κόσμου."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ΧΩΡΙΣ ΒΑΘΜΟ"
 
@@ -2563,9 +2583,9 @@ msgstr "ΧΩΡΙΣ ΒΑΘΜΟ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Κανένα"
 
@@ -2573,11 +2593,11 @@ msgstr "Κανένα"
 msgid "Normal"
 msgstr "Κανονικό"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "ΡΙΝ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Δεν είναι προφίλ χειριστηρίου"
 
@@ -2615,7 +2635,7 @@ msgstr "Αρχάριος"
 msgid "Number"
 msgstr "Αριθμός"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Λεπτομέρεια ωκεανού"
 
@@ -2623,7 +2643,7 @@ msgstr "Λεπτομέρεια ωκεανού"
 msgid "offline"
 msgstr "εκτός σύνδεσης"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Όνομα επιλογής"
 msgid "Options"
 msgstr "Επιλογές"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "ή"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "τροχιά"
 
@@ -2708,8 +2728,8 @@ msgstr "τροχιά"
 msgid "Other"
 msgstr "Άλλο"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Παράκαμψη ορίου G"
 
@@ -2717,11 +2737,11 @@ msgstr "Παράκαμψη ορίου G"
 msgid "Owner"
 msgstr "Ιδιοκτήτης"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ΚΛΕΙΔΩΜΑ ΒΛΕΜΜΑΤΟΣ"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "ΒΛΕΜΜΑ ΕΛΕΥΘΕΡΟ"
 
@@ -2731,7 +2751,11 @@ msgstr "ΒΛΕΜΜΑ ΕΛΕΥΘΕΡΟ"
 msgid "Parent"
 msgstr "Γονικό"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "ΦΡΕΝΟ ΣΤΑΘΜΕΥΣΗΣ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Χειρόφρενο"
 
@@ -2756,7 +2780,7 @@ msgstr "Τα passkeys δεν είναι διαθέσιμα σε αυτό το π
 msgid "Pattern (regex)"
 msgstr "Μοτίβο (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Σε παύση"
 
@@ -2776,15 +2800,15 @@ msgstr "πιλότος"
 msgid "Pilot"
 msgstr "Πιλότος"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "ΠΙΛΟΤΟΣ ΝΕΚΡΟΣ"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Ταυτότητα πιλότου"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Ο πιλότος σκοτώθηκε"
 
@@ -2793,23 +2817,23 @@ msgstr "Ο πιλότος σκοτώθηκε"
 msgid "Pin"
 msgstr "Καρφίτσωμα"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "πρόνευση"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Πρόνευση"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Μύτη κάτω"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Μύτη πάνω"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "ΠΛΑΤΦΌΡΜΑ"
 
@@ -2839,15 +2863,15 @@ msgstr "Αναρτήσεις"
 msgid "Posts and comments"
 msgstr "Αναρτήσεις και σχόλια"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Πατήστε ένα πλήκτρο…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ΠΑΤΗΣΕ ENTER ΓΙΑ ΑΠΟΓΕΙΩΣΗ"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Πατήστε…"
 
@@ -2861,12 +2885,24 @@ msgstr "Προηγούμενη εικόνα"
 msgid "Privacy"
 msgstr "Ιδιωτικότητα"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ΚΑΘΕΤΗΡΑΣ"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ΚΑΘΕΤΗΡΑΣ ΜΕΣΑ"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ΚΑΘΕΤΗΡΑΣ ΕΞΩ"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Γίνεται επεξεργασία…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Το προφίλ αποθηκεύτηκε"
 
@@ -2887,24 +2923,24 @@ msgstr "Δημόσιοι διακομιστές"
 msgid "Push notification"
 msgstr "Ειδοποίηση push"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ΏΡΑ ΠΡΟΣΈΓΓΙΣΗΣ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "ΔΕΞ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ΦΩΤΙΑ ΔΕΞ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "ΔΕΞ ΤΡΟΧΟΣ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Σίγαση ραντάρ"
 
@@ -2920,7 +2956,7 @@ msgstr "Επανασυνδέστε τους λογαριασμούς σας σε
 msgid "Re-register your passkeys on this server"
 msgstr "Καταχωρίστε ξανά τα κλειδιά πρόσβασής σας σε αυτόν τον διακομιστή"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ΕΠΑΝΟΠΛΙΣΤΗΚΕ"
 
@@ -2936,12 +2972,12 @@ msgstr "Συνιστώμενο"
 msgid "Reconnecting ({retries})..."
 msgstr "Επανασύνδεση ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Καταγραφή πτήσεων"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Καταγραφή"
 
@@ -2982,7 +3018,7 @@ msgstr "Αναφορά"
 msgid "Refresh"
 msgstr "Ανανέωση"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ΑΝΑΣΥΝΤΑΣΣΟΜΑΙ"
 
@@ -3082,23 +3118,23 @@ msgstr "Υποχρεωτικό"
 msgid "Resend email"
 msgstr "Επαναποστολή email"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Επαναφορά κύριας προειδοποίησης"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Μηδενισμός αντιστάθμισης"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Μηδενισμός προβολής"
 
@@ -3114,19 +3150,19 @@ msgstr "Παραίτηση από το παιχνίδι;"
 msgid "Resigning..."
 msgstr "Παραίτηση..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Επίλυση"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Επανεκκίνηση αποστολής"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Επανεκκίνηση αποστολής;"
 
@@ -3134,12 +3170,12 @@ msgstr "Επανεκκίνηση αποστολής;"
 msgid "Result"
 msgstr "Αποτέλεσμα"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Συνέχιση"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Ανάκληση πτερυγίων"
 
@@ -3147,7 +3183,7 @@ msgstr "Ανάκληση πτερυγίων"
 msgid "Retry"
 msgstr "Δοκιμή ξανά"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Αντεστραμμένο"
 
@@ -3172,19 +3208,19 @@ msgstr "Δεξιά πτέρυγα"
 msgid "Right wingtip"
 msgstr "Άκρο δεξιάς πτέρυγας"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "διατοιχισμός"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Διατοιχισμός"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Κλίση αριστερά"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Κλίση δεξιά"
 
@@ -3209,7 +3245,7 @@ msgstr "Ροή RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "Το URL του RSS αντιγράφηκε στο πρόχειρο"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "ΠΛΗΡΗΣ ΙΣΧΥΣ"
 
@@ -3242,8 +3278,8 @@ msgstr "Στάθμη θάλασσας"
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Αναζήτηση χειριστηρίων"
 
@@ -3340,8 +3376,8 @@ msgstr "Επιλέξτε άτομο..."
 msgid "Select previous card"
 msgstr "Επιλογή προηγούμενης κάρτας"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Επιλογή όπλου"
 
@@ -3363,7 +3399,7 @@ msgstr "Αποστολή"
 msgid "Send again"
 msgstr "Αποστολή ξανά"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Αποστολή μηνύματος"
 
@@ -3404,7 +3440,7 @@ msgstr "Κανόνες του διακομιστή"
 msgid "server runs v{0}, you have v{version}"
 msgstr "ο διακομιστής τρέχει v{0}, εσείς έχετε v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "Η ΣΥΝΕΔΡΙΑ ΕΛΗΞΕ"
 
@@ -3412,7 +3448,7 @@ msgstr "Η ΣΥΝΕΔΡΙΑ ΕΛΗΞΕ"
 msgid "Session expired. Please log in again."
 msgstr "Η συνεδρία έληξε. Συνδεθείτε ξανά."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Ορισμός"
 
@@ -3423,14 +3459,14 @@ msgstr "Ορίστε αφετηρία και προορισμό"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Σκιές"
 
@@ -3485,7 +3521,7 @@ msgstr "Μικρό"
 msgid "Sort"
 msgstr "Ταξινόμηση"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Ήχος"
 
@@ -3505,17 +3541,17 @@ msgstr "Αραιές εμφανίσεις"
 msgid "Spacious"
 msgstr "Ευρύχωρο"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "ΑΕΡΟΦΡ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "αεροφρένο"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Αεροφρένο"
 
@@ -3523,9 +3559,13 @@ msgstr "Αεροφρένο"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Ταχύτητες σε KCAS, ως εύρος από ελαφρύ (ελάχιστο καύσιμο, χωρίς φορτία) έως βαρύ (μέγιστο μικτό βάρος). Τα δεδομένα προέκυψαν πειραματικά εντός του παιχνιδιού. Τυχόν διαφορές από το πραγματικό αεροσκάφος αντικατοπτρίζουν σφάλματα του μοντέλου πτήσης του προσομοιωτή."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "ΣΤΟΧΟΣ ΚΑΤΕΡΡΙΦΘΗ"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ΑΝΟΙΓΜΑ ΠΤΕΡΥΓΩΝ"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Πιο απότομη άνοδος (Vx, μετάκαυση)"
 msgid "Stop watching"
 msgstr "Διακοπή παρακολούθησης"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "ΔΟΜΗ"
 
@@ -3598,7 +3638,7 @@ msgstr "Εναλλαγή σε προβολή 1-9"
 msgid "System"
 msgstr "Σύστημα"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "ΤΑΚΤΙΚΟΣ ΧΑΡΤΗΣ"
 
@@ -3615,7 +3655,7 @@ msgstr "Η ετικέτα πρέπει να έχει έως 50 χαρακτήρ�
 msgid "Tags"
 msgstr "Ετικέτες"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ΒΛΕΠΩ ΤΟΝ ΕΧΘΡΟ"
 
@@ -3623,11 +3663,11 @@ msgstr "ΒΛΕΠΩ ΤΟΝ ΕΧΘΡΟ"
 msgid "Task"
 msgstr "Εργασία"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Ομάδα"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "ΟΜΑΔΑ"
 
@@ -3674,7 +3714,7 @@ msgstr "Το αίτημα κάμερας δεν απαντήθηκε"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Δεν ήταν δυνατή η φόρτωση του παιχνιδιού. Φορτώστε ξανά τη σελίδα για να δοκιμάσετε ξανά."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Ο αγώνας συνεχίζεται πίσω από αυτό το μενού."
 
@@ -3686,7 +3726,7 @@ msgstr "Το αίτημα μικροφώνου δεν απαντήθηκε"
 msgid "The mission stopped."
 msgstr "Η αποστολή σταμάτησε."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Η αποστολή θα επανεκκινηθεί. Η τρέχουσα πτήση δεν θα αποθηκευτεί."
 
@@ -3722,21 +3762,21 @@ msgstr "Αυτό το μηχάνημα μπορεί να είναι πολύ α�
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Αυτό θα διαγράψει οριστικά το παιχνίδι και τη συνομιλία του. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "γκάζι"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Γκάζι"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Μείωση γκαζιού"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Αύξηση γκαζιού"
 
@@ -3748,7 +3788,7 @@ msgstr "Πέμπτη"
 msgid "Tightest sustained turn speed"
 msgstr "Ταχύτητα στενότερης διατηρούμενης στροφής"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "κλίση"
 
@@ -3795,7 +3835,7 @@ msgstr "Πάρα πολλά αιτήματα"
 msgid "Top"
 msgstr "Κορυφή"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Ιχνηλάτες"
 
@@ -3803,35 +3843,35 @@ msgstr "Ιχνηλάτες"
 msgid "Travelling"
 msgstr "Σε ταξίδι"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "αντιστάθμιση"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Αντιστάθμιση"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Καπέλο αντιστάθμισης"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Αντιστάθμιση: ρύγχος κάτω"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Αντιστάθμιση: ρύγχος πάνω"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Αντιστάθμιση: κλίση αριστερά"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Αντιστάθμιση: κλίση δεξιά"
 
@@ -3869,7 +3909,7 @@ msgstr "Πληκτρολογήστε για αναζήτηση χρηστών"
 msgid "Type to search..."
 msgstr "Πληκτρολογήστε για αναζήτηση..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "Χωρίς ανάθεση"
 msgid "Unavailable"
 msgstr "Μη διαθέσιμο"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Απελευθέρωση αναζητητή"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Ακύρωση ορισμού στόχου"
 
@@ -4014,11 +4054,11 @@ msgstr "Μικρογραφία βίντεο"
 msgid "Video viewer: {0}"
 msgstr "Προβολή βίντεο: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "θέα"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Προβολή"
 
@@ -4035,7 +4075,7 @@ msgstr "Προβολή και επεξεργασία λεπτομερειών σ
 msgid "View controls"
 msgstr "Στοιχεία ελέγχου προβολής"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Προβολές"
 
@@ -4043,11 +4083,11 @@ msgstr "Προβολές"
 msgid "Voice recording is not supported in this browser"
 msgstr "Η φωνητική εγγραφή δεν υποστηρίζεται σε αυτό το πρόγραμμα περιήγησης"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Εντάσεις"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ΑΝΑΜΟΝΗ ΑΝΤΙΠΑΛΟΥ"
 
@@ -4065,7 +4105,7 @@ msgstr "Σε παρακολούθηση"
 msgid "Watched only"
 msgstr "Μόνο σε παρακολούθηση"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ΕΠΑΝΑΚΥΚΛΩΣΗ"
 
@@ -4074,16 +4114,16 @@ msgstr "ΕΠΑΝΑΚΥΚΛΩΣΗ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Στείλαμε έναν κωδικό επαλήθευσης στο <0>{0}</0>. Εισαγάγετε τον κωδικό παρακάτω για να επαληθεύσετε τη διεύθυνση email σας."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "όπλο"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Καπέλο επιλογής όπλου"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Όπλα"
 
@@ -4095,21 +4135,37 @@ msgstr "Καιρός"
 msgid "Wednesday"
 msgstr "Τετάρτη"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Φρένα τροχών"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Άνεμος και άτρακτος"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Δίπλωμα πτερύγων"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ΠΤΕΡΥΓΕΣ"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ΠΤΕΡΥΓΕΣ ΔΙΠΛΩΝΟΥΝ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ΠΤΕΡΥΓΕΣ ΑΣΦΑΛΙΣΜΕΝΕΣ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ΠΤΕΡΥΓΕΣ ΑΝΟΙΓΟΥΝ"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ΝΙΚΑ"
 
@@ -4126,25 +4182,25 @@ msgstr "Ο διακομιστής κόσμου δεν είναι προσβάσ�
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, ελεύθερα πυρά στο πέρασμα"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "εκτροπή"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Εκτροπή"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Εκτροπή αριστερά"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Εκτροπή δεξιά"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ΕΣΥ"
 
@@ -4176,14 +4232,14 @@ msgstr "Το κείμενο και τα συνημμένα σας θα χαθο�
 msgid "Your text will be lost."
 msgstr "Το κείμενό σας θα χαθεί."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Ζουμ"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Μεγέθυνση"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Σμίκρυνση"
