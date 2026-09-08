@@ -104,6 +104,7 @@ export interface MissionConfig {
   task: 'free' | 'joust' // multiplayer is no longer a task: a MATCH is joined from the server page (#77)
   fuel: number
   record: boolean // record flights for replay download
+  hints: boolean // in-flight coaching (#70/#91). Consumers all test `!== false`, so the effective default has always been ON
   bandit: 'novice' | 'pilot' | 'ace' | 'superhuman'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
   joystick: string // menu-selected stick id ('' = first connected)
@@ -162,11 +163,27 @@ export function seedStart(config: MissionConfig, start: MissionConfig['start']):
 }
 
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
+// Which config fields each Settings tab's Reset button restores. It lives here
+// rather than beside the dialog because its correctness is a property of
+// DEFAULT_CONFIG, not of the UI: a field listed here with no default has
+// nothing to reset TO, and assigning undefined is worse than doing nothing --
+// JSON.stringify drops the key, config/save upserts only what arrives, and the
+// stored row keeps its old value while the switch shows the opposite. `hints`
+// shipped that way (#116). config.test.ts pins the invariant.
+export const TAB_FIELDS: Record<string, string[]> = {
+  general: ['callsign', 'record', 'hints'],
+  controls: ['joystick', 'sticks'],
+  keys: ['keys'],
+  sound: ['sound', 'volume'],
+  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'effects_quality', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],
+}
+
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   bandit: 'ace',
   fuel: 10800, // full internal — combat loads are a slider pull away
   record: true, // flight recorder (#212): always running, saved from the log
+  hints: true, // ON, matching the `!== false` idiom every consumer already used while this key was undeclared (#116)
   aircraft: 'fa18c',
   joystick: '',
   sticks: {},

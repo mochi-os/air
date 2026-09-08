@@ -39,6 +39,7 @@ import { Slider } from '@mochi/web/components/ui/slider'
 import {
   DEFAULT_CONFIG,
   GRAPHICS_PRESETS,
+  TAB_FIELDS,
   type GraphicsPreset,
   graphicsPreset,
   type MissionConfig,
@@ -52,14 +53,6 @@ import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
 
 
 // The fields each tab owns, for the per-tab Reset
-const TAB_FIELDS: Record<string, string[]> = {
-  general: ['callsign', 'record', 'hints'],
-  controls: ['joystick', 'sticks'],
-  keys: ['keys'],
-  sound: ['sound', 'volume'],
-  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'effects_quality', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],
-}
-
 interface PadState {
   id: string
   mapping: string
@@ -1154,7 +1147,16 @@ export function SettingsDialog({
             onClick={() => {
               const fields = TAB_FIELDS[tab] ?? Object.keys(DEFAULT_CONFIG)
               const next = { ...config }
-              for (const field of fields) next[field] = DEFAULT_CONFIG[field]
+              for (const field of fields) {
+                // A field this tab lists but DEFAULT_CONFIG does not declare has
+                // no default to reset TO, and assigning undefined is worse than
+                // doing nothing: JSON.stringify drops the key, config/save
+                // upserts only what arrives, and the stored row silently keeps
+                // its old value while the switch shows the opposite (#116 —
+                // `hints` shipped that way). Leave it alone instead.
+                if (DEFAULT_CONFIG[field] === undefined) continue
+                next[field] = DEFAULT_CONFIG[field]
+              }
               if (next.callsign === '' && identity) next.callsign = identity
               onChange(next)
             }}
