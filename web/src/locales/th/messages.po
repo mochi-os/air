@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# ผลลัพธ์} other {# ผลลัพธ์}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {โดนยิง # นัด}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} จาก {1} เที่ยวบิน"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ถูกใช้อยู่แล้ว และตัวควบคุมนั้นตอนนี้ไม่ได้ผูกไว้"
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} อยู่บน {1} ซึ่งตอนนี้ไม่ได้ผูกไว้"
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# การตอบกลับ} other 
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {เปิดเมนู (การแจ้งเตือนที่ยังไม่ได้อ่าน # รายการ)} other {เปิดเมนู (การแจ้งเตือนที่ยังไม่ได้อ่าน # รายการ)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "สาย 1"
 
@@ -155,7 +155,7 @@ msgstr "12 ชั่วโมง"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "สาย 2"
 
@@ -163,7 +163,7 @@ msgstr "สาย 2"
 msgid "24 hours"
 msgstr "24 ชั่วโมง"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "สาย 3"
 
@@ -202,13 +202,13 @@ msgstr "ประเภทบัญชี"
 msgid "Ace"
 msgstr "เสืออากาศ"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "ล็อกเป้าหมาย"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "โหมดการจับเป้า"
 
@@ -290,7 +290,7 @@ msgstr "เพิ่มมุมมอง"
 msgid "Adding..."
 msgstr "กำลังเพิ่ม..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "สันดาปท้าย"
 
@@ -298,7 +298,7 @@ msgstr "สันดาปท้าย"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "เครื่องบิน"
 
@@ -356,8 +356,8 @@ msgstr "ใครก็ตามที่เข้าสู่ระบบ"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "ทุกอย่างที่สมัครรับฟีดนี้จะหยุดรับ คุณสามารถคัดลอก URL ใหม่ได้ภายหลัง"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "กำลังช่วงร่อนลงจอด (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "แน่ใจว่าต้องการยอมแพ้?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "คุณแน่ใจหรือไม่ว่าต้องการยอมแพ้? {opponentName} จะชนะเกม"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "ตะขอหยุด"
 
@@ -436,16 +436,16 @@ msgstr "อวาตาร์"
 msgid "Avatar for {name}"
 msgstr "อวาตาร์ของ {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "แกน {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "การปรับเทียบและการแมปแกน"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "ถอยออก"
 
@@ -476,7 +476,7 @@ msgstr "ลบแบนเนอร์แล้ว"
 msgid "Banner updated"
 msgstr "อัปเดตแบนเนอร์แล้ว"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ต่ำกว่า 250 — ฐานล้อและแฟลป"
 
@@ -496,11 +496,11 @@ msgstr "ร่อนดีที่สุด (เครื่องยนต์�
 msgid "Best sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องที่ดีที่สุด"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "เสียงเตือน Betty และ RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "เชื้อเพลิงบิงโก"
 
@@ -530,7 +530,7 @@ msgstr "บอทน้ำเงิน"
 msgid "Board"
 msgstr "กระดาน"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "โบลเตอร์"
 
@@ -547,19 +547,19 @@ msgstr "สีขอบ"
 msgid "Bots"
 msgstr "บอท"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "เบรก"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "หักซ้าย"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "หักขวา"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "เลี้ยวเมื่อพร้อม"
 
@@ -567,12 +567,12 @@ msgstr "เลี้ยวเมื่อพร้อม"
 msgid "Browser notifications"
 msgstr "การแจ้งเตือนของเบราว์เซอร์"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "ปุ่ม {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "การแมปปุ่ม"
 
@@ -584,16 +584,16 @@ msgstr "BVR — ใช้อาวุธได้อิสระตั้งแ�
 msgid "BVR, fight's on from the start"
 msgstr "BVR, ใช้อาวุธได้อิสระตั้งแต่เริ่ม"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "แจ้งบอล"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "นามเรียกขาน"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "ระยะกล้อง"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "สิทธิ์กล้องถูกปฏิเสธ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "กล้องไม่พร้อมใช้งาน"
 
@@ -620,10 +620,10 @@ msgstr "กล้องไม่พร้อมใช้งาน"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -641,20 +641,40 @@ msgstr "ยกเลิกการตอบกลับ"
 msgid "Cancelled"
 msgstr "ยกเลิกแล้ว"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "ปืนใหญ่และสรรพาวุธ"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "ฝาครอบห้องนักบิน"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ฝาครอบ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ฝาครอบปิด"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ฝาครอบกำลังปิด"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ฝาครอบล็อก"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ฝาครอบเปิด"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "คำบรรยายภาพ"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "เรือบรรทุกเครื่องบินและเสียงแวดล้อม"
 
@@ -711,19 +731,19 @@ msgstr "เปลี่ยนแล้ว"
 msgid "Changed {field}"
 msgstr "เปลี่ยน {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "มุมมองไล่ตาม:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "แชท"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "แชท"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "แชทกับทุกคน"
 
@@ -760,7 +780,7 @@ msgstr "เลือกภาษา"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "ล้าง"
 
@@ -806,7 +826,7 @@ msgstr "ปิดแผง / ยกเลิก"
 msgid "Close search"
 msgstr "ปิดการค้นหา"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "เข้าใกล้"
 
@@ -846,7 +866,7 @@ msgstr "สบาย"
 msgid "Command Palette"
 msgstr "แผงคำสั่ง"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "เริ่มเข้าใกล้"
 
@@ -865,7 +885,7 @@ msgstr "ความคิดเห็น"
 msgid "Comments ({0})"
 msgstr "ความคิดเห็น ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "การสื่อสาร"
 
@@ -906,7 +926,7 @@ msgstr "กำลังเชื่อมต่อ..."
 msgid "Connecting…"
 msgstr "กำลังเชื่อมต่อ…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "การเชื่อมต่อล้มเหลว"
 
@@ -963,7 +983,7 @@ msgstr "ไม่สามารถโหลดเอกสารนี้ได
 msgid "Could not load your flights"
 msgstr "ไม่สามารถโหลดการบินของคุณได้"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "ไม่สามารถบันทึกโปรไฟล์ได้"
 
@@ -992,16 +1012,16 @@ msgstr "เริ่มการยืนยันตัวตนอีกคร
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ไม่สามารถยืนยันด้วยบัญชีนั้นได้ โปรดลองอีกครั้ง"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "มาตรการตอบโต้"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "เครื่องตก"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "ตกแล้ว"
 
@@ -1069,12 +1089,12 @@ msgstr "ตำแหน่งปัจจุบัน"
 msgid "Custom"
 msgstr "กำหนดเอง"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "อันตราย"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "สลับมุมมอง"
 
@@ -1101,7 +1121,7 @@ msgstr "กลางวัน"
 msgid "Deaths"
 msgstr "ตาย"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "บันทึกตำแหน่งบนดาดฟ้าแล้ว"
 
@@ -1203,11 +1223,11 @@ msgstr "จากมากไปน้อย"
 msgid "Description"
 msgstr "คำอธิบาย"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "ถูกไฟเผาทำลาย"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "รายละเอียด"
 
@@ -1215,8 +1235,8 @@ msgstr "รายละเอียด"
 msgid "Details Panel"
 msgstr "แผงรายละเอียด"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "ตรวจจับ"
 
@@ -1239,7 +1259,7 @@ msgstr "โฮสต์เกมอื่น"
 msgid "Directory"
 msgstr "ไดเรกทอรี"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ลดฐานล้อ"
 
@@ -1251,7 +1271,7 @@ msgstr "ยกเลิก"
 msgid "Discard draft?"
 msgstr "ยกเลิกฉบับร่างใช่ไหม?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "ตัดการเชื่อมต่อแล้ว"
 
@@ -1264,12 +1284,12 @@ msgstr "ตัดการเชื่อมต่อแล้ว"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "ปิด"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "ตัวทวนหน้าจอ"
 
@@ -1277,7 +1297,7 @@ msgstr "ตัวทวนหน้าจอ"
 msgid "Displays the mobile sidebar."
 msgstr "แสดงแถบด้านข้างบนมือถือ"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD ตามระยะ"
 
@@ -1288,7 +1308,7 @@ msgstr "ไม่ตรงกับรูปแบบที่กำหนด"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "เสร็จสิ้น"
 
@@ -1303,11 +1323,11 @@ msgstr "ดาวน์โหลด"
 msgid "Download failed"
 msgstr "ดาวน์โหลดไม่สำเร็จ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ตามลม 600 ฟุต"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "ลาก"
 
@@ -1323,7 +1343,7 @@ msgstr "ทำซ้ำ"
 msgid "Duration"
 msgstr "ระยะเวลา"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "ความละเอียดแบบไดนามิก"
 
@@ -1331,7 +1351,7 @@ msgstr "ความละเอียดแบบไดนามิก"
 msgid "Dyslexia-friendly"
 msgstr "เหมาะสำหรับผู้บกพร่องการอ่าน"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "เร็ว"
 
@@ -1374,19 +1394,19 @@ msgstr "แก้ไขการ์ดที่เลือก"
 msgid "Edit view"
 msgstr "แก้ไขมุมมอง"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "เอฟเฟกต์"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "รายละเอียดเอฟเฟกต์"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ดีดตัว"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "ดีดตัวแล้ว"
 
@@ -1398,12 +1418,12 @@ msgstr "อีเมล"
 msgid "Email code"
 msgstr "รหัสอีเมล"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "สลัดทิ้งฉุกเฉิน"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "สลัดทิ้งฉุกเฉิน (กดค้าง)"
 
@@ -1416,11 +1436,11 @@ msgstr "ว่าง"
 msgid "Empty pylon"
 msgstr "ไพลอนว่าง"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "เปิดเสียง"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "เข้าโจมตี"
 
@@ -1428,7 +1448,7 @@ msgstr "เข้าโจมตี"
 msgid "Engagement"
 msgstr "การปะทะ"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "เครื่องยนต์และสันดาปท้าย"
 
@@ -1448,15 +1468,15 @@ msgstr "ป้อนรหัสจากแอปยืนยันตัวต
 msgid "Error"
 msgstr "ข้อผิดพลาด"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "ทุกคน"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "ออกจากแมตช์"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
 
@@ -1475,16 +1495,16 @@ msgstr "ขยายแถบด้านข้าง"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "แอนิเมชันการระเบิด <0>“Explosion02HD”</0> โดย <1>Unity Technologies</1> (ลำดับภาพ VFX ของ Unity Labs) เผยแพร่ภายใต้ <2>CC0</2> แก้ไข: บีบอัดใหม่สำหรับเว็บ"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "ส่งออก"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "กางแฟลป"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "รายละเอียดภายนอก"
 
@@ -1603,15 +1623,15 @@ msgstr "อัปเดตการติดตามไม่สำเร็จ
 msgid "Failed to upload attachment"
 msgstr "ไม่สามารถอัปโหลดไฟล์แนบได้"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "พอใช้"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "การต่อสู้เริ่มแล้ว"
 
@@ -1629,16 +1649,16 @@ msgstr "เสร็จสิ้นการย้ายบัญชี"
 msgid "Finished"
 msgstr "จบแล้ว"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "ยิง"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "ยิงอาวุธ"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "ปุ่มการบินคงที่"
 
@@ -1646,15 +1666,15 @@ msgstr "ปุ่มการบินคงที่"
 msgid "Flags"
 msgstr "Flags"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "เครื่องดับ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "แฟลป"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "พลุล่อ"
 
@@ -1666,19 +1686,19 @@ msgstr "พลุล่อเป้า"
 msgid "Flat"
 msgstr "แบน"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "บินลงทะเล"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "การบิน"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "แกนการบินล้มเหลว"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "คำแนะนำการบิน"
 
@@ -1699,11 +1719,11 @@ msgstr "บินแล้ว"
 msgid "Fly"
 msgstr "บิน"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "บินอีกครั้ง"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "ตัวนับเฟรมเรต"
 
@@ -1736,23 +1756,23 @@ msgstr "จากธีม"
 msgid "Fuel"
 msgstr "เชื้อเพลิง"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "เชื้อเพลิง"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ไฟเชื้อเพลิง"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "เชื้อเพลิงรั่ว"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "เชื้อเพลิงต่ำ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "ท่อรับเชื้อเพลิง"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ลำตัวเครื่องบิน"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "อัตราขยาย"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "ฐานล้อ"
 
@@ -1781,7 +1801,7 @@ msgstr "ฐานล้อ"
 msgid "GEAR"
 msgstr "ล้อ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "ทั่วไป"
 
@@ -1790,11 +1810,11 @@ msgstr "ทั่วไป"
 msgid "Go back"
 msgstr "กลับ"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "กราฟิก"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "พรีเซ็ตกราฟิก"
 
@@ -1832,15 +1852,15 @@ msgstr "ปืนใหญ่เท่านั้น"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "การเร่งกราฟิกด้วยฮาร์ดแวร์ปิดอยู่ — ตรวจสอบการตั้งค่าเบราว์เซอร์หรือไดรเวอร์กราฟิก"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "ศีรษะ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "การติดตามศีรษะ"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "สูง"
 
@@ -1850,7 +1870,7 @@ msgstr "สูง"
 msgid "High stratus"
 msgstr "สเตรตัสสูง"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "คำแนะนำ"
 
@@ -1865,7 +1885,7 @@ msgstr "ประวัติ"
 msgid "Home"
 msgstr "หน้าหลัก"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "ตะขอ"
 
@@ -1877,11 +1897,11 @@ msgstr "ตะขอ"
 msgid "Hot"
 msgstr "ยอดนิยม"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "แหล่งข้อมูลความสูงของ HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "ลดรายละเอียด HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "โปรแกรมดูรูปภาพ: {0}"
 msgid "Imperial"
 msgstr "อิมพีเรียล"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "นำเข้า"
 
@@ -1919,7 +1939,7 @@ msgstr "อวาตาร์ตัวย่อ"
 msgid "Initials avatar for {name}"
 msgstr "อวาตาร์ตัวย่อของ {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "ฮาร์ดแวร์อินพุต"
 
@@ -1944,7 +1964,7 @@ msgstr "วันที่ไม่ถูกต้อง"
 msgid "Invulnerable"
 msgstr "อมตะ"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "อมตะ"
 
@@ -1961,17 +1981,17 @@ msgstr "ดูเหมือนว่าหน้าที่คุณกำล
 msgid "Item details"
 msgstr "รายละเอียดรายการ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "เครื่องรบกวนสัญญาณ"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "สลัดถังทิ้ง"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "สลัดทิ้ง: ฐานล้อ"
 
@@ -1984,7 +2004,7 @@ msgstr "เข้าร่วม"
 msgid "Join server"
 msgstr "เข้าร่วมเซิร์ฟเวอร์"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "เข้าร่วมแล้ว"
 
@@ -2002,7 +2022,7 @@ msgstr "ดวล — 1v1 ใครยิงตกก่อนชนะ"
 msgid "Joust against bot"
 msgstr "ดวล กับบอต"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "จอยสติ๊ก"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ทางลัดแป้นพิมพ์"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "ปุ่มกด"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "สังหาร"
 
@@ -2035,20 +2055,20 @@ msgstr "ถูกยิงตก"
 msgid "Kills"
 msgstr "สังหาร"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "เครื่องยนต์ซ้าย"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ไฟ เครื่องซ้าย"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "ล้อซ้าย"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ล้อลงจอด"
 
@@ -2057,16 +2077,16 @@ msgstr "ล้อลงจอด"
 msgid "Large"
 msgstr "ใหญ่"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "ช้า"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "ปล่อยตัว / ล็อกเป้า"
 
@@ -2086,7 +2106,7 @@ msgstr "ออกจากเซิร์ฟเวอร์"
 msgid "Left"
 msgstr "ออกจากเกม"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ออกแล้ว"
 
@@ -2103,7 +2123,7 @@ msgstr "ปลายปีกซ้าย"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "ใช้ได้เฉพาะตัวอักษร ตัวเลข ช่องว่าง ยัติภังค์ และเครื่องหมายทับ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ระดับที่ 1200 ลดล้อ"
 
@@ -2111,16 +2131,16 @@ msgstr "ระดับที่ 1200 ลดล้อ"
 msgid "Light"
 msgstr "สว่าง"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "ไฟ"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "ไฟ"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ไฟ"
 
@@ -2140,7 +2160,7 @@ msgstr "รายการ"
 msgid "Load more"
 msgstr "โหลดเพิ่ม"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "กำลังโหลด"
 
@@ -2148,7 +2168,7 @@ msgstr "กำลังโหลด"
 msgid "Loading content…"
 msgstr "กำลังโหลดเนื้อหา…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "การโหลดล้มเหลว"
 
@@ -2186,35 +2206,35 @@ msgstr "ออกจากระบบเรียบร้อยแล้ว"
 msgid "Logging out…"
 msgstr "กำลังออกจากระบบ…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "มอง"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "มอง / หมุนรอบ"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "มองเป้าหมาย"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "มองลง"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "มองซ้าย"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "มองขวา"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "มองขึ้น"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "ต่ำ"
 
@@ -2224,7 +2244,7 @@ msgstr "ต่ำ"
 msgid "Low stratus"
 msgstr "สเตรตัสต่ำ"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M เพื่อปิด"
 
@@ -2236,11 +2256,11 @@ msgstr "จัดการหมวดหมู่"
 msgid "Manual"
 msgstr "คู่มือ"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "แผนที่"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "แผนที่"
 
@@ -2249,8 +2269,8 @@ msgstr "แผนที่"
 msgid "Mark all as read"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "ระดับเสียงหลัก"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "เซิร์ฟเวอร์ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "กลาง"
 
@@ -2279,13 +2299,13 @@ msgstr "กลาง"
 msgid "Members"
 msgstr "สมาชิก"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "เมนู"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "เมนู"
 
@@ -2297,7 +2317,7 @@ msgstr "เมิร์จ — เริ่มสู้เมื่อบิน�
 msgid "Message"
 msgstr "ข้อความ"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "ส่งข้อความถึงทุกคน"
 
@@ -2305,7 +2325,7 @@ msgstr "ส่งข้อความถึงทุกคน"
 msgid "Message players on this server"
 msgstr "ส่งข้อความถึงผู้เล่นบนเซิร์ฟเวอร์นี้"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "ส่งข้อความถึงทีมของคุณ"
 
@@ -2323,7 +2343,7 @@ msgstr "สิทธิ์ไมโครโฟนถูกปฏิเสธ"
 msgid "Mid stratus"
 msgstr "สเตรตัสกลาง"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "ชนกันกลางอากาศ"
 
@@ -2335,7 +2355,7 @@ msgstr "แผนที่อะทอลล์มิดเวย์ — ภา�
 msgid "Minimum length"
 msgstr "ความยาวขั้นต่ำ"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ขีปนาวุธ"
 
@@ -2343,7 +2363,7 @@ msgstr "ขีปนาวุธ"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "โมเดลขีปนาวุธ <0>“AIM-120C AMRAAM”</0> โดย <1>Pippa</1> (Sketchfab) อนุญาตภายใต้ <2>CC BY 4.0</2>. แก้ไข: ปรับขนาดใหม่ ปรับทิศทางใหม่ และจัดกึ่งกลางสำหรับการติดตั้ง"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "ภารกิจสิ้นสุด"
 
@@ -2369,7 +2389,7 @@ msgstr "วันจันทร์"
 msgid "More options"
 msgstr "ตัวเลือกเพิ่มเติม"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "ขยับ…"
 
@@ -2447,7 +2467,7 @@ msgstr "ยังไม่มีกิจกรรม"
 msgid "No comments yet"
 msgstr "ยังไม่มีความคิดเห็น"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "ไม่มีตัวควบคุมที่ตรงกับ “{query}”"
 
@@ -2471,7 +2491,7 @@ msgstr "ไม่มีกลุ่มที่ใช้งานได้"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ยังไม่สามารถสร้างประเภทรายการได้ กรุณาสร้างรายการแม่ที่จำเป็นก่อน"
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ไม่พบจอยสติ๊ก — กดปุ่มใดก็ได้บนจอยสติ๊กเพื่อปลุกให้ทำงาน"
 
@@ -2507,11 +2527,11 @@ msgstr "ไม่พบผลลัพธ์"
 msgid "No status"
 msgstr "ไม่มีสถานะ"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ไม่มีถัง"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "ไม่มีเป้าหมาย"
 
@@ -2540,7 +2560,7 @@ msgstr "ไม่มีการเข้าชม"
 msgid "No world server."
 msgstr "ไม่มีเซิร์ฟเวอร์โลก"
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ไม่มีเกรด"
 
@@ -2563,9 +2583,9 @@ msgstr "ไม่มีเกรด"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "ไม่มี"
 
@@ -2573,11 +2593,11 @@ msgstr "ไม่มี"
 msgid "Normal"
 msgstr "ปกติ"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "ล้อหน้า"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ไม่ใช่โปรไฟล์จอยสติ๊ก"
 
@@ -2615,7 +2635,7 @@ msgstr "มือใหม่"
 msgid "Number"
 msgstr "ตัวเลข"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "รายละเอียดมหาสมุทร"
 
@@ -2623,7 +2643,7 @@ msgstr "รายละเอียดมหาสมุทร"
 msgid "offline"
 msgstr "ออฟไลน์"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "ชื่อตัวเลือก"
 msgid "Options"
 msgstr "ตัวเลือก"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "หรือ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "หมุนรอบ"
 
@@ -2708,8 +2728,8 @@ msgstr "หมุนรอบ"
 msgid "Other"
 msgstr "อื่น ๆ"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "ข้ามขีดจำกัด G"
 
@@ -2717,11 +2737,11 @@ msgstr "ข้ามขีดจำกัด G"
 msgid "Owner"
 msgstr "เจ้าของ"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ล็อกสายตา"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "สายตาอิสระ"
 
@@ -2731,7 +2751,11 @@ msgstr "สายตาอิสระ"
 msgid "Parent"
 msgstr "แม่"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "เบรกจอด"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "เบรกจอด"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkeys ไม่พร้อมใช้งานในเบราว
 msgid "Pattern (regex)"
 msgstr "รูปแบบ (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "หยุดชั่วคราวแล้ว"
 
@@ -2776,15 +2800,15 @@ msgstr "นักบิน"
 msgid "Pilot"
 msgstr "นักบิน"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "ตัวตนนักบิน"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "นักบินเสียชีวิต"
 
@@ -2793,23 +2817,23 @@ msgstr "นักบินเสียชีวิต"
 msgid "Pin"
 msgstr "ปักหมุด"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "ก้มเงย"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "พิตช์"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "พิตช์ลง"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "พิตช์ขึ้น"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "แพลตฟอร์ม"
 
@@ -2839,15 +2863,15 @@ msgstr "โพสต์"
 msgid "Posts and comments"
 msgstr "โพสต์และความคิดเห็น"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "กดปุ่ม…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "กด ENTER เพื่อปล่อยตัว"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "กด…"
 
@@ -2861,12 +2885,24 @@ msgstr "รูปก่อนหน้า"
 msgid "Privacy"
 msgstr "ความเป็นส่วนตัว"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ท่อรับน้ำมัน"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ท่อเก็บ"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ท่อกาง"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "กำลังประมวลผล…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "บันทึกโปรไฟล์แล้ว"
 
@@ -2887,24 +2923,24 @@ msgstr "เซิร์ฟเวอร์สาธารณะ"
 msgid "Push notification"
 msgstr "การแจ้งเตือนแบบพุช"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "เวลาเข้าใกล้"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "เครื่องยนต์ขวา"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ไฟ เครื่องขวา"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "ล้อขวา"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "เรดาร์เงียบ"
 
@@ -2920,7 +2956,7 @@ msgstr "เชื่อมโยงบัญชีของคุณใหม่
 msgid "Re-register your passkeys on this server"
 msgstr "ลงทะเบียนพาสคีย์ของคุณใหม่บนเซิร์ฟเวอร์นี้"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ติดอาวุธใหม่แล้ว"
 
@@ -2936,12 +2972,12 @@ msgstr "แนะนำ"
 msgid "Reconnecting ({retries})..."
 msgstr "กำลังเชื่อมต่อใหม่ ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "บันทึกการบิน"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "การบันทึก"
 
@@ -2982,7 +3018,7 @@ msgstr "อ้างอิง"
 msgid "Refresh"
 msgstr "รีเฟรช"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "กลับเข้าหมู่บิน"
 
@@ -3082,23 +3118,23 @@ msgstr "จำเป็น"
 msgid "Resend email"
 msgstr "ส่งอีเมลอีกครั้ง"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "รีเซ็ต"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "รีเซ็ตคำเตือนหลัก"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "รีเซ็ตทริม"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "รีเซ็ตมุมมอง"
 
@@ -3114,19 +3150,19 @@ msgstr "ยอมแพ้เกม?"
 msgid "Resigning..."
 msgstr "กำลังยอมแพ้..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "การแก้ปัญหา"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "เริ่มใหม่"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "เริ่มภารกิจใหม่"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "เริ่มภารกิจใหม่หรือไม่"
 
@@ -3134,12 +3170,12 @@ msgstr "เริ่มภารกิจใหม่หรือไม่"
 msgid "Result"
 msgstr "ผล"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "ดำเนินการต่อ"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "เก็บแฟลป"
 
@@ -3147,7 +3183,7 @@ msgstr "เก็บแฟลป"
 msgid "Retry"
 msgstr "ลองอีกครั้ง"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "กลับด้าน"
 
@@ -3172,19 +3208,19 @@ msgstr "ปีกขวา"
 msgid "Right wingtip"
 msgstr "ปลายปีกขวา"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "ม้วนตัว"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "โรล"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "โรลซ้าย"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "โรลขวา"
 
@@ -3209,7 +3245,7 @@ msgstr "ฟีด RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "คัดลอก URL RSS ไปยังคลิปบอร์ดแล้ว"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "กำลังเต็มที่"
 
@@ -3242,8 +3278,8 @@ msgstr "ระดับน้ำทะเล"
 msgid "Search"
 msgstr "ค้นหา"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "ค้นหาตัวควบคุม"
 
@@ -3340,8 +3376,8 @@ msgstr "เลือกบุคคล..."
 msgid "Select previous card"
 msgstr "เลือกการ์ดก่อนหน้า"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "เลือกอาวุธ"
 
@@ -3363,7 +3399,7 @@ msgstr "ส่ง"
 msgid "Send again"
 msgstr "ส่งอีกครั้ง"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "ส่งแชท"
 
@@ -3404,7 +3440,7 @@ msgstr "กฎของเซิร์ฟเวอร์"
 msgid "server runs v{0}, you have v{version}"
 msgstr "เซิร์ฟเวอร์ใช้ v{0} คุณมี v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "เซสชันสิ้นสุดแล้ว"
 
@@ -3412,7 +3448,7 @@ msgstr "เซสชันสิ้นสุดแล้ว"
 msgid "Session expired. Please log in again."
 msgstr "เซสชันหมดอายุ โปรดเข้าสู่ระบบอีกครั้ง"
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "ตั้งค่า"
 
@@ -3423,14 +3459,14 @@ msgstr "ตั้งค่าต้นทางและปลายทาง"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "การตั้งค่า"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "เงา"
 
@@ -3485,7 +3521,7 @@ msgstr "เล็ก"
 msgid "Sort"
 msgstr "เรียงลำดับ"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "เสียง"
 
@@ -3505,17 +3541,17 @@ msgstr "จุดเกิดห่างกัน"
 msgid "Spacious"
 msgstr "กว้างขวาง"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "เบ.ลม"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "เบรกลม"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "เบรกลม"
 
@@ -3523,9 +3559,13 @@ msgstr "เบรกลม"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "ความเร็วเป็น KCAS แสดงเป็นช่วงตั้งแต่เบา (เชื้อเพลิงน้อยที่สุด ไม่ติดอาวุธภายนอก) ถึงหนัก (น้ำหนักรวมสูงสุด) ข้อมูลได้มาจากการทดลองในเกม ความแตกต่างใด ๆ จากอากาศยานจริงสะท้อนถึงข้อผิดพลาดของแบบจำลองการบินในเครื่องจำลอง"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "ยิงตกแล้ว"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "กางปีก"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "ไต่ชันที่สุด (Vx, สันดาปท้าย
 msgid "Stop watching"
 msgstr "หยุดติดตาม"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "โครงสร้าง"
 
@@ -3598,7 +3638,7 @@ msgstr "เปลี่ยนเป็นมุมมอง 1-9"
 msgid "System"
 msgstr "ระบบ"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "แผนที่ยุทธวิธี"
 
@@ -3615,7 +3655,7 @@ msgstr "แท็กต้องมีไม่เกิน 50 อักขร�
 msgid "Tags"
 msgstr "แท็ก"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "เห็นข้าศึกแล้ว"
 
@@ -3623,11 +3663,11 @@ msgstr "เห็นข้าศึกแล้ว"
 msgid "Task"
 msgstr "งาน"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "ทีม"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "ทีม"
 
@@ -3674,7 +3714,7 @@ msgstr "คำขอกล้องไม่ได้รับการตอบ
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "โหลดเกมไม่ได้ โหลดหน้านี้ใหม่เพื่อลองอีกครั้ง"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "แมตช์ยังดำเนินต่ออยู่หลังเมนูนี้"
 
@@ -3686,7 +3726,7 @@ msgstr "คำขอไมโครโฟนไม่ได้รับการ
 msgid "The mission stopped."
 msgstr "ภารกิจหยุดลง"
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "ภารกิจจะเริ่มต้นใหม่ การบินปัจจุบันจะไม่ถูกบันทึก"
 
@@ -3722,21 +3762,21 @@ msgstr "เครื่องนี้อาจช้าเกินไปสำ
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "การดำเนินการนี้จะลบเกมและแชทของเกมอย่างถาวร ไม่สามารถยกเลิกการดำเนินการนี้ได้"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "คันเร่ง"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "คันเร่ง"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "ลดคันเร่ง"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "เพิ่มคันเร่ง"
 
@@ -3748,7 +3788,7 @@ msgstr "วันพฤหัสบดี"
 msgid "Tightest sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องแคบที่สุด"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "เอียง"
 
@@ -3795,7 +3835,7 @@ msgstr "คำขอมากเกินไป"
 msgid "Top"
 msgstr "บนสุด"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "กระสุนส่องวิถี"
 
@@ -3803,35 +3843,35 @@ msgstr "กระสุนส่องวิถี"
 msgid "Travelling"
 msgstr "กำลังเดินทาง"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "ทริม"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "ทริม"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "หมวกทริม"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ทริม: หัวลง"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ทริม: หัวขึ้น"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ทริม: เอียงซ้าย"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ทริม: เอียงขวา"
 
@@ -3869,7 +3909,7 @@ msgstr "พิมพ์เพื่อค้นหาผู้ใช้"
 msgid "Type to search..."
 msgstr "พิมพ์เพื่อค้นหา..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "อัลตรา"
 
@@ -3890,13 +3930,13 @@ msgstr "ยังไม่กำหนด"
 msgid "Unavailable"
 msgstr "ไม่พร้อมใช้งาน"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "ปลดหัวค้นหา"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "ยกเลิกการกำหนดเป้าหมาย"
 
@@ -4014,11 +4054,11 @@ msgstr "ภาพย่อวิดีโอ"
 msgid "Video viewer: {0}"
 msgstr "โปรแกรมดูวิดีโอ: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "มุมมอง"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "ดู"
 
@@ -4035,7 +4075,7 @@ msgstr "ดูและแก้ไขรายละเอียดรายก
 msgid "View controls"
 msgstr "ตัวควบคุมมุมมอง"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "การดู"
 
@@ -4043,11 +4083,11 @@ msgstr "การดู"
 msgid "Voice recording is not supported in this browser"
 msgstr "เบราว์เซอร์นี้ไม่รองรับการบันทึกเสียง"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "ระดับเสียง"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "กำลังรอคู่ต่อสู้"
 
@@ -4065,7 +4105,7 @@ msgstr "ติดตามแล้ว"
 msgid "Watched only"
 msgstr "ที่ติดตามเท่านั้น"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "โกอะราวด์"
 
@@ -4074,16 +4114,16 @@ msgstr "โกอะราวด์"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "เราส่งรหัสยืนยันไปที่ <0>{0}</0> แล้ว ป้อนรหัสด้านล่างเพื่อยืนยันที่อยู่อีเมลของคุณ"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "อาวุธ"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "ปุ่มหมวกเลือกอาวุธ"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "อาวุธ"
 
@@ -4095,21 +4135,37 @@ msgstr "สภาพอากาศ"
 msgid "Wednesday"
 msgstr "วันพุธ"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "เบรกล้อ"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "ลมและโครงเครื่องบิน"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "พับปีก"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ปีก"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ปีกกำลังพับ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ปีกล็อก"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ปีกกำลังกาง"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ชนะ"
 
@@ -4126,25 +4182,25 @@ msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, ใช้อาวุธได้อิสระเมื่อบินสวนกัน"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "หันเห"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "ยอ"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "ยอซ้าย"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "ยอขวา"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "คุณ"
 
@@ -4176,14 +4232,14 @@ msgstr "ข้อความและไฟล์แนบของคุณจ
 msgid "Your text will be lost."
 msgstr "ข้อความของคุณจะหายไป"
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "ซูม"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "ซูมเข้า"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "ซูมออก"

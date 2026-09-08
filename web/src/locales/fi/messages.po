@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# tulos} other {# tulosta}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Sai # osuman} other {Sai # osumaa}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0}/{1} lentoa"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} oli jo varattu, ja kyseinen säädin on nyt sitomaton."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} oli säätimessä {1}, joka on nyt sitomaton."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# vastaus} other {+# lisävastausta}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Avaa valikko (# lukematon ilmoitus)} other {Avaa valikko (# lukematonta ilmoitusta)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "VAIJERI 1"
 
@@ -155,7 +155,7 @@ msgstr "12 tuntia"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "VAIJERI 2"
 
@@ -163,7 +163,7 @@ msgstr "VAIJERI 2"
 msgid "24 hours"
 msgstr "24 tuntia"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "VAIJERI 3"
 
@@ -202,13 +202,13 @@ msgstr "Tilin tyyppi"
 msgid "Ace"
 msgstr "Ässä"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Lukitse maali"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Kaappaustila"
 
@@ -290,7 +290,7 @@ msgstr "Lisää näkymä"
 msgid "Adding..."
 msgstr "Lisätään..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Jälkipoltin"
 
@@ -298,7 +298,7 @@ msgstr "Jälkipoltin"
 msgid "AI"
 msgstr "Tekoäly"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Lentokone"
 
@@ -356,8 +356,8 @@ msgstr "Kuka tahansa kirjautunut"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Kaikki tätä syötettä tilaavat lakkaavat vastaanottamasta sitä. Voit kopioida uuden URL-osoitteen jälkeenpäin."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Lähestymisteho (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Haluatko varmasti luovuttaa?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Haluatko varmasti luovuttaa? {opponentName} voittaa pelin."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Jarrukoukku"
 
@@ -436,16 +436,16 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Käyttäjän {name} avatar"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Akseli {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Akselien kalibrointi ja määritys"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "takaisin"
 
@@ -476,7 +476,7 @@ msgstr "Banneri poistettu"
 msgid "Banner updated"
 msgstr "Banneri päivitetty"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ALLE 250 — TELINE JA LASKUSIIVEKKEET"
 
@@ -496,11 +496,11 @@ msgstr "Paras liito (moottorit sammuneina)"
 msgid "Best sustained turn speed"
 msgstr "Paras jatkuvan käännöksen nopeus"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty- ja RWR-hälytykset"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "BINGO POLTTOAINE"
 
@@ -530,7 +530,7 @@ msgstr "Siniset botit"
 msgid "Board"
 msgstr "Lauta"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "Reunan väri"
 msgid "Bots"
 msgstr "Botit"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "jarrut"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "VEDÄ VASEMMALLE"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "VEDÄ OIKEALLE"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "KÄÄNNÖS KUN VALMIS"
 
@@ -567,12 +567,12 @@ msgstr "KÄÄNNÖS KUN VALMIS"
 msgid "Browser notifications"
 msgstr "Selaimen ilmoitukset"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Painike {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Painikemääritykset"
 
@@ -584,16 +584,16 @@ msgstr "BVR — aseet vapaat alusta asti"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, aseet vapaat alusta asti"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ILMOITA PALLO"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Kutsutunnus"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Kameran etäisyys"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Kameran käyttöoikeus evättiin"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Kamera ei ole käytettävissä"
 
@@ -620,10 +620,10 @@ msgstr "Kamera ei ole käytettävissä"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Peruuta"
 
@@ -641,20 +641,40 @@ msgstr "Peruuta vastaus"
 msgid "Cancelled"
 msgstr "Peruutettu"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Tykit ja ammukset"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Kuomu"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "KUOMU"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "KUOMU KIINNI"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "KUOMU SULKEUTUU"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "KUOMU LUKITTU"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "KUOMU AUKI"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Kuvateksti"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Lentotukialus ja ympäristö"
 
@@ -711,19 +731,19 @@ msgstr "Muutettu"
 msgid "Changed {field}"
 msgstr "{field} muutettu"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Seurantanäkymä:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Keskustelu"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Chat kaikille"
 
@@ -760,7 +780,7 @@ msgstr "Valitse kieli"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Tyhjennä"
 
@@ -806,7 +826,7 @@ msgstr "Sulje paneeli / peruuta"
 msgid "Close search"
 msgstr "Sulje haku"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "lähemmäs"
 
@@ -846,7 +866,7 @@ msgstr "Mukava"
 msgid "Command Palette"
 msgstr "Komentopaletti"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ALOITAN"
 
@@ -865,7 +885,7 @@ msgstr "Kommentit"
 msgid "Comments ({0})"
 msgstr "Kommentit ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Viestintä"
 
@@ -906,7 +926,7 @@ msgstr "Yhdistetään..."
 msgid "Connecting…"
 msgstr "Yhdistetään…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "YHTEYS EPÄONNISTUI"
 
@@ -963,7 +983,7 @@ msgstr "Tätä dokumenttia ei voitu ladata. Yritä myöhemmin uudelleen."
 msgid "Could not load your flights"
 msgstr "Lentojasi ei voitu ladata"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Profiilin tallennus epäonnistui"
 
@@ -992,16 +1012,16 @@ msgstr "Uudelleentodennuksen aloittaminen ei onnistunut. Yritä uudelleen."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Vahvistaminen tällä tilillä ei onnistunut. Yritä uudelleen."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Vastatoimet"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Syöksyi maahan"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "PUTOSI"
 
@@ -1069,12 +1089,12 @@ msgstr "Nykyinen sijainti"
 msgid "Custom"
 msgstr "Mukautettu"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "VAARALLINEN"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Vaihda näkymää"
 
@@ -1101,7 +1121,7 @@ msgstr "Päivä"
 msgid "Deaths"
 msgstr "Kuolemat"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "KANSIPAIKKA TALLENNETTU"
 
@@ -1203,11 +1223,11 @@ msgstr "Laskeva"
 msgid "Description"
 msgstr "Kuvaus"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Tuhoutui tulipalossa"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Tarkkuus"
 
@@ -1215,8 +1235,8 @@ msgstr "Tarkkuus"
 msgid "Details Panel"
 msgstr "Tietopaneeli"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Tunnista"
 
@@ -1239,7 +1259,7 @@ msgstr "Eri pelin isäntä"
 msgid "Directory"
 msgstr "Hakemisto"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "TELINE ALAS"
 
@@ -1251,7 +1271,7 @@ msgstr "Hylkää"
 msgid "Discard draft?"
 msgstr "Hylätäänkö luonnos?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "irrotettu"
 
@@ -1264,12 +1284,12 @@ msgstr "Ei yhteyttä"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Hylkää"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Näytön toistin"
 
@@ -1277,7 +1297,7 @@ msgstr "Näytön toistin"
 msgid "Displays the mobile sidebar."
 msgstr "Näyttää mobiilisivupalkin."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "Etäisyys-LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "Ei vastaa vaadittua kaavaa"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Valmis"
 
@@ -1303,11 +1323,11 @@ msgstr "Lataa"
 msgid "Download failed"
 msgstr "Lataus epäonnistui"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "MYÖTÄTUULI 600 JALKAA"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Vedä"
 
@@ -1323,7 +1343,7 @@ msgstr "Duplikoi"
 msgid "Duration"
 msgstr "Kesto"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Dynaaminen resoluutio"
 
@@ -1331,7 +1351,7 @@ msgstr "Dynaaminen resoluutio"
 msgid "Dyslexia-friendly"
 msgstr "Lukihäiriöystävällinen"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "AIKAISIN"
 
@@ -1374,19 +1394,19 @@ msgstr "Muokkaa valittua korttia"
 msgid "Edit view"
 msgstr "Muokkaa näkymää"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Tehosteet"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Efektien tarkkuus"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Heittoistuin"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "PELASTAUTUI"
 
@@ -1398,12 +1418,12 @@ msgstr "Sähköposti"
 msgid "Email code"
 msgstr "Sähköpostikoodi"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "HÄTÄPUDOTUS"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Hätäpudotus (pidä)"
 
@@ -1416,11 +1436,11 @@ msgstr "tyhjä"
 msgid "Empty pylon"
 msgstr "Tyhjä pyloni"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Ota ääni käyttöön"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "HYÖKKÄÄN"
 
@@ -1428,7 +1448,7 @@ msgstr "HYÖKKÄÄN"
 msgid "Engagement"
 msgstr "Taistelu"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Moottori ja jälkipoltin"
 
@@ -1448,15 +1468,15 @@ msgstr "Anna todennussovelluksen koodi"
 msgid "Error"
 msgstr "Virhe"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Kaikki"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Poistu ottelusta"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Poistu tehtävästä"
 
@@ -1475,16 +1495,16 @@ msgstr "Laajenna sivupalkki"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Räjähdysanimaatio <0>“Explosion02HD”</0>, tekijä <1>Unity Technologies</1> (Unity Labsin VFX-kuvasarjat), julkaistu <2>CC0</2>-lisenssillä. Muokattu: pakattu uudelleen verkkoa varten."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Vie"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Laskusiivekkeet ulos"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Ulkopuolen yksityiskohdat"
 
@@ -1603,15 +1623,15 @@ msgstr "Seurannan päivitys epäonnistui"
 msgid "Failed to upload attachment"
 msgstr "Liitteen lähetys epäonnistui"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "KOHTALAINEN"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "TAISTELU ALKAA"
 
@@ -1629,16 +1649,16 @@ msgstr "Viimeistele tilin siirto"
 msgid "Finished"
 msgstr "Päättyi"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "ammu"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Ammu aseella"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Kiinteät lentonäppäimet"
 
@@ -1646,15 +1666,15 @@ msgstr "Kiinteät lentonäppäimet"
 msgid "Flags"
 msgstr "Liput"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "SAMMUMINEN"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "laskusiivekkeet"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "soihdut"
 
@@ -1666,19 +1686,19 @@ msgstr "SOIHDUT"
 msgid "Flat"
 msgstr "Litteä"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Lensi mereen"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Lento"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "LENTOYTIMEN VIRHE"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Lentovihjeet"
 
@@ -1699,11 +1719,11 @@ msgstr "Lennetty"
 msgid "Fly"
 msgstr "Lennä"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Lennä uudelleen"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Kuvataajuuslaskuri"
 
@@ -1736,23 +1756,23 @@ msgstr "Teemasta"
 msgid "Fuel"
 msgstr "Polttoaine"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "POLTTOAINE"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "POLTTOAINEPALO"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "POLTTOAINEVUOTO"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "POLTTOAINE VÄHISSÄ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Polttoainepuomi"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Runko"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Vahvistus"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "laskuteline"
 
@@ -1781,7 +1801,7 @@ msgstr "laskuteline"
 msgid "GEAR"
 msgstr "TELINE"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Yleiset"
 
@@ -1790,11 +1810,11 @@ msgstr "Yleiset"
 msgid "Go back"
 msgstr "Takaisin"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Grafiikka"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Grafiikan esiasetus"
 
@@ -1832,15 +1852,15 @@ msgstr "Vain tykit"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Laitteistokiihdytys on pois päältä — tarkista selaimen asetukset tai näytönohjaimen ajurit."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Pää"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Pään seuranta"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Korkea"
 
@@ -1850,7 +1870,7 @@ msgstr "Korkea"
 msgid "High stratus"
 msgstr "Korkea kerrospilvi"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Vihjeet"
 
@@ -1865,7 +1885,7 @@ msgstr "Historia"
 msgid "Home"
 msgstr "Etusivu"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "koukku"
 
@@ -1877,11 +1897,11 @@ msgstr "KOUKKU"
 msgid "Hot"
 msgstr "Kuuma"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD-korkeuden lähde"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD-pelkistys"
 
@@ -1898,7 +1918,7 @@ msgstr "Kuvankatselin: {0}"
 msgid "Imperial"
 msgstr "Brittiläinen"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Tuo"
 
@@ -1919,7 +1939,7 @@ msgstr "Nimikirjainavatar"
 msgid "Initials avatar for {name}"
 msgstr "Käyttäjän {name} nimikirjainavatar"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Ohjainlaitteet"
 
@@ -1944,7 +1964,7 @@ msgstr "Virheellinen päivämäärä"
 msgid "Invulnerable"
 msgstr "Haavoittumaton"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "HAAVOITTUMATON"
 
@@ -1961,17 +1981,17 @@ msgstr "Näyttää siltä, että etsimääsi sivua <0/>ei ole olemassa tai se on
 msgid "Item details"
 msgstr "Kohteen tiedot"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Häirintälähetin"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Pudota säiliöt"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "PUDOTUS: LASKUTELINE"
 
@@ -1984,7 +2004,7 @@ msgstr "Liity"
 msgid "Join server"
 msgstr "Liity palvelimeen"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "LIITTYI"
 
@@ -2002,7 +2022,7 @@ msgstr "Kaksintaistelu — 1v1, ensimmäinen pudotus voittaa"
 msgid "Joust against bot"
 msgstr "Kaksintaistelu bottia vastaan"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Sauvaohjain"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Pikanäppäimet"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Näppäimet"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "PUDOTUS"
 
@@ -2035,20 +2055,20 @@ msgstr "Tapettu"
 msgid "Kills"
 msgstr "Tapot"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "VAS MOOTTORI"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "PALO VAS MOOT"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "V TELINE"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Laskuteline"
 
@@ -2057,16 +2077,16 @@ msgstr "Laskuteline"
 msgid "Large"
 msgstr "Suuri"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "MYÖHÄSSÄ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Laukaisu (katapultti)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "laukaisu / lukitus"
 
@@ -2086,7 +2106,7 @@ msgstr "Poistu palvelimelta"
 msgid "Left"
 msgstr "Poistui"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "POISTUI"
 
@@ -2103,7 +2123,7 @@ msgstr "Vasemman siiven kärki"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Vain kirjaimet, numerot, välilyönnit, yhdysmerkit ja kauttaviivat"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "VAAKALENTO 1200, TELINE ALAS"
 
@@ -2111,16 +2131,16 @@ msgstr "VAAKALENTO 1200, TELINE ALAS"
 msgid "Light"
 msgstr "Vaalea"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "valot"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Valot"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "VALOT"
 
@@ -2140,7 +2160,7 @@ msgstr "Luettelo"
 msgid "Load more"
 msgstr "Lataa lisää"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "LADATAAN"
 
@@ -2148,7 +2168,7 @@ msgstr "LADATAAN"
 msgid "Loading content…"
 msgstr "Ladataan sisältöä…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "LATAUS EPÄONNISTUI"
 
@@ -2186,35 +2206,35 @@ msgstr "Uloskirjautuminen onnistui"
 msgid "Logging out…"
 msgstr "Kirjaudutaan ulos…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Katso"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Katselu / kierto"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Katso maalia"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Katso alas"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Katso vasemmalle"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Katso oikealle"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Katso ylös"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Matala"
 
@@ -2224,7 +2244,7 @@ msgstr "Matala"
 msgid "Low stratus"
 msgstr "Matala kerrospilvi"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M sulkee"
 
@@ -2236,11 +2256,11 @@ msgstr "Hallitse kategorioita"
 msgid "Manual"
 msgstr "Manuaalinen"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "kartta"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Kartta"
 
@@ -2249,8 +2269,8 @@ msgstr "Kartta"
 msgid "Mark all as read"
 msgstr "Merkitse kaikki luetuiksi"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Pää-äänenvoimakkuus"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP-palvelin"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Keskikoko"
 
@@ -2279,13 +2299,13 @@ msgstr "Keskikoko"
 msgid "Members"
 msgstr "Jäsenet"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "valikko"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Valikko"
 
@@ -2297,7 +2317,7 @@ msgstr "Kohtaaminen — taistelu alkaa ohituksessa"
 msgid "Message"
 msgstr "Viesti"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Kirjoita kaikille"
 
@@ -2305,7 +2325,7 @@ msgstr "Kirjoita kaikille"
 msgid "Message players on this server"
 msgstr "Lähetä viesti tämän palvelimen pelaajille"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Kirjoita tiimillesi"
 
@@ -2323,7 +2343,7 @@ msgstr "Mikrofonin käyttölupa evätty"
 msgid "Mid stratus"
 msgstr "Keskikorkea kerrospilvi"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Yhteentörmäys ilmassa"
 
@@ -2335,7 +2355,7 @@ msgstr "Midwayn atollin kartta — kuvat sisältävät muokattua <0>Copernicus S
 msgid "Minimum length"
 msgstr "Vähimmäispituus"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "OHJUS"
 
@@ -2343,7 +2363,7 @@ msgstr "OHJUS"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Ohjusmalli <0>“AIM-120C AMRAAM”</0>, tekijä <1>Pippa</1> (Sketchfab), lisensoitu lisenssillä <2>CC BY 4.0</2>. Muokattu: skaalattu, suunnattu uudelleen ja keskitetty sijoitusta varten."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Tehtävä ohi"
 
@@ -2369,7 +2389,7 @@ msgstr "Maanantai"
 msgid "More options"
 msgstr "Lisää vaihtoehtoja"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Liikuta…"
 
@@ -2447,7 +2467,7 @@ msgstr "Ei vielä toimintaa"
 msgid "No comments yet"
 msgstr "Ei vielä kommentteja"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Mikään säädin ei vastaa hakua ”{query}”."
 
@@ -2471,7 +2491,7 @@ msgstr "Ei saatavilla olevia ryhmiä"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Mitään kohdetyyppiä ei voi vielä luoda. Luo ensin vaaditut yläkohteet."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Sauvaohjainta ei havaittu — herätä se painamalla mitä tahansa sen painiketta."
 
@@ -2507,11 +2527,11 @@ msgstr "Tuloksia ei löytynyt."
 msgid "No status"
 msgstr "Ei tilaa"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "EI SÄILIÖITÄ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "EI MAALIA"
 
@@ -2540,7 +2560,7 @@ msgstr "Ei näkymiä"
 msgid "No world server."
 msgstr "Ei maailmapalvelinta."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "EI ARVOSANAA"
 
@@ -2563,9 +2583,9 @@ msgstr "EI ARVOSANAA"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Ei mitään"
 
@@ -2573,11 +2593,11 @@ msgstr "Ei mitään"
 msgid "Normal"
 msgstr "Normaali"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "NOKKATELINE"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Ei ohjaussauvan profiili"
 
@@ -2615,7 +2635,7 @@ msgstr "Aloittelija"
 msgid "Number"
 msgstr "Numero"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Meren yksityiskohdat"
 
@@ -2623,7 +2643,7 @@ msgstr "Meren yksityiskohdat"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Vaihtoehdon nimi"
 msgid "Options"
 msgstr "Vaihtoehdot"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "tai"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "kierto"
 
@@ -2708,8 +2728,8 @@ msgstr "kierto"
 msgid "Other"
 msgstr "Muu"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G-rajan ohitus"
 
@@ -2717,11 +2737,11 @@ msgstr "G-rajan ohitus"
 msgid "Owner"
 msgstr "Omistaja"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "PADLOCK"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "PADLOCK POIS"
 
@@ -2731,7 +2751,11 @@ msgstr "PADLOCK POIS"
 msgid "Parent"
 msgstr "Yläkohde"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "SEISONTAJARRU"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Seisontajarru"
 
@@ -2756,7 +2780,7 @@ msgstr "Avainkoodit eivät ole käytettävissä tässä selaimessa"
 msgid "Pattern (regex)"
 msgstr "Kuvio (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Tauolla"
 
@@ -2776,15 +2800,15 @@ msgstr "lentäjä"
 msgid "Pilot"
 msgstr "Lentäjä"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "LENTÄJÄ KAATUI"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Lentäjän identiteetti"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Lentäjä kuoli"
 
@@ -2793,23 +2817,23 @@ msgstr "Lentäjä kuoli"
 msgid "Pin"
 msgstr "Kiinnitä"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "nyökkäys"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Nyökkäys"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Nokka alas"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Nokka ylös"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "TASANNE"
 
@@ -2839,15 +2863,15 @@ msgstr "Julkaisut"
 msgid "Posts and comments"
 msgstr "Julkaisut ja kommentit"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Paina näppäintä…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PAINA ENTER LAUKAISTAKSESI"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Paina…"
 
@@ -2861,12 +2885,24 @@ msgstr "Edellinen kuva"
 msgid "Privacy"
 msgstr "Yksityisyys"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "TANKKAUSPUOMI"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "PUOMI SISÄLLÄ"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "PUOMI ULKONA"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Käsitellään…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profiili tallennettu"
 
@@ -2887,24 +2923,24 @@ msgstr "Julkiset palvelimet"
 msgid "Push notification"
 msgstr "Push-ilmoitus"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "LÄHESTYMISAIKA"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "OIK MOOTTORI"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "PALO OIK MOOT"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "O TELINE"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Tutkahiljaisuus"
 
@@ -2920,7 +2956,7 @@ msgstr "Yhdistä tilisi uudelleen tällä palvelimella"
 msgid "Re-register your passkeys on this server"
 msgstr "Rekisteröi pääsyavaimesi uudelleen tällä palvelimella"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "UUDELLEENASEISTETTU"
 
@@ -2936,12 +2972,12 @@ msgstr "Suositeltu"
 msgid "Reconnecting ({retries})..."
 msgstr "Yhdistetään uudelleen ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Tallenna lennot"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Tallennus"
 
@@ -2982,7 +3018,7 @@ msgstr "Viitearvot"
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "PALAAN MUODOSTELMAAN"
 
@@ -3082,23 +3118,23 @@ msgstr "Pakollinen"
 msgid "Resend email"
 msgstr "Lähetä sähköposti uudelleen"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Nollaa"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Nollaa päävaroitus"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Trimmin nollaus"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Nollaa näkymä"
 
@@ -3114,19 +3150,19 @@ msgstr "Luovutatko pelin?"
 msgid "Resigning..."
 msgstr "Luovutetaan..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Ratkaisu"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Käynnistä uudelleen"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Käynnistä tehtävä uudelleen"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Käynnistetäänkö tehtävä uudelleen?"
 
@@ -3134,12 +3170,12 @@ msgstr "Käynnistetäänkö tehtävä uudelleen?"
 msgid "Result"
 msgstr "Tulos"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Jatka"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Laskusiivekkeet sisään"
 
@@ -3147,7 +3183,7 @@ msgstr "Laskusiivekkeet sisään"
 msgid "Retry"
 msgstr "Yritä uudelleen"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Käännetty"
 
@@ -3172,19 +3208,19 @@ msgstr "Oikea siipi"
 msgid "Right wingtip"
 msgstr "Oikean siiven kärki"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "kallistus"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Kierto"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Kallistus vasemmalle"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Kallistus oikealle"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS-syöte"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS-URL kopioitu leikepöydälle"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "TÄYSI TEHO"
 
@@ -3242,8 +3278,8 @@ msgstr "Merenpinta"
 msgid "Search"
 msgstr "Haku"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Hae säätimiä"
 
@@ -3340,8 +3376,8 @@ msgstr "Valitse henkilö..."
 msgid "Select previous card"
 msgstr "Valitse edellinen kortti"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Valitse ase"
 
@@ -3363,7 +3399,7 @@ msgstr "Lähetä"
 msgid "Send again"
 msgstr "Lähetä uudelleen"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Lähetä viesti"
 
@@ -3404,7 +3440,7 @@ msgstr "Palvelimen säännöt"
 msgid "server runs v{0}, you have v{version}"
 msgstr "palvelin käyttää v{0}, sinulla on v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "ISTUNTO PÄÄTTYI"
 
@@ -3412,7 +3448,7 @@ msgstr "ISTUNTO PÄÄTTYI"
 msgid "Session expired. Please log in again."
 msgstr "Istunto on vanhentunut. Kirjaudu sisään uudelleen."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Aseta"
 
@@ -3423,14 +3459,14 @@ msgstr "Aseta lähtöpaikka ja määränpää"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Asetukset"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Varjot"
 
@@ -3485,7 +3521,7 @@ msgstr "Pieni"
 msgid "Sort"
 msgstr "Lajittele"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Ääni"
 
@@ -3505,17 +3541,17 @@ msgstr "Hajautetut aloitukset"
 msgid "Spacious"
 msgstr "Tilava"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "ILMAJ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "ilmajarru"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Ilmajarru"
 
@@ -3523,9 +3559,13 @@ msgstr "Ilmajarru"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Nopeudet KCAS-yksikköinä, vaihteluvälinä kevyestä (vähimmäispolttoaine, ei ripustuksia) raskaaseen (suurin sallittu massa). Tiedot on johdettu kokeellisesti pelissä. Mahdolliset erot todelliseen koneeseen johtuvat simulaattorin lentomallin virheistä."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "MAALI PUDOTETTU"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "LEVITÄ SIIVET"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Jyrkin nousu (Vx, jälkipoltto)"
 msgid "Stop watching"
 msgstr "Lopeta seuranta"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "RAKENNE"
 
@@ -3598,7 +3638,7 @@ msgstr "Vaihda näkymään 1-9"
 msgid "System"
 msgstr "Järjestelmä"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "TAKTINEN KARTTA"
 
@@ -3615,7 +3655,7 @@ msgstr "Tunniste saa olla enintään 50 merkkiä"
 msgid "Tags"
 msgstr "Tunnisteet"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "VIHOLLINEN NÄKYVISSÄ"
 
@@ -3623,11 +3663,11 @@ msgstr "VIHOLLINEN NÄKYVISSÄ"
 msgid "Task"
 msgstr "Tehtävä"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Tiimi"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "TIIMI"
 
@@ -3674,7 +3714,7 @@ msgstr "Kamerapyyntöön ei vastattu"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Peliä ei voitu ladata. Yritä uudelleen lataamalla sivu uudelleen."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Ottelu jatkuu tämän valikon takana."
 
@@ -3686,7 +3726,7 @@ msgstr "Mikrofonipyyntöön ei vastattu"
 msgid "The mission stopped."
 msgstr "Tehtävä pysähtyi."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Tehtävä käynnistyy uudelleen. Nykyistä lentoa ei tallenneta."
 
@@ -3722,21 +3762,21 @@ msgstr "Tämä kone voi olla liian hidas sujuvaan lentoon."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Tämä poistaa pelin ja sen keskustelun pysyvästi. Tätä ei voi peruuttaa."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "kaasu"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Kaasu"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Vähennä kaasua"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Lisää kaasua"
 
@@ -3748,7 +3788,7 @@ msgstr "Torstai"
 msgid "Tightest sustained turn speed"
 msgstr "Tiukin jatkuvan käännöksen nopeus"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "kallistus"
 
@@ -3795,7 +3835,7 @@ msgstr "Liikaa pyyntöjä"
 msgid "Top"
 msgstr "Ylin"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Valojuovat"
 
@@ -3803,35 +3843,35 @@ msgstr "Valojuovat"
 msgid "Travelling"
 msgstr "Matkustetaan"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "trimmi"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Trimmi"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Trimmihattu"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trimmi: nokka alas"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trimmi: nokka ylös"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trimmi: kallistus vasemmalle"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trimmi: kallistus oikealle"
 
@@ -3869,7 +3909,7 @@ msgstr "Kirjoita hakeaksesi käyttäjiä"
 msgid "Type to search..."
 msgstr "Kirjoita hakeaksesi..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "Ei määritetty"
 msgid "Unavailable"
 msgstr "Ei saatavilla"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Vapauta hakupää"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Poista maalin valinta"
 
@@ -4014,11 +4054,11 @@ msgstr "Videon pikkukuva"
 msgid "Video viewer: {0}"
 msgstr "Videokatselin: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "näkymä"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Näytä"
 
@@ -4035,7 +4075,7 @@ msgstr "Näytä ja muokkaa kohteen tietoja"
 msgid "View controls"
 msgstr "Näkymän hallinta"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Katselukerrat"
 
@@ -4043,11 +4083,11 @@ msgstr "Katselukerrat"
 msgid "Voice recording is not supported in this browser"
 msgstr "Äänitallennusta ei tueta tässä selaimessa"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Äänenvoimakkuudet"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ODOTETAAN VASTUSTAJAA"
 
@@ -4065,7 +4105,7 @@ msgstr "Seurattu"
 msgid "Watched only"
 msgstr "Vain seuratut"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "YLÖSVETO"
 
@@ -4074,16 +4114,16 @@ msgstr "YLÖSVETO"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Lähetimme vahvistuskoodin osoitteeseen <0>{0}</0>. Syötä koodi alle vahvistaaksesi sähköpostiosoitteesi."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "ase"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Aseenvalintahattu"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Aseet"
 
@@ -4095,21 +4135,37 @@ msgstr "Sää"
 msgid "Wednesday"
 msgstr "Keskiviikko"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Pyöräjarrut"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Tuuli ja ohjaamon runkoäänet"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Siipien taitto"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "SIIVET"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "SIIVET TAITTUVAT"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "SIIVET LUKITTU"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "SIIVET LEVIÄVÄT"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "VOITTAA"
 
@@ -4126,25 +4182,25 @@ msgstr "Maailmapalvelimeen ei saada yhteyttä"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, aseet vapaat ohituksessa"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "kääntö"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Kääntö"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Käännös vasemmalle"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Käännös oikealle"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "SINÄ"
 
@@ -4176,14 +4232,14 @@ msgstr "Tekstisi ja liitteesi menetetään."
 msgid "Your text will be lost."
 msgstr "Tekstisi menetetään."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Zoomaus"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Lähennä"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Loitonna"

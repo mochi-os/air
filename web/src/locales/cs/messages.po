@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# výsledek} few {# výsledků} other {# výsledků}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# zásah} few {# zásahy} many {# zásahu} other {# zásahů}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} z {1} letů"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} už bylo obsazené a toto ovládání je nyní nepřiřazené."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} bylo na {1}, které je nyní nepřiřazené."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# odpověď} few {+# dalších odpověd�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Otevřít nabídku (# nepřečtené oznámení)} few {Otevřít nabídku (# nepřečtená oznámení)} other {Otevřít nabídku (# nepřečtených oznámení)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "LANO 1"
 
@@ -155,7 +155,7 @@ msgstr "12 hodin"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "LANO 2"
 
@@ -163,7 +163,7 @@ msgstr "LANO 2"
 msgid "24 hours"
 msgstr "24 hodin"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "LANO 3"
 
@@ -202,13 +202,13 @@ msgstr "Typ účtu"
 msgid "Ace"
 msgstr "Eso"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Zaměřit cíl"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Režim zachycení"
 
@@ -290,7 +290,7 @@ msgstr "Přidat zobrazení"
 msgid "Adding..."
 msgstr "Přidávání..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Přídavné spalování"
 
@@ -298,7 +298,7 @@ msgstr "Přídavné spalování"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Letadlo"
 
@@ -356,8 +356,8 @@ msgstr "Kdokoli, kdo je přihlášen"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Vše, co je k tomuto kanálu přihlášeno, jej přestane dostávat. Poté můžete zkopírovat novou adresu URL."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Výkon při přiblížení (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Opravdu chcete vzdát hru?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Opravdu se chcete vzdát? {opponentName} vyhraje hru."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Záchytný hák"
 
@@ -436,16 +436,16 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar uživatele {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Osa {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Kalibrace a mapování os"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "zpět"
 
@@ -476,7 +476,7 @@ msgstr "Banner odstraněn"
 msgid "Banner updated"
 msgstr "Banner aktualizován"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "POD 250 — PODVOZEK A KLAPKY"
 
@@ -496,11 +496,11 @@ msgstr "Nejlepší klouzání (motory vypnuté)"
 msgid "Best sustained turn speed"
 msgstr "Nejlepší rychlost ustáleného zatáčení"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Výstrahy Betty a RWR"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "BINGO PALIVO"
 
@@ -530,7 +530,7 @@ msgstr "Modří boti"
 msgid "Board"
 msgstr "Deska"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "Barva okraje"
 msgid "Bots"
 msgstr "Boti"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "brzdy"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "OSTŘE DOLEVA"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "OSTŘE DOPRAVA"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "ZATÁČKA AŽ BUDEŠ PŘIPRAVEN"
 
@@ -567,12 +567,12 @@ msgstr "ZATÁČKA AŽ BUDEŠ PŘIPRAVEN"
 msgid "Browser notifications"
 msgstr "Oznámení prohlížeče"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Tlačítko {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Mapování tlačítek"
 
@@ -584,16 +584,16 @@ msgstr "BVR — palba volná od startu"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, palba volná od startu"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "OHLAS MÍČ"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Volací znak"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Vzdálenost kamery"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Oprávnění ke kameře bylo zamítnuto"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Kamera není k dispozici"
 
@@ -620,10 +620,10 @@ msgstr "Kamera není k dispozici"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -641,20 +641,40 @@ msgstr "Zrušit odpověď"
 msgid "Cancelled"
 msgstr "Zrušeno"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Kanóny a munice"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Překryt kabiny"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "PŘEKRYT"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "PŘEKRYT ZAVŘEN"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "PŘEKRYT SE ZAVÍRÁ"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "PŘEKRYT ZAJIŠTĚN"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "PŘEKRYT OTEVŘEN"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Popisek"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Letadlová loď a okolní zvuky"
 
@@ -711,19 +731,19 @@ msgstr "Změněno"
 msgid "Changed {field}"
 msgstr "Změněno {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Pohled zezadu:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Chat všem"
 
@@ -760,7 +780,7 @@ msgstr "Vyberte jazyk"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Vymazat"
 
@@ -806,7 +826,7 @@ msgstr "Zavřít panel / zrušit"
 msgid "Close search"
 msgstr "Zavřít hledání"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "blíž"
 
@@ -846,7 +866,7 @@ msgstr "Pohodlné"
 msgid "Command Palette"
 msgstr "Paleta příkazů"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ZAHAJUJI"
 
@@ -865,7 +885,7 @@ msgstr "Komentáře"
 msgid "Comments ({0})"
 msgstr "Komentáře ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Komunikace"
 
@@ -906,7 +926,7 @@ msgstr "Připojování..."
 msgid "Connecting…"
 msgstr "Připojování…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "PŘIPOJENÍ SELHALO"
 
@@ -963,7 +983,7 @@ msgstr "Tento dokument nelze načíst. Zkuste to prosím později."
 msgid "Could not load your flights"
 msgstr "Nepodařilo se načíst vaše lety"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Profil se nepodařilo uložit"
 
@@ -992,16 +1012,16 @@ msgstr "Opětovné ověření se nepodařilo zahájit. Zkuste to prosím znovu."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "S tímto účtem se nepodařilo ověřit. Zkuste to prosím znovu."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Protiopatření"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Zřítil se"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "ZŘÍCENO"
 
@@ -1069,12 +1089,12 @@ msgstr "Aktuální poloha"
 msgid "Custom"
 msgstr "Vlastní"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "NEBEZPEČNÉ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Přepnout pohled"
 
@@ -1101,7 +1121,7 @@ msgstr "Den"
 msgid "Deaths"
 msgstr "Smrti"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "POZICE NA PALUBĚ ULOŽENA"
 
@@ -1203,11 +1223,11 @@ msgstr "Sestupně"
 msgid "Description"
 msgstr "Popis"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Zničen požárem"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Detail"
 
@@ -1215,8 +1235,8 @@ msgstr "Detail"
 msgid "Details Panel"
 msgstr "Panel podrobností"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Detekovat"
 
@@ -1239,7 +1259,7 @@ msgstr "Jiný herní hostitel"
 msgid "Directory"
 msgstr "Adresář"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "VYSUŇ PODVOZEK"
 
@@ -1251,7 +1271,7 @@ msgstr "Zahodit"
 msgid "Discard draft?"
 msgstr "Zahodit koncept?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "odpojeno"
 
@@ -1264,12 +1284,12 @@ msgstr "Odpojeno"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Zavřít"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Opakovač displeje"
 
@@ -1277,7 +1297,7 @@ msgstr "Opakovač displeje"
 msgid "Displays the mobile sidebar."
 msgstr "Zobrazí mobilní postranní panel."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD vzdálenosti"
 
@@ -1288,7 +1308,7 @@ msgstr "Neodpovídá požadovanému vzoru"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Hotovo"
 
@@ -1303,11 +1323,11 @@ msgstr "Stáhnout"
 msgid "Download failed"
 msgstr "Stahování se nezdařilo"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "PO VĚTRU 600 STOP"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Přetáhnout"
 
@@ -1323,7 +1343,7 @@ msgstr "Duplikuje"
 msgid "Duration"
 msgstr "Délka"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Dynamické rozlišení"
 
@@ -1331,7 +1351,7 @@ msgstr "Dynamické rozlišení"
 msgid "Dyslexia-friendly"
 msgstr "Vhodné pro dyslexii"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "BRZY"
 
@@ -1374,19 +1394,19 @@ msgstr "Upravit vybranou kartu"
 msgid "Edit view"
 msgstr "Upravit pohled"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Efekty"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Detail efektů"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Katapultáž"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "KATAPULTOVÁN"
 
@@ -1398,12 +1418,12 @@ msgstr "E-mail"
 msgid "Email code"
 msgstr "E-mailový kód"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "NOUZOVÝ ODHOZ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Nouzové odhození (držet)"
 
@@ -1416,11 +1436,11 @@ msgstr "prázdná"
 msgid "Empty pylon"
 msgstr "Prázdný pylon"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Zapnout zvuk"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "ÚTOČÍM"
 
@@ -1428,7 +1448,7 @@ msgstr "ÚTOČÍM"
 msgid "Engagement"
 msgstr "Střetnutí"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Motor a přídavné spalování"
 
@@ -1448,15 +1468,15 @@ msgstr "Zadejte kód z autentizační aplikace"
 msgid "Error"
 msgstr "Chyba"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Všichni"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Opustit zápas"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Ukončit misi"
 
@@ -1475,16 +1495,16 @@ msgstr "Rozbalit postranní panel"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Animace exploze <0>“Explosion02HD”</0> od <1>Unity Technologies</1> (sekvence snímků VFX Unity Labs), vydáno pod <2>CC0</2>. Upraveno: znovu komprimováno pro web."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Exportovat"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Vysunout klapky"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Detail exteriéru"
 
@@ -1603,15 +1623,15 @@ msgstr "Sledování se nepodařilo aktualizovat"
 msgid "Failed to upload attachment"
 msgstr "Nepodařilo se nahrát přílohu"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "USPOKOJIVÉ"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "BOJ ZAČÍNÁ"
 
@@ -1629,16 +1649,16 @@ msgstr "Dokončit přesun účtu"
 msgid "Finished"
 msgstr "Dokončeno"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "palba"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Zahájit palbu"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Pevné letové klávesy"
 
@@ -1646,15 +1666,15 @@ msgstr "Pevné letové klávesy"
 msgid "Flags"
 msgstr "Příznaky"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ZHASNUTÍ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "klapky"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "světlice"
 
@@ -1666,19 +1686,19 @@ msgstr "SVĚTLICE"
 msgid "Flat"
 msgstr "Plochá"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Vletěl do moře"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Let"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "SELHÁNÍ LETOVÉHO JÁDRA"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Letové nápovědy"
 
@@ -1699,11 +1719,11 @@ msgstr "Odlétáno"
 msgid "Fly"
 msgstr "Letět"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Letět znovu"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Počítadlo snímků"
 
@@ -1736,23 +1756,23 @@ msgstr "Z motivu"
 msgid "Fuel"
 msgstr "Palivo"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "PALIVO"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "POŽÁR PALIVA"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ÚNIK PALIVA"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "MÁLO PALIVA"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Palivová sonda"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Trup"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Zesílení"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "podvozek"
 
@@ -1781,7 +1801,7 @@ msgstr "podvozek"
 msgid "GEAR"
 msgstr "PODVOZEK"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Obecné"
 
@@ -1790,11 +1810,11 @@ msgstr "Obecné"
 msgid "Go back"
 msgstr "Zpět"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Grafika"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Grafická předvolba"
 
@@ -1832,15 +1852,15 @@ msgstr "Jen kanóny"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardwarová akcelerace grafiky je vypnutá — zkontrolujte nastavení prohlížeče nebo grafické ovladače."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Hlava"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Sledování hlavy"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Vysoká"
 
@@ -1850,7 +1870,7 @@ msgstr "Vysoká"
 msgid "High stratus"
 msgstr "Vysoký stratus"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Nápovědy"
 
@@ -1865,7 +1885,7 @@ msgstr "Historie"
 msgid "Home"
 msgstr "Domů"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "hák"
 
@@ -1877,11 +1897,11 @@ msgstr "HÁK"
 msgid "Hot"
 msgstr "Žhavé"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Zdroj výšky pro HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Zjednodušení HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "Prohlížeč obrázků: {0}"
 msgid "Imperial"
 msgstr "Imperiální"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Importovat"
 
@@ -1919,7 +1939,7 @@ msgstr "Avatar s iniciálami"
 msgid "Initials avatar for {name}"
 msgstr "Avatar s iniciálami uživatele {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Vstupní hardware"
 
@@ -1944,7 +1964,7 @@ msgstr "Neplatné datum"
 msgid "Invulnerable"
 msgstr "Nezranitelný"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "NEZRANITELNOST"
 
@@ -1961,17 +1981,17 @@ msgstr "Zdá se, že stránka, kterou hledáte, <0/>neexistuje nebo byla odebrá
 msgid "Item details"
 msgstr "Podrobnosti položky"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Rušička"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Odhodit nádrže"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ODHOZ: PODVOZEK"
 
@@ -1984,7 +2004,7 @@ msgstr "Připojit se"
 msgid "Join server"
 msgstr "Připojit se k serveru"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "SE PŘIPOJIL"
 
@@ -2002,7 +2022,7 @@ msgstr "Souboj — 1v1, první sestřel vyhrává"
 msgid "Joust against bot"
 msgstr "Souboj proti botovi"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Klávesové zkratky"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Klávesy"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "SESTŘEL"
 
@@ -2035,20 +2055,20 @@ msgstr "Zabit"
 msgid "Kills"
 msgstr "Zabití"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "L MOTOR"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "POŽÁR L MOT"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "PODVOZEK L"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Podvozek"
 
@@ -2057,16 +2077,16 @@ msgstr "Podvozek"
 msgid "Large"
 msgstr "Velké"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "POZDĚ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Vypuštění (katapult)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "start / zaměření"
 
@@ -2086,7 +2106,7 @@ msgstr "Opustit server"
 msgid "Left"
 msgstr "Odešel"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ODEŠEL"
 
@@ -2103,7 +2123,7 @@ msgstr "Konec levého křídla"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Pouze písmena, číslice, mezery, spojovníky a lomítka"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "VYROVNAT V 1200, PODVOZEK DOLŮ"
 
@@ -2111,16 +2131,16 @@ msgstr "VYROVNAT V 1200, PODVOZEK DOLŮ"
 msgid "Light"
 msgstr "Světlý"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "světla"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Světla"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "SVĚTLA"
 
@@ -2140,7 +2160,7 @@ msgstr "Seznam"
 msgid "Load more"
 msgstr "Načíst další"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "NAČÍTÁNÍ"
 
@@ -2148,7 +2168,7 @@ msgstr "NAČÍTÁNÍ"
 msgid "Loading content…"
 msgstr "Načítání obsahu…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "NAČÍTÁNÍ SELHALO"
 
@@ -2186,35 +2206,35 @@ msgstr "Úspěšně odhlášeno"
 msgid "Logging out…"
 msgstr "Odhlašování…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Pohled"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Pohled / orbita"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Podívat se na cíl"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Pohled dolů"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Pohled doleva"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Pohled doprava"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Pohled nahoru"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Nízká"
 
@@ -2224,7 +2244,7 @@ msgstr "Nízká"
 msgid "Low stratus"
 msgstr "Nízký stratus"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M pro zavření"
 
@@ -2236,11 +2256,11 @@ msgstr "Spravovat kategorie"
 msgid "Manual"
 msgstr "Ručně"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "mapa"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Mapa"
 
@@ -2249,8 +2269,8 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Označit vše jako přečtené"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Hlavní hlasitost"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Střední"
 
@@ -2279,13 +2299,13 @@ msgstr "Střední"
 msgid "Members"
 msgstr "Členové"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Nabídka"
 
@@ -2297,7 +2317,7 @@ msgstr "Sblížení — boj začíná při míjení"
 msgid "Message"
 msgstr "Zpráva"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Napište všem"
 
@@ -2305,7 +2325,7 @@ msgstr "Napište všem"
 msgid "Message players on this server"
 msgstr "Napište hráčům na tomto serveru"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Napište svému týmu"
 
@@ -2323,7 +2343,7 @@ msgstr "Oprávnění k mikrofonu odepřeno"
 msgid "Mid stratus"
 msgstr "Střední stratus"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Srážka ve vzduchu"
 
@@ -2335,7 +2355,7 @@ msgstr "Mapa atolu Midway — snímky obsahují upravená data <0>Copernicus Sen
 msgid "Minimum length"
 msgstr "Minimální délka"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "RAKETA"
 
@@ -2343,7 +2363,7 @@ msgstr "RAKETA"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model střely <0>“AIM-120C AMRAAM”</0> od <1>Pippa</1> (Sketchfab), licencováno pod <2>CC BY 4.0</2>. Upraveno: změněno měřítko, přeorientováno a vystředěno pro umístění."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Mise skončila"
 
@@ -2369,7 +2389,7 @@ msgstr "Pondělí"
 msgid "More options"
 msgstr "Další možnosti"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Pohněte…"
 
@@ -2447,7 +2467,7 @@ msgstr "Zatím žádná aktivita"
 msgid "No comments yet"
 msgstr "Zatím žádné komentáře"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Žádné ovládání neodpovídá „{query}“."
 
@@ -2471,7 +2491,7 @@ msgstr "Žádné skupiny k dispozici"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Zatím nelze vytvořit žádné typy položek. Nejprve vytvořte potřebné nadřazené položky."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nebyl zjištěn žádný joystick — stiskněte na něm libovolné tlačítko, aby se probudil."
 
@@ -2507,11 +2527,11 @@ msgstr "Žádné výsledky nenalezeny."
 msgid "No status"
 msgstr "Bez stavu"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ŽÁDNÉ NÁDRŽE"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "ŽÁDNÝ CÍL"
 
@@ -2540,7 +2560,7 @@ msgstr "Žádná zobrazení"
 msgid "No world server."
 msgstr "Žádný server světa."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "BEZ HODNOCENÍ"
 
@@ -2563,9 +2583,9 @@ msgstr "BEZ HODNOCENÍ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Žádné"
 
@@ -2573,11 +2593,11 @@ msgstr "Žádné"
 msgid "Normal"
 msgstr "Normální"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "PODVOZEK PŘÍĎ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Toto není profil joysticku"
 
@@ -2615,7 +2635,7 @@ msgstr "Začátečník"
 msgid "Number"
 msgstr "Číslo"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Detail oceánu"
 
@@ -2623,7 +2643,7 @@ msgstr "Detail oceánu"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Název možnosti"
 msgid "Options"
 msgstr "Možnosti"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "nebo"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "obíhat"
 
@@ -2708,8 +2728,8 @@ msgstr "obíhat"
 msgid "Other"
 msgstr "Ostatní"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Obejít limit G"
 
@@ -2717,11 +2737,11 @@ msgstr "Obejít limit G"
 msgid "Owner"
 msgstr "Vlastník"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "PADLOCK"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "PADLOCK VYPNUT"
 
@@ -2731,7 +2751,11 @@ msgstr "PADLOCK VYPNUT"
 msgid "Parent"
 msgstr "Rodič"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "PARKOVACÍ BRZDA"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Parkovací brzda"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkeys nejsou v tomto prohlížeči k dispozici"
 msgid "Pattern (regex)"
 msgstr "Vzor (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Pozastaveno"
 
@@ -2776,15 +2800,15 @@ msgstr "pilot"
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "PILOT ZABIT"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Identita pilota"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Pilot zabit"
 
@@ -2793,23 +2817,23 @@ msgstr "Pilot zabit"
 msgid "Pin"
 msgstr "Připnout"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "klopení"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Klopení"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Klopení dolů"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Klopení nahoru"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
@@ -2839,15 +2863,15 @@ msgstr "Příspěvky"
 msgid "Posts and comments"
 msgstr "Příspěvky a komentáře"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Stiskněte klávesu…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "STISKNI ENTER PRO START"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Stiskněte…"
 
@@ -2861,12 +2885,24 @@ msgstr "Předchozí obrázek"
 msgid "Privacy"
 msgstr "Soukromí"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "SONDA"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "SONDA ZASUNUTA"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "SONDA VYSUNUTA"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Zpracovává se…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profil uložen"
 
@@ -2887,24 +2923,24 @@ msgstr "Veřejné servery"
 msgid "Push notification"
 msgstr "Push oznámení"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ČAS PŘIBLÍŽENÍ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "P MOTOR"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "POŽÁR P MOT"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "PODVOZEK P"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radarové ticho"
 
@@ -2920,7 +2956,7 @@ msgstr "Znovu propojit účty na tomto serveru"
 msgid "Re-register your passkeys on this server"
 msgstr "Znovu zaregistrujte své přístupové klíče na tomto serveru"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "PŘEZBROJEN"
 
@@ -2936,12 +2972,12 @@ msgstr "Doporučené"
 msgid "Reconnecting ({retries})..."
 msgstr "Opětovné připojování ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Zaznamenávat lety"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Záznam"
 
@@ -2982,7 +3018,7 @@ msgstr "Reference"
 msgid "Refresh"
 msgstr "Obnovit"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ZAŘAZUJI SE"
 
@@ -3082,23 +3118,23 @@ msgstr "Povinné"
 msgid "Resend email"
 msgstr "Odeslat e-mail znovu"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Resetovat"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Resetovat hlavní výstrahu"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Vynulovat vyvážení"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Vynulovat pohled"
 
@@ -3114,19 +3150,19 @@ msgstr "Vzdát hru?"
 msgid "Resigning..."
 msgstr "Vzdávání…"
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Rozlišení"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Restartovat"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Restartovat misi"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Restartovat misi?"
 
@@ -3134,12 +3170,12 @@ msgstr "Restartovat misi?"
 msgid "Result"
 msgstr "Výsledek"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Pokračovat"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Zasunout klapky"
 
@@ -3147,7 +3183,7 @@ msgstr "Zasunout klapky"
 msgid "Retry"
 msgstr "Zkusit znovu"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Obrácené"
 
@@ -3172,19 +3208,19 @@ msgstr "Pravé křídlo"
 msgid "Right wingtip"
 msgstr "Konec pravého křídla"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "klonění"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Klonění"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Klonění doleva"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Klonění doprava"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS kanál"
 msgid "RSS URL copied to clipboard"
 msgstr "URL RSS zkopírována do schránky"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "PLNÝ PLYN"
 
@@ -3242,8 +3278,8 @@ msgstr "Hladina moře"
 msgid "Search"
 msgstr "Hledat"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Hledat ovládání"
 
@@ -3340,8 +3376,8 @@ msgstr "Vyberte osobu..."
 msgid "Select previous card"
 msgstr "Vybrat předchozí kartu"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Vybrat zbraň"
 
@@ -3363,7 +3399,7 @@ msgstr "Odeslat"
 msgid "Send again"
 msgstr "Odeslat znovu"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Napsat zprávu"
 
@@ -3404,7 +3440,7 @@ msgstr "Pravidla serveru"
 msgid "server runs v{0}, you have v{version}"
 msgstr "server běží na v{0}, máte v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "RELACE UKONČENA"
 
@@ -3412,7 +3448,7 @@ msgstr "RELACE UKONČENA"
 msgid "Session expired. Please log in again."
 msgstr "Platnost relace vypršela. Přihlaste se znovu."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Nastavit"
 
@@ -3423,14 +3459,14 @@ msgstr "Nastavit výchozí bod a cíl"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Stíny"
 
@@ -3485,7 +3521,7 @@ msgstr "Malé"
 msgid "Sort"
 msgstr "Třídit"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Zvuk"
 
@@ -3505,17 +3541,17 @@ msgstr "Rozestoupené starty"
 msgid "Spacious"
 msgstr "Prostorné"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "VZD BR"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "vzdušná brzda"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Vzdušná brzda"
 
@@ -3523,9 +3559,13 @@ msgstr "Vzdušná brzda"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Rychlosti v KCAS, jako rozsah od lehkého (minimum paliva, bez podvěsů) po těžké (maximální hmotnost). Data získána experimentálně ve hře. Jakékoli odchylky od skutečného letadla odrážejí chyby letového modelu simulátoru."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "CÍL SESTŘELEN"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ROZLOŽIT KŘÍDLA"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Nejstrmější stoupání (Vx, přídavné spalování)"
 msgid "Stop watching"
 msgstr "Přestat sledovat"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "KONSTRUKCE"
 
@@ -3598,7 +3638,7 @@ msgstr "Přepnout na zobrazení 1-9"
 msgid "System"
 msgstr "Systém"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "TAKTICKÁ MAPA"
 
@@ -3615,7 +3655,7 @@ msgstr "Štítek musí mít nejvýše 50 znaků"
 msgid "Tags"
 msgstr "Štítky"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "VIDÍM NEPŘÍTELE"
 
@@ -3623,11 +3663,11 @@ msgstr "VIDÍM NEPŘÍTELE"
 msgid "Task"
 msgstr "Úkol"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Tým"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "TÝM"
 
@@ -3674,7 +3714,7 @@ msgstr "Požadavek na kameru zůstal bez odpovědi"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Hru se nepodařilo načíst. Zkuste to znovu obnovením stránky."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Zápas pokračuje i za tímto menu."
 
@@ -3686,7 +3726,7 @@ msgstr "Požadavek na mikrofon zůstal bez odpovědi"
 msgid "The mission stopped."
 msgstr "Mise se zastavila."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Mise se restartuje. Aktuální let nebude uložen."
 
@@ -3722,21 +3762,21 @@ msgstr "Tento stroj může být na plynulý let příliš pomalý."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Tímto trvale smažete hru a její chat. Tuto akci nelze vzít zpět."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "plyn"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Plyn"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Ubrat plyn"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Přidat plyn"
 
@@ -3748,7 +3788,7 @@ msgstr "Čtvrtek"
 msgid "Tightest sustained turn speed"
 msgstr "Rychlost nejtěsnějšího ustáleného zatáčení"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "naklonit"
 
@@ -3795,7 +3835,7 @@ msgstr "Příliš mnoho požadavků"
 msgid "Top"
 msgstr "Nahoru"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Svítící střely"
 
@@ -3803,35 +3843,35 @@ msgstr "Svítící střely"
 msgid "Travelling"
 msgstr "Cestuje se"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "vyvážení"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Vyvážení"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Klobouček vyvážení"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Vyvážení: příď dolů"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Vyvážení: příď nahoru"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Vyvážení: náklon vlevo"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Vyvážení: náklon vpravo"
 
@@ -3869,7 +3909,7 @@ msgstr "Napište pro hledání uživatelů"
 msgid "Type to search..."
 msgstr "Napište pro hledání..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "Nepřiřazeno"
 msgid "Unavailable"
 msgstr "Nedostupné"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Uvolnit hledač"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Zrušit označení cíle"
 
@@ -4014,11 +4054,11 @@ msgstr "Náhled videa"
 msgid "Video viewer: {0}"
 msgstr "Přehrávač videa: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "pohled"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Zobrazit"
 
@@ -4035,7 +4075,7 @@ msgstr "Zobrazit a upravit detaily položky"
 msgid "View controls"
 msgstr "Zobrazit ovládací prvky"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Zobrazení"
 
@@ -4043,11 +4083,11 @@ msgstr "Zobrazení"
 msgid "Voice recording is not supported in this browser"
 msgstr "Nahrávání hlasu není v tomto prohlížeči podporováno"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Hlasitosti"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ČEKÁNÍ NA SOUPEŘE"
 
@@ -4065,7 +4105,7 @@ msgstr "Sledováno"
 msgid "Watched only"
 msgstr "Pouze sledované"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "OPAKUJTE PŘIBLÍŽENÍ"
 
@@ -4074,16 +4114,16 @@ msgstr "OPAKUJTE PŘIBLÍŽENÍ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Ověřovací kód jsme odeslali na <0>{0}</0>. Zadejte kód níže pro ověření vaší e-mailové adresy."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "zbraň"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Klobouček výběru zbraně"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Zbraně"
 
@@ -4095,21 +4135,37 @@ msgstr "Počasí"
 msgid "Wednesday"
 msgstr "Středa"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Kolové brzdy"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Vítr a drak letounu"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Sklápění křídel"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "KŘÍDLA"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "KŘÍDLA SE SKLÁDAJÍ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "KŘÍDLA ZAJIŠTĚNA"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "KŘÍDLA SE ROZKLÁDAJÍ"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "VÍTĚZÍ"
 
@@ -4126,25 +4182,25 @@ msgstr "Server světa je nedostupný"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, palba volná při míjení"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "zatáčení"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Zatáčení"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Bočení doleva"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Bočení doprava"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "VY"
 
@@ -4176,14 +4232,14 @@ msgstr "Váš text a přílohy budou ztraceny."
 msgid "Your text will be lost."
 msgstr "Váš text bude ztracen."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Přiblížit"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Oddálit"

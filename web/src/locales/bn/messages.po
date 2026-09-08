@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# ফলাফল} other {# ফলাফল}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {#টি গুলি লেগেছে} other {#টি গুলি লেগেছে}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{1}টি ফ্লাইটের মধ্যে {0}টি"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} আগেই নেওয়া ছিল, এবং সেই নিয়ন্ত্রণ এখন সংযুক্ত নয়।"
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ছিল {1}-এ, যা এখন সংযুক্ত নয়।"
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# উত্তর} other {+# আরো �
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {মেনু খুলুন (# অপঠিত বিজ্ঞপ্তি)} other {মেনু খুলুন (# অপঠিত বিজ্ঞপ্তি)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "তার 1"
 
@@ -155,7 +155,7 @@ msgstr "১২ ঘণ্টা"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "তার 2"
 
@@ -163,7 +163,7 @@ msgstr "তার 2"
 msgid "24 hours"
 msgstr "২৪ ঘণ্টা"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "তার 3"
 
@@ -202,13 +202,13 @@ msgstr "অ্যাকাউন্টের ধরন"
 msgid "Ace"
 msgstr "টেক্কা"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "টার্গেট লক করুন"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "লক্ষ্য ধরার মোড"
 
@@ -290,7 +290,7 @@ msgstr "ভিউ যোগ করুন"
 msgid "Adding..."
 msgstr "যোগ করা হচ্ছে..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "আফটারবার্নার"
 
@@ -298,7 +298,7 @@ msgstr "আফটারবার্নার"
 msgid "AI"
 msgstr "এআই"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "বিমান"
 
@@ -356,8 +356,8 @@ msgstr "যে কেউ লগ ইন করেছেন"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "এই ফিডে সাবস্ক্রাইব করা সবকিছু এটি পাওয়া বন্ধ করবে। পরে আপনি একটি নতুন URL কপি করতে পারেন।"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "অ্যাপ্রোচ পাওয়ার (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "আপনি কি সত্যিই হার মানতে চা�
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "আপনি কি নিশ্চিত যে আপনি হার মানতে চান? {opponentName} খেলায় জিতবে।"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "প্রতিরোধক হুক"
 
@@ -436,16 +436,16 @@ msgstr "অবতার"
 msgid "Avatar for {name}"
 msgstr "{name}-এর অবতার"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "অক্ষ {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "অক্ষ ক্যালিব্রেশন ও ম্যাপিং"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "পিছনে"
 
@@ -476,7 +476,7 @@ msgstr "ব্যানার সরানো হয়েছে"
 msgid "Banner updated"
 msgstr "ব্যানার আপডেট হয়েছে"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "২৫০-এর নিচে — গিয়ার ও ফ্ল্যাপ"
 
@@ -496,11 +496,11 @@ msgstr "সেরা গ্লাইড (ইঞ্জিন বন্ধ)"
 msgid "Best sustained turn speed"
 msgstr "সেরা টেকসই বাঁকের গতি"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty ও RWR সতর্কতা"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "বিঙ্গো জ্বালানি"
 
@@ -530,7 +530,7 @@ msgstr "নীল বট"
 msgid "Board"
 msgstr "বোর্ড"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "বোল্টার"
 
@@ -547,19 +547,19 @@ msgstr "বর্ডারের রঙ"
 msgid "Bots"
 msgstr "বট"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "ব্রেক"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "বাঁয়ে কাটো"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "ডানে কাটো"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "প্রস্তুত হলে ব্রেক"
 
@@ -567,12 +567,12 @@ msgstr "প্রস্তুত হলে ব্রেক"
 msgid "Browser notifications"
 msgstr "ব্রাউজার নোটিফিকেশন"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "বোতাম {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "বোতাম ম্যাপিং"
 
@@ -584,16 +584,16 @@ msgstr "BVR — শুরু থেকেই অস্ত্র মুক্ত"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, শুরু থেকেই অস্ত্র মুক্ত"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "বল ঘোষণা করো"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "কলসাইন"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "ক্যামেরার দূরত্ব"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "ক্যামেরার অনুমতি প্রত্যাখ্যান করা হয়েছে"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "ক্যামেরা অনুপলব্ধ"
 
@@ -620,10 +620,10 @@ msgstr "ক্যামেরা অনুপলব্ধ"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "বাতিল করুন"
 
@@ -641,20 +641,40 @@ msgstr "উত্তর বাতিল করুন"
 msgid "Cancelled"
 msgstr "বাতিল করা হয়েছে"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "কামান ও গোলাবারুদ"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "ক্যানোপি"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ক্যানোপি"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ক্যানোপি বন্ধ"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ক্যানোপি বন্ধ হচ্ছে"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ক্যানোপি লক"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ক্যানোপি খোলা"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "ক্যাপশন"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "রণতরী ও পরিবেশ"
 
@@ -711,19 +731,19 @@ msgstr "পরিবর্তন করা হয়েছে"
 msgid "Changed {field}"
 msgstr "{field} পরিবর্তন করা হয়েছে"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "অনুসরণ দৃশ্য:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "চ্যাট"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "চ্যাট"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "সবার সাথে চ্যাট"
 
@@ -760,7 +780,7 @@ msgstr "ভাষা বেছে নিন"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "পরিষ্কার করুন"
 
@@ -806,7 +826,7 @@ msgstr "প্যানেল বন্ধ / বাতিল"
 msgid "Close search"
 msgstr "অনুসন্ধান বন্ধ করুন"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "আরও কাছে"
 
@@ -846,7 +866,7 @@ msgstr "আরামদায়ক"
 msgid "Command Palette"
 msgstr "কমান্ড প্যালেট"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "শুরু করছি"
 
@@ -865,7 +885,7 @@ msgstr "মন্তব্য"
 msgid "Comments ({0})"
 msgstr "মন্তব্য ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "যোগাযোগ"
 
@@ -906,7 +926,7 @@ msgstr "সংযোগ করা হচ্ছে..."
 msgid "Connecting…"
 msgstr "সংযোগ হচ্ছে…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "সংযোগ ব্যর্থ হয়েছে"
 
@@ -963,7 +983,7 @@ msgstr "এই ডকুমেন্টটি লোড করা যায়�
 msgid "Could not load your flights"
 msgstr "আপনার উড়ানগুলি লোড করা যায়নি"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "প্রোফাইল সংরক্ষণ করা যায়নি"
 
@@ -992,16 +1012,16 @@ msgstr "পুনরায় প্রমাণীকরণ শুরু কর
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ওই অ্যাকাউন্ট দিয়ে যাচাই করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "প্রতিব্যবস্থা"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "বিধ্বস্ত হয়েছে"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "বিধ্বস্ত"
 
@@ -1069,12 +1089,12 @@ msgstr "বর্তমান অবস্থান"
 msgid "Custom"
 msgstr "কাস্টম"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "বিপজ্জনক"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "দৃশ্য পরিবর্তন"
 
@@ -1101,7 +1121,7 @@ msgstr "দিন"
 msgid "Deaths"
 msgstr "মৃত্যু"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ডেক অবস্থান সংরক্ষিত"
 
@@ -1203,11 +1223,11 @@ msgstr "অধঃক্রম"
 msgid "Description"
 msgstr "বিবরণ"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "আগুনে ধ্বংস হয়েছে"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "ডিটেল"
 
@@ -1215,8 +1235,8 @@ msgstr "ডিটেল"
 msgid "Details Panel"
 msgstr "বিবরণ প্যানেল"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "শনাক্ত করুন"
 
@@ -1239,7 +1259,7 @@ msgstr "ভিন্ন গেম হোস্ট"
 msgid "Directory"
 msgstr "ডিরেক্টরি"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "গিয়ার নামান"
 
@@ -1251,7 +1271,7 @@ msgstr "বাতিল করুন"
 msgid "Discard draft?"
 msgstr "খসড়া বাতিল করবেন?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "সংযোগ বিচ্ছিন্ন"
 
@@ -1264,12 +1284,12 @@ msgstr "সংযোগ বিচ্ছিন্ন"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "বাতিল করুন"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "ডিসপ্লে রিপিটার"
 
@@ -1277,7 +1297,7 @@ msgstr "ডিসপ্লে রিপিটার"
 msgid "Displays the mobile sidebar."
 msgstr "মোবাইল সাইডবার প্রদর্শন করে।"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "দূরত্ব LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "প্রয়োজনীয় প্যাটার্নের স�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "সম্পন্ন"
 
@@ -1303,11 +1323,11 @@ msgstr "ডাউনলোড"
 msgid "Download failed"
 msgstr "ডাউনলোড ব্যর্থ হয়েছে"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ডাউনউইন্ড ৬০০ ফুট"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "টেনে আনা"
 
@@ -1323,7 +1343,7 @@ msgstr "নকল"
 msgid "Duration"
 msgstr "সময়কাল"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "ডায়নামিক রেজোলিউশন"
 
@@ -1331,7 +1351,7 @@ msgstr "ডায়নামিক রেজোলিউশন"
 msgid "Dyslexia-friendly"
 msgstr "ডিসলেক্সিয়া-বান্ধব"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "আগে"
 
@@ -1374,19 +1394,19 @@ msgstr "নির্বাচিত কার্ড সম্পাদনা"
 msgid "Edit view"
 msgstr "ভিউ সম্পাদনা করুন"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "ইফেক্ট"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "ইফেক্টের বিস্তারিত"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ইজেক্ট"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "উৎক্ষিপ্ত"
 
@@ -1398,12 +1418,12 @@ msgstr "ইমেইল"
 msgid "Email code"
 msgstr "ইমেইল কোড"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "জরুরি নিক্ষেপ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "জরুরি নিক্ষেপ (ধরে রাখুন)"
 
@@ -1416,11 +1436,11 @@ msgstr "খালি"
 msgid "Empty pylon"
 msgstr "খালি পাইলন"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "শব্দ চালু করুন"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "আক্রমণ করছি"
 
@@ -1428,7 +1448,7 @@ msgstr "আক্রমণ করছি"
 msgid "Engagement"
 msgstr "লড়াই"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "ইঞ্জিন ও আফটারবার্নার"
 
@@ -1448,15 +1468,15 @@ msgstr "আপনার প্রমাণীকরণকারী কোড ল
 msgid "Error"
 msgstr "ত্রুটি"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "সবাই"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "ম্যাচ ছাড়ুন"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "মিশন ত্যাগ"
 
@@ -1475,16 +1495,16 @@ msgstr "সাইডবার প্রসারিত করুন"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "বিস্ফোরণ অ্যানিমেশন <0>“Explosion02HD”</0>, <1>Unity Technologies</1>-এর তৈরি (Unity Labs VFX চিত্র ক্রম), <2>CC0</2>-এর অধীনে প্রকাশিত। পরিবর্তন: ওয়েবের জন্য পুনরায় সংকুচিত।"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "এক্সপোর্ট"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "ফ্ল্যাপ খোলা"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "বাহ্যিক বিবরণ"
 
@@ -1603,15 +1623,15 @@ msgstr "পর্যবেক্ষণ আপডেট ব্যর্থ"
 msgid "Failed to upload attachment"
 msgstr "সংযুক্তি আপলোড করতে ব্যর্থ"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "মাঝারি"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "লড়াই শুরু"
 
@@ -1629,16 +1649,16 @@ msgstr "আপনার অ্যাকাউন্ট স্থানান্�
 msgid "Finished"
 msgstr "সম্পন্ন"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "ফায়ার"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "অস্ত্র ফায়ার করুন"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "স্থির উড়ান কী"
 
@@ -1646,15 +1666,15 @@ msgstr "স্থির উড়ান কী"
 msgid "Flags"
 msgstr "ফ্ল্যাগসমূহ"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ফ্লেমআউট"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "ফ্ল্যাপ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "ফ্লেয়ার"
 
@@ -1666,19 +1686,19 @@ msgstr "ফ্লেয়ার"
 msgid "Flat"
 msgstr "সমতল"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "সমুদ্রে আছড়ে পড়েছে"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "উড়ান"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "ফ্লাইট কোর ব্যর্থ"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "উড়ানের ইঙ্গিত"
 
@@ -1699,11 +1719,11 @@ msgstr "উড়েছে"
 msgid "Fly"
 msgstr "উড়ান"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "আবার উড়ুন"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "ফ্রেমরেট কাউন্টার"
 
@@ -1736,23 +1756,23 @@ msgstr "থিম থেকে"
 msgid "Fuel"
 msgstr "জ্বালানি"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "জ্বালানি"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "জ্বালানি আগুন"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "জ্বালানি লিক"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "জ্বালানি কম"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "জ্বালানি প্রোব"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ফিউজেলাজ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "গেইন"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "ল্যান্ডিং গিয়ার"
 
@@ -1781,7 +1801,7 @@ msgstr "ল্যান্ডিং গিয়ার"
 msgid "GEAR"
 msgstr "গিয়ার"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "সাধারণ"
 
@@ -1790,11 +1810,11 @@ msgstr "সাধারণ"
 msgid "Go back"
 msgstr "ফিরে যান"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "গ্রাফিক্স"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "গ্রাফিক্স প্রিসেট"
 
@@ -1832,15 +1852,15 @@ msgstr "শুধু কামান"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "হার্ডওয়্যার গ্রাফিক্স ত্বরণ বন্ধ — ব্রাউজার সেটিংস বা গ্রাফিক্স ড্রাইভার দেখুন।"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "মাথা"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "মাথা ট্র্যাকিং"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "উচ্চ"
 
@@ -1850,7 +1870,7 @@ msgstr "উচ্চ"
 msgid "High stratus"
 msgstr "উচ্চ স্ট্র্যাটাস"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "ইঙ্গিত"
 
@@ -1865,7 +1885,7 @@ msgstr "ইতিহাস"
 msgid "Home"
 msgstr "হোম"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "হুক"
 
@@ -1877,11 +1897,11 @@ msgstr "হুক"
 msgid "Hot"
 msgstr "জনপ্রিয়"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD উচ্চতার উৎস"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD সরলীকরণ"
 
@@ -1898,7 +1918,7 @@ msgstr "ছবি দর্শক: {0}"
 msgid "Imperial"
 msgstr "ইম্পেরিয়াল"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "ইমপোর্ট"
 
@@ -1919,7 +1939,7 @@ msgstr "আদ্যক্ষর অবতার"
 msgid "Initials avatar for {name}"
 msgstr "{name}-এর আদ্যক্ষর অবতার"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "ইনপুট হার্ডওয়্যার"
 
@@ -1944,7 +1964,7 @@ msgstr "অবৈধ তারিখ"
 msgid "Invulnerable"
 msgstr "অভেদ্য"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "অপরাজেয়"
 
@@ -1961,17 +1981,17 @@ msgstr "আপনি যে পৃষ্ঠাটি খুঁজছেন <0/>�
 msgid "Item details"
 msgstr "আইটেমের বিবরণ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "জ্যামার"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "ট্যাংক ফেলে দিন"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "নিক্ষেপ: ল্যান্ডিং গিয়ার"
 
@@ -1984,7 +2004,7 @@ msgstr "যোগ দিন"
 msgid "Join server"
 msgstr "সার্ভারে যোগ দিন"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "যোগ দিয়েছেন"
 
@@ -2002,7 +2022,7 @@ msgstr "দ্বৈরথ — 1v1, প্রথম কিলেই জয়"
 msgid "Joust against bot"
 msgstr "দ্বৈরথ বটের বিরুদ্ধে"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "জয়স্টিক"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "কীবোর্ড শর্টকাট"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "কী"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "ভূপাতিত"
 
@@ -2035,20 +2055,20 @@ msgstr "নিহত"
 msgid "Kills"
 msgstr "কিল"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "বাম ইঞ্জিন"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "বাম ইঞ্জিন আগুন"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "বাম গিয়ার"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ল্যান্ডিং গিয়ার"
 
@@ -2057,16 +2077,16 @@ msgstr "ল্যান্ডিং গিয়ার"
 msgid "Large"
 msgstr "বড়"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "দেরি"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "উৎক্ষেপণ (ক্যাটাপাল্ট)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "লঞ্চ / টার্গেট"
 
@@ -2086,7 +2106,7 @@ msgstr "সার্ভার ত্যাগ"
 msgid "Left"
 msgstr "ছেড়ে গেছে"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "চলে গেছেন"
 
@@ -2103,7 +2123,7 @@ msgstr "বাম ডানার ডগা"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "শুধু অক্ষর, সংখ্যা, ফাঁকা জায়গা, হাইফেন এবং স্ল্যাশ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-এ সমতল, চাকা নামাও"
 
@@ -2111,16 +2131,16 @@ msgstr "1200-এ সমতল, চাকা নামাও"
 msgid "Light"
 msgstr "হালকা"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "বাতি"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "বাতি"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "লাইট"
 
@@ -2140,7 +2160,7 @@ msgstr "তালিকা"
 msgid "Load more"
 msgstr "আরও লোড করুন"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "লোড হচ্ছে"
 
@@ -2148,7 +2168,7 @@ msgstr "লোড হচ্ছে"
 msgid "Loading content…"
 msgstr "কন্টেন্ট লোড হচ্ছে…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "লোড ব্যর্থ হয়েছে"
 
@@ -2186,35 +2206,35 @@ msgstr "সফলভাবে লগ আউট"
 msgid "Logging out…"
 msgstr "লগ আউট হচ্ছে…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "তাকান"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "দৃষ্টি / অরবিট"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "লক্ষ্যের দিকে তাকান"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "নিচে তাকান"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "বামে তাকান"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "ডানে তাকান"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "উপরে তাকান"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "নিম্ন"
 
@@ -2224,7 +2244,7 @@ msgstr "নিম্ন"
 msgid "Low stratus"
 msgstr "নিম্ন স্ট্র্যাটাস"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "বন্ধ করতে M"
 
@@ -2236,11 +2256,11 @@ msgstr "ক্যাটেগরি পরিচালনা করুন"
 msgid "Manual"
 msgstr "ম্যানুয়াল"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "মানচিত্র"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "মানচিত্র"
 
@@ -2249,8 +2269,8 @@ msgstr "মানচিত্র"
 msgid "Mark all as read"
 msgstr "সবগুলি পঠিত হিসেবে চিহ্নিত করুন"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "মাস্টার ভলিউম"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP সার্ভার"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "মাঝারি"
 
@@ -2279,13 +2299,13 @@ msgstr "মাঝারি"
 msgid "Members"
 msgstr "সদস্যগণ"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "মেনু"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "মেনু"
 
@@ -2297,7 +2317,7 @@ msgstr "মার্জ — পাশ কাটানোর সময় লড�
 msgid "Message"
 msgstr "বার্তা"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "সবাইকে মেসেজ করুন"
 
@@ -2305,7 +2325,7 @@ msgstr "সবাইকে মেসেজ করুন"
 msgid "Message players on this server"
 msgstr "এই সার্ভারের খেলোয়াড়দের বার্তা পাঠান"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "আপনার টিমকে মেসেজ করুন"
 
@@ -2323,7 +2343,7 @@ msgstr "মাইক্রোফোনের অনুমতি প্রত্�
 msgid "Mid stratus"
 msgstr "মধ্যম স্ট্র্যাটাস"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "মাঝ আকাশে সংঘর্ষ"
 
@@ -2335,7 +2355,7 @@ msgstr "মিডওয়ে অ্যাটল মানচিত্র — �
 msgid "Minimum length"
 msgstr "ন্যূনতম দৈর্ঘ্য"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "মিসাইল"
 
@@ -2343,7 +2363,7 @@ msgstr "মিসাইল"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ক্ষেপণাস্ত্র মডেল <0>“AIM-120C AMRAAM”</0> <1>Pippa</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: পুনরায় স্কেল, পুনর্বিন্যস্ত এবং স্থাপনের জন্য কেন্দ্রীভূত।"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "মিশন শেষ"
 
@@ -2369,7 +2389,7 @@ msgstr "সোমবার"
 msgid "More options"
 msgstr "আরও বিকল্প"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "নাড়ুন…"
 
@@ -2447,7 +2467,7 @@ msgstr "এখনও কোনো কার্যকলাপ নেই"
 msgid "No comments yet"
 msgstr "এখনও কোনো মন্তব্য নেই"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "“{query}”-এর সঙ্গে কোনো নিয়ন্ত্রণ মেলে না।"
 
@@ -2471,7 +2491,7 @@ msgstr "কোনো গ্রুপ উপলব্ধ নেই"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "এখনও কোনো আইটেম টাইপ তৈরি করা যাবে না। প্রথমে প্রয়োজনীয় প্যারেন্ট আইটেম তৈরি করুন।"
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "কোনো জয়স্টিক শনাক্ত হয়নি — জাগাতে এর যেকোনো বোতাম চাপুন।"
 
@@ -2507,11 +2527,11 @@ msgstr "কোনো ফলাফল পাওয়া যায়নি।"
 msgid "No status"
 msgstr "কোনো স্ট্যাটাস নেই"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ট্যাংক নেই"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "কোনো লক্ষ্য নেই"
 
@@ -2540,7 +2560,7 @@ msgstr "কোনো ভিউ নেই"
 msgid "No world server."
 msgstr "কোনো ওয়ার্ল্ড সার্ভার নেই।"
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "কোনো গ্রেড নেই"
 
@@ -2563,9 +2583,9 @@ msgstr "কোনো গ্রেড নেই"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "কোনোটি নয়"
 
@@ -2573,11 +2593,11 @@ msgstr "কোনোটি নয়"
 msgid "Normal"
 msgstr "সাধারণ"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "নোজ গিয়ার"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "এটি জয়স্টিক প্রোফাইল নয়"
 
@@ -2615,7 +2635,7 @@ msgstr "নবীন"
 msgid "Number"
 msgstr "সংখ্যা"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "সমুদ্রের বিবরণ"
 
@@ -2623,7 +2643,7 @@ msgstr "সমুদ্রের বিবরণ"
 msgid "offline"
 msgstr "অফলাইন"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "অপশনের নাম"
 msgid "Options"
 msgstr "অপশন"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "বা"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "প্রদক্ষিণ"
 
@@ -2708,8 +2728,8 @@ msgstr "প্রদক্ষিণ"
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G সীমা অগ্রাহ্য"
 
@@ -2717,11 +2737,11 @@ msgstr "G সীমা অগ্রাহ্য"
 msgid "Owner"
 msgstr "মালিক"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "দৃষ্টি স্থির"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "দৃষ্টি মুক্ত"
 
@@ -2731,7 +2751,11 @@ msgstr "দৃষ্টি মুক্ত"
 msgid "Parent"
 msgstr "প্যারেন্ট"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "পার্কিং ব্রেক"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "পার্কিং ব্রেক"
 
@@ -2756,7 +2780,7 @@ msgstr "এই ব্রাউজারে পাসকি উপলব্ধ �
 msgid "Pattern (regex)"
 msgstr "প্যাটার্ন (রেজেক্স)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "বিরতি দেওয়া হয়েছে"
 
@@ -2776,15 +2800,15 @@ msgstr "পাইলট"
 msgid "Pilot"
 msgstr "পাইলট"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "পাইলট নিহত"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "পাইলট পরিচয়"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "পাইলট নিহত"
 
@@ -2793,23 +2817,23 @@ msgstr "পাইলট নিহত"
 msgid "Pin"
 msgstr "পিন করুন"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "পিচ"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "পিচ"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "পিচ নিচে"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "পিচ উপরে"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "প্ল্যাটফর্ম"
 
@@ -2839,15 +2863,15 @@ msgstr "পোস্টসমূহ"
 msgid "Posts and comments"
 msgstr "পোস্ট ও মন্তব্য"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "একটি কী চাপুন…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "উড্ডয়নের জন্য ENTER চাপুন"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "চাপুন…"
 
@@ -2861,12 +2885,24 @@ msgstr "পূর্ববর্তী ছবি"
 msgid "Privacy"
 msgstr "গোপনীয়তা"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "প্রোব"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "প্রোব ভিতরে"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "প্রোব বাইরে"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "প্রক্রিয়াকরণ চলছে…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "প্রোফাইল সংরক্ষণ করা হয়েছে"
 
@@ -2887,24 +2923,24 @@ msgstr "সর্বজনীন সার্ভার"
 msgid "Push notification"
 msgstr "পুশ বিজ্ঞপ্তি"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "অ্যাপ্রোচ সময়"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "ডান ইঞ্জিন"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ডান ইঞ্জিন আগুন"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "ডান গিয়ার"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "রাডার নীরব"
 
@@ -2920,7 +2956,7 @@ msgstr "এই সার্ভারে আপনার অ্যাকাউন
 msgid "Re-register your passkeys on this server"
 msgstr "এই সার্ভারে আপনার পাসকি পুনরায় নিবন্ধন করুন"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "পুনরায় অস্ত্রসজ্জিত"
 
@@ -2936,12 +2972,12 @@ msgstr "সুপারিশকৃত"
 msgid "Reconnecting ({retries})..."
 msgstr "পুনরায় সংযোগ করা হচ্ছে ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "উড়ান রেকর্ড করুন"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "রেকর্ডিং"
 
@@ -2982,7 +3018,7 @@ msgstr "তথ্যসূত্র"
 msgid "Refresh"
 msgstr "রিফ্রেশ"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ফর্মেশনে ফিরছি"
 
@@ -3082,23 +3118,23 @@ msgstr "প্রয়োজনীয়"
 msgid "Resend email"
 msgstr "ইমেল আবার পাঠান"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "রিসেট"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "প্রধান সতর্কতা রিসেট করুন"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "ট্রিম রিসেট"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "দৃশ্য রিসেট"
 
@@ -3114,19 +3150,19 @@ msgstr "গেম থেকে পদত্যাগ করবেন?"
 msgid "Resigning..."
 msgstr "পদত্যাগ করা হচ্ছে..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "রেজোলিউশন"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "পুনরায় শুরু"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "মিশন পুনরায় শুরু"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "মিশন পুনরায় শুরু করবেন?"
 
@@ -3134,12 +3170,12 @@ msgstr "মিশন পুনরায় শুরু করবেন?"
 msgid "Result"
 msgstr "ফলাফল"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "পুনরায় শুরু করুন"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "ফ্ল্যাপ গোটানো"
 
@@ -3147,7 +3183,7 @@ msgstr "ফ্ল্যাপ গোটানো"
 msgid "Retry"
 msgstr "আবার চেষ্টা করুন"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "উল্টানো"
 
@@ -3172,19 +3208,19 @@ msgstr "ডান ডানা"
 msgid "Right wingtip"
 msgstr "ডান ডানার ডগা"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "রোল"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "রোল"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "রোল বামে"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "রোল ডানে"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS ফিড"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL ক্লিপবোর্ডে কপি করা হয়েছে"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "পূর্ণ শক্তি"
 
@@ -3242,8 +3278,8 @@ msgstr "সমুদ্রপৃষ্ঠ"
 msgid "Search"
 msgstr "অনুসন্ধান"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "নিয়ন্ত্রণ খুঁজুন"
 
@@ -3340,8 +3376,8 @@ msgstr "ব্যক্তি নির্বাচন করুন..."
 msgid "Select previous card"
 msgstr "পূর্ববর্তী কার্ড নির্বাচন করুন"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "অস্ত্র নির্বাচন"
 
@@ -3363,7 +3399,7 @@ msgstr "পাঠান"
 msgid "Send again"
 msgstr "আবার পাঠান"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "চ্যাট পাঠান"
 
@@ -3404,7 +3440,7 @@ msgstr "সার্ভারের নিয়মাবলী"
 msgid "server runs v{0}, you have v{version}"
 msgstr "সার্ভার v{0} চালাচ্ছে, আপনার আছে v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "সেশন শেষ হয়েছে"
 
@@ -3412,7 +3448,7 @@ msgstr "সেশন শেষ হয়েছে"
 msgid "Session expired. Please log in again."
 msgstr "সেশনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে আবার লগ ইন করুন।"
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "সেট করুন"
 
@@ -3423,14 +3459,14 @@ msgstr "উৎস ও গন্তব্য সেট করুন"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "সেটিংস"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "ছায়া"
 
@@ -3485,7 +3521,7 @@ msgstr "ছোট"
 msgid "Sort"
 msgstr "সাজান"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "শব্দ"
 
@@ -3505,17 +3541,17 @@ msgstr "দূরে দূরে স্পন"
 msgid "Spacious"
 msgstr "প্রশস্ত"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "বা.ব্র"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "বায়ু ব্রেক"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "বায়ু ব্রেক"
 
@@ -3523,9 +3559,13 @@ msgstr "বায়ু ব্রেক"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "KCAS-এ গতি, হালকা (সর্বনিম্ন জ্বালানি, কোনো বাহ্যিক বোঝা নেই) থেকে ভারী (সর্বোচ্চ মোট ওজন) পর্যন্ত একটি পরিসর হিসেবে। তথ্য খেলার মধ্যে পরীক্ষামূলকভাবে সংগৃহীত। প্রকৃত বিমানের সঙ্গে যেকোনো পার্থক্য সিমুলেটরের উড়ান মডেলের ত্রুটি প্রতিফলিত করে।"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "লক্ষ্য ভূপাতিত"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ডানা মেলুন"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "খাড়াতম আরোহণ (Vx, আফটারবার্�
 msgid "Stop watching"
 msgstr "দেখা বন্ধ করুন"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "কাঠামো"
 
@@ -3598,7 +3638,7 @@ msgstr "ভিউ 1-9 এ স্যুইচ করুন"
 msgid "System"
 msgstr "সিস্টেম"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "কৌশলগত মানচিত্র"
 
@@ -3615,7 +3655,7 @@ msgstr "ট্যাগ ৫০ অক্ষর বা তার কম হতে
 msgid "Tags"
 msgstr "ট্যাগ"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "শত্রু নজরে"
 
@@ -3623,11 +3663,11 @@ msgstr "শত্রু নজরে"
 msgid "Task"
 msgstr "কাজ"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "টিম"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "টিম"
 
@@ -3674,7 +3714,7 @@ msgstr "ক্যামেরা অনুরোধের উত্তর দে
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "গেমটি লোড করা যায়নি। আবার চেষ্টা করতে পৃষ্ঠাটি পুনরায় লোড করুন।"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "এই মেনুর পেছনে ম্যাচ চলতে থাকে।"
 
@@ -3686,7 +3726,7 @@ msgstr "মাইক্রোফোন অনুরোধের উত্তর 
 msgid "The mission stopped."
 msgstr "মিশন থেমে গেছে।"
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "মিশন পুনরায় শুরু হবে। বর্তমান উড়ান সংরক্ষিত হবে না।"
 
@@ -3722,21 +3762,21 @@ msgstr "মসৃণ উড়ানের জন্য এই মেশিন �
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "এটি গেম এবং এর চ্যাট স্থায়ীভাবে মুছে ফেলবে। এটি ফিরিয়ে আনা যাবে না।"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "থ্রটল"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "থ্রটল"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "থ্রটল কমান"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "থ্রটল বাড়ান"
 
@@ -3748,7 +3788,7 @@ msgstr "বৃহস্পতিবার"
 msgid "Tightest sustained turn speed"
 msgstr "সংকীর্ণতম টেকসই বাঁকের গতি"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "কাত"
 
@@ -3795,7 +3835,7 @@ msgstr "অনেক বেশি অনুরোধ"
 msgid "Top"
 msgstr "উপরে"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "ট্রেসার"
 
@@ -3803,35 +3843,35 @@ msgstr "ট্রেসার"
 msgid "Travelling"
 msgstr "ভ্রমণরত"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "ট্রিম"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "ট্রিম"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "ট্রিম টুপি"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ট্রিম: নাক নিচে"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ট্রিম: নাক উপরে"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ট্রিম: বামে হেলা"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ট্রিম: ডানে হেলা"
 
@@ -3869,7 +3909,7 @@ msgstr "ব্যবহারকারী অনুসন্ধান করত�
 msgid "Type to search..."
 msgstr "অনুসন্ধান করতে টাইপ করুন..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "আল্ট্রা"
 
@@ -3890,13 +3930,13 @@ msgstr "অ্যাসাইন করা হয়নি"
 msgid "Unavailable"
 msgstr "অনুপলব্ধ"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "সিকার মুক্ত করুন"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "লক্ষ্য নির্ধারণ বাতিল"
 
@@ -4014,11 +4054,11 @@ msgstr "ভিডিও থাম্বনেইল"
 msgid "Video viewer: {0}"
 msgstr "ভিডিও দর্শক: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "দৃশ্য"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "দেখুন"
 
@@ -4035,7 +4075,7 @@ msgstr "আইটেমের বিস্তারিত দেখুন এব
 msgid "View controls"
 msgstr "কন্ট্রোল দেখুন"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "ভিউ"
 
@@ -4043,11 +4083,11 @@ msgstr "ভিউ"
 msgid "Voice recording is not supported in this browser"
 msgstr "এই ব্রাউজারে ভয়েস রেকর্ডিং সমর্থিত নয়"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "ভলিউম"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "প্রতিপক্ষের অপেক্ষায়"
 
@@ -4065,7 +4105,7 @@ msgstr "দেখা হচ্ছে"
 msgid "Watched only"
 msgstr "শুধুমাত্র দেখা"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "গো অ্যারাউন্ড"
 
@@ -4074,16 +4114,16 @@ msgstr "গো অ্যারাউন্ড"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "আমরা <0>{0}</0> এ একটি যাচাইকরণ কোড পাঠিয়েছি। আপনার ইমেল ঠিকানা যাচাই করতে নীচে কোডটি লিখুন।"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "অস্ত্র"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "অস্ত্র নির্বাচন হ্যাট"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "অস্ত্র"
 
@@ -4095,21 +4135,37 @@ msgstr "আবহাওয়া"
 msgid "Wednesday"
 msgstr "বুধবার"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "চাকার ব্রেক"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "বাতাস ও ককপিট কাঠামো"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "ডানা ভাঁজ"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ডানা"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ডানা ভাঁজ হচ্ছে"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ডানা লক"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ডানা মেলছে"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "জয়ী"
 
@@ -4126,25 +4182,25 @@ msgstr "ওয়ার্ল্ড সার্ভারে পৌঁছান�
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, পাশ কাটানোর সময় অস্ত্র মুক্ত"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "ইয়ো"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "ইয়াও"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "ইয়াও বামে"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "ইয়াও ডানে"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "আপনি"
 
@@ -4176,14 +4232,14 @@ msgstr "আপনার লেখা ও সংযুক্তিগুলি �
 msgid "Your text will be lost."
 msgstr "আপনার লেখা হারিয়ে যাবে।"
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "জুম"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "জুম ইন"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "জুম আউট"

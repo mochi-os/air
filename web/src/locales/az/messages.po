@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# seçildi} other {# seçildi}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# güllə dəydi} other {# güllə dəydi}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{1} uçuşdan {0}"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} artıq tutulmuşdu və həmin idarəetmə indi bağlanmayıb."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} üzərində idi, o da indi bağlanmayıb."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# cavab} other {+# daha çox cavab}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Menyunu aç (# oxunmamış bildiriş)} other {Menyunu aç (# oxunmamış bildiriş)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "TROS 1"
 
@@ -155,7 +155,7 @@ msgstr "12 saat"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "TROS 2"
 
@@ -163,7 +163,7 @@ msgstr "TROS 2"
 msgid "24 hours"
 msgstr "24 saat"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "TROS 3"
 
@@ -202,13 +202,13 @@ msgstr "Hesab tipi"
 msgid "Ace"
 msgstr "As"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Hədəfi tut"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Tutma rejimi"
 
@@ -290,7 +290,7 @@ msgstr "Görünüş əlavə et"
 msgid "Adding..."
 msgstr "Əlavə edilir..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Forsaj"
 
@@ -298,7 +298,7 @@ msgstr "Forsaj"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Təyyarə"
 
@@ -356,8 +356,8 @@ msgstr "Daxil olmuş hər kəs"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Bu lentə abunə olan hər şey onu almağı dayandıracaq. Sonra yeni URL kopyalaya bilərsiniz."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Yaxınlaşma gücü (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Təslim olmaq istədiyinizə əminsiniz?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Təslim olmaq istədiyinizə əminsiniz? {opponentName} oyunu qazanacaq."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Əyləc qarmağı"
 
@@ -436,16 +436,16 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "{name} üçün avatar"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Ox {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Ox kalibrləməsi və təyinatı"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "geri"
 
@@ -476,7 +476,7 @@ msgstr "Banner silindi"
 msgid "Banner updated"
 msgstr "Banner yeniləndi"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250-DƏN AŞAĞI — ŞASSİ VƏ QANADCIQ"
 
@@ -496,11 +496,11 @@ msgstr "Ən yaxşı süzülmə (mühərriklər sönmüş)"
 msgid "Best sustained turn speed"
 msgstr "Ən yaxşı davamlı dönmə sürəti"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty və RWR xəbərdarlıqları"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "BINGO YANACAQ"
 
@@ -530,7 +530,7 @@ msgstr "Mavi botlar"
 msgid "Board"
 msgstr "Lövhə"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "Sərhəd rəngi"
 msgid "Bots"
 msgstr "Botlar"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "əyləclər"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "SOLA QIR"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "SAĞA QIR"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "HAZIR OLANDA DÖN"
 
@@ -567,12 +567,12 @@ msgstr "HAZIR OLANDA DÖN"
 msgid "Browser notifications"
 msgstr "Brauzer bildirişləri"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Düymə {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Düymə təyinatları"
 
@@ -584,16 +584,16 @@ msgstr "BVR — başlanğıcdan silahlar sərbəst"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, silahlar başlanğıcdan sərbəst"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "TOPU BILDIR"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Çağırış işarəsi"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Kamera məsafəsi"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Kamera icazəsi rədd edildi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Kamera əlçatan deyil"
 
@@ -620,10 +620,10 @@ msgstr "Kamera əlçatan deyil"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Ləğv et"
 
@@ -641,20 +641,40 @@ msgstr "Cavabı ləğv et"
 msgid "Cancelled"
 msgstr "Ləğv edildi"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Toplar və sursat"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Kabinə qapağı"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "KANOPİ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "KANOPİ BAĞLI"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "KANOPİ BAĞLANIR"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "KANOPİ KİLİDLİ"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "KANOPİ AÇIQ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "İzah"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Daşıyıcı və ətraf səslər"
 
@@ -711,19 +731,19 @@ msgstr "Dəyişdirildi"
 msgid "Changed {field}"
 msgstr "{field} dəyişdirildi"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Təqib görünüşü:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "çat"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Söhbət"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Hamı ilə çat"
 
@@ -760,7 +780,7 @@ msgstr "Dil seçin"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Təmizlə"
 
@@ -806,7 +826,7 @@ msgstr "Paneli bağla / ləğv et"
 msgid "Close search"
 msgstr "Axtarışı bağla"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "yaxınlaş"
 
@@ -846,7 +866,7 @@ msgstr "Rahat"
 msgid "Command Palette"
 msgstr "Əmr paleti"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "BAŞLANIR"
 
@@ -865,7 +885,7 @@ msgstr "Şərhlər"
 msgid "Comments ({0})"
 msgstr "Şərhlər ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Rabitə"
 
@@ -906,7 +926,7 @@ msgstr "Qoşulur..."
 msgid "Connecting…"
 msgstr "Bağlanır…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "BAĞLANTI ALINMADI"
 
@@ -963,7 +983,7 @@ msgstr "Bu sənəd yüklənə bilmədi. Daha sonra yenidən cəhd edin."
 msgid "Could not load your flights"
 msgstr "Uçuşlarınızı yükləmək mümkün olmadı"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Profil saxlanıla bilmədi"
 
@@ -992,16 +1012,16 @@ msgstr "Yenidən autentifikasiyanı başlatmaq mümkün olmadı. Zəhmət olmasa
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Bu hesabla doğrulama mümkün olmadı. Zəhmət olmasa, yenidən cəhd edin."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Əks tədbirlər"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Qəzaya uğradı"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "QƏZAYA UĞRADI"
 
@@ -1069,12 +1089,12 @@ msgstr "Cari məkan"
 msgid "Custom"
 msgstr "Xüsusi"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "TƏHLÜKƏLİ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Görünüşü dəyiş"
 
@@ -1101,7 +1121,7 @@ msgstr "Gündüz"
 msgid "Deaths"
 msgstr "Ölümlər"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "GÖYƏRTƏ MÖVQEYİ YADDA SAXLANDI"
 
@@ -1203,11 +1223,11 @@ msgstr "Azalan"
 msgid "Description"
 msgstr "Təsvir"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Yanğında məhv oldu"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Təfərrüat"
 
@@ -1215,8 +1235,8 @@ msgstr "Təfərrüat"
 msgid "Details Panel"
 msgstr "Təfərrüatlar paneli"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Aşkarla"
 
@@ -1239,7 +1259,7 @@ msgstr "Fərqli oyun hostu"
 msgid "Directory"
 msgstr "Kataloq"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ŞASSİ AÇ"
 
@@ -1251,7 +1271,7 @@ msgstr "Ləğv et"
 msgid "Discard draft?"
 msgstr "Qaralama ləğv edilsin?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "ayrılıb"
 
@@ -1264,12 +1284,12 @@ msgstr "Bağlantı kəsilib"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Rədd et"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Ekran təkrarlayıcısı"
 
@@ -1277,7 +1297,7 @@ msgstr "Ekran təkrarlayıcısı"
 msgid "Displays the mobile sidebar."
 msgstr "Mobil yan paneli göstərir."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "Məsafə LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "Tələb olunan şablona uyğun gəlmir"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Hazırdır"
 
@@ -1303,11 +1323,11 @@ msgstr "Yüklə"
 msgid "Download failed"
 msgstr "Yükləmə alınmadı"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "KÜLƏK ARXASI 600 FUT"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Sürükləmə"
 
@@ -1323,7 +1343,7 @@ msgstr "Dublikatlar"
 msgid "Duration"
 msgstr "Müddət"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Dinamik ayırdetmə"
 
@@ -1331,7 +1351,7 @@ msgstr "Dinamik ayırdetmə"
 msgid "Dyslexia-friendly"
 msgstr "Disleksiya üçün uyğun"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "ERKƏN"
 
@@ -1374,19 +1394,19 @@ msgstr "Seçilmiş kartı redaktə et"
 msgid "Edit view"
 msgstr "Görünüşü redaktə et"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Effektlər"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Effekt detalları"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Katapultlaşma"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "KATAPULT OLDU"
 
@@ -1398,12 +1418,12 @@ msgstr "E-poçt"
 msgid "Email code"
 msgstr "E-poçt kodu"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "TƏCİLİ ATMA"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Təcili atma (saxla)"
 
@@ -1416,11 +1436,11 @@ msgstr "boş"
 msgid "Empty pylon"
 msgstr "Boş pilon"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Səsi aktiv et"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "HÜCUM EDİRƏM"
 
@@ -1428,7 +1448,7 @@ msgstr "HÜCUM EDİRƏM"
 msgid "Engagement"
 msgstr "Döyüş"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Mühərrik və forsaj"
 
@@ -1448,15 +1468,15 @@ msgstr "Autentifikator kodunuzu daxil edin"
 msgid "Error"
 msgstr "Xəta"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Hamı"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Matçdan çıx"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Missiyadan çıx"
 
@@ -1475,16 +1495,16 @@ msgstr "Yan paneli genişləndir"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Partlayış animasiyası <0>“Explosion02HD”</0>, müəllif <1>Unity Technologies</1> (Unity Labs VFX şəkil ardıcıllıqları), <2>CC0</2> altında buraxılıb. Dəyişdirilib: veb üçün yenidən sıxılıb."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "İxrac et"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Flapları açmaq"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Xarici detal"
 
@@ -1603,15 +1623,15 @@ msgstr "İzləmə yenilənmədi"
 msgid "Failed to upload attachment"
 msgstr "Əlavəni yükləmək alınmadı"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ORTA"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "DÖYÜŞ BAŞLADI"
 
@@ -1629,16 +1649,16 @@ msgstr "Hesabınızın köçürülməsini tamamlayın"
 msgid "Finished"
 msgstr "Bitdi"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "atəş"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Silahla atəş aç"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Sabit uçuş klavişləri"
 
@@ -1646,15 +1666,15 @@ msgstr "Sabit uçuş klavişləri"
 msgid "Flags"
 msgstr "Bayraqlar"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ALOV SÖNMƏSİ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "flaplar"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "fişənglər"
 
@@ -1666,19 +1686,19 @@ msgstr "TƏLƏLƏR"
 msgid "Flat"
 msgstr "Düz"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Dənizə çırpıldı"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Uçuş"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "UÇUŞ NÜVƏSİ XƏTASI"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Uçuş məsləhətləri"
 
@@ -1699,11 +1719,11 @@ msgstr "Uçuldu"
 msgid "Fly"
 msgstr "Uç"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Yenidən uç"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Kadr sürəti sayğacı"
 
@@ -1736,23 +1756,23 @@ msgstr "Mövzudan"
 msgid "Fuel"
 msgstr "Yanacaq"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "YANACAQ"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "YANACAQ YANĞINI"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "YANACAQ SIZMASI"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "YANACAQ AZ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Yanacaq zondu"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Gövdə"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Gücləndirmə"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "şassi"
 
@@ -1781,7 +1801,7 @@ msgstr "şassi"
 msgid "GEAR"
 msgstr "ŞASSİ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Ümumi"
 
@@ -1790,11 +1810,11 @@ msgstr "Ümumi"
 msgid "Go back"
 msgstr "Geri"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Qrafika"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Qrafika ön ayarı"
 
@@ -1832,15 +1852,15 @@ msgstr "Yalnız toplar"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Aparat qrafika sürətləndirilməsi sönülüdür — brauzer parametrlərinə və ya qrafika sürücülərinə baxın."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Baş"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Baş izləmə"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Yüksək"
 
@@ -1850,7 +1870,7 @@ msgstr "Yüksək"
 msgid "High stratus"
 msgstr "Yüksək stratus"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Məsləhətlər"
 
@@ -1865,7 +1885,7 @@ msgstr "Tarixçə"
 msgid "Home"
 msgstr "Ev"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "qarmaq"
 
@@ -1877,11 +1897,11 @@ msgstr "QARMAQ"
 msgid "Hot"
 msgstr "İsti"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD hündürlük mənbəyi"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD sadələşdirməsi"
 
@@ -1898,7 +1918,7 @@ msgstr "Şəkil göstəricisi: {0}"
 msgid "Imperial"
 msgstr "İmperial"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "İdxal et"
 
@@ -1919,7 +1939,7 @@ msgstr "İnisial avatarı"
 msgid "Initials avatar for {name}"
 msgstr "{name} üçün inisial avatarı"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Giriş avadanlığı"
 
@@ -1944,7 +1964,7 @@ msgstr "Etibarsız tarix"
 msgid "Invulnerable"
 msgstr "Toxunulmaz"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "TOXUNULMAZ"
 
@@ -1961,17 +1981,17 @@ msgstr "Axtardığınız səhifə <0/>mövcud deyil və ya silinib."
 msgid "Item details"
 msgstr "Element təfərrüatları"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Maneə yaradıcı"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Çənləri at"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ATMA: ŞASSİ"
 
@@ -1984,7 +2004,7 @@ msgstr "Qoşul"
 msgid "Join server"
 msgstr "Serverə qoşul"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "QOŞULDU"
 
@@ -2002,7 +2022,7 @@ msgstr "Duel — 1v1, ilk vuran qazanır"
 msgid "Joust against bot"
 msgstr "Duel bota qarşı"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Joystik"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Klaviatura qısayolları"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Düymələr"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "VURULDU"
 
@@ -2035,20 +2055,20 @@ msgstr "Öldürüldü"
 msgid "Kills"
 msgstr "Öldürmələr"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "SOL MÜHƏRRİK"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "SOL MÜH YANĞINI"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "SOL ŞASSİ"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Şassi"
 
@@ -2057,16 +2077,16 @@ msgstr "Şassi"
 msgid "Large"
 msgstr "Böyük"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "GEC"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Buraxılış (katapult)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "buraxılış / hədəf"
 
@@ -2086,7 +2106,7 @@ msgstr "Serverdən çıx"
 msgid "Left"
 msgstr "Ayrıldı"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "AYRILDI"
 
@@ -2103,7 +2123,7 @@ msgstr "Sol qanad ucu"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Yalnız hərflər, rəqəmlər, boşluqlar, defislər və kəsik xətlər"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-DƏ DÜZ, ŞASSI AÇ"
 
@@ -2111,16 +2131,16 @@ msgstr "1200-DƏ DÜZ, ŞASSI AÇ"
 msgid "Light"
 msgstr "İşıqlı"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "işıqlar"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "İşıqlar"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "İŞIQLAR"
 
@@ -2140,7 +2160,7 @@ msgstr "Siyahı"
 msgid "Load more"
 msgstr "Daha çox yüklə"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "YÜKLƏNİR"
 
@@ -2148,7 +2168,7 @@ msgstr "YÜKLƏNİR"
 msgid "Loading content…"
 msgstr "Məzmun yüklənir…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "YÜKLƏMƏ ALINMADI"
 
@@ -2186,35 +2206,35 @@ msgstr "Uğurla çıxış edildi"
 msgid "Logging out…"
 msgstr "Çıxış edilir…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Bax"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Baxış / orbit"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Hədəfə bax"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Aşağı bax"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Sola bax"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Sağa bax"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Yuxarı bax"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Aşağı"
 
@@ -2224,7 +2244,7 @@ msgstr "Aşağı"
 msgid "Low stratus"
 msgstr "Aşağı stratus"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "Bağlamaq üçün M"
 
@@ -2236,11 +2256,11 @@ msgstr "Kateqoriyaları idarə et"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "xəritə"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Xəritə"
 
@@ -2249,8 +2269,8 @@ msgstr "Xəritə"
 msgid "Mark all as read"
 msgstr "Hamısını oxunmuş kimi işarələ"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Əsas səs səviyyəsi"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP serveri"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Orta"
 
@@ -2279,13 +2299,13 @@ msgstr "Orta"
 msgid "Members"
 msgstr "Üzvlər"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "menyu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Menyu"
 
@@ -2297,7 +2317,7 @@ msgstr "Qovuşma — döyüş qarşılaşmada başlayır"
 msgid "Message"
 msgstr "Mesaj"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Hamıya mesaj yaz"
 
@@ -2305,7 +2325,7 @@ msgstr "Hamıya mesaj yaz"
 msgid "Message players on this server"
 msgstr "Bu serverdəki oyunçulara mesaj yazın"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Komandana mesaj yaz"
 
@@ -2323,7 +2343,7 @@ msgstr "Mikrofon icazəsi rədd edildi"
 msgid "Mid stratus"
 msgstr "Orta stratus"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Havada toqquşma"
 
@@ -2335,7 +2355,7 @@ msgstr "Midway Atolu xəritəsi — təsvirlərdə dəyişdirilmiş <0>Copernicu
 msgid "Minimum length"
 msgstr "Minimum uzunluq"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "RAKET"
 
@@ -2343,7 +2363,7 @@ msgstr "RAKET"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Raket modeli <0>“AIM-120C AMRAAM”</0> müəllifi <1>Pippa</1> (Sketchfab), <2>CC BY 4.0</2> lisenziyası altında. Dəyişdirilib: yenidən miqyaslanıb, yenidən istiqamətlənib və yerləşdirmə üçün mərkəzləşdirilib."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Missiya bitdi"
 
@@ -2369,7 +2389,7 @@ msgstr "Bazar ertəsi"
 msgid "More options"
 msgstr "Digər seçimlər"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Hərəkət etdir…"
 
@@ -2447,7 +2467,7 @@ msgstr "Hələ fəaliyyət yoxdur"
 msgid "No comments yet"
 msgstr "Hələ şərh yoxdur"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "“{query}” ilə uyğun idarəetmə yoxdur."
 
@@ -2471,7 +2491,7 @@ msgstr "Mövcud qrup yoxdur"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Hələ heç bir element növü yaradıla bilməz. Əvvəlcə tələb olunan əsas elementləri yaradın."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystik tapılmadı — oyatmaq üçün üzərindəki hər hansı düyməni bas."
 
@@ -2507,11 +2527,11 @@ msgstr "Nəticə tapılmadı."
 msgid "No status"
 msgstr "Status yoxdur"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ÇƏN YOXDUR"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "HƏDƏF YOXDUR"
 
@@ -2540,7 +2560,7 @@ msgstr "Baxış yoxdur"
 msgid "No world server."
 msgstr "Dünya serveri yoxdur."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "QİYMƏT VERİLMƏDİ"
 
@@ -2563,9 +2583,9 @@ msgstr "QİYMƏT VERİLMƏDİ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Heç biri"
 
@@ -2573,11 +2593,11 @@ msgstr "Heç biri"
 msgid "Normal"
 msgstr "Normal"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "BURUN ŞASSİ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Coystik profili deyil"
 
@@ -2615,7 +2635,7 @@ msgstr "Yeni başlayan"
 msgid "Number"
 msgstr "Nömrə"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Okean detalı"
 
@@ -2623,7 +2643,7 @@ msgstr "Okean detalı"
 msgid "offline"
 msgstr "oflayn"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Seçim adı"
 msgid "Options"
 msgstr "Seçimlər"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "və ya"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "fırlan"
 
@@ -2708,8 +2728,8 @@ msgstr "fırlan"
 msgid "Other"
 msgstr "Digər"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G limitini keçmək"
 
@@ -2717,11 +2737,11 @@ msgstr "G limitini keçmək"
 msgid "Owner"
 msgstr "Sahibi"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "BAXIŞ KİLİDİ"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "BAXIŞ AÇIQ"
 
@@ -2731,7 +2751,11 @@ msgstr "BAXIŞ AÇIQ"
 msgid "Parent"
 msgstr "Əsas"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "DAYANACAQ ƏYLƏCİ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Dayanacaq əyləci"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkey-lər bu brauzerdə mövcud deyil"
 msgid "Pattern (regex)"
 msgstr "Şablon (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Dayandırıldı"
 
@@ -2776,15 +2800,15 @@ msgstr "pilot"
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "PİLOT HƏLAK OLDU"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Pilot kimliyi"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Pilot öldürüldü"
 
@@ -2793,23 +2817,23 @@ msgstr "Pilot öldürüldü"
 msgid "Pin"
 msgstr "Sancaqla"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "tanqaj"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Tanqaj"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Burun aşağı"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Burun yuxarı"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
@@ -2839,15 +2863,15 @@ msgstr "Postlar"
 msgid "Posts and comments"
 msgstr "Postlar və şərhlər"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Bir klaviş bas…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "UÇMAQ ÜÇÜN ENTER BASIN"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Bas…"
 
@@ -2861,12 +2885,24 @@ msgstr "Əvvəlki şəkil"
 msgid "Privacy"
 msgstr "Məxfilik"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ZOND"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ZOND İÇƏRİDƏ"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ZOND ÇÖLDƏ"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Emal olunur…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profil saxlanıldı"
 
@@ -2887,24 +2923,24 @@ msgstr "İctimai serverlər"
 msgid "Push notification"
 msgstr "Push bildirişi"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "YAXINLAŞMA VAXTI"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "SAĞ MÜHƏRRİK"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "SAĞ MÜH YANĞINI"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "SAĞ ŞASSİ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radar səssizliyi"
 
@@ -2920,7 +2956,7 @@ msgstr "Bu serverdə hesablarınızı yenidən əlaqələndirin"
 msgid "Re-register your passkeys on this server"
 msgstr "Bu serverdə giriş açarlarınızı yenidən qeydiyyatdan keçirin"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "YENİDƏN SİLAHLANDI"
 
@@ -2936,12 +2972,12 @@ msgstr "Tövsiyə olunur"
 msgid "Reconnecting ({retries})..."
 msgstr "Yenidən qoşulur ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Uçuşları qeyd et"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Qeyd"
 
@@ -2982,7 +3018,7 @@ msgstr "İstinad"
 msgid "Refresh"
 msgstr "Yenilə"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "SIRAYA QAYIDIRAM"
 
@@ -3082,23 +3118,23 @@ msgstr "Tələb olunur"
 msgid "Resend email"
 msgstr "E-poçtu yenidən göndər"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Sıfırla"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Əsas xəbərdarlığı sıfırla"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Trimi sıfırlamaq"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Görünüşü sıfırlamaq"
 
@@ -3114,19 +3150,19 @@ msgstr "Oyundan təslim olunsun?"
 msgid "Resigning..."
 msgstr "Təslim olunur..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Çözüm"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Yenidən başlat"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Missiyanı yenidən başlat"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Missiya yenidən başladılsın?"
 
@@ -3134,12 +3170,12 @@ msgstr "Missiya yenidən başladılsın?"
 msgid "Result"
 msgstr "Nəticə"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Davam et"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Flapları yığmaq"
 
@@ -3147,7 +3183,7 @@ msgstr "Flapları yığmaq"
 msgid "Retry"
 msgstr "Yenidən cəhd et"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Tərsinə"
 
@@ -3172,19 +3208,19 @@ msgstr "Sağ qanad"
 msgid "Right wingtip"
 msgstr "Sağ qanad ucu"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "kren"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Kren"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Sola kren"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Sağa kren"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS lenti"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL panelə kopyalandı"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "TAM GÜC"
 
@@ -3242,8 +3278,8 @@ msgstr "Dəniz səviyyəsi"
 msgid "Search"
 msgstr "Axtar"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "İdarəetmələri axtar"
 
@@ -3340,8 +3376,8 @@ msgstr "Şəxs seçin..."
 msgid "Select previous card"
 msgstr "Əvvəlki kartı seçin"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Silah seçmək"
 
@@ -3363,7 +3399,7 @@ msgstr "Göndər"
 msgid "Send again"
 msgstr "Yenidən göndər"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Mesaj göndər"
 
@@ -3404,7 +3440,7 @@ msgstr "Server qaydaları"
 msgid "server runs v{0}, you have v{version}"
 msgstr "server v{0} işlədir, sizdə v{version} var"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "SESSİYA BİTDİ"
 
@@ -3412,7 +3448,7 @@ msgstr "SESSİYA BİTDİ"
 msgid "Session expired. Please log in again."
 msgstr "Sessiyanın vaxtı bitib. Zəhmət olmasa, yenidən daxil olun."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Təyin et"
 
@@ -3423,14 +3459,14 @@ msgstr "Başlanğıc və təyinat nöqtəsini təyin et"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Parametrlər"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Kölgələr"
 
@@ -3485,7 +3521,7 @@ msgstr "Kiçik"
 msgid "Sort"
 msgstr "Sırala"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Səs"
 
@@ -3505,17 +3541,17 @@ msgstr "Aralı başlanğıclar"
 msgid "Spacious"
 msgstr "Geniş"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "HV.FR"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "hava freni"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Hava freni"
 
@@ -3523,9 +3559,13 @@ msgstr "Hava freni"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Sürətlər KCAS ilə, yüngüldən (minimum yanacaq, yüksüz) ağıra (maksimum ümumi çəki) qədər diapazon kimi. Məlumatlar oyun daxilində təcrübi olaraq əldə edilib. Real təyyarədən hər hansı fərq simulyatorun uçuş modeli xətalarını əks etdirir."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "HƏDƏF VURULDU"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "QANADLARI AÇ"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Ən dik qalxma (Vx, forsaj)"
 msgid "Stop watching"
 msgstr "İzləməyi dayandır"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "KONSTRUKSİYA"
 
@@ -3598,7 +3638,7 @@ msgstr "1-9 görünüşünə keç"
 msgid "System"
 msgstr "Sistem"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "TAKTİKİ XƏRİTƏ"
 
@@ -3615,7 +3655,7 @@ msgstr "Etiket 50 simvol və ya daha az olmalıdır"
 msgid "Tags"
 msgstr "Etiketlər"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "DÜŞMƏNİ GÖRÜRƏM"
 
@@ -3623,11 +3663,11 @@ msgstr "DÜŞMƏNİ GÖRÜRƏM"
 msgid "Task"
 msgstr "Tapşırıq"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Komanda"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "KOMANDA"
 
@@ -3674,7 +3714,7 @@ msgstr "Kamera sorğusu cavablandırılmadı"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Oyun yüklənə bilmədi. Yenidən cəhd etmək üçün səhifəni yeniləyin."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Matç bu menyunun arxasında davam edir."
 
@@ -3686,7 +3726,7 @@ msgstr "Mikrofon sorğusu cavablandırılmadı"
 msgid "The mission stopped."
 msgstr "Missiya dayandı."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Missiya yenidən başlayacaq. Cari uçuş yadda saxlanılmayacaq."
 
@@ -3722,21 +3762,21 @@ msgstr "Bu maşın rəvan uçuş üçün çox yavaş ola bilər."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Bu, oyunu və onun söhbətini həmişəlik siləcək. Bu geri qaytarıla bilməz."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "qaz"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Mühərrik gücü"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Gücü azalt"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Gücü artır"
 
@@ -3748,7 +3788,7 @@ msgstr "Qalan vaxt"
 msgid "Tightest sustained turn speed"
 msgstr "Ən dar davamlı dönmə sürəti"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "əymə"
 
@@ -3795,7 +3835,7 @@ msgstr "Həddindən çox sorğu"
 msgid "Top"
 msgstr "Mövzular"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "İzli güllələr"
 
@@ -3803,35 +3843,35 @@ msgstr "İzli güllələr"
 msgid "Travelling"
 msgstr "Səyahət"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Trim papağı"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: burun aşağı"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: burun yuxarı"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: sola yatma"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: sağa yatma"
 
@@ -3869,7 +3909,7 @@ msgstr "Mesajınızı yazın…"
 msgid "Type to search..."
 msgstr "Axtarmaq üçün yazın..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "İcazəsiz giriş"
 msgid "Unavailable"
 msgstr "Hesabın banını götür"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Axtarıcını sərbəst burax"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Hədəf təyinatını ləğv et"
 
@@ -4014,11 +4054,11 @@ msgstr "Hamısına bax"
 msgid "Video viewer: {0}"
 msgstr "Video göstəricisi: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "görünüş"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Bütün bildirişlərə bax"
 
@@ -4035,7 +4075,7 @@ msgstr "Görünüş idarəetmələri"
 msgid "View controls"
 msgstr "Görünüş seçimləri"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Səs ver və bax"
 
@@ -4043,11 +4083,11 @@ msgstr "Səs ver və bax"
 msgid "Voice recording is not supported in this browser"
 msgstr "Səs yazma bu brauzerdə dəstəklənmir"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Səs səviyyələri"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "RƏQİB GÖZLƏNİLİR"
 
@@ -4065,7 +4105,7 @@ msgstr "İzlənilən"
 msgid "Watched only"
 msgstr "Yalnız izlənilənlər"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "İKİNCİ DÖVRƏYƏ GET"
 
@@ -4074,16 +4114,16 @@ msgstr "İKİNCİ DÖVRƏYƏ GET"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "<0>{0}</0> ünvanına təsdiq kodu göndərdik. E-poçt ünvanınızı təsdiqləmək üçün kodu aşağıda daxil edin."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "silah"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Silah seçimi papağı"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Silahlar"
 
@@ -4095,21 +4135,37 @@ msgstr "Hava"
 msgid "Wednesday"
 msgstr "Çərşənbə"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Təkər əyləcləri"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Külək və kokpit gövdəsi"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Qanad qatlanması"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "QANADLAR"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "QANADLAR YIĞILIR"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "QANADLAR KİLİDLİ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "QANADLAR AÇILIR"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "QALİB GƏLDİ"
 
@@ -4126,25 +4182,25 @@ msgstr "Dünya serveri əlçatan deyil"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, silahlar qarşılaşmada sərbəst"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "rıskan"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Rıskan"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Sola dönmə"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Sağa dönmə"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "SİZ"
 
@@ -4176,14 +4232,14 @@ msgstr "Mətniniz və qoşmalarınız itiriləcək."
 msgid "Your text will be lost."
 msgstr "Mətniniz itəcək."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Yaxınlaşdırma"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Yaxınlaşdır"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Uzaqlaşdır"

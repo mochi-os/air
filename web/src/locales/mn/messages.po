@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# үр дүн} other {# үр дүн}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# сум оносон} other {# сум оносон}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{1} нислэгээс {0}"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} аль хэдийн эзэлсэн байсан бөгөөд тэр удирдлага одоо холбогдоогүй."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} нь {1} дээр байсан бөгөөд одоо холбогдоогүй."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# хариу} other {+# илүү хар�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Цэс нээх (# уншаагүй мэдэгдэл)} other {Цэс нээх (# уншаагүй мэдэгдэл)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -155,7 +155,7 @@ msgstr "12 цаг"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -163,7 +163,7 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 цаг"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
@@ -202,13 +202,13 @@ msgstr "Бүртгэлийн төрөл"
 msgid "Ace"
 msgstr "Мэргэн"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Бай түгжих"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Барих горим"
 
@@ -290,7 +290,7 @@ msgstr "Харагдац нэмэх"
 msgid "Adding..."
 msgstr "Нэмж байна..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -298,7 +298,7 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "Хиймэл оюун"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Онгоц"
 
@@ -356,8 +356,8 @@ msgstr "Нэвтэрсэн хэн ч"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Энэ хангамжид бүртгүүлсэн бүх зүйл хүлээн авахаа болино. Дараа нь та шинэ URL хуулж болно."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Ойртолтын чадал (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Бууж өгөхдөө итгэлтэй байна уу?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Бууж өгөхдөө итгэлтэй байна уу? {opponentName} тоглоомд ялна."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Тоормослох дэгээ"
 
@@ -436,16 +436,16 @@ msgstr "Аватар"
 msgid "Avatar for {name}"
 msgstr "{name}-ийн аватар"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Тэнхлэг {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Тэнхлэгийн тохируулга ба оноолт"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "буцах"
 
@@ -476,7 +476,7 @@ msgstr "Баннер хасагдсан"
 msgid "Banner updated"
 msgstr "Баннер шинэчлэгдсэн"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250-ААС ДООШ — ШАССИ БА ЖИГҮҮР"
 
@@ -496,11 +496,11 @@ msgstr "Хамгийн сайн хөвөлт (хөдөлгүүр унтарса�
 msgid "Best sustained turn speed"
 msgstr "Хамгийн сайн тогтвортой эргэлтийн хурд"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty ба RWR анхааруулга"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "БИНГО ТҮЛШ"
 
@@ -530,7 +530,7 @@ msgstr "Цэнхэр ботууд"
 msgid "Board"
 msgstr "Самбар"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
@@ -547,19 +547,19 @@ msgstr "Хүрээний өнгө"
 msgid "Bots"
 msgstr "Ботууд"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "гальм"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "ОГЦОМ ЗҮҮН ТИЙШ"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "ОГЦОМ БАРУУН ТИЙШ"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "БЭЛЭН БОЛМОГЦ ЭРГЭ"
 
@@ -567,12 +567,12 @@ msgstr "БЭЛЭН БОЛМОГЦ ЭРГЭ"
 msgid "Browser notifications"
 msgstr "Хөтчийн мэдэгдэл"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Товч {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Товчлуурын оноолт"
 
@@ -584,16 +584,16 @@ msgstr "BVR — эхнээсээ зэвсэг чөлөөтэй"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, эхнээсээ зэвсэг чөлөөтэй"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "БӨМБӨГИЙГ МЭДЭГД"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Дуудлагын нэр"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Камерын зай"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Камерын зөвшөөрлийг татгалзсан"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Камер ашиглах боломжгүй"
 
@@ -620,10 +620,10 @@ msgstr "Камер ашиглах боломжгүй"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Цуцлах"
 
@@ -641,20 +641,40 @@ msgstr "Хариултыг цуцлах"
 msgid "Cancelled"
 msgstr "Цуцалсан"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Их буу ба сум зэвсэг"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Бүхээгийн бүрхүүл"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "БҮРХҮҮЛ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "БҮРХҮҮЛ ХААЛТТАЙ"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "БҮРХҮҮЛ ХААГДАЖ БАЙНА"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "БҮРХҮҮЛ ЦООЖТОЙ"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "БҮРХҮҮЛ НЭЭЛТТЭЙ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Тайлбар"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Онгоц тээгч ба орчин"
 
@@ -711,19 +731,19 @@ msgstr "Өөрчилсөн"
 msgid "Changed {field}"
 msgstr "{field} өөрчилсөн"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Хөөх харагдац:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "чат"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Чат"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Бүгдтэй чатлах"
 
@@ -760,7 +780,7 @@ msgstr "Хэл сонгох"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Цэвэрлэх"
 
@@ -806,7 +826,7 @@ msgstr "Самбар хаах / цуцлах"
 msgid "Close search"
 msgstr "Хайлтыг хаах"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "ойртох"
 
@@ -846,7 +866,7 @@ msgstr "Тав тухтай"
 msgid "Command Palette"
 msgstr "Командын самбар"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ЭХЭЛЖ БАЙНА"
 
@@ -865,7 +885,7 @@ msgstr "Сэтгэгдэлүүд"
 msgid "Comments ({0})"
 msgstr "Сэтгэгдэлүүд ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Холбоо"
 
@@ -906,7 +926,7 @@ msgstr "Холбогдож байна..."
 msgid "Connecting…"
 msgstr "Холбогдож байна…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "ХОЛБОЛТ АМЖИЛТГҮЙ"
 
@@ -963,7 +983,7 @@ msgstr "Энэ баримт бичгийг ачаалж чадсангүй. Да
 msgid "Could not load your flights"
 msgstr "Таны нислэгүүдийг ачаалж чадсангүй"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Профайлыг хадгалж чадсангүй"
 
@@ -992,16 +1012,16 @@ msgstr "Дахин баталгаажуулалтыг эхлүүлж чадса�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Тэр бүртгэлээр баталгаажуулж чадсангүй. Дахин оролдоно уу."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Сөрөг арга хэмжээ"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Осолдсон"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "СҮЙРЭВ"
 
@@ -1069,12 +1089,12 @@ msgstr "Одоогийн байршил"
 msgid "Custom"
 msgstr "Захиалгат"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "АЮУЛТАЙ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Харагдац солих"
 
@@ -1101,7 +1121,7 @@ msgstr "Өдөр"
 msgid "Deaths"
 msgstr "Үхэл"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ТАВЦАН ДАХЬ БАЙРЛАЛ ХАДГАЛАГДЛАА"
 
@@ -1203,11 +1223,11 @@ msgstr "Буурахаар"
 msgid "Description"
 msgstr "Тайлбар"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Галд сүйрсэн"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Нарийвчлал"
 
@@ -1215,8 +1235,8 @@ msgstr "Нарийвчлал"
 msgid "Details Panel"
 msgstr "Дэлгэрэнгүй самбар"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Илрүүлэх"
 
@@ -1239,7 +1259,7 @@ msgstr "Өөр тоглоомын сервер"
 msgid "Directory"
 msgstr "Лавлах"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ШАССИ БУУЛГА"
 
@@ -1251,7 +1271,7 @@ msgstr "Хаях"
 msgid "Discard draft?"
 msgstr "Ноорогийг хаах уу?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "салгагдсан"
 
@@ -1264,12 +1284,12 @@ msgstr "Салгагдсан"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Болих"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Дэлгэцийн давтагч"
 
@@ -1277,7 +1297,7 @@ msgstr "Дэлгэцийн давтагч"
 msgid "Displays the mobile sidebar."
 msgstr "Гар утасны хажуугийн самбарыг харуулна."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "Зайн LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "Шаардлагатай хэв маягт тохирохгүй байн
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Дууссан"
 
@@ -1303,11 +1323,11 @@ msgstr "Татах"
 msgid "Download failed"
 msgstr "Татаж чадсангүй"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "САЛХИНЫ ДАГУУ 600 ФУТ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Чирэх"
 
@@ -1323,7 +1343,7 @@ msgstr "Давхардлууд"
 msgid "Duration"
 msgstr "Үргэлжлэх хугацаа"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Динамик нягтрал"
 
@@ -1331,7 +1351,7 @@ msgstr "Динамик нягтрал"
 msgid "Dyslexia-friendly"
 msgstr "Дислексид зориулсан"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "ЭРТ"
 
@@ -1374,19 +1394,19 @@ msgstr "Сонгосон карт засах"
 msgid "Edit view"
 msgstr "Харагдац засах"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Эффектүүд"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Эффектийн нарийвчлал"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Катапультлах"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "КАТАПУЛЬТЛАВ"
 
@@ -1398,12 +1418,12 @@ msgstr "Имэйл"
 msgid "Email code"
 msgstr "Имэйл код"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "ОСЛЫН ХАЯЛТ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Ослын хаялт (барих)"
 
@@ -1416,11 +1436,11 @@ msgstr "хоосон"
 msgid "Empty pylon"
 msgstr "Хоосон пилон"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Дууг идэвхжүүлэх"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "ДОВТОЛЖ БАЙНА"
 
@@ -1428,7 +1448,7 @@ msgstr "ДОВТОЛЖ БАЙНА"
 msgid "Engagement"
 msgstr "Тулаан"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Хөдөлгүүр ба форсаж"
 
@@ -1448,15 +1468,15 @@ msgstr "Баталгаажуулагчийн кодоо оруулна уу"
 msgid "Error"
 msgstr "Алдаа"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Бүгд"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Тоглолтоос гарах"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Даалгавраас гарах"
 
@@ -1475,16 +1495,16 @@ msgstr "Хажуугийн самбарыг тэлэх"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Дэлбэрэлтийн хөдөлгөөнт зураг <0>“Explosion02HD”</0>, <1>Unity Technologies</1>-ийн бүтээл (Unity Labs VFX зургийн дараалал), <2>CC0</2>-оор гаргасан. Өөрчилсөн: вебэд зориулж дахин шахсан."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Экспортлох"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Флап гаргах"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Гадна талын нарийвчлал"
 
@@ -1603,15 +1623,15 @@ msgstr "Хяналтыг шинэчилж чадсангүй"
 msgid "Failed to upload attachment"
 msgstr "Хавсралт байршуулж чадсангүй"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ДУНД"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "ТУЛААН ЭХЭЛЛЭЭ"
 
@@ -1629,16 +1649,16 @@ msgstr "Бүртгэлээ шилжүүлэхийг дуусгана уу"
 msgid "Finished"
 msgstr "Дууссан"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "буудах"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Зэвсгээр буудах"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Нислэгийн тогтмол товчлуурууд"
 
@@ -1646,15 +1666,15 @@ msgstr "Нислэгийн тогтмол товчлуурууд"
 msgid "Flags"
 msgstr "Тэмдэгт"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ДӨЛ УНТРАЛТ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "флап"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "дулааны хавх"
 
@@ -1666,19 +1686,19 @@ msgstr "ДУЛААНЫ ХАВХ"
 msgid "Flat"
 msgstr "Хавтгай"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Далайд унасан"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Нислэг"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "НИСЛЭГИЙН ЦӨМ АМЖИЛТГҮЙ"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Нислэгийн зөвлөмж"
 
@@ -1699,11 +1719,11 @@ msgstr "Ниссэн"
 msgid "Fly"
 msgstr "Нисэх"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Дахин нисэх"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Кадрын хурдны тоолуур"
 
@@ -1736,23 +1756,23 @@ msgstr "Загвараас"
 msgid "Fuel"
 msgstr "Түлш"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ТҮЛШ"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ТҮЛШНИЙ ГАЛ"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ТҮЛШ ГООЖИЛТ"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "ТҮЛШ БАГА"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Түлшний зонд"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Их бие"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Өсгөлт"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "Шасси"
 
@@ -1781,7 +1801,7 @@ msgstr "Шасси"
 msgid "GEAR"
 msgstr "ШАССИ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Ерөнхий"
 
@@ -1790,11 +1810,11 @@ msgstr "Ерөнхий"
 msgid "Go back"
 msgstr "Буцах"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "График"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Графикийн урьдчилсан тохиргоо"
 
@@ -1832,15 +1852,15 @@ msgstr "Зөвхөн их буу"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Техник хангамжийн график хурдасгуур унтраалттай байна — хөтчийн тохиргоо эсвэл график драйверуудыг шалгана уу."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Толгой"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Толгой хянах"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Өндөр"
 
@@ -1850,7 +1870,7 @@ msgstr "Өндөр"
 msgid "High stratus"
 msgstr "Өндөр давхарга үүл"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Зөвлөмж"
 
@@ -1865,7 +1885,7 @@ msgstr "Түүх"
 msgid "Home"
 msgstr "Нүүр"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "Дэгээ"
 
@@ -1877,11 +1897,11 @@ msgstr "ДЭГЭЭ"
 msgid "Hot"
 msgstr "Хот"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD өндрийн эх үүсвэр"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD хялбарчлах"
 
@@ -1898,7 +1918,7 @@ msgstr "Зураг үзэгч: {0}"
 msgid "Imperial"
 msgstr "Империал"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Импортлох"
 
@@ -1919,7 +1939,7 @@ msgstr "Товч нэрийн аватар"
 msgid "Initials avatar for {name}"
 msgstr "{name}-ийн товч нэрийн аватар"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Оролтын техник хангамж"
 
@@ -1944,7 +1964,7 @@ msgstr "Огноо хүчингүй"
 msgid "Invulnerable"
 msgstr "Халдашгүй"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ХАЛДАШГҮЙ"
 
@@ -1961,17 +1981,17 @@ msgstr "Таны хайж буй хуудас <0/>байхгүй эсвэл ус
 msgid "Item details"
 msgstr "Зүйлийн дэлгэрэнгүй"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Саадлагч"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Сав хаях"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ХАЯЛТ: БУУХ ТӨХӨӨРӨМЖ"
 
@@ -1984,7 +2004,7 @@ msgstr "Нэгдэх"
 msgid "Join server"
 msgstr "Сервэрт нэгдэх"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "НЭГДЛЭЭ"
 
@@ -2002,7 +2022,7 @@ msgstr "Тулаан — 1v1, түрүүлж унагасан нь ялна"
 msgid "Joust against bot"
 msgstr "Тулаан боттой"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Жойстик"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Гарын товчлолууд"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Товчлуур"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "АЛАЛТ"
 
@@ -2035,20 +2055,20 @@ msgstr "Алагдсан"
 msgid "Kills"
 msgstr "Алалт"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "ЗҮҮН ХӨД"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ЗҮҮН ХӨД ГАЛ"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "ЗҮҮН ШАССИ"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Буултын тоног"
 
@@ -2057,16 +2077,16 @@ msgstr "Буултын тоног"
 msgid "Large"
 msgstr "Том"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "ОРОЙ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Хөөргөх (катапульт)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "хөөрөх / бай"
 
@@ -2086,7 +2106,7 @@ msgstr "Сервэрээс гарах"
 msgid "Left"
 msgstr "Гарсан"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ГАРЛАА"
 
@@ -2103,7 +2123,7 @@ msgstr "Зүүн далавчны үзүүр"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Зөвхөн үсэг, тоо, хоосон зай, зураас, ташуу зураас"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-Д ТЭГШ, АРАА БУУЛГА"
 
@@ -2111,16 +2131,16 @@ msgstr "1200-Д ТЭГШ, АРАА БУУЛГА"
 msgid "Light"
 msgstr "Цайвар"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "гэрлүүд"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Гэрлүүд"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ГЭРЛҮҮД"
 
@@ -2140,7 +2160,7 @@ msgstr "Жагсаалт"
 msgid "Load more"
 msgstr "Илүү ачаалах"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "АЧААЛЖ БАЙНА"
 
@@ -2148,7 +2168,7 @@ msgstr "АЧААЛЖ БАЙНА"
 msgid "Loading content…"
 msgstr "Контент ачааллаж байна…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "АЧААЛАЛТ АМЖИЛТГҮЙ"
 
@@ -2186,35 +2206,35 @@ msgstr "Амжилттай гарлаа"
 msgid "Logging out…"
 msgstr "Гарч байна…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Харах"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Харах / тойрох"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Байг харах"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Доош харах"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Зүүн тийш харах"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Баруун тийш харах"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Дээш харах"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Бага"
 
@@ -2224,7 +2244,7 @@ msgstr "Бага"
 msgid "Low stratus"
 msgstr "Нам давхарга үүл"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M дарж хаах"
 
@@ -2236,11 +2256,11 @@ msgstr "Ангиллуудыг удирдах"
 msgid "Manual"
 msgstr "Гар аргаар"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "газрын зураг"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Газрын зураг"
 
@@ -2249,8 +2269,8 @@ msgstr "Газрын зураг"
 msgid "Mark all as read"
 msgstr "Бүгдийг уншсан гэж тэмдэглэх"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Үндсэн дууны түвшин"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Дунд"
 
@@ -2279,13 +2299,13 @@ msgstr "Дунд"
 msgid "Members"
 msgstr "Гишүүд"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "цэс"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Цэс"
 
@@ -2297,7 +2317,7 @@ msgstr "Нэгдэл — зөрөх үед тулаан эхэлнэ"
 msgid "Message"
 msgstr "Мессеж"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Бүгдэд зурвас бичих"
 
@@ -2305,7 +2325,7 @@ msgstr "Бүгдэд зурвас бичих"
 msgid "Message players on this server"
 msgstr "Энэ серверийн тоглогчдод зурвас бичээрэй"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Багтаа зурвас бичих"
 
@@ -2323,7 +2343,7 @@ msgstr "Микрофоны зөвшөөрөл татгалзагдсан"
 msgid "Mid stratus"
 msgstr "Дунд давхарга үүл"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Агаарт мөргөлдсөн"
 
@@ -2335,7 +2355,7 @@ msgstr "Мидвэй шүрэн арлын газрын зураг — зура�
 msgid "Minimum length"
 msgstr "Хамгийн бага урт"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ПУУЖИН"
 
@@ -2343,7 +2363,7 @@ msgstr "ПУУЖИН"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Пуужингийн загвар <0>“AIM-120C AMRAAM”</0>, зохиогч <1>Pippa</1> (Sketchfab), <2>CC BY 4.0</2>-ийн дагуу лицензжүүлсэн. Өөрчилсөн: масштаб, чиглэлийг өөрчилж, суурилуулахад голлуулсан."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Даалгавар дууслаа"
 
@@ -2369,7 +2389,7 @@ msgstr "Даваа"
 msgid "More options"
 msgstr "Бусад сонголтууд"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Хөдөлгөнө үү…"
 
@@ -2447,7 +2467,7 @@ msgstr "Үйл ажиллагаа алга"
 msgid "No comments yet"
 msgstr "Сэтгэгдэл алга"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "„{query}“-д тохирох удирдлага алга."
 
@@ -2471,7 +2491,7 @@ msgstr "Боломжит групп байхгүй"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Одоогоор зүйл үүсгэх боломжгүй. Эхлээд шаардлагатай эх зүйлийг үүсгэнэ үү."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Жойстик илрээгүй — сэрээхийн тулд түүний дурын товчийг дарна уу."
 
@@ -2507,11 +2527,11 @@ msgstr "Үр дүн олдсонгүй."
 msgid "No status"
 msgstr "Төлөв алга"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "САВ БАЙХГҮЙ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "БАЙ АЛГА"
 
@@ -2540,7 +2560,7 @@ msgstr "Үзэлт алга"
 msgid "No world server."
 msgstr "Ертөнцийн сервер алга."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ҮНЭЛГЭЭГҮЙ"
 
@@ -2563,9 +2583,9 @@ msgstr "ҮНЭЛГЭЭГҮЙ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Алга"
 
@@ -2573,11 +2593,11 @@ msgstr "Алга"
 msgid "Normal"
 msgstr "Энгийн"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "УРД ШАССИ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Энэ бол жойстикийн профайл биш"
 
@@ -2615,7 +2635,7 @@ msgstr "Шинэ суралцагч"
 msgid "Number"
 msgstr "Тоо"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Далайн нарийвчлал"
 
@@ -2623,7 +2643,7 @@ msgstr "Далайн нарийвчлал"
 msgid "offline"
 msgstr "офлайн"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Сонголтын нэр"
 msgid "Options"
 msgstr "Сонголтууд"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "эсвэл"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "тойрох"
 
@@ -2708,8 +2728,8 @@ msgstr "тойрох"
 msgid "Other"
 msgstr "Бусад"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G хязгаар давах"
 
@@ -2717,11 +2737,11 @@ msgstr "G хязгаар давах"
 msgid "Owner"
 msgstr "Эзэмшигч"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ХАРЦ ТҮГЖИГДСЭН"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "ХАРЦ ЧӨЛӨӨТЭЙ"
 
@@ -2731,7 +2751,11 @@ msgstr "ХАРЦ ЧӨЛӨӨТЭЙ"
 msgid "Parent"
 msgstr "Эх"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "ЗОГСООЛЫН ТОРМОЗ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Зогсоолын тоормос"
 
@@ -2756,7 +2780,7 @@ msgstr "Passkey-ууд энэ хөтөч дээр боломжгүй"
 msgid "Pattern (regex)"
 msgstr "Загвар (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Түр зогссон"
 
@@ -2776,15 +2800,15 @@ msgstr "нисгэгч"
 msgid "Pilot"
 msgstr "Нисгэгч"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "НИСГЭГЧ АМЬ ҮРЭГДЭВ"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Нисгэгчийн мэдээлэл"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Нисгэгч алагдсан"
 
@@ -2793,23 +2817,23 @@ msgstr "Нисгэгч алагдсан"
 msgid "Pin"
 msgstr "Бэхлэх"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "тангаж"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Тангаж"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Тангаж доош"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Тангаж дээш"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "ТАВЦАН"
 
@@ -2839,15 +2863,15 @@ msgstr "Нийтлэлүүд"
 msgid "Posts and comments"
 msgstr "Нийтлэл болон сэтгэгдэл"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Товчлуур дарна уу…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "НИСЭХИЙН ТУЛД ENTER ДАР"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Дарна уу…"
 
@@ -2861,12 +2885,24 @@ msgstr "Өмнөх зураг"
 msgid "Privacy"
 msgstr "Нууцлал"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ШТАНГА"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ШТАНГА ХУРААГДСАН"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ШТАНГА ГАРГАСАН"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Боловсруулж байна…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Профайл хадгалагдсан"
 
@@ -2887,24 +2923,24 @@ msgstr "Нийтийн серверүүд"
 msgid "Push notification"
 msgstr "Push мэдэгдэл"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ОЙРТОЛТЫН ЦАГ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "БАРУУН ХӨД"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "БАРУУН ХӨД ГАЛ"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "БАРУУН ШАССИ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Радарын чимээгүй байдал"
 
@@ -2920,7 +2956,7 @@ msgstr "Энэ серверт бүртгэлүүдээ дахин холбоно
 msgid "Re-register your passkeys on this server"
 msgstr "Энэ серверт нэвтрэх түлхүүрээ дахин бүртгүүлнэ үү"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ДАХИН ЗЭВСЭГЛЭВ"
 
@@ -2936,12 +2972,12 @@ msgstr "Зөвлөмжтэй"
 msgid "Reconnecting ({retries})..."
 msgstr "Дахин холбогдож байна ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Нислэгүүдийг бичих"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Бичлэг"
 
@@ -2982,7 +3018,7 @@ msgstr "Лавлагаа"
 msgid "Refresh"
 msgstr "Сэргээх"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ЭГНЭЭНД БУЦАЖ БАЙНА"
 
@@ -3082,23 +3118,23 @@ msgstr "Шаардлагатай"
 msgid "Resend email"
 msgstr "Имэйлийг дахин илгээх"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Шинэчлэх"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Үндсэн анхааруулгыг дахин тохируулах"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Трим тэглэх"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Харагдацыг тэглэх"
 
@@ -3114,19 +3150,19 @@ msgstr "Тоглоомоос тэрсэх үү?"
 msgid "Resigning..."
 msgstr "Тэрсэж байна..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Тогтоол"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Дахин эхлүүлэх"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Даалгаврыг дахин эхлүүлэх"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Даалгаврыг дахин эхлүүлэх үү?"
 
@@ -3134,12 +3170,12 @@ msgstr "Даалгаврыг дахин эхлүүлэх үү?"
 msgid "Result"
 msgstr "Үр дүн"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Үргэлжлүүлэх"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Флап хураах"
 
@@ -3147,7 +3183,7 @@ msgstr "Флап хураах"
 msgid "Retry"
 msgstr "Дахин оролдох"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Урвуу"
 
@@ -3172,19 +3208,19 @@ msgstr "Баруун далавч"
 msgid "Right wingtip"
 msgstr "Баруун далавчны үзүүр"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "хазайлт"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Хажуу эргэлт"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Хажуу эргэлт зүүн тийш"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Хажуу эргэлт баруун тийш"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS фид"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL clipboard руу хуулагдсан"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "БҮРЭН ХҮЧ"
 
@@ -3242,8 +3278,8 @@ msgstr "Далайн түвшин"
 msgid "Search"
 msgstr "Хайх"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Удирдлага хайх"
 
@@ -3340,8 +3376,8 @@ msgstr "Хүн сонгох..."
 msgid "Select previous card"
 msgstr "Өмнөх карт сонгох"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Зэвсэг сонгох"
 
@@ -3363,7 +3399,7 @@ msgstr "Илгээх"
 msgid "Send again"
 msgstr "Дахин илгээх"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Зурвас илгээх"
 
@@ -3404,7 +3440,7 @@ msgstr "Серверийн дүрэм"
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер v{0} ажиллуулж байна, танд v{version} байна"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "СЕШН ДУУСЛАА"
 
@@ -3412,7 +3448,7 @@ msgstr "СЕШН ДУУСЛАА"
 msgid "Session expired. Please log in again."
 msgstr "Сессийн хугацаа дууссан. Дахин нэвтэрнэ үү."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Тохируулах"
 
@@ -3423,14 +3459,14 @@ msgstr "Эхлэл, очих газрыг тогтоох"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Тохиргоо"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Сүүдэр"
 
@@ -3485,7 +3521,7 @@ msgstr "Жижиг"
 msgid "Sort"
 msgstr "Эрэмбэлэх"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Дуу"
 
@@ -3505,17 +3541,17 @@ msgstr "Зайтай оролтууд"
 msgid "Spacious"
 msgstr "Уужим"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "ХУ.ГЛ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "хурдны гальм"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Хурдны гальм"
 
@@ -3523,9 +3559,13 @@ msgstr "Хурдны гальм"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Хурд нь KCAS-аар, хөнгөнөөс (хамгийн бага түлш, гадна ачаагүй) хүнд (хамгийн их нийт жин) хүртэлх хүрээнд. Өгөгдлийг тоглоом дотор туршилтаар гаргаж авсан. Жинхэнэ нисэх онгоцтой харьцуулахад гарах аливаа зөрүү нь симуляторын нислэгийн загварын алдааг илэрхийлнэ."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "БАЙ УСТГАГДЛАА"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ЖИГҮҮР ДЭЛГЭХ"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Хамгийн эгц авиралт (Vx, форсаж)"
 msgid "Stop watching"
 msgstr "Үзэхээ зогсоох"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "БҮТЭЦ"
 
@@ -3598,7 +3638,7 @@ msgstr "1-9 харагдац руу шилжих"
 msgid "System"
 msgstr "Систем"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "ТАКТИКИЙН ЗУРАГ"
 
@@ -3615,7 +3655,7 @@ msgstr "Шошго 50 тэмдэгтээс ихгүй байх ёстой"
 msgid "Tags"
 msgstr "Тэгүүд"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ДАЙСАН ХАРАГДЛАА"
 
@@ -3623,11 +3663,11 @@ msgstr "ДАЙСАН ХАРАГДЛАА"
 msgid "Task"
 msgstr "Зорилт"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Баг"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "БАГ"
 
@@ -3674,7 +3714,7 @@ msgstr "Камерын хүсэлтэд хариу ирсэнгүй"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Тоглоомыг ачаалж чадсангүй. Дахин оролдохын тулд хуудсыг дахин ачаална уу."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Тоглолт энэ цэсний ард үргэлжилнэ."
 
@@ -3686,7 +3726,7 @@ msgstr "Микрофоны хүсэлтэд хариу ирсэнгүй"
 msgid "The mission stopped."
 msgstr "Даалгавар зогслоо."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Даалгавар дахин эхэлнэ. Одоогийн нислэг хадгалагдахгүй."
 
@@ -3722,21 +3762,21 @@ msgstr "Энэ машин жигд нислэгт хэт удаан байж м�
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Энэ нь тоглоом болон түүний чатыг бүрмөсөн устгана. Энэ үйлдлийг буцаах боломжгүй."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "хурдасгуур"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Хурдатгал"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Хурдатгал бууруулах"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Хурдатгал нэмэх"
 
@@ -3748,7 +3788,7 @@ msgstr "Пүрэв гараг"
 msgid "Tightest sustained turn speed"
 msgstr "Хамгийн нарийн тогтвортой эргэлтийн хурд"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "налуу"
 
@@ -3795,7 +3835,7 @@ msgstr "Хэт олон хүсэлт"
 msgid "Top"
 msgstr "Дээд"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Гэрэлт сум"
 
@@ -3803,35 +3843,35 @@ msgstr "Гэрэлт сум"
 msgid "Travelling"
 msgstr "Аялж байна"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "трим"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Трим"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Тримийн малгай"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Трим: хошуу доош"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Трим: хошуу дээш"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Трим: зүүн налалт"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Трим: баруун налалт"
 
@@ -3869,7 +3909,7 @@ msgstr "Хэрэглэгч хайхын тулд бичих"
 msgid "Type to search..."
 msgstr "Хайхын тулд бичих..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ультра"
 
@@ -3890,13 +3930,13 @@ msgstr "Хариуцсан хүн оноогоогүй"
 msgid "Unavailable"
 msgstr "Боломжгүй"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Хайгчийг чөлөөлөх"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Байны тэмдэглэгээг цуцлах"
 
@@ -4014,11 +4054,11 @@ msgstr "Видеоны жижиг зураг"
 msgid "Video viewer: {0}"
 msgstr "Видео үзэгч: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "харагдац"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Үзэх"
 
@@ -4035,7 +4075,7 @@ msgstr "Зүйлийн дэлгэрэнгүйг үзэх, засварлах"
 msgid "View controls"
 msgstr "Хяналт үзэх"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Үзлэгүүд"
 
@@ -4043,11 +4083,11 @@ msgstr "Үзлэгүүд"
 msgid "Voice recording is not supported in this browser"
 msgstr "Энэ хөтөч дуу бичихийг дэмждэггүй"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Дууны түвшин"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ӨРСӨЛДӨГЧИЙГ ХҮЛЭЭЖ БАЙНА"
 
@@ -4065,7 +4105,7 @@ msgstr "Үзсэн"
 msgid "Watched only"
 msgstr "Зөвхөн үзсэн"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "БУУЛТЫГ ЦУЦАЛ"
 
@@ -4074,16 +4114,16 @@ msgstr "БУУЛТЫГ ЦУЦАЛ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Бид <0>{0}</0> хаяг руу баталгаажуулах код илгээлээ. Имэйл хаягаа баталгаажуулахын тулд доор кодоо оруулна уу."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "зэвсэг"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Зэвсэг сонгох малгай"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Зэвсэг"
 
@@ -4095,21 +4135,37 @@ msgstr "Цаг агаар"
 msgid "Wednesday"
 msgstr "Лхагва гараг"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Дугуйн гальм"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Салхи ба бүхээгийн их бие"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Далавч эвхэх"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ЖИГҮҮР"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ЖИГҮҮР ЭВХЭГДЭЖ БАЙНА"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ЖИГҮҮР ЦООЖТОЙ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ЖИГҮҮР ДЭЛГЭГДЭЖ БАЙНА"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ЯЛЛАА"
 
@@ -4126,25 +4182,25 @@ msgstr "Ертөнцийн серверт холбогдох боломжгүй"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, зөрөх үед зэвсэг чөлөөтэй"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "эргэлт"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Эргэлт"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Эргэлт зүүн тийш"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Эргэлт баруун тийш"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ТА"
 
@@ -4176,14 +4232,14 @@ msgstr "Таны текст болон хавсралтууд устах бол�
 msgid "Your text will be lost."
 msgstr "Чиний текст алдагдана."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Зум"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Ойртуулах"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Холдуулах"

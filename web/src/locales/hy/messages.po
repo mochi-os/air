@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# արդյունք} other {# արդյունք}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Ստացավ # հարված} other {Ստացավ # հարված}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{1} թռիչքից {0}-ը"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0}-ն արդեն զբաղված էր, և այդ կառավարումն այժմ կապված չէ։"
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0}-ը {1}-ի վրա էր, որն այժմ կապված չէ։"
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# պատասխան} other {+# ևս պա�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Բացել ընտրացանկը (# չկարդացված ծանուցում)} other {Բացել ընտրացանկը (# չկարդացված ծանուցում)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "ՃՈՊԱՆ 1"
 
@@ -155,7 +155,7 @@ msgstr "12 ժամ"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "ՃՈՊԱՆ 2"
 
@@ -163,7 +163,7 @@ msgstr "ՃՈՊԱՆ 2"
 msgid "24 hours"
 msgstr "24 ժամ"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "ՃՈՊԱՆ 3"
 
@@ -202,13 +202,13 @@ msgstr "Հաշվի տեսակ"
 msgid "Ace"
 msgstr "Վարպետ"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Կողպել թիրախը"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Որսալու ռեժիմ"
 
@@ -290,7 +290,7 @@ msgstr "Ավելացնել տեսք"
 msgid "Adding..."
 msgstr "Ավելացվում է..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Ֆորսաժ"
 
@@ -298,7 +298,7 @@ msgstr "Ֆորսաժ"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Ինքնաթիռ"
 
@@ -356,8 +356,8 @@ msgstr "Ցանկացած մուտք գործած անձ"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Այս հոսքին բաժանորդագրված ամեն ինչ կդադարի ստանալ այն։ Դրանից հետո կարող եք պատճենել նոր URL։"
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Մոտեցման հզորություն (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Վստա՞հ եք, որ ուզում եք հանձնվել։"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Վստա՞հ եք, որ ուզում եք հանձնվել։ {opponentName}-ը կհաղթի խաղում։"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Արգելակող կեռ"
 
@@ -436,16 +436,16 @@ msgstr "Ավատար"
 msgid "Avatar for {name}"
 msgstr "{name}-ի ավատար"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Առանցք {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Առանցքների կալիբրավորում և նշանակում"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "հետ"
 
@@ -476,7 +476,7 @@ msgstr "Բանները հեռացվեց"
 msgid "Banner updated"
 msgstr "Բանները թարմացվեց"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250-ԻՑ ՑԱԾՐ — ՇԱՍԻ ԵՎ ԶԱԿՐԻԼՈՎ"
 
@@ -496,11 +496,11 @@ msgstr "Լավագույն սահք (շարժիչներն անջատված)"
 msgid "Best sustained turn speed"
 msgstr "Լավագույն կայուն շրջադարձի արագություն"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty և RWR ազդանշաններ"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "ԲԻՆԳՈ ՎԱՌԵԼԻՔ"
 
@@ -530,7 +530,7 @@ msgstr "Կապույտ բոտեր"
 msgid "Board"
 msgstr "Տախտակ"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "ԲՈԼՏԵՐ"
 
@@ -547,19 +547,19 @@ msgstr "Եզրագծի գույն"
 msgid "Bots"
 msgstr "Բոտեր"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "արգելակներ"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "ԿՏՐՈՒԿ ՁԱԽ"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "ԿՏՐՈՒԿ ԱՋ"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "ՇՐՋԱԴԱՐՁ ԵՐԲ ՊԱՏՐԱՍՏ ԵՍ"
 
@@ -567,12 +567,12 @@ msgstr "ՇՐՋԱԴԱՐՁ ԵՐԲ ՊԱՏՐԱՍՏ ԵՍ"
 msgid "Browser notifications"
 msgstr "Բրաուզերի ծանուցումներ"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Կոճակ {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Կոճակների նշանակումներ"
 
@@ -584,16 +584,16 @@ msgstr "BVR — կրակը ազատ է սկզբից"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, կրակը ազատ է սկզբից"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "ՀԱՅՏՆԻՐ ԳՆԴԱԿԸ"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Կանչանշան"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Տեսախցիկի հեռավորություն"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Տեսախցիկի թույլտվությունը մերժվեց"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Տեսախցիկը հասանելի չէ"
 
@@ -620,10 +620,10 @@ msgstr "Տեսախցիկը հասանելի չէ"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Չեղարկել"
 
@@ -641,20 +641,40 @@ msgstr "Չեղարկել պատասխանը"
 msgid "Cancelled"
 msgstr "Չեղարկված"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Թնդանոթներ և զինամթերք"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Կաբինայի ծածկ"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "ԾԱԾԿ"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "ԾԱԾԿԸ ՓԱԿ Է"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "ԾԱԾԿԸ ՓԱԿՎՈՒՄ Է"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "ԾԱԾԿԸ ԿՈՂՊՎԱԾ Է"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "ԾԱԾԿԸ ԲԱՑ Է"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Մակագրություն"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Ավիակիր և միջավայր"
 
@@ -711,19 +731,19 @@ msgstr "Փոփոխվել է"
 msgid "Changed {field}"
 msgstr "Փոփոխվել է {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Հետապնդման տեսք:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "չատ"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Զրույց"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Չատ բոլորի հետ"
 
@@ -760,7 +780,7 @@ msgstr "Ընտրել լեզուն"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Մաքրել"
 
@@ -806,7 +826,7 @@ msgstr "Փակել վահանակը / չեղարկել"
 msgid "Close search"
 msgstr "Փակել որոնումը"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "ավելի մոտ"
 
@@ -846,7 +866,7 @@ msgstr "Հարմարավետ"
 msgid "Command Palette"
 msgstr "Հրամանների վահանակ"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "ՍԿՍՈՒՄ ԵՄ"
 
@@ -865,7 +885,7 @@ msgstr "Մեկնաբանություններ"
 msgid "Comments ({0})"
 msgstr "Մեկնաբանություններ ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Կապ"
 
@@ -906,7 +926,7 @@ msgstr "Միանում է..."
 msgid "Connecting…"
 msgstr "Միանում է…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "ՄԻԱՑՈՒՄԸ ՁԱԽՈՂՎԵՑ"
 
@@ -963,7 +983,7 @@ msgstr "Չհաջողվեց բեռնել այս փաստաթուղթը։ Խնդր
 msgid "Could not load your flights"
 msgstr "Չհաջողվեց բեռնել ձեր թռիչքները"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Չհաջողվեց պահպանել պրոֆիլը"
 
@@ -992,16 +1012,16 @@ msgstr "Չհաջողվեց սկսել վերանույնականացումը։ �
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Չհաջողվեց ստուգել այդ հաշվով։ Խնդրում ենք նորից փորձել։"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Հակազդման միջոցներ"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Կործանվեց"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "ԿՈՐԾԱՆՎԵՑ"
 
@@ -1069,12 +1089,12 @@ msgstr "Ընթացիկ վայրը"
 msgid "Custom"
 msgstr "Հատուկ"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "ՎՏԱՆԳԱՎՈՐ"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Փոխել տեսքը"
 
@@ -1101,7 +1121,7 @@ msgstr "Ցերեկ"
 msgid "Deaths"
 msgstr "Մահեր"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "ՏԱԽՏԱԿԱՄԱԾԻ ԴԻՐՔԸ ՊԱՀՊԱՆՎԵՑ"
 
@@ -1203,11 +1223,11 @@ msgstr "Նվազման կարգով"
 msgid "Description"
 msgstr "Նկարագրություն"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Ոչնչացավ հրդեհից"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Մանրամասնություն"
 
@@ -1215,8 +1235,8 @@ msgstr "Մանրամասնություն"
 msgid "Details Panel"
 msgstr "Մանրամասների վահանակ"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Հայտնաբերել"
 
@@ -1239,7 +1259,7 @@ msgstr "Այլ խաղային սերվեր"
 msgid "Directory"
 msgstr "Տեղեկագիրք"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "ՇԱՍԻՆ ԻՋԵՑՐՈՒ"
 
@@ -1251,7 +1271,7 @@ msgstr "Հրաժարվել"
 msgid "Discard draft?"
 msgstr "Հրաժարվե՞լ սևագրից։"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "անջատված"
 
@@ -1264,12 +1284,12 @@ msgstr "Անջատված"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Հեռացնել"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Ցուցասարքի կրկնիչ"
 
@@ -1277,7 +1297,7 @@ msgstr "Ցուցասարքի կրկնիչ"
 msgid "Displays the mobile sidebar."
 msgstr "Ցուցադրում է բջջային կողագոտին։"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "Հեռավորության LOD"
 
@@ -1288,7 +1308,7 @@ msgstr "Չի համապատասխանում պահանջվող ձևանմուշ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Կատարված է"
 
@@ -1303,11 +1323,11 @@ msgstr "Ներբեռնել"
 msgid "Download failed"
 msgstr "Ներբեռնումը ձախողվեց"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "ՔԱՄՈՒ ՈՒՂՂՈՒԹՅԱՄԲ 600 ՖՈՒՏ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Քաշել"
 
@@ -1323,7 +1343,7 @@ msgstr "Կրկնօրինակներ"
 msgid "Duration"
 msgstr "Տևողություն"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Դինամիկ լուծաչափ"
 
@@ -1331,7 +1351,7 @@ msgstr "Դինամիկ լուծաչափ"
 msgid "Dyslexia-friendly"
 msgstr "Դիսլեքսիայի հարմար"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "ՎԱՂ"
 
@@ -1374,19 +1394,19 @@ msgstr "Խմբագրել ընտրված քարտը"
 msgid "Edit view"
 msgstr "Խմբագրել տեսքը"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Էֆեկտներ"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Էֆեկտների մանրամասնություն"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Կատապուլտացում"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "ԿԱՏԱՊՈՒԼՏԱՑՎԵՑ"
 
@@ -1398,12 +1418,12 @@ msgstr "Էլ․ փոստ"
 msgid "Email code"
 msgstr "Էլ․ փոստի կոդ"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "ՎԹԱՐԱՅԻՆ ՆԵՏՈՒՄ"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Վթարային նետում (պահել)"
 
@@ -1416,11 +1436,11 @@ msgstr "դատարկ"
 msgid "Empty pylon"
 msgstr "Դատարկ պիլոն"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Միացնել ձայնը"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "ԳՐՈՀՈՒՄ ԵՄ"
 
@@ -1428,7 +1448,7 @@ msgstr "ԳՐՈՀՈՒՄ ԵՄ"
 msgid "Engagement"
 msgstr "Ընդհարում"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Շարժիչ և ֆորսաժ"
 
@@ -1448,15 +1468,15 @@ msgstr "Մուտքագրեք ձեր նույնականացուցիչի կոդը"
 msgid "Error"
 msgstr "Սխալ"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Բոլորը"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Դուրս գալ խաղից"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Լքել առաքելությունը"
 
@@ -1475,16 +1495,16 @@ msgstr "Ընդարձակել կողագոտին"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Պայթյունի անիմացիա <0>“Explosion02HD”</0>՝ <1>Unity Technologies</1>-ից (Unity Labs VFX պատկերների հաջորդականություններ), թողարկված <2>CC0</2> ներքո։ Փոփոխված՝ վերասեղմված վեբի համար։"
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Արտահանել"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Փեղկերը բացել"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Արտաքին մանրամասներ"
 
@@ -1603,15 +1623,15 @@ msgstr "Չհաջողվեց թարմացնել հետևումը"
 msgid "Failed to upload attachment"
 msgstr "Չհաջողվեց վերբեռնել կցորդը"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "ԲԱՎԱՐԱՐ"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "ՄԱՐՏԸ ՍԿՍՎԵՑ"
 
@@ -1629,16 +1649,16 @@ msgstr "Ավարտեք ձեր հաշվի տեղափոխությունը"
 msgid "Finished"
 msgstr "Ավարտվեց"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "կրակ"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Կրակել զենքից"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Թռիչքի ֆիքսված ստեղներ"
 
@@ -1646,15 +1666,15 @@ msgstr "Թռիչքի ֆիքսված ստեղներ"
 msgid "Flags"
 msgstr "Դրոշներ"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "ԲՈՑԻ ՄԱՐՈՒՄ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "փեղկեր"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "ջերմային ծուղակներ"
 
@@ -1666,19 +1686,19 @@ msgstr "ՋԵՐՄԱՅԻՆ ԹԱԿԱՐԴՆԵՐ"
 msgid "Flat"
 msgstr "Հարթ"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Ընկավ ծովը"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Թռիչք"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "ԹՌԻՉՔԻ ՄԻՋՈՒԿԸ ՁԱԽՈՂՎԵՑ"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Թռիչքի հուշումներ"
 
@@ -1699,11 +1719,11 @@ msgstr "Թռավ"
 msgid "Fly"
 msgstr "Թռչել"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Կրկին թռչել"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Կադրերի հաճախության հաշվիչ"
 
@@ -1736,23 +1756,23 @@ msgstr "Թեմայից"
 msgid "Fuel"
 msgstr "Վառելիք"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ՎԱՌԵԼԻՔ"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ՎԱՌԵԼԻՔԻ ՀՐԴԵՀ"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ՎԱՌԵԼԻՔԻ ՀՈՍՔ"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "ՔԻՉ ՎԱՌԵԼԻՔ"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Վառելիքի զոնդ"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Ֆյուզելաժ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Ուժեղացում"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "շասսի"
 
@@ -1781,7 +1801,7 @@ msgstr "շասսի"
 msgid "GEAR"
 msgstr "ՇԱՍՍԻ"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Ընդհանուր"
 
@@ -1790,11 +1810,11 @@ msgstr "Ընդհանուր"
 msgid "Go back"
 msgstr "Հետ"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Գրաֆիկա"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Գրաֆիկայի նախակարգավորում"
 
@@ -1832,15 +1852,15 @@ msgstr "Միայն թնդանոթներ"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Սարքային գրաֆիկական արագացումն անջատված է — ստուգեք զննարկիչի կարգավորումները կամ գրաֆիկական դրայվերները։"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Գլուխ"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Գլխի հետագծում"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Բարձր"
 
@@ -1850,7 +1870,7 @@ msgstr "Բարձր"
 msgid "High stratus"
 msgstr "Բարձր շերտավոր ամպեր"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Հուշումներ"
 
@@ -1865,7 +1885,7 @@ msgstr "Պատմություն"
 msgid "Home"
 msgstr "Տուն"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "Կեռիկ"
 
@@ -1877,11 +1897,11 @@ msgstr "ԿԵՌԻԿ"
 msgid "Hot"
 msgstr "Թեժ"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD-ի բարձրության աղբյուր"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD-ի պարզեցում"
 
@@ -1898,7 +1918,7 @@ msgstr "Պատկերի դիտիչ՝ {0}"
 msgid "Imperial"
 msgstr "Իմպերիալ"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Ներմուծել"
 
@@ -1919,7 +1939,7 @@ msgstr "Սկզբնատառերի ավատար"
 msgid "Initials avatar for {name}"
 msgstr "{name}-ի սկզբնատառերի ավատար"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Մուտքային սարքավորումներ"
 
@@ -1944,7 +1964,7 @@ msgstr "Անվավեր ամսաթիվ"
 msgid "Invulnerable"
 msgstr "Անխոցելի"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ԱՆԽՈՑԵԼԻ"
 
@@ -1961,17 +1981,17 @@ msgstr "Կարծես թե ձեր փնտրած էջը <0/>գոյություն չ
 msgid "Item details"
 msgstr "Տարրի մանրամասներ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Խլացուցիչ"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Նետել բաքերը"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "ՆԵՏՈՒՄ. ՇԱՍՍԻ"
 
@@ -1984,7 +2004,7 @@ msgstr "Միանալ"
 msgid "Join server"
 msgstr "Միանալ սերվերին"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "ՄԻԱՑԱՎ"
 
@@ -2002,7 +2022,7 @@ msgstr "Մենամարտ — 1v1, առաջին խոցումը հաղթում է"
 msgid "Joust against bot"
 msgstr "Մենամարտ բոտի դեմ"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Ջոյստիկ"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Ստեղնաշարի դյուրանցումներ"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Ստեղներ"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "ԽՈՑՈՒՄ"
 
@@ -2035,20 +2055,20 @@ msgstr "Խոցվեց"
 msgid "Kills"
 msgstr "Խոցումներ"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "ՁԱԽ ՇԱՐԺԻՉ"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ՁԱԽ ՇԱՐԺ ՀՐԴԵՀ"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "ՁԱԽ ՇԱՍՍԻ"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Վայրէջքի սարք"
 
@@ -2057,16 +2077,16 @@ msgstr "Վայրէջքի սարք"
 msgid "Large"
 msgstr "Մեծ"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "ՈՒՇ"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Արձակում (կատապուլտ)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "արձակում / թիրախ"
 
@@ -2086,7 +2106,7 @@ msgstr "Լքել սերվերը"
 msgid "Left"
 msgstr "Լքեց"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "ՀԵՌԱՑԱՎ"
 
@@ -2103,7 +2123,7 @@ msgstr "Ձախ թևի ծայրը"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Միայն տառեր, թվեր, բացատներ, գծիկներ և շեղագծեր"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ՀԱՎԱՍԱՐ 1200-ՈՒՄ, ԱՆԻՎՆԵՐԸ ՆԵՐՔԵՒ"
 
@@ -2111,16 +2131,16 @@ msgstr "ՀԱՎԱՍԱՐ 1200-ՈՒՄ, ԱՆԻՎՆԵՐԸ ՆԵՐՔԵՒ"
 msgid "Light"
 msgstr "Լուսավոր"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "լույսեր"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Լույսեր"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "ԼՈՒՅՍԵՐ"
 
@@ -2140,7 +2160,7 @@ msgstr "Ցանկ"
 msgid "Load more"
 msgstr "Բեռնել ավելին"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "ԲԵՌՆՎՈՒՄ Է"
 
@@ -2148,7 +2168,7 @@ msgstr "ԲԵՌՆՎՈՒՄ Է"
 msgid "Loading content…"
 msgstr "Բովանդակությունը բեռնվում է…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "ԲԵՌՆՈՒՄԸ ՁԱԽՈՂՎԵՑ"
 
@@ -2186,35 +2206,35 @@ msgstr "Հաջողությամբ դուրս եկաք"
 msgid "Logging out…"
 msgstr "Դուրս գալիս…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Նայել"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Դիտում / պտույտ"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Նայել թիրախին"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Նայել ներքև"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Նայել ձախ"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Նայել աջ"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Նայել վերև"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Ցածր"
 
@@ -2224,7 +2244,7 @@ msgstr "Ցածր"
 msgid "Low stratus"
 msgstr "Ցածր շերտավոր ամպեր"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M՝ փակելու համար"
 
@@ -2236,11 +2256,11 @@ msgstr "Կառավարել կատեգորիաները"
 msgid "Manual"
 msgstr "Ձեռքով"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "քարտեզ"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Քարտեզ"
 
@@ -2249,8 +2269,8 @@ msgstr "Քարտեզ"
 msgid "Mark all as read"
 msgstr "Նշել բոլորը կարդացված"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Գլխավոր ձայնի ուժգնություն"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP սերվեր"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Միջին"
 
@@ -2279,13 +2299,13 @@ msgstr "Միջին"
 msgid "Members"
 msgstr "Անդամներ"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "մենյու"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Ընտրացանկ"
 
@@ -2297,7 +2317,7 @@ msgstr "Միաձուլում — մարտը սկսվում է հանդիպման
 msgid "Message"
 msgstr "Հաղորդագրություն"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Գրեք բոլորին"
 
@@ -2305,7 +2325,7 @@ msgstr "Գրեք բոլորին"
 msgid "Message players on this server"
 msgstr "Գրեք այս սերվերի խաղացողներին"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Գրեք ձեր թիմին"
 
@@ -2323,7 +2343,7 @@ msgstr "Խոսափողի թույլտվությունը մերժված է"
 msgid "Mid stratus"
 msgstr "Միջին շերտավոր ամպեր"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Բախում օդում"
 
@@ -2335,7 +2355,7 @@ msgstr "Միդուեյ ատոլի քարտեզ — պատկերները պարո
 msgid "Minimum length"
 msgstr "Նվազագույն երկարություն"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "ՀՐԹԻՌ"
 
@@ -2343,7 +2363,7 @@ msgstr "ՀՐԹԻՌ"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Հրթիռի մոդել <0>“AIM-120C AMRAAM”</0> ինքնաթիռակիր՝ <1>Pippa</1>-ի կողմից (Sketchfab), արտոնագրված <2>CC BY 4.0</2>-ի ներքո։ Փոփոխված է՝ վերամասշտաբավորված, վերակողմնորոշված և տեղադրման համար կենտրոնացված:"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Առաքելությունն ավարտվեց"
 
@@ -2369,7 +2389,7 @@ msgstr "Երկուշաբթի"
 msgid "More options"
 msgstr "Լրացուցիչ ընտրանքներ"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Շարժեք…"
 
@@ -2447,7 +2467,7 @@ msgstr "Դեռ ակտիվություն չկա"
 msgid "No comments yet"
 msgstr "Դեռ մեկնաբանություններ չկան"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Ոչ մի կառավարում չի համապատասխանում «{query}»-ին։"
 
@@ -2471,7 +2491,7 @@ msgstr "Հասանելի խմբեր չկան"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Տարրերի տեսակներ դեռ հնարավոր չէ ստեղծել։ Նախ ստեղծեք պահանջվող ծնող տարրերը։"
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ջոյստիկ չի հայտնաբերվել — այն արթնացնելու համար սեղմեք դրա որևէ կոճակ։"
 
@@ -2507,11 +2527,11 @@ msgstr "Արդյունքներ չեն գտնվել։"
 msgid "No status"
 msgstr "Կարգավիճակ չկա"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ԲԱՔԵՐ ՉԿԱՆ"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "ԹԻՐԱԽ ՉԿԱ"
 
@@ -2540,7 +2560,7 @@ msgstr "Դիտումներ չկան"
 msgid "No world server."
 msgstr "Աշխարհի սերվեր չկա։"
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ԱՌԱՆՑ ԳՆԱՀԱՏԱԿԱՆԻ"
 
@@ -2563,9 +2583,9 @@ msgstr "ԱՌԱՆՑ ԳՆԱՀԱՏԱԿԱՆԻ"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Ոչ մեկը"
 
@@ -2573,11 +2593,11 @@ msgstr "Ոչ մեկը"
 msgid "Normal"
 msgstr "Սովորական"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "ՔԹԻ ՇԱՍՍԻ"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Ջոյսթիքի պրոֆիլ չէ"
 
@@ -2615,7 +2635,7 @@ msgstr "Սկսնակ"
 msgid "Number"
 msgstr "Թիվ"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Օվկիանոսի մանրամասներ"
 
@@ -2623,7 +2643,7 @@ msgstr "Օվկիանոսի մանրամասներ"
 msgid "offline"
 msgstr "անցանց"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Տարբերակի անունը"
 msgid "Options"
 msgstr "Տարբերակներ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "կամ"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "պտույտ"
 
@@ -2708,8 +2728,8 @@ msgstr "պտույտ"
 msgid "Other"
 msgstr "Այլ"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G սահմանի շրջանցում"
 
@@ -2717,11 +2737,11 @@ msgstr "G սահմանի շրջանցում"
 msgid "Owner"
 msgstr "Սեփականատեր"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "ՀԱՅԱՑՔԸ ԿՈՂՊՎԱԾ"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "ՀԱՅԱՑՔՆ ԱԶԱՏ Է"
 
@@ -2731,7 +2751,11 @@ msgstr "ՀԱՅԱՑՔՆ ԱԶԱՏ Է"
 msgid "Parent"
 msgstr "Ծնող"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "ԿԱՅԱՆՄԱՆ ԱՐԳԵԼԱԿ"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Կայանման արգելակ"
 
@@ -2756,7 +2780,7 @@ msgstr "Անցաբանալիները հասանելի չեն այս դիտարկ
 msgid "Pattern (regex)"
 msgstr "Ձևանմուշ (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Դադարեցված"
 
@@ -2776,15 +2800,15 @@ msgstr "օդաչու"
 msgid "Pilot"
 msgstr "Օդաչու"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "ՕԴԱՉՈՒՆ ԶՈՀՎԵՑ"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Օդաչուի ինքնություն"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Օդաչուն զոհվեց"
 
@@ -2793,23 +2817,23 @@ msgstr "Օդաչուն զոհվեց"
 msgid "Pin"
 msgstr "Ամրացնել"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "թեքում"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Թեքում"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Քիթը ներքև"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Քիթը վերև"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "ՀԱՐԹԱԿ"
 
@@ -2839,15 +2863,15 @@ msgstr "Գրառումներ"
 msgid "Posts and comments"
 msgstr "Գրառումներ և մեկնաբանություններ"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Սեղմեք որևէ ստեղն…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ԹՌՉԵԼՈՒ ՀԱՄԱՐ ՍԵՂՄԻՐ ENTER"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Սեղմեք…"
 
@@ -2861,12 +2885,24 @@ msgstr "Նախորդ նկարը"
 msgid "Privacy"
 msgstr "Գաղտնիություն"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ՁՈՂ"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "ՁՈՂԸ ՆԵՐՍ Է"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "ՁՈՂԸ ԴՈՒՐՍ Է"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Մշակվում է…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Պրոֆիլը պահպանվեց"
 
@@ -2887,24 +2923,24 @@ msgstr "Հանրային սերվերներ"
 msgid "Push notification"
 msgstr "Push ծանուցում"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "ՄՈՏԵՑՄԱՆ ԺԱՄ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "ԱՋ ՇԱՐԺԻՉ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ԱՋ ՇԱՐԺ ՀՐԴԵՀ"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "ԱՋ ՇԱՍՍԻ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Ռադարի լռություն"
 
@@ -2920,7 +2956,7 @@ msgstr "Նորից կապեք ձեր հաշիվները այս սերվերու�
 msgid "Re-register your passkeys on this server"
 msgstr "Կրկին գրանցեք ձեր անցաբառերը այս սերվերում"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ՎԵՐԱԶԻՆՎԵՑ"
 
@@ -2936,12 +2972,12 @@ msgstr "Առաջարկվող"
 msgid "Reconnecting ({retries})..."
 msgstr "Վերամիացում ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Գրանցել թռիչքները"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Գրանցում"
 
@@ -2982,7 +3018,7 @@ msgstr "Տեղեկանք"
 msgid "Refresh"
 msgstr "Թարմացնել"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "ՎԵՐԱԴԱՌՆՈՒՄ ԵՄ ՇԱՐՔ"
 
@@ -3082,23 +3118,23 @@ msgstr "Պարտադիր է"
 msgid "Resend email"
 msgstr "Կրկին ուղարկել նամակը"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Վերականգնել"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Վերականգնել գլխավոր զգուշացումը"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Տրիմի զրոյացում"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Զրոյացնել տեսքը"
 
@@ -3114,19 +3150,19 @@ msgstr "Հանձնվե՞լ խաղում։"
 msgid "Resigning..."
 msgstr "Հանձնվում..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Լուծաչափ"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Վերսկսել"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Վերսկսել առաքելությունը"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Վերսկսե՞լ առաքելությունը"
 
@@ -3134,12 +3170,12 @@ msgstr "Վերսկսե՞լ առաքելությունը"
 msgid "Result"
 msgstr "Արդյունք"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Շարունակել"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Փեղկերը հավաքել"
 
@@ -3147,7 +3183,7 @@ msgstr "Փեղկերը հավաքել"
 msgid "Retry"
 msgstr "Կրկին փորձել"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Շրջված"
 
@@ -3172,19 +3208,19 @@ msgstr "Աջ թև"
 msgid "Right wingtip"
 msgstr "Աջ թևի ծայրը"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "գլորում"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Թավալում"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Կրեն ձախ"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Կրեն աջ"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS հոսք"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL-ը պատճենվեց clipboard-ին"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "ԼՐԻՎ ՀԶՈՐՈՒԹՅՈՒՆ"
 
@@ -3242,8 +3278,8 @@ msgstr "Ծովի մակարդակ"
 msgid "Search"
 msgstr "Որոնել"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Որոնել կառավարումներ"
 
@@ -3340,8 +3376,8 @@ msgstr "Ընտրեք անձ..."
 msgid "Select previous card"
 msgstr "Ընտրել նախորդ քարտը"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Ընտրել զենքը"
 
@@ -3363,7 +3399,7 @@ msgstr "Ուղարկել"
 msgid "Send again"
 msgstr "Ուղարկել կրկին"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Ուղարկել հաղորդագրություն"
 
@@ -3404,7 +3440,7 @@ msgstr "Սերվերի կանոններ"
 msgid "server runs v{0}, you have v{version}"
 msgstr "սերվերն աշխատում է v{0}, դուք ունեք v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "ՍԵՍԻԱՆ ԱՎԱՐՏՎԵՑ"
 
@@ -3412,7 +3448,7 @@ msgstr "ՍԵՍԻԱՆ ԱՎԱՐՏՎԵՑ"
 msgid "Session expired. Please log in again."
 msgstr "Աշխատաշրջանի ժամկետը սպառվել է։ Խնդրում ենք նորից մուտք գործել։"
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Սահմանել"
 
@@ -3423,14 +3459,14 @@ msgstr "Սահմանել ծագումը և նպատակակետը"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Կարգավորումներ"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Ստվերներ"
 
@@ -3485,7 +3521,7 @@ msgstr "Փոքր"
 msgid "Sort"
 msgstr "Տեսակավորել"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Ձայն"
 
@@ -3505,17 +3541,17 @@ msgstr "Հեռավոր մուտքեր"
 msgid "Spacious"
 msgstr "Ընդարձակ"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "Ա.ԱՐ"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "արագության արգելակ"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Արագության արգելակ"
 
@@ -3523,9 +3559,13 @@ msgstr "Արագության արգելակ"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Արագությունները KCAS-ով, որպես միջակայք թեթևից (նվազագույն վառելիք, առանց կախովի բեռի) մինչև ծանր (առավելագույն ընդհանուր զանգված)։ Տվյալները ստացվել են խաղում փորձնական ճանապարհով։ Իրական ինքնաթիռից ցանկացած տարբերություն արտացոլում է սիմուլյատորի թռիչքի մոդելի սխալները։"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "ԹԻՐԱԽԸ ԽՈՑՎԵՑ"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "ԲԱՑԵԼ ԹԵՎԵՐԸ"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Ամենակտրուկ վերելք (Vx, ֆորսաժ)"
 msgid "Stop watching"
 msgstr "Դադարեցնել դիտումը"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "ԿԱՌՈՒՑՎԱԾՔ"
 
@@ -3598,7 +3638,7 @@ msgstr "Անցնել 1-9 տեսքի"
 msgid "System"
 msgstr "Համակարգ"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "ՄԱՐՏԱՎԱՐԱԿԱՆ ՔԱՐՏԵԶ"
 
@@ -3615,7 +3655,7 @@ msgstr "Պիտակը պետք է լինի առավելագույնը 50 նիշ"
 msgid "Tags"
 msgstr "Թեգեր"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ԹՇՆԱՄԻՆ ՏԵՍԱԴԱՇՏՈՒՄ"
 
@@ -3623,11 +3663,11 @@ msgstr "ԹՇՆԱՄԻՆ ՏԵՍԱԴԱՇՏՈՒՄ"
 msgid "Task"
 msgstr "Առաջադրանք"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Թիմ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "ԹԻՄ"
 
@@ -3674,7 +3714,7 @@ msgstr "Տեսախցիկի հարցումը չպատասխանվեց"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Խաղը չհաջողվեց բեռնել։ Կրկին փորձելու համար վերաբեռնեք էջը։"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Խաղը շարունակվում է այս մենյուի հետևում։"
 
@@ -3686,7 +3726,7 @@ msgstr "Խոսափողի հարցումը չպատասխանվեց"
 msgid "The mission stopped."
 msgstr "Առաքելությունը կանգ առավ։"
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Առաքելությունը կվերսկսվի։ Ընթացիկ թռիչքը չի պահպանվի։"
 
@@ -3722,21 +3762,21 @@ msgstr "Այս մեքենան կարող է չափազանց դանդաղ լին
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Սա ընդմիշտ կջնջի խաղը և դրա չաթը։ Այս գործողությունը հնարավոր չէ հետարկել։"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "գազ"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Գազ"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Նվազեցնել գազը"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Ավելացնել գազը"
 
@@ -3748,7 +3788,7 @@ msgstr "Հինգշաբթի"
 msgid "Tightest sustained turn speed"
 msgstr "Ամենասեղմ կայուն շրջադարձի արագություն"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "թեքել"
 
@@ -3795,7 +3835,7 @@ msgstr "Չափազանց շատ հարցումներ"
 msgid "Top"
 msgstr "Վերև"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Հետագծային փամփուշտներ"
 
@@ -3803,35 +3843,35 @@ msgstr "Հետագծային փամփուշտներ"
 msgid "Travelling"
 msgstr "Ճանապարհորդություն"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "տրիմ"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Տրիմ"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Տրիմի գլխարկ"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Տրիմ՝ քիթը վար"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Տրիմ՝ քիթը վեր"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Տրիմ՝ թեքում ձախ"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Տրիմ՝ թեքում աջ"
 
@@ -3869,7 +3909,7 @@ msgstr "Մուտքագրեք օգտատերեր որոնելու համար"
 msgid "Type to search..."
 msgstr "Մուտքագրեք որոնելու համար..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ուլտրա"
 
@@ -3890,13 +3930,13 @@ msgstr "Չվերագրված"
 msgid "Unavailable"
 msgstr "Անհասանելի"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Ազատել որոնիչը"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Չեղարկել թիրախի նշանակումը"
 
@@ -4014,11 +4054,11 @@ msgstr "Տեսանյութի մանրապատկեր"
 msgid "Video viewer: {0}"
 msgstr "Տեսանյութի դիտիչ՝ {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "տեսք"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Դիտել"
 
@@ -4035,7 +4075,7 @@ msgstr "Դիտել և խմբագրել տարրի մանրամասները"
 msgid "View controls"
 msgstr "Դիտել կառավարակետերը"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Դիտումներ"
 
@@ -4043,11 +4083,11 @@ msgstr "Դիտումներ"
 msgid "Voice recording is not supported in this browser"
 msgstr "Ձայնագրումն այս դիտարկիչում չի աջակցվում"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Ձայնի մակարդակներ"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "ՍՊԱՍՈՒՄ ԵՆՔ ՀԱԿԱՌԱԿՈՐԴԻՆ"
 
@@ -4065,7 +4105,7 @@ msgstr "Հետևված"
 msgid "Watched only"
 msgstr "Միայն հետևված"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "ՎԱՅՐԷՋՔԸ ՉԵՂԱՐԿԻՐ"
 
@@ -4074,16 +4114,16 @@ msgstr "ՎԱՅՐԷՋՔԸ ՉԵՂԱՐԿԻՐ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Մենք հաստատման կոդ ուղարկեցինք <0>{0}</0> հասցեին։ Մուտքագրեք կոդը ստորև՝ ձեր էլ․ հասցեն հաստատելու համար։"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "զենք"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Զենքի ընտրության գլխարկ"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Զենքեր"
 
@@ -4095,21 +4135,37 @@ msgstr "Եղանակ"
 msgid "Wednesday"
 msgstr "Չորեքշաբթի"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Անիվի արգելակներ"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Քամի և օդանավի կառուցվածք"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Թևի ծալում"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "ԹԵՎԵՐ"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "ԹԵՎԵՐԸ ԾԱԼՎՈՒՄ ԵՆ"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "ԹԵՎԵՐԸ ԿՈՂՊՎԱԾ ԵՆ"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "ԹԵՎԵՐԸ ԲԱՑՎՈՒՄ ԵՆ"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "ՀԱՂԹՈՒՄ Է"
 
@@ -4126,25 +4182,25 @@ msgstr "Աշխարհի սերվերը հասանելի չէ"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, կրակը ազատ է հանդիպման պահին"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "շեղում"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Շեղում"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Քիթը ձախ"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Քիթը աջ"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ԴՈՒ"
 
@@ -4176,14 +4232,14 @@ msgstr "Ձեր տեքստը և կցորդները կկորչեն։"
 msgid "Your text will be lost."
 msgstr "Քո տեքստը կկորչի։"
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Զում"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Մոտեցնել"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Հեռացնել"

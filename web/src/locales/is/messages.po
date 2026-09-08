@@ -36,7 +36,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# niðurstaða} other {# niðurstöður}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:421
+#: src/components/GameCanvas.tsx:440
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Varð fyrir # skoti} other {Varð fyrir # skotum}}"
 
@@ -78,13 +78,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} af {1} flugum"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:779
+#: src/components/SettingsDialog.tsx:772
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} var þegar tekið og sú stjórn er nú óbundin."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:775
+#: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} var á {1}, sem er nú óbundið."
 
@@ -143,7 +143,7 @@ msgstr "{totalDescendants, plural, one {# svar} other {+# fleiri svör}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Opna valmynd (# ólesin tilkynning)} other {Opna valmynd (# ólesnar tilkynningar)}}"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "VÍR 1"
 
@@ -155,7 +155,7 @@ msgstr "12 klukkustundir"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:66
+#: src/components/GameCanvas.tsx:84
 msgid "2 WIRE"
 msgstr "VÍR 2"
 
@@ -163,7 +163,7 @@ msgstr "VÍR 2"
 msgid "24 hours"
 msgstr "24 klukkustundir"
 
-#: src/components/GameCanvas.tsx:67
+#: src/components/GameCanvas.tsx:85
 msgid "3 WIRE"
 msgstr "VÍR 3"
 
@@ -202,13 +202,13 @@ msgstr "Tegund reiknings"
 msgid "Ace"
 msgstr "Ás"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Læsa á skotmark"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Föngunarhamur"
 
@@ -290,7 +290,7 @@ msgstr "Bæta við sýn"
 msgid "Adding..."
 msgstr "Bæti við..."
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Eftirbrennari"
 
@@ -298,7 +298,7 @@ msgstr "Eftirbrennari"
 msgid "AI"
 msgstr "Gervigreind"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:96
 msgid "Aircraft"
 msgstr "Flugvél"
 
@@ -356,8 +356,8 @@ msgstr "Allir sem eru skráðir inn"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Allt sem er áskrifandi að þessari veitu hættir að fá hana. Þú getur afritað nýja vefslóð á eftir."
 
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Aðflugsafl (ATC)"
 
@@ -394,8 +394,8 @@ msgstr "Ertu viss um að þú viljir gefast upp?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Ertu viss um að þú viljir gefast upp? {opponentName} mun vinna leikinn."
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Stöðvunarkrókur"
 
@@ -436,16 +436,16 @@ msgstr "Auðkennismynd"
 msgid "Avatar for {name}"
 msgstr "Auðkennismynd fyrir {name}"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:483
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:476
 msgid "Axis {i}"
 msgstr "Ás {i}"
 
-#: src/components/SettingsDialog.tsx:432
+#: src/components/SettingsDialog.tsx:425
 msgid "Axis calibration and mapping"
 msgstr "Kvörðun og úthlutun ása"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "back"
 msgstr "til baka"
 
@@ -476,7 +476,7 @@ msgstr "Borði fjarlægður"
 msgid "Banner updated"
 msgstr "Borði uppfærður"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:134
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "UNDIR 250 — HJÓL OG VÆNGBÖRÐ"
 
@@ -496,11 +496,11 @@ msgstr "Besta svif (hreyflar óvirkir)"
 msgid "Best sustained turn speed"
 msgstr "Besti hraði viðvarandi beygju"
 
-#: src/components/SettingsDialog.tsx:600
+#: src/components/SettingsDialog.tsx:593
 msgid "Betty and RWR alerts"
 msgstr "Betty- og RWR-viðvaranir"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:62
 msgid "BINGO FUEL"
 msgstr "BINGO ELDSNEYTI"
 
@@ -530,7 +530,7 @@ msgstr "Bláir bottar"
 msgid "Board"
 msgstr "Borð"
 
-#: src/components/GameCanvas.tsx:72
+#: src/components/GameCanvas.tsx:90
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -547,19 +547,19 @@ msgstr "Litur ramma"
 msgid "Bots"
 msgstr "Vélmenni"
 
-#: src/components/GameCanvas.tsx:147
+#: src/components/GameCanvas.tsx:166
 msgid "brakes"
 msgstr "bremsur"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:115
 msgid "BREAK LEFT"
 msgstr "HART VINSTRI"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:114
 msgid "BREAK RIGHT"
 msgstr "HART HÆGRI"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:133
 msgid "BREAK WHEN READY"
 msgstr "BEYGÐU ÞEGAR TILBÚINN"
 
@@ -567,12 +567,12 @@ msgstr "BEYGÐU ÞEGAR TILBÚINN"
 msgid "Browser notifications"
 msgstr "Tilkynningar vafra"
 
-#: src/components/SettingsDialog.tsx:355
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:552
 msgid "Button {i}"
 msgstr "Hnappur {i}"
 
-#: src/components/SettingsDialog.tsx:524
+#: src/components/SettingsDialog.tsx:517
 msgid "Button mappings"
 msgstr "Úthlutun hnappa"
 
@@ -584,16 +584,16 @@ msgstr "BVR — vopn frjáls frá upphafi"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, vopn frjáls frá upphafi"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:132
 msgid "CALL THE BALL"
 msgstr "TILKYNNTU BOLTANN"
 
 #: src/components/Multiplayer.tsx:326
-#: src/components/SettingsDialog.tsx:1063
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Kallmerki"
 
-#: src/components/SettingsDialog.tsx:861
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Fjarlægð myndavélar"
 
@@ -602,7 +602,7 @@ msgid "Camera permission denied"
 msgstr "Myndavélarheimild hafnað"
 
 #: ../../../lib/web/src/lib/shell-errors.ts:56
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Myndavél ekki tiltæk"
 
@@ -620,10 +620,10 @@ msgstr "Myndavél ekki tiltæk"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:549
+#: src/components/GameCanvas.tsx:568
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Hætta við"
 
@@ -641,20 +641,40 @@ msgstr "Hætta við svar"
 msgid "Cancelled"
 msgstr "Hætt við"
 
-#: src/components/SettingsDialog.tsx:598
+#: src/components/SettingsDialog.tsx:591
 msgid "Cannons and ordnance"
 msgstr "Fallbyssur og skotfæri"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Stjórnklefahlíf"
+
+#: src/components/GameCanvas.tsx:47
+msgid "CANOPY"
+msgstr "HVELFING"
+
+#: src/components/GameCanvas.tsx:49
+msgid "CANOPY CLOSED"
+msgstr "HVELFING LOKUÐ"
+
+#: src/components/GameCanvas.tsx:50
+msgid "CANOPY CLOSING"
+msgstr "HVELFING LOKAST"
+
+#: src/components/GameCanvas.tsx:51
+msgid "CANOPY LOCKED"
+msgstr "HVELFING LÆST"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CANOPY OPEN"
+msgstr "HVELFING OPIN"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:386
 #: ../../../lib/web/src/components/attachment-composer.tsx:421
 msgid "Caption"
 msgstr "Myndatexti"
 
-#: src/components/SettingsDialog.tsx:599
+#: src/components/SettingsDialog.tsx:592
 msgid "Carrier and ambient"
 msgstr "Flugmóðurskip og umhverfi"
 
@@ -711,19 +731,19 @@ msgstr "Breytt"
 msgid "Changed {field}"
 msgstr "Breytti {field}"
 
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:595
 msgid "Chase view:"
 msgstr "Eltingarsýn:"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:169
 msgid "chat"
 msgstr "spjall"
 
-#: src/components/SettingsDialog.tsx:247
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Spjall"
 
-#: src/components/SettingsDialog.tsx:248
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Spjall við alla"
 
@@ -760,7 +780,7 @@ msgstr "Veldu tungumál"
 #: src/components/MatchLog.tsx:328
 #: src/components/MatchLog.tsx:384
 #: src/components/Multiplayer.tsx:396
-#: src/components/SettingsDialog.tsx:690
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Hreinsa"
 
@@ -806,7 +826,7 @@ msgstr "Loka spjaldi / hætta við"
 msgid "Close search"
 msgstr "Loka leit"
 
-#: src/components/GameCanvas.tsx:580
+#: src/components/GameCanvas.tsx:599
 msgid "closer"
 msgstr "nær"
 
@@ -846,7 +866,7 @@ msgstr "Þægilegt"
 msgid "Command Palette"
 msgstr "Skipanaspjald"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:127
 msgid "COMMENCING"
 msgstr "HEF AÐFLUG"
 
@@ -865,7 +885,7 @@ msgstr "Athugasemdir"
 msgid "Comments ({0})"
 msgstr "Athugasemdir ({0})"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:98
 msgid "Communication"
 msgstr "Samskipti"
 
@@ -906,7 +926,7 @@ msgstr "Tengist..."
 msgid "Connecting…"
 msgstr "Tengist…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:98
 msgid "CONNECTION FAILED"
 msgstr "TENGING MISTÓKST"
 
@@ -963,7 +983,7 @@ msgstr "Ekki tókst að hlaða þessu skjali. Reyndu aftur síðar."
 msgid "Could not load your flights"
 msgstr "Ekki tókst að hlaða flugunum þínum"
 
-#: src/components/SettingsDialog.tsx:298
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Tókst ekki að vista sniðið"
 
@@ -992,16 +1012,16 @@ msgstr "Ekki tókst að hefja endurauðkenningu. Reyndu aftur."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ekki tókst að staðfesta með þeim reikningi. Reyndu aftur."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Mótvægisaðgerðir"
 
-#: src/components/GameCanvas.tsx:415
+#: src/components/GameCanvas.tsx:434
 msgid "Crashed"
 msgstr "Vélin hrapaði"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:79
 msgid "CRASHED"
 msgstr "HRAPAÐI"
 
@@ -1069,12 +1089,12 @@ msgstr "Núverandi staðsetning"
 msgid "Custom"
 msgstr "Sérsniðið"
 
-#: src/components/GameCanvas.tsx:71
+#: src/components/GameCanvas.tsx:89
 msgid "CUT"
 msgstr "HÆTTULEGT"
 
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Skipta um sýn"
 
@@ -1101,7 +1121,7 @@ msgstr "Dagur"
 msgid "Deaths"
 msgstr "Dauðsföll"
 
-#: src/components/GameCanvas.tsx:74
+#: src/components/GameCanvas.tsx:92
 msgid "DECK POSITION SAVED"
 msgstr "STAÐA Á ÞILFARI VISTUÐ"
 
@@ -1203,11 +1223,11 @@ msgstr "Lækkandi"
 msgid "Description"
 msgstr "Lýsing"
 
-#: src/components/GameCanvas.tsx:409
+#: src/components/GameCanvas.tsx:428
 msgid "Destroyed by fire"
 msgstr "Eyðilagðist í eldi"
 
-#: src/components/SettingsDialog.tsx:936
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Smáatriði"
 
@@ -1215,8 +1235,8 @@ msgstr "Smáatriði"
 msgid "Details Panel"
 msgstr "Smáatriðaspjald"
 
-#: src/components/SettingsDialog.tsx:512
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:505
+#: src/components/SettingsDialog.tsx:569
 msgid "Detect"
 msgstr "Greina"
 
@@ -1239,7 +1259,7 @@ msgstr "Annar leikjahýsill"
 msgid "Directory"
 msgstr "Skrá"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:135
 msgid "DIRTY UP"
 msgstr "HJÓL NIÐUR"
 
@@ -1251,7 +1271,7 @@ msgstr "Henda"
 msgid "Discard draft?"
 msgstr "Henda drögum?"
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:391
 msgid "disconnected"
 msgstr "aftengdur"
 
@@ -1264,12 +1284,12 @@ msgstr "Aftengt"
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
 #: src/components/MissionSetup.tsx:1246
-#: src/components/SettingsDialog.tsx:785
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Hafna"
 
-#: src/components/SettingsDialog.tsx:189
-#: src/components/SettingsDialog.tsx:243
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Skjáendurvarpi"
 
@@ -1277,7 +1297,7 @@ msgstr "Skjáendurvarpi"
 msgid "Displays the mobile sidebar."
 msgstr "Sýnir hliðarstiku farsíma."
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD eftir fjarlægð"
 
@@ -1288,7 +1308,7 @@ msgstr "Samsvarar ekki tilskildu mynstri"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
-#: src/components/SettingsDialog.tsx:1167
+#: src/components/SettingsDialog.tsx:1169
 msgid "Done"
 msgstr "Lokið"
 
@@ -1303,11 +1323,11 @@ msgstr "Hlaða niður"
 msgid "Download failed"
 msgstr "Niðurhal mistókst"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:136
 msgid "DOWNWIND 600 FEET"
 msgstr "UNDAN VINDI 600 FET"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "Drag"
 msgstr "Draga"
 
@@ -1323,7 +1343,7 @@ msgstr "Tvítekur"
 msgid "Duration"
 msgstr "Lengd"
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Breytileg upplausn"
 
@@ -1331,7 +1351,7 @@ msgstr "Breytileg upplausn"
 msgid "Dyslexia-friendly"
 msgstr "Lesblinduvænt"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:128
 msgid "EARLY"
 msgstr "SNEMMA"
 
@@ -1374,19 +1394,19 @@ msgstr "Breyta völdu spjaldi"
 msgid "Edit view"
 msgstr "Breyta skoðun"
 
-#: src/components/SettingsDialog.tsx:982
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Áhrif"
 
-#: src/components/SettingsDialog.tsx:960
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Smáatriði áhrifa"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Skjóta sér út"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:103
 msgid "EJECTED"
 msgstr "SKAUT SÉR ÚT"
 
@@ -1398,12 +1418,12 @@ msgstr "Tölvupóstur"
 msgid "Email code"
 msgstr "Tölvupóstkóði"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:106
 msgid "EMERG JETT"
 msgstr "NEYÐARVARP"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Neyðarvarp (halda)"
 
@@ -1416,11 +1436,11 @@ msgstr "tóm"
 msgid "Empty pylon"
 msgstr "Tómur pýlon"
 
-#: src/components/SettingsDialog.tsx:616
+#: src/components/SettingsDialog.tsx:609
 msgid "Enable sound"
 msgstr "Virkja hljóð"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:113
 msgid "ENGAGED"
 msgstr "GERI ÁRÁS"
 
@@ -1428,7 +1448,7 @@ msgstr "GERI ÁRÁS"
 msgid "Engagement"
 msgstr "Átök"
 
-#: src/components/SettingsDialog.tsx:596
+#: src/components/SettingsDialog.tsx:589
 msgid "Engine and afterburner"
 msgstr "Hreyfill og eftirbrennari"
 
@@ -1448,15 +1468,15 @@ msgstr "Sláðu inn auðkenniskóðann þinn"
 msgid "Error"
 msgstr "Villa"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Everyone"
 msgstr "Allir"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit match"
 msgstr "Yfirgefa leikinn"
 
-#: src/components/GameCanvas.tsx:509
+#: src/components/GameCanvas.tsx:528
 msgid "Exit mission"
 msgstr "Hætta í verkefni"
 
@@ -1475,16 +1495,16 @@ msgstr "Útvíkka hliðarstiku"
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Sprengingarhreyfimynd <0>“Explosion02HD”</0> eftir <1>Unity Technologies</1> (VFX myndaraðir Unity Labs), gefin út undir <2>CC0</2>. Breytt: endurþjöppuð fyrir vefinn."
 
-#: src/components/SettingsDialog.tsx:416
+#: src/components/SettingsDialog.tsx:409
 msgid "Export"
 msgstr "Flytja út"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Vængbörð út"
 
-#: src/components/SettingsDialog.tsx:952
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Ytri smáatriði"
 
@@ -1603,15 +1623,15 @@ msgstr "Ekki tókst að uppfæra vöktun"
 msgid "Failed to upload attachment"
 msgstr "Tókst ekki að hlaða upp viðhengi"
 
-#: src/components/GameCanvas.tsx:69
+#: src/components/GameCanvas.tsx:87
 msgid "FAIR"
 msgstr "SÆMILEGT"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:76
 msgid "FCS"
 msgstr "FCS"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:60
 msgid "FIGHT'S ON"
 msgstr "BARDAGINN ER HAFINN"
 
@@ -1629,16 +1649,16 @@ msgstr "Kláraðu að færa reikninginn þinn"
 msgid "Finished"
 msgstr "Lokið"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:157
 msgid "fire"
 msgstr "skjóta"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Skjóta úr vopni"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Fastir fluglyklar"
 
@@ -1646,15 +1666,15 @@ msgstr "Fastir fluglyklar"
 msgid "Flags"
 msgstr "Flögg"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:66
 msgid "FLAMEOUT"
 msgstr "SLOKKNUN"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:161
 msgid "flaps"
 msgstr "vængbörð"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:160
 msgid "flares"
 msgstr "blys"
 
@@ -1666,19 +1686,19 @@ msgstr "BLYS"
 msgid "Flat"
 msgstr "Flatt"
 
-#: src/components/GameCanvas.tsx:411
+#: src/components/GameCanvas.tsx:430
 msgid "Flew into the sea"
 msgstr "Flaug í sjóinn"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:93
 msgid "Flight"
 msgstr "Flug"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:100
 msgid "FLIGHT CORE FAILED"
 msgstr "FLUGKJARNI BRÁST"
 
-#: src/components/SettingsDialog.tsx:1105
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Flugábendingar"
 
@@ -1699,11 +1719,11 @@ msgstr "Flogið"
 msgid "Fly"
 msgstr "Fljúga"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:457
 msgid "Fly again"
 msgstr "Fljúga aftur"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Rammatíðniteljari"
 
@@ -1736,23 +1756,23 @@ msgstr "Frá þema"
 msgid "Fuel"
 msgstr "Eldsneyti"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:61
 msgid "FUEL"
 msgstr "ELDSNEYTI"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:67
 msgid "FUEL FIRE"
 msgstr "ELDSNEYTISELDUR"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:75
 msgid "FUEL LEAK"
 msgstr "ELDSNEYTISLEKI"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:63
 msgid "FUEL LO"
 msgstr "LÍTIÐ ELDSNEYTI"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Eldsneytisstöng"
 
@@ -1769,11 +1789,11 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Skrokkur"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Mögnun"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:162
 msgid "gear"
 msgstr "lendingarbúnaður"
 
@@ -1781,7 +1801,7 @@ msgstr "lendingarbúnaður"
 msgid "GEAR"
 msgstr "GÍR"
 
-#: src/components/SettingsDialog.tsx:1176
+#: src/components/SettingsDialog.tsx:1178
 msgid "General"
 msgstr "Almennt"
 
@@ -1790,11 +1810,11 @@ msgstr "Almennt"
 msgid "Go back"
 msgstr "Til baka"
 
-#: src/components/SettingsDialog.tsx:1180
+#: src/components/SettingsDialog.tsx:1182
 msgid "Graphics"
 msgstr "Grafík"
 
-#: src/components/SettingsDialog.tsx:912
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Grafíkforstilling"
 
@@ -1832,15 +1852,15 @@ msgstr "Aðeins fallbyssur"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Vélbúnaðarhröðun grafíkur er slökkt — athugaðu vafrastillingar eða grafíkrekla."
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Höfuð"
 
-#: src/components/SettingsDialog.tsx:879
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Höfuðrakning"
 
-#: src/components/SettingsDialog.tsx:903
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Hátt"
 
@@ -1850,7 +1870,7 @@ msgstr "Hátt"
 msgid "High stratus"
 msgstr "Há lagský"
 
-#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Ábendingar"
 
@@ -1865,7 +1885,7 @@ msgstr "Saga"
 msgid "Home"
 msgstr "Heim"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:163
 msgid "hook"
 msgstr "Krókur"
 
@@ -1877,11 +1897,11 @@ msgstr "KRÓKUR"
 msgid "Hot"
 msgstr "Heitt"
 
-#: src/components/SettingsDialog.tsx:244
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Hæðargjafi HUD"
 
-#: src/components/SettingsDialog.tsx:245
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Einföldun HUD"
 
@@ -1898,7 +1918,7 @@ msgstr "Myndaskoðari: {0}"
 msgid "Imperial"
 msgstr "Bresk mælieining"
 
-#: src/components/SettingsDialog.tsx:420
+#: src/components/SettingsDialog.tsx:413
 msgid "Import"
 msgstr "Flytja inn"
 
@@ -1919,7 +1939,7 @@ msgstr "Upphafsstafaauðkenni"
 msgid "Initials avatar for {name}"
 msgstr "Upphafsstafaauðkenni fyrir {name}"
 
-#: src/components/SettingsDialog.tsx:376
+#: src/components/SettingsDialog.tsx:369
 msgid "Input hardware"
 msgstr "Inntaksbúnaður"
 
@@ -1944,7 +1964,7 @@ msgstr "Ógild dagsetning"
 msgid "Invulnerable"
 msgstr "Ósæranlegur"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:64
 msgid "INVULNERABLE"
 msgstr "ÓSÆRANLEGUR"
 
@@ -1961,17 +1981,17 @@ msgstr "Svo virðist sem síðan sem þú leitar að <0/>sé ekki til eða hafi 
 msgid "Item details"
 msgstr "Upplýsingar um atriði"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Truflunarsendir"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Varpa tönkum"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:104
 msgid "JETTISON: GEAR"
 msgstr "VARP: LENDINGARBÚNAÐUR"
 
@@ -1984,7 +2004,7 @@ msgstr "Taka þátt"
 msgid "Join server"
 msgstr "Tengjast þjóni"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:109
 msgid "JOINED"
 msgstr "BÆTTIST VIÐ"
 
@@ -2002,7 +2022,7 @@ msgstr "Einvígi — 1v1, fyrsta niðurskotið vinnur"
 msgid "Joust against bot"
 msgstr "Einvígi gegn vélmenni"
 
-#: src/components/SettingsDialog.tsx:1188
+#: src/components/SettingsDialog.tsx:1190
 msgid "Joystick"
 msgstr "Stýripinni"
 
@@ -2018,11 +2038,11 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Flýtilyklar"
 
-#: src/components/SettingsDialog.tsx:1192
+#: src/components/SettingsDialog.tsx:1194
 msgid "Keys"
 msgstr "Lyklar"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:102
 msgid "KILL"
 msgstr "DRÁP"
 
@@ -2035,20 +2055,20 @@ msgstr "Drepinn"
 msgid "Kills"
 msgstr "Dráp"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:70
 msgid "L ENG"
 msgstr "V HREYFILL"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:68
 msgid "L ENG FIRE"
 msgstr "ELDUR V HREYF"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:73
 msgid "L GEAR"
 msgstr "V HJÓL"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Lendingarbúnaður"
 
@@ -2057,16 +2077,16 @@ msgstr "Lendingarbúnaður"
 msgid "Large"
 msgstr "Stórt"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:129
 msgid "LATE"
 msgstr "SEINT"
 
-#: src/components/SettingsDialog.tsx:185
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Skot (katapúlta)"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:159
 msgid "launch / target"
 msgstr "flugtak / læsing"
 
@@ -2086,7 +2106,7 @@ msgstr "Yfirgefa þjón"
 msgid "Left"
 msgstr "Fór"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:110
 msgid "LEFT"
 msgstr "FÓR"
 
@@ -2103,7 +2123,7 @@ msgstr "Vinstri vængbroddur"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Aðeins bókstafir, tölur, bil, bandstrik og skástrik"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:131
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "FLATT Í 1200, HJÓL NIÐUR"
 
@@ -2111,16 +2131,16 @@ msgstr "FLATT Í 1200, HJÓL NIÐUR"
 msgid "Light"
 msgstr "Ljóst"
 
-#: src/components/GameCanvas.tsx:146
+#: src/components/GameCanvas.tsx:165
 msgid "lights"
 msgstr "ljós"
 
-#: src/components/SettingsDialog.tsx:186
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Ljós"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:81
 msgid "LIGHTS"
 msgstr "LJÓS"
 
@@ -2140,7 +2160,7 @@ msgstr "Listi"
 msgid "Load more"
 msgstr "Hlaða meiru"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:78
 msgid "LOADING"
 msgstr "HLEÐ"
 
@@ -2148,7 +2168,7 @@ msgstr "HLEÐ"
 msgid "Loading content…"
 msgstr "Hleð inn efni…"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:99
 msgid "LOADING FAILED"
 msgstr "HLEÐSLA MISTÓKST"
 
@@ -2186,35 +2206,35 @@ msgstr "Útskráning tókst"
 msgid "Logging out…"
 msgstr "Útskrái…"
 
-#: src/components/SettingsDialog.tsx:115
+#: src/components/SettingsDialog.tsx:108
 msgid "Look"
 msgstr "Horfa"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Horfa / hringsóla"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Horfa á skotmark"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Horfa niður"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Horfa til vinstri"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Horfa til hægri"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Horfa upp"
 
-#: src/components/SettingsDialog.tsx:901
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Lágt"
 
@@ -2224,7 +2244,7 @@ msgstr "Lágt"
 msgid "Low stratus"
 msgstr "Lág lagský"
 
-#: src/components/GameCanvas.tsx:79
+#: src/components/GameCanvas.tsx:97
 msgid "M to close"
 msgstr "M til að loka"
 
@@ -2236,11 +2256,11 @@ msgstr "Stjórna flokkum"
 msgid "Manual"
 msgstr "Handvirkt"
 
-#: src/components/GameCanvas.tsx:149
+#: src/components/GameCanvas.tsx:168
 msgid "map"
 msgstr "kort"
 
-#: src/components/SettingsDialog.tsx:246
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Kort"
 
@@ -2249,8 +2269,8 @@ msgstr "Kort"
 msgid "Mark all as read"
 msgstr "Merkja allt sem lesið"
 
-#: src/components/SettingsDialog.tsx:595
-#: src/components/SettingsDialog.tsx:622
+#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:615
 msgid "Master volume"
 msgstr "Aðalhljóðstyrkur"
 
@@ -2271,7 +2291,7 @@ msgid "MCP server"
 msgstr "MCP-þjónn"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Miðlungs"
 
@@ -2279,13 +2299,13 @@ msgstr "Miðlungs"
 msgid "Members"
 msgstr "Meðlimir"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:170
 msgid "menu"
 msgstr "valmynd"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:197
-#: src/components/SettingsDialog.tsx:249
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Valmynd"
 
@@ -2297,7 +2317,7 @@ msgstr "Mót — bardaginn hefst við framhjáflug"
 msgid "Message"
 msgstr "Skilaboð"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message everyone"
 msgstr "Sendu skilaboð á alla"
 
@@ -2305,7 +2325,7 @@ msgstr "Sendu skilaboð á alla"
 msgid "Message players on this server"
 msgstr "Sendu skilaboð á leikmenn á þessum netþjóni"
 
-#: src/components/GameCanvas.tsx:342
+#: src/components/GameCanvas.tsx:361
 msgid "Message your team"
 msgstr "Sendu skilaboð á liðið þitt"
 
@@ -2323,7 +2343,7 @@ msgstr "Heimild fyrir hljóðnema hafnað"
 msgid "Mid stratus"
 msgstr "Miðlungs lagský"
 
-#: src/components/GameCanvas.tsx:413
+#: src/components/GameCanvas.tsx:432
 msgid "Midair collision"
 msgstr "Árekstur í lofti"
 
@@ -2335,7 +2355,7 @@ msgstr "Kort af Midway-atollinum — myndirnar innihalda breytt <0>Copernicus Se
 msgid "Minimum length"
 msgstr "Lágmarkslengd"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:116
 msgid "MISSILE"
 msgstr "FLUGSKEYTI"
 
@@ -2343,7 +2363,7 @@ msgstr "FLUGSKEYTI"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Flugskeytalíkan <0>“AIM-120C AMRAAM”</0> eftir <1>Pippa</1> (Sketchfab), með leyfi samkvæmt <2>CC BY 4.0</2>. Breytt: endurkvarðað, endursnúið og miðjað fyrir staðsetningu."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Mission over"
 msgstr "Verkefni lokið"
 
@@ -2369,7 +2389,7 @@ msgstr "Mánudagur"
 msgid "More options"
 msgstr "Fleiri valkostir"
 
-#: src/components/SettingsDialog.tsx:512
+#: src/components/SettingsDialog.tsx:505
 msgid "Move…"
 msgstr "Hreyfðu…"
 
@@ -2447,7 +2467,7 @@ msgstr "Engin virkni ennþá"
 msgid "No comments yet"
 msgstr "Engar athugasemdir ennþá"
 
-#: src/components/SettingsDialog.tsx:705
+#: src/components/SettingsDialog.tsx:698
 msgid "No control matches “{query}”."
 msgstr "Engin stjórn passar við „{query}“."
 
@@ -2471,7 +2491,7 @@ msgstr "Engir hópar tiltækir"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Ekki er enn hægt að búa til neinar tegundir atriða. Búðu fyrst til nauðsynleg foreldraatriði."
 
-#: src/components/SettingsDialog.tsx:408
+#: src/components/SettingsDialog.tsx:401
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Enginn stýripinni fannst — ýttu á einhvern hnapp á honum til að vekja hann."
 
@@ -2507,11 +2527,11 @@ msgstr "Engar niðurstöður fundust."
 msgid "No status"
 msgstr "Engin staða"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:105
 msgid "NO TANKS"
 msgstr "ENGIR TANKAR"
 
-#: src/components/GameCanvas.tsx:78
+#: src/components/GameCanvas.tsx:96
 msgid "NO TARGET"
 msgstr "EKKERT SKOTMARK"
 
@@ -2540,7 +2560,7 @@ msgstr "Engar skoðanir"
 msgid "No world server."
 msgstr "Enginn heimsþjónn."
 
-#: src/components/GameCanvas.tsx:70
+#: src/components/GameCanvas.tsx:88
 msgid "NO-GRADE"
 msgstr "ENGIN EINKUNN"
 
@@ -2563,9 +2583,9 @@ msgstr "ENGIN EINKUNN"
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
 #: src/components/MissionSetup.tsx:1101
-#: src/components/SettingsDialog.tsx:477
-#: src/components/SettingsDialog.tsx:553
-#: src/components/SettingsDialog.tsx:833
+#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:546
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Ekkert"
 
@@ -2573,11 +2593,11 @@ msgstr "Ekkert"
 msgid "Normal"
 msgstr "Venjulegt"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:72
 msgid "NOSE GEAR"
 msgstr "NEFHJÓL"
 
-#: src/components/SettingsDialog.tsx:311
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Ekki stýripinnasnið"
 
@@ -2615,7 +2635,7 @@ msgstr "Byrjandi"
 msgid "Number"
 msgstr "Tala"
 
-#: src/components/SettingsDialog.tsx:968
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Smáatriði hafs"
 
@@ -2623,7 +2643,7 @@ msgstr "Smáatriði hafs"
 msgid "offline"
 msgstr "ónettengt"
 
-#: src/components/GameCanvas.tsx:68
+#: src/components/GameCanvas.tsx:86
 msgid "OK"
 msgstr "OK"
 
@@ -2696,11 +2716,11 @@ msgstr "Heiti valkosts"
 msgid "Options"
 msgstr "Valkostir"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "or"
 msgstr "eða"
 
-#: src/components/GameCanvas.tsx:578
+#: src/components/GameCanvas.tsx:597
 msgid "orbit"
 msgstr "hringsól"
 
@@ -2708,8 +2728,8 @@ msgstr "hringsól"
 msgid "Other"
 msgstr "Annað"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Fara fram úr G-mörkum"
 
@@ -2717,11 +2737,11 @@ msgstr "Fara fram úr G-mörkum"
 msgid "Owner"
 msgstr "Eigandi"
 
-#: src/components/GameCanvas.tsx:76
+#: src/components/GameCanvas.tsx:94
 msgid "PADLOCK"
 msgstr "SJÓNLÆSING"
 
-#: src/components/GameCanvas.tsx:77
+#: src/components/GameCanvas.tsx:95
 msgid "PADLOCK OFF"
 msgstr "SJÓN FRJÁLS"
 
@@ -2731,7 +2751,11 @@ msgstr "SJÓN FRJÁLS"
 msgid "Parent"
 msgstr "Foreldri"
 
-#: src/components/SettingsDialog.tsx:211
+#: src/components/GameCanvas.tsx:43
+msgid "PARK"
+msgstr "STÖÐUHEMILL"
+
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Stöðuhemill"
 
@@ -2756,7 +2780,7 @@ msgstr "Aðgangslyklar eru ekki tiltækir í þessum vafra"
 msgid "Pattern (regex)"
 msgstr "Mynstur (regex)"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:383
 msgid "Paused"
 msgstr "Í hléi"
 
@@ -2776,15 +2800,15 @@ msgstr "flugmaður"
 msgid "Pilot"
 msgstr "Flugmaður"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:107
 msgid "PILOT DOWN"
 msgstr "FLUGMAÐUR FÉLL"
 
-#: src/components/SettingsDialog.tsx:1058
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Auðkenni flugmanns"
 
-#: src/components/GameCanvas.tsx:407
+#: src/components/GameCanvas.tsx:426
 msgid "Pilot killed"
 msgstr "Flugmaðurinn féll"
 
@@ -2793,23 +2817,23 @@ msgstr "Flugmaðurinn féll"
 msgid "Pin"
 msgstr "Festa"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:152
 msgid "pitch"
 msgstr "hnik"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:103
 msgid "Pitch"
 msgstr "Hnig"
 
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Nef niður"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Nef upp"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:130
 msgid "PLATFORM"
 msgstr "PALLUR"
 
@@ -2839,15 +2863,15 @@ msgstr "Færslur"
 msgid "Posts and comments"
 msgstr "Færslur og athugasemdir"
 
-#: src/components/SettingsDialog.tsx:813
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Ýttu á lykil…"
 
-#: src/components/GameCanvas.tsx:62
+#: src/components/GameCanvas.tsx:80
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ÝTTU Á ENTER TIL FLUGTAKS"
 
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:569
 msgid "Press…"
 msgstr "Ýttu…"
 
@@ -2861,12 +2885,24 @@ msgstr "Fyrri mynd"
 msgid "Privacy"
 msgstr "Friðhelgi"
 
+#: src/components/GameCanvas.tsx:44
+msgid "PROBE"
+msgstr "ELDSNEYTISSTÖNG"
+
+#: src/components/GameCanvas.tsx:45
+msgid "PROBE IN"
+msgstr "STÖNG INNI"
+
+#: src/components/GameCanvas.tsx:46
+msgid "PROBE OUT"
+msgstr "STÖNG ÚTI"
+
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:50
 msgid "Processing…"
 msgstr "Í vinnslu…"
 
-#: src/components/SettingsDialog.tsx:297
-#: src/components/SettingsDialog.tsx:309
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Síða vistuð"
 
@@ -2887,24 +2923,24 @@ msgstr "Opinberir netþjónar"
 msgid "Push notification"
 msgstr "Ýtitilkynning"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:126
 msgid "PUSH TIME"
 msgstr "AÐFLUGSTÍMI"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:71
 msgid "R ENG"
 msgstr "H HREYFILL"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:69
 msgid "R ENG FIRE"
 msgstr "ELDUR H HREYF"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:74
 msgid "R GEAR"
 msgstr "H HJÓL"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Ratsjárþögn"
 
@@ -2920,7 +2956,7 @@ msgstr "Tengdu reikninga þína aftur á þessum þjóni"
 msgid "Re-register your passkeys on this server"
 msgstr "Skráðu aðgangslyklana þína aftur á þessum netþjóni"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:65
 msgid "REARMED"
 msgstr "ENDURVOPNUÐ"
 
@@ -2936,12 +2972,12 @@ msgstr "Mælt með"
 msgid "Reconnecting ({retries})..."
 msgstr "Tengist aftur ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1087
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Taka upp flug"
 
 #: src/components/MatchLog.tsx:447
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Upptaka"
 
@@ -2982,7 +3018,7 @@ msgstr "Viðmið"
 msgid "Refresh"
 msgstr "Endurnýja"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:122
 msgid "REJOINING"
 msgstr "AFTUR Í FYLKINGU"
 
@@ -3082,23 +3118,23 @@ msgstr "Nauðsynlegt"
 msgid "Resend email"
 msgstr "Senda tölvupóst aftur"
 
-#: src/components/SettingsDialog.tsx:1163
+#: src/components/SettingsDialog.tsx:1165
 msgid "Reset"
 msgstr "Endurstilla"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Endurstilla aðalviðvörun"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Núllstilla trim"
 
-#: src/components/SettingsDialog.tsx:188
-#: src/components/SettingsDialog.tsx:242
-#: src/components/SettingsDialog.tsx:859
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Núllstilla útsýni"
 
@@ -3114,19 +3150,19 @@ msgstr "Gefast upp í leik?"
 msgid "Resigning..."
 msgstr "Gefst upp..."
 
-#: src/components/SettingsDialog.tsx:942
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Úrlausn"
 
-#: src/components/GameCanvas.tsx:558
+#: src/components/GameCanvas.tsx:577
 msgid "Restart"
 msgstr "Endurræsa"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:512
 msgid "Restart mission"
 msgstr "Endurræsa verkefni"
 
-#: src/components/GameCanvas.tsx:541
+#: src/components/GameCanvas.tsx:560
 msgid "Restart mission?"
 msgstr "Endurræsa verkefnið?"
 
@@ -3134,12 +3170,12 @@ msgstr "Endurræsa verkefnið?"
 msgid "Result"
 msgstr "Niðurstaða"
 
-#: src/components/GameCanvas.tsx:449
+#: src/components/GameCanvas.tsx:468
 msgid "Resume"
 msgstr "Halda áfram"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Vængbörð inn"
 
@@ -3147,7 +3183,7 @@ msgstr "Vængbörð inn"
 msgid "Retry"
 msgstr "Reyna aftur"
 
-#: src/components/SettingsDialog.tsx:495
+#: src/components/SettingsDialog.tsx:488
 msgid "Reversed"
 msgstr "Öfugt"
 
@@ -3172,19 +3208,19 @@ msgstr "Hægri vængur"
 msgid "Right wingtip"
 msgstr "Hægri vængbroddur"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:153
 msgid "roll"
 msgstr "velta"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:104
 msgid "Roll"
 msgstr "Velta"
 
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Velta til vinstri"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Velta til hægri"
 
@@ -3209,7 +3245,7 @@ msgstr "RSS-straumur"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS-vefslóð afrituð á klippiborð"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:82
 msgid "RUN UP ENGINE"
 msgstr "FULLT AFL"
 
@@ -3242,8 +3278,8 @@ msgstr "Sjávarmál"
 msgid "Search"
 msgstr "Leita"
 
-#: src/components/SettingsDialog.tsx:681
-#: src/components/SettingsDialog.tsx:682
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
 msgid "Search controls"
 msgstr "Leita í stjórnum"
 
@@ -3340,8 +3376,8 @@ msgstr "Veldu einstakling..."
 msgid "Select previous card"
 msgstr "Velja fyrra spjald"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Velja vopn"
 
@@ -3363,7 +3399,7 @@ msgstr "Senda"
 msgid "Send again"
 msgstr "Senda aftur"
 
-#: src/components/GameCanvas.tsx:463
+#: src/components/GameCanvas.tsx:482
 msgid "Send chat"
 msgstr "Senda skilaboð"
 
@@ -3404,7 +3440,7 @@ msgstr "Reglur þjónsins"
 msgid "server runs v{0}, you have v{version}"
 msgstr "þjónninn keyrir v{0}, þú ert með v{version}"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:101
 msgid "SESSION ENDED"
 msgstr "LOTU LOKIÐ"
 
@@ -3412,7 +3448,7 @@ msgstr "LOTU LOKIÐ"
 msgid "Session expired. Please log in again."
 msgstr "Setan er útrunnin. Skráðu þig aftur inn."
 
-#: src/components/SettingsDialog.tsx:825
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Stilla"
 
@@ -3423,14 +3459,14 @@ msgstr "Stilltu upphafsstað og áfangastað"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:477
+#: src/components/GameCanvas.tsx:496
 #: src/components/MissionSetup.tsx:1270
-#: src/components/SettingsDialog.tsx:1146
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
 msgstr "Stillingar"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Skuggar"
 
@@ -3485,7 +3521,7 @@ msgstr "Lítið"
 msgid "Sort"
 msgstr "Raða"
 
-#: src/components/SettingsDialog.tsx:1184
+#: src/components/SettingsDialog.tsx:1186
 msgid "Sound"
 msgstr "Hljóð"
 
@@ -3505,17 +3541,17 @@ msgstr "Dreifðir byrjunarstaðir"
 msgid "Spacious"
 msgstr "Rúmgott"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:57
 msgid "SPD BK"
 msgstr "LFTB"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:167
 msgid "speed brake"
 msgstr "loftbremsa"
 
-#: src/components/SettingsDialog.tsx:114
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Loftbremsa"
 
@@ -3523,9 +3559,13 @@ msgstr "Loftbremsa"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Hraði í KCAS, sem bil frá léttri (lágmarkseldsneyti, engin vopn) til þungrar (hámarksþyngd). Gögn fengin með tilraunum í leiknum. Frávik frá raunverulegri flugvél endurspegla villur í fluglíkani hermisins."
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:120
 msgid "SPLASH"
 msgstr "SKOTMARKI GRANDAÐ"
+
+#: src/components/GameCanvas.tsx:56
+msgid "SPREAD WINGS"
+msgstr "BREIÐA ÚT VÆNGI"
 
 #: src/components/MissionSetup.tsx:433
 msgid "Stall, clean (Vs1)"
@@ -3556,7 +3596,7 @@ msgstr "Brattasta klifur (Vx, eftirbrennari)"
 msgid "Stop watching"
 msgstr "Hætta að fylgjast með"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:77
 msgid "STRUCTURE"
 msgstr "BURÐARVIRKI"
 
@@ -3598,7 +3638,7 @@ msgstr "Skipta yfir í sýn 1-9"
 msgid "System"
 msgstr "Kerfi"
 
-#: src/components/GameCanvas.tsx:75
+#: src/components/GameCanvas.tsx:93
 msgid "TACTICAL MAP"
 msgstr "TAKTÍSKT KORT"
 
@@ -3615,7 +3655,7 @@ msgstr "Merkið má mest vera 50 stafir"
 msgid "Tags"
 msgstr "Merki"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:121
 msgid "TALLY"
 msgstr "ÓVINUR Í AUGSÝN"
 
@@ -3623,11 +3663,11 @@ msgstr "ÓVINUR Í AUGSÝN"
 msgid "Task"
 msgstr "Hlutverk"
 
-#: src/components/GameCanvas.tsx:337
+#: src/components/GameCanvas.tsx:356
 msgid "Team"
 msgstr "Teymi"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:118
 msgid "TEAM"
 msgstr "LIÐ"
 
@@ -3674,7 +3714,7 @@ msgstr "Myndavélarbeiðninni var ekki svarað"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ekki tókst að hlaða leiknum. Endurhladdu síðuna til að reyna aftur."
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:532
 msgid "The match continues behind this menu."
 msgstr "Leikurinn heldur áfram á bak við þessa valmynd."
 
@@ -3686,7 +3726,7 @@ msgstr "Hljóðnemabeiðninni var ekki svarað"
 msgid "The mission stopped."
 msgstr "Verkefnið stöðvaðist."
 
-#: src/components/GameCanvas.tsx:544
+#: src/components/GameCanvas.tsx:563
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Verkefnið endurræsist. Núverandi flug verður ekki vistað."
 
@@ -3722,21 +3762,21 @@ msgstr "Þessi vél gæti verið of hæg fyrir mjúkt flug."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Þetta eyðir leiknum og spjallinu varanlega. Ekki er hægt að afturkalla þessa aðgerð."
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:155
 msgid "throttle"
 msgstr "inngjöf"
 
-#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:106
 msgid "Throttle"
 msgstr "Inngjöf"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Minnka inngjöf"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Auka inngjöf"
 
@@ -3748,7 +3788,7 @@ msgstr "Fimmtudagur"
 msgid "Tightest sustained turn speed"
 msgstr "Þrengsti hraði viðvarandi beygju"
 
-#: src/components/GameCanvas.tsx:579
+#: src/components/GameCanvas.tsx:598
 msgid "tilt"
 msgstr "halli"
 
@@ -3795,7 +3835,7 @@ msgstr "Of margar beiðnir"
 msgid "Top"
 msgstr "Efst"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Ljósskot"
 
@@ -3803,35 +3843,35 @@ msgstr "Ljósskot"
 msgid "Travelling"
 msgstr "Á ferðalagi"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:156
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:94
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:116
+#: src/components/SettingsDialog.tsx:109
 msgid "Trim hat"
 msgstr "Trim-hattur"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: nef niður"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: nef upp"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: velta til vinstri"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: velta til hægri"
 
@@ -3869,7 +3909,7 @@ msgstr "Skrifaðu til að leita að notendum"
 msgid "Type to search..."
 msgstr "Skrifaðu til að leita..."
 
-#: src/components/SettingsDialog.tsx:904
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3890,13 +3930,13 @@ msgstr "Ekki úthlutað"
 msgid "Unavailable"
 msgstr "Ekki tiltækt"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Losa leitarhaus"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Afvelja skotmark"
 
@@ -4014,11 +4054,11 @@ msgstr "Smámynd myndbands"
 msgid "Video viewer: {0}"
 msgstr "Myndskeiðaskoðari: {0}"
 
-#: src/components/GameCanvas.tsx:573
+#: src/components/GameCanvas.tsx:592
 msgid "view"
 msgstr "sýn"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:97
 msgid "View"
 msgstr "Skoða"
 
@@ -4035,7 +4075,7 @@ msgstr "Skoða og breyta upplýsingum hlutarins"
 msgid "View controls"
 msgstr "Skoða stjórntæki"
 
-#: src/components/SettingsDialog.tsx:858
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Áhorf"
 
@@ -4043,11 +4083,11 @@ msgstr "Áhorf"
 msgid "Voice recording is not supported in this browser"
 msgstr "Talupptaka er ekki studd í þessum vafra"
 
-#: src/components/SettingsDialog.tsx:643
+#: src/components/SettingsDialog.tsx:636
 msgid "Volumes"
 msgstr "Hljóðstyrkir"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:59
 msgid "WAITING FOR OPPONENT"
 msgstr "BEÐIÐ EFTIR ANDSTÆÐINGI"
 
@@ -4065,7 +4105,7 @@ msgstr "Fylgst með"
 msgid "Watched only"
 msgstr "Aðeins það sem fylgst er með"
 
-#: src/components/GameCanvas.tsx:73
+#: src/components/GameCanvas.tsx:91
 msgid "WAVE OFF"
 msgstr "HÆTTU VIÐ LENDINGU"
 
@@ -4074,16 +4114,16 @@ msgstr "HÆTTU VIÐ LENDINGU"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Við sendum staðfestingarkóða á <0>{0}</0>. Sláðu inn kóðann hér að neðan til að staðfesta netfangið þitt."
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:158
 msgid "weapon"
 msgstr "vopn"
 
-#: src/components/SettingsDialog.tsx:117
+#: src/components/SettingsDialog.tsx:110
 msgid "Weapon select hat"
 msgstr "Vopnavalshattur"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:95
 msgid "Weapons"
 msgstr "Vopn"
 
@@ -4095,21 +4135,37 @@ msgstr "Veður"
 msgid "Wednesday"
 msgstr "Miðvikudagur"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Hjólbremsur"
 
-#: src/components/SettingsDialog.tsx:597
+#: src/components/SettingsDialog.tsx:590
 msgid "Wind and cockpit airframe"
 msgstr "Vindur og skrokkur í stjórnklefa"
 
-#: src/components/SettingsDialog.tsx:184
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Vængjafelling"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:52
+msgid "WINGS"
+msgstr "VÆNGIR"
+
+#: src/components/GameCanvas.tsx:53
+msgid "WINGS FOLDING"
+msgstr "VÆNGIR BRETTAST"
+
+#: src/components/GameCanvas.tsx:55
+msgid "WINGS LOCKED"
+msgstr "VÆNGIR LÆSTIR"
+
+#: src/components/GameCanvas.tsx:54
+msgid "WINGS SPREADING"
+msgstr "VÆNGIR BREIÐAST"
+
+#: src/components/GameCanvas.tsx:108
 msgid "WINS"
 msgstr "SIGRAR"
 
@@ -4126,25 +4182,25 @@ msgstr "Ekki næst í heimsþjóninn"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, vopn frjáls við framhjáflug"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:154
 msgid "yaw"
 msgstr "snúningur"
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:105
 msgid "Yaw"
 msgstr "Snúningur"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Nef til vinstri"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Nef til hægri"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:58
 msgid "YOU"
 msgstr "ÞÚ"
 
@@ -4176,14 +4232,14 @@ msgstr "Textinn þinn og viðhengin glatast."
 msgid "Your text will be lost."
 msgstr "Textinn þinn tapast."
 
-#: src/components/SettingsDialog.tsx:118
+#: src/components/SettingsDialog.tsx:111
 msgid "Zoom"
 msgstr "Aðdráttur"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Auka aðdrátt"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Minnka aðdrátt"
