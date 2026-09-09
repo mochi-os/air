@@ -275,6 +275,16 @@ def recording_pin(a):
 	session = a.input("session", "")[:64]
 	started = whole(a, "started")
 	pinned = 1 if a.input("pinned", "") == "true" else 0
+	# Refuse what the update would not have matched, the way recording_save and
+	# recording_fetch do: the response reports what was stored, so answering it
+	# without knowing a row exists is a claim the handler cannot make. The
+	# client already reverts its optimistic flip on a refusal.
+	if not session:
+		a.error.label(400, "errors.missing_field")
+		return
+	if not mochi.db.exists("select 1 from matches where session = ? and started = ?", session, started):
+		a.error.label(404, "errors.not_found")
+		return
 	mochi.db.execute("update matches set pinned = ? where session = ? and started = ?", pinned, session, started)
 	return {"data": {"pinned": pinned == 1}}
 
