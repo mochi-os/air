@@ -123,6 +123,17 @@ const round = (v: number, places: number) => {
   return Math.round(v * f) / f
 }
 
+// field makes a value safe to interpolate into an ACMI line. The comma
+// separates properties and the newline separates records, so a value carrying
+// either writes structure rather than text: a multiplayer pilot named
+// `x,Type=Ground+Static` reaches the object line through the wire and adds a
+// property to their own object in everyone else's recording. Space, not
+// removal, so a field keeps its visible length and cannot fuse two words.
+// Every interpolation goes through here rather than only the ones that come
+// from the network today - "escape the untrusted ones" is the rule that let
+// nine of eleven sites go unescaped.
+const field = (v: string) => v.replace(/[,\n\r]/g, ' ')
+
 // acmi renders samples as an ACMI 2.2 recording; `started` stamps the reference
 // time. Match describes the fight's rules in the header (mode, duel, weapons
 // class, bot tier, live cheats) as free-text ACMI global properties.
@@ -136,14 +147,14 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
     'FileVersion=2.2',
     `0,ReferenceTime=${started.toISOString().replace(/\.\d+Z$/, 'Z')}`,
     '0,DataSource=Mochi Air',
-    `0,Title=${title.replace(/[,\n]/g, ' ')}`,
+    `0,Title=${field(title)}`,
     '0,Category=Flight',
   ]
   if (match) {
     for (const [key, value] of Object.entries(match)) {
       if (value === undefined || value === '') continue
       // Match_ prefix keeps these clear of ACMI's reserved global names.
-      out.push(`0,Match_${key}=${String(value).replace(/[,\n]/g, ' ')}`)
+      out.push(`0,Match_${key}=${field(String(value))}`)
     }
   }
   // Declared properties are written once per object and repeated only when
@@ -204,7 +215,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
           if (d.structure !== undefined) battle += `,Structure=${round(d.structure, 2)}`
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
-          if (d.fate !== undefined) battle += `,Fate=${d.fate}`
+          if (d.fate !== undefined) battle += `,Fate=${field(d.fate)}`
           if (battle && battled.get(o.id) !== battle) {
             battled.set(o.id, battle)
             line += battle
@@ -230,7 +241,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         }
         if (d.cue !== undefined && cued.get(o.id) !== d.cue) {
           cued.set(o.id, d.cue)
-          line += `,Cue=${d.cue}`
+          line += `,Cue=${field(d.cue)}`
         }
         if (d.flares !== undefined && countered.get(o.id) !== d.flares) {
           countered.set(o.id, d.flares)
@@ -249,7 +260,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         // seconds and steps at exactly the moments a debrief cares about.
         {
           let sensed = ''
-          if (d.radar !== undefined) sensed += `,Radar=${d.radar}`
+          if (d.radar !== undefined) sensed += `,Radar=${field(d.radar)}`
           if (d.lock !== undefined) sensed += `,Lock=${d.lock.toString(16)}`
           if (d.rwrlock !== undefined) sensed += `,RwrLock=${d.rwrlock ? 1 : 0}`
           if (d.rwrmissile !== undefined) sensed += `,RwrMissile=${d.rwrmissile ? 1 : 0}`
@@ -267,9 +278,9 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
       // TacView's Weapon type gives the debrief a track it can fly forward.
       const r = o.round
       if (r) {
-        let guide = `,Seeker=${r.seeker}`
+        let guide = `,Seeker=${field(r.seeker)}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
-        if (r.fate !== undefined) guide += `,Fate=${r.fate},Killed=${r.killed ? 1 : 0}`
+        if (r.fate !== undefined) guide += `,Fate=${field(r.fate)},Killed=${r.killed ? 1 : 0}`
         if (r.burst !== undefined) {
           guide += `,Burst=${round(r.burst, 1)},Closure=${round(r.closure ?? 0, 0)},When=${round(r.when ?? 0, 2)}`
           if (r.off) guide += `,Off=${round(r.off.ahead, 1)}|${round(r.off.above, 1)}|${round(r.off.right, 1)}`
@@ -286,9 +297,9 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
       const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}|${o.skill ?? ''}|${r ? `${r.shooter}>${r.target ?? ''}` : ''}`
       if (declared.get(o.id) !== properties) {
         declared.set(o.id, properties)
-        line += `,Name=${o.name},Pilot=${o.label},Color=${o.colour},Type=${o.kind}`
-        if (o.skill) line += `,Skill=${o.skill}` // the bot's tier, on the object itself: the mission title named it only for jousts, and only in the header
-        if (o.mode) line += `,Doctrine=${o.mode}` // developer builds only: the bot's chosen manoeuvre
+        line += `,Name=${field(o.name)},Pilot=${field(o.label)},Color=${field(o.colour)},Type=${field(o.kind)}`
+        if (o.skill) line += `,Skill=${field(o.skill)}` // the bot's tier, on the object itself: the mission title named it only for jousts, and only in the header
+        if (o.mode) line += `,Doctrine=${field(o.mode)}` // developer builds only: the bot's chosen manoeuvre
         if (r) {
           // ACMI's own parent/target linkage, in the object ids the file uses.
           line += `,Parent=${r.shooter.toString(16)}`
