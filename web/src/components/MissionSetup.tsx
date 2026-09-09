@@ -383,6 +383,7 @@ function Armament({
           {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
           <Trans>Gross weight</Trans>{' '}
           <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+            {/* jsx-text-ok: cockpit unit annunciation */}
             {formatNumber(gross)} lb
           </span>
           {/* The asymmetry rides in brackets on the gross-weight line: it is a
@@ -397,6 +398,7 @@ function Armament({
                   Asymmetrie must stay capitalised where English asymmetry does not. */}
               <Trans>asymmetry</Trans>{' '}
               <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+                {/* jsx-text-ok: cockpit unit annunciation */}
                 {formatNumber(moment)} ft·lb
               </span>
               {')'}
@@ -522,6 +524,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               Sketchfab
             </a>{' '}
             ·{' '}
@@ -531,6 +534,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: licence name */}
               CC BY 4.0
             </a>
           </p>
@@ -546,6 +550,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               Sketchfab
             </a>{' '}
             ·{' '}
@@ -555,6 +560,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: licence name */}
               CC BY 4.0
             </a>
           </p>
@@ -569,6 +575,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               Sketchfab
             </a>{' '}
             ·{' '}
@@ -578,6 +585,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: licence name */}
               CC BY 4.0
             </a>
           </p>
@@ -592,6 +600,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               Unity Labs
             </a>{' '}
             ·{' '}
@@ -601,6 +610,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: licence name */}
               CC0
             </a>
           </p>
@@ -617,6 +627,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               Copernicus
             </a>{' '}
             ·{' '}
@@ -626,6 +637,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               OpenStreetMap
             </a>{' '}
             ·{' '}
@@ -635,6 +647,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               NOAA NCCOS
             </a>
           </p>
@@ -648,6 +661,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: brand name */}
               three.js
             </a>
           </p>
@@ -1228,7 +1242,7 @@ export function MissionSetup({
             >
               <path d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z' />
             </svg>
-            <h1 className='text-2xl font-bold tracking-tight'>Air</h1>
+            <h1 className='text-2xl font-bold tracking-tight'>{/* jsx-text-ok: app name */}Air</h1>
           </div>
 
         {alert && dismissed !== alert && (
