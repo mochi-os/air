@@ -45,6 +45,7 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
+import { demise } from './fate'
 import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
@@ -2567,7 +2568,7 @@ function step_amraam(m,dt){
 			m.off=(prey&&prey.fwd&&prey.up&&prey.right)?{ ahead:wx*prey.fwd.x+wy*prey.fwd.y+wz*prey.fwd.z, above:wx*prey.up.x+wy*prey.up.y+wz*prey.up.z, right:wx*prey.right.x+wy*prey.right.y+wz*prey.right.z }:undefined; }
 		if(m.enemy){ if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=own.judged; m.spot=own.spot;
 				if(DEV_MODE){ m.mask=own.mask; m.killed=own.kill; }
-				if(own.kill) crash_ownship("missile"); }   // #85: the radar round carried the same asymmetry as the heater — the bandit branch below destroys on the verdict, the ownship branch dropped it   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
+				if(own.kill) crash_ownship("missile",BANDIT); }   // #85: the radar round carried the same asymmetry as the heater — the bandit branch below destroys on the verdict, the ownship branch dropped it   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
 			explosion_at(m.px,m.py,m.pz); }
 		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=verdict.judged;   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
@@ -2646,7 +2647,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 					// or fly them into the sea, which is exactly what recording 01a0461021ec
 					// shows: two rounds at 2.0 and 10.9 m for nothing. Measured live at
 					// 2.3-3.9 m the core said kill every time and the jet flew on.
-					if(own.kill) crash_ownship("missile"); }
+					if(own.kill) crash_ownship("missile",BANDIT); }
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
@@ -4137,7 +4138,7 @@ function recording_sample(){
 		// state the CAS alerts and damage visuals read
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
 		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
-		...(ownship.fate?{fate:ownship.fate}:{}),
+		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R, lateral:last_controls?last_controls.roll:0 }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
@@ -4206,7 +4207,9 @@ function recording_identity(){ return replay_identity(MULTIPLAYER,MULTIPLAYER&&j
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
+const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
+let own_killer="";   // who ended this life, for the banner: the bandit in single player, the crediting player's name in multiplayer, empty when nobody is credited
 let mission_done=false;   // SP: the crash ended the mission — the world holds and the menu owns what happens next (#240)
 let mission_zero=0;       // sim_time at mission start, for the outcome line's clock
 let on_over=null;         // app callback: the mission ended with a result
@@ -4502,8 +4505,9 @@ function soot_burst(x,y,z){
 		smoke.sz[k]=0.3+Math.random()*0.4; smoke.gr[k]=0.45+Math.random()*0.35;   // a drifting smudge in mixed tones and sizes, not a synchronized cauliflower
 		const tone=0.10+Math.random()*0.12;
 		smoke.r[k]=tone*1.1; smoke.g[k]=tone; smoke.b[k]=tone*0.95; } }
-function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
+function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
+	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
@@ -4562,7 +4566,7 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship("island");   // flew into the island superstructure
 	}
 	// A midair kills both: bandit_destroy ends the duel, and no kill is credited.
-	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair"); }
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair",BANDIT); }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
 	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
@@ -4947,8 +4951,8 @@ function fly_player(dt){
 			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, (bandit.reheat??0)>0.3); }   // the bandit's roar carries its burner (#88 audit): its plume state is a core mechanic and it was hardcoded cold
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
-		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire"); }   // the fuel fire's fuse ran out
-		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship(); }
+		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire",has_enemy?BANDIT:""); }   // the fuel fire's fuse ran out
+		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship("pilot",has_enemy?BANDIT:""); }
 	}
 	if(weapons_hold&&!MULTIPLAYER&&has_enemy){   // SP merge check (#87): either jet crossing the other's 3/9 line frees the weapons (mirrors the server's rule)
 		const rx=bandit.pos.x-ownship.pos.x, ry=bandit.pos.y-ownship.pos.y, rz=bandit.pos.z-ownship.pos.z;
@@ -5758,7 +5762,9 @@ function draw_hud(){
 	// HUD's field of view. Cockpit view gets this from the glass rectangle.
 	const boresight=Math.hypot(head_az,head_el);
 	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
-	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate(ejected?"EJECTED":"CRASHED"),cx,cy-60); return; }   // a fired seat is an ejection, not a crash — same banner, honest word
+	if(crash_t>0){ const end=demise(ownship.fate,own_killer,ejected);   // the cause the engine already recorded, not a guess: CRASHED was shown for every death including being shot down
+		hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace";
+		hctx.fillText(translate(end.text,end.callsign?{callsign:end.callsign}:undefined),cx,cy-60); return; }
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
@@ -6543,7 +6549,14 @@ function net_event(e){ const slot=Number(e.slot);
 	switch(e.kind){
 	case "kill":
 		if(net&&slot===net.slot){ own_deaths++;
-			if(crash_t<=0){ crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; } }
+			// Through crash_ownship, which sets the fate and the killer: this path
+			// used to move crash_t by hand, so multiplayer recorded no cause at all
+			// and the banner said CRASHED however the jet was lost. The server
+			// credits the last player to damage us inside a minute, else nobody -
+			// and it does not carry WHICH weapon, so the fate says only that battle
+			// damage did it. The recording keeps the rounds themselves.
+			const by=Number(e.by); const named=by>=0?(net.names.get(by)||""):"";
+			crash_ownship("battle",named); }   // an uncredited kill (by<0) is still battle damage: terrain is caught locally by check_collisions, which runs in multiplayer too, so what reaches here is a wound the wire cannot attribute - the banner says DESTROYED without inventing either a shooter or a surface
 		else { if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]);
 			const st=remotes.get(slot); if(st) st.group.visible=false;
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }

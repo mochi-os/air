@@ -77,6 +77,14 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   STRUCTURE: msg`STRUCTURE`,
   LOADING: msg`LOADING`,
   CRASHED: msg`CRASHED`,
+  // The death banner (#149). One whole sentence per outcome, with the callsign
+  // interpolated rather than concatenated, so a translator can put the name
+  // where their language needs it. The bare forms are for a multiplayer death
+  // nobody is credited with.
+  DESTROYED: msg`DESTROYED`,
+  'DESTROYED BY {callsign}': msg({ message: 'DESTROYED BY {callsign}' }),
+  COLLIDED: msg`COLLIDED`,
+  'COLLIDED WITH {callsign}': msg({ message: 'COLLIDED WITH {callsign}' }),
   'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
   LIGHTS: msg`LIGHTS`,
   'RUN UP ENGINE': msg`RUN UP ENGINE`,
@@ -230,9 +238,9 @@ export function GameCanvas({
   const binding = (action: string) => config?.keys?.[action] ?? KEY_DEFAULTS[action]
 
   useEffect(() => {
-    const translate = (text: string) => {
+    const translate = (text: string, values?: Record<string, unknown>) => {
       const descriptor = HUD_MESSAGES[text]
-      return descriptor ? i18nRef.current._(descriptor) : text
+      return descriptor ? i18nRef.current._(values ? { ...descriptor, values } : descriptor) : text
     }
     let game: GameHandle
     try {

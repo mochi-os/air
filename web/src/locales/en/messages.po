@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# result} other {# results}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:448
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# round taken} other {# rounds taken}}"
 
@@ -145,27 +145,27 @@ msgstr "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 
-#: src/components/GameCanvas.tsx:602
+#: src/components/GameCanvas.tsx:610
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> to tilt"
 
-#: src/components/GameCanvas.tsx:608
+#: src/components/GameCanvas.tsx:616
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> to move closer"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:613
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> to pull back"
 
-#: src/components/GameCanvas.tsx:592
+#: src/components/GameCanvas.tsx:600
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> for the view"
 
-#: src/components/GameCanvas.tsx:599
+#: src/components/GameCanvas.tsx:607
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Drag</0> or <1>←→</1> to orbit"
 
-#: src/components/GameCanvas.tsx:83
+#: src/components/GameCanvas.tsx:91
 msgid "1 WIRE"
 msgstr "1 WIRE"
 
@@ -177,7 +177,7 @@ msgstr "12 hours"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:84
+#: src/components/GameCanvas.tsx:92
 msgid "2 WIRE"
 msgstr "2 WIRE"
 
@@ -185,7 +185,7 @@ msgstr "2 WIRE"
 msgid "24 hours"
 msgstr "24 hours"
 
-#: src/components/GameCanvas.tsx:85
+#: src/components/GameCanvas.tsx:93
 msgid "3 WIRE"
 msgstr "3 WIRE"
 
@@ -234,7 +234,7 @@ msgstr "Acquire target"
 msgid "Acquisition mode"
 msgstr "Acquisition mode"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:423
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:425
 msgid "Activity"
 msgstr "Activity"
 
@@ -392,7 +392,7 @@ msgstr "Approach, on-speed (Vapp)"
 msgid "Are you sure you want to delete \"{0}\"?"
 msgstr "Are you sure you want to delete \"{0}\"?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:679
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:681
 msgid "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 msgstr "Are you sure you want to delete \"{title}\"? This action cannot be undone."
 
@@ -494,7 +494,7 @@ msgstr "Banner removed"
 msgid "Banner updated"
 msgstr "Banner updated"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:142
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "BELOW 250 — GEAR AND FLAPS"
 
@@ -548,7 +548,7 @@ msgstr "Blue bots"
 msgid "Board"
 msgstr "Board"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +565,19 @@ msgstr "Border colour"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:174
 msgid "brakes"
 msgstr "brakes"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "BREAK LEFT"
 msgstr "BREAK LEFT"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "BREAK RIGHT"
 msgstr "BREAK RIGHT"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:141
 msgid "BREAK WHEN READY"
 msgstr "BREAK WHEN READY"
 
@@ -602,7 +602,7 @@ msgstr "BVR — weapons free from spawn"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, fight's on from the start"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:140
 msgid "CALL THE BALL"
 msgstr "CALL THE BALL"
 
@@ -638,7 +638,7 @@ msgstr "Camera unavailable"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:576
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +749,11 @@ msgstr "Changed"
 msgid "Changed {field}"
 msgstr "Changed {field}"
 
-#: src/components/GameCanvas.tsx:597
+#: src/components/GameCanvas.tsx:605
 msgid "Chase view:"
 msgstr "Chase view:"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:177
 msgid "chat"
 msgstr "chat"
 
@@ -859,6 +859,14 @@ msgstr "Collapse"
 msgid "Collapse sidebar"
 msgstr "Collapse sidebar"
 
+#: src/components/GameCanvas.tsx:86
+msgid "COLLIDED"
+msgstr "COLLIDED"
+
+#: src/components/GameCanvas.tsx:87
+msgid "COLLIDED WITH {callsign}"
+msgstr "COLLIDED WITH {callsign}"
+
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:148
 msgid "Colour"
 msgstr "Colour"
@@ -880,7 +888,7 @@ msgstr "Comfortable"
 msgid "Command Palette"
 msgstr "Command Palette"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:135
 msgid "COMMENCING"
 msgstr "COMMENCING"
 
@@ -895,7 +903,7 @@ msgid "Comments"
 msgstr "Comments"
 
 #. placeholder {0}: data.comments.count || 0
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:419
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:421
 msgid "Comments ({0})"
 msgstr "Comments ({0})"
 
@@ -940,7 +948,7 @@ msgstr "Connecting..."
 msgid "Connecting…"
 msgstr "Connecting…"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "CONNECTION FAILED"
 msgstr "CONNECTION FAILED"
 
@@ -1031,7 +1039,7 @@ msgstr "Couldn't verify with that account. Please try again."
 msgid "Countermeasures"
 msgstr "Countermeasures"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:442
 msgid "Crashed"
 msgstr "Crashed"
 
@@ -1103,7 +1111,7 @@ msgstr "Current location"
 msgid "Custom"
 msgstr "Custom"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "CUT"
 msgstr "CUT"
 
@@ -1135,7 +1143,7 @@ msgstr "Day"
 msgid "Deaths"
 msgstr "Deaths"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "DECK POSITION SAVED"
 msgstr "DECK POSITION SAVED"
 
@@ -1164,7 +1172,7 @@ msgstr "Default sort"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:208
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:255
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:317
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:682
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx:78
 msgid "Delete"
 msgstr "Delete"
@@ -1189,9 +1197,9 @@ msgstr "Delete field"
 msgid "Delete game?"
 msgstr "Delete game?"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:494
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:499
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:678
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:496
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:501
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:680
 msgid "Delete item"
 msgstr "Delete item"
 
@@ -1237,7 +1245,15 @@ msgstr "Descending"
 msgid "Description"
 msgstr "Description"
 
-#: src/components/GameCanvas.tsx:428
+#: src/components/GameCanvas.tsx:84
+msgid "DESTROYED"
+msgstr "DESTROYED"
+
+#: src/components/GameCanvas.tsx:85
+msgid "DESTROYED BY {callsign}"
+msgstr "DESTROYED BY {callsign}"
+
+#: src/components/GameCanvas.tsx:436
 msgid "Destroyed by fire"
 msgstr "Destroyed by fire"
 
@@ -1273,7 +1289,7 @@ msgstr "Different game host"
 msgid "Directory"
 msgstr "Directory"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:143
 msgid "DIRTY UP"
 msgstr "DIRTY UP"
 
@@ -1320,7 +1336,7 @@ msgid "Does not match the required pattern"
 msgstr "Does not match the required pattern"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:309
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:503
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:505
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:523
 #: src/components/SettingsDialog.tsx:1169
 msgid "Done"
@@ -1337,7 +1353,7 @@ msgstr "Download"
 msgid "Download failed"
 msgstr "Download failed"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:144
 msgid "DOWNWIND 600 FEET"
 msgstr "DOWNWIND 600 FEET"
 
@@ -1361,7 +1377,7 @@ msgstr "Dynamic resolution"
 msgid "Dyslexia-friendly"
 msgstr "Dyslexia-friendly"
 
-#: src/components/GameCanvas.tsx:128
+#: src/components/GameCanvas.tsx:136
 msgid "EARLY"
 msgstr "EARLY"
 
@@ -1416,7 +1432,7 @@ msgstr "Effects detail"
 msgid "Eject"
 msgstr "Eject"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "EJECTED"
 msgstr "EJECTED"
 
@@ -1428,7 +1444,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Email code"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "EMERG JETT"
 msgstr "EMERG JETT"
 
@@ -1450,7 +1466,7 @@ msgstr "Empty pylon"
 msgid "Enable sound"
 msgstr "Enable sound"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "ENGAGED"
 msgstr "ENGAGED"
 
@@ -1474,19 +1490,19 @@ msgstr "Enter the code from your email"
 msgid "Enter your authenticator code"
 msgstr "Enter your authenticator code"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:389
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:391
 msgid "Error"
 msgstr "Error"
 
-#: src/components/GameCanvas.tsx:356
+#: src/components/GameCanvas.tsx:364
 msgid "Everyone"
 msgstr "Everyone"
 
-#: src/components/GameCanvas.tsx:528
+#: src/components/GameCanvas.tsx:536
 msgid "Exit match"
 msgstr "Exit match"
 
-#: src/components/GameCanvas.tsx:528
+#: src/components/GameCanvas.tsx:536
 msgid "Exit mission"
 msgstr "Exit mission"
 
@@ -1544,7 +1560,7 @@ msgstr "Failed to copy"
 msgid "Failed to create link"
 msgstr "Failed to create link"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:303
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:305
 msgid "Failed to delete"
 msgstr "Failed to delete"
 
@@ -1580,8 +1596,8 @@ msgstr "Failed to load history"
 msgid "Failed to load image"
 msgstr "Failed to load image"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:390
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:393
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:392
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:395
 msgid "Failed to load item"
 msgstr "Failed to load item"
 
@@ -1593,7 +1609,7 @@ msgstr "Failed to load prompts"
 msgid "Failed to load video"
 msgstr "Failed to load video"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:317
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:319
 msgid "Failed to move"
 msgstr "Failed to move"
 
@@ -1609,7 +1625,7 @@ msgstr "Failed to reset prompt"
 msgid "Failed to revoke RSS access"
 msgstr "Failed to revoke RSS access"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:273
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:275
 msgid "Failed to save"
 msgstr "Failed to save"
 
@@ -1625,7 +1641,7 @@ msgstr "Failed to update banner"
 msgid "Failed to update comment"
 msgstr "Failed to update comment"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:288
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:290
 msgid "Failed to update watching"
 msgstr "Failed to update watching"
 
@@ -1633,7 +1649,7 @@ msgstr "Failed to update watching"
 msgid "Failed to upload attachment"
 msgstr "Failed to upload attachment"
 
-#: src/components/GameCanvas.tsx:87
+#: src/components/GameCanvas.tsx:95
 msgid "FAIR"
 msgstr "FAIR"
 
@@ -1659,7 +1675,7 @@ msgstr "Finish moving your account"
 msgid "Finished"
 msgstr "Finished"
 
-#: src/components/GameCanvas.tsx:157
+#: src/components/GameCanvas.tsx:165
 msgid "fire"
 msgstr "fire"
 
@@ -1680,11 +1696,11 @@ msgstr "Flags"
 msgid "FLAMEOUT"
 msgstr "FLAMEOUT"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:169
 msgid "flaps"
 msgstr "flaps"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:168
 msgid "flares"
 msgstr "flares"
 
@@ -1696,7 +1712,7 @@ msgstr "FLARES"
 msgid "Flat"
 msgstr "Flat"
 
-#: src/components/GameCanvas.tsx:430
+#: src/components/GameCanvas.tsx:438
 msgid "Flew into the sea"
 msgstr "Flew into the sea"
 
@@ -1704,7 +1720,7 @@ msgstr "Flew into the sea"
 msgid "Flight"
 msgstr "Flight"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "FLIGHT CORE FAILED"
 msgstr "FLIGHT CORE FAILED"
 
@@ -1729,7 +1745,7 @@ msgstr "Flown"
 msgid "Fly"
 msgstr "Fly"
 
-#: src/components/GameCanvas.tsx:457
+#: src/components/GameCanvas.tsx:465
 msgid "Fly again"
 msgstr "Fly again"
 
@@ -1803,7 +1819,7 @@ msgstr "Fuselage"
 msgid "Gain"
 msgstr "Gain"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:170
 msgid "gear"
 msgstr "gear"
 
@@ -1895,7 +1911,7 @@ msgstr "History"
 msgid "Home"
 msgstr "Home"
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:171
 msgid "hook"
 msgstr "hook"
 
@@ -1987,7 +2003,7 @@ msgstr "Invulnerable (human players only)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "It seems like the page you're looking for <0/>does not exist or might have been removed."
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:449
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:451
 msgid "Item details"
 msgstr "Item details"
 
@@ -2001,7 +2017,7 @@ msgstr "Jammer"
 msgid "Jettison tanks"
 msgstr "Jettison tanks"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "JETTISON: GEAR"
 msgstr "JETTISON: GEAR"
 
@@ -2014,7 +2030,7 @@ msgstr "Join"
 msgid "Join server"
 msgstr "Join server"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "JOINED"
 msgstr "JOINED"
 
@@ -2052,7 +2068,7 @@ msgstr "Keyboard shortcuts"
 msgid "Keys"
 msgstr "Keys"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "KILL"
 msgstr "KILL"
 
@@ -2087,7 +2103,7 @@ msgstr "Landing gear"
 msgid "Large"
 msgstr "Large"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:137
 msgid "LATE"
 msgstr "LATE"
 
@@ -2096,7 +2112,7 @@ msgstr "LATE"
 msgid "Launch (catapult)"
 msgstr "Launch (catapult)"
 
-#: src/components/GameCanvas.tsx:159
+#: src/components/GameCanvas.tsx:167
 msgid "launch / target"
 msgstr "launch / target"
 
@@ -2116,7 +2132,7 @@ msgstr "Leave server"
 msgid "Left"
 msgstr "Left"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "LEFT"
 msgstr "LEFT"
 
@@ -2133,7 +2149,7 @@ msgstr "Left wingtip"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Letters, numbers, spaces, hyphens, and slashes only"
 
-#: src/components/GameCanvas.tsx:131
+#: src/components/GameCanvas.tsx:139
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "LEVEL AT 1200, DIRTY UP"
 
@@ -2141,7 +2157,7 @@ msgstr "LEVEL AT 1200, DIRTY UP"
 msgid "Light"
 msgstr "Light"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:173
 msgid "lights"
 msgstr "lights"
 
@@ -2150,7 +2166,7 @@ msgstr "lights"
 msgid "Lights"
 msgstr "Lights"
 
-#: src/components/GameCanvas.tsx:81
+#: src/components/GameCanvas.tsx:89
 msgid "LIGHTS"
 msgstr "LIGHTS"
 
@@ -2178,15 +2194,15 @@ msgstr "LOADING"
 msgid "Loading content…"
 msgstr "Loading content…"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "LOADING FAILED"
 msgstr "LOADING FAILED"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:373
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:375
 msgid "Loading item"
 msgstr "Loading item"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:374
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:376
 msgid "Loading item details"
 msgstr "Loading item details"
 
@@ -2254,7 +2270,7 @@ msgstr "Low"
 msgid "Low stratus"
 msgstr "Low stratus"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "M to close"
 msgstr "M to close"
 
@@ -2266,7 +2282,7 @@ msgstr "Manage categories"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:176
 msgid "map"
 msgstr "map"
 
@@ -2309,7 +2325,7 @@ msgstr "Medium"
 msgid "Members"
 msgstr "Members"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:178
 msgid "menu"
 msgstr "menu"
 
@@ -2327,7 +2343,7 @@ msgstr "Merge — fight on at the pass"
 msgid "Message"
 msgstr "Message"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:369
 msgid "Message everyone"
 msgstr "Message everyone"
 
@@ -2335,7 +2351,7 @@ msgstr "Message everyone"
 msgid "Message players on this server"
 msgstr "Message players on this server"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:369
 msgid "Message your team"
 msgstr "Message your team"
 
@@ -2353,7 +2369,7 @@ msgstr "Microphone permission denied"
 msgid "Mid stratus"
 msgstr "Mid stratus"
 
-#: src/components/GameCanvas.tsx:432
+#: src/components/GameCanvas.tsx:440
 msgid "Midair collision"
 msgstr "Midair collision"
 
@@ -2365,7 +2381,7 @@ msgstr "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2<
 msgid "Minimum length"
 msgstr "Minimum length"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "MISSILE"
 msgstr "MISSILE"
 
@@ -2373,7 +2389,7 @@ msgstr "MISSILE"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 
-#: src/components/GameCanvas.tsx:383
+#: src/components/GameCanvas.tsx:391
 msgid "Mission over"
 msgstr "Mission over"
 
@@ -2537,11 +2553,11 @@ msgstr "No results found."
 msgid "No status"
 msgstr "No status"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "NO TANKS"
 msgstr "NO TANKS"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO TARGET"
 msgstr "NO TARGET"
 
@@ -2570,7 +2586,7 @@ msgstr "No views"
 msgid "No world server."
 msgstr "No world server."
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "NO-GRADE"
 msgstr "NO-GRADE"
 
@@ -2578,10 +2594,10 @@ msgstr "NO-GRADE"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:554
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:557
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:565
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:578
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:583
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:580
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:581
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:585
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:385
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
@@ -2653,7 +2669,7 @@ msgstr "Ocean detail"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:86
+#: src/components/GameCanvas.tsx:94
 msgid "OK"
 msgstr "OK"
 
@@ -2739,17 +2755,17 @@ msgstr "Override G limit"
 msgid "Owner"
 msgstr "Owner"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "PADLOCK"
 msgstr "PADLOCK"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "PADLOCK OFF"
 msgstr "PADLOCK OFF"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:546
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:561
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:577
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:563
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:579
 msgid "Parent"
 msgstr "Parent"
 
@@ -2782,7 +2798,7 @@ msgstr "Passkeys are not available in this browser"
 msgid "Pattern (regex)"
 msgstr "Pattern (regex)"
 
-#: src/components/GameCanvas.tsx:383
+#: src/components/GameCanvas.tsx:391
 msgid "Paused"
 msgstr "Paused"
 
@@ -2802,7 +2818,7 @@ msgstr "pilot"
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "PILOT DOWN"
 msgstr "PILOT DOWN"
 
@@ -2810,7 +2826,7 @@ msgstr "PILOT DOWN"
 msgid "Pilot identity"
 msgstr "Pilot identity"
 
-#: src/components/GameCanvas.tsx:426
+#: src/components/GameCanvas.tsx:434
 msgid "Pilot killed"
 msgstr "Pilot killed"
 
@@ -2819,7 +2835,7 @@ msgstr "Pilot killed"
 msgid "Pin"
 msgstr "Pin"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:160
 msgid "pitch"
 msgstr "pitch"
 
@@ -2835,7 +2851,7 @@ msgstr "Pitch down"
 msgid "Pitch up"
 msgstr "Pitch up"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:138
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
@@ -2869,7 +2885,7 @@ msgstr "Posts and comments"
 msgid "Press a key…"
 msgstr "Press a key…"
 
-#: src/components/GameCanvas.tsx:80
+#: src/components/GameCanvas.tsx:88
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PRESS ENTER TO LAUNCH"
 
@@ -2912,7 +2928,7 @@ msgstr "Profile saved"
 msgid "Prompt saved"
 msgstr "Prompt saved"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:416
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:418
 msgid "Properties"
 msgstr "Properties"
 
@@ -2925,7 +2941,7 @@ msgstr "Public servers"
 msgid "Push notification"
 msgstr "Push notification"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "PUSH TIME"
 msgstr "PUSH TIME"
 
@@ -3020,7 +3036,7 @@ msgstr "Reference"
 msgid "Refresh"
 msgstr "Refresh"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "REJOINING"
 msgstr "REJOINING"
 
@@ -3156,15 +3172,15 @@ msgstr "Resigning..."
 msgid "Resolution"
 msgstr "Resolution"
 
-#: src/components/GameCanvas.tsx:577
+#: src/components/GameCanvas.tsx:585
 msgid "Restart"
 msgstr "Restart"
 
-#: src/components/GameCanvas.tsx:512
+#: src/components/GameCanvas.tsx:520
 msgid "Restart mission"
 msgstr "Restart mission"
 
-#: src/components/GameCanvas.tsx:560
+#: src/components/GameCanvas.tsx:568
 msgid "Restart mission?"
 msgstr "Restart mission?"
 
@@ -3172,7 +3188,7 @@ msgstr "Restart mission?"
 msgid "Result"
 msgstr "Result"
 
-#: src/components/GameCanvas.tsx:468
+#: src/components/GameCanvas.tsx:476
 msgid "Resume"
 msgstr "Resume"
 
@@ -3210,7 +3226,7 @@ msgstr "Right wing"
 msgid "Right wingtip"
 msgstr "Right wingtip"
 
-#: src/components/GameCanvas.tsx:153
+#: src/components/GameCanvas.tsx:161
 msgid "roll"
 msgstr "roll"
 
@@ -3247,7 +3263,7 @@ msgstr "RSS feed"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL copied to clipboard"
 
-#: src/components/GameCanvas.tsx:82
+#: src/components/GameCanvas.tsx:90
 msgid "RUN UP ENGINE"
 msgstr "RUN UP ENGINE"
 
@@ -3401,7 +3417,7 @@ msgstr "Send"
 msgid "Send again"
 msgstr "Send again"
 
-#: src/components/GameCanvas.tsx:482
+#: src/components/GameCanvas.tsx:490
 msgid "Send chat"
 msgstr "Send chat"
 
@@ -3442,7 +3458,7 @@ msgstr "Server rules"
 msgid "server runs v{0}, you have v{version}"
 msgstr "server runs v{0}, you have v{version}"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "SESSION ENDED"
 msgstr "SESSION ENDED"
 
@@ -3461,7 +3477,7 @@ msgstr "Set origin and destination"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:496
+#: src/components/GameCanvas.tsx:504
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3547,7 +3563,7 @@ msgstr "Spacious"
 msgid "SPD BK"
 msgstr "SPD BK"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:175
 msgid "speed brake"
 msgstr "speed brake"
 
@@ -3561,7 +3577,7 @@ msgstr "Speed brake"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:128
 msgid "SPLASH"
 msgstr "SPLASH"
 
@@ -3593,8 +3609,8 @@ msgstr "Steepest climb (Vx, 100% thrust)"
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Steepest climb (Vx, afterburner)"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:481
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
 msgid "Stop watching"
 msgstr "Stop watching"
 
@@ -3640,7 +3656,7 @@ msgstr "Switch to view 1-9"
 msgid "System"
 msgstr "System"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "TACTICAL MAP"
 msgstr "TACTICAL MAP"
 
@@ -3657,7 +3673,7 @@ msgstr "Tag must be 50 characters or less"
 msgid "Tags"
 msgstr "Tags"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "TALLY"
 msgstr "TALLY"
 
@@ -3665,11 +3681,11 @@ msgstr "TALLY"
 msgid "Task"
 msgstr "Task"
 
-#: src/components/GameCanvas.tsx:356
+#: src/components/GameCanvas.tsx:364
 msgid "Team"
 msgstr "Team"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "TEAM"
 msgstr "TEAM"
 
@@ -3716,7 +3732,7 @@ msgstr "The camera request was not answered"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "The game could not be loaded. Reload the page to try again."
 
-#: src/components/GameCanvas.tsx:532
+#: src/components/GameCanvas.tsx:540
 msgid "The match continues behind this menu."
 msgstr "The match continues behind this menu."
 
@@ -3728,7 +3744,7 @@ msgstr "The microphone request was not answered"
 msgid "The mission stopped."
 msgstr "The mission stopped."
 
-#: src/components/GameCanvas.tsx:563
+#: src/components/GameCanvas.tsx:571
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "The mission will restart. The current flight will not be saved."
 
@@ -3764,7 +3780,7 @@ msgstr "This machine may be too slow for smooth flight."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "This permanently deletes the game and its chat. This cannot be undone."
 
-#: src/components/GameCanvas.tsx:155
+#: src/components/GameCanvas.tsx:163
 msgid "throttle"
 msgstr "throttle"
 
@@ -3841,7 +3857,7 @@ msgstr "Tracers"
 msgid "Travelling"
 msgstr "Travelling"
 
-#: src/components/GameCanvas.tsx:156
+#: src/components/GameCanvas.tsx:164
 msgid "trim"
 msgstr "trim"
 
@@ -4061,7 +4077,7 @@ msgstr "View"
 msgid "View all notifications"
 msgstr "View all notifications"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:450
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:452
 msgid "View and edit item details"
 msgstr "View and edit item details"
 
@@ -4085,8 +4101,8 @@ msgstr "Volumes"
 msgid "WAITING FOR OPPONENT"
 msgstr "WAITING FOR OPPONENT"
 
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:479
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:484
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:481
+#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx:486
 msgid "Watch"
 msgstr "Watch"
 
@@ -4099,7 +4115,7 @@ msgstr "Watched"
 msgid "Watched only"
 msgstr "Watched only"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -4108,7 +4124,7 @@ msgstr "WAVE OFF"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 
-#: src/components/GameCanvas.tsx:158
+#: src/components/GameCanvas.tsx:166
 msgid "weapon"
 msgstr "weapon"
 
@@ -4159,7 +4175,7 @@ msgstr "WINGS LOCKED"
 msgid "WINGS SPREADING"
 msgstr "WINGS SPREADING"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "WINS"
 msgstr "WINS"
 
@@ -4176,7 +4192,7 @@ msgstr "World server not reachable"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, fight's on at the pass"
 
-#: src/components/GameCanvas.tsx:154
+#: src/components/GameCanvas.tsx:162
 msgid "yaw"
 msgstr "yaw"
 
