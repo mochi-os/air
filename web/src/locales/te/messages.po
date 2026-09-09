@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# ఫలితం} other {# ఫలితాలు}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# తూటా తగిలింది} other {# తూటాలు తగిలాయి}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#వా} other {#వా}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} పేరు"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim} ను ధ్వంసం చేశారు"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name} మ్యాచ్"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# జవాబు} other {+# అదన�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {మెనూ తెరవండి (# చదవని నోటిఫికేషన్)} other {మెనూ తెరవండి (# చదవని నోటిఫికేషన్‌లు)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} {other} తో ఢీకొన్నారు"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} కూలిపోయారు"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> వంచడానికి"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> దగ్గరకు రావడానికి"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> వెనక్కి వెళ్లడానికి"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> వీక్షణ కోసం"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>లాగండి</0> లేదా <1>←→</1> చుట్టూ తిరగడానికి"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "కేబుల్ 1"
 
@@ -177,7 +189,7 @@ msgstr "12 గంటలు"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "కేబుల్ 2"
 
@@ -185,7 +197,7 @@ msgstr "కేబుల్ 2"
 msgid "24 hours"
 msgstr "24 గంటలు"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "కేబుల్ 3"
 
@@ -494,7 +506,7 @@ msgstr "బ్యానర్ తీసివేయబడింది"
 msgid "Banner updated"
 msgstr "బ్యానర్ నవీకరించబడింది"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 కంటే తక్కువ — గేర్ మరియు ఫ్లాప్"
 
@@ -548,7 +560,7 @@ msgstr "నీలం బాట్లు"
 msgid "Board"
 msgstr "బోర్డు"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "బోల్టర్"
 
@@ -565,19 +577,19 @@ msgstr "అంచు రంగు"
 msgid "Bots"
 msgstr "బాట్‌లు"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "బ్రేకులు"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "ఎడమకు తిరుగు"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "కుడికి తిరుగు"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "సిద్ధమైనప్పుడు తిరగండి"
 
@@ -602,7 +614,7 @@ msgstr "BVR — మొదటి నుంచే ఆయుధాలు స్వ�
 msgid "BVR, fight's on from the start"
 msgstr "BVR, మొదటి నుంచే ఆయుధాలు స్వేచ్ఛ"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "బాల్ ప్రకటించండి"
 
@@ -638,7 +650,7 @@ msgstr "కెమెరా అందుబాటులో లేదు"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "మార్చబడింది"
 msgid "Changed {field}"
 msgstr "{field} మార్చబడింది"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "వెంబడింపు వీక్షణ:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "చాట్"
 
@@ -888,7 +900,7 @@ msgstr "సౌకర్యవంతమైన"
 msgid "Command Palette"
 msgstr "కమాండ్ ప్యాలెట్"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "ప్రారంభిస్తున్నాను"
 
@@ -948,7 +960,7 @@ msgstr "కనెక్ట్ అవుతోంది..."
 msgid "Connecting…"
 msgstr "కనెక్ట్ అవుతోంది…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "కనెక్షన్ విఫలమైంది"
 
@@ -1039,7 +1051,7 @@ msgstr "ఆ ఖాతాతో ధృవీకరించడం సాధ్య
 msgid "Countermeasures"
 msgstr "ప్రతిచర్యలు"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "కూలిపోయింది"
 
@@ -1111,7 +1123,7 @@ msgstr "ప్రస్తుత స్థానం"
 msgid "Custom"
 msgstr "అనుకూల"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "ప్రమాదకరం"
 
@@ -1143,7 +1155,7 @@ msgstr "పగలు"
 msgid "Deaths"
 msgstr "మరణాలు"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "డెక్ స్థానం సేవ్ చేయబడింది"
 
@@ -1253,7 +1265,7 @@ msgstr "ధ్వంసమైంది"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} ధ్వంసం చేశారు"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "మంటల్లో ధ్వంసమైంది"
 
@@ -1289,7 +1301,7 @@ msgstr "వేరే గేమ్ హోస్ట్"
 msgid "Directory"
 msgstr "డైరెక్టరీ"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "గేర్ దించండి"
 
@@ -1353,7 +1365,7 @@ msgstr "డౌన్‌లోడ్"
 msgid "Download failed"
 msgstr "డౌన్‌లోడ్ విఫలమైంది"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "డౌన్‌విండ్ 600 అడుగులు"
 
@@ -1377,7 +1389,7 @@ msgstr "డైనమిక్ రిజల్యూషన్"
 msgid "Dyslexia-friendly"
 msgstr "డిస్లెక్సియా-అనుకూలం"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "త్వరగా"
 
@@ -1432,7 +1444,7 @@ msgstr "ఎఫెక్ట్ వివరాలు"
 msgid "Eject"
 msgstr "ఎజెక్ట్"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "ఎజెక్ట్ అయ్యారు"
 
@@ -1444,7 +1456,7 @@ msgstr "ఇమెయిల్"
 msgid "Email code"
 msgstr "ఇమెయిల్ కోడ్"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "అత్యవసర విడుదల"
 
@@ -1466,7 +1478,7 @@ msgstr "ఖాళీ పైలాన్"
 msgid "Enable sound"
 msgstr "ధ్వనిని ప్రారంభించండి"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "దాడి చేస్తున్నా"
 
@@ -1494,15 +1506,15 @@ msgstr "మీ ప్రమాణీకరణ కోడ్‌ను నమోద
 msgid "Error"
 msgstr "లోపం"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "అందరూ"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "మ్యాచ్ నుండి నిష్క్రమించండి"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "మిషన్ నుండి నిష్క్రమించు"
 
@@ -1649,7 +1661,7 @@ msgstr "పర్యవేక్షణ నవీకరించడంలో వ�
 msgid "Failed to upload attachment"
 msgstr "జోడింపును అప్‌లోడ్ చేయడంలో విఫలమైంది"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "సగటు"
 
@@ -1675,7 +1687,7 @@ msgstr "మీ ఖాతా తరలింపు పూర్తి చేయ�
 msgid "Finished"
 msgstr "ముగిసింది"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "కాల్చు"
 
@@ -1696,11 +1708,11 @@ msgstr "ఫ్లాగ్‌లు"
 msgid "FLAMEOUT"
 msgstr "ఫ్లేమ్అవుట్"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "ఫ్లాప్"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "ఫ్లేర్లు"
 
@@ -1712,7 +1724,7 @@ msgstr "ఫ్లేర్లు"
 msgid "Flat"
 msgstr "చదునైనది"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "సముద్రంలో పడిపోయింది"
 
@@ -1720,7 +1732,7 @@ msgstr "సముద్రంలో పడిపోయింది"
 msgid "Flight"
 msgstr "విమానయానం"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "ఫ్లైట్ కోర్ విఫలమైంది"
 
@@ -1745,7 +1757,7 @@ msgstr "ఎగిరింది"
 msgid "Fly"
 msgstr "ఎగరడం"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "మళ్లీ ఎగరండి"
 
@@ -1819,7 +1831,7 @@ msgstr "విమాన శరీరం"
 msgid "Gain"
 msgstr "గెయిన్"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "గేర్"
 
@@ -1911,7 +1923,7 @@ msgstr "చరిత్ర"
 msgid "Home"
 msgstr "హోమ్"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "కొక్కెం"
 
@@ -2017,7 +2029,7 @@ msgstr "జామర్"
 msgid "Jettison tanks"
 msgstr "ట్యాంకులను వదిలేయండి"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "విడుదల: ల్యాండింగ్ గేర్"
 
@@ -2030,7 +2042,7 @@ msgstr "చేరండి"
 msgid "Join server"
 msgstr "సర్వర్‌లో చేరండి"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "చేరారు"
 
@@ -2068,7 +2080,7 @@ msgstr "కీబోర్డ్ షార్ట్‌కట్‌లు"
 msgid "Keys"
 msgstr "కీలు"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "కిల్"
 
@@ -2103,7 +2115,7 @@ msgstr "ల్యాండింగ్ గేర్"
 msgid "Large"
 msgstr "పెద్దది"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "ఆలస్యం"
 
@@ -2112,7 +2124,7 @@ msgstr "ఆలస్యం"
 msgid "Launch (catapult)"
 msgstr "ప్రయోగం (కేటాపుల్ట్)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "లాంచ్ / లక్ష్యం"
 
@@ -2132,7 +2144,7 @@ msgstr "సర్వర్ వదిలివేయి"
 msgid "Left"
 msgstr "నిష్క్రమించారు"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "వెళ్లిపోయారు"
 
@@ -2149,7 +2161,7 @@ msgstr "ఎడమ రెక్క కొన"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "అక్షరాలు, సంఖ్యలు, ఖాళీలు, హైఫన్‌లు, స్లాష్‌లు మాత్రమే"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 వద్ద సమతలం, చక్రాలు కిందకు"
 
@@ -2157,7 +2169,7 @@ msgstr "1200 వద్ద సమతలం, చక్రాలు కిందక
 msgid "Light"
 msgstr "లైట్"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "దీపాలు"
 
@@ -2166,7 +2178,7 @@ msgstr "దీపాలు"
 msgid "Lights"
 msgstr "దీపాలు"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "లైట్లు"
 
@@ -2194,7 +2206,7 @@ msgstr "లోడ్ చేస్తోంది"
 msgid "Loading content…"
 msgstr "కంటెంట్ లోడ్ అవుతోంది…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "లోడింగ్ విఫలమైంది"
 
@@ -2270,7 +2282,7 @@ msgstr "తక్కువ"
 msgid "Low stratus"
 msgstr "తక్కువ స్ట్రాటస్"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "మూసివేయడానికి M"
 
@@ -2282,7 +2294,7 @@ msgstr "వర్గాలను నిర్వహించండి"
 msgid "Manual"
 msgstr "మాన్యువల్"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "పటం"
 
@@ -2325,7 +2337,7 @@ msgstr "మధ్యస్థం"
 msgid "Members"
 msgstr "సభ్యులు"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "మెను"
 
@@ -2343,7 +2355,7 @@ msgstr "మెర్జ్ — దాటే సమయంలో పోరాట�
 msgid "Message"
 msgstr "సందేశం"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "అందరికీ సందేశం పంపండి"
 
@@ -2351,7 +2363,7 @@ msgstr "అందరికీ సందేశం పంపండి"
 msgid "Message players on this server"
 msgstr "ఈ సర్వర్‌లోని ఆటగాళ్లకు సందేశం పంపండి"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "మీ జట్టుకు సందేశం పంపండి"
 
@@ -2369,7 +2381,7 @@ msgstr "మైక్రోఫోన్ అనుమతి నిరాకరి�
 msgid "Mid stratus"
 msgstr "మధ్యస్థ స్ట్రాటస్"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "గాల్లో ఢీకొనడం"
 
@@ -2381,7 +2393,7 @@ msgstr "మిడ్‌వే అటోల్ పటం — చిత్రా�
 msgid "Minimum length"
 msgstr "కనిష్ట పొడవు"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "క్షిపణి"
 
@@ -2389,7 +2401,7 @@ msgstr "క్షిపణి"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "క్షిపణి నమూనా <0>“AIM-120C AMRAAM”</0> — <1>Pippa</1> (Sketchfab) రూపొందించారు, <2>CC BY 4.0</2> కింద లైసెన్స్ పొందింది. సవరించబడింది: తిరిగి స్కేల్, తిరిగి దిశ మరియు అమరిక కోసం మధ్యస్థం."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "మిషన్ ముగిసింది"
 
@@ -2553,11 +2565,11 @@ msgstr "ఫలితాలు ఏవీ కనుగొనబడలేదు."
 msgid "No status"
 msgstr "స్థితి లేదు"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "ట్యాంకులు లేవు"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "లక్ష్యం లేదు"
 
@@ -2586,7 +2598,7 @@ msgstr "వ్యూస్ లేవు"
 msgid "No world server."
 msgstr "వరల్డ్ సర్వర్ లేదు."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "గ్రేడ్ లేదు"
 
@@ -2669,7 +2681,7 @@ msgstr "సముద్ర వివరాలు"
 msgid "offline"
 msgstr "ఆఫ్‌లైన్"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G పరిమితి అధిగమణ"
 msgid "Owner"
 msgstr "ఓనర్"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "చూపు లాక్"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "చూపు స్వేచ్ఛ"
 
@@ -2798,7 +2810,7 @@ msgstr "ఈ బ్రౌజర్‌లో పాస్‌కీలు అంద
 msgid "Pattern (regex)"
 msgstr "నమూనా (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "పాజ్ చేయబడింది"
 
@@ -2818,7 +2830,7 @@ msgstr "పైలట్"
 msgid "Pilot"
 msgstr "పైలట్"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "పైలట్ మృతి"
 
@@ -2826,7 +2838,7 @@ msgstr "పైలట్ మృతి"
 msgid "Pilot identity"
 msgstr "పైలట్ గుర్తింపు"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "పైలట్ మరణించారు"
 
@@ -2835,7 +2847,7 @@ msgstr "పైలట్ మరణించారు"
 msgid "Pin"
 msgstr "పిన్"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "పిచ్"
 
@@ -2851,7 +2863,7 @@ msgstr "పిచ్ కిందికి"
 msgid "Pitch up"
 msgstr "పిచ్ పైకి"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "వేదిక"
 
@@ -2885,7 +2897,7 @@ msgstr "పోస్ట్‌లు మరియు కామెంట్‌ల�
 msgid "Press a key…"
 msgstr "ఒక కీని నొక్కండి…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ఎగరడానికి ENTER నొక్కండి"
 
@@ -2941,7 +2953,7 @@ msgstr "పబ్లిక్ సర్వర్లు"
 msgid "Push notification"
 msgstr "పుష్ నోటిఫికేషన్"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "చేరువ సమయం"
 
@@ -3036,7 +3048,7 @@ msgstr "సూచన"
 msgid "Refresh"
 msgstr "రిఫ్రెష్"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "తిరిగి చేరుతున్నాను"
 
@@ -3172,15 +3184,15 @@ msgstr "రిజైన్ చేస్తోంది..."
 msgid "Resolution"
 msgstr "రిజల్యూషన్"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "పునఃప్రారంభించు"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "మిషన్ పునఃప్రారంభించు"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "మిషన్ పునఃప్రారంభించాలా?"
 
@@ -3188,7 +3200,7 @@ msgstr "మిషన్ పునఃప్రారంభించాలా?"
 msgid "Result"
 msgstr "ఫలితం"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "తిరిగి ప్రారంభించండి"
 
@@ -3226,7 +3238,7 @@ msgstr "కుడి రెక్క"
 msgid "Right wingtip"
 msgstr "కుడి రెక్క కొన"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "రోల్"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS ఫీడ్"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "పూర్తి శక్తి"
 
@@ -3417,7 +3429,7 @@ msgstr "పంపండి"
 msgid "Send again"
 msgstr "మళ్ళీ పంపండి"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "చాట్ పంపండి"
 
@@ -3458,7 +3470,7 @@ msgstr "సర్వర్ నియమాలు"
 msgid "server runs v{0}, you have v{version}"
 msgstr "సర్వర్ v{0} నడుపుతోంది, మీ వద్ద v{version} ఉంది"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "సెషన్ ముగిసింది"
 
@@ -3477,7 +3489,7 @@ msgstr "మూలం మరియు గమ్యస్థానాన్ని 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "విశాలమైన"
 msgid "SPD BK"
 msgstr "వా.బ్రే"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "వాయు బ్రేక్"
 
@@ -3576,10 +3588,6 @@ msgstr "వాయు బ్రేక్"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "వేగాలు KCASలో, తేలికైన స్థితి (కనిష్ఠ ఇంధనం, ఆయుధాలు లేకుండా) నుండి భారీ స్థితి (గరిష్ఠ స్థూల బరువు) వరకు ఒక శ్రేణిగా. డేటా ఆటలోనే ప్రయోగాత్మకంగా సేకరించబడింది. అసలు విమానంతో ఏవైనా తేడాలు సిమ్యులేటర్ విమాన నమూనా లోపాలను ప్రతిబింబిస్తాయి."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "లక్ష్యం కూల్చాను"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "వీక్షణ 1-9 కి మారండి"
 msgid "System"
 msgstr "సిస్టమ్"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "వ్యూహాత్మక మ్యాప్"
 
@@ -3673,7 +3681,7 @@ msgstr "ట్యాగ్ 50 అక్షరాలు లేదా తక్క
 msgid "Tags"
 msgstr "ట్యాగ్‌లు"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "శత్రువు కనబడ్డాడు"
 
@@ -3681,11 +3689,11 @@ msgstr "శత్రువు కనబడ్డాడు"
 msgid "Task"
 msgstr "టాస్క్"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "టీమ్"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "జట్టు"
 
@@ -3732,7 +3740,7 @@ msgstr "కెమెరా అభ్యర్థనకు స్పందన ల
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "గేమ్‌ను లోడ్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "ఈ మెనూ వెనుక మ్యాచ్ కొనసాగుతుంది."
 
@@ -3744,7 +3752,7 @@ msgstr "మైక్రోఫోన్ అభ్యర్థనకు స్ప�
 msgid "The mission stopped."
 msgstr "మిషన్ ఆగిపోయింది."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "మిషన్ పునఃప్రారంభమవుతుంది. ప్రస్తుత విమానయానం సేవ్ చేయబడదు."
 
@@ -3780,7 +3788,7 @@ msgstr "మృదువైన విమానానికి ఈ యంత్ర
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "ఇది గేమ్‌ను మరియు దాని చాట్‌ను శాశ్వతంగా తొలగిస్తుంది. ఈ చర్యను తిరిగి మార్చలేరు."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "థ్రోటిల్"
 
@@ -3857,7 +3865,7 @@ msgstr "ట్రేసర్‌లు"
 msgid "Travelling"
 msgstr "ప్రయాణిస్తోంది"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "ట్రిమ్"
 
@@ -4115,7 +4123,7 @@ msgstr "వాచ్ చేయబడింది"
 msgid "Watched only"
 msgstr "వాచ్ చేసినవి మాత్రమే"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "గో అరౌండ్"
 
@@ -4124,7 +4132,7 @@ msgstr "గో అరౌండ్"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "మేము <0>{0}</0> కు ధృవీకరణ కోడ్‌ను పంపాము. మీ ఇమెయిల్ చిరునామాను ధృవీకరించడానికి క్రింద కోడ్‌ను నమోదు చేయండి."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "ఆయుధం"
 
@@ -4175,7 +4183,7 @@ msgstr "రెక్కలు లాక్"
 msgid "WINGS SPREADING"
 msgstr "రెక్కలు విచ్చుకుంటున్నాయి"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "విజయం"
 
@@ -4192,7 +4200,7 @@ msgstr "వరల్డ్ సర్వర్ అందుబాటులో ల
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, దాటే సమయంలో ఆయుధాలు స్వేచ్ఛ"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "యా"
 

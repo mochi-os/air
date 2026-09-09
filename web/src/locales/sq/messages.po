@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# rezultat} other {# rezultate}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# goditje e marrë} other {# goditje të marra}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#javë} other {#javë}}"
 msgid "{entityLabel} name"
 msgstr "Emri i {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} shkatërroi {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Ndeshja e {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# përgjigje} other {+# përgjigje të t
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Hap menynë (# njoftim i palexuar)} other {Hap menynë (# njoftime të palexuara)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} u përplas me {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} u rrëzua"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> për ta pjerrësuar"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> për t'u afruar"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> për t'u larguar"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> për pamjen"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Tërhiqni</0> ose <1>←→</1> për të orbituar"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "KABLLO 1"
 
@@ -177,7 +189,7 @@ msgstr "12 orë"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "KABLLO 2"
 
@@ -185,7 +197,7 @@ msgstr "KABLLO 2"
 msgid "24 hours"
 msgstr "24 orë"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "KABLLO 3"
 
@@ -494,7 +506,7 @@ msgstr "Banner-i u hoq"
 msgid "Banner updated"
 msgstr "Banner-i u përditësua"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "NËN 250 — TRENI DHE FLAPSAT"
 
@@ -548,7 +560,7 @@ msgstr "Bots blu"
 msgid "Board"
 msgstr "Tabela"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Ngjyra e kornizës"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "frenat"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "KTHEHU MAJTAS"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "KTHEHU DJATHTAS"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "KTHESË KUR TË JESH GATI"
 
@@ -602,7 +614,7 @@ msgstr "BVR — armët të lira që nga nisja"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, armët të lira që nga nisja"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "NJOFTO TOPIN"
 
@@ -638,7 +650,7 @@ msgstr "Kamera nuk është e disponueshme"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "U ndryshua"
 msgid "Changed {field}"
 msgstr "U ndryshua {field}"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Pamja e ndjekjes:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "I rehatshëm"
 msgid "Command Palette"
 msgstr "Paleta e komandave"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "PO FILLOJ"
 
@@ -948,7 +960,7 @@ msgstr "Po lidhet..."
 msgid "Connecting…"
 msgstr "Duke u lidhur…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "LIDHJA DËSHTOI"
 
@@ -1039,7 +1051,7 @@ msgstr "Nuk u verifikua dot me atë llogari. Ju lutemi provoni përsëri."
 msgid "Countermeasures"
 msgstr "Kundërmasat"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "U rrëzua"
 
@@ -1111,7 +1123,7 @@ msgstr "Vendndodhja aktuale"
 msgid "Custom"
 msgstr "Personalizuar"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "I RREZIKSHËM"
 
@@ -1143,7 +1155,7 @@ msgstr "Ditë"
 msgid "Deaths"
 msgstr "Vdekjet"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "POZICIONI I KUVERTËS U RUAJT"
 
@@ -1253,7 +1265,7 @@ msgstr "SHKATËRRUAR"
 msgid "DESTROYED BY {callsign}"
 msgstr "SHKATËRRUAR NGA {callsign}"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Shkatërruar nga zjarri"
 
@@ -1289,7 +1301,7 @@ msgstr "Strehues tjetër i lojës"
 msgid "Directory"
 msgstr "Drejtoria"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "ULE TRENIN"
 
@@ -1353,7 +1365,7 @@ msgstr "Shkarko"
 msgid "Download failed"
 msgstr "Shkarkimi dështoi"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "ME ERËN 600 KËMBË"
 
@@ -1377,7 +1389,7 @@ msgstr "Rezolucion dinamik"
 msgid "Dyslexia-friendly"
 msgstr "I përshtatshëm për disleksi"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "HERËT"
 
@@ -1432,7 +1444,7 @@ msgstr "Detaje të efekteve"
 msgid "Eject"
 msgstr "Katapultim"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "U KATAPULTUA"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Kodi me email"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "HEDHJE URGJENCE"
 
@@ -1466,7 +1478,7 @@ msgstr "Pilon bosh"
 msgid "Enable sound"
 msgstr "Aktivizo zërin"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "PO SULMOJ"
 
@@ -1494,15 +1506,15 @@ msgstr "Vendosni kodin e aplikacionit të vërtetimit"
 msgid "Error"
 msgstr "Gabim"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Të gjithë"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Dil nga ndeshja"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Dil nga misioni"
 
@@ -1649,7 +1661,7 @@ msgstr "Përditësimi i ndjekjes dështoi"
 msgid "Failed to upload attachment"
 msgstr "Ngarkimi i bashkëngjitjes dështoi"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "MESATAR"
 
@@ -1675,7 +1687,7 @@ msgstr "Përfundoni lëvizjen e llogarisë suaj"
 msgid "Finished"
 msgstr "Përfundoi"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "zjarr"
 
@@ -1696,11 +1708,11 @@ msgstr "Flamujt"
 msgid "FLAMEOUT"
 msgstr "SHUARJE"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flapet"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "flarë"
 
@@ -1712,7 +1724,7 @@ msgstr "FLAKADANË"
 msgid "Flat"
 msgstr "I sheshtë"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "U përplas në det"
 
@@ -1720,7 +1732,7 @@ msgstr "U përplas në det"
 msgid "Flight"
 msgstr "Fluturimi"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "BËRTHAMA E FLUTURIMIT DËSHTOI"
 
@@ -1745,7 +1757,7 @@ msgstr "Fluturuar"
 msgid "Fly"
 msgstr "Fluturo"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Fluturo sërish"
 
@@ -1819,7 +1831,7 @@ msgstr "Trupi i avionit"
 msgid "Gain"
 msgstr "Përforcimi"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "Trupi i uljes"
 
@@ -1911,7 +1923,7 @@ msgstr "Historia"
 msgid "Home"
 msgstr "Faqja kryesore"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Grep"
 
@@ -2017,7 +2029,7 @@ msgstr "Bllokues"
 msgid "Jettison tanks"
 msgstr "Hidh serbatorët"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "HEDHJE: SHASIA"
 
@@ -2030,7 +2042,7 @@ msgstr "Bashkohu"
 msgid "Join server"
 msgstr "Bashkohu me serverin"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "U BASHKUA"
 
@@ -2068,7 +2080,7 @@ msgstr "Shkurtoret e tastierës"
 msgid "Keys"
 msgstr "Tastet"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "VRASJE"
 
@@ -2103,7 +2115,7 @@ msgstr "Rrotat e uljes"
 msgid "Large"
 msgstr "I madh"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "VONË"
 
@@ -2112,7 +2124,7 @@ msgstr "VONË"
 msgid "Launch (catapult)"
 msgstr "Nisje (katapultë)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "ngritje / objektiv"
 
@@ -2132,7 +2144,7 @@ msgstr "Lër serverin"
 msgid "Left"
 msgstr "U largua"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "U LARGUA"
 
@@ -2149,7 +2161,7 @@ msgstr "Maja e krahut të majtë"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Vetëm shkronja, numra, hapësira, vija ndarëse dhe vija të pjerrëta"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "RRAFSH NË 1200, ULNI RROTAT"
 
@@ -2157,7 +2169,7 @@ msgstr "RRAFSH NË 1200, ULNI RROTAT"
 msgid "Light"
 msgstr "E çelët"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "dritat"
 
@@ -2166,7 +2178,7 @@ msgstr "dritat"
 msgid "Lights"
 msgstr "Dritat"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "DRITAT"
 
@@ -2194,7 +2206,7 @@ msgstr "DUKE NGARKUAR"
 msgid "Loading content…"
 msgstr "Po ngarkohet përmbajtja…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "NGARKIMI DËSHTOI"
 
@@ -2270,7 +2282,7 @@ msgstr "I ulët"
 msgid "Low stratus"
 msgstr "Stratus i ulët"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M për të mbyllur"
 
@@ -2282,7 +2294,7 @@ msgstr "Menaxho kategoritë"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "hartë"
 
@@ -2325,7 +2337,7 @@ msgstr "I mesëm"
 msgid "Members"
 msgstr "Anëtarët"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "meny"
 
@@ -2343,7 +2355,7 @@ msgstr "Bashkim — lufta nis në kalim"
 msgid "Message"
 msgstr "Mesazhi"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Shkruaju të gjithëve"
 
@@ -2351,7 +2363,7 @@ msgstr "Shkruaju të gjithëve"
 msgid "Message players on this server"
 msgstr "Shkruajuni lojtarëve në këtë server"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Shkruaji skuadrës tënde"
 
@@ -2369,7 +2381,7 @@ msgstr "Leja e mikrofonit u refuzua"
 msgid "Mid stratus"
 msgstr "Stratus i mesëm"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Përplasje në ajër"
 
@@ -2381,7 +2393,7 @@ msgstr "Harta e Atolit Midway — imazhet përmbajnë të dhëna të modifikuara
 msgid "Minimum length"
 msgstr "Gjatësia minimale"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "RAKETË"
 
@@ -2389,7 +2401,7 @@ msgstr "RAKETË"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model rakete <0>“AIM-120C AMRAAM”</0> nga <1>Pippa</1> (Sketchfab), licencuar sipas <2>CC BY 4.0</2>. Modifikuar: rishkallëzuar, riorientuar dhe qendërzuar për vendosje."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Misioni mbaroi"
 
@@ -2553,11 +2565,11 @@ msgstr "S'u gjet asnjë rezultat."
 msgid "No status"
 msgstr "Pa status"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "PA SERBATORË"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "S'KA OBJEKTIV"
 
@@ -2586,7 +2598,7 @@ msgstr "Asnjë shikim"
 msgid "No world server."
 msgstr "Nuk ka server bote."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "PA NOTË"
 
@@ -2669,7 +2681,7 @@ msgstr "Detaje të oqeanit"
 msgid "offline"
 msgstr "jashtë linje"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Kapërce kufirin G"
 msgid "Owner"
 msgstr "Pronari"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "SHIKIMI I KYÇUR"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "SHIKIMI I LIRË"
 
@@ -2798,7 +2810,7 @@ msgstr "Kyçet nuk janë të disponueshëm në këtë shfletues"
 msgid "Pattern (regex)"
 msgstr "Modeli (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "I ndaluar"
 
@@ -2818,7 +2830,7 @@ msgstr "pilot"
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PILOTI U VRA"
 
@@ -2826,7 +2838,7 @@ msgstr "PILOTI U VRA"
 msgid "Pilot identity"
 msgstr "Identiteti i pilotit"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Piloti u vra"
 
@@ -2835,7 +2847,7 @@ msgstr "Piloti u vra"
 msgid "Pin"
 msgstr "Fikso"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "pjerrësi"
 
@@ -2851,7 +2863,7 @@ msgstr "Pjerrësi poshtë"
 msgid "Pitch up"
 msgstr "Pjerrësi lart"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATFORMË"
 
@@ -2885,7 +2897,7 @@ msgstr "Postimet dhe komentet"
 msgid "Press a key…"
 msgstr "Shtypni një tast…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "SHTYP ENTER PËR T'U NGRITUR"
 
@@ -2941,7 +2953,7 @@ msgstr "Serverë publikë"
 msgid "Push notification"
 msgstr "Njoftim push"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ORA E AFRIMIT"
 
@@ -3036,7 +3048,7 @@ msgstr "Referencë"
 msgid "Refresh"
 msgstr "Rifresko"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "RIKTHEHEM NË FORMACION"
 
@@ -3172,15 +3184,15 @@ msgstr "Duke u dorëzuar..."
 msgid "Resolution"
 msgstr "Rezolucioni"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Rinis"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Rinis misionin"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Ta rinisni misionin?"
 
@@ -3188,7 +3200,7 @@ msgstr "Ta rinisni misionin?"
 msgid "Result"
 msgstr "Rezultati"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Vazhdo"
 
@@ -3226,7 +3238,7 @@ msgstr "Krahu i djathtë"
 msgid "Right wingtip"
 msgstr "Maja e krahut të djathtë"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "rrotullim"
 
@@ -3263,7 +3275,7 @@ msgstr "Prurje RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL e RSS u kopjua në clipboard"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "FUQI E PLOTË"
 
@@ -3417,7 +3429,7 @@ msgstr "Dërgo"
 msgid "Send again"
 msgstr "Dërgo përsëri"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Dërgo mesazh"
 
@@ -3458,7 +3470,7 @@ msgstr "Rregullat e serverit"
 msgid "server runs v{0}, you have v{version}"
 msgstr "serveri përdor v{0}, ju keni v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SESIONI PËRFUNDOI"
 
@@ -3477,7 +3489,7 @@ msgstr "Vendos origjinën dhe destinacionin"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "I hapësirshëm"
 msgid "SPD BK"
 msgstr "FR.AJR"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "frena ajrore"
 
@@ -3576,10 +3588,6 @@ msgstr "Frena ajrore"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Shpejtësitë në KCAS, si një interval nga i lehtë (karburant minimal, pa ngarkesa të jashtme) deri te i rëndë (pesha maksimale bruto). Të dhënat janë nxjerrë në mënyrë eksperimentale brenda lojës. Çdo ndryshim nga avioni i vërtetë pasqyron gabime të modelit të fluturimit të simulatorit."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "OBJEKTIVI U RRËZUA"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Kalo te pamja 1-9"
 msgid "System"
 msgstr "Sistemi"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "HARTA TAKTIKE"
 
@@ -3673,7 +3681,7 @@ msgstr "Etiketa duhet të jetë 50 karaktere ose më pak"
 msgid "Tags"
 msgstr "Etiketat"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "SHOH ARMIKUN"
 
@@ -3681,11 +3689,11 @@ msgstr "SHOH ARMIKUN"
 msgid "Task"
 msgstr "Detyra"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Ekipi"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "SKUADRA"
 
@@ -3732,7 +3740,7 @@ msgstr "Kërkesa për kamerë nuk mori përgjigje"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Loja nuk u ngarkua dot. Ringarko faqen për të provuar sërish."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Ndeshja vazhdon pas kësaj menuje."
 
@@ -3744,7 +3752,7 @@ msgstr "Kërkesa për mikrofon nuk mori përgjigje"
 msgid "The mission stopped."
 msgstr "Misioni u ndal."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Misioni do të riniset. Fluturimi aktual nuk do të ruhet."
 
@@ -3780,7 +3788,7 @@ msgstr "Kjo makinë mund të jetë tepër e ngadaltë për fluturim të lëmuar.
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Kjo do të fshijë përgjithmonë lojën dhe bisedën e saj. Ky veprim nuk mund të zhbëhet."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "gaz"
 
@@ -3857,7 +3865,7 @@ msgstr "Gjurmuese"
 msgid "Travelling"
 msgstr "Duke udhëtuar"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "I shikuar"
 msgid "Watched only"
 msgstr "Vetëm të shikuarit"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "NDËRPRIT ULJEN"
 
@@ -4124,7 +4132,7 @@ msgstr "NDËRPRIT ULJEN"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Dërguam një kod verifikimi te <0>{0}</0>. Shkruani kodin më poshtë për të verifikuar adresën tuaj të email-it."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "armë"
 
@@ -4175,7 +4183,7 @@ msgstr "KRAHËT KYÇUR"
 msgid "WINGS SPREADING"
 msgstr "KRAHËT PO HAPEN"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "FITON"
 
@@ -4192,7 +4200,7 @@ msgstr "Serveri i botës nuk arrihet"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, armët të lira në kalim"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "devijim"
 

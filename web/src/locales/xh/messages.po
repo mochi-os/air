@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {Iziphumo #} other {Iziphumo #}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Ichanwe ngembumbulu e-#} other {Ichanwe ngeembumbulu ezi-#}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#vk} other {#vk}}"
 msgid "{entityLabel} name"
 msgstr "Igama le-{entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} utshabalalise {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Umdlalo ka-{name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {Impendulo #} other {+# ezinye iimpendulo
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Vula imenyu (# isaziso esingafundwanga)} other {Vula imenyu (# izaziso ezingafundwanga)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} ungqubeke no-{other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} uwile"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> ukutyekisa"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> ukusondela"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> ukubuya umva"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> yembonakalo"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Tsala</0> okanye <1>←→</1> ukujikeleza"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "UCINGO 1"
 
@@ -177,7 +189,7 @@ msgstr "iiyure ezili-12"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "UCINGO 2"
 
@@ -185,7 +197,7 @@ msgstr "UCINGO 2"
 msgid "24 hours"
 msgstr "iiyure ezingama-24"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "UCINGO 3"
 
@@ -494,7 +506,7 @@ msgstr "Ibhena isusiwe"
 msgid "Banner updated"
 msgstr "Ibhena ihlaziyiwe"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "NGAPHANTSI KWE-250 — IGIYA NEEMPIKO"
 
@@ -548,7 +560,7 @@ msgstr "Iibhothi ezizuba"
 msgid "Board"
 msgstr "Ibhodi"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Umbala womda"
 msgid "Bots"
 msgstr "Iibhothi"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "iibhreyiki"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "JIKA EKHOHLO"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "JIKA EKUNENE"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "JIKA XA ULUNGILE"
 
@@ -602,7 +614,7 @@ msgstr "BVR — izixhobo zikhululekile ukusuka ekuqaleni"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, izixhobo zikhululekile ukusuka ekuqaleni"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "YAZISA IBHOLA"
 
@@ -638,7 +650,7 @@ msgstr "Ikhamera ayifumaneki"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Kutshintshiwe"
 msgid "Changed {field}"
 msgstr "Kutshintshiwe {field}"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Imbono yokusukela:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "incoko"
 
@@ -888,7 +900,7 @@ msgstr "Kumnandi"
 msgid "Command Palette"
 msgstr "Ipalethi yemiyalelo"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "NDIYAQALA"
 
@@ -948,7 +960,7 @@ msgstr "Iyaqhagamshela..."
 msgid "Connecting…"
 msgstr "Iyaqhagamshela…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "UQHAGAMSHELWANO ALUPHUMELELANGA"
 
@@ -1039,7 +1051,7 @@ msgstr "Akukwazekanga ukuqinisekisa ngaloo akhawunti. Nceda uzame kwakhona."
 msgid "Countermeasures"
 msgstr "Amanyathelo okuchasa"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Iwile"
 
@@ -1111,7 +1123,7 @@ msgstr "Indawo yangoku"
 msgid "Custom"
 msgstr "Ngokwesiqhelo"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "INGOZI"
 
@@ -1143,7 +1155,7 @@ msgstr "Imini"
 msgid "Deaths"
 msgstr "Ukufa"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "INDAWO YEDEKI IGCINIWE"
 
@@ -1253,7 +1265,7 @@ msgstr "UTSHATYALALISIWE"
 msgid "DESTROYED BY {callsign}"
 msgstr "UTSHATYALALISWE NGU-{callsign}"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Itshatyalaliswe ngumlilo"
 
@@ -1289,7 +1301,7 @@ msgstr "Iseva yomdlalo eyahlukileyo"
 msgid "Directory"
 msgstr "Uluhlu"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "THOBA IGIYA"
 
@@ -1353,7 +1365,7 @@ msgstr "Khuphela"
 msgid "Download failed"
 msgstr "Ukukhuphela akuphumelelanga"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "NGOKOMOYA IINYAWO EZINGU-600"
 
@@ -1377,7 +1389,7 @@ msgstr "I-resolution eguqukayo"
 msgid "Dyslexia-friendly"
 msgstr "Yamkelekile kwidyslexia"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "KWANGOKO"
 
@@ -1432,7 +1444,7 @@ msgstr "Iinkcukacha zeziphumo"
 msgid "Eject"
 msgstr "Ukukhutshwa"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "UKHUTSHIWE"
 
@@ -1444,7 +1456,7 @@ msgstr "I-imeyili"
 msgid "Email code"
 msgstr "Ikhowudi ye-imeyili"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "UKULAHLA KONGXAMISEKO"
 
@@ -1466,7 +1478,7 @@ msgstr "Ipylon engenanto"
 msgid "Enable sound"
 msgstr "Vula isandi"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "NDIYAHLASELA"
 
@@ -1494,15 +1506,15 @@ msgstr "Faka ikhowudi yakho yesiqinisekisi"
 msgid "Error"
 msgstr "Impazamo"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Bonke"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Phuma emdlalweni"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Phuma kuphando"
 
@@ -1649,7 +1661,7 @@ msgstr "Akuphumelelanga ukuhlaziya ukubukela"
 msgid "Failed to upload attachment"
 msgstr "Ayiphumelelanga ukulayisha isiqhoboshelo"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "PHAKATHI"
 
@@ -1675,7 +1687,7 @@ msgstr "Gqiba ukufudusa i-akhawunti yakho"
 msgid "Finished"
 msgstr "Igqityiwe"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "dubula"
 
@@ -1696,11 +1708,11 @@ msgstr "Iiflegi"
 msgid "FLAMEOUT"
 msgstr "INJINI ICIMILE"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "iiflaps"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "iiflare"
 
@@ -1712,7 +1724,7 @@ msgstr "AMALANGABI"
 msgid "Flat"
 msgstr "Isicaba"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Intlitheke elwandle"
 
@@ -1720,7 +1732,7 @@ msgstr "Intlitheke elwandle"
 msgid "Flight"
 msgstr "Ukubhabha"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "UNDOQO WOKUBHABHA WOYISIWE"
 
@@ -1745,7 +1757,7 @@ msgstr "Kubhabhiwe"
 msgid "Fly"
 msgstr "Bhabha"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Bhabha kwakhona"
 
@@ -1819,7 +1831,7 @@ msgstr "Umzimba wenqwelo"
 msgid "Gain"
 msgstr "Ukomeleza"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "Igiya"
 
@@ -1911,7 +1923,7 @@ msgstr "Imbali"
 msgid "Home"
 msgstr "Ekhaya"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Ihuku"
 
@@ -2017,7 +2029,7 @@ msgstr "Isiphazamisi"
 msgid "Jettison tanks"
 msgstr "Lahla iitanki"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "UKULAHLA: AMAVILI"
 
@@ -2030,7 +2042,7 @@ msgstr "Joyina"
 msgid "Join server"
 msgstr "Joyina iseva"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "UJOYINILE"
 
@@ -2068,7 +2080,7 @@ msgstr "Izinqumlelo zekhibhodi"
 msgid "Keys"
 msgstr "Izitshixo"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "UMBULELE"
 
@@ -2103,7 +2115,7 @@ msgstr "Amavili okuhlala"
 msgid "Large"
 msgstr "Inkulu"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "EMVA KWEXESHA"
 
@@ -2112,7 +2124,7 @@ msgstr "EMVA KWEXESHA"
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "ntinga / ithagethi"
 
@@ -2132,7 +2144,7 @@ msgstr "Shiya iseva"
 msgid "Left"
 msgstr "Uphumile"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "UPHUMILE"
 
@@ -2149,7 +2161,7 @@ msgstr "Incam yephiko lasekhohlo"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Onobumba, amanani, izithuba, oohayifeni kunye neeslashi kuphela"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "LUNGELELANISA KU-1200, YEHLISA AMAVILI"
 
@@ -2157,7 +2169,7 @@ msgstr "LUNGELELANISA KU-1200, YEHLISA AMAVILI"
 msgid "Light"
 msgstr "Khaphukhaphu"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "izibane"
 
@@ -2166,7 +2178,7 @@ msgstr "izibane"
 msgid "Lights"
 msgstr "Izibane"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "IZIBANE"
 
@@ -2194,7 +2206,7 @@ msgstr "KULAYISHWA"
 msgid "Loading content…"
 msgstr "Iyalayisha umxholo…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "UKULAYISHWA AKUPHUMELELANGA"
 
@@ -2270,7 +2282,7 @@ msgstr "Ephantsi"
 msgid "Low stratus"
 msgstr "I-stratus ephantsi"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M ukuvala"
 
@@ -2282,7 +2294,7 @@ msgstr "Lawula iindidi"
 msgid "Manual"
 msgstr "Ngesandla"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "imephu"
 
@@ -2325,7 +2337,7 @@ msgstr "Ephakathi"
 msgid "Members"
 msgstr "Amalungu"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "imenyu"
 
@@ -2343,7 +2355,7 @@ msgstr "Ukudibana — umlo uqala ekudluleni"
 msgid "Message"
 msgstr "Umyalezo"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Thumela umyalezo kubo bonke"
 
@@ -2351,7 +2363,7 @@ msgstr "Thumela umyalezo kubo bonke"
 msgid "Message players on this server"
 msgstr "Thumela umyalezo kubadlali kule seva"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Thumela umyalezo kwiqela lakho"
 
@@ -2369,7 +2381,7 @@ msgstr "Imvume yemakrofoni ikhatyiwe"
 msgid "Mid stratus"
 msgstr "I-stratus ephakathi"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Ungquzulwano emoyeni"
 
@@ -2381,7 +2393,7 @@ msgstr "Imephu ye-Midway Atoll — imifanekiso iqulethe idatha ye-<0>Copernicus 
 msgid "Minimum length"
 msgstr "Ubude obuncinane"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "UMJUKUJELWA"
 
@@ -2389,7 +2401,7 @@ msgstr "UMJUKUJELWA"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Imodeli yomjukujelwa <0>“AIM-120C AMRAAM”</0> ka-<1>Pippa</1> (Sketchfab), enelayisensi phantsi kwe-<2>CC BY 4.0</2>. Ilungisiwe: ilinganiswe ngokutsha, yalungiswa ukujonga kwakhona yaza yabekwa embindini ukuze ifakwe."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Umsebenzi ugqityiwe"
 
@@ -2553,11 +2565,11 @@ msgstr "Akukho ziphumo zifumanekileyo."
 msgid "No status"
 msgstr "Akukho mgangatho"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "AKUKHO TANKI"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "AKUKHO THAGETHI"
 
@@ -2586,7 +2598,7 @@ msgstr "Akukho zinkangeleko"
 msgid "No world server."
 msgstr "Akukho seva yehlabathi."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "AKUKHO BANGA"
 
@@ -2669,7 +2681,7 @@ msgstr "Iinkcukacha zolwandle"
 msgid "offline"
 msgstr "ayiqhagamshelwanga"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Ukugqitha umda we-G"
 msgid "Owner"
 msgstr "Umnini"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "UKUJONGA KUTSHIXIWE"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "UKUJONGA KUKHULULEKILE"
 
@@ -2798,7 +2810,7 @@ msgstr "Ii-passkey azifumaneki kule bhrawuza"
 msgid "Pattern (regex)"
 msgstr "Ipateni (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Imisiwe"
 
@@ -2818,7 +2830,7 @@ msgstr "umqhubi wenqwelomoya"
 msgid "Pilot"
 msgstr "Umqhubi wenqwelomoya"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "UMQHUBI UBULEWE"
 
@@ -2826,7 +2838,7 @@ msgstr "UMQHUBI UBULEWE"
 msgid "Pilot identity"
 msgstr "Isazisi somqhubi wenqwelomoya"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Umqhubi ubulewe"
 
@@ -2835,7 +2847,7 @@ msgstr "Umqhubi ubulewe"
 msgid "Pin"
 msgstr "Ncamathisa"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "nyusa-thoba"
 
@@ -2851,7 +2863,7 @@ msgstr "I-pitch ezantsi"
 msgid "Pitch up"
 msgstr "I-pitch phezulu"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "IQONGA"
 
@@ -2885,7 +2897,7 @@ msgstr "Imiyalezo nezimvo"
 msgid "Press a key…"
 msgstr "Cofa isitshixo…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "CINEZELA U-ENTER UKUZE UNDIZE"
 
@@ -2941,7 +2953,7 @@ msgstr "Iiseva zoluntu"
 msgid "Push notification"
 msgstr "Isaziso se-push"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "IXESHA LOKUSONDELA"
 
@@ -3036,7 +3048,7 @@ msgstr "Isalathiso"
 msgid "Refresh"
 msgstr "Vuselela"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "NDIBUYELA KWIQELA"
 
@@ -3172,15 +3184,15 @@ msgstr "Iyarhoxa..."
 msgid "Resolution"
 msgstr "Isisombululo"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Qala kwakhona"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Qala kwakhona uphando"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Qala kwakhona uphando?"
 
@@ -3188,7 +3200,7 @@ msgstr "Qala kwakhona uphando?"
 msgid "Result"
 msgstr "Isiphumo"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Qhubeka"
 
@@ -3226,7 +3238,7 @@ msgstr "Iphiko lasekunene"
 msgid "Right wingtip"
 msgstr "Incam yephiko lasekunene"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "qengqela"
 
@@ -3263,7 +3275,7 @@ msgstr "Ifidi ye-RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "I-URL ye-RSS ikhutshelwe ku-clipboard"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "AMANDLA APHELELEYO"
 
@@ -3417,7 +3429,7 @@ msgstr "Thumela"
 msgid "Send again"
 msgstr "Thumela kwakhona"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Thumela umyalezo"
 
@@ -3458,7 +3470,7 @@ msgstr "Imithetho yeseva"
 msgid "server runs v{0}, you have v{version}"
 msgstr "iseva isebenzisa v{0}, unayo v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "ISESHONI IPHELILE"
 
@@ -3477,7 +3489,7 @@ msgstr "Misa indawo yokuqala neyokugqibela"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Banzi"
 msgid "SPD BK"
 msgstr "IB.MO"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "ibhuleki yomoya"
 
@@ -3576,10 +3588,6 @@ msgstr "Ibhuleki yomoya"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Izantya zi-KCAS, njengoluhlu ukusuka kokukhaphukhaphu (amafutha amancinci, akukho zixhobo) ukuya kokunzima (ubunzima obupheleleyo obuphezulu). Idatha ifunyenwe ngokulinga ngaphakathi kumdlalo. Nawuphi na umahluko kwinqwelomoya yokwenene ubonisa iimpazamo kwimodeli yokubhabha yesilingisi."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "NDIYIWISILE"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Tshintshela kwijongo 1-9"
 msgid "System"
 msgstr "Inkqubo"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "IMEPHU YEQHINGA"
 
@@ -3673,7 +3681,7 @@ msgstr "Ithegi kufuneka ibe ngamagama angama-50 okanye ngaphantsi"
 msgid "Tags"
 msgstr "Iiletile"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "NDIBONA UTSHABA"
 
@@ -3681,11 +3689,11 @@ msgstr "NDIBONA UTSHABA"
 msgid "Task"
 msgstr "Umsebenzi"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Iqela"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "IQELA"
 
@@ -3732,7 +3740,7 @@ msgstr "Isicelo sekhamera asiphendulwanga"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Umdlalo awukhange ukwazi ukulayishwa. Layisha kwakhona iphepha ukuze uzame kwakhona."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Umdlalo uyaqhubeka emva kwale menyu."
 
@@ -3744,7 +3752,7 @@ msgstr "Isicelo semayikrofoni asiphendulwanga"
 msgid "The mission stopped."
 msgstr "Umsebenzi umile."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Uphando luya kuqala kwakhona. Ukubhabha kwangoku akuyi kugcinwa."
 
@@ -3780,7 +3788,7 @@ msgstr "Lo matshini usenokucotha kakhulu ekubhabheni okugudileyo."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Oku kuza kucima umdlalo nengxoxo yawo ngokusisigxina. Esi senzo asinakuguqulwa."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "isantya"
 
@@ -3857,7 +3865,7 @@ msgstr "Ii-tracers"
 msgid "Travelling"
 msgstr "Ukuhamba"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "itrim"
 
@@ -4115,7 +4123,7 @@ msgstr "Kubukelweyo"
 msgid "Watched only"
 msgstr "Kubukelweyo kuphela"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -4124,7 +4132,7 @@ msgstr "WAVE OFF"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Sithumele ikhowudi yoqinisekiso ku-<0>{0}</0>. Faka ikhowudi ngezantsi ukuze uqinisekise idilesi yakho ye-imeyile."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "isikhali"
 
@@ -4175,7 +4183,7 @@ msgstr "AMAPHIKO ATSHIXIWE"
 msgid "WINGS SPREADING"
 msgstr "AMAPHIKO AYANDISWA"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "UYAPHUMELELA"
 
@@ -4192,7 +4200,7 @@ msgstr "Iseva yehlabathi ayifikeleleki"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, izixhobo zikhululekile ekudluleni"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "jika"
 

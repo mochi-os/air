@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# نتیجه} other {# نتیجه}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# گلوله اصابت کرد} other {# گلوله اصابت کرد}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ه} other {#ه}}"
 msgid "{entityLabel} name"
 msgstr "نام {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim} را نابود کرد"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "مسابقهٔ {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# پاسخ} other {+# پاسخ دیگر}
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {باز کردن منو (# اعلان خوانده‌نشده)} other {باز کردن منو (# اعلان خوانده‌نشده)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} با {other} برخورد کرد"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} سقوط کرد"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> برای شیب"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> برای نزدیک شدن"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> برای عقب رفتن"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> برای نما"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>بکشید</0> یا <1>←→</1> برای چرخش"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "کابل 1"
 
@@ -177,7 +189,7 @@ msgstr "۱۲ ساعت"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "کابل 2"
 
@@ -185,7 +197,7 @@ msgstr "کابل 2"
 msgid "24 hours"
 msgstr "۲۴ ساعت"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "کابل 3"
 
@@ -494,7 +506,7 @@ msgstr "بنر حذف شد"
 msgid "Banner updated"
 msgstr "بنر به‌روزرسانی شد"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "زیر ۲۵۰ — ارابه و فلاپ"
 
@@ -548,7 +560,7 @@ msgstr "بات‌های آبی"
 msgid "Board"
 msgstr "تخته"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "بولتر"
 
@@ -565,19 +577,19 @@ msgstr "رنگ حاشیه"
 msgid "Bots"
 msgstr "بات‌ها"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "ترمز"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "بپیچ به چپ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "بپیچ به راست"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "در آمادگی بچرخ"
 
@@ -602,7 +614,7 @@ msgstr "BVR — سلاح آزاد از آغاز"
 msgid "BVR, fight's on from the start"
 msgstr "BVR، سلاح آزاد از آغاز"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "توپ را اعلام کن"
 
@@ -638,7 +650,7 @@ msgstr "دوربین در دسترس نیست"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "تغییر کرد"
 msgid "Changed {field}"
 msgstr "{field} تغییر کرد"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "نمای تعقیب:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "چت"
 
@@ -888,7 +900,7 @@ msgstr "راحت"
 msgid "Command Palette"
 msgstr "پالت فرمان"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "شروع تقرب"
 
@@ -948,7 +960,7 @@ msgstr "در حال اتصال..."
 msgid "Connecting…"
 msgstr "در حال اتصال…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "اتصال ناموفق بود"
 
@@ -1039,7 +1051,7 @@ msgstr "تأیید با آن حساب ممکن نشد. لطفاً دوباره �
 msgid "Countermeasures"
 msgstr "اقدامات متقابل"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "سقوط کرد"
 
@@ -1111,7 +1123,7 @@ msgstr "موقعیت فعلی"
 msgid "Custom"
 msgstr "سفارشی"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "خطرناک"
 
@@ -1143,7 +1155,7 @@ msgstr "روز"
 msgid "Deaths"
 msgstr "مرگ‌ها"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "موقعیت روی عرشه ذخیره شد"
 
@@ -1253,7 +1265,7 @@ msgstr "نابود شد"
 msgid "DESTROYED BY {callsign}"
 msgstr "توسط {callsign} نابود شد"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "در آتش‌سوزی نابود شد"
 
@@ -1289,7 +1301,7 @@ msgstr "میزبان بازی متفاوت"
 msgid "Directory"
 msgstr "فهرست"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "ارابه پایین"
 
@@ -1353,7 +1365,7 @@ msgstr "دانلود"
 msgid "Download failed"
 msgstr "دانلود ناموفق بود"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "بادپشت ۶۰۰ پا"
 
@@ -1377,7 +1389,7 @@ msgstr "وضوح پویا"
 msgid "Dyslexia-friendly"
 msgstr "مناسب برای دیسلکسی"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "زود"
 
@@ -1432,7 +1444,7 @@ msgstr "جزئیات جلوه‌ها"
 msgid "Eject"
 msgstr "ایجکت"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "ایجکت کرد"
 
@@ -1444,7 +1456,7 @@ msgstr "ایمیل"
 msgid "Email code"
 msgstr "کد ایمیل"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "رهاسازی اضطراری"
 
@@ -1466,7 +1478,7 @@ msgstr "پایلون خالی"
 msgid "Enable sound"
 msgstr "فعال‌سازی صدا"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "درگیر شدم"
 
@@ -1494,15 +1506,15 @@ msgstr "کد برنامه احرازکننده هویت خود را وارد ک�
 msgid "Error"
 msgstr "خطا"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "همه"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "خروج از مسابقه"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "خروج از مأموریت"
 
@@ -1649,7 +1661,7 @@ msgstr "به‌روزرسانی دنبال‌کردن ناموفق بود"
 msgid "Failed to upload attachment"
 msgstr "بارگذاری پیوست ناموفق بود"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "متوسط"
 
@@ -1675,7 +1687,7 @@ msgstr "انتقال حساب کاربری خود را تکمیل کنید"
 msgid "Finished"
 msgstr "پایان یافت"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "شلیک"
 
@@ -1696,11 +1708,11 @@ msgstr "پرچم‌ها"
 msgid "FLAMEOUT"
 msgstr "خاموشی موتور"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "فلپ‌ها"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "منورها"
 
@@ -1712,7 +1724,7 @@ msgstr "فلرها"
 msgid "Flat"
 msgstr "تخت"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "به دریا برخورد کرد"
 
@@ -1720,7 +1732,7 @@ msgstr "به دریا برخورد کرد"
 msgid "Flight"
 msgstr "پرواز"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "هسته پرواز خراب شد"
 
@@ -1745,7 +1757,7 @@ msgstr "پرواز شد"
 msgid "Fly"
 msgstr "پرواز"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "دوباره پرواز کن"
 
@@ -1819,7 +1831,7 @@ msgstr "بدنه"
 msgid "Gain"
 msgstr "بهره"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "ارابه"
 
@@ -1911,7 +1923,7 @@ msgstr "تاریخچه"
 msgid "Home"
 msgstr "خانه"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "قلاب"
 
@@ -2017,7 +2029,7 @@ msgstr "جمر"
 msgid "Jettison tanks"
 msgstr "رها کردن مخزن‌ها"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "رهاسازی: ارابه فرود"
 
@@ -2030,7 +2042,7 @@ msgstr "پیوستن"
 msgid "Join server"
 msgstr "پیوستن به سرور"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "پیوست"
 
@@ -2068,7 +2080,7 @@ msgstr "میانبرهای صفحه‌کلید"
 msgid "Keys"
 msgstr "کلیدها"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "سرنگونی"
 
@@ -2103,7 +2115,7 @@ msgstr "ارابهٔ فرود"
 msgid "Large"
 msgstr "بزرگ"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "دیر"
 
@@ -2112,7 +2124,7 @@ msgstr "دیر"
 msgid "Launch (catapult)"
 msgstr "پرتاب (منجنیق)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "پرتاب / قفل"
 
@@ -2132,7 +2144,7 @@ msgstr "خروج از سرور"
 msgid "Left"
 msgstr "ترک کرد"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "خارج شد"
 
@@ -2149,7 +2161,7 @@ msgstr "نوک بال چپ"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "فقط حروف، اعداد، فاصله، خط تیره و اسلش"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "در 1200 تراز، چرخ‌ها پایین"
 
@@ -2157,7 +2169,7 @@ msgstr "در 1200 تراز، چرخ‌ها پایین"
 msgid "Light"
 msgstr "روشن"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "چراغ‌ها"
 
@@ -2166,7 +2178,7 @@ msgstr "چراغ‌ها"
 msgid "Lights"
 msgstr "چراغ‌ها"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "چراغ‌ها"
 
@@ -2194,7 +2206,7 @@ msgstr "در حال بارگذاری"
 msgid "Loading content…"
 msgstr "در حال بارگذاری محتوا…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "بارگذاری ناموفق بود"
 
@@ -2270,7 +2282,7 @@ msgstr "پایین"
 msgid "Low stratus"
 msgstr "استراتوس پایین"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M برای بستن"
 
@@ -2282,7 +2294,7 @@ msgstr "مدیریت دسته‌ها"
 msgid "Manual"
 msgstr "دستی"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "نقشه"
 
@@ -2325,7 +2337,7 @@ msgstr "متوسط"
 msgid "Members"
 msgstr "اعضا"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "منو"
 
@@ -2343,7 +2355,7 @@ msgstr "ادغام — نبرد در عبور آغاز می‌شود"
 msgid "Message"
 msgstr "پیام"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "به همه پیام بدهید"
 
@@ -2351,7 +2363,7 @@ msgstr "به همه پیام بدهید"
 msgid "Message players on this server"
 msgstr "به بازیکنان این سرور پیام بفرستید"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "به تیم خود پیام بدهید"
 
@@ -2369,7 +2381,7 @@ msgstr "اجازهٔ میکروفون رد شد"
 msgid "Mid stratus"
 msgstr "استراتوس میانی"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "برخورد در هوا"
 
@@ -2381,7 +2393,7 @@ msgstr "نقشهٔ آتول میدوی — تصاویر حاوی داده‌ها
 msgid "Minimum length"
 msgstr "حداقل طول"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "موشک"
 
@@ -2389,7 +2401,7 @@ msgstr "موشک"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "مدل موشک <0>“AIM-120C AMRAAM”</0> اثر <1>Pippa</1> (Sketchfab)، تحت مجوز <2>CC BY 4.0</2>. تغییرات: مقیاس مجدد، جهت‌گیری مجدد و مرکزچینی برای نصب."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "مأموریت تمام شد"
 
@@ -2553,11 +2565,11 @@ msgstr "نتیجه‌ای یافت نشد."
 msgid "No status"
 msgstr "بدون وضعیت"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "مخزنی نیست"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "هدفی نیست"
 
@@ -2586,7 +2598,7 @@ msgstr "بدون بازدید"
 msgid "No world server."
 msgstr "سرور دنیا وجود ندارد."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "بدون نمره"
 
@@ -2669,7 +2681,7 @@ msgstr "جزئیات اقیانوس"
 msgid "offline"
 msgstr "آفلاین"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "نادیده گرفتن حد G"
 msgid "Owner"
 msgstr "مالک"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "قفل نگاه"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "نگاه آزاد"
 
@@ -2798,7 +2810,7 @@ msgstr "پسکی‌ها در این مرورگر در دسترس نیستند"
 msgid "Pattern (regex)"
 msgstr "الگو (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "متوقف شد"
 
@@ -2818,7 +2830,7 @@ msgstr "خلبان"
 msgid "Pilot"
 msgstr "خلبان"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "خلبان کشته شد"
 
@@ -2826,7 +2838,7 @@ msgstr "خلبان کشته شد"
 msgid "Pilot identity"
 msgstr "هویت خلبان"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "خلبان کشته شد"
 
@@ -2835,7 +2847,7 @@ msgstr "خلبان کشته شد"
 msgid "Pin"
 msgstr "سنجاق"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "فراز"
 
@@ -2851,7 +2863,7 @@ msgstr "دماغه پایین"
 msgid "Pitch up"
 msgstr "دماغه بالا"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "سکو"
 
@@ -2885,7 +2897,7 @@ msgstr "پست‌ها و نظرات"
 msgid "Press a key…"
 msgstr "یک کلید فشار دهید…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "برای پرتاب Enter را فشار دهید"
 
@@ -2941,7 +2953,7 @@ msgstr "سرورهای عمومی"
 msgid "Push notification"
 msgstr "اعلان فوری"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "زمان تقرب"
 
@@ -3036,7 +3048,7 @@ msgstr "مرجع"
 msgid "Refresh"
 msgstr "تازه‌سازی"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "به آرایش برمی‌گردم"
 
@@ -3172,15 +3184,15 @@ msgstr "در حال تسلیم..."
 msgid "Resolution"
 msgstr "رفع"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "شروع مجدد"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "شروع مجدد مأموریت"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "شروع مجدد مأموریت؟"
 
@@ -3188,7 +3200,7 @@ msgstr "شروع مجدد مأموریت؟"
 msgid "Result"
 msgstr "نتیجه"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "ازسرگیری"
 
@@ -3226,7 +3238,7 @@ msgstr "بال راست"
 msgid "Right wingtip"
 msgstr "نوک بال راست"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "غلت"
 
@@ -3263,7 +3275,7 @@ msgstr "فید RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL RSS در کلیپ‌بورد کپی شد"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "قدرت کامل"
 
@@ -3417,7 +3429,7 @@ msgstr "ارسال"
 msgid "Send again"
 msgstr "ارسال مجدد"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "ارسال پیام"
 
@@ -3458,7 +3470,7 @@ msgstr "قوانین سرور"
 msgid "server runs v{0}, you have v{version}"
 msgstr "سرور v{0} را اجرا می‌کند، شما v{version} دارید"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "جلسه پایان یافت"
 
@@ -3477,7 +3489,7 @@ msgstr "تنظیم مبدأ و مقصد"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "گسترده"
 msgid "SPD BK"
 msgstr "ت.هو"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "ترمز هوایی"
 
@@ -3576,10 +3588,6 @@ msgstr "ترمز هوایی"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "سرعت‌ها بر حسب KCAS، به‌صورت بازه‌ای از سبک (حداقل سوخت، بدون بار بیرونی) تا سنگین (حداکثر وزن ناخالص). داده‌ها به‌صورت تجربی درون بازی به‌دست آمده‌اند. هرگونه تفاوت با هواپیمای واقعی، بازتاب خطاهای مدل پروازی شبیه‌ساز است."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "هدف منهدم شد"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "تغییر به نمای ۱ تا ۹"
 msgid "System"
 msgstr "سیستم"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "نقشه تاکتیکی"
 
@@ -3673,7 +3681,7 @@ msgstr "برچسب باید ۵۰ نویسه یا کمتر باشد"
 msgid "Tags"
 msgstr "برچسب‌ها"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "دشمن در دیدرس"
 
@@ -3681,11 +3689,11 @@ msgstr "دشمن در دیدرس"
 msgid "Task"
 msgstr "وظیفه"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "تیم"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "تیم"
 
@@ -3732,7 +3740,7 @@ msgstr "درخواست دوربین پاسخ داده نشد"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "بازی بارگیری نشد. برای تلاش دوباره صفحه را دوباره بارگیری کنید."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "مسابقه پشت این منو ادامه دارد."
 
@@ -3744,7 +3752,7 @@ msgstr "درخواست میکروفون پاسخ داده نشد"
 msgid "The mission stopped."
 msgstr "مأموریت متوقف شد."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "مأموریت از نو آغاز می‌شود. پرواز فعلی ذخیره نخواهد شد."
 
@@ -3780,7 +3788,7 @@ msgstr "این دستگاه ممکن است برای پرواز روان بیش 
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "این کار بازی و گفتگوی آن را برای همیشه حذف می‌کند. این عمل قابل بازگشت نیست."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "گاز"
 
@@ -3857,7 +3865,7 @@ msgstr "گلوله‌های رسام"
 msgid "Travelling"
 msgstr "در حال سفر"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "تریم"
 
@@ -4115,7 +4123,7 @@ msgstr "تماشا شد"
 msgid "Watched only"
 msgstr "فقط تماشاشده"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "فرود را لغو کن"
 
@@ -4124,7 +4132,7 @@ msgstr "فرود را لغو کن"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "کد تأیید را به <0>{0}</0> ارسال کردیم. برای تأیید نشانی رایانامه خود، کد را در زیر وارد کنید."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "سلاح"
 
@@ -4175,7 +4183,7 @@ msgstr "بال‌ها قفل شد"
 msgid "WINGS SPREADING"
 msgstr "بال‌ها در حال باز شدن"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "برنده شد"
 
@@ -4192,7 +4200,7 @@ msgstr "سرور دنیا در دسترس نیست"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR، سلاح آزاد در عبور"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "انحراف"
 

@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, other {ရလဒ် #}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {ကျည် # တောင့် ထိမှန်သည်}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ပတ်} other {#ပတ်}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} အမည်"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} က {victim} ကို ဖျက်ဆီးလိုက်သည်"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}၏ ပွဲ"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, other {+ ပြန်ဖြေချက် # 
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {မီနူးဖွင့်ရန် (မဖတ်ရသေးသော အကြောင်းကြားချက် # ခု)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} သည် {other} နှင့် တိုက်မိသည်"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} ပျက်ကျသည်"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> စောင်းရန်"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> အနီးကပ်ကြည့်ရန်"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> နောက်ဆုတ်ရန်"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> မြင်ကွင်းအတွက်"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ဆွဲပါ</0> သို့မဟုတ် <1>←→</1> လှည့်ပတ်ရန်"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "ကြိုး 1"
 
@@ -177,7 +189,7 @@ msgstr "၁၂ နာရီ"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "ကြိုး 2"
 
@@ -185,7 +197,7 @@ msgstr "ကြိုး 2"
 msgid "24 hours"
 msgstr "၂၄ နာရီ"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "ကြိုး 3"
 
@@ -494,7 +506,7 @@ msgstr "ပိုစတာ ဖယ်ရှားပြီး"
 msgid "Banner updated"
 msgstr "ပိုစတာ ပြောင်းပြီး"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "၂၅၀ အောက် — ဂီယာနှင့် ဖလက်"
 
@@ -548,7 +560,7 @@ msgstr "အပြာ ဘော့များ"
 msgid "Board"
 msgstr "ဘုတ်"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "ဘောင်အရောင်"
 msgid "Bots"
 msgstr "ဘော့တ်များ"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "ဘရိတ်"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "ဘယ်ဘက် အမြန်ကွေ့"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "ညာဘက် အမြန်ကွေ့"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "အဆင်သင့်ဖြစ်လျှင် ကွေ့ပါ"
 
@@ -602,7 +614,7 @@ msgstr "BVR — အစမှစ၍ လက်နက်လွတ်လပ်"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, အစမှစ၍ လက်နက်လွတ်လပ်"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ဘောလုံးကိုကြေညာပါ"
 
@@ -638,7 +650,7 @@ msgstr "ကင်မရာ မရနိုင်ပါ"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "ပြောင်းလဲခဲ့သည်"
 msgid "Changed {field}"
 msgstr "{field} ကို ပြောင်းလဲခဲ့သည်"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "လိုက်ကြည့်မြင်ကွင်း:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "ချတ်"
 
@@ -888,7 +900,7 @@ msgstr "အဆင်ပြေသည်"
 msgid "Command Palette"
 msgstr "အမိန့်ပလိတ်"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "စတင်နေသည်"
 
@@ -948,7 +960,7 @@ msgstr "ချိတ်ဆက်နေသည်..."
 msgid "Connecting…"
 msgstr "ချိတ်ဆက်နေသည်…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "ချိတ်ဆက်မှု မအောင်မြင်ပါ"
 
@@ -1039,7 +1051,7 @@ msgstr "ထိုအကောင့်ဖြင့် အတည်ပြု၍�
 msgid "Countermeasures"
 msgstr "တန်ပြန်နည်းလမ်းများ"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "ပျက်ကျသည်"
 
@@ -1111,7 +1123,7 @@ msgstr "လက်ရှိတည်နေရာ"
 msgid "Custom"
 msgstr "စိတ်ကြိုက်"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "အန္တရာယ်ရှိ"
 
@@ -1143,7 +1155,7 @@ msgstr "နေ့"
 msgid "Deaths"
 msgstr "သေဆုံးမှု"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "ကုန်းပတ်တည်နေရာ သိမ်းဆည်းပြီးပြီ"
 
@@ -1253,7 +1265,7 @@ msgstr "ဖျက်ဆီးခံရ"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} က ဖျက်ဆီး"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "မီးလောင်၍ ပျက်စီးသည်"
 
@@ -1289,7 +1301,7 @@ msgstr "မတူညီသော ဂိမ်းဆာဗာ"
 msgid "Directory"
 msgstr "လမ်းညွှန်"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "ဂီယာချပါ"
 
@@ -1353,7 +1365,7 @@ msgstr "ဒေါင်းလုဒ်"
 msgid "Download failed"
 msgstr "ဒေါင်းလုဒ် မအောင်မြင်ပါ"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "လေအောက် ၆၀၀ ပေ"
 
@@ -1377,7 +1389,7 @@ msgstr "ပြောင်းလဲနိုင်သော ရက်ဆို�
 msgid "Dyslexia-friendly"
 msgstr "စာဖတ်ရခက်သူများအတွက်ရိုးရှင်း"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "စော"
 
@@ -1432,7 +1444,7 @@ msgstr "အထူးပြုလုပ်ချက် အသေးစိတ်"
 msgid "Eject"
 msgstr "ခုန်ထွက်မည်"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "ခုန်ထွက်"
 
@@ -1444,7 +1456,7 @@ msgstr "အီးမေးလ်"
 msgid "Email code"
 msgstr "အီးမေးလ် ကုဒ်"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "အရေးပေါ်ပစ်ချ"
 
@@ -1466,7 +1478,7 @@ msgstr "ပိုင်လွန်အလွတ်"
 msgid "Enable sound"
 msgstr "အသံဖွင့်ရန်"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "တိုက်ခိုက်နေပြီ"
 
@@ -1494,15 +1506,15 @@ msgstr "သင့်အထောက်အထားစိစစ်ရေးကု
 msgid "Error"
 msgstr "အမှား"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "အားလုံး"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "ပွဲမှ ထွက်ရန်"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "မစ်ရှင်မှထွက်"
 
@@ -1649,7 +1661,7 @@ msgstr "စောင့်ကြည့်မှု အပ်ဒိတ်လု�
 msgid "Failed to upload attachment"
 msgstr "တွဲဖက်ဖိုင် တင်၍ မရပါ"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "အလယ်အလတ်"
 
@@ -1675,7 +1687,7 @@ msgstr "အကောင့်ရွှေ့ပြောင်းခြင်း
 msgid "Finished"
 msgstr "ပြီးဆုံးသည်"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "ပစ်ခတ်"
 
@@ -1696,11 +1708,11 @@ msgstr "အလံများ"
 msgid "FLAMEOUT"
 msgstr "မီးတောက်ငြိမ်း"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "ဖလက်ပ်"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "မီးပန်းများ"
 
@@ -1712,7 +1724,7 @@ msgstr "မီးပန်းများ"
 msgid "Flat"
 msgstr "ပြားသော"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "ပင်လယ်ထဲသို့ ထိုးကျသည်"
 
@@ -1720,7 +1732,7 @@ msgstr "ပင်လယ်ထဲသို့ ထိုးကျသည်"
 msgid "Flight"
 msgstr "ပျံသန်းမှု"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "ပျံသန်းရေးအူတိုင် မအောင်မြင်ပါ"
 
@@ -1745,7 +1757,7 @@ msgstr "ပျံသန်းပြီး"
 msgid "Fly"
 msgstr "ပျံသန်း"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "ထပ်ပျံသန်းမည်"
 
@@ -1819,7 +1831,7 @@ msgstr "လေယာဉ်ကိုယ်ထည်"
 msgid "Gain"
 msgstr "ချဲ့ထွင်မှု"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "ဆင်းသက်ဘီး"
 
@@ -1911,7 +1923,7 @@ msgstr "မှတ်တမ်း"
 msgid "Home"
 msgstr "ပင်မ"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "ချိတ်"
 
@@ -2017,7 +2029,7 @@ msgstr "နှောင့်ယှက်စက်"
 msgid "Jettison tanks"
 msgstr "တိုင်ကီများ ပစ်ချရန်"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "ပစ်ချ- လျှောက်ခုံ"
 
@@ -2030,7 +2042,7 @@ msgstr "ဝင်ရန်"
 msgid "Join server"
 msgstr "ဆာဗာသို့ဝင်"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "ဝင်လာသည်"
 
@@ -2068,7 +2080,7 @@ msgstr "ကီးဘုတ် ဖြတ်လမ်းများ"
 msgid "Keys"
 msgstr "ခလုတ်များ"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "ပစ်ချပြီ"
 
@@ -2103,7 +2115,7 @@ msgstr "ဆင်းသက်ဂီယာ"
 msgid "Large"
 msgstr "ကြီး"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "နောက်ကျ"
 
@@ -2112,7 +2124,7 @@ msgstr "နောက်ကျ"
 msgid "Launch (catapult)"
 msgstr "ပစ်လွှတ်ခြင်း (ကတ်တာပတ်)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "ပျံတက် / ပစ်မှတ်"
 
@@ -2132,7 +2144,7 @@ msgstr "ဆာဗာမှထွက်"
 msgid "Left"
 msgstr "ထွက်ခွာသည်"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "ထွက်သွားသည်"
 
@@ -2149,7 +2161,7 @@ msgstr "ဘယ်တောင်ပံထိပ်"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "စာလုံး၊ ဂဏန်း၊ နေရာလွတ်၊ တံစက်ခြစ် နှင့် မျဉ်းစောင်းများသာ"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 တွင်ညီအောင်၊ ဘီးချပါ"
 
@@ -2157,7 +2169,7 @@ msgstr "1200 တွင်ညီအောင်၊ ဘီးချပါ"
 msgid "Light"
 msgstr "အလင်း"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "မီးများ"
 
@@ -2166,7 +2178,7 @@ msgstr "မီးများ"
 msgid "Lights"
 msgstr "မီးများ"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "မီးများ"
 
@@ -2194,7 +2206,7 @@ msgstr "တင်နေသည်"
 msgid "Loading content…"
 msgstr "အကြောင်းအရာ ဖွင့်နေသည်…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "တင်ခြင်း မအောင်မြင်ပါ"
 
@@ -2270,7 +2282,7 @@ msgstr "နိမ့်"
 msgid "Low stratus"
 msgstr "အနိမ့် စထရေးတပ်စ်"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "ပိတ်ရန် M"
 
@@ -2282,7 +2294,7 @@ msgstr "အမျိုးအစားများ စီမံရန်"
 msgid "Manual"
 msgstr "ကိုယ်တိုင်"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "မြေပုံ"
 
@@ -2325,7 +2337,7 @@ msgstr "အလယ်အလတ်"
 msgid "Members"
 msgstr "အဖွဲ့ဝင်များ"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "မီနူး"
 
@@ -2343,7 +2355,7 @@ msgstr "မာ့ဂျ် — ဖြတ်သန်းချိန်တွင�
 msgid "Message"
 msgstr "မက်ဆေ့ဂျ်"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "အားလုံးကို စာပို့ပါ"
 
@@ -2351,7 +2363,7 @@ msgstr "အားလုံးကို စာပို့ပါ"
 msgid "Message players on this server"
 msgstr "ဤဆာဗာပေါ်ရှိ ကစားသမားများထံ မက်ဆေ့ချ်ပို့ပါ"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "သင့်အသင်းကို စာပို့ပါ"
 
@@ -2369,7 +2381,7 @@ msgstr "မိုက်ခရိုဖုန်း ခွင့်ပြုခ�
 msgid "Mid stratus"
 msgstr "အလယ် စထရေးတပ်စ်"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "လေထဲတွင် တိုက်မိသည်"
 
@@ -2381,7 +2393,7 @@ msgstr "Midway Atoll မြေပုံ — ရုပ်ပုံများတ
 msgid "Minimum length"
 msgstr "အနည်းဆုံး အရှည်"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "ဒုံးကျည်"
 
@@ -2389,7 +2401,7 @@ msgstr "ဒုံးကျည်"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ဒုံးကျည်မော်ဒယ် <0>“AIM-120C AMRAAM”</0>၊ <1>Pippa</1> မှ (Sketchfab)၊ <2>CC BY 4.0</2>. ပြင်ဆင်ပြီး: အရွယ်ပြန်ညှိ၊ ဦးတည်ချက်ပြန်ညှိပြီး တပ်ဆင်ရန် အလယ်ချထားသည်။"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "တာဝန်ပြီးဆုံး"
 
@@ -2553,11 +2565,11 @@ msgstr "ရလဒ်များ မတွေ့ပါ။"
 msgid "No status"
 msgstr "အခြေအနေ မရှိ"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "တိုင်ကီမရှိ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "ပစ်မှတ် မရှိ"
 
@@ -2586,7 +2598,7 @@ msgstr "view များ မရှိ"
 msgid "No world server."
 msgstr "ကမ္ဘာ့ဆာဗာ မရှိပါ။"
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "အဆင့်မရှိ"
 
@@ -2669,7 +2681,7 @@ msgstr "သမုဒ္ဒရာ အသေးစိတ်"
 msgid "offline"
 msgstr "အော့ဖ်လိုင်း"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G ကန့်သတ်ချက် ကျော်လွန်"
 msgid "Owner"
 msgstr "ပိုင်ရှင်"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "ကြည့်ရှုမှု သော့ခတ်"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "ကြည့်ရှုမှု လွတ်"
 
@@ -2798,7 +2810,7 @@ msgstr "ဤဘရောက်ဆာတွင် passkey များ မရရ�
 msgid "Pattern (regex)"
 msgstr "ပုံစံ (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "ခေတ္တရပ်ထားသည်"
 
@@ -2818,7 +2830,7 @@ msgstr "လေယာဉ်မှူး"
 msgid "Pilot"
 msgstr "လေယာဉ်မှူး"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "လေယာဉ်မှူးကျဆုံး"
 
@@ -2826,7 +2838,7 @@ msgstr "လေယာဉ်မှူးကျဆုံး"
 msgid "Pilot identity"
 msgstr "လေယာဉ်မှူး အထောက်အထား"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "လေယာဉ်မှူး ကျဆုံးသည်"
 
@@ -2835,7 +2847,7 @@ msgstr "လေယာဉ်မှူး ကျဆုံးသည်"
 msgid "Pin"
 msgstr "ပင်တွဲရန်"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "မော့ငုံ့"
 
@@ -2851,7 +2863,7 @@ msgstr "မော့ချ အောက်သို့"
 msgid "Pitch up"
 msgstr "မော့ချ အပေါ်သို့"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "စင်မြင့်"
 
@@ -2885,7 +2897,7 @@ msgstr "ပို့စ်နှင့် comment များ"
 msgid "Press a key…"
 msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ပျံတက်ရန် ENTER နှိပ်ပါ"
 
@@ -2941,7 +2953,7 @@ msgstr "အများသုံး ဆာဗာများ"
 msgid "Push notification"
 msgstr "Push အကြောင်းကြားချက်"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ချဉ်းကပ်ချိန်"
 
@@ -3036,7 +3048,7 @@ msgstr "ကိုးကားချက်"
 msgid "Refresh"
 msgstr "ပြန်စစ်ဆေး"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "ပြန်လည်ပူးပေါင်းနေပြီ"
 
@@ -3172,15 +3184,15 @@ msgstr "ရှုံးကြောင်းပြောနေသည်..."
 msgid "Resolution"
 msgstr "ဖြေရှင်းချက်"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "ပြန်စရန်"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "မစ်ရှင်ပြန်စ"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "မစ်ရှင်ကို ပြန်စမလား။"
 
@@ -3188,7 +3200,7 @@ msgstr "မစ်ရှင်ကို ပြန်စမလား။"
 msgid "Result"
 msgstr "ရလဒ်"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "ဆက်လုပ်"
 
@@ -3226,7 +3238,7 @@ msgstr "ညာတောင်ပံ"
 msgid "Right wingtip"
 msgstr "ညာတောင်ပံထိပ်"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "ယိမ်း"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS ဖိဒ်"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL ကို clipboard သို့ ကူးယူပြီးပါပြီ"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "အားအပြည့်"
 
@@ -3417,7 +3429,7 @@ msgstr "ပို့ရန်"
 msgid "Send again"
 msgstr "ထပ်ပို့ပါ"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "ချတ်ပို့ရန်"
 
@@ -3458,7 +3470,7 @@ msgstr "ဆာဗာ စည်းမျဉ်းများ"
 msgid "server runs v{0}, you have v{version}"
 msgstr "ဆာဗာသည် v{0} ကိုအသုံးပြုသည်၊ သင့်တွင် v{version} ရှိသည်"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "စက်ရှင် ပြီးဆုံးပါပြီ"
 
@@ -3477,7 +3489,7 @@ msgstr "မူရင်းနှင့် ဦးတည်ရာ သတ်မှ�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "ကျယ်ပြန့်သော"
 msgid "SPD BK"
 msgstr "လေ.ဘ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "လေကြောင်းဘရိတ်"
 
@@ -3576,10 +3588,6 @@ msgstr "လေကြောင်းဘရိတ်"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "အမြန်နှုန်းများကို KCAS ဖြင့်၊ ပေါ့ပါးသော (လောင်စာအနည်းဆုံး၊ ပြင်ပတပ်ဆင်ပစ္စည်းမရှိ) မှ လေးလံသော (အများဆုံးစုစုပေါင်းအလေးချိန်) အထိ အပိုင်းအခြားအဖြစ်။ ဒေတာကို ဂိမ်းအတွင်း စမ်းသပ်၍ ရရှိထားသည်။ တကယ့်လေယာဉ်နှင့် ကွာခြားချက်များသည် ဆင်မြူလေတာ၏ ပျံသန်းမှုပုံစံအမှားများကို ထင်ဟပ်သည်။"
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "ပစ်ချလိုက်ပြီ"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "ကြည့်ရှုခြင်း 1-9 သို့ ပြောင
 msgid "System"
 msgstr "စနစ်"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "နည်းဗျူဟာမြေပုံ"
 
@@ -3673,7 +3681,7 @@ msgstr "တဂ်သည် စာလုံး ၅၀ သို့မဟုတ်
 msgid "Tags"
 msgstr "တက်ဂ်များ"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "ရန်သူတွေ့ပြီ"
 
@@ -3681,11 +3689,11 @@ msgstr "ရန်သူတွေ့ပြီ"
 msgid "Task"
 msgstr "တာဝန်"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "အဖွဲ့"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "အသင်း"
 
@@ -3732,7 +3740,7 @@ msgstr "ကင်မရာ တောင်းဆိုမှုကို မဖ�
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ဂိမ်းကို ဖွင့်၍မရပါ။ ထပ်စမ်းရန် စာမျက်နှာကို ပြန်ဖွင့်ပါ။"
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "ဤမီနူးနောက်ကွယ်တွင် ပွဲဆက်လက်ဆင်နွှဲနေသည်။"
 
@@ -3744,7 +3752,7 @@ msgstr "မိုက်ခရိုဖုန်း တောင်းဆို�
 msgid "The mission stopped."
 msgstr "တာဝန်စစ်ဆင်ရေး ရပ်သွားသည်။"
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "မစ်ရှင်ပြန်စပါမည်။ လက်ရှိပျံသန်းမှုကို သိမ်းဆည်းမည်မဟုတ်ပါ။"
 
@@ -3780,7 +3788,7 @@ msgstr "ချောမွေ့သောပျံသန်းမှုအတွ
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "ဤလုပ်ဆောင်ချက်သည် ဂိမ်းနှင့် ၎င်း၏ ချတ်ကို အပြီးအပိုင် ဖျက်ပစ်မည်ဖြစ်သည်။ ဤလုပ်ဆောင်ချက်ကို ပြန်ပြောင်း၍မရပါ။"
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "အရှိန်"
 
@@ -3857,7 +3865,7 @@ msgstr "ခြေရာခံကျည်များ"
 msgid "Travelling"
 msgstr "ခရီးသွားနေသည်"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "ထရင်မ်"
 
@@ -4115,7 +4123,7 @@ msgstr "ကြည့်ရှုထား"
 msgid "Watched only"
 msgstr "ကြည့်ရှုထားသောသာ"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "ဆင်းသက်မှုကို ရပ်ပါ"
 
@@ -4124,7 +4132,7 @@ msgstr "ဆင်းသက်မှုကို ရပ်ပါ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "<0>{0}</0> သို့ အတည်ပြုကုဒ် ပို့လိုက်ပါပြီ။ သင့်အီးမေးလ်လိပ်စာကို အတည်ပြုရန် အောက်တွင် ကုဒ်ထည့်ပါ။"
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "လက်နက်"
 
@@ -4175,7 +4183,7 @@ msgstr "အတောင်သော့ခတ်"
 msgid "WINGS SPREADING"
 msgstr "အတောင်ဖြန့်နေသည်"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "နိုင်ပြီ"
 
@@ -4192,7 +4200,7 @@ msgstr "ကမ္ဘာ့ဆာဗာသို့ ချိတ်ဆက်၍�
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, ဖြတ်သန်းချိန်တွင် လက်နက်လွတ်လပ်"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "လှည့်"
 

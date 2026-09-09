@@ -45,7 +45,7 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { demise } from './fate'
+import { demise, opponent, report } from './fate'
 import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
@@ -2804,6 +2804,7 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // fallback is for a caller that cannot say.
 function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	has_enemy=false; bandit.group.visible=false;
+	if(bandit.fate!=="midair") feed(opponent(bandit.fate), cfg.callsign||"701", BANDIT);   // a midair kills both, and the ownship's own crash reports that one, naming both jets
 	notice(translate("KILL")); }
 let aircraft_lights=null;
 ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
@@ -4510,6 +4511,7 @@ function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0;
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
+	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
@@ -6302,6 +6304,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // otherwise). Remotes are interpolated ~100 ms behind live.
 let net=null, flare_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
+function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
@@ -6560,8 +6563,8 @@ function net_event(e){ const slot=Number(e.slot);
 		else { if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]);
 			const st=remotes.get(slot); if(st) st.group.visible=false;
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
-		if(net&&Number(e.by)>=0&&Number(e.by)!==net.slot){ const killer=Number(e.by); const myteam=net.teams.get(net.slot);   // SPLASH (#146): a teammate's kill, straight off the kill event — no server change, log only
-			if(myteam&&net.teams.get(killer)===myteam) comm((net.names.get(killer)||"")+": "+translate("SPLASH"),"#ffd27f"); }
+		if(net){ const by=Number(e.by); const named=by>=0&&by!==slot?(net.names.get(by)||""):"";   // every death in the match, named for everyone flying it or watching it: the wire says who is credited, and an uncredited death reads as a crash rather than inventing a mechanism the server did not send
+			feed("battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
 		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, ownship.msl); }   // in a joust the match-starting double-respawn releases the waiting room

@@ -85,6 +85,14 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'DESTROYED BY {callsign}': msg({ message: 'DESTROYED BY {callsign}' }),
   COLLIDED: msg`COLLIDED`,
   'COLLIDED WITH {callsign}': msg({ message: 'COLLIDED WITH {callsign}' }),
+  // The same events in the third person, for the comms log: the banner
+  // is gone in three seconds and tells only the pilot who died, so the log
+  // carries who did what to whom for everyone still flying. Lower case because
+  // the names interpolated into these are people's callsigns, which keep the
+  // case their owner chose.
+  '{killer} destroyed {victim}': msg({ message: '{killer} destroyed {victim}' }),
+  '{victim} collided with {other}': msg({ message: '{victim} collided with {other}' }),
+  '{victim} crashed': msg({ message: '{victim} crashed' }),
   'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
   LIGHTS: msg`LIGHTS`,
   'RUN UP ENGINE': msg`RUN UP ENGINE`,
@@ -125,7 +133,6 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   // The comms log's team-chat prefix (#84).
   TEAM: msg`TEAM`,
   // The flavour radio tier (#146) — log-only calls.
-  SPLASH: msg`SPLASH`,
   TALLY: msg`TALLY`,
   REJOINING: msg`REJOINING`,
   // The Case III recovery script (#205) — controller callsigns (MARSHAL,

@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# riżultat} few {# riżultati} many {# riżultati} other {# riżultati}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Qala' # tir} few {Qala' # tiri} many {Qala' # tir} other {Qala' # tir}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ġim} other {#ġim}}"
 msgid "{entityLabel} name"
 msgstr "Isem ta' {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} qered lil {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Il-partita ta' {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# tweġiba} few {+# tweġibiet aktar} ma
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Iftaħ il-menu (# notifika mhux moqrija)} few {Iftaħ il-menu (# notifiki mhux moqrija)} many {Iftaħ il-menu (# notifiki mhux moqrija)} other {Iftaħ il-menu (# notifiki mhux moqrija)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} ħabat ma' {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} ġġarraf"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> biex tmejjel"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> biex toqrob"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> biex tirtira"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> għall-veduta"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Kaxkar</0> jew <1>←→</1> biex iddur"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "KEJBIL 1"
 
@@ -177,7 +189,7 @@ msgstr "12-il siegħa"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "KEJBIL 2"
 
@@ -185,7 +197,7 @@ msgstr "KEJBIL 2"
 msgid "24 hours"
 msgstr "24 siegħa"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "KEJBIL 3"
 
@@ -494,7 +506,7 @@ msgstr "Banner imneħħi"
 msgid "Banner updated"
 msgstr "Banner aġġornat"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "TAHT 250 — RKIEB U FLAPS"
 
@@ -548,7 +560,7 @@ msgstr "Bots blu"
 msgid "Board"
 msgstr "Bord"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Kulur tal-bord"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "freni"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "DUR XELLUG"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "DUR LEMIN"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "DAWWAR META LEST"
 
@@ -602,7 +614,7 @@ msgstr "BVR — armi ħielsa mill-bidu"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, armi ħielsa mill-bidu"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ĦABBAR IL-BALLUN"
 
@@ -638,7 +650,7 @@ msgstr "Il-kamera mhix disponibbli"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Inbidel"
 msgid "Changed {field}"
 msgstr "Inbidel {field}"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Komdu"
 msgid "Command Palette"
 msgstr "Palett tal-kmandi"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "QED NIBDA"
 
@@ -948,7 +960,7 @@ msgstr "Qed jgħaqqad..."
 msgid "Connecting…"
 msgstr "Qed jikkonnettja…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "IL-KONNESSJONI FALLIET"
 
@@ -1039,7 +1051,7 @@ msgstr "Ma stajniex nivverifikaw b'dak il-kont. Jekk jogħġbok erġa' pprova."
 msgid "Countermeasures"
 msgstr "Kontromiżuri"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Iġġarraf"
 
@@ -1111,7 +1123,7 @@ msgstr "Post attwali"
 msgid "Custom"
 msgstr "Personalizzat"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "PERIKOLUŻ"
 
@@ -1143,7 +1155,7 @@ msgstr "Binhar"
 msgid "Deaths"
 msgstr "Mwiet"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "POŻIZZJONI TAL-GVERTA MAĦŻUNA"
 
@@ -1253,7 +1265,7 @@ msgstr "MEQRUD"
 msgid "DESTROYED BY {callsign}"
 msgstr "MEQRUD MINN {callsign}"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Meqrud min-nar"
 
@@ -1289,7 +1301,7 @@ msgstr "Server tal-logħba differenti"
 msgid "Directory"
 msgstr "Direttorju"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "NIŻŻEL IR-RKIEB"
 
@@ -1353,7 +1365,7 @@ msgstr "Niżżel"
 msgid "Download failed"
 msgstr "It-tniżżil falla"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "MAR-RIĦ 600 PIED"
 
@@ -1377,7 +1389,7 @@ msgstr "Riżoluzzjoni dinamika"
 msgid "Dyslexia-friendly"
 msgstr "Adattat għad-disleksja"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "KMIENI"
 
@@ -1432,7 +1444,7 @@ msgstr "Dettall tal-effetti"
 msgid "Eject"
 msgstr "Eject"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "QABEŻ 'IL BARRA"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Kodiċi tal-email"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "TFIGĦ TA' EMERĠENZA"
 
@@ -1466,7 +1478,7 @@ msgstr "Pilun vojt"
 msgid "Enable sound"
 msgstr "Attiva l-ħoss"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "QED NATTAKKA"
 
@@ -1494,15 +1506,15 @@ msgstr "Daħħal il-kodiċi tal-awtentikatur tiegħek"
 msgid "Error"
 msgstr "Żball"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Kulħadd"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Oħroġ mill-partita"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Oħroġ mill-missjoni"
 
@@ -1649,7 +1661,7 @@ msgstr "Ma rnexxiex jiġi aġġornat is-segwitu"
 msgid "Failed to upload attachment"
 msgstr "Ma rnexxiex jittella' l-attachment"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "SODISFAĊENTI"
 
@@ -1675,7 +1687,7 @@ msgstr "Lesti t-trasferiment tal-kont tiegħek"
 msgid "Finished"
 msgstr "Spiċċat"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "spara"
 
@@ -1696,11 +1708,11 @@ msgstr "Bandieri"
 msgid "FLAMEOUT"
 msgstr "MAGNA MITFIJA"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flaps"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "flares"
 
@@ -1712,7 +1724,7 @@ msgstr "FLARES"
 msgid "Flat"
 msgstr "Ċatta"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Tar ġol-baħar"
 
@@ -1720,7 +1732,7 @@ msgstr "Tar ġol-baħar"
 msgid "Flight"
 msgstr "Titjira"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "IL-QALBA TAT-TITJIR FALLIET"
 
@@ -1745,7 +1757,7 @@ msgstr "Ittajjar"
 msgid "Fly"
 msgstr "Ittajjar"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Erġa' tir"
 
@@ -1819,7 +1831,7 @@ msgstr "Buq tal-ajruplan"
 msgid "Gain"
 msgstr "Amplifikazzjoni"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "Inżul"
 
@@ -1911,7 +1923,7 @@ msgstr "Storja"
 msgid "Home"
 msgstr "Paġna ewlenija"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "ganċ"
 
@@ -2017,7 +2029,7 @@ msgstr "Interferitur"
 msgid "Jettison tanks"
 msgstr "Itfa' t-tankijiet"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "TFIGĦ: ROTI"
 
@@ -2030,7 +2042,7 @@ msgstr "Ingħaqad"
 msgid "Join server"
 msgstr "Ingħaqad ma’ server"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "INGĦAQAD"
 
@@ -2068,7 +2080,7 @@ msgstr "Shortcuts tat-tastiera"
 msgid "Keys"
 msgstr "Ċwievet"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "QTIL"
 
@@ -2103,7 +2115,7 @@ msgstr "Karrell tal-inżul"
 msgid "Large"
 msgstr "Kbir"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "TARD"
 
@@ -2112,7 +2124,7 @@ msgstr "TARD"
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "tlugħ / mira"
 
@@ -2132,7 +2144,7 @@ msgstr "Ħalli s-server"
 msgid "Left"
 msgstr "Telaq"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "TELAQ"
 
@@ -2149,7 +2161,7 @@ msgstr "Tarf tal-ġewnaħ tax-xellug"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Ittri, numri, spazji, sing u sing obliku biss"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "LIVELL F’1200, ROTI ’L ISFEL"
 
@@ -2157,7 +2169,7 @@ msgstr "LIVELL F’1200, ROTI ’L ISFEL"
 msgid "Light"
 msgstr "Ċar"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "dwal"
 
@@ -2166,7 +2178,7 @@ msgstr "dwal"
 msgid "Lights"
 msgstr "Dwal"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "DAWLIJIET"
 
@@ -2194,7 +2206,7 @@ msgstr "QED JITGĦABBA"
 msgid "Loading content…"
 msgstr "Qed jitgħabba l-kontenut…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "IT-TAGĦBIJA FALLIET"
 
@@ -2270,7 +2282,7 @@ msgstr "Baxx"
 msgid "Low stratus"
 msgstr "Stratus baxx"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M biex tagħlaq"
 
@@ -2282,7 +2294,7 @@ msgstr "Immaniġġja l-kategoriji"
 msgid "Manual"
 msgstr "Manwali"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "mappa"
 
@@ -2325,7 +2337,7 @@ msgstr "Medju"
 msgid "Members"
 msgstr "Membri"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menu"
 
@@ -2343,7 +2355,7 @@ msgstr "Merge — il-ġlieda tibda mal-qsim"
 msgid "Message"
 msgstr "Messaġġ"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Ibgħat messaġġ lil kulħadd"
 
@@ -2351,7 +2363,7 @@ msgstr "Ibgħat messaġġ lil kulħadd"
 msgid "Message players on this server"
 msgstr "Ibgħat messaġġ lill-plejers fuq dan is-server"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Ibgħat messaġġ lit-tim tiegħek"
 
@@ -2369,7 +2381,7 @@ msgstr "Il-permess tal-mikrofonu ġie miċħud"
 msgid "Mid stratus"
 msgstr "Stratus medju"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Ħabta fl-ajru"
 
@@ -2381,7 +2393,7 @@ msgstr "Mappa tal-Atoll ta' Midway — l-immaġni fiha data <0>Copernicus Sentin
 msgid "Minimum length"
 msgstr "Tul minimu"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISSILA"
 
@@ -2389,7 +2401,7 @@ msgstr "MISSILA"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Mudell ta' missila <0>“AIM-120C AMRAAM”</0> minn <1>Pippa</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Modifikat: skalat mill-ġdid, orjentat mill-ġdid u ċċentrat għat-tqegħid."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Il-missjoni spiċċat"
 
@@ -2553,11 +2565,11 @@ msgstr "Ma nstabu l-ebda riżultati."
 msgid "No status"
 msgstr "L-ebda status"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "L-EBDA TANK"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "L-EBDA MIRA"
 
@@ -2586,7 +2598,7 @@ msgstr "L-ebda views"
 msgid "No world server."
 msgstr "M'hemm l-ebda server tad-dinja."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "L-EBDA GRAD"
 
@@ -2669,7 +2681,7 @@ msgstr "Dettall tal-oċean"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Aqbeż il-limitu G"
 msgid "Owner"
 msgstr "Sid"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "ĦARSA MSAKKRA"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "ĦARSA ĦIELSA"
 
@@ -2798,7 +2810,7 @@ msgstr "Il-passkeys mhumiex disponibbli f'dan il-browser"
 msgid "Pattern (regex)"
 msgstr "Mudell (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Mwaqqaf"
 
@@ -2818,7 +2830,7 @@ msgstr "bdot"
 msgid "Pilot"
 msgstr "Bdot"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "BDOT MEJJET"
 
@@ -2826,7 +2838,7 @@ msgstr "BDOT MEJJET"
 msgid "Pilot identity"
 msgstr "Identità tal-pilota"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Il-bdot inqatel"
 
@@ -2835,7 +2847,7 @@ msgstr "Il-bdot inqatel"
 msgid "Pin"
 msgstr "Waħħal"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "pitch"
 
@@ -2851,7 +2863,7 @@ msgstr "Pitch 'l isfel"
 msgid "Pitch up"
 msgstr "Pitch 'il fuq"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PJATTAFORMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Posts u kummenti"
 msgid "Press a key…"
 msgstr "Agħfas ċavetta…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "AGĦFAS ENTER BIEX TITLAQ"
 
@@ -2941,7 +2953,7 @@ msgstr "Servers pubbliċi"
 msgid "Push notification"
 msgstr "Notifika push"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ĦIN TAL-AVVIĊINAMENT"
 
@@ -3036,7 +3048,7 @@ msgstr "Referenza"
 msgid "Refresh"
 msgstr "Aġġorna"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "LURA FIL-FORMAZZJONI"
 
@@ -3172,15 +3184,15 @@ msgstr "Qed jirriżenja..."
 msgid "Resolution"
 msgstr "Riżoluzzjoni"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Erġa' ibda"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Erġa’ ibda l-missjoni"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Terġa' tibda l-missjoni?"
 
@@ -3188,7 +3200,7 @@ msgstr "Terġa' tibda l-missjoni?"
 msgid "Result"
 msgstr "Riżultat"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Kompli"
 
@@ -3226,7 +3238,7 @@ msgstr "Ġewnaħ tal-lemin"
 msgid "Right wingtip"
 msgstr "Tarf tal-ġewnaħ tal-lemin"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "roll"
 
@@ -3263,7 +3275,7 @@ msgstr "Feed RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL ta' RSS ikkupjat fil-clipboard"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "QAWWA SĦIĦA"
 
@@ -3417,7 +3429,7 @@ msgstr "Ibgħat"
 msgid "Send again"
 msgstr "Ibgħat mill-ġdid"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Ibgħat messaġġ"
 
@@ -3458,7 +3470,7 @@ msgstr "Regoli tas-server"
 msgid "server runs v{0}, you have v{version}"
 msgstr "is-server iħaddem v{0}, int għandek v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "IS-SESSJONI NTEMMET"
 
@@ -3477,7 +3489,7 @@ msgstr "Issettja oriġini u destinazzjoni"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Wiesa'"
 msgid "SPD BK"
 msgstr "FRN.VL"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "fren tal-veloċità"
 
@@ -3576,10 +3588,6 @@ msgstr "Fren tal-veloċità"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Veloċitajiet f'KCAS, bħala firxa minn ħafif (minimu ta' fjuwil, mingħajr tagħbija esterna) sa tqil (piż gross massimu). Id-data nkisbet b'mod sperimentali fil-logħba. Kwalunkwe differenza mill-ajruplan reali tirrifletti żbalji fil-mudell tat-titjira tas-simulatur."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "MIRA MEQRUDA"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Aqleb għal vista 1-9"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "MAPPA TATTIKA"
 
@@ -3673,7 +3681,7 @@ msgstr "It-tikketta trid tkun sa 50 karattru"
 msgid "Tags"
 msgstr "Tikketti"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "NARA L-GĦADU"
 
@@ -3681,11 +3689,11 @@ msgstr "NARA L-GĦADU"
 msgid "Task"
 msgstr "Kompitu"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Tim"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "TIM"
 
@@ -3732,7 +3740,7 @@ msgstr "It-talba għall-kamera ma twiġbitx"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Il-logħba ma setgħetx titgħabba. Erġa' tella' l-paġna biex tipprova mill-ġdid."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Il-partita tkompli wara dan il-menu."
 
@@ -3744,7 +3752,7 @@ msgstr "It-talba għall-mikrofonu ma twiġbitx"
 msgid "The mission stopped."
 msgstr "Il-missjoni waqfet."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Il-missjoni terġa' tibda. It-titjira attwali ma tinħażinx."
 
@@ -3780,7 +3788,7 @@ msgstr "Din il-magna tista' tkun bil-mod wisq għal titjira mingħajr skossi."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Dan għad iħassar il-logħba u ċ-chat tagħha b'mod permanenti. Din l-azzjoni ma tistax titħassar."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "throttle"
 
@@ -3857,7 +3865,7 @@ msgstr "Tracers"
 msgid "Travelling"
 msgstr "Qed jivvjaġġa"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Segwit"
 msgid "Watched only"
 msgstr "Segwit biss"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "WAQQAF L-INŻUL"
 
@@ -4124,7 +4132,7 @@ msgstr "WAQQAF L-INŻUL"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Bgħatna kodiċi ta' verifika lil <0>{0}</0>. Daħħal il-kodiċi hawn taħt biex tivverifika l-indirizz elettroniku tiegħek."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "arma"
 
@@ -4175,7 +4183,7 @@ msgstr "ĠWIENAĦ IMSAKKRA"
 msgid "WINGS SPREADING"
 msgstr "ĠWIENAĦ JINFETĦU"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "JIRBAĦ"
 
@@ -4192,7 +4200,7 @@ msgstr "Is-server tad-dinja ma jistax jintlaħaq"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, armi ħielsa mal-qsim"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "yaw"
 

@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# ئەنجام} other {# ئەنجام}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {بە # فیشەک پێکرا} other {بە # فیشەک پێکرا}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ه} other {#ه}}"
 msgid "{entityLabel} name"
 msgstr "ناوی {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim}ی وێران کرد"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "یارییەکەی {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# وەڵام} other {+# وەڵامی ز�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {پێڕست بکەرەوە (# ئاگادارکردنەوەی نەخوێندراو)} other {پێڕست بکەرەوە (# ئاگادارکردنەوەی نەخوێندراو)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} لەگەڵ {other} پێکدا"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} کەوت"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> بۆ لادان"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> بۆ نزیکبوونەوە"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> بۆ دواکەوتن"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> بۆ دیمەن"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ڕایبکێشە</0> یان <1>←→</1> بۆ سووڕانەوە"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "تێل 1"
 
@@ -177,7 +189,7 @@ msgstr "١٢ کاتژمێر"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "تێل 2"
 
@@ -185,7 +197,7 @@ msgstr "تێل 2"
 msgid "24 hours"
 msgstr "٢٤ کاتژمێر"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "تێل 3"
 
@@ -494,7 +506,7 @@ msgstr "بانەر لابرا"
 msgid "Banner updated"
 msgstr "بانەر نوێکرایەوە"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "خوارتر لە 250 — چەرخ و فلاپ"
 
@@ -548,7 +560,7 @@ msgstr "بۆتە شینەکان"
 msgid "Board"
 msgstr "تەختە"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "بۆڵتەر"
 
@@ -565,19 +577,19 @@ msgstr "ڕەنگی سنوور"
 msgid "Bots"
 msgstr "بۆتەکان"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "برێک"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "بۆ چەپ بسووڕێ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "بۆ ڕاست بسووڕێ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "کاتێک ئامادەیت بسووڕێوە"
 
@@ -602,7 +614,7 @@ msgstr "BVR — چەک ئازادە لە دەستپێکەوە"
 msgid "BVR, fight's on from the start"
 msgstr "BVR، چەک ئازادە لە دەستپێکەوە"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "تۆپەکە ڕابگەیەنە"
 
@@ -638,7 +650,7 @@ msgstr "کامێرا بەردەست نییە"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "گۆڕدرا"
 msgid "Changed {field}"
 msgstr "{field} گۆڕدرا"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "دیمەنی شوێنکەوتن:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "چات"
 
@@ -888,7 +900,7 @@ msgstr "ئاسوودە"
 msgid "Command Palette"
 msgstr "پەلەتی فەرمان"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "دەستپێدەکەم"
 
@@ -948,7 +960,7 @@ msgstr "پەیوەندی دەکرێت..."
 msgid "Connecting…"
 msgstr "پەیوەست دەبێت…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "پەیوەندی شکستی هێنا"
 
@@ -1039,7 +1051,7 @@ msgstr "نەتوانرا بەو هەژمارە پشتڕاست بکرێتەوە. 
 msgid "Countermeasures"
 msgstr "ڕێوشوێنی دژە"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "فڕۆکەکە کەوت"
 
@@ -1111,7 +1123,7 @@ msgstr "شوێنی ئێستا"
 msgid "Custom"
 msgstr "تایبەت"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "مەترسیدار"
 
@@ -1143,7 +1155,7 @@ msgstr "ڕۆژ"
 msgid "Deaths"
 msgstr "مردنەکان"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "شوێنی سەکۆ پاشەکەوتکرا"
 
@@ -1253,7 +1265,7 @@ msgstr "وێران کرا"
 msgid "DESTROYED BY {callsign}"
 msgstr "لەلایەن {callsign} وێران کرا"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "بە ئاگر لەناوچوو"
 
@@ -1289,7 +1301,7 @@ msgstr "ھۆستی یاری جیاواز"
 msgid "Directory"
 msgstr "پێڕست"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "چەرخ دابەزێنە"
 
@@ -1353,7 +1365,7 @@ msgstr "داگرتن"
 msgid "Download failed"
 msgstr "داگرتن سەرکەوتوو نەبوو"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "لەگەڵ با 600 پێ"
 
@@ -1377,7 +1389,7 @@ msgstr "ڕەزۆلیوشنی گۆڕاو"
 msgid "Dyslexia-friendly"
 msgstr "لەگەڵ دیسلێکسیا گونجاو"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "زوو"
 
@@ -1432,7 +1444,7 @@ msgstr "وردەکاری کاریگەرییەکان"
 msgid "Eject"
 msgstr "خۆفڕێدان"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "خۆی هاویشتە دەرەوە"
 
@@ -1444,7 +1456,7 @@ msgstr "ئیمەیڵ"
 msgid "Email code"
 msgstr "کۆدی ئیمەیڵ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "فڕێدانی کتوپڕ"
 
@@ -1466,7 +1478,7 @@ msgstr "پایلۆنی بەتاڵ"
 msgid "Enable sound"
 msgstr "دەنگ چالاک بکە"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "هێرش دەکەم"
 
@@ -1494,15 +1506,15 @@ msgstr "کۆدی ڕاستاندنەکەت بنووسە"
 msgid "Error"
 msgstr "هەڵە"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "هەمووان"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "دەرچوون لە یارییەکە"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "دەرچوون لە ئەرک"
 
@@ -1649,7 +1661,7 @@ msgstr "نوێکردنەوەی چاودێری سەرکەوتوو نەبوو"
 msgid "Failed to upload attachment"
 msgstr "بارکردنی هاوپێچ سەرکەوتوو نەبوو"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "مامناوەند"
 
@@ -1675,7 +1687,7 @@ msgstr "گواستنەوەی هەژمارەکەت تەواو بکە"
 msgid "Finished"
 msgstr "تەواوبوو"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "تەقە"
 
@@ -1696,11 +1708,11 @@ msgstr "ئاڵاکان"
 msgid "FLAMEOUT"
 msgstr "کوژانەوەی بڵێسە"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "فلاپەکان"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "فلێر"
 
@@ -1712,7 +1724,7 @@ msgstr "بڵێسەکان"
 msgid "Flat"
 msgstr "تەخت"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "کەوتە ناو دەریاوە"
 
@@ -1720,7 +1732,7 @@ msgstr "کەوتە ناو دەریاوە"
 msgid "Flight"
 msgstr "فڕین"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "ناوکی فڕین سەرکەوتوو نەبوو"
 
@@ -1745,7 +1757,7 @@ msgstr "فڕی"
 msgid "Fly"
 msgstr "فڕین"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "دووبارە بفڕە"
 
@@ -1819,7 +1831,7 @@ msgstr "لاشەی فڕۆکە"
 msgid "Gain"
 msgstr "بەهێزکردن"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "چەرخ"
 
@@ -1911,7 +1923,7 @@ msgstr "مێژوو"
 msgid "Home"
 msgstr "ماڵەوە"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "قولاپ"
 
@@ -2017,7 +2029,7 @@ msgstr "تێکدەری شەپۆل"
 msgid "Jettison tanks"
 msgstr "تانکەکان فڕێبدە"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "فڕێدان: چەرخەکان"
 
@@ -2030,7 +2042,7 @@ msgstr "بەشداربە"
 msgid "Join server"
 msgstr "بەشداری ڕاژە"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "بەشداری کرد"
 
@@ -2068,7 +2080,7 @@ msgstr "کورتە کلیلەکان"
 msgid "Keys"
 msgstr "کلیلەکان"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "کوشتن"
 
@@ -2103,7 +2115,7 @@ msgstr "تایەکانی نیشتنەوە"
 msgid "Large"
 msgstr "گەورە"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "درەنگ"
 
@@ -2112,7 +2124,7 @@ msgstr "درەنگ"
 msgid "Launch (catapult)"
 msgstr "هەڵدان (مەنجەنیق)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "هاویشتن / ئامانج"
 
@@ -2132,7 +2144,7 @@ msgstr "جێهێشتنی ڕاژە"
 msgid "Left"
 msgstr "ڕۆیشت"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "ڕۆیشت"
 
@@ -2149,7 +2161,7 @@ msgstr "سەری باڵی چەپ"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "تەنها پیت، ژمارە، بۆشایی، هێڵی بچووک و سلاش"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "لە 1200 ڕاست بە، چەرخەکان دابەزێنە"
 
@@ -2157,7 +2169,7 @@ msgstr "لە 1200 ڕاست بە، چەرخەکان دابەزێنە"
 msgid "Light"
 msgstr "ڕووناک"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "چراکان"
 
@@ -2166,7 +2178,7 @@ msgstr "چراکان"
 msgid "Lights"
 msgstr "چراکان"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "چراکان"
 
@@ -2194,7 +2206,7 @@ msgstr "بار دەکرێت"
 msgid "Loading content…"
 msgstr "ناوەڕۆک باردەکرێت…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "بارکردن شکستی هێنا"
 
@@ -2270,7 +2282,7 @@ msgstr "نزم"
 msgid "Low stratus"
 msgstr "ستراتۆسی نزم"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M بۆ داخستن"
 
@@ -2282,7 +2294,7 @@ msgstr "بەڕێوەبردنی هاوپۆلەکان"
 msgid "Manual"
 msgstr "دەستی"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "نەخشە"
 
@@ -2325,7 +2337,7 @@ msgstr "مامناوەند"
 msgid "Members"
 msgstr "ئەندامەکان"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "مینیو"
 
@@ -2343,7 +2355,7 @@ msgstr "گەیشتن — شەڕ لە تێپەڕبوون دەست پێدەکات"
 msgid "Message"
 msgstr "پەیام"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "نامە بۆ هەمووان بنێرە"
 
@@ -2351,7 +2363,7 @@ msgstr "نامە بۆ هەمووان بنێرە"
 msgid "Message players on this server"
 msgstr "نامە بنێرە بۆ یاریزانەکانی ئەم سێرڤەرە"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "نامە بۆ تیمەکەت بنێرە"
 
@@ -2369,7 +2381,7 @@ msgstr "مۆڵەتی مایکرۆفۆن ڕەتکرایەوە"
 msgid "Mid stratus"
 msgstr "ستراتۆسی ناوەند"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "پێکدادان لە ئاسماندا"
 
@@ -2381,7 +2393,7 @@ msgstr "نەخشەی ئەتۆڵی میدوەی — وێنەکان داتای د�
 msgid "Minimum length"
 msgstr "کەمترین درێژی"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "مووشەک"
 
@@ -2389,7 +2401,7 @@ msgstr "مووشەک"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "مۆدێلی مووشەک <0>“AIM-120C AMRAAM”</0> لەلایەن <1>Pippa</1> (Sketchfab)، مۆڵەت پێدراوە بەپێی <2>CC BY 4.0</2>. دەستکاریکراوە: قەبارە گۆڕدراوە، ئاراستە گۆڕدراوە و بۆ دانان ناوەندگیر کراوە."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "ئەرکەکە تەواو بوو"
 
@@ -2553,11 +2565,11 @@ msgstr "هیچ ئەنجامێک نەدۆزرایەوە."
 msgid "No status"
 msgstr "هیچ دۆخێک نییە"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "تانک نییە"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "ئامانج نییە"
 
@@ -2586,7 +2598,7 @@ msgstr "هیچ بینینێک نییە"
 msgid "No world server."
 msgstr "هیچ ڕاژەکارێکی جیهان نییە."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "بێ نمرە"
 
@@ -2669,7 +2681,7 @@ msgstr "وردەکاری زەریا"
 msgid "offline"
 msgstr "دەرهێڵ"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "تێپەڕاندنی سنووری G"
 msgid "Owner"
 msgstr "خاوەن"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "چاو لەسەر ئامانج"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "چاو ئازادە"
 
@@ -2798,7 +2810,7 @@ msgstr "پاسکییەکان لەم وێبگەڕەدا بەردەست نین"
 msgid "Pattern (regex)"
 msgstr "نموونە (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "وەستێنراو"
 
@@ -2818,7 +2830,7 @@ msgstr "فڕۆکەوان"
 msgid "Pilot"
 msgstr "فڕۆکەوان"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "فڕۆکەوان کوژرا"
 
@@ -2826,7 +2838,7 @@ msgstr "فڕۆکەوان کوژرا"
 msgid "Pilot identity"
 msgstr "ناسنامەی فڕۆکەوان"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "فڕۆکەوان کوژرا"
 
@@ -2835,7 +2847,7 @@ msgstr "فڕۆکەوان کوژرا"
 msgid "Pin"
 msgstr "چەسپاندن"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "سەرەوخوار"
 
@@ -2851,7 +2863,7 @@ msgstr "لووت بۆ خوارەوە"
 msgid "Pitch up"
 msgstr "لووت بۆ سەرەوە"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "سەکۆ"
 
@@ -2885,7 +2897,7 @@ msgstr "پۆستەکان و بۆچوونەکان"
 msgid "Press a key…"
 msgstr "کلیلێک دابگرە…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "بۆ فڕین ENTER داگرە"
 
@@ -2941,7 +2953,7 @@ msgstr "ڕاژەکارە گشتییەکان"
 msgid "Push notification"
 msgstr "ئاگادارکردنەوەی پاڵنان"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "کاتی نزیکبوونەوە"
 
@@ -3036,7 +3048,7 @@ msgstr "سەرچاوە"
 msgid "Refresh"
 msgstr "نوێکردنەوە"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "بۆ ڕیز دەگەڕێمەوە"
 
@@ -3172,15 +3184,15 @@ msgstr "دەستلەکارکێشانەوە..."
 msgid "Resolution"
 msgstr "چارەسەر"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "دەستپێکردنەوە"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "دەستپێکردنەوەی ئەرک"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "دەستپێکردنەوەی ئەرک؟"
 
@@ -3188,7 +3200,7 @@ msgstr "دەستپێکردنەوەی ئەرک؟"
 msgid "Result"
 msgstr "ئەنجام"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "بەردەوامبوون"
 
@@ -3226,7 +3238,7 @@ msgstr "باڵی ڕاست"
 msgid "Right wingtip"
 msgstr "سەری باڵی ڕاست"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "گێڕانەوە"
 
@@ -3263,7 +3275,7 @@ msgstr "فیدی RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URLی RSS لەبەر کرایەوە بۆ کلیپ بۆرد"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "هێزی تەواو"
 
@@ -3417,7 +3429,7 @@ msgstr "ناردن"
 msgid "Send again"
 msgstr "دیسان بنێرە"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "چات بنێرە"
 
@@ -3458,7 +3470,7 @@ msgstr "ڕێساکانی ڕاژەکار"
 msgid "server runs v{0}, you have v{version}"
 msgstr "ڕاژەکار v{0} کار دەکات، تۆ v{version}ت هەیە"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "دانیشتن کۆتایی هات"
 
@@ -3477,7 +3489,7 @@ msgstr "سەرچاوە و مەبەست دیاریبکە"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "فراوان"
 msgid "SPD BK"
 msgstr "ب.هە"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "بریکی هەوا"
 
@@ -3576,10 +3588,6 @@ msgstr "بریکی هەوا"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "خێراییەکان بە KCAS، وەک مەودایەک لە سووک (کەمترین سووتەمەنی، بێ چەک) بۆ قورس (زۆرترین کێشی گشتی). داتاکان بە شێوەی ئەزموونی لەناو یارییەکەدا وەرگیراون. هەر جیاوازییەک لەگەڵ فڕۆکەی ڕاستەقینەدا ڕەنگدانەوەی هەڵەکانی مۆدێلی فڕینی هاوشێوەکارە."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "ئامانج لەناوبرا"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "بگۆڕە بۆ پیشاندانی ١-٩"
 msgid "System"
 msgstr "سیستەم"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "نەخشەی تاکتیکی"
 
@@ -3673,7 +3681,7 @@ msgstr "تاگ دەبێت ٥٠ پیت یان کەمتر بێت"
 msgid "Tags"
 msgstr "تاگەکان"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "دوژمن دەبینم"
 
@@ -3681,11 +3689,11 @@ msgstr "دوژمن دەبینم"
 msgid "Task"
 msgstr "کار"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "تیم"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "تیم"
 
@@ -3732,7 +3740,7 @@ msgstr "داواکاری کامێرا وەڵام نەدرایەوە"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "یارییەکە بار نەکرا. بۆ هەوڵدانەوە پەڕەکە دووبارە بار بکەوە."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "یارییەکە لە پشت ئەم مێنیوەوە بەردەوام دەبێت."
 
@@ -3744,7 +3752,7 @@ msgstr "داواکاری مایکرۆفۆن وەڵام نەدرایەوە"
 msgid "The mission stopped."
 msgstr "ئەرکەکە وەستا."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "ئەرکەکە دەست پێدەکاتەوە. فڕینی ئێستا پاشەکەوت ناکرێت."
 
@@ -3780,7 +3788,7 @@ msgstr "لەوانەیە ئەم ئامێرە زۆر خاو بێت بۆ فڕین�
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "ئەمە یارییەکە و چاتەکەی بە یەکجاری دەسڕێتەوە. ئەم کردارە ناتوانرێت پووچ بکرێتەوە."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "گاز"
 
@@ -3857,7 +3865,7 @@ msgstr "گوللەی ڕووناک"
 msgid "Travelling"
 msgstr "گەشتکردن"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "تریم"
 
@@ -4115,7 +4123,7 @@ msgstr "چاودێریکراو"
 msgid "Watched only"
 msgstr "تەنها چاودێریکراو"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "نیشتنەوە ڕابگرە"
 
@@ -4124,7 +4132,7 @@ msgstr "نیشتنەوە ڕابگرە"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "کۆدی پشتڕاستکردنەوەمان نارد بۆ <0>{0}</0>. بۆ پشتڕاستکردنەوەی ناونیشانی ئیمەیڵەکەت کۆدەکە لە خوارەوە بنووسە."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "چەک"
 
@@ -4175,7 +4183,7 @@ msgstr "باڵەکان قوفڵکراون"
 msgid "WINGS SPREADING"
 msgstr "باڵەکان دەکرێنەوە"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "بردیەوە"
 
@@ -4192,7 +4200,7 @@ msgstr "ڕاژەکاری جیهان بەردەست نییە"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR، شەڕ لە تێپەڕبوون دەست پێدەکات"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "لادان"
 

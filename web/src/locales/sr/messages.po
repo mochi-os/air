@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# резултат} few {# резултата} other {# резултата}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# примљени погодак} few {# примљена поготка} other {# примљених погодака}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#нед} other {#нед}}"
 msgid "{entityLabel} name"
 msgstr "Назив {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} је уништио играча {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Меч играча {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# одговор} few {+# додатни
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Отвори мени (# непрочитано обавештење)} few {Отвори мени (# непрочитана обавештења)} other {Отвори мени (# непрочитаних обавештења)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} се сударио са {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} се срушио"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> за нагиб"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> за приближавање"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> за удаљавање"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> за приказ"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Превуците</0> или <1>←→</1> за кружење"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "САЈЛА 1"
 
@@ -177,7 +189,7 @@ msgstr "12 сати"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "САЈЛА 2"
 
@@ -185,7 +197,7 @@ msgstr "САЈЛА 2"
 msgid "24 hours"
 msgstr "24 сата"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "САЈЛА 3"
 
@@ -494,7 +506,7 @@ msgstr "Банер уклоњен"
 msgid "Banner updated"
 msgstr "Банер ажуриран"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ИСПОД 250 — СТАЈНИ ТРАП И ЗАКРИЛЦА"
 
@@ -548,7 +560,7 @@ msgstr "Плави ботови"
 msgid "Board"
 msgstr "Табла"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
@@ -565,19 +577,19 @@ msgstr "Боја ивице"
 msgid "Bots"
 msgstr "Ботови"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "кочнице"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "ОШТРО ЛЕВО"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "ОШТРО ДЕСНО"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "СКРЕНИ КАД СИ СПРЕМАН"
 
@@ -602,7 +614,7 @@ msgstr "BVR — оружје слободно од почетка"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, оружје слободно од почетка"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ЈАВИ ЛОПТУ"
 
@@ -638,7 +650,7 @@ msgstr "Камера није доступна"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Промењено"
 msgid "Changed {field}"
 msgstr "Промењено {field}"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Поглед праћења:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "чет"
 
@@ -888,7 +900,7 @@ msgstr "Удобно"
 msgid "Command Palette"
 msgstr "Палета команди"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "ПОЧИЊЕМ"
 
@@ -948,7 +960,7 @@ msgstr "Повезивање..."
 msgid "Connecting…"
 msgstr "Повезивање…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "ПОВЕЗИВАЊЕ НИЈЕ УСПЕЛО"
 
@@ -1039,7 +1051,7 @@ msgstr "Није било могуће извршити проверу са ти
 msgid "Countermeasures"
 msgstr "Противмере"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Срушио се"
 
@@ -1111,7 +1123,7 @@ msgstr "Тренутна локација"
 msgid "Custom"
 msgstr "Прилагођено"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "ОПАСНО"
 
@@ -1143,7 +1155,7 @@ msgstr "Дан"
 msgid "Deaths"
 msgstr "Смрти"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "ПОЗИЦИЈА НА ПАЛУБИ САЧУВАНА"
 
@@ -1253,7 +1265,7 @@ msgstr "УНИШТЕН"
 msgid "DESTROYED BY {callsign}"
 msgstr "УНИШТИО {callsign}"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Уништен у пожару"
 
@@ -1289,7 +1301,7 @@ msgstr "Други домаћин игре"
 msgid "Directory"
 msgstr "Именик"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "СПУСТИ ТРАП"
 
@@ -1353,7 +1365,7 @@ msgstr "Преузми"
 msgid "Download failed"
 msgstr "Преузимање није успело"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "НИЗ ВЕТАР 600 СТОПА"
 
@@ -1377,7 +1389,7 @@ msgstr "Динамичка резолуција"
 msgid "Dyslexia-friendly"
 msgstr "Прилагођено за дислексију"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "РАНО"
 
@@ -1432,7 +1444,7 @@ msgstr "Детаљи ефеката"
 msgid "Eject"
 msgstr "Катапултирање"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "КАТАПУЛТИРАН"
 
@@ -1444,7 +1456,7 @@ msgstr "Е-пошта"
 msgid "Email code"
 msgstr "Код е-поште"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "ХИТНО ОДБАЦИВАЊЕ"
 
@@ -1466,7 +1478,7 @@ msgstr "Празан пилон"
 msgid "Enable sound"
 msgstr "Укључи звук"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "НАПАДАМ"
 
@@ -1494,15 +1506,15 @@ msgstr "Унесите код из апликације за потврду ид
 msgid "Error"
 msgstr "Грешка"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Сви"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Напусти меч"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Напусти мисију"
 
@@ -1649,7 +1661,7 @@ msgstr "Ажурирање праћења није успело"
 msgid "Failed to upload attachment"
 msgstr "Отпремање прилога није успело"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "ЗАДОВОЉАВАЈУЋЕ"
 
@@ -1675,7 +1687,7 @@ msgstr "Завршите премештање налога"
 msgid "Finished"
 msgstr "Завршено"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "паљба"
 
@@ -1696,11 +1708,11 @@ msgstr "Заставице"
 msgid "FLAMEOUT"
 msgstr "ГАШЕЊЕ"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "закрилца"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "светлице"
 
@@ -1712,7 +1724,7 @@ msgstr "БАКЉЕ"
 msgid "Flat"
 msgstr "Равно"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Улетео у море"
 
@@ -1720,7 +1732,7 @@ msgstr "Улетео у море"
 msgid "Flight"
 msgstr "Лет"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "ОТКАЗ ЛЕТНОГ ЈЕЗГРА"
 
@@ -1745,7 +1757,7 @@ msgstr "Одлетано"
 msgid "Fly"
 msgstr "Полети"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Лети поново"
 
@@ -1819,7 +1831,7 @@ msgstr "Труп"
 msgid "Gain"
 msgstr "Појачање"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "Стајни трап"
 
@@ -1911,7 +1923,7 @@ msgstr "Историја"
 msgid "Home"
 msgstr "Почетна"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Кука"
 
@@ -2017,7 +2029,7 @@ msgstr "Ометач"
 msgid "Jettison tanks"
 msgstr "Одбаци резервоаре"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "ОДБАЦИВАЊЕ: СТАЈНИ ТРАП"
 
@@ -2030,7 +2042,7 @@ msgstr "Придружи се"
 msgid "Join server"
 msgstr "Придружи се серверу"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "СЕ ПРИДРУЖИО"
 
@@ -2068,7 +2080,7 @@ msgstr "Пречице на тастатури"
 msgid "Keys"
 msgstr "Тастери"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "ОБАРАЊЕ"
 
@@ -2103,7 +2115,7 @@ msgstr "Стајни трап"
 msgid "Large"
 msgstr "Велико"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "КАСНО"
 
@@ -2112,7 +2124,7 @@ msgstr "КАСНО"
 msgid "Launch (catapult)"
 msgstr "Лансирање (катапулт)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "старт / мета"
 
@@ -2132,7 +2144,7 @@ msgstr "Напусти сервер"
 msgid "Left"
 msgstr "Напустио"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "ЈЕ НАПУСТИО"
 
@@ -2149,7 +2161,7 @@ msgstr "Врх левог крила"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Само слова, бројеви, размаци, цртице и косе црте"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "РАВНО НА 1200, СТАЈНИ ТРАП ДОЛЕ"
 
@@ -2157,7 +2169,7 @@ msgstr "РАВНО НА 1200, СТАЈНИ ТРАП ДОЛЕ"
 msgid "Light"
 msgstr "Светло"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "светла"
 
@@ -2166,7 +2178,7 @@ msgstr "светла"
 msgid "Lights"
 msgstr "Светла"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "СВЕТЛА"
 
@@ -2194,7 +2206,7 @@ msgstr "УЧИТАВАЊЕ"
 msgid "Loading content…"
 msgstr "Учитавање садржаја…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "УЧИТАВАЊЕ НИЈЕ УСПЕЛО"
 
@@ -2270,7 +2282,7 @@ msgstr "Низак"
 msgid "Low stratus"
 msgstr "Ниски стратус"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M за затварање"
 
@@ -2282,7 +2294,7 @@ msgstr "Управљај категоријама"
 msgid "Manual"
 msgstr "Ручно"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "мапа"
 
@@ -2325,7 +2337,7 @@ msgstr "Средње"
 msgid "Members"
 msgstr "Чланови"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "мени"
 
@@ -2343,7 +2355,7 @@ msgstr "Спајање — борба почиње при сусрету"
 msgid "Message"
 msgstr "Порука"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Пиши свима"
 
@@ -2351,7 +2363,7 @@ msgstr "Пиши свима"
 msgid "Message players on this server"
 msgstr "Пишите играчима на овом серверу"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Пиши свом тиму"
 
@@ -2369,7 +2381,7 @@ msgstr "Дозвола за микрофон је одбијена"
 msgid "Mid stratus"
 msgstr "Средњи стратус"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Судар у ваздуху"
 
@@ -2381,7 +2393,7 @@ msgstr "Мапа атола Мидвеј — снимци садрже изме�
 msgid "Minimum length"
 msgstr "Najmanja dužina"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "РАКЕТА"
 
@@ -2389,7 +2401,7 @@ msgstr "РАКЕТА"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Модел пројектила <0>“AIM-120C AMRAAM”</0> аутора <1>Pippa</1> (Sketchfab), лиценцирано под <2>CC BY 4.0</2>. Измењено: промењена размера, преусмерено и центрирано за постављање."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Мисија завршена"
 
@@ -2553,11 +2565,11 @@ msgstr "Нема пронађених резултата."
 msgid "No status"
 msgstr "Нема статуса"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "НЕМА РЕЗЕРВОАРА"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "НЕМА МЕТЕ"
 
@@ -2586,7 +2598,7 @@ msgstr "Нема прегледа"
 msgid "No world server."
 msgstr "Нема сервера света."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "БЕЗ ОЦЕНЕ"
 
@@ -2669,7 +2681,7 @@ msgstr "Детаљи океана"
 msgid "offline"
 msgstr "ван мреже"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Премошћење G-лимита"
 msgid "Owner"
 msgstr "Власник"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "ПОГЛЕД ВЕЗАН"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "ПОГЛЕД СЛОБОДАН"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkey-еви нису доступни у овом прегледач�
 msgid "Pattern (regex)"
 msgstr "Šablon (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Паузирано"
 
@@ -2818,7 +2830,7 @@ msgstr "пилот"
 msgid "Pilot"
 msgstr "Пилот"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "ПИЛОТ ПОГИНУО"
 
@@ -2826,7 +2838,7 @@ msgstr "ПИЛОТ ПОГИНУО"
 msgid "Pilot identity"
 msgstr "Идентитет пилота"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Пилот погинуо"
 
@@ -2835,7 +2847,7 @@ msgstr "Пилот погинуо"
 msgid "Pin"
 msgstr "Закачи"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "пропињање"
 
@@ -2851,7 +2863,7 @@ msgstr "Пропињање надоле"
 msgid "Pitch up"
 msgstr "Пропињање нагоре"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
@@ -2885,7 +2897,7 @@ msgstr "Постови и коментари"
 msgid "Press a key…"
 msgstr "Притисните тастер…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ПРИТИСНИ ENTER ЗА ПОЛЕТАЊЕ"
 
@@ -2941,7 +2953,7 @@ msgstr "Јавни сервери"
 msgid "Push notification"
 msgstr "Push обавештење"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ВРЕМЕ ПРИЛАЗА"
 
@@ -3036,7 +3048,7 @@ msgstr "Референца"
 msgid "Refresh"
 msgstr "Освежи"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "ВРАЋАМ СЕ У ФОРМАЦИЈУ"
 
@@ -3172,15 +3184,15 @@ msgstr "Предавање..."
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Поново покрени"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Поново покрени мисију"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Поново покренути мисију?"
 
@@ -3188,7 +3200,7 @@ msgstr "Поново покренути мисију?"
 msgid "Result"
 msgstr "Резултат"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Настави"
 
@@ -3226,7 +3238,7 @@ msgstr "Десно крило"
 msgid "Right wingtip"
 msgstr "Врх десног крила"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "ваљање"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS извор"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL копиран у клипборд"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "ПУНА СНАГА"
 
@@ -3417,7 +3429,7 @@ msgstr "Пошаљи"
 msgid "Send again"
 msgstr "Пошаљи поново"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Пошаљи поруку"
 
@@ -3458,7 +3470,7 @@ msgstr "Правила сервера"
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер користи v{0}, ви имате v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "СЕСИЈА ЗАВРШЕНА"
 
@@ -3477,7 +3489,7 @@ msgstr "Постави полазиште и одредиште"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Простран"
 msgid "SPD BK"
 msgstr "ВАЗ.КОЧ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "ваздушна кочница"
 
@@ -3576,10 +3588,6 @@ msgstr "Ваздушна кочница"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Брзине у KCAS, као опсег од лаког (минимум горива, без наоружања) до тешког (максимална бруто маса). Подаци добијени експериментално у игри. Све разлике у односу на стварни авион одражавају грешке модела лета симулатора."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "МЕТА ОБОРЕНА"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Пребаци на приказ 1-9"
 msgid "System"
 msgstr "Систем"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "ТАКТИЧКА МАПА"
 
@@ -3673,7 +3681,7 @@ msgstr "Ознака сме имати највише 50 знакова"
 msgid "Tags"
 msgstr "Ознаке"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "ВИДИМ НЕПРИЈАТЕЉА"
 
@@ -3681,11 +3689,11 @@ msgstr "ВИДИМ НЕПРИЈАТЕЉА"
 msgid "Task"
 msgstr "Задатак"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Тим"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "ТИМ"
 
@@ -3732,7 +3740,7 @@ msgstr "На захтев за камеру није одговорено"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Игра није могла да се учита. Поново учитајте страницу да бисте покушали поново."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Меч се наставља иза овог менија."
 
@@ -3744,7 +3752,7 @@ msgstr "На захтев за микрофон није одговорено"
 msgid "The mission stopped."
 msgstr "Мисија је стала."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Мисија ће се поново покренути. Тренутни лет неће бити сачуван."
 
@@ -3780,7 +3788,7 @@ msgstr "Ова машина је можда преспора за гладак �
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Ово ће трајно обрисати игру и њено ћаскање. Ова радња се не може опозвати."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "гас"
 
@@ -3857,7 +3865,7 @@ msgstr "Трасери"
 msgid "Travelling"
 msgstr "Путовање"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "трим"
 
@@ -4115,7 +4123,7 @@ msgstr "Праћено"
 msgid "Watched only"
 msgstr "Само праћено"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "ПРЕКИНИ СЛЕТАЊЕ"
 
@@ -4124,7 +4132,7 @@ msgstr "ПРЕКИНИ СЛЕТАЊЕ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Послали смо кôд за потврду на <0>{0}</0>. Унесите кôд испод да бисте потврдили своју адресу е-поште."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "оружје"
 
@@ -4175,7 +4183,7 @@ msgstr "КРИЛА ЗАКЉУЧАНА"
 msgid "WINGS SPREADING"
 msgstr "КРИЛА СЕ ШИРЕ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "ПОБЕЂУЈЕ"
 
@@ -4192,7 +4200,7 @@ msgstr "Сервер света није доступан"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, оружје слободно при сусрету"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "скретање"
 

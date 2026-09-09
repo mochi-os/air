@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# үр дүн} other {# үр дүн}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# сум оносон} other {# сум оносон}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#дол} other {#дол}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} нэр"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim}-г устгав"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}-ийн тоглолт"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# хариу} other {+# илүү хар�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Цэс нээх (# уншаагүй мэдэгдэл)} other {Цэс нээх (# уншаагүй мэдэгдэл)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} {other}-тай мөргөлдөв"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} сүйрэв"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> хазайлгахын тулд"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> ойртохын тулд"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> ухрахын тулд"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> харагдацад"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Чирнэ</0> эсвэл <1>←→</1> тойрохын тулд"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -177,7 +189,7 @@ msgstr "12 цаг"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -185,7 +197,7 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 цаг"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
@@ -494,7 +506,7 @@ msgstr "Баннер хасагдсан"
 msgid "Banner updated"
 msgstr "Баннер шинэчлэгдсэн"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250-ААС ДООШ — ШАССИ БА ЖИГҮҮР"
 
@@ -548,7 +560,7 @@ msgstr "Цэнхэр ботууд"
 msgid "Board"
 msgstr "Самбар"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
@@ -565,19 +577,19 @@ msgstr "Хүрээний өнгө"
 msgid "Bots"
 msgstr "Ботууд"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "гальм"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "ОГЦОМ ЗҮҮН ТИЙШ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "ОГЦОМ БАРУУН ТИЙШ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "БЭЛЭН БОЛМОГЦ ЭРГЭ"
 
@@ -602,7 +614,7 @@ msgstr "BVR — эхнээсээ зэвсэг чөлөөтэй"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, эхнээсээ зэвсэг чөлөөтэй"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "БӨМБӨГИЙГ МЭДЭГД"
 
@@ -638,7 +650,7 @@ msgstr "Камер ашиглах боломжгүй"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Өөрчилсөн"
 msgid "Changed {field}"
 msgstr "{field} өөрчилсөн"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Хөөх харагдац:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "чат"
 
@@ -888,7 +900,7 @@ msgstr "Тав тухтай"
 msgid "Command Palette"
 msgstr "Командын самбар"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "ЭХЭЛЖ БАЙНА"
 
@@ -948,7 +960,7 @@ msgstr "Холбогдож байна..."
 msgid "Connecting…"
 msgstr "Холбогдож байна…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "ХОЛБОЛТ АМЖИЛТГҮЙ"
 
@@ -1039,7 +1051,7 @@ msgstr "Тэр бүртгэлээр баталгаажуулж чадсангү�
 msgid "Countermeasures"
 msgstr "Сөрөг арга хэмжээ"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Осолдсон"
 
@@ -1111,7 +1123,7 @@ msgstr "Одоогийн байршил"
 msgid "Custom"
 msgstr "Захиалгат"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "АЮУЛТАЙ"
 
@@ -1143,7 +1155,7 @@ msgstr "Өдөр"
 msgid "Deaths"
 msgstr "Үхэл"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "ТАВЦАН ДАХЬ БАЙРЛАЛ ХАДГАЛАГДЛАА"
 
@@ -1253,7 +1265,7 @@ msgstr "УСТГАГДСАН"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} УСТГАВ"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Галд сүйрсэн"
 
@@ -1289,7 +1301,7 @@ msgstr "Өөр тоглоомын сервер"
 msgid "Directory"
 msgstr "Лавлах"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "ШАССИ БУУЛГА"
 
@@ -1353,7 +1365,7 @@ msgstr "Татах"
 msgid "Download failed"
 msgstr "Татаж чадсангүй"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "САЛХИНЫ ДАГУУ 600 ФУТ"
 
@@ -1377,7 +1389,7 @@ msgstr "Динамик нягтрал"
 msgid "Dyslexia-friendly"
 msgstr "Дислексид зориулсан"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "ЭРТ"
 
@@ -1432,7 +1444,7 @@ msgstr "Эффектийн нарийвчлал"
 msgid "Eject"
 msgstr "Катапультлах"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "КАТАПУЛЬТЛАВ"
 
@@ -1444,7 +1456,7 @@ msgstr "Имэйл"
 msgid "Email code"
 msgstr "Имэйл код"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "ОСЛЫН ХАЯЛТ"
 
@@ -1466,7 +1478,7 @@ msgstr "Хоосон пилон"
 msgid "Enable sound"
 msgstr "Дууг идэвхжүүлэх"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "ДОВТОЛЖ БАЙНА"
 
@@ -1494,15 +1506,15 @@ msgstr "Баталгаажуулагчийн кодоо оруулна уу"
 msgid "Error"
 msgstr "Алдаа"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Бүгд"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Тоглолтоос гарах"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Даалгавраас гарах"
 
@@ -1649,7 +1661,7 @@ msgstr "Хяналтыг шинэчилж чадсангүй"
 msgid "Failed to upload attachment"
 msgstr "Хавсралт байршуулж чадсангүй"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "ДУНД"
 
@@ -1675,7 +1687,7 @@ msgstr "Бүртгэлээ шилжүүлэхийг дуусгана уу"
 msgid "Finished"
 msgstr "Дууссан"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "буудах"
 
@@ -1696,11 +1708,11 @@ msgstr "Тэмдэгт"
 msgid "FLAMEOUT"
 msgstr "ДӨЛ УНТРАЛТ"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "флап"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "дулааны хавх"
 
@@ -1712,7 +1724,7 @@ msgstr "ДУЛААНЫ ХАВХ"
 msgid "Flat"
 msgstr "Хавтгай"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Далайд унасан"
 
@@ -1720,7 +1732,7 @@ msgstr "Далайд унасан"
 msgid "Flight"
 msgstr "Нислэг"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "НИСЛЭГИЙН ЦӨМ АМЖИЛТГҮЙ"
 
@@ -1745,7 +1757,7 @@ msgstr "Ниссэн"
 msgid "Fly"
 msgstr "Нисэх"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Дахин нисэх"
 
@@ -1819,7 +1831,7 @@ msgstr "Их бие"
 msgid "Gain"
 msgstr "Өсгөлт"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "Шасси"
 
@@ -1911,7 +1923,7 @@ msgstr "Түүх"
 msgid "Home"
 msgstr "Нүүр"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Дэгээ"
 
@@ -2017,7 +2029,7 @@ msgstr "Саадлагч"
 msgid "Jettison tanks"
 msgstr "Сав хаях"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "ХАЯЛТ: БУУХ ТӨХӨӨРӨМЖ"
 
@@ -2030,7 +2042,7 @@ msgstr "Нэгдэх"
 msgid "Join server"
 msgstr "Сервэрт нэгдэх"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "НЭГДЛЭЭ"
 
@@ -2068,7 +2080,7 @@ msgstr "Гарын товчлолууд"
 msgid "Keys"
 msgstr "Товчлуур"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "АЛАЛТ"
 
@@ -2103,7 +2115,7 @@ msgstr "Буултын тоног"
 msgid "Large"
 msgstr "Том"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "ОРОЙ"
 
@@ -2112,7 +2124,7 @@ msgstr "ОРОЙ"
 msgid "Launch (catapult)"
 msgstr "Хөөргөх (катапульт)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "хөөрөх / бай"
 
@@ -2132,7 +2144,7 @@ msgstr "Сервэрээс гарах"
 msgid "Left"
 msgstr "Гарсан"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "ГАРЛАА"
 
@@ -2149,7 +2161,7 @@ msgstr "Зүүн далавчны үзүүр"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Зөвхөн үсэг, тоо, хоосон зай, зураас, ташуу зураас"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-Д ТЭГШ, АРАА БУУЛГА"
 
@@ -2157,7 +2169,7 @@ msgstr "1200-Д ТЭГШ, АРАА БУУЛГА"
 msgid "Light"
 msgstr "Цайвар"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "гэрлүүд"
 
@@ -2166,7 +2178,7 @@ msgstr "гэрлүүд"
 msgid "Lights"
 msgstr "Гэрлүүд"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "ГЭРЛҮҮД"
 
@@ -2194,7 +2206,7 @@ msgstr "АЧААЛЖ БАЙНА"
 msgid "Loading content…"
 msgstr "Контент ачааллаж байна…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "АЧААЛАЛТ АМЖИЛТГҮЙ"
 
@@ -2270,7 +2282,7 @@ msgstr "Бага"
 msgid "Low stratus"
 msgstr "Нам давхарга үүл"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M дарж хаах"
 
@@ -2282,7 +2294,7 @@ msgstr "Ангиллуудыг удирдах"
 msgid "Manual"
 msgstr "Гар аргаар"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "газрын зураг"
 
@@ -2325,7 +2337,7 @@ msgstr "Дунд"
 msgid "Members"
 msgstr "Гишүүд"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "цэс"
 
@@ -2343,7 +2355,7 @@ msgstr "Нэгдэл — зөрөх үед тулаан эхэлнэ"
 msgid "Message"
 msgstr "Мессеж"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Бүгдэд зурвас бичих"
 
@@ -2351,7 +2363,7 @@ msgstr "Бүгдэд зурвас бичих"
 msgid "Message players on this server"
 msgstr "Энэ серверийн тоглогчдод зурвас бичээрэй"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Багтаа зурвас бичих"
 
@@ -2369,7 +2381,7 @@ msgstr "Микрофоны зөвшөөрөл татгалзагдсан"
 msgid "Mid stratus"
 msgstr "Дунд давхарга үүл"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Агаарт мөргөлдсөн"
 
@@ -2381,7 +2393,7 @@ msgstr "Мидвэй шүрэн арлын газрын зураг — зура�
 msgid "Minimum length"
 msgstr "Хамгийн бага урт"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "ПУУЖИН"
 
@@ -2389,7 +2401,7 @@ msgstr "ПУУЖИН"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Пуужингийн загвар <0>“AIM-120C AMRAAM”</0>, зохиогч <1>Pippa</1> (Sketchfab), <2>CC BY 4.0</2>-ийн дагуу лицензжүүлсэн. Өөрчилсөн: масштаб, чиглэлийг өөрчилж, суурилуулахад голлуулсан."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Даалгавар дууслаа"
 
@@ -2553,11 +2565,11 @@ msgstr "Үр дүн олдсонгүй."
 msgid "No status"
 msgstr "Төлөв алга"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "САВ БАЙХГҮЙ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "БАЙ АЛГА"
 
@@ -2586,7 +2598,7 @@ msgstr "Үзэлт алга"
 msgid "No world server."
 msgstr "Ертөнцийн сервер алга."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "ҮНЭЛГЭЭГҮЙ"
 
@@ -2669,7 +2681,7 @@ msgstr "Далайн нарийвчлал"
 msgid "offline"
 msgstr "офлайн"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G хязгаар давах"
 msgid "Owner"
 msgstr "Эзэмшигч"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "ХАРЦ ТҮГЖИГДСЭН"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "ХАРЦ ЧӨЛӨӨТЭЙ"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkey-ууд энэ хөтөч дээр боломжгүй"
 msgid "Pattern (regex)"
 msgstr "Загвар (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Түр зогссон"
 
@@ -2818,7 +2830,7 @@ msgstr "нисгэгч"
 msgid "Pilot"
 msgstr "Нисгэгч"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "НИСГЭГЧ АМЬ ҮРЭГДЭВ"
 
@@ -2826,7 +2838,7 @@ msgstr "НИСГЭГЧ АМЬ ҮРЭГДЭВ"
 msgid "Pilot identity"
 msgstr "Нисгэгчийн мэдээлэл"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Нисгэгч алагдсан"
 
@@ -2835,7 +2847,7 @@ msgstr "Нисгэгч алагдсан"
 msgid "Pin"
 msgstr "Бэхлэх"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "тангаж"
 
@@ -2851,7 +2863,7 @@ msgstr "Тангаж доош"
 msgid "Pitch up"
 msgstr "Тангаж дээш"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "ТАВЦАН"
 
@@ -2885,7 +2897,7 @@ msgstr "Нийтлэл болон сэтгэгдэл"
 msgid "Press a key…"
 msgstr "Товчлуур дарна уу…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "НИСЭХИЙН ТУЛД ENTER ДАР"
 
@@ -2941,7 +2953,7 @@ msgstr "Нийтийн серверүүд"
 msgid "Push notification"
 msgstr "Push мэдэгдэл"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ОЙРТОЛТЫН ЦАГ"
 
@@ -3036,7 +3048,7 @@ msgstr "Лавлагаа"
 msgid "Refresh"
 msgstr "Сэргээх"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "ЭГНЭЭНД БУЦАЖ БАЙНА"
 
@@ -3172,15 +3184,15 @@ msgstr "Тэрсэж байна..."
 msgid "Resolution"
 msgstr "Тогтоол"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Дахин эхлүүлэх"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Даалгаврыг дахин эхлүүлэх"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Даалгаврыг дахин эхлүүлэх үү?"
 
@@ -3188,7 +3200,7 @@ msgstr "Даалгаврыг дахин эхлүүлэх үү?"
 msgid "Result"
 msgstr "Үр дүн"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Үргэлжлүүлэх"
 
@@ -3226,7 +3238,7 @@ msgstr "Баруун далавч"
 msgid "Right wingtip"
 msgstr "Баруун далавчны үзүүр"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "хазайлт"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS фид"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL clipboard руу хуулагдсан"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "БҮРЭН ХҮЧ"
 
@@ -3417,7 +3429,7 @@ msgstr "Илгээх"
 msgid "Send again"
 msgstr "Дахин илгээх"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Зурвас илгээх"
 
@@ -3458,7 +3470,7 @@ msgstr "Серверийн дүрэм"
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер v{0} ажиллуулж байна, танд v{version} байна"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "СЕШН ДУУСЛАА"
 
@@ -3477,7 +3489,7 @@ msgstr "Эхлэл, очих газрыг тогтоох"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Уужим"
 msgid "SPD BK"
 msgstr "ХУ.ГЛ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "хурдны гальм"
 
@@ -3576,10 +3588,6 @@ msgstr "Хурдны гальм"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Хурд нь KCAS-аар, хөнгөнөөс (хамгийн бага түлш, гадна ачаагүй) хүнд (хамгийн их нийт жин) хүртэлх хүрээнд. Өгөгдлийг тоглоом дотор туршилтаар гаргаж авсан. Жинхэнэ нисэх онгоцтой харьцуулахад гарах аливаа зөрүү нь симуляторын нислэгийн загварын алдааг илэрхийлнэ."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "БАЙ УСТГАГДЛАА"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "1-9 харагдац руу шилжих"
 msgid "System"
 msgstr "Систем"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "ТАКТИКИЙН ЗУРАГ"
 
@@ -3673,7 +3681,7 @@ msgstr "Шошго 50 тэмдэгтээс ихгүй байх ёстой"
 msgid "Tags"
 msgstr "Тэгүүд"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "ДАЙСАН ХАРАГДЛАА"
 
@@ -3681,11 +3689,11 @@ msgstr "ДАЙСАН ХАРАГДЛАА"
 msgid "Task"
 msgstr "Зорилт"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Баг"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "БАГ"
 
@@ -3732,7 +3740,7 @@ msgstr "Камерын хүсэлтэд хариу ирсэнгүй"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Тоглоомыг ачаалж чадсангүй. Дахин оролдохын тулд хуудсыг дахин ачаална уу."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Тоглолт энэ цэсний ард үргэлжилнэ."
 
@@ -3744,7 +3752,7 @@ msgstr "Микрофоны хүсэлтэд хариу ирсэнгүй"
 msgid "The mission stopped."
 msgstr "Даалгавар зогслоо."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Даалгавар дахин эхэлнэ. Одоогийн нислэг хадгалагдахгүй."
 
@@ -3780,7 +3788,7 @@ msgstr "Энэ машин жигд нислэгт хэт удаан байж м�
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Энэ нь тоглоом болон түүний чатыг бүрмөсөн устгана. Энэ үйлдлийг буцаах боломжгүй."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "хурдасгуур"
 
@@ -3857,7 +3865,7 @@ msgstr "Гэрэлт сум"
 msgid "Travelling"
 msgstr "Аялж байна"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "трим"
 
@@ -4115,7 +4123,7 @@ msgstr "Үзсэн"
 msgid "Watched only"
 msgstr "Зөвхөн үзсэн"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "БУУЛТЫГ ЦУЦАЛ"
 
@@ -4124,7 +4132,7 @@ msgstr "БУУЛТЫГ ЦУЦАЛ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Бид <0>{0}</0> хаяг руу баталгаажуулах код илгээлээ. Имэйл хаягаа баталгаажуулахын тулд доор кодоо оруулна уу."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "зэвсэг"
 
@@ -4175,7 +4183,7 @@ msgstr "ЖИГҮҮР ЦООЖТОЙ"
 msgid "WINGS SPREADING"
 msgstr "ЖИГҮҮР ДЭЛГЭГДЭЖ БАЙНА"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "ЯЛЛАА"
 
@@ -4192,7 +4200,7 @@ msgstr "Ертөнцийн серверт холбогдох боломжгүй"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, зөрөх үед зэвсэг чөлөөтэй"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "эргэлт"
 

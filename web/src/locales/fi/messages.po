@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# tulos} other {# tulosta}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Sai # osuman} other {Sai # osumaa}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#vk} other {#vk}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel}: nimi"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} tuhosi pelaajan {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Pelaajan {name} ottelu"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# vastaus} other {+# lisävastausta}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Avaa valikko (# lukematon ilmoitus)} other {Avaa valikko (# lukematonta ilmoitusta)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} törmäsi pelaajaan {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} syöksyi maahan"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> kallistaaksesi"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> lähentääksesi"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> loitontaaksesi"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> näkymälle"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Vedä</0> tai <1>←→</1> kiertääksesi"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "VAIJERI 1"
 
@@ -177,7 +189,7 @@ msgstr "12 tuntia"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "VAIJERI 2"
 
@@ -185,7 +197,7 @@ msgstr "VAIJERI 2"
 msgid "24 hours"
 msgstr "24 tuntia"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "VAIJERI 3"
 
@@ -494,7 +506,7 @@ msgstr "Banneri poistettu"
 msgid "Banner updated"
 msgstr "Banneri päivitetty"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ALLE 250 — TELINE JA LASKUSIIVEKKEET"
 
@@ -548,7 +560,7 @@ msgstr "Siniset botit"
 msgid "Board"
 msgstr "Lauta"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Reunan väri"
 msgid "Bots"
 msgstr "Botit"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "jarrut"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "VEDÄ VASEMMALLE"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "VEDÄ OIKEALLE"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "KÄÄNNÖS KUN VALMIS"
 
@@ -602,7 +614,7 @@ msgstr "BVR — aseet vapaat alusta asti"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, aseet vapaat alusta asti"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ILMOITA PALLO"
 
@@ -638,7 +650,7 @@ msgstr "Kamera ei ole käytettävissä"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Muutettu"
 msgid "Changed {field}"
 msgstr "{field} muutettu"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Seurantanäkymä:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Mukava"
 msgid "Command Palette"
 msgstr "Komentopaletti"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "ALOITAN"
 
@@ -948,7 +960,7 @@ msgstr "Yhdistetään..."
 msgid "Connecting…"
 msgstr "Yhdistetään…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "YHTEYS EPÄONNISTUI"
 
@@ -1039,7 +1051,7 @@ msgstr "Vahvistaminen tällä tilillä ei onnistunut. Yritä uudelleen."
 msgid "Countermeasures"
 msgstr "Vastatoimet"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Syöksyi maahan"
 
@@ -1111,7 +1123,7 @@ msgstr "Nykyinen sijainti"
 msgid "Custom"
 msgstr "Mukautettu"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "VAARALLINEN"
 
@@ -1143,7 +1155,7 @@ msgstr "Päivä"
 msgid "Deaths"
 msgstr "Kuolemat"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "KANSIPAIKKA TALLENNETTU"
 
@@ -1253,7 +1265,7 @@ msgstr "TUHOTTU"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} TUHOSI"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Tuhoutui tulipalossa"
 
@@ -1289,7 +1301,7 @@ msgstr "Eri pelin isäntä"
 msgid "Directory"
 msgstr "Hakemisto"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "TELINE ALAS"
 
@@ -1353,7 +1365,7 @@ msgstr "Lataa"
 msgid "Download failed"
 msgstr "Lataus epäonnistui"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "MYÖTÄTUULI 600 JALKAA"
 
@@ -1377,7 +1389,7 @@ msgstr "Dynaaminen resoluutio"
 msgid "Dyslexia-friendly"
 msgstr "Lukihäiriöystävällinen"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "AIKAISIN"
 
@@ -1432,7 +1444,7 @@ msgstr "Efektien tarkkuus"
 msgid "Eject"
 msgstr "Heittoistuin"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "PELASTAUTUI"
 
@@ -1444,7 +1456,7 @@ msgstr "Sähköposti"
 msgid "Email code"
 msgstr "Sähköpostikoodi"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "HÄTÄPUDOTUS"
 
@@ -1466,7 +1478,7 @@ msgstr "Tyhjä pyloni"
 msgid "Enable sound"
 msgstr "Ota ääni käyttöön"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "HYÖKKÄÄN"
 
@@ -1494,15 +1506,15 @@ msgstr "Anna todennussovelluksen koodi"
 msgid "Error"
 msgstr "Virhe"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Kaikki"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Poistu ottelusta"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Poistu tehtävästä"
 
@@ -1649,7 +1661,7 @@ msgstr "Seurannan päivitys epäonnistui"
 msgid "Failed to upload attachment"
 msgstr "Liitteen lähetys epäonnistui"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "KOHTALAINEN"
 
@@ -1675,7 +1687,7 @@ msgstr "Viimeistele tilin siirto"
 msgid "Finished"
 msgstr "Päättyi"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "ammu"
 
@@ -1696,11 +1708,11 @@ msgstr "Liput"
 msgid "FLAMEOUT"
 msgstr "SAMMUMINEN"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "laskusiivekkeet"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "soihdut"
 
@@ -1712,7 +1724,7 @@ msgstr "SOIHDUT"
 msgid "Flat"
 msgstr "Litteä"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Lensi mereen"
 
@@ -1720,7 +1732,7 @@ msgstr "Lensi mereen"
 msgid "Flight"
 msgstr "Lento"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "LENTOYTIMEN VIRHE"
 
@@ -1745,7 +1757,7 @@ msgstr "Lennetty"
 msgid "Fly"
 msgstr "Lennä"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Lennä uudelleen"
 
@@ -1819,7 +1831,7 @@ msgstr "Runko"
 msgid "Gain"
 msgstr "Vahvistus"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "laskuteline"
 
@@ -1911,7 +1923,7 @@ msgstr "Historia"
 msgid "Home"
 msgstr "Etusivu"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "koukku"
 
@@ -2017,7 +2029,7 @@ msgstr "Häirintälähetin"
 msgid "Jettison tanks"
 msgstr "Pudota säiliöt"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "PUDOTUS: LASKUTELINE"
 
@@ -2030,7 +2042,7 @@ msgstr "Liity"
 msgid "Join server"
 msgstr "Liity palvelimeen"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "LIITTYI"
 
@@ -2068,7 +2080,7 @@ msgstr "Pikanäppäimet"
 msgid "Keys"
 msgstr "Näppäimet"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "PUDOTUS"
 
@@ -2103,7 +2115,7 @@ msgstr "Laskuteline"
 msgid "Large"
 msgstr "Suuri"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "MYÖHÄSSÄ"
 
@@ -2112,7 +2124,7 @@ msgstr "MYÖHÄSSÄ"
 msgid "Launch (catapult)"
 msgstr "Laukaisu (katapultti)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "laukaisu / lukitus"
 
@@ -2132,7 +2144,7 @@ msgstr "Poistu palvelimelta"
 msgid "Left"
 msgstr "Poistui"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "POISTUI"
 
@@ -2149,7 +2161,7 @@ msgstr "Vasemman siiven kärki"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Vain kirjaimet, numerot, välilyönnit, yhdysmerkit ja kauttaviivat"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "VAAKALENTO 1200, TELINE ALAS"
 
@@ -2157,7 +2169,7 @@ msgstr "VAAKALENTO 1200, TELINE ALAS"
 msgid "Light"
 msgstr "Vaalea"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "valot"
 
@@ -2166,7 +2178,7 @@ msgstr "valot"
 msgid "Lights"
 msgstr "Valot"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "VALOT"
 
@@ -2194,7 +2206,7 @@ msgstr "LADATAAN"
 msgid "Loading content…"
 msgstr "Ladataan sisältöä…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "LATAUS EPÄONNISTUI"
 
@@ -2270,7 +2282,7 @@ msgstr "Matala"
 msgid "Low stratus"
 msgstr "Matala kerrospilvi"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M sulkee"
 
@@ -2282,7 +2294,7 @@ msgstr "Hallitse kategorioita"
 msgid "Manual"
 msgstr "Manuaalinen"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "kartta"
 
@@ -2325,7 +2337,7 @@ msgstr "Keskikoko"
 msgid "Members"
 msgstr "Jäsenet"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "valikko"
 
@@ -2343,7 +2355,7 @@ msgstr "Kohtaaminen — taistelu alkaa ohituksessa"
 msgid "Message"
 msgstr "Viesti"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Kirjoita kaikille"
 
@@ -2351,7 +2363,7 @@ msgstr "Kirjoita kaikille"
 msgid "Message players on this server"
 msgstr "Lähetä viesti tämän palvelimen pelaajille"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Kirjoita tiimillesi"
 
@@ -2369,7 +2381,7 @@ msgstr "Mikrofonin käyttölupa evätty"
 msgid "Mid stratus"
 msgstr "Keskikorkea kerrospilvi"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Yhteentörmäys ilmassa"
 
@@ -2381,7 +2393,7 @@ msgstr "Midwayn atollin kartta — kuvat sisältävät muokattua <0>Copernicus S
 msgid "Minimum length"
 msgstr "Vähimmäispituus"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "OHJUS"
 
@@ -2389,7 +2401,7 @@ msgstr "OHJUS"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Ohjusmalli <0>“AIM-120C AMRAAM”</0>, tekijä <1>Pippa</1> (Sketchfab), lisensoitu lisenssillä <2>CC BY 4.0</2>. Muokattu: skaalattu, suunnattu uudelleen ja keskitetty sijoitusta varten."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Tehtävä ohi"
 
@@ -2553,11 +2565,11 @@ msgstr "Tuloksia ei löytynyt."
 msgid "No status"
 msgstr "Ei tilaa"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "EI SÄILIÖITÄ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "EI MAALIA"
 
@@ -2586,7 +2598,7 @@ msgstr "Ei näkymiä"
 msgid "No world server."
 msgstr "Ei maailmapalvelinta."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "EI ARVOSANAA"
 
@@ -2669,7 +2681,7 @@ msgstr "Meren yksityiskohdat"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G-rajan ohitus"
 msgid "Owner"
 msgstr "Omistaja"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "PADLOCK"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "PADLOCK POIS"
 
@@ -2798,7 +2810,7 @@ msgstr "Avainkoodit eivät ole käytettävissä tässä selaimessa"
 msgid "Pattern (regex)"
 msgstr "Kuvio (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Tauolla"
 
@@ -2818,7 +2830,7 @@ msgstr "lentäjä"
 msgid "Pilot"
 msgstr "Lentäjä"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "LENTÄJÄ KAATUI"
 
@@ -2826,7 +2838,7 @@ msgstr "LENTÄJÄ KAATUI"
 msgid "Pilot identity"
 msgstr "Lentäjän identiteetti"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Lentäjä kuoli"
 
@@ -2835,7 +2847,7 @@ msgstr "Lentäjä kuoli"
 msgid "Pin"
 msgstr "Kiinnitä"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "nyökkäys"
 
@@ -2851,7 +2863,7 @@ msgstr "Nokka alas"
 msgid "Pitch up"
 msgstr "Nokka ylös"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "TASANNE"
 
@@ -2885,7 +2897,7 @@ msgstr "Julkaisut ja kommentit"
 msgid "Press a key…"
 msgstr "Paina näppäintä…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PAINA ENTER LAUKAISTAKSESI"
 
@@ -2941,7 +2953,7 @@ msgstr "Julkiset palvelimet"
 msgid "Push notification"
 msgstr "Push-ilmoitus"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "LÄHESTYMISAIKA"
 
@@ -3036,7 +3048,7 @@ msgstr "Viitearvot"
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "PALAAN MUODOSTELMAAN"
 
@@ -3172,15 +3184,15 @@ msgstr "Luovutetaan..."
 msgid "Resolution"
 msgstr "Ratkaisu"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Käynnistä uudelleen"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Käynnistä tehtävä uudelleen"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Käynnistetäänkö tehtävä uudelleen?"
 
@@ -3188,7 +3200,7 @@ msgstr "Käynnistetäänkö tehtävä uudelleen?"
 msgid "Result"
 msgstr "Tulos"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Jatka"
 
@@ -3226,7 +3238,7 @@ msgstr "Oikea siipi"
 msgid "Right wingtip"
 msgstr "Oikean siiven kärki"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "kallistus"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS-syöte"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS-URL kopioitu leikepöydälle"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "TÄYSI TEHO"
 
@@ -3417,7 +3429,7 @@ msgstr "Lähetä"
 msgid "Send again"
 msgstr "Lähetä uudelleen"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Lähetä viesti"
 
@@ -3458,7 +3470,7 @@ msgstr "Palvelimen säännöt"
 msgid "server runs v{0}, you have v{version}"
 msgstr "palvelin käyttää v{0}, sinulla on v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "ISTUNTO PÄÄTTYI"
 
@@ -3477,7 +3489,7 @@ msgstr "Aseta lähtöpaikka ja määränpää"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Tilava"
 msgid "SPD BK"
 msgstr "ILMAJ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "ilmajarru"
 
@@ -3576,10 +3588,6 @@ msgstr "Ilmajarru"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Nopeudet KCAS-yksikköinä, vaihteluvälinä kevyestä (vähimmäispolttoaine, ei ripustuksia) raskaaseen (suurin sallittu massa). Tiedot on johdettu kokeellisesti pelissä. Mahdolliset erot todelliseen koneeseen johtuvat simulaattorin lentomallin virheistä."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "MAALI PUDOTETTU"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Vaihda näkymään 1-9"
 msgid "System"
 msgstr "Järjestelmä"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "TAKTINEN KARTTA"
 
@@ -3673,7 +3681,7 @@ msgstr "Tunniste saa olla enintään 50 merkkiä"
 msgid "Tags"
 msgstr "Tunnisteet"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "VIHOLLINEN NÄKYVISSÄ"
 
@@ -3681,11 +3689,11 @@ msgstr "VIHOLLINEN NÄKYVISSÄ"
 msgid "Task"
 msgstr "Tehtävä"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Tiimi"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "TIIMI"
 
@@ -3732,7 +3740,7 @@ msgstr "Kamerapyyntöön ei vastattu"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Peliä ei voitu ladata. Yritä uudelleen lataamalla sivu uudelleen."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Ottelu jatkuu tämän valikon takana."
 
@@ -3744,7 +3752,7 @@ msgstr "Mikrofonipyyntöön ei vastattu"
 msgid "The mission stopped."
 msgstr "Tehtävä pysähtyi."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Tehtävä käynnistyy uudelleen. Nykyistä lentoa ei tallenneta."
 
@@ -3780,7 +3788,7 @@ msgstr "Tämä kone voi olla liian hidas sujuvaan lentoon."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Tämä poistaa pelin ja sen keskustelun pysyvästi. Tätä ei voi peruuttaa."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "kaasu"
 
@@ -3857,7 +3865,7 @@ msgstr "Valojuovat"
 msgid "Travelling"
 msgstr "Matkustetaan"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trimmi"
 
@@ -4115,7 +4123,7 @@ msgstr "Seurattu"
 msgid "Watched only"
 msgstr "Vain seuratut"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "YLÖSVETO"
 
@@ -4124,7 +4132,7 @@ msgstr "YLÖSVETO"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Lähetimme vahvistuskoodin osoitteeseen <0>{0}</0>. Syötä koodi alle vahvistaaksesi sähköpostiosoitteesi."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "ase"
 
@@ -4175,7 +4183,7 @@ msgstr "SIIVET LUKITTU"
 msgid "WINGS SPREADING"
 msgstr "SIIVET LEVIÄVÄT"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "VOITTAA"
 
@@ -4192,7 +4200,7 @@ msgstr "Maailmapalvelimeen ei saada yhteyttä"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, aseet vapaat ohituksessa"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "kääntö"
 
