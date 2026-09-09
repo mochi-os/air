@@ -40,3 +40,39 @@ export function demise(fate: string | undefined, callsign: string, ejected: bool
   // unset fate: flown into something.
   return { text: 'CRASHED' }
 }
+
+export interface Line {
+  text: string // a HUD_MESSAGES key
+  values?: Record<string, string> // interpolated into it
+}
+
+// The same event told to everyone else, for the comms log: "A destroyed B",
+// "B crashed". The banner tells the pilot who ended THEIR life and is gone in
+// three seconds; this is the third-person record that outlives it and answers
+// "where did the bandit go" for anyone who missed the moment.
+//
+// A death nobody is credited with reads as a crash. In multiplayer that is what
+// the wire says - the server credits the last player to damage the victim
+// within a minute, and offers no cause when nobody qualifies - so the feed
+// reports the credit rather than guessing at a mechanism it was not told.
+// Returns null when the victim has no name, since " crashed" is worse than
+// silence.
+export function report(fate: string | undefined, killer: string, victim: string): Line | null {
+  if (!victim) return null
+  if (fate === 'midair' && killer) {
+    return { text: '{victim} collided with {other}', values: { victim, other: killer } }
+  }
+  if (killer && fate && BATTLE.has(fate)) {
+    return { text: '{killer} destroyed {victim}', values: { killer, victim } }
+  }
+  return { text: '{victim} crashed', values: { victim } }
+}
+
+// The single-player bandit's fates read differently from the ownship's in one
+// place: its "verdict" is the battle model judging the airframe dead, which is
+// the player's kill, where the ownship's is a wrecked landing. Everything else
+// - the sea, a building, the fuel fire - means on the bandit exactly what it
+// means on the player.
+export function opponent(fate: string | undefined): string | undefined {
+  return fate === 'verdict' ? 'battle' : fate
+}

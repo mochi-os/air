@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# alja} other {# aljas}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# balamp nuwat'atawa} other {# balamp nuwat'atawa}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#sem} other {#sem}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} suti"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim} t'unjatayna"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}na anatäwipa"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {1 kutsuwi} other {# mayamp kutsuwinaka}}
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Menu jist'araña (# jan ullt'ata yatiyawi)} other {Menu jist'araña (# jan ullt'ata yatiyawinaka)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} {other} ukampi nuwasitayna"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} liwjatayna"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> k'umuñataki"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> jak'achañataki"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> qhipar kutiñataki"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> uñjañataki"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Qatatiña</0> jan ukax <1>←→</1> muyuñataki"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "CABLE 1"
 
@@ -177,7 +189,7 @@ msgstr "12 hora"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "CABLE 2"
 
@@ -185,7 +197,7 @@ msgstr "CABLE 2"
 msgid "24 hours"
 msgstr "24 hora"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "CABLE 3"
 
@@ -494,7 +506,7 @@ msgstr "Banner apaqata"
 msgid "Banner updated"
 msgstr "Banner machaqachata"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 AYNACHA — CHAKA UKAT FLAPS"
 
@@ -548,7 +560,7 @@ msgstr "Larama botanaka"
 msgid "Board"
 msgstr "Tabla"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Borde colora"
 msgid "Bots"
 msgstr "Botanaka"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "frenu"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "CH'IQARU MUYTAM"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "KUPIRU MUYTAM"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "WAKICHATA JICHHAXA T'AQAÑA"
 
@@ -602,7 +614,7 @@ msgstr "BVR — qalltatpacha nuwasiña yänaka antutata"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, qalltatpacha nuwasiña qallti"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "PELOTA ARUNAQAÑA"
 
@@ -638,7 +650,7 @@ msgstr "Cámara jan utjkiti"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Mayjt'ayata"
 msgid "Changed {field}"
 msgstr "{field} mayjt'ayata"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Arkaña uñjawi:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Suma"
 msgid "Command Palette"
 msgstr "Kamachi paleta"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "QALLTAÑA"
 
@@ -948,7 +960,7 @@ msgstr "Mayacht'asiskiwa..."
 msgid "Connecting…"
 msgstr "Mayacht'asiski…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "JANIW MAYACHT'ASKITI"
 
@@ -1039,7 +1051,7 @@ msgstr "Uka cuentampi jan chiqañchasiñjamäkiti. Mayampi yant'añamawa."
 msgid "Countermeasures"
 msgstr "Jark'aqañ luräwinaka"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Avionax tinkuwa"
 
@@ -1111,7 +1123,7 @@ msgstr "Jichha cheqa"
 msgid "Custom"
 msgstr "Sapa"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "PELIGROSO"
 
@@ -1143,7 +1155,7 @@ msgstr "Uru"
 msgid "Deaths"
 msgstr "Jiwäwinaka"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "CUBIERTA CHIQA IMATA"
 
@@ -1253,7 +1265,7 @@ msgstr "T'UNJATA"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} T'UNJI"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Ninamp t'unjatawa"
 
@@ -1289,7 +1301,7 @@ msgstr "Yaqha anatañ host"
 msgid "Directory"
 msgstr "Katalogo"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "CHAKA APSUÑA"
 
@@ -1353,7 +1365,7 @@ msgstr "Apaqaña"
 msgid "Download failed"
 msgstr "Apaqañax janiw walkiti"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "AYNACHA 600 CHAKI"
 
@@ -1377,7 +1389,7 @@ msgstr "Resolución dinámica"
 msgid "Dyslexia-friendly"
 msgstr "Dislexia jaqinakataki"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "NAYRA"
 
@@ -1432,7 +1444,7 @@ msgstr "Efecto detalle"
 msgid "Eject"
 msgstr "Jaqtasiña"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "JAQSUTA"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Email código"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "EMERGENCIA JAQTAÑA"
 
@@ -1466,7 +1478,7 @@ msgstr "Ch'usa pylon"
 msgid "Enable sound"
 msgstr "Sonido nakhtayaña"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "CH'AXWASKTWA"
 
@@ -1494,15 +1506,15 @@ msgstr "Autenticador codigoma uchma"
 msgid "Error"
 msgstr "Pantjata"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Taqpacha"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Anatat mistuña"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Misión mistuña"
 
@@ -1649,7 +1661,7 @@ msgstr "Uñjaña jan machaqachkiti"
 msgid "Failed to upload attachment"
 msgstr "Janiw archivo apxata apsuña atinkti"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "REGULAR"
 
@@ -1675,7 +1687,7 @@ msgstr "Cuenta apsuña tukuyaña"
 msgid "Finished"
 msgstr "Tukuyata"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "disparaña"
 
@@ -1696,11 +1708,11 @@ msgstr "Banderanaka"
 msgid "FLAMEOUT"
 msgstr "MOTOR JIWATA"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flaps"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "bengalanaka"
 
@@ -1712,7 +1724,7 @@ msgstr "BENGALAS"
 msgid "Flat"
 msgstr "Pallalla"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Lamar qutar halantawa"
 
@@ -1720,7 +1732,7 @@ msgstr "Lamar qutar halantawa"
 msgid "Flight"
 msgstr "Halaña"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "HALAKIRI CORE PANTJAWA"
 
@@ -1745,7 +1757,7 @@ msgstr "Jalatawa"
 msgid "Fly"
 msgstr "Halaña"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Mayamp halam"
 
@@ -1819,7 +1831,7 @@ msgstr "Cuerpo"
 msgid "Gain"
 msgstr "Jach'aptayaña"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "tren"
 
@@ -1911,7 +1923,7 @@ msgstr "Sarawi"
 msgid "Home"
 msgstr "Uta"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "gancho"
 
@@ -2017,7 +2029,7 @@ msgstr "Ch'axwa apnaqiri"
 msgid "Jettison tanks"
 msgstr "Tanquenak jaqtaña"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "JAQTAÑA: CAYUNAKA"
 
@@ -2030,7 +2042,7 @@ msgstr "Mantaña"
 msgid "Join server"
 msgstr "Servidorar mantaña"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "MANTIWA"
 
@@ -2068,7 +2080,7 @@ msgstr "Teclado atajonaka"
 msgid "Keys"
 msgstr "Teclanaka"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "JIWAYATA"
 
@@ -2103,7 +2115,7 @@ msgstr "Alintañ ruedanaka"
 msgid "Large"
 msgstr "Jach'a"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "QHIPA"
 
@@ -2112,7 +2124,7 @@ msgstr "QHIPA"
 msgid "Launch (catapult)"
 msgstr "Jalaya (q'urawa)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "jaqtaña / chimpu"
 
@@ -2132,7 +2144,7 @@ msgstr "Servidor mistuña"
 msgid "Left"
 msgstr "Sarxi"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "MISTUWA"
 
@@ -2149,7 +2161,7 @@ msgstr "Ch'iqa chhiqha puntu"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Qillqanaka, jakhunaka, ch'usanaka, jisk'a chimpunaka ukat k'umu chimpunakakiwa"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 PATANA, RUEDAS APAQAÑA"
 
@@ -2157,7 +2169,7 @@ msgstr "1200 PATANA, RUEDAS APAQAÑA"
 msgid "Light"
 msgstr "Qhana"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "qhananaka"
 
@@ -2166,7 +2178,7 @@ msgstr "qhananaka"
 msgid "Lights"
 msgstr "Qhananaka"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "QHANANAKA"
 
@@ -2194,7 +2206,7 @@ msgstr "APAQASKIWA"
 msgid "Loading content…"
 msgstr "Contenido aptañataki…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "JANIW APAQASKITI"
 
@@ -2270,7 +2282,7 @@ msgstr "Aynacha"
 msgid "Low stratus"
 msgstr "Aynacha stratus"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M jist'añataki"
 
@@ -2282,7 +2294,7 @@ msgstr "Kastanaka apnaqaña"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "mapa"
 
@@ -2325,7 +2337,7 @@ msgstr "Taypi"
 msgid "Members"
 msgstr "Integrantenaka"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menu"
 
@@ -2343,7 +2355,7 @@ msgstr "Jikthapta — jikxatasin nuwasiña qallti"
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Taqiniru qillqt'am"
 
@@ -2351,7 +2363,7 @@ msgstr "Taqiniru qillqt'am"
 msgid "Message players on this server"
 msgstr "Aka servidorana anatirinakaru mensaje apayam"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Equipomaru qillqt'am"
 
@@ -2369,7 +2381,7 @@ msgstr "Micrófono permisox jark'atawa"
 msgid "Mid stratus"
 msgstr "Taypi stratus"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Alaxpachan tinkusiwi"
 
@@ -2381,7 +2393,7 @@ msgstr "Midway Atoll mapa — imaginakax <0>Copernicus Sentinel-2</0> mayjt'ayat
 msgid "Minimum length"
 msgstr "Pisin jach'awi"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISIL"
 
@@ -2389,7 +2401,7 @@ msgstr "MISIL"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Modelo de misil <0>“AIM-120C AMRAAM”</0> <1>Pippa</1> lurata (Sketchfab), <2>CC BY 4.0</2> ukampi licenciado. Modificado: reescalado, reorientado y centrado para la colocación."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Luräwix tukuyawa"
 
@@ -2553,11 +2565,11 @@ msgstr "Jan resultadonak jikxatasiti."
 msgid "No status"
 msgstr "Jan estado"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "JANIW TANQUENAKAXA"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "JANIW PUNTERIYAKITI"
 
@@ -2586,7 +2598,7 @@ msgstr "Jan uñjawinak"
 msgid "No world server."
 msgstr "Janiw uraqpacha servidorax utjkiti."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "SIN NOTA"
 
@@ -2669,7 +2681,7 @@ msgstr "Quta detalle"
 msgid "offline"
 msgstr "jan mayachtʼata"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G chimpu sarxaruyaña"
 msgid "Owner"
 msgstr "Dueño"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "UÑJAÑA CHINUTA"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "UÑJAÑA ANTUTATA"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkeyanakax janiw aka navegadorana utjkiti"
 msgid "Pattern (regex)"
 msgstr "Patrón (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Sayt'ata"
 
@@ -2818,7 +2830,7 @@ msgstr "piloto"
 msgid "Pilot"
 msgstr "Piloto"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PILOTO JIWATA"
 
@@ -2826,7 +2838,7 @@ msgstr "PILOTO JIWATA"
 msgid "Pilot identity"
 msgstr "Piloto identidad"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Pilotox jiwayatawa"
 
@@ -2835,7 +2847,7 @@ msgstr "Pilotox jiwayatawa"
 msgid "Pin"
 msgstr "Ch'akhu"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "k'umu"
 
@@ -2851,7 +2863,7 @@ msgstr "Cabeceo aynacharu"
 msgid "Pitch up"
 msgstr "Cabeceo alaxaru"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATAFURMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Qillqatanak comentarionakampi"
 msgid "Press a key…"
 msgstr "Mä tecla limt'am…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "HALAÑATAKI ENTER ÑIT'AÑA"
 
@@ -2941,7 +2953,7 @@ msgstr "Publica servidores"
 msgid "Push notification"
 msgstr "Push yatiyawi"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "JAK’ACHAÑA PACHA"
 
@@ -3036,7 +3048,7 @@ msgstr "Referencia"
 msgid "Refresh"
 msgstr "Machaqachama"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "TAMARU KUTT'ASKTA"
 
@@ -3172,15 +3184,15 @@ msgstr "Jaytayski..."
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Wasitat qalltaña"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Misión wasitat qalltaña"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "¿Misión wasitat qalltaña?"
 
@@ -3188,7 +3200,7 @@ msgstr "¿Misión wasitat qalltaña?"
 msgid "Result"
 msgstr "Tukuyäwi"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Mayamp qalltama"
 
@@ -3226,7 +3238,7 @@ msgstr "Kupi chhiqha"
 msgid "Right wingtip"
 msgstr "Kupi chhiqha puntu"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "kumpha"
 
@@ -3263,7 +3275,7 @@ msgstr "Canal RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL clipboard ukar copiata"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "TAQI CH'AMA"
 
@@ -3417,7 +3429,7 @@ msgstr "Apayaña"
 msgid "Send again"
 msgstr "Wasitata apayaña"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Chat apayaña"
 
@@ -3458,7 +3470,7 @@ msgstr "Servidor reglas"
 msgid "server runs v{0}, you have v{version}"
 msgstr "servidor v{0} apnaqi, jumax v{version} utjtamawa"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SESIONAX TUKUSIWA"
 
@@ -3477,7 +3489,7 @@ msgstr "Origen ukat destino uñstayaña"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Jach'a"
 msgid "SPD BK"
 msgstr "WY FR"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "wayra freno"
 
@@ -3576,10 +3588,6 @@ msgstr "Wayra freno"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Velocidadanakax KCAS-na, pisi (juk'a combustible, jan cargani) tuqita jach'a (juk'ampi jach'a jathi) tuqikama. Datonakax anati manqhana yant'awimpi jikxatata. Kuna jan kikipas chiqa avionampi simulador jalaña modelon pantjatanakapa uñacht'ayi."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "OÑEHUNDI"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "1-9 uñjaña ukar muyt'aña"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "CH'AXWA MAPA"
 
@@ -3673,7 +3681,7 @@ msgstr "Etiquetax 50 qillqanaka jan ukax juk'ampi jisk'a"
 msgid "Tags"
 msgstr "Chimpunaka"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "AWQA UÑJTA"
 
@@ -3681,11 +3689,11 @@ msgstr "AWQA UÑJTA"
 msgid "Task"
 msgstr "Luraña"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Equipo"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "EQUIPO"
 
@@ -3732,7 +3740,7 @@ msgstr "Cámara mayiwix janiw jaysatäkiti"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Anatañxa janiw cargañjamäkiti. Wasitat yant'añataki página wasitat cargam."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Anatax aka menú qhipaxan sarantaskakiwa."
 
@@ -3744,7 +3752,7 @@ msgstr "Micrófono mayiwix janiw jaysatäkiti"
 msgid "The mission stopped."
 msgstr "Misionaxa sayt'awayi."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Misiónax wasitat qalltaniwa. Jichha jaläwix janiw imatäkaniti."
 
@@ -3780,7 +3788,7 @@ msgstr "Aka máquinax inas wali jayrächispa suma jalañataki."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Aka anatawixa aruskipäwipampi chhaqtayani. Janiw kuttʼayasiñäkiti."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "ch'ama"
 
@@ -3857,7 +3865,7 @@ msgstr "Trazadoranaka"
 msgid "Travelling"
 msgstr "Yaqha thaqhañ término yant'am"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Uñch'ukita sapa"
 msgid "Watched only"
 msgstr "Uñjatakiw"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -4124,7 +4132,7 @@ msgstr "WAVE OFF"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "<0>{0}</0> ukar mä chiqapa yatiyawi khitanipxta. Correo electrónico chiqanchañatakix aka jaqhu uchma."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "arma"
 
@@ -4175,7 +4183,7 @@ msgstr "CHIQNAKA CHINTATA"
 msgid "WINGS SPREADING"
 msgstr "CHIQNAKA JIST'ARASKI"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "ATIPI"
 
@@ -4192,7 +4200,7 @@ msgstr "Janiw uraqpacha servidorar puriñjamäkiti"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, jikxatasin nuwasiña qallti"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "muyt'a"
 

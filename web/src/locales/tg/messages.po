@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# натиҷа} other {# натиҷа}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# тир хӯрд} other {# тир хӯрд}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ҳаф} other {#ҳаф}}"
 msgid "{entityLabel} name"
 msgstr "Номи {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim}-ро нобуд кард"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Бозии {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# ҷавоб} other {+# ҷавоби б�
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Менюро кушоед (# огоҳиномаи хонданашуда)} other {Менюро кушоед (# огоҳиномаи хонданашуда)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} бо {other} бархӯрд кард"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} суқут кард"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> барои хам кардан"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> барои наздик шудан"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> барои ақиб рафтан"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> барои намуд"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Кашед</0> ё <1>←→</1> барои давр задан"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -177,7 +189,7 @@ msgstr "12 соат"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -185,7 +197,7 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 соат"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
@@ -494,7 +506,7 @@ msgstr "Баннер хориҷ карда шуд"
 msgid "Banner updated"
 msgstr "Баннер навсозӣ шуд"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ПОЁНТАР АЗ 250 — ШАССИ ВА БОЛҲО"
 
@@ -548,7 +560,7 @@ msgstr "Ботҳои кабуд"
 msgid "Board"
 msgstr "Тахта"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
@@ -565,19 +577,19 @@ msgstr "Ранги ҳошия"
 msgid "Bots"
 msgstr "Ботҳо"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "тормозҳо"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "ТЕЗ БА ЧАП"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "ТЕЗ БА РОСТ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "ҲАНГОМИ ОМОДА ГАРДИШ"
 
@@ -602,7 +614,7 @@ msgstr "BVR — силоҳ аз оғоз озод"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, силоҳ аз оғоз озод"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ТӮБРО ЭЪЛОН КУН"
 
@@ -638,7 +650,7 @@ msgstr "Камера дастрас нест"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Тағйир дода шуд"
 msgid "Changed {field}"
 msgstr "{field} тағйир дода шуд"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Намои таъқиб:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "чат"
 
@@ -888,7 +900,7 @@ msgstr "Бароҳат"
 msgid "Command Palette"
 msgstr "Палитраи фармонҳо"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "САР МЕКУНАМ"
 
@@ -948,7 +960,7 @@ msgstr "Пайваст шуда истодааст..."
 msgid "Connecting…"
 msgstr "Пайвастшавӣ…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "ПАЙВАСТШАВӢ НОКОМ ШУД"
 
@@ -1039,7 +1051,7 @@ msgstr "Бо он ҳисоб тасдиқ кардан имконнопазир 
 msgid "Countermeasures"
 msgstr "Чораҳои муқобил"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Суқут кард"
 
@@ -1111,7 +1123,7 @@ msgstr "Ҷойгиршавии ҷорӣ"
 msgid "Custom"
 msgstr "Танзимшаванда"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "ХАТАРНОК"
 
@@ -1143,7 +1155,7 @@ msgstr "Рӯз"
 msgid "Deaths"
 msgstr "Маргҳо"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "МАВҚЕИ ПАЛУБА ЗАХИРА ШУД"
 
@@ -1253,7 +1265,7 @@ msgstr "НОБУД ШУД"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} НОБУД КАРД"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Дар оташ нобуд шуд"
 
@@ -1289,7 +1301,7 @@ msgstr "Мизбони дигари бозӣ"
 msgid "Directory"
 msgstr "Феҳрист"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "ШАССИРО ФАРОРАД"
 
@@ -1353,7 +1365,7 @@ msgstr "Боргирӣ"
 msgid "Download failed"
 msgstr "Боргирӣ ноком шуд"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "БО БОД 600 ФУТ"
 
@@ -1377,7 +1389,7 @@ msgstr "Возеҳияти динамикӣ"
 msgid "Dyslexia-friendly"
 msgstr "Барои дислексия мувофиқ"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "БАРВАҚТ"
 
@@ -1432,7 +1444,7 @@ msgstr "Тафсилоти эффектҳо"
 msgid "Eject"
 msgstr "Катапулта"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "КАТАПУЛТА ШУД"
 
@@ -1444,7 +1456,7 @@ msgstr "Имейл"
 msgid "Email code"
 msgstr "Рамзи email"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "ПАРТОФТАНИ ИЗТИРОРӢ"
 
@@ -1466,7 +1478,7 @@ msgstr "Пилони холӣ"
 msgid "Enable sound"
 msgstr "Фаъол кардани садо"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "ҲУҶУМ МЕКУНАМ"
 
@@ -1494,15 +1506,15 @@ msgstr "Рамзи аутентификатори худро ворид куне
 msgid "Error"
 msgstr "Хатогӣ"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Ҳама"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Баромадан аз бозӣ"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Баромадан аз супориш"
 
@@ -1649,7 +1661,7 @@ msgstr "Навсозии пайгирӣ ноком шуд"
 msgid "Failed to upload attachment"
 msgstr "Боркунии замима ба анҷом нарасид"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "МИЁНА"
 
@@ -1675,7 +1687,7 @@ msgstr "Интиқоли ҳисобро анҷом диҳед"
 msgid "Finished"
 msgstr "Тамом шуд"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "оташ"
 
@@ -1696,11 +1708,11 @@ msgstr "Парчамҳо"
 msgid "FLAMEOUT"
 msgstr "АЛАНГА ХОМӮШ"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "флапҳо"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "машъалҳо"
 
@@ -1712,7 +1724,7 @@ msgstr "ФАШАНГҲО"
 msgid "Flat"
 msgstr "Ҳамвор"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Ба баҳр афтод"
 
@@ -1720,7 +1732,7 @@ msgstr "Ба баҳр афтод"
 msgid "Flight"
 msgstr "Парвоз"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "ЯДРОИ ПАРВОЗ АЗ КОР МОНД"
 
@@ -1745,7 +1757,7 @@ msgstr "Парвоз шуд"
 msgid "Fly"
 msgstr "Парвоз"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Боз парвоз кунед"
 
@@ -1819,7 +1831,7 @@ msgstr "Фюзеляж"
 msgid "Gain"
 msgstr "Пурзӯркунӣ"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "шасси"
 
@@ -1911,7 +1923,7 @@ msgstr "Таърих"
 msgid "Home"
 msgstr "Хона"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Қалмоқ"
 
@@ -2017,7 +2029,7 @@ msgstr "Халалрасон"
 msgid "Jettison tanks"
 msgstr "Бакҳоро партофтан"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "ПАРТОФТАН: ШАССИ"
 
@@ -2030,7 +2042,7 @@ msgstr "Ҳамроҳ шудан"
 msgid "Join server"
 msgstr "Ҳамроҳ шудан ба сервер"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
@@ -2068,7 +2080,7 @@ msgstr "Миёнбурҳои клавиатура"
 msgid "Keys"
 msgstr "Тугмаҳо"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "КУШТОР"
 
@@ -2103,7 +2115,7 @@ msgstr "Шасси"
 msgid "Large"
 msgstr "Калон"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "ДЕР"
 
@@ -2112,7 +2124,7 @@ msgstr "ДЕР"
 msgid "Launch (catapult)"
 msgstr "Партоб (катапулт)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "партоб / ҳадаф"
 
@@ -2132,7 +2144,7 @@ msgstr "Тарк кардани сервер"
 msgid "Left"
 msgstr "Баромад"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "БАРОМАД"
 
@@ -2149,7 +2161,7 @@ msgstr "Нӯги боли чап"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Танҳо ҳарфҳо, рақамҳо, фосилаҳо, дефисҳо ва хатҳои каҷ"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ДАР 1200 ҲАМВОР, ЧАРХҲО ПОЁН"
 
@@ -2157,7 +2169,7 @@ msgstr "ДАР 1200 ҲАМВОР, ЧАРХҲО ПОЁН"
 msgid "Light"
 msgstr "Равшан"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "чароғҳо"
 
@@ -2166,7 +2178,7 @@ msgstr "чароғҳо"
 msgid "Lights"
 msgstr "Чароғҳо"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "ЧАРОҒҲО"
 
@@ -2194,7 +2206,7 @@ msgstr "БОР КАРДА МЕШАВАД"
 msgid "Loading content…"
 msgstr "Боркунии муҳтаво…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "БОРКУНӢ НОКОМ ШУД"
 
@@ -2270,7 +2282,7 @@ msgstr "Паст"
 msgid "Low stratus"
 msgstr "Абри қабатии паст"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M барои пӯшидан"
 
@@ -2282,7 +2294,7 @@ msgstr "Идоракунии категорияҳо"
 msgid "Manual"
 msgstr "Дастӣ"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "харита"
 
@@ -2325,7 +2337,7 @@ msgstr "Миёна"
 msgid "Members"
 msgstr "Аъзоҳо"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "меню"
 
@@ -2343,7 +2355,7 @@ msgstr "Ҳамроҳшавӣ — ҷанг ҳангоми гузаштан оғо
 msgid "Message"
 msgstr "Паём"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Ба ҳама нависед"
 
@@ -2351,7 +2363,7 @@ msgstr "Ба ҳама нависед"
 msgid "Message players on this server"
 msgstr "Ба бозигарони ин сервер паём нависед"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Ба дастаи худ нависед"
 
@@ -2369,7 +2381,7 @@ msgstr "Иҷозати микрофон рад шуд"
 msgid "Mid stratus"
 msgstr "Абри қабатии миёна"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Бархӯрд дар ҳаво"
 
@@ -2381,7 +2393,7 @@ msgstr "Харитаи Атолли Мидвей — тасвирҳо дорои
 msgid "Minimum length"
 msgstr "Дарозии камтарин"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "МУШАК"
 
@@ -2389,7 +2401,7 @@ msgstr "МУШАК"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Модели мушак <0>“AIM-120C AMRAAM”</0> аз <1>Pippa</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: миқёс, самт иваз ва барои насб марказонида шуд."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Вазифа анҷом ёфт"
 
@@ -2553,11 +2565,11 @@ msgstr "Ягон натиҷа ёфт нашуд."
 msgid "No status"
 msgstr "Ҳолат нест"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "БАК НЕСТ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "ҲАДАФ НЕСТ"
 
@@ -2586,7 +2598,7 @@ msgstr "Ягон намоиш нест"
 msgid "No world server."
 msgstr "Сервери ҷаҳон нест."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "БЕ БАҲО"
 
@@ -2669,7 +2681,7 @@ msgstr "Тафсилоти уқёнус"
 msgid "offline"
 msgstr "офлайн"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Аз ҳадди G гузаштан"
 msgid "Owner"
 msgstr "Соҳиб"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "НИГОҲ БАСТА"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "НИГОҲ ОЗОД"
 
@@ -2798,7 +2810,7 @@ msgstr "Калидҳои дастрасӣ дар ин браузер дастр�
 msgid "Pattern (regex)"
 msgstr "Намуна (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Таваққуфшуда"
 
@@ -2818,7 +2830,7 @@ msgstr "халабон"
 msgid "Pilot"
 msgstr "Халабон"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "ХАЛАБОН ҲАЛОК ШУД"
 
@@ -2826,7 +2838,7 @@ msgstr "ХАЛАБОН ҲАЛОК ШУД"
 msgid "Pilot identity"
 msgstr "Шахсияти халабон"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Халабон кушта шуд"
 
@@ -2835,7 +2847,7 @@ msgstr "Халабон кушта шуд"
 msgid "Pin"
 msgstr "Часпонидан"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "тангаж"
 
@@ -2851,7 +2863,7 @@ msgstr "Фароз ба поён"
 msgid "Pitch up"
 msgstr "Фароз ба боло"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
@@ -2885,7 +2897,7 @@ msgstr "Постҳо ва шарҳҳо"
 msgid "Press a key…"
 msgstr "Тугмаеро пахш кунед…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "БАРОИ ПАРВОЗ ENTER ПАХШ КУНЕД"
 
@@ -2941,7 +2953,7 @@ msgstr "Серверҳои ҷамъиятӣ"
 msgid "Push notification"
 msgstr "Огоҳиномаи push"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ВАҚТИ НАЗДИКШАВӢ"
 
@@ -3036,7 +3048,7 @@ msgstr "Истинод"
 msgid "Refresh"
 msgstr "Нав кардан"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "БА САФ БАРМЕГАРДАМ"
 
@@ -3172,15 +3184,15 @@ msgstr "Таслим шудан..."
 msgid "Resolution"
 msgstr "Қарор"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Аз нав оғоз кардан"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Аз нав оғоз кардани супориш"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Супоришро аз нав оғоз кунед?"
 
@@ -3188,7 +3200,7 @@ msgstr "Супоришро аз нав оғоз кунед?"
 msgid "Result"
 msgstr "Натиҷа"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Идома додан"
 
@@ -3226,7 +3238,7 @@ msgstr "Боли рост"
 msgid "Right wingtip"
 msgstr "Нӯги боли рост"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "крен"
 
@@ -3263,7 +3275,7 @@ msgstr "Фиди RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL-и RSS ба буфер нусха карда шуд"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "ҚУВВАИ ПУРРА"
 
@@ -3417,7 +3429,7 @@ msgstr "Фиристодан"
 msgid "Send again"
 msgstr "Бори дигар фиристодан"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Фиристодани паём"
 
@@ -3458,7 +3470,7 @@ msgstr "Қоидаҳои сервер"
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер v{0}-ро иҷро мекунад, шумо v{version} доред"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "СЕССИЯ АНҶОМ ЁФТ"
 
@@ -3477,7 +3489,7 @@ msgstr "Сарчашма ва таъиноти манзилро таъин ку�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Васеъ"
 msgid "SPD BK"
 msgstr "ТОР.ҲВ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "тормози ҳавоӣ"
 
@@ -3576,10 +3588,6 @@ msgstr "Тормози ҳавоӣ"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Суръатҳо бо KCAS, ҳамчун маҳдуда аз сабук (сӯзишвории ҳадди ақал, бе бори берунӣ) то вазнин (вазни умумии ҳадди аксар). Маълумот дар дохили бозӣ ба таври таҷрибавӣ ба даст оварда шудааст. Ҳама гуна фарқият аз ҳавопаймои воқеӣ хатогиҳои модели парвози симуляторро инъикос мекунад."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "ҲАДАФ НОБУД ШУД"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Гузариш ба назари 1-9"
 msgid "System"
 msgstr "Система"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "ХАРИТАИ ТАКТИКӢ"
 
@@ -3673,7 +3681,7 @@ msgstr "Барчасп бояд то 50 аломат бошад"
 msgid "Tags"
 msgstr "Барчаспҳо"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "ДУШМАНРО МЕБИНАМ"
 
@@ -3681,11 +3689,11 @@ msgstr "ДУШМАНРО МЕБИНАМ"
 msgid "Task"
 msgstr "Вазифа"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Даста"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "ДАСТА"
 
@@ -3732,7 +3740,7 @@ msgstr "Ба дархости камера ҷавоб дода нашуд"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Бозӣ бор карда нашуд. Барои аз нав кӯшиш кардан саҳифаро аз нав бор кунед."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Бозӣ дар паси ин меню идома дорад."
 
@@ -3744,7 +3752,7 @@ msgstr "Ба дархости микрофон ҷавоб дода нашуд"
 msgid "The mission stopped."
 msgstr "Миссия қатъ шуд."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Супориш аз нав оғоз мешавад. Парвози ҷорӣ нигоҳ дошта намешавад."
 
@@ -3780,7 +3788,7 @@ msgstr "Ин мошин шояд барои парвози ҳамвор хеле
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Ин бозӣ ва чати онро якумра нест мекунад. Ин амалро баргардонидан мумкин нест."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "газ"
 
@@ -3857,7 +3865,7 @@ msgstr "Тирҳои равшанкунанда"
 msgid "Travelling"
 msgstr "Сафар"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "тример"
 
@@ -4115,7 +4123,7 @@ msgstr "Назорат шуда"
 msgid "Watched only"
 msgstr "Танҳо назоратшуда"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "ФУРУДРО БЕКОР КУН"
 
@@ -4124,7 +4132,7 @@ msgstr "ФУРУДРО БЕКОР КУН"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Мо рамзи тасдиқро ба <0>{0}</0> фиристодем. Барои тасдиқи суроғаи почтаи электронии худ рамзро дар поён ворид кунед."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "силоҳ"
 
@@ -4175,7 +4183,7 @@ msgstr "БОЛҲО ҚУЛФ"
 msgid "WINGS SPREADING"
 msgstr "БОЛҲО КУШОДА МЕШАВАНД"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "ҒОЛИБ"
 
@@ -4192,7 +4200,7 @@ msgstr "Сервери ҷаҳон дастнорас аст"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, силоҳ ҳангоми гузаштан озод"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "инҳироф"
 

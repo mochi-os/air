@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# ojejuhu} other {# ojejuhu}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Ojejapi # jey} other {Ojejapi # jey}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#arap} other {#arap}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} réra"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} ohundi {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name} ñembosarai"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# ñembohovái} other {+# ñembohovái a
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Embojuruja menu (# marandu ojeleeʼỹva)} other {Embojuruja menu (# marandu ojeleeʼỹva)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} ojoaju {other} ndive"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} ho'a"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> oñeñapymi hag̃ua"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> oñemboja hag̃ua"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> ojei hag̃ua"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> ehecha hag̃ua"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Emyaña</0> térã <1>←→</1> ojere hag̃ua"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "CABLE 1"
 
@@ -177,7 +189,7 @@ msgstr "12 aravo"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "CABLE 2"
 
@@ -185,7 +197,7 @@ msgstr "CABLE 2"
 msgid "24 hours"
 msgstr "24 aravo"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "CABLE 3"
 
@@ -494,7 +506,7 @@ msgstr "Banner oñehundi"
 msgid "Banner updated"
 msgstr "Banner oñembojeguáma"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 GUÝPE — TREN HA FLAPS"
 
@@ -548,7 +560,7 @@ msgstr "Bot hovy"
 msgid "Board"
 msgstr "Tablero"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Borde sa'y"
 msgid "Bots"
 msgstr "Bot kuéra"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "freno"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "EJERE ASU GOTYO"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "EJERE AKATÚA GOTYO"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "EJERE REÍMEVO"
 
@@ -602,7 +614,7 @@ msgstr "BVR — mboka sãso ñepyrũ guive"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, mboka sãso ñepyrũ guive"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "EMOMBE’U PELOTA"
 
@@ -638,7 +650,7 @@ msgstr "Cámara ndaipóri"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Oñemoambue"
 msgid "Changed {field}"
 msgstr "{field} oñemoambue"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Muña jehecha:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Hovyrõ"
 msgid "Command Palette"
 msgstr "Tembiapoukapy paleta"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "AÑEPYRŨ"
 
@@ -948,7 +960,7 @@ msgstr "Ojoajúhína..."
 msgid "Connecting…"
 msgstr "Ojoajuhína…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "JOAJU OJAVY"
 
@@ -1039,7 +1051,7 @@ msgstr "Ndaikatúi ojehechajey upe mba'ete ndive. Eha'ã jey."
 msgid "Countermeasures"
 msgstr "Ñemo'ã rembiapo"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Ho'a"
 
@@ -1111,7 +1123,7 @@ msgstr "Tenda ag̃agua"
 msgid "Custom"
 msgstr "Ñemomba'e"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "PELIGROSO"
 
@@ -1143,7 +1155,7 @@ msgstr "Ára"
 msgid "Deaths"
 msgstr "Mano"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "CUBIERTA RENDA OÑEÑONGATÝMA"
 
@@ -1253,7 +1265,7 @@ msgstr "OÑEHUNDI"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} OHUNDI"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Oñehundi tatápe"
 
@@ -1289,7 +1301,7 @@ msgstr "Ñembosarái host ambue"
 msgid "Directory"
 msgstr "Ñongatuha"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "TREN GUEJY"
 
@@ -1353,7 +1365,7 @@ msgstr "Emboguejy"
 msgid "Download failed"
 msgstr "Ndaikatúi oñemboguejy"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "YVYTU RAPYKUERI 600 PY"
 
@@ -1377,7 +1389,7 @@ msgstr "Resolución dinámica"
 msgid "Dyslexia-friendly"
 msgstr "Disléxia peguarã iporãva"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "VOI"
 
@@ -1432,7 +1444,7 @@ msgstr "Efecto mba'emimi"
 msgid "Eject"
 msgstr "Epo okápe"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "OPO OKÁPE"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Código email"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "POI PYA'E"
 
@@ -1466,7 +1478,7 @@ msgstr "Pylon nandi"
 msgid "Enable sound"
 msgstr "Emyandy pu"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "ANDYRY HESE"
 
@@ -1494,15 +1506,15 @@ msgstr "Emoinge nde código autenticador rehegua"
 msgid "Error"
 msgstr "Jejavy"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Opavave"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Esẽ partidágui"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Misión jeheja"
 
@@ -1649,7 +1661,7 @@ msgstr "Ndaikatúi omoĩmbaite ñemaña"
 msgid "Failed to upload attachment"
 msgstr "Ndaikatúi oñemondo archivo"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "REGULAR"
 
@@ -1675,7 +1687,7 @@ msgstr "Oñepyrũ nde cuenta mbojuaju"
 msgid "Finished"
 msgstr "Opa"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "japi"
 
@@ -1696,11 +1708,11 @@ msgstr "Banderakuéra"
 msgid "FLAMEOUT"
 msgstr "MOTÓR OGUE"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flaps"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "tatarendy"
 
@@ -1712,7 +1724,7 @@ msgstr "BENGALA"
 msgid "Flat"
 msgstr "Ipe"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Ho'a párape"
 
@@ -1720,7 +1732,7 @@ msgstr "Ho'a párape"
 msgid "Flight"
 msgstr "Veve"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "VEVE APYTERE OJEJAVY"
 
@@ -1745,7 +1757,7 @@ msgstr "Oveve"
 msgid "Fly"
 msgstr "Oveve"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Eveve jey"
 
@@ -1819,7 +1831,7 @@ msgstr "Hete"
 msgid "Gain"
 msgstr "Mbotuichave"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "tren"
 
@@ -1911,7 +1923,7 @@ msgstr "Tembiasakue"
 msgid "Home"
 msgstr "Óga"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "pindá"
 
@@ -2017,7 +2029,7 @@ msgstr "Mbyai mba'e'oka"
 msgid "Jettison tanks"
 msgstr "Tanque poi"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "POI: PYTA"
 
@@ -2030,7 +2042,7 @@ msgstr "Eike"
 msgid "Join server"
 msgstr "Servidor-pe jeike"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "OIKE"
 
@@ -2068,7 +2080,7 @@ msgstr "Teclado mboypýi"
 msgid "Keys"
 msgstr "Tecla-kuéra"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "JEJUKA"
 
@@ -2103,7 +2115,7 @@ msgstr "Ñemboguejy ruéda"
 msgid "Large"
 msgstr "Tuicha"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "TARDE"
 
@@ -2112,7 +2124,7 @@ msgstr "TARDE"
 msgid "Launch (catapult)"
 msgstr "Emosẽ (katapúlta)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "ñemombo / objetivo"
 
@@ -2132,7 +2144,7 @@ msgstr "Servidor jeheja"
 msgid "Left"
 msgstr "Osẽ"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "OSẼ"
 
@@ -2149,7 +2161,7 @@ msgstr "Pepo asu apỹi"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Achegety, papapy, pa'ũ, guión ha barra añoite"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-PE TESÃI, RUEDA YVÝPE"
 
@@ -2157,7 +2169,7 @@ msgstr "1200-PE TESÃI, RUEDA YVÝPE"
 msgid "Light"
 msgstr "Hesakã"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "tesapekuéra"
 
@@ -2166,7 +2178,7 @@ msgstr "tesapekuéra"
 msgid "Lights"
 msgstr "Tesapekuéra"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "MBA'ERENDY"
 
@@ -2194,7 +2206,7 @@ msgstr "OJEMBOGUE"
 msgid "Loading content…"
 msgstr "Contenido henyhẽhína…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "MBOGUEJY OJAVY"
 
@@ -2270,7 +2282,7 @@ msgstr "Yvýpe"
 msgid "Low stratus"
 msgstr "Estrato yvýpe"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M emboty hag̃ua"
 
@@ -2282,7 +2294,7 @@ msgstr "Eñangareko categoríakuéra rehe"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "mapa"
 
@@ -2325,7 +2337,7 @@ msgstr "Mbyte"
 msgid "Members"
 msgstr "Memberskuera"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menu"
 
@@ -2343,7 +2355,7 @@ msgstr "Jejuhu — ñorairõ oñepyrũ ojasa jave"
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Ehai opavavépe"
 
@@ -2351,7 +2363,7 @@ msgstr "Ehai opavavépe"
 msgid "Message players on this server"
 msgstr "Emondo marandu ko servidor-pegua jugadorkuérape"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Ehai ne equípope"
 
@@ -2369,7 +2381,7 @@ msgstr "Ojejokóma micrófono ñemoneĩ"
 msgid "Mid stratus"
 msgstr "Estrato mbyte"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Oñembota árape"
 
@@ -2381,7 +2393,7 @@ msgstr "Midway Atoll mapa — ta'angakuéra oguereko <0>Copernicus Sentinel-2</0
 msgid "Minimum length"
 msgstr "Pukuvevéva"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISIL"
 
@@ -2389,7 +2401,7 @@ msgstr "MISIL"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Misil ra'ãnga <0>“AIM-120C AMRAAM”</0> ojapo <1>Pippa</1> (Sketchfab), oñemboguata <2>CC BY 4.0</2> rehe. Oñemoambue: oñemoĩ jey itamaño, oñembohape jey ha oñemombyte oñemoĩ hag̃ua."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Tembiapo opa"
 
@@ -2553,11 +2565,11 @@ msgstr "Ndojejuhúi resultados."
 msgid "No status"
 msgstr "Ndaipóri estado"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "NDAIPÓRI TANQUE"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "NDAIPÓRI TA'ÃHA"
 
@@ -2586,7 +2598,7 @@ msgstr "Ndaipóri jehecha"
 msgid "No world server."
 msgstr "Ndaipóri mohendahavusu arapygua."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "SIN NOTA"
 
@@ -2669,7 +2681,7 @@ msgstr "Detalle yguasu"
 msgid "offline"
 msgstr "desconectado"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G apyra jehasa"
 msgid "Owner"
 msgstr "Mburuvicha"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "MAÑA JOKOPY"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "MAÑA SÃSO"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkeys ndaipóri ko navegador-pe"
 msgid "Pattern (regex)"
 msgstr "Tape (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Oñembohejéi"
 
@@ -2818,7 +2830,7 @@ msgstr "piloto"
 msgid "Pilot"
 msgstr "Piloto"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PILOTO OMANO"
 
@@ -2826,7 +2838,7 @@ msgstr "PILOTO OMANO"
 msgid "Pilot identity"
 msgstr "Piloto identidad"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Pilóto ojejuka"
 
@@ -2835,7 +2847,7 @@ msgstr "Pilóto ojejuka"
 msgid "Pin"
 msgstr "Mboja"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "jeupi-guejy"
 
@@ -2851,7 +2863,7 @@ msgstr "Tĩ yvy gotyo"
 msgid "Pitch up"
 msgstr "Tĩ yvate gotyo"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATAFÓRMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Marandu ha comentarios"
 msgid "Press a key…"
 msgstr "Epoko peteĩ tecla-re…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "EÑATÓI ENTER OVEVE HAGUÃ"
 
@@ -2941,7 +2953,7 @@ msgstr "Servidor publico"
 msgid "Push notification"
 msgstr "Push marandu"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "AJA APROXIMACIÓN"
 
@@ -3036,7 +3048,7 @@ msgstr "Techapyrã"
 msgid "Refresh"
 msgstr "Embohekopyahu"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "AJEVY ATÝPE"
 
@@ -3172,15 +3184,15 @@ msgstr "Ohasahína..."
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Ñepyrũjey"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Misión ñepyrũjey"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Emoñepyrũjeýtapa pe misión?"
 
@@ -3188,7 +3200,7 @@ msgstr "Emoñepyrũjeýtapa pe misión?"
 msgid "Result"
 msgstr "Resultado"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Eñepyrũ jey"
 
@@ -3226,7 +3238,7 @@ msgstr "Pepo akatúa"
 msgid "Right wingtip"
 msgstr "Pepo akatúa apỹi"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "ñembojere"
 
@@ -3263,7 +3275,7 @@ msgstr "Canal RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL oñekopia clipboard-pe"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "OPA MBARETE"
 
@@ -3417,7 +3429,7 @@ msgstr "Emondo"
 msgid "Send again"
 msgstr "Emondo jey"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Emondo marandu"
 
@@ -3458,7 +3470,7 @@ msgstr "Mohendaha mbojeguatára"
 msgid "server runs v{0}, you have v{version}"
 msgstr "servidor oiporu v{0}, nde rereko v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SESIÓN OPA"
 
@@ -3477,7 +3489,7 @@ msgstr "Emoĩ ñepyrũmby ha ohohaguã"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Ipa'ũva"
 msgid "SPD BK"
 msgstr "AEROF"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "aerofreno"
 
@@ -3576,10 +3588,6 @@ msgstr "Aerofreno"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Pya'eha KCAS-pe, vevýigui (combustible michĩvéva, carga'ỹre) pohýi peve (peso máximo). Umi datos ojejuhu experimento rupive ñembosaráipe. Opa mba'e iñambuéva aeronave añeteguágui ohechauka simulador veve modelo javy."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "OÑEHUNDI"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Eike vista 1-9"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "MAPA TÁKTIKO"
 
@@ -3673,7 +3681,7 @@ msgstr "Etiqueta oguereko va'erã 50 tai térã sa'ive"
 msgid "Tags"
 msgstr "Tagskuéra"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "AHECHA AMOTARE'Ỹ"
 
@@ -3681,11 +3689,11 @@ msgstr "AHECHA AMOTARE'Ỹ"
 msgid "Task"
 msgstr "Tembiapo"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Aty"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "EQUIPO"
 
@@ -3732,7 +3740,7 @@ msgstr "Cámara jerure ndojehechái mbohovái"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ndaikatúi oñemyanyhẽ pe juego. Emyanyhẽ jey pe rogue eha'ã jey hag̃ua."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Pe partida osegui ko menú kupépe."
 
@@ -3744,7 +3752,7 @@ msgstr "Micrófono jerure ndojehechái mbohovái"
 msgid "The mission stopped."
 msgstr "Pe misión opyta."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Pe misión oñepyrũjeýta. Pe veve ag̃agua noñeñongatumo'ãi."
 
@@ -3780,7 +3788,7 @@ msgstr "Ko máquina ikatu imbegue eterei jeveve sỹi peg̃uarã."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Kóva ohundíta opa árape g̃uarã ñembosarái ha ijoayhuháicha. Ndaikatuvéima ojejapo jey."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "mbopya'e"
 
@@ -3857,7 +3865,7 @@ msgstr "Trazadora"
 msgid "Travelling"
 msgstr "Ojeguatáva"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Ojehechapyre"
 msgid "Watched only"
 msgstr "Ojehechapyre mante"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -4124,7 +4132,7 @@ msgstr "WAVE OFF"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Romondo peteĩ código jehechajeýva <0>{0}</0> peg̃uarã. Emoinge código kóva guýpe ne correo emoañete hag̃ua."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "arma"
 
@@ -4175,7 +4183,7 @@ msgstr "PEPO OÑEMBOTYPYRE"
 msgid "WINGS SPREADING"
 msgstr "PEPO OÑEMYASÃI"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "OGANA"
 
@@ -4192,7 +4200,7 @@ msgstr "Ndaikatúi ojehupyty mohendahavusu arapygua"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, mboka sãso ojasa jave"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "jere yképe"
 

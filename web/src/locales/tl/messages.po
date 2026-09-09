@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# resulta} other {# resulta}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Tinamaan ng # bala} other {Tinamaan ng # bala}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#lin} other {#lin}}"
 msgid "{entityLabel} name"
 msgstr "Pangalan ng {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "Winasak ni {killer} si {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Match ni {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# tugon} other {+# pang tugon}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Buksan ang menu (# hindi pa nababasang notification)} other {Buksan ang menu (# hindi pa nababasang notification)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "Bumangga si {victim} kay {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "Bumagsak si {victim}"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> upang ikiling"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> upang lumapit"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> upang umatras"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> para sa tanawin"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>I-drag</0> o <1>←→</1> upang umikot"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "KABLE 1"
 
@@ -177,7 +189,7 @@ msgstr "12 oras"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "KABLE 2"
 
@@ -185,7 +197,7 @@ msgstr "KABLE 2"
 msgid "24 hours"
 msgstr "24 oras"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "KABLE 3"
 
@@ -494,7 +506,7 @@ msgstr "Tinanggal ang banner"
 msgid "Banner updated"
 msgstr "Na-update ang banner"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "BABA SA 250 — GEAR AT FLAPS"
 
@@ -548,7 +560,7 @@ msgstr "Mga asul na bot"
 msgid "Board"
 msgstr "Board"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Kulay ng border"
 msgid "Bots"
 msgstr "Mga bot"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "preno"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "KUMALIWA NA"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "KUMANAN NA"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "LUMIKO KAPAG HANDA"
 
@@ -602,7 +614,7 @@ msgstr "BVR — malayang sandata mula umpisa"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, malayang sandata mula umpisa"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "IANUNSYO ANG BOLA"
 
@@ -638,7 +650,7 @@ msgstr "Hindi available ang camera"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Binago"
 msgid "Changed {field}"
 msgstr "Binago ang {field}"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Tanaw sa paghabol:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Komportable"
 msgid "Command Palette"
 msgstr "Command palette"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "NAGSISIMULA"
 
@@ -948,7 +960,7 @@ msgstr "Kumokonekta..."
 msgid "Connecting…"
 msgstr "Kumokonekta…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "NABIGO ANG KONEKSYON"
 
@@ -1039,7 +1051,7 @@ msgstr "Hindi ma-verify gamit ang account na iyon. Pakisubukang muli."
 msgid "Countermeasures"
 msgstr "Kontramedida"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Bumagsak"
 
@@ -1111,7 +1123,7 @@ msgstr "Kasalukuyang lokasyon"
 msgid "Custom"
 msgstr "Pasadya"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "MAPANGANIB"
 
@@ -1143,7 +1155,7 @@ msgstr "Araw"
 msgid "Deaths"
 msgstr "Namatay"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "NA-SAVE ANG POSISYON SA DECK"
 
@@ -1253,7 +1265,7 @@ msgstr "WINASAK"
 msgid "DESTROYED BY {callsign}"
 msgstr "WINASAK NI {callsign}"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Winasak ng apoy"
 
@@ -1289,7 +1301,7 @@ msgstr "Ibang host ng laro"
 msgid "Directory"
 msgstr "Direktoryo"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "IBABA ANG GEAR"
 
@@ -1353,7 +1365,7 @@ msgstr "I-download"
 msgid "Download failed"
 msgstr "Nabigo ang pag-download"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "KASUNOD NG HANGIN 600 TALAMPAKAN"
 
@@ -1377,7 +1389,7 @@ msgstr "Dynamic na resolution"
 msgid "Dyslexia-friendly"
 msgstr "Angkop sa dyslexia"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "MAAGA"
 
@@ -1432,7 +1444,7 @@ msgstr "Detalye ng mga epekto"
 msgid "Eject"
 msgstr "Eject"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "NAG-EJECT"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Code ng email"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "EMERGENCY NA PAGTATAPON"
 
@@ -1466,7 +1478,7 @@ msgstr "Walang lamang pylon"
 msgid "Enable sound"
 msgstr "Paganahin ang tunog"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "UMAATAKE AKO"
 
@@ -1494,15 +1506,15 @@ msgstr "Ilagay ang iyong authenticator code"
 msgid "Error"
 msgstr "Error"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Lahat"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Umalis sa match"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Lumabas sa misyon"
 
@@ -1649,7 +1661,7 @@ msgstr "Nabigong i-update ang pagsubaybay"
 msgid "Failed to upload attachment"
 msgstr "Nabigong mag-upload ng attachment"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "KATAMTAMAN"
 
@@ -1675,7 +1687,7 @@ msgstr "Tapusin ang paglipat ng iyong account"
 msgid "Finished"
 msgstr "Natapos"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "magpaputok"
 
@@ -1696,11 +1708,11 @@ msgstr "Mga flag"
 msgid "FLAMEOUT"
 msgstr "FLAMEOUT"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flaps"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "flares"
 
@@ -1712,7 +1724,7 @@ msgstr "FLARES"
 msgid "Flat"
 msgstr "Patag"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Bumulusok sa dagat"
 
@@ -1720,7 +1732,7 @@ msgstr "Bumulusok sa dagat"
 msgid "Flight"
 msgstr "Paglipad"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "NABIGO ANG FLIGHT CORE"
 
@@ -1745,7 +1757,7 @@ msgstr "Lumipad"
 msgid "Fly"
 msgstr "Lumipad"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Lumipad ulit"
 
@@ -1819,7 +1831,7 @@ msgstr "Katawan ng eroplano"
 msgid "Gain"
 msgstr "Pagpapalakas"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "gear"
 
@@ -1911,7 +1923,7 @@ msgstr "Kasaysayan"
 msgid "Home"
 msgstr "Home"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Kawit"
 
@@ -2017,7 +2029,7 @@ msgstr "Pang-abala ng signal"
 msgid "Jettison tanks"
 msgstr "Itapon ang mga tangke"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "PAGTATAPON: LANDING GEAR"
 
@@ -2030,7 +2042,7 @@ msgstr "Sumali"
 msgid "Join server"
 msgstr "Sumali sa server"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "SUMALI"
 
@@ -2068,7 +2080,7 @@ msgstr "Mga keyboard shortcut"
 msgid "Keys"
 msgstr "Mga key"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "KILL"
 
@@ -2103,7 +2115,7 @@ msgstr "Gulong sa paglapag"
 msgid "Large"
 msgstr "Malaki"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "HULI"
 
@@ -2112,7 +2124,7 @@ msgstr "HULI"
 msgid "Launch (catapult)"
 msgstr "Ilunsad (katapulta)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "lunsad / target"
 
@@ -2132,7 +2144,7 @@ msgstr "Umalis sa server"
 msgid "Left"
 msgstr "Umalis"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "UMALIS"
 
@@ -2149,7 +2161,7 @@ msgstr "Dulo ng kaliwang pakpak"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Mga titik, numero, espasyo, gitling, at slash lamang"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "PANTAY SA 1200, IBABA ANG GULONG"
 
@@ -2157,7 +2169,7 @@ msgstr "PANTAY SA 1200, IBABA ANG GULONG"
 msgid "Light"
 msgstr "Maliwanag"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "mga ilaw"
 
@@ -2166,7 +2178,7 @@ msgstr "mga ilaw"
 msgid "Lights"
 msgstr "Mga ilaw"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "MGA ILAW"
 
@@ -2194,7 +2206,7 @@ msgstr "NILO-LOAD"
 msgid "Loading content…"
 msgstr "Nilo-load ang nilalaman…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "NABIGO ANG PAG-LOAD"
 
@@ -2270,7 +2282,7 @@ msgstr "Mababa"
 msgid "Low stratus"
 msgstr "Mababang stratus"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M para isara"
 
@@ -2282,7 +2294,7 @@ msgstr "I-manage ang mga category"
 msgid "Manual"
 msgstr "Manwal"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "mapa"
 
@@ -2325,7 +2337,7 @@ msgstr "Katamtaman"
 msgid "Members"
 msgstr "Mga Miyembro"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menu"
 
@@ -2343,7 +2355,7 @@ msgstr "Merge — magsisimula ang laban sa pagdaan"
 msgid "Message"
 msgstr "Mensahe"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Mag-message sa lahat"
 
@@ -2351,7 +2363,7 @@ msgstr "Mag-message sa lahat"
 msgid "Message players on this server"
 msgstr "Magpadala ng mensahe sa mga player sa server na ito"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Mag-message sa team mo"
 
@@ -2369,7 +2381,7 @@ msgstr "Tinanggihan ang pahintulot sa mikropono"
 msgid "Mid stratus"
 msgstr "Katamtamang stratus"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Banggaan sa himpapawid"
 
@@ -2381,7 +2393,7 @@ msgstr "Mapa ng Midway Atoll — naglalaman ang mga imahe ng binagong datos ng <
 msgid "Minimum length"
 msgstr "Pinakamababang haba"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISIL"
 
@@ -2389,7 +2401,7 @@ msgstr "MISIL"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Modelo ng missile <0>“AIM-120C AMRAAM”</0> ni <1>Pippa</1> (Sketchfab), lisensyado sa ilalim ng <2>CC BY 4.0</2>. Binago: muling sinukat, muling inayos ang direksyon, at isinentro para sa paglalagay."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Tapos na ang misyon"
 
@@ -2553,11 +2565,11 @@ msgstr "Walang nakitang resulta."
 msgid "No status"
 msgstr "Walang status"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "WALANG TANGKE"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "WALANG TARGET"
 
@@ -2586,7 +2598,7 @@ msgstr "Walang view"
 msgid "No world server."
 msgstr "Walang world server."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "WALANG GRADO"
 
@@ -2669,7 +2681,7 @@ msgstr "Detalye ng karagatan"
 msgid "offline"
 msgstr "offline"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Lampasan ang limitasyong G"
 msgid "Owner"
 msgstr "May-ari"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "NAKAKANDADONG TINGIN"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "MALAYANG TINGIN"
 
@@ -2798,7 +2810,7 @@ msgstr "Hindi available ang mga passkey sa browser na ito"
 msgid "Pattern (regex)"
 msgstr "Pattern (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Naka-pause"
 
@@ -2818,7 +2830,7 @@ msgstr "piloto"
 msgid "Pilot"
 msgstr "Piloto"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PATAY ANG PILOTO"
 
@@ -2826,7 +2838,7 @@ msgstr "PATAY ANG PILOTO"
 msgid "Pilot identity"
 msgstr "Pagkakakilanlan ng piloto"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Napatay ang piloto"
 
@@ -2835,7 +2847,7 @@ msgstr "Napatay ang piloto"
 msgid "Pin"
 msgstr "I-pin"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "pitch"
 
@@ -2851,7 +2863,7 @@ msgstr "Pitch pababa"
 msgid "Pitch up"
 msgstr "Pitch pataas"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATAPORMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Mga post at komento"
 msgid "Press a key…"
 msgstr "Pindutin ang isang key…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PINDUTIN ANG ENTER PARA UMANGAT"
 
@@ -2941,7 +2953,7 @@ msgstr "Pampublikong server"
 msgid "Push notification"
 msgstr "Push notification"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "ORAS NG PAGLAPIT"
 
@@ -3036,7 +3048,7 @@ msgstr "Sanggunian"
 msgid "Refresh"
 msgstr "I-refresh"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "BUMABALIK SA PORMASYON"
 
@@ -3172,15 +3184,15 @@ msgstr "Sumusuko..."
 msgid "Resolution"
 msgstr "Resolusyon"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "I-restart"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "I-restart ang misyon"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "I-restart ang misyon?"
 
@@ -3188,7 +3200,7 @@ msgstr "I-restart ang misyon?"
 msgid "Result"
 msgstr "Resulta"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Ipagpatuloy"
 
@@ -3226,7 +3238,7 @@ msgstr "Kanang pakpak"
 msgid "Right wingtip"
 msgstr "Dulo ng kanang pakpak"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "roll"
 
@@ -3263,7 +3275,7 @@ msgstr "Feed ng RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "Nakopya ang RSS URL sa clipboard"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "BUONG LAKAS"
 
@@ -3417,7 +3429,7 @@ msgstr "Ipadala"
 msgid "Send again"
 msgstr "Ipadala muli"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Magpadala ng chat"
 
@@ -3458,7 +3470,7 @@ msgstr "Mga patakaran ng server"
 msgid "server runs v{0}, you have v{version}"
 msgstr "gumagana ang server sa v{0}, mayroon kang v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "TAPOS NA ANG SESSION"
 
@@ -3477,7 +3489,7 @@ msgstr "Itakda ang origin at destination"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Maluwag"
 msgid "SPD BK"
 msgstr "PR HGN"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "preno ng hangin"
 
@@ -3576,10 +3588,6 @@ msgstr "Preno ng hangin"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Mga bilis sa KCAS, bilang saklaw mula magaan (pinakamababang gasolina, walang kargada) hanggang mabigat (pinakamataas na kabuuang timbang). Ang datos ay nakuha nang eksperimental sa loob ng laro. Anumang pagkakaiba sa tunay na eroplano ay bunga ng mga pagkakamali sa modelo ng paglipad ng simulator."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "BAGSAK ANG TARGET"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Lumipat sa view 1-9"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "TAKTIKAL NA MAPA"
 
@@ -3673,7 +3681,7 @@ msgstr "Ang tag ay dapat 50 character o mas kaunti"
 msgid "Tags"
 msgstr "Mga tag"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "KITA ANG KAAWAY"
 
@@ -3681,11 +3689,11 @@ msgstr "KITA ANG KAAWAY"
 msgid "Task"
 msgstr "Gawain"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Team"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "TEAM"
 
@@ -3732,7 +3740,7 @@ msgstr "Hindi nasagot ang kahilingan sa camera"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Hindi ma-load ang laro. I-reload ang pahina para subukang muli."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Tuloy ang match sa likod ng menu na ito."
 
@@ -3744,7 +3752,7 @@ msgstr "Hindi nasagot ang kahilingan sa mikropono"
 msgid "The mission stopped."
 msgstr "Huminto ang misyon."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Magre-restart ang misyon. Hindi ise-save ang kasalukuyang paglipad."
 
@@ -3780,7 +3788,7 @@ msgstr "Maaaring masyadong mabagal ang makinang ito para sa maayos na paglipad."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Permanenteng buburahin nito ang laro at ang chat nito. Hindi na maaaring bawiin ang aksyong ito."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "throttle"
 
@@ -3857,7 +3865,7 @@ msgstr "Mga tracer"
 msgid "Travelling"
 msgstr "Naglalakbay"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Binabantayan"
 msgid "Watched only"
 msgstr "Binabantayan lamang"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "GO AROUND"
 
@@ -4124,7 +4132,7 @@ msgstr "GO AROUND"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Nagpadala kami ng verification code sa <0>{0}</0>. Ilagay ang code sa ibaba upang i-verify ang iyong email address."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "sandata"
 
@@ -4175,7 +4183,7 @@ msgstr "NAKA-LOCK ANG PAKPAK"
 msgid "WINGS SPREADING"
 msgstr "NAGBUBUKA ANG PAKPAK"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "PANALO"
 
@@ -4192,7 +4200,7 @@ msgstr "Hindi maabot ang world server"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, malayang sandata sa pagdaan"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "yaw"
 

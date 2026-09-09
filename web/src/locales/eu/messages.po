@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# emaitza} other {# emaitza}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# bala jaso du} other {# bala jaso ditu}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#ast} other {#ast}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} izena"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer}(e)k {victim} suntsitu du"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}(r)en partida"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# erantzun} other {+# erantzun gehiago}}
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Ireki menua (irakurri gabeko # jakinarazpen)} other {Ireki menua (irakurri gabeko # jakinarazpen)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} {other}(r)ekin talka egin du"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} erori da"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> okertzeko"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> hurbiltzeko"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> atzera egiteko"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> ikuspegirako"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Arrastatu</0> edo <1>←→</1> orbitatzeko"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "KABLE 1"
 
@@ -177,7 +189,7 @@ msgstr "12 ordu"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "KABLE 2"
 
@@ -185,7 +197,7 @@ msgstr "KABLE 2"
 msgid "24 hours"
 msgstr "24 ordu"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "KABLE 3"
 
@@ -494,7 +506,7 @@ msgstr "Iragarki-banda kendu da"
 msgid "Banner updated"
 msgstr "Iragarki-banda eguneratu da"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 AZPITIK — TRENA ETA FLAPAK"
 
@@ -548,7 +560,7 @@ msgstr "Bot urdinak"
 msgid "Board"
 msgstr "Taula"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Ertzaren kolorea"
 msgid "Bots"
 msgstr "Botak"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "balaztak"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "BIRATU EZKERRERA"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "BIRATU ESKUINERA"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "PREST ZAUDENEAN BIRATU"
 
@@ -602,7 +614,7 @@ msgstr "BVR — armak aske hasieratik"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, armak aske hasieratik"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ESAN BOLA"
 
@@ -638,7 +650,7 @@ msgstr "Kamera ez dago erabilgarri"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Aldatuta"
 msgid "Changed {field}"
 msgstr "{field} aldatu da"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Jarraipen-ikuspegia:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "txata"
 
@@ -888,7 +900,7 @@ msgstr "Erosoa"
 msgid "Command Palette"
 msgstr "Komando-paleta"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "HASTEN"
 
@@ -948,7 +960,7 @@ msgstr "Konektatzen..."
 msgid "Connecting…"
 msgstr "Konektatzen…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "KONEXIOAK HUTS EGIN DU"
 
@@ -1039,7 +1051,7 @@ msgstr "Ezin izan da kontu horrekin egiaztatu. Saiatu berriro."
 msgid "Countermeasures"
 msgstr "Kontraneurriak"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Lurra jo du"
 
@@ -1111,7 +1123,7 @@ msgstr "Uneko kokapena"
 msgid "Custom"
 msgstr "Pertsonalizatua"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "ARRISKUTSUA"
 
@@ -1143,7 +1155,7 @@ msgstr "Eguna"
 msgid "Deaths"
 msgstr "Heriotzak"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "BIZKARREKO POSIZIOA GORDETA"
 
@@ -1253,7 +1265,7 @@ msgstr "SUNTSITUA"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign}-EK SUNTSITUA"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Suteak suntsitu du"
 
@@ -1289,7 +1301,7 @@ msgstr "Beste joko-ostalari bat"
 msgid "Directory"
 msgstr "Direktorioa"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "TRENA JAITSI"
 
@@ -1353,7 +1365,7 @@ msgstr "Deskargatu"
 msgid "Download failed"
 msgstr "Deskargak huts egin du"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "HAIZE-ALDEA 600 OIN"
 
@@ -1377,7 +1389,7 @@ msgstr "Bereizmen dinamikoa"
 msgid "Dyslexia-friendly"
 msgstr "Dislexiarako egokia"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "GOIZ"
 
@@ -1432,7 +1444,7 @@ msgstr "Efektuen xehetasuna"
 msgid "Eject"
 msgstr "Eiekzioa"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "JAURTITA"
 
@@ -1444,7 +1456,7 @@ msgstr "Posta elektronikoa"
 msgid "Email code"
 msgstr "Posta elektronikoko kodea"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "LARRIALDIKO ASKATZEA"
 
@@ -1466,7 +1478,7 @@ msgstr "Piloi hutsa"
 msgid "Enable sound"
 msgstr "Gaitu soinua"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "ERASOTZEN ARI NAIZ"
 
@@ -1494,15 +1506,15 @@ msgstr "Sartu zure autentifikazio-aplikazioaren kodea"
 msgid "Error"
 msgstr "Errorea"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Denak"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Irten partidatik"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Irten misiotik"
 
@@ -1649,7 +1661,7 @@ msgstr "Ezin izan da jarraipena eguneratu"
 msgid "Failed to upload attachment"
 msgstr "Ezin izan da eranskina igo"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "NAHIKOA"
 
@@ -1675,7 +1687,7 @@ msgstr "Amaitu kontuaren mugiketa"
 msgid "Finished"
 msgstr "Amaituta"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "tiro egin"
 
@@ -1696,11 +1708,11 @@ msgstr "Banderak"
 msgid "FLAMEOUT"
 msgstr "ITZALTZEA"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flapak"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "bengalak"
 
@@ -1712,7 +1724,7 @@ msgstr "BENGALAK"
 msgid "Flat"
 msgstr "Laua"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Itsasoa jo du"
 
@@ -1720,7 +1732,7 @@ msgstr "Itsasoa jo du"
 msgid "Flight"
 msgstr "Hegaldia"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "HEGALDI-NUKLEOAK HUTS EGIN DU"
 
@@ -1745,7 +1757,7 @@ msgstr "Hegan egina"
 msgid "Fly"
 msgstr "Hegan"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Hegan egin berriro"
 
@@ -1819,7 +1831,7 @@ msgstr "Fuselajea"
 msgid "Gain"
 msgstr "Irabazia"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "trena"
 
@@ -1911,7 +1923,7 @@ msgstr "Historia"
 msgid "Home"
 msgstr "Hasiera"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "kako"
 
@@ -2017,7 +2029,7 @@ msgstr "Interferitzailea"
 msgid "Jettison tanks"
 msgstr "Askatu tangak"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "ASKATZEA: TRENA"
 
@@ -2030,7 +2042,7 @@ msgstr "Batu"
 msgid "Join server"
 msgstr "Elkartu zerbitzarira"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "BATU DA"
 
@@ -2068,7 +2080,7 @@ msgstr "Teklatuko lasterbideak"
 msgid "Keys"
 msgstr "Teklak"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "ERAITSITA"
 
@@ -2103,7 +2115,7 @@ msgstr "Lurreratze-trena"
 msgid "Large"
 msgstr "Handia"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "BERANDU"
 
@@ -2112,7 +2124,7 @@ msgstr "BERANDU"
 msgid "Launch (catapult)"
 msgstr "Jaurtiketa (katapulta)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "jaurtiketa / jomuga"
 
@@ -2132,7 +2144,7 @@ msgstr "Irten zerbitzaritik"
 msgid "Left"
 msgstr "Irten da"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "ALDE EGIN DU"
 
@@ -2149,7 +2161,7 @@ msgstr "Ezkerreko hegal-punta"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Letrak, zenbakiak, zuriuneak, marratxoak eta barrak soilik"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200EAN BERDINDUTA, TRENA BEHERA"
 
@@ -2157,7 +2169,7 @@ msgstr "1200EAN BERDINDUTA, TRENA BEHERA"
 msgid "Light"
 msgstr "Argia"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "argiak"
 
@@ -2166,7 +2178,7 @@ msgstr "argiak"
 msgid "Lights"
 msgstr "Argiak"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "ARGIAK"
 
@@ -2194,7 +2206,7 @@ msgstr "KARGATZEN"
 msgid "Loading content…"
 msgstr "Edukia kargatzen…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "KARGAK HUTS EGIN DU"
 
@@ -2270,7 +2282,7 @@ msgstr "Baxua"
 msgid "Low stratus"
 msgstr "Estratu baxua"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M ixteko"
 
@@ -2282,7 +2294,7 @@ msgstr "Kudeatu kategoriak"
 msgid "Manual"
 msgstr "Eskuz"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "mapa"
 
@@ -2325,7 +2337,7 @@ msgstr "Ertaina"
 msgid "Members"
 msgstr "Kideak"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menua"
 
@@ -2343,7 +2355,7 @@ msgstr "Elkartzea — borroka gurutzatzean hasten da"
 msgid "Message"
 msgstr "Mezua"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Idatzi denei"
 
@@ -2351,7 +2363,7 @@ msgstr "Idatzi denei"
 msgid "Message players on this server"
 msgstr "Bidali mezua zerbitzari honetako jokalariei"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Idatzi zure taldeari"
 
@@ -2369,7 +2381,7 @@ msgstr "Mikrofonoaren baimena ukatu da"
 msgid "Mid stratus"
 msgstr "Estratu ertaina"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Aireko talka"
 
@@ -2381,7 +2393,7 @@ msgstr "Midway atoloiaren mapa — irudiek <0>Copernicus Sentinel-2</0> datu ald
 msgid "Minimum length"
 msgstr "Gutxieneko luzera"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISIL"
 
@@ -2389,7 +2401,7 @@ msgstr "MISIL"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Misil eredua <0>“AIM-120C AMRAAM”</0> hegazkin-ontzia, <1>Pippa</1>-ren lana (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldatuta: birreskalatua, birbideratua eta kokatzeko zentratua."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Misioa amaituta"
 
@@ -2553,11 +2565,11 @@ msgstr "Ez da emaitzarik aurkitu."
 msgid "No status"
 msgstr "Egoerarik ez"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "TANGARIK EZ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "JOMUGARIK EZ"
 
@@ -2586,7 +2598,7 @@ msgstr "Ikuspegirik ez"
 msgid "No world server."
 msgstr "Ez dago mundu-zerbitzaririk."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "NOTARIK GABE"
 
@@ -2669,7 +2681,7 @@ msgstr "Ozeanoaren xehetasuna"
 msgid "offline"
 msgstr "lineaz kanpo"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G muga gainditu"
 msgid "Owner"
 msgstr "Jabea"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "PADLOCK"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "PADLOCK ITZALITA"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkey-ak ez daude erabilgarri nabigatzaile honetan"
 msgid "Pattern (regex)"
 msgstr "Eredua (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Pausatuta"
 
@@ -2818,7 +2830,7 @@ msgstr "pilotua"
 msgid "Pilot"
 msgstr "Pilotua"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PILOTUA HILDA"
 
@@ -2826,7 +2838,7 @@ msgstr "PILOTUA HILDA"
 msgid "Pilot identity"
 msgstr "Pilotuaren identitatea"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Pilotua hil da"
 
@@ -2835,7 +2847,7 @@ msgstr "Pilotua hil da"
 msgid "Pin"
 msgstr "Finkatu"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "kabezeo"
 
@@ -2851,7 +2863,7 @@ msgstr "Sudurra behera"
 msgid "Pitch up"
 msgstr "Sudurra gora"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATAFORMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Argitalpenak eta iruzkinak"
 msgid "Press a key…"
 msgstr "Sakatu tekla bat…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "SAKATU ENTER ABIARAZTEKO"
 
@@ -2941,7 +2953,7 @@ msgstr "Zerbitzari publikoak"
 msgid "Push notification"
 msgstr "Push jakinarazpena"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "HURBILKETA-ORDUA"
 
@@ -3036,7 +3048,7 @@ msgstr "Erreferentzia"
 msgid "Refresh"
 msgstr "Freskatu"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "FORMAZIORA ITZULTZEN"
 
@@ -3172,15 +3184,15 @@ msgstr "Amore ematen..."
 msgid "Resolution"
 msgstr "Bereizmena"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Berrabiarazi"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Berrabiarazi misioa"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Misioa berrabiarazi?"
 
@@ -3188,7 +3200,7 @@ msgstr "Misioa berrabiarazi?"
 msgid "Result"
 msgstr "Emaitza"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Berriro hasi"
 
@@ -3226,7 +3238,7 @@ msgstr "Eskuineko hegala"
 msgid "Right wingtip"
 msgstr "Eskuineko hegal-punta"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "alabeo"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS jarioa"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URLa arbelera kopiatu da"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "POTENTZIA OSOA"
 
@@ -3417,7 +3429,7 @@ msgstr "Bidali"
 msgid "Send again"
 msgstr "Bidali berriz"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Bidali mezua"
 
@@ -3458,7 +3470,7 @@ msgstr "Zerbitzariaren arauak"
 msgid "server runs v{0}, you have v{version}"
 msgstr "zerbitzariak v{0} darabil, zuk v{version} duzu"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SAIOA AMAITU DA"
 
@@ -3477,7 +3489,7 @@ msgstr "Ezarri jatorria eta helmuga"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Lasaia"
 msgid "SPD BK"
 msgstr "AIREB"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "aire-balazta"
 
@@ -3576,10 +3588,6 @@ msgstr "Aire-balazta"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Abiadurak KCAS-etan, arina (erregai minimoa, kargarik gabe) izatetik astuna (gehienezko pisu gordina) izatera bitarteko tarte gisa. Datuak jokoan bertan esperimentalki lortuak. Benetako hegazkinarekiko edozein desberdintasun simuladorearen hegaldi-ereduaren erroreen ondorio da."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "HELBURUA ERAITSITA"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Aldatu 1-9 ikuspegira"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "MAPA TAKTIKOA"
 
@@ -3673,7 +3681,7 @@ msgstr "Etiketak gehienez 50 karaktere izan behar ditu"
 msgid "Tags"
 msgstr "Etiketak"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "ETSAIA BISTAN"
 
@@ -3681,11 +3689,11 @@ msgstr "ETSAIA BISTAN"
 msgid "Task"
 msgstr "Zeregina"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Taldea"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "TALDEA"
 
@@ -3732,7 +3740,7 @@ msgstr "Kamera eskaerak ez du erantzunik jaso"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ezin izan da jokoa kargatu. Berriro saiatzeko, kargatu orria berriro."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Partidak menu honen atzean jarraitzen du."
 
@@ -3744,7 +3752,7 @@ msgstr "Mikrofono eskaerak ez du erantzunik jaso"
 msgid "The mission stopped."
 msgstr "Misioa gelditu da."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Misioa berrabiarazi egingo da. Uneko hegaldia ez da gordeko."
 
@@ -3780,7 +3788,7 @@ msgstr "Makina hau motelegia izan daiteke hegaldi leunerako."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Honek jokoa eta bere txata betiko ezabatuko ditu. Ekintza hau ezin da desegin."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "gasa"
 
@@ -3857,7 +3865,7 @@ msgstr "Trazatzaileak"
 msgid "Travelling"
 msgstr "Bidaian"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Ikusten"
 msgid "Watched only"
 msgstr "Ikusiak soilik"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "LURRERATZEA ETEN"
 
@@ -4124,7 +4132,7 @@ msgstr "LURRERATZEA ETEN"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Egiaztapen-kode bat bidali dugu <0>{0}</0> helbidera. Sartu kodea behean zure helbide elektronikoa egiaztatzeko."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "arma"
 
@@ -4175,7 +4183,7 @@ msgstr "HEGOAK BLOKEATUTA"
 msgid "WINGS SPREADING"
 msgstr "HEGOAK ZABALTZEN"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "GARAILE"
 
@@ -4192,7 +4200,7 @@ msgstr "Ezin da mundu-zerbitzarira iritsi"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, armak aske gurutzatzean"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "guiñada"
 

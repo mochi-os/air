@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, other {# rezilta}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Li pran # bal} other {Li pran # bal}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#sem} other {#sem}}"
 msgid "{entityLabel} name"
 msgstr "Non {entityLabel}"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} detwi {victim}"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "Match {name}"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, other {+# plis repons}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {Louvri meni (# notifikasyon ki poko li)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} frape ak {other}"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} kraze"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> pou panche"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> pou pwoche"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> pou rale dèyè"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> pou vi a"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Trennen</0> oswa <1>←→</1> pou vire"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "KAB 1"
 
@@ -177,7 +189,7 @@ msgstr "12 èdtan"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "KAB 2"
 
@@ -185,7 +197,7 @@ msgstr "KAB 2"
 msgid "24 hours"
 msgstr "24 èdtan"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "KAB 3"
 
@@ -494,7 +506,7 @@ msgstr "Banyè retire"
 msgid "Banner updated"
 msgstr "Banyè mete ajou"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ANBA 250 — TREN AK VOLÈ"
 
@@ -548,7 +560,7 @@ msgstr "Bot ble"
 msgid "Board"
 msgstr "Tablo"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Koulè bòdi"
 msgid "Bots"
 msgstr "Bot"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "fren"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "VIRE AGOCH"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "VIRE ADWAT"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "VIRE LÈ OU PARE"
 
@@ -602,7 +614,7 @@ msgstr "BVR — zam lib depi kòmansman"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, zam lib depi kòmansman"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "ANONSE BOUL LA"
 
@@ -638,7 +650,7 @@ msgstr "Kamera pa disponib"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Chanje"
 msgid "Changed {field}"
 msgstr "{field} chanje"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Vi swivi:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Konfòtab"
 msgid "Command Palette"
 msgstr "Palèt kòmand"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "KÒMANSE"
 
@@ -948,7 +960,7 @@ msgstr "Konekte..."
 msgid "Connecting…"
 msgstr "Ap konekte…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "KONEKSYON AN ECHWE"
 
@@ -1039,7 +1051,7 @@ msgstr "Nou pa t kapab verifye ak kont sa a. Tanpri eseye ankò."
 msgid "Countermeasures"
 msgstr "Kontmezi"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Avyon an kraze"
 
@@ -1111,7 +1123,7 @@ msgstr "Kote ou ye kounye a"
 msgid "Custom"
 msgstr "Pèsonalize"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "DANJERE"
 
@@ -1143,7 +1155,7 @@ msgstr "Jou"
 msgid "Deaths"
 msgstr "Lanmò"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "POZISYON SOU PON ANREJISTRE"
 
@@ -1253,7 +1265,7 @@ msgstr "DETWI"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} DETWI OU"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Dife detwi avyon an"
 
@@ -1289,7 +1301,7 @@ msgstr "Lòt sèvè jwèt"
 msgid "Directory"
 msgstr "Anyè"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "DESANN TREN"
 
@@ -1353,7 +1365,7 @@ msgstr "Telechaje"
 msgid "Download failed"
 msgstr "Telechajman an echwe"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "AK VAN 600 PYE"
 
@@ -1377,7 +1389,7 @@ msgstr "Rezolisyon dinamik"
 msgid "Dyslexia-friendly"
 msgstr "Adapte pou disleksi"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "BONÈ"
 
@@ -1432,7 +1444,7 @@ msgstr "Detay efè yo"
 msgid "Eject"
 msgstr "Ejekte"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "EJEKTE"
 
@@ -1444,7 +1456,7 @@ msgstr "Imèl"
 msgid "Email code"
 msgstr "Kòd imèl"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "LAGE IJANS"
 
@@ -1466,7 +1478,7 @@ msgstr "Pilon vid"
 msgid "Enable sound"
 msgstr "Aktive son"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "M AP ATAKE"
 
@@ -1494,15 +1506,15 @@ msgstr "Antre kòd otantifikatè ou"
 msgid "Error"
 msgstr "Erè"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Tout moun"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Kite match la"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Kite misyon"
 
@@ -1649,7 +1661,7 @@ msgstr "Echèk mizajou siveyans"
 msgid "Failed to upload attachment"
 msgstr "Echwe pou telechaje atachman"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "PASAB"
 
@@ -1675,7 +1687,7 @@ msgstr "Fini deplase kont ou"
 msgid "Finished"
 msgstr "Fini"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "tire"
 
@@ -1696,11 +1708,11 @@ msgstr "Drapo"
 msgid "FLAMEOUT"
 msgstr "MOTÈ MOURI"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flap"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "fize"
 
@@ -1712,7 +1724,7 @@ msgstr "FIZE"
 msgid "Flat"
 msgstr "Plat"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Avyon an tonbe nan lanmè"
 
@@ -1720,7 +1732,7 @@ msgstr "Avyon an tonbe nan lanmè"
 msgid "Flight"
 msgstr "Vòl"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "NWAYO VÒL LA ECHWE"
 
@@ -1745,7 +1757,7 @@ msgstr "Vole"
 msgid "Fly"
 msgstr "Vole"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Vole ankò"
 
@@ -1819,7 +1831,7 @@ msgstr "Kò avyon an"
 msgid "Gain"
 msgstr "Ranfòsman"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "tren"
 
@@ -1911,7 +1923,7 @@ msgstr "Istwa"
 msgid "Home"
 msgstr "Akèy"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Kwòk"
 
@@ -2017,7 +2029,7 @@ msgstr "Bwouyè"
 msgid "Jettison tanks"
 msgstr "Lage tank yo"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "LAGE: TREN ATERISAJ"
 
@@ -2030,7 +2042,7 @@ msgstr "Antre"
 msgid "Join server"
 msgstr "Antre nan sèvè"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "ANTRE"
 
@@ -2068,7 +2080,7 @@ msgstr "Rakousi klavye"
 msgid "Keys"
 msgstr "Touch"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "ELIMINE"
 
@@ -2103,7 +2115,7 @@ msgstr "Tren daterisaj"
 msgid "Large"
 msgstr "Gwo"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "ANRETA"
 
@@ -2112,7 +2124,7 @@ msgstr "ANRETA"
 msgid "Launch (catapult)"
 msgstr "Lanse (katapil)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "lanse / vize"
 
@@ -2132,7 +2144,7 @@ msgstr "Kite sèvè"
 msgid "Left"
 msgstr "Kite"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "SOTI"
 
@@ -2149,7 +2161,7 @@ msgstr "Pwent zèl gòch"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Sèlman lèt, chif, espas, tirè ak bar oblik"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "EGAL A 1200, DESANN WOU YO"
 
@@ -2157,7 +2169,7 @@ msgstr "EGAL A 1200, DESANN WOU YO"
 msgid "Light"
 msgstr "Klè"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "limyè"
 
@@ -2166,7 +2178,7 @@ msgstr "limyè"
 msgid "Lights"
 msgstr "Limyè"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "LIMYÈ"
 
@@ -2194,7 +2206,7 @@ msgstr "AP CHAJE"
 msgid "Loading content…"
 msgstr "Y ap chaje kontni…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "CHAJMAN AN ECHWE"
 
@@ -2270,7 +2282,7 @@ msgstr "Ba"
 msgid "Low stratus"
 msgstr "Stratis ba"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "M pou fèmen"
 
@@ -2282,7 +2294,7 @@ msgstr "Jere kategori yo"
 msgid "Manual"
 msgstr "Manyèl"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "kat"
 
@@ -2325,7 +2337,7 @@ msgstr "Mwayen"
 msgid "Members"
 msgstr "Manm"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "meni"
 
@@ -2343,7 +2355,7 @@ msgstr "Rankont — batay la kòmanse nan pasaj la"
 msgid "Message"
 msgstr "Mesaj"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Voye mesaj bay tout moun"
 
@@ -2351,7 +2363,7 @@ msgstr "Voye mesaj bay tout moun"
 msgid "Message players on this server"
 msgstr "Voye mesaj bay jwè yo sou sèvè sa a"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Voye mesaj bay ekip ou"
 
@@ -2369,7 +2381,7 @@ msgstr "Pèmisyon mikwofòn refize"
 msgid "Mid stratus"
 msgstr "Stratis mwayen"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Kolizyon nan lè a"
 
@@ -2381,7 +2393,7 @@ msgstr "Kat Midway Atoll — imaj yo gen done <0>Copernicus Sentinel-2</0> ki mo
 msgid "Minimum length"
 msgstr "Longè minimòm"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "MISIL"
 
@@ -2389,7 +2401,7 @@ msgstr "MISIL"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Modèl misil <0>“AIM-120C AMRAAM”</0> pa <1>Pippa</1> (Sketchfab), lisansye anba <2>CC BY 4.0</2>. Modifye: re-echèl, re-oryante epi santre pou plasman."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Misyon fini"
 
@@ -2553,11 +2565,11 @@ msgstr "Pa gen rezilta ki jwenn."
 msgid "No status"
 msgstr "Pa gen estati"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "PA GEN TANK"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "PA GEN SIB"
 
@@ -2586,7 +2598,7 @@ msgstr "Pa gen vi"
 msgid "No world server."
 msgstr "Pa gen okenn sèvè mond."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "SAN NÒT"
 
@@ -2669,7 +2681,7 @@ msgstr "Detay oseyan"
 msgid "offline"
 msgstr "pa konekte"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "Depase limit G"
 msgid "Owner"
 msgstr "Pwopriyetè"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "JE FIKSE"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "JE LIB"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkeys pa disponib nan navigatè sa a"
 msgid "Pattern (regex)"
 msgstr "Modèl (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "An pòz"
 
@@ -2818,7 +2830,7 @@ msgstr "pilòt"
 msgid "Pilot"
 msgstr "Pilòt"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "PILÒT MOURI"
 
@@ -2826,7 +2838,7 @@ msgstr "PILÒT MOURI"
 msgid "Pilot identity"
 msgstr "Idantite pilòt"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Yo touye pilòt la"
 
@@ -2835,7 +2847,7 @@ msgstr "Yo touye pilòt la"
 msgid "Pin"
 msgstr "Pini"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "tangaj"
 
@@ -2851,7 +2863,7 @@ msgstr "Nen anba"
 msgid "Pitch up"
 msgstr "Nen anwo"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATFÒM"
 
@@ -2885,7 +2897,7 @@ msgstr "Pòs ak kòmantè"
 msgid "Press a key…"
 msgstr "Peze yon touch…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PIJE ENTER POU DEKOLE"
 
@@ -2941,7 +2953,7 @@ msgstr "Sèvè piblik"
 msgid "Push notification"
 msgstr "Notifikasyon push"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "LÈ APWÒCH"
 
@@ -3036,7 +3048,7 @@ msgstr "Referans"
 msgid "Refresh"
 msgstr "Rafrechi"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "M AP REJWENN FÒMASYON"
 
@@ -3172,15 +3184,15 @@ msgstr "Ap demisyone..."
 msgid "Resolution"
 msgstr "Rezolisyon"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Rekòmanse"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Rekòmanse misyon"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Rekòmanse misyon an?"
 
@@ -3188,7 +3200,7 @@ msgstr "Rekòmanse misyon an?"
 msgid "Result"
 msgstr "Rezilta"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Repran"
 
@@ -3226,7 +3238,7 @@ msgstr "Zèl dwat"
 msgid "Right wingtip"
 msgstr "Pwent zèl dwat"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "woulis"
 
@@ -3263,7 +3275,7 @@ msgstr "Flux RSS"
 msgid "RSS URL copied to clipboard"
 msgstr "URL RSS kopye nan clipboard"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "PLEN GAZ"
 
@@ -3417,7 +3429,7 @@ msgstr "Voye"
 msgid "Send again"
 msgstr "Voye ankò"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Voye mesaj"
 
@@ -3458,7 +3470,7 @@ msgstr "Règ sèvè"
 msgid "server runs v{0}, you have v{version}"
 msgstr "sèvè a ap sèvi ak v{0}, ou gen v{version}"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SESYON AN FINI"
 
@@ -3477,7 +3489,7 @@ msgstr "Mete orijin ak destinasyon"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Espasye"
 msgid "SPD BK"
 msgstr "FRLÈ"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "frèn lè"
 
@@ -3576,10 +3588,6 @@ msgstr "Frèn lè"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Vitès yo an KCAS, kòm yon dyapazon soti nan lejè (minimòm gazolin, san chaj) pou rive nan lou (maksimòm pwa brit). Done yo sòti eksperimantalman anndan jwèt la. Nenpòt diferans ak vrè avyon an reflete erè nan modèl vòl similatè a."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "SIB DETWI"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "Chanje pou wè 1-9"
 msgid "System"
 msgstr "Sistèm"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "KAT TAKTIK"
 
@@ -3673,7 +3681,7 @@ msgstr "Etikèt la dwe gen 50 karaktè oswa mwens"
 msgid "Tags"
 msgstr "Tag yo"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "MWEN WÈ LÈNMI"
 
@@ -3681,11 +3689,11 @@ msgstr "MWEN WÈ LÈNMI"
 msgid "Task"
 msgstr "Tach"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Ekip"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "EKIP"
 
@@ -3732,7 +3740,7 @@ msgstr "Demann kamera a pa jwenn repons"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Jwèt la pa t ka chaje. Rechaje paj la pou eseye ankò."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Match la ap kontinye dèyè meni sa a."
 
@@ -3744,7 +3752,7 @@ msgstr "Demann mikwofòn nan pa jwenn repons"
 msgid "The mission stopped."
 msgstr "Misyon an sispann."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Misyon an ap rekòmanse. Vòl aktyèl la p ap sove."
 
@@ -3780,7 +3788,7 @@ msgstr "Machin sa a ka twò dousman pou yon vòl lis."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Sa a ap efase jwèt la ak chat li pou tout tan. Aksyon sa a pa ka anile."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "gaz"
 
@@ -3857,7 +3865,7 @@ msgstr "Bal trasè"
 msgid "Travelling"
 msgstr "Vwayaje"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Gade"
 msgid "Watched only"
 msgstr "Gade sèlman"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "ANILE ATERISAJ LA"
 
@@ -4124,7 +4132,7 @@ msgstr "ANILE ATERISAJ LA"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Nou voye yon kòd verifikasyon nan <0>{0}</0>. Antre kòd la anba a pou verifye adrès imèl ou."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "zam"
 
@@ -4175,7 +4183,7 @@ msgstr "ZÈL KLE"
 msgid "WINGS SPREADING"
 msgstr "ZÈL AP LOUVRI"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "GENYEN"
 
@@ -4192,7 +4200,7 @@ msgstr "Pa ka jwenn sèvè mond lan"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, zam lib nan pasaj la"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "lasèt"
 

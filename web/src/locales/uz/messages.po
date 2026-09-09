@@ -48,7 +48,7 @@ msgid "{0, plural, one {# result} other {# results}}"
 msgstr "{0, plural, one {# natija} other {# natijalar}}"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:455
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# ta oʻq tegdi} other {# ta oʻq tegdi}}"
 
@@ -116,6 +116,10 @@ msgstr "{count, plural, one {#hafta} other {#hafta}}"
 msgid "{entityLabel} name"
 msgstr "{entityLabel} nomi"
 
+#: src/components/GameCanvas.tsx:93
+msgid "{killer} destroyed {victim}"
+msgstr "{killer} {victim} samolyotini yo'q qildi"
+
 #: src/components/Multiplayer.tsx:236
 msgid "{name}'s match"
 msgstr "{name}ning oʻyini"
@@ -145,27 +149,35 @@ msgstr "{totalDescendants, plural, one {# javob} other {+# koʻproq javoblar}}"
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Menyuni ochish (# o'qilmagan bildirishnoma)} other {Menyuni ochish (# o'qilmagan bildirishnoma)}}"
 
-#: src/components/GameCanvas.tsx:610
+#: src/components/GameCanvas.tsx:94
+msgid "{victim} collided with {other}"
+msgstr "{victim} {other} bilan to'qnashdi"
+
+#: src/components/GameCanvas.tsx:95
+msgid "{victim} crashed"
+msgstr "{victim} qulab tushdi"
+
+#: src/components/GameCanvas.tsx:617
 msgid "<0>↑↓</0> to tilt"
 msgstr "<0>↑↓</0> egish uchun"
 
-#: src/components/GameCanvas.tsx:616
+#: src/components/GameCanvas.tsx:623
 msgid "<0>=</0> to move closer"
 msgstr "<0>=</0> yaqinlashish uchun"
 
-#: src/components/GameCanvas.tsx:613
+#: src/components/GameCanvas.tsx:620
 msgid "<0>−</0> to pull back"
 msgstr "<0>−</0> orqaga chekinish uchun"
 
-#: src/components/GameCanvas.tsx:600
+#: src/components/GameCanvas.tsx:607
 msgid "<0>1</0>–<1>5</1> for the view"
 msgstr "<0>1</0>–<1>5</1> ko'rinish uchun"
 
-#: src/components/GameCanvas.tsx:607
+#: src/components/GameCanvas.tsx:614
 msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Torting</0> yoki <1>←→</1> aylanish uchun"
 
-#: src/components/GameCanvas.tsx:91
+#: src/components/GameCanvas.tsx:99
 msgid "1 WIRE"
 msgstr "TROS 1"
 
@@ -177,7 +189,7 @@ msgstr "12 soat"
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
-#: src/components/GameCanvas.tsx:92
+#: src/components/GameCanvas.tsx:100
 msgid "2 WIRE"
 msgstr "TROS 2"
 
@@ -185,7 +197,7 @@ msgstr "TROS 2"
 msgid "24 hours"
 msgstr "24 soat"
 
-#: src/components/GameCanvas.tsx:93
+#: src/components/GameCanvas.tsx:101
 msgid "3 WIRE"
 msgstr "TROS 3"
 
@@ -494,7 +506,7 @@ msgstr "Banner olib tashlandi"
 msgid "Banner updated"
 msgstr "Banner yangilandi"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:149
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 DAN PAST — SHASSI VA QANOTCHA"
 
@@ -548,7 +560,7 @@ msgstr "Koʻk botlar"
 msgid "Board"
 msgstr "Doska"
 
-#: src/components/GameCanvas.tsx:98
+#: src/components/GameCanvas.tsx:106
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -565,19 +577,19 @@ msgstr "Hoshiya rangi"
 msgid "Bots"
 msgstr "Botlar"
 
-#: src/components/GameCanvas.tsx:174
+#: src/components/GameCanvas.tsx:181
 msgid "brakes"
 msgstr "tormozlar"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:131
 msgid "BREAK LEFT"
 msgstr "KESKIN CHAPGA"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:130
 msgid "BREAK RIGHT"
 msgstr "KESKIN OʻNGGA"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:148
 msgid "BREAK WHEN READY"
 msgstr "TAYYOR BO'LGANDA BURIL"
 
@@ -602,7 +614,7 @@ msgstr "BVR — boshidanoq qurollar erkin"
 msgid "BVR, fight's on from the start"
 msgstr "BVR, boshidanoq qurollar erkin"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:147
 msgid "CALL THE BALL"
 msgstr "TOʻPNI EʼLON QIL"
 
@@ -638,7 +650,7 @@ msgstr "Kamera mavjud emas"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:576
+#: src/components/GameCanvas.tsx:583
 #: src/components/Multiplayer.tsx:297
 #: src/components/Multiplayer.tsx:611
 #: src/components/SettingsDialog.tsx:818
@@ -749,11 +761,11 @@ msgstr "Oʻzgartirildi"
 msgid "Changed {field}"
 msgstr "{field} oʻzgartirildi"
 
-#: src/components/GameCanvas.tsx:605
+#: src/components/GameCanvas.tsx:612
 msgid "Chase view:"
 msgstr "Ta'qib ko'rinishi:"
 
-#: src/components/GameCanvas.tsx:177
+#: src/components/GameCanvas.tsx:184
 msgid "chat"
 msgstr "chat"
 
@@ -888,7 +900,7 @@ msgstr "Qulay"
 msgid "Command Palette"
 msgstr "Buyruqlar palitrasi"
 
-#: src/components/GameCanvas.tsx:135
+#: src/components/GameCanvas.tsx:142
 msgid "COMMENCING"
 msgstr "BOSHLAYAPMAN"
 
@@ -948,7 +960,7 @@ msgstr "Ulanmoqda..."
 msgid "Connecting…"
 msgstr "Ulanmoqda…"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:114
 msgid "CONNECTION FAILED"
 msgstr "ULANIB BOʻLMADI"
 
@@ -1039,7 +1051,7 @@ msgstr "Ushbu hisob bilan tasdiqlab bo‘lmadi. Iltimos, qayta urinib ko‘ring.
 msgid "Countermeasures"
 msgstr "Qarshi choralar"
 
-#: src/components/GameCanvas.tsx:442
+#: src/components/GameCanvas.tsx:449
 msgid "Crashed"
 msgstr "Halokatga uchradi"
 
@@ -1111,7 +1123,7 @@ msgstr "Joriy joylashuv"
 msgid "Custom"
 msgstr "Maxsus"
 
-#: src/components/GameCanvas.tsx:97
+#: src/components/GameCanvas.tsx:105
 msgid "CUT"
 msgstr "XAVFLI"
 
@@ -1143,7 +1155,7 @@ msgstr "Kunduz"
 msgid "Deaths"
 msgstr "O'limlar"
 
-#: src/components/GameCanvas.tsx:100
+#: src/components/GameCanvas.tsx:108
 msgid "DECK POSITION SAVED"
 msgstr "PALUBA POZITSIYASI SAQLANDI"
 
@@ -1253,7 +1265,7 @@ msgstr "YO'Q QILINDI"
 msgid "DESTROYED BY {callsign}"
 msgstr "{callsign} YO'Q QILDI"
 
-#: src/components/GameCanvas.tsx:436
+#: src/components/GameCanvas.tsx:443
 msgid "Destroyed by fire"
 msgstr "Yongʻinda nobud boʻldi"
 
@@ -1289,7 +1301,7 @@ msgstr "Boshqa oʻyin xosti"
 msgid "Directory"
 msgstr "Katalog"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:150
 msgid "DIRTY UP"
 msgstr "SHASSINI TUSHIR"
 
@@ -1353,7 +1365,7 @@ msgstr "Yuklab olish"
 msgid "Download failed"
 msgstr "Yuklab olib boʻlmadi"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:151
 msgid "DOWNWIND 600 FEET"
 msgstr "SHAMOL BO'YLAB 600 FUT"
 
@@ -1377,7 +1389,7 @@ msgstr "Dinamik ruxsat"
 msgid "Dyslexia-friendly"
 msgstr "Disleksiyaga moslashtirilgan"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:143
 msgid "EARLY"
 msgstr "ERTA"
 
@@ -1432,7 +1444,7 @@ msgstr "Effekt tafsiloti"
 msgid "Eject"
 msgstr "Katapult"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:119
 msgid "EJECTED"
 msgstr "KATAPULTLANDI"
 
@@ -1444,7 +1456,7 @@ msgstr "Email"
 msgid "Email code"
 msgstr "Email kodi"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:122
 msgid "EMERG JETT"
 msgstr "FAVQULODDA TASHLASH"
 
@@ -1466,7 +1478,7 @@ msgstr "Bo'sh pilon"
 msgid "Enable sound"
 msgstr "Ovozni yoqish"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:129
 msgid "ENGAGED"
 msgstr "HUJUM QILYAPMAN"
 
@@ -1494,15 +1506,15 @@ msgstr "Autentifikator kodingizni kiriting"
 msgid "Error"
 msgstr "Xato"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Everyone"
 msgstr "Hamma"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit match"
 msgstr "Oʻyindan chiqish"
 
-#: src/components/GameCanvas.tsx:536
+#: src/components/GameCanvas.tsx:543
 msgid "Exit mission"
 msgstr "Vazifadan chiqish"
 
@@ -1649,7 +1661,7 @@ msgstr "Kuzatuvni yangilab bo'lmadi"
 msgid "Failed to upload attachment"
 msgstr "Ilovani yuklab boʻlmadi"
 
-#: src/components/GameCanvas.tsx:95
+#: src/components/GameCanvas.tsx:103
 msgid "FAIR"
 msgstr "OʻRTACHA"
 
@@ -1675,7 +1687,7 @@ msgstr "Hisobni ko'chirishni yakunlang"
 msgid "Finished"
 msgstr "Yakunlandi"
 
-#: src/components/GameCanvas.tsx:165
+#: src/components/GameCanvas.tsx:172
 msgid "fire"
 msgstr "otish"
 
@@ -1696,11 +1708,11 @@ msgstr "Bayroqlar"
 msgid "FLAMEOUT"
 msgstr "ALANGA O'CHISHI"
 
-#: src/components/GameCanvas.tsx:169
+#: src/components/GameCanvas.tsx:176
 msgid "flaps"
 msgstr "flaplar"
 
-#: src/components/GameCanvas.tsx:168
+#: src/components/GameCanvas.tsx:175
 msgid "flares"
 msgstr "flerlar"
 
@@ -1712,7 +1724,7 @@ msgstr "FLERLAR"
 msgid "Flat"
 msgstr "Tekis"
 
-#: src/components/GameCanvas.tsx:438
+#: src/components/GameCanvas.tsx:445
 msgid "Flew into the sea"
 msgstr "Dengizga qulab tushdi"
 
@@ -1720,7 +1732,7 @@ msgstr "Dengizga qulab tushdi"
 msgid "Flight"
 msgstr "Parvoz"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:116
 msgid "FLIGHT CORE FAILED"
 msgstr "PARVOZ YADROSI ISHDAN CHIQDI"
 
@@ -1745,7 +1757,7 @@ msgstr "Uchildi"
 msgid "Fly"
 msgstr "Uchish"
 
-#: src/components/GameCanvas.tsx:465
+#: src/components/GameCanvas.tsx:472
 msgid "Fly again"
 msgstr "Yana uchish"
 
@@ -1819,7 +1831,7 @@ msgstr "Fyuzelyaj"
 msgid "Gain"
 msgstr "Kuchaytirish"
 
-#: src/components/GameCanvas.tsx:170
+#: src/components/GameCanvas.tsx:177
 msgid "gear"
 msgstr "shassi"
 
@@ -1911,7 +1923,7 @@ msgstr "Tarix"
 msgid "Home"
 msgstr "Bosh sahifa"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:178
 msgid "hook"
 msgstr "Ilgak"
 
@@ -2017,7 +2029,7 @@ msgstr "Xalaqit beruvchi"
 msgid "Jettison tanks"
 msgstr "Baklarni tashlash"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:120
 msgid "JETTISON: GEAR"
 msgstr "TASHLASH: SHASSI"
 
@@ -2030,7 +2042,7 @@ msgstr "Qoʻshilish"
 msgid "Join server"
 msgstr "Serverga qoʻshilish"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:125
 msgid "JOINED"
 msgstr "QOʻSHILDI"
 
@@ -2068,7 +2080,7 @@ msgstr "Klaviatura yorliqlari"
 msgid "Keys"
 msgstr "Tugmalar"
 
-#: src/components/GameCanvas.tsx:110
+#: src/components/GameCanvas.tsx:118
 msgid "KILL"
 msgstr "URIB TUSHIRILDI"
 
@@ -2103,7 +2115,7 @@ msgstr "Shassi"
 msgid "Large"
 msgstr "Katta"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:144
 msgid "LATE"
 msgstr "KECH"
 
@@ -2112,7 +2124,7 @@ msgstr "KECH"
 msgid "Launch (catapult)"
 msgstr "Uchirish (katapulta)"
 
-#: src/components/GameCanvas.tsx:167
+#: src/components/GameCanvas.tsx:174
 msgid "launch / target"
 msgstr "uchirish / nishon"
 
@@ -2132,7 +2144,7 @@ msgstr "Serverdan chiqish"
 msgid "Left"
 msgstr "Chiqib ketdi"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:126
 msgid "LEFT"
 msgstr "CHIQIB KETDI"
 
@@ -2149,7 +2161,7 @@ msgstr "Chap qanot uchi"
 msgid "Letters, numbers, spaces, hyphens, and slashes only"
 msgstr "Faqat harflar, raqamlar, boʻshliqlar, defislar va qiya chiziqlar"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:146
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 DA TEKIS, SHASSI PASTGA"
 
@@ -2157,7 +2169,7 @@ msgstr "1200 DA TEKIS, SHASSI PASTGA"
 msgid "Light"
 msgstr "Yorugʻ"
 
-#: src/components/GameCanvas.tsx:173
+#: src/components/GameCanvas.tsx:180
 msgid "lights"
 msgstr "chiroqlar"
 
@@ -2166,7 +2178,7 @@ msgstr "chiroqlar"
 msgid "Lights"
 msgstr "Chiroqlar"
 
-#: src/components/GameCanvas.tsx:89
+#: src/components/GameCanvas.tsx:97
 msgid "LIGHTS"
 msgstr "CHIROQLAR"
 
@@ -2194,7 +2206,7 @@ msgstr "YUKLANMOQDA"
 msgid "Loading content…"
 msgstr "Kontent yuklanmoqda…"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:115
 msgid "LOADING FAILED"
 msgstr "YUKLAB BOʻLMADI"
 
@@ -2270,7 +2282,7 @@ msgstr "Past"
 msgid "Low stratus"
 msgstr "Past stratus"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:113
 msgid "M to close"
 msgstr "Yopish uchun M"
 
@@ -2282,7 +2294,7 @@ msgstr "Toifalarni boshqarish"
 msgid "Manual"
 msgstr "Qoʻlda"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:183
 msgid "map"
 msgstr "xarita"
 
@@ -2325,7 +2337,7 @@ msgstr "Oʻrta"
 msgid "Members"
 msgstr "Aʼzolar"
 
-#: src/components/GameCanvas.tsx:178
+#: src/components/GameCanvas.tsx:185
 msgid "menu"
 msgstr "menyu"
 
@@ -2343,7 +2355,7 @@ msgstr "Qo'shilish — jang o'tishda boshlanadi"
 msgid "Message"
 msgstr "Xabar"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message everyone"
 msgstr "Hammaga yozing"
 
@@ -2351,7 +2363,7 @@ msgstr "Hammaga yozing"
 msgid "Message players on this server"
 msgstr "Bu serverdagi o‘yinchilarga xabar yozing"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "Message your team"
 msgstr "Jamoangizga yozing"
 
@@ -2369,7 +2381,7 @@ msgstr "Mikrofon ruxsati rad etildi"
 msgid "Mid stratus"
 msgstr "O'rta stratus"
 
-#: src/components/GameCanvas.tsx:440
+#: src/components/GameCanvas.tsx:447
 msgid "Midair collision"
 msgstr "Havoda toʻqnashuv"
 
@@ -2381,7 +2393,7 @@ msgstr "Midway Atoll xaritasi — tasvirlar oʻzgartirilgan <0>Copernicus Sentin
 msgid "Minimum length"
 msgstr "Minimal uzunlik"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:132
 msgid "MISSILE"
 msgstr "RAKETA"
 
@@ -2389,7 +2401,7 @@ msgstr "RAKETA"
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Raketa modeli <0>“AIM-120C AMRAAM”</0> — muallif <1>Pippa</1> (Sketchfab), <2>CC BY 4.0</2> litsenziyasi asosida. O'zgartirildi: qayta masshtablandi, qayta yo'naltirildi va o'rnatish uchun markazlashtirildi."
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Mission over"
 msgstr "Vazifa tugadi"
 
@@ -2553,11 +2565,11 @@ msgstr "Natijalar topilmadi."
 msgid "No status"
 msgstr "Holat yoʻq"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:121
 msgid "NO TANKS"
 msgstr "BAK YO'Q"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:112
 msgid "NO TARGET"
 msgstr "NISHON YO'Q"
 
@@ -2586,7 +2598,7 @@ msgstr "Koʻrishlar yoʻq"
 msgid "No world server."
 msgstr "Dunyo serveri yoʻq."
 
-#: src/components/GameCanvas.tsx:96
+#: src/components/GameCanvas.tsx:104
 msgid "NO-GRADE"
 msgstr "BAHO YOʻQ"
 
@@ -2669,7 +2681,7 @@ msgstr "Okean detallari"
 msgid "offline"
 msgstr "oflayn"
 
-#: src/components/GameCanvas.tsx:94
+#: src/components/GameCanvas.tsx:102
 msgid "OK"
 msgstr "OK"
 
@@ -2755,11 +2767,11 @@ msgstr "G chegarasidan o'tish"
 msgid "Owner"
 msgstr "Egasi"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:110
 msgid "PADLOCK"
 msgstr "NIGOH QULFLANDI"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:111
 msgid "PADLOCK OFF"
 msgstr "NIGOH ERKIN"
 
@@ -2798,7 +2810,7 @@ msgstr "Passkey’lar bu brauzerda mavjud emas"
 msgid "Pattern (regex)"
 msgstr "Naqsh (regex)"
 
-#: src/components/GameCanvas.tsx:391
+#: src/components/GameCanvas.tsx:398
 msgid "Paused"
 msgstr "Pauza qilingan"
 
@@ -2818,7 +2830,7 @@ msgstr "uchuvchi"
 msgid "Pilot"
 msgstr "Uchuvchi"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:123
 msgid "PILOT DOWN"
 msgstr "UCHUVCHI HALOK BO'LDI"
 
@@ -2826,7 +2838,7 @@ msgstr "UCHUVCHI HALOK BO'LDI"
 msgid "Pilot identity"
 msgstr "Uchuvchi shaxsi"
 
-#: src/components/GameCanvas.tsx:434
+#: src/components/GameCanvas.tsx:441
 msgid "Pilot killed"
 msgstr "Uchuvchi halok boʻldi"
 
@@ -2835,7 +2847,7 @@ msgstr "Uchuvchi halok boʻldi"
 msgid "Pin"
 msgstr "Mahkamlash"
 
-#: src/components/GameCanvas.tsx:160
+#: src/components/GameCanvas.tsx:167
 msgid "pitch"
 msgstr "qiyalanish"
 
@@ -2851,7 +2863,7 @@ msgstr "Tangaj pastga"
 msgid "Pitch up"
 msgstr "Tangaj yuqoriga"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:145
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
@@ -2885,7 +2897,7 @@ msgstr "Postlar va izohlar"
 msgid "Press a key…"
 msgstr "Biror tugmani bosing…"
 
-#: src/components/GameCanvas.tsx:88
+#: src/components/GameCanvas.tsx:96
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "UCHISH UCHUN ENTER BOSING"
 
@@ -2941,7 +2953,7 @@ msgstr "Ommaviy serverlar"
 msgid "Push notification"
 msgstr "Push bildirishnoma"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:141
 msgid "PUSH TIME"
 msgstr "YAQINLASHISH VAQTI"
 
@@ -3036,7 +3048,7 @@ msgstr "Ma'lumotnoma"
 msgid "Refresh"
 msgstr "Yangilash"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:137
 msgid "REJOINING"
 msgstr "SAFGA QAYTYAPMAN"
 
@@ -3172,15 +3184,15 @@ msgstr "Taslim boʻlinmoqda..."
 msgid "Resolution"
 msgstr "Yechim"
 
-#: src/components/GameCanvas.tsx:585
+#: src/components/GameCanvas.tsx:592
 msgid "Restart"
 msgstr "Qayta boshlash"
 
-#: src/components/GameCanvas.tsx:520
+#: src/components/GameCanvas.tsx:527
 msgid "Restart mission"
 msgstr "Vazifani qayta boshlash"
 
-#: src/components/GameCanvas.tsx:568
+#: src/components/GameCanvas.tsx:575
 msgid "Restart mission?"
 msgstr "Vazifa qayta boshlansinmi?"
 
@@ -3188,7 +3200,7 @@ msgstr "Vazifa qayta boshlansinmi?"
 msgid "Result"
 msgstr "Natija"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:483
 msgid "Resume"
 msgstr "Davom etish"
 
@@ -3226,7 +3238,7 @@ msgstr "O'ng qanot"
 msgid "Right wingtip"
 msgstr "O'ng qanot uchi"
 
-#: src/components/GameCanvas.tsx:161
+#: src/components/GameCanvas.tsx:168
 msgid "roll"
 msgstr "ag'darilish"
 
@@ -3263,7 +3275,7 @@ msgstr "RSS lentasi"
 msgid "RSS URL copied to clipboard"
 msgstr "RSS URL klipboardga nusxalandi"
 
-#: src/components/GameCanvas.tsx:90
+#: src/components/GameCanvas.tsx:98
 msgid "RUN UP ENGINE"
 msgstr "TO'LIQ QUVVAT"
 
@@ -3417,7 +3429,7 @@ msgstr "Yuborish"
 msgid "Send again"
 msgstr "Qayta yuborish"
 
-#: src/components/GameCanvas.tsx:490
+#: src/components/GameCanvas.tsx:497
 msgid "Send chat"
 msgstr "Xabar yuborish"
 
@@ -3458,7 +3470,7 @@ msgstr "Server qoidalari"
 msgid "server runs v{0}, you have v{version}"
 msgstr "server v{0} ishlatadi, sizda v{version} bor"
 
-#: src/components/GameCanvas.tsx:109
+#: src/components/GameCanvas.tsx:117
 msgid "SESSION ENDED"
 msgstr "SESSIYA TUGADI"
 
@@ -3477,7 +3489,7 @@ msgstr "Boshlang‘ich va manzilni belgilash"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:504
+#: src/components/GameCanvas.tsx:511
 #: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
@@ -3563,7 +3575,7 @@ msgstr "Keng"
 msgid "SPD BK"
 msgstr "TZL TR"
 
-#: src/components/GameCanvas.tsx:175
+#: src/components/GameCanvas.tsx:182
 msgid "speed brake"
 msgstr "tezlik tormozi"
 
@@ -3576,10 +3588,6 @@ msgstr "Tezlik tormozi"
 #: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Tezliklar KCAS da, yengil holatdan (minimal yoqilg'i, qurollarsiz) og'ir holatgacha (maksimal umumiy vazn) diapazon sifatida. Ma'lumotlar o'yin ichida tajriba yo'li bilan olingan. Haqiqiy samolyotdan har qanday farqlar simulyatorning parvoz modeli xatolarini aks ettiradi."
-
-#: src/components/GameCanvas.tsx:128
-msgid "SPLASH"
-msgstr "NISHON URIB TUSHIRILDI"
 
 #: src/components/GameCanvas.tsx:56
 msgid "SPREAD WINGS"
@@ -3656,7 +3664,7 @@ msgstr "1-9 koʻrinishiga oʻtish"
 msgid "System"
 msgstr "Tizim"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/GameCanvas.tsx:109
 msgid "TACTICAL MAP"
 msgstr "TAKTIK XARITA"
 
@@ -3673,7 +3681,7 @@ msgstr "Teg 50 ta belgidan oshmasligi kerak"
 msgid "Tags"
 msgstr "Teglar"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:136
 msgid "TALLY"
 msgstr "DUSHMAN KO'RINDI"
 
@@ -3681,11 +3689,11 @@ msgstr "DUSHMAN KO'RINDI"
 msgid "Task"
 msgstr "Topshiriq"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "Team"
 msgstr "Jamoa"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:134
 msgid "TEAM"
 msgstr "JAMOA"
 
@@ -3732,7 +3740,7 @@ msgstr "Kamera so‘roviga javob berilmadi"
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "O'yinni yuklab bo'lmadi. Qayta urinish uchun sahifani qayta yuklang."
 
-#: src/components/GameCanvas.tsx:540
+#: src/components/GameCanvas.tsx:547
 msgid "The match continues behind this menu."
 msgstr "Oʻyin bu menyu ortida davom etadi."
 
@@ -3744,7 +3752,7 @@ msgstr "Mikrofon so‘roviga javob berilmadi"
 msgid "The mission stopped."
 msgstr "Missiya to'xtadi."
 
-#: src/components/GameCanvas.tsx:571
+#: src/components/GameCanvas.tsx:578
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Vazifa qayta boshlanadi. Joriy parvoz saqlanmaydi."
 
@@ -3780,7 +3788,7 @@ msgstr "Bu mashina silliq parvoz uchun juda sekin bo'lishi mumkin."
 msgid "This permanently deletes the game and its chat. This cannot be undone."
 msgstr "Bu oʻyin va uning chatini butunlay oʻchirib tashlaydi. Bu amalni bekor qilib boʻlmaydi."
 
-#: src/components/GameCanvas.tsx:163
+#: src/components/GameCanvas.tsx:170
 msgid "throttle"
 msgstr "gaz"
 
@@ -3857,7 +3865,7 @@ msgstr "Trasserlar"
 msgid "Travelling"
 msgstr "Sayohatda"
 
-#: src/components/GameCanvas.tsx:164
+#: src/components/GameCanvas.tsx:171
 msgid "trim"
 msgstr "trim"
 
@@ -4115,7 +4123,7 @@ msgstr "Kuzatilgan"
 msgid "Watched only"
 msgstr "Faqat kuzatilgan"
 
-#: src/components/GameCanvas.tsx:99
+#: src/components/GameCanvas.tsx:107
 msgid "WAVE OFF"
 msgstr "QOʻNISHNI BEKOR QIL"
 
@@ -4124,7 +4132,7 @@ msgstr "QOʻNISHNI BEKOR QIL"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Biz <0>{0}</0> manziliga tasdiqlash kodini yubordik. Elektron pochta manzilingizni tasdiqlash uchun kodni quyida kiriting."
 
-#: src/components/GameCanvas.tsx:166
+#: src/components/GameCanvas.tsx:173
 msgid "weapon"
 msgstr "qurol"
 
@@ -4175,7 +4183,7 @@ msgstr "QANOTLAR QULFLANGAN"
 msgid "WINGS SPREADING"
 msgstr "QANOTLAR YOZILMOQDA"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:124
 msgid "WINS"
 msgstr "GʻOLIB"
 
@@ -4192,7 +4200,7 @@ msgstr "Dunyo serveriga ulanib boʻlmadi"
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, qurollar o'tishda erkin"
 
-#: src/components/GameCanvas.tsx:162
+#: src/components/GameCanvas.tsx:169
 msgid "yaw"
 msgstr "burilish"
 
