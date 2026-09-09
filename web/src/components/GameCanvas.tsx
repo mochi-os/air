@@ -589,14 +589,25 @@ export function GameCanvas({
           </span>
         ))}
         {' · '}
-        <kbd>1</kbd>–<kbd>5</kbd> <Trans>view</Trans>
+        <Trans>
+          <kbd>1</kbd>–<kbd>5</kbd> for the view
+        </Trans>
         <br />
         <b>
           <Trans>Chase view:</Trans>
         </b>{' '}
-        <b><Trans>Drag</Trans></b> <Trans>or</Trans> <kbd>←→</kbd> <Trans>orbit</Trans> · <kbd>↑↓</kbd>{' '}
-        <Trans>tilt</Trans> · <kbd>−</kbd> <Trans>back</Trans> · <kbd>=</kbd>{' '}
-        <Trans>closer</Trans>
+        <Trans>
+          <b>Drag</b> or <kbd>←→</kbd> to orbit
+        </Trans>{' · '}
+        <Trans>
+          <kbd>↑↓</kbd> to tilt
+        </Trans>{' · '}
+        <Trans>
+          <kbd>−</kbd> to pull back
+        </Trans>{' · '}
+        <Trans>
+          <kbd>=</kbd> to move closer
+        </Trans>
       </div>
     </div>
   )

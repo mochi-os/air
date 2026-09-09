@@ -20,7 +20,7 @@ export interface Server {
 // A listing is offline once it has missed two 10-minute refresh floors: core
 // keeps it in the table for 45 minutes (repair grace), but a join page should
 // stop advertising a server that has gone quiet well before then.
-export const OFFLINE_AFTER = 1500
+const OFFLINE_AFTER = 1500
 
 // server_offline reports whether a listing has gone quiet past two refresh
 // floors. `now` is seconds since the epoch, passed in so the rule is testable

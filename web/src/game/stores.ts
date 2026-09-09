@@ -38,7 +38,7 @@ export type Loadout = Record<string, Slot>
 // not removable, so the setup offers no fixture choice there. Cheeks 4/6 take
 // the LAU-116 ejector ('rail' here, with no visual piece); inboard pylons 3/7
 // also take the twin.
-export const STATIONS: Record<number, { fixtures: string[]; locked?: boolean }> = {
+const STATIONS: Record<number, { fixtures: string[]; locked?: boolean }> = {
   1: { fixtures: ['rail'], locked: true },
   2: { fixtures: ['', 'rail', 'twin'] },
   3: { fixtures: ['', 'pylon', 'twin'] },

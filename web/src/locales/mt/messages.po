@@ -30,6 +30,18 @@ msgstr "(espandi)"
 msgid "[not set]"
 msgstr "[mhux issettjat]"
 
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:342
+msgid "{0, plural, one {# flying} other {# flying}}"
+msgstr "{0, plural, one {# itir} two {# itiru} few {# itiru} many {# itiru} other {# itiru}}"
+
+#. placeholder {0}: ordered.length
+#. placeholder {1}: formatNumber(matches.length)
+#. placeholder {2}: formatNumber(matches.length)
+#: src/components/MatchLog.tsx:337
+msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
+msgstr "{0, plural, one {# minn {1} titjira} two {# minn {2} titjiriet} few {# minn {2} titjiriet} many {# minn {2} titjiriet} other {# minn {2} titjira}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx:179
 msgid "{0, plural, one {# result} other {# results}}"
@@ -45,6 +57,13 @@ msgstr "{0, plural, one {Qala' # tir} few {Qala' # tiri} many {Qala' # tir} othe
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# magħżul} few {# magħżula} many {# magħżula} other {# magħżula}}"
 
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#. placeholder {2}: s.capacity
+#: src/components/Multiplayer.tsx:580
+msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
+msgstr "{0, plural, one {#/{1} plejer} two {#/{2} plejers} few {#/{2} plejers} many {#/{2} plejers} other {#/{2} plejer}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -52,30 +71,19 @@ msgstr "{0, plural, one {+# innestjat} few {+# innestjati} many {+# innestjati} 
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:753
+#: src/components/MissionSetup.tsx:767
 msgid "{0} created “{1}”"
 msgstr "{0} ħoloq “{1}”"
 
-#. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:342
-msgid "{0} flying"
-msgstr "{0} qed itiru"
-
 #. placeholder {0}: formatNumber(moment - CATAPULT)
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:416
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb 'il fuq mil-limitu tal-asimmetrija tal-katapulta"
 
 #. placeholder {0}: formatNumber(gross - LAUNCH)
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:410
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb aktar mill-piż massimu tat-tluq"
-
-#. placeholder {0}: ordered.length
-#. placeholder {1}: matches.length
-#: src/components/MatchLog.tsx:333
-msgid "{0} of {1} flights"
-msgstr "{0} minn {1} titjiriet"
 
 #. placeholder {0}: pretty(taken.chord)
 #: src/components/SettingsDialog.tsx:772
@@ -87,12 +95,6 @@ msgstr "{0} kien diġà meħud, u dak il-kontroll issa mhux marbut."
 #: src/components/SettingsDialog.tsx:768
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} kien fuq {1}, li issa mhux marbut."
-
-#. placeholder {0}: (s.players ?? []).length
-#. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:582
-msgid "{0}/{1} players"
-msgstr "{0}/{1} plejers"
 
 #: ../../../lib/web/src/lib/locale-format.ts:191
 msgid "{count, plural, one {#d} other {#d}}"
@@ -123,8 +125,8 @@ msgid "{opponentName} offered a draw"
 msgstr "{opponentName} offra draw"
 
 #: src/components/Multiplayer.tsx:544
-msgid "{placed} of {limit} bots"
-msgstr "{placed} minn {limit} bots"
+msgid "{placed, plural, one {# of {limit} bot} other {# of {limit} bots}}"
+msgstr "{placed, plural, one {# minn {limit} bot} two {# minn {limit} bots} few {# minn {limit} bots} many {# minn {limit} bots} other {# minn {limit} bot}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -143,6 +145,26 @@ msgstr "{totalDescendants, plural, one {# tweġiba} few {+# tweġibiet aktar} ma
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Iftaħ il-menu (# notifika mhux moqrija)} few {Iftaħ il-menu (# notifiki mhux moqrija)} many {Iftaħ il-menu (# notifiki mhux moqrija)} other {Iftaħ il-menu (# notifiki mhux moqrija)}}"
 
+#: src/components/GameCanvas.tsx:602
+msgid "<0>↑↓</0> to tilt"
+msgstr "<0>↑↓</0> biex tmejjel"
+
+#: src/components/GameCanvas.tsx:608
+msgid "<0>=</0> to move closer"
+msgstr "<0>=</0> biex toqrob"
+
+#: src/components/GameCanvas.tsx:605
+msgid "<0>−</0> to pull back"
+msgstr "<0>−</0> biex tirtira"
+
+#: src/components/GameCanvas.tsx:592
+msgid "<0>1</0>–<1>5</1> for the view"
+msgstr "<0>1</0>–<1>5</1> għall-veduta"
+
+#: src/components/GameCanvas.tsx:599
+msgid "<0>Drag</0> or <1>←→</1> to orbit"
+msgstr "<0>Kaxkar</0> jew <1>←→</1> biex iddur"
+
 #: src/components/GameCanvas.tsx:83
 msgid "1 WIRE"
 msgstr "KEJBIL 1"
@@ -151,7 +173,7 @@ msgstr "KEJBIL 1"
 msgid "12 hours"
 msgstr "12-il siegħa"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:464
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -167,7 +189,7 @@ msgstr "24 siegħa"
 msgid "3 WIRE"
 msgstr "KEJBIL 3"
 
-#: src/components/MissionSetup.tsx:465
+#: src/components/MissionSetup.tsx:467
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -196,19 +218,19 @@ msgstr "Livell ta' aċċess"
 msgid "Account type"
 msgstr "Tip ta' kont"
 
-#: src/components/MissionSetup.tsx:1026
-#: src/components/MissionSetup.tsx:1193
+#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1207
 #: src/components/Multiplayer.tsx:517
 msgid "Ace"
 msgstr "Ass"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Acquire target"
 msgstr "Illokkja l-mira"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Acquisition mode"
 msgstr "Modalità tal-qbid"
 
@@ -298,23 +320,23 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Ajruplan"
 
-#: src/components/MissionSetup.tsx:538
+#: src/components/MissionSetup.tsx:542
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Bastiment tal-ajruplani <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> minn <1>Muhamad Mirza Arrafi</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Modifikat: skalat mill-ġdid, orjentat mill-ġdid, mgħaddas sal-linja tal-ilma, u ssimplifikat għall-web."
 
-#: src/components/MissionSetup.tsx:514
+#: src/components/MissionSetup.tsx:516
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Mudell tal-ajruplan <0>“F/A-18C Hornet”</0> minn <1>CreadorDeMu</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Immodifikat: orjentat mill-ġdid u skalat mill-ġdid, tneħħiet id-data tat-tessituri mhux użata, it-tagħmir imdendel estern infired f'fajl separat, mesh waħda tal-għata ġiet riflessa bħal f'mera."
 
-#: src/components/MatchLog.tsx:298
+#: src/components/MatchLog.tsx:302
 msgid "All modes"
 msgstr "Il-modi kollha"
 
-#: src/components/MatchLog.tsx:315
+#: src/components/MatchLog.tsx:319
 msgid "All servers"
 msgstr "Is-servers kollha"
 
@@ -356,12 +378,12 @@ msgstr "Kull min hu llogjat"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Kull ma huwa abbonat għal din il-feed se jieqaf jirċeviha. Wara tista' tikkopja URL ġdid."
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Approach power (ATC)"
 msgstr "Qawwa tal-avviċinament (ATC)"
 
-#: src/components/MissionSetup.tsx:435
+#: src/components/MissionSetup.tsx:437
 msgid "Approach, on-speed (Vapp)"
 msgstr "Avviċinament, fil-veloċità t-tajba (Vapp)"
 
@@ -394,8 +416,8 @@ msgstr "Żgur trid tirriżenja?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Żgur trid tirriżenja? {opponentName} tirbaħ il-logħba."
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Arrestor hook"
 msgstr "Ganċ tal-waqfien"
 
@@ -403,7 +425,7 @@ msgstr "Ganċ tal-waqfien"
 msgid "Ascending"
 msgstr "Axxendenti"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:399
 msgid "asymmetry"
 msgstr "asimmetrija"
 
@@ -445,10 +467,6 @@ msgstr "Assi {i}"
 msgid "Axis calibration and mapping"
 msgstr "Kalibrazzjoni u mmappjar tal-assi"
 
-#: src/components/GameCanvas.tsx:598
-msgid "back"
-msgstr "lura"
-
 #: ../../../lib/web/src/components/place-picker.tsx:142
 #: src/routes/log.tsx:30
 msgid "Back"
@@ -459,7 +477,7 @@ msgstr "Lura"
 msgid "Back to home"
 msgstr "Lura għall-paġna ewlenija"
 
-#: src/components/MissionSetup.tsx:1018
+#: src/components/MissionSetup.tsx:1032
 msgid "Bandit"
 msgstr "Għadu"
 
@@ -480,19 +498,19 @@ msgstr "Banner aġġornat"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "TAHT 250 — RKIEB U FLAPS"
 
-#: src/components/MissionSetup.tsx:426
+#: src/components/MissionSetup.tsx:428
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "L-aħjar tlugħ (Vy, 100% spinta)"
 
-#: src/components/MissionSetup.tsx:427
+#: src/components/MissionSetup.tsx:429
 msgid "Best climb (Vy, afterburner)"
 msgstr "L-aħjar tlugħ (Vy, postkombustjoni)"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:431
 msgid "Best glide (engines out)"
 msgstr "L-aħjar żliq (bil-magni mitfija)"
 
-#: src/components/MissionSetup.tsx:431
+#: src/components/MissionSetup.tsx:433
 msgid "Best sustained turn speed"
 msgstr "Veloċità tal-aħjar dawra sostnuta"
 
@@ -580,7 +598,7 @@ msgstr "Immappjar tal-buttuni"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — armi ħielsa mill-bidu"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1026
 msgid "BVR, fight's on from the start"
 msgstr "BVR, armi ħielsa mill-bidu"
 
@@ -645,7 +663,7 @@ msgstr "Ikkanċellat"
 msgid "Cannons and ordnance"
 msgstr "Kanuni u munizzjon"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:230
 msgid "Canopy"
 msgstr "Għatu tal-kabina"
 
@@ -678,31 +696,31 @@ msgstr "Didaskalija"
 msgid "Carrier and ambient"
 msgstr "Bastiment u ambjent"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1214
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1063
 msgid "Case I (day)"
 msgstr "Każ I (jum)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1215
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1050
+#: src/components/MissionSetup.tsx:1064
 msgid "Case II (weather)"
 msgstr "Każ II (temp)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1216
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:1065
 msgid "Case III (night)"
 msgstr "Każ III (lejl)"
 
-#: src/components/MissionSetup.tsx:1059
+#: src/components/MissionSetup.tsx:1073
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -731,7 +749,7 @@ msgstr "Inbidel"
 msgid "Changed {field}"
 msgstr "Inbidel {field}"
 
-#: src/components/GameCanvas.tsx:595
+#: src/components/GameCanvas.tsx:597
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
 
@@ -739,16 +757,16 @@ msgstr "Veduta tal-insegwiment:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:240
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:241
+#: src/components/SettingsDialog.tsx:242
 msgid "Chat to everyone"
 msgstr "Chat ma' kulħadd"
 
-#: src/components/MatchLog.tsx:370
-#: src/components/MissionSetup.tsx:1115
+#: src/components/MatchLog.tsx:376
+#: src/components/MissionSetup.tsx:1129
 #: src/components/Multiplayer.tsx:458
 msgid "Cheats"
 msgstr "Cheats"
@@ -777,8 +795,8 @@ msgstr "Agħżel lingwa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:151
 #: ../../../lib/web/src/components/travelling-picker.tsx:212
 #: ../../../lib/web/src/components/travelling-picker.tsx:218
-#: src/components/MatchLog.tsx:328
-#: src/components/MatchLog.tsx:384
+#: src/components/MatchLog.tsx:332
+#: src/components/MatchLog.tsx:390
 #: src/components/Multiplayer.tsx:396
 #: src/components/SettingsDialog.tsx:683
 msgid "Clear"
@@ -826,11 +844,7 @@ msgstr "Agħlaq il-pannell / ikkanċella"
 msgid "Close search"
 msgstr "Agħlaq it-tiftix"
 
-#: src/components/GameCanvas.tsx:599
-msgid "closer"
-msgstr "eqreb"
-
-#: src/components/MissionSetup.tsx:1095
+#: src/components/MissionSetup.tsx:1109
 msgid "Clouds"
 msgstr "Sħab"
 
@@ -885,7 +899,7 @@ msgstr "Kummenti"
 msgid "Comments ({0})"
 msgstr "Kummenti ({0})"
 
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Komunikazzjoni"
 
@@ -906,11 +920,11 @@ msgstr "Ikkonfigura s-settings tal-view"
 msgid "Confirm"
 msgstr "Ikkonferma"
 
-#: src/components/MissionSetup.tsx:919
+#: src/components/MissionSetup.tsx:933
 msgid "Connect"
 msgstr "Qabbad"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:920
 msgid "Connect to private server"
 msgstr "Aqbad ma' server privat"
 
@@ -963,11 +977,11 @@ msgstr "Ikkupjat fil-clipboard"
 msgid "Copy"
 msgstr "Ikkupja"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:432
 msgid "Corner speed (best instant turn)"
 msgstr "Veloċità tal-kantuniera (l-aħjar dawra istantanja)"
 
-#: src/components/MatchLog.tsx:488
+#: src/components/MatchLog.tsx:494
 msgid "Could not change the recording"
 msgstr "Ir-reġistrazzjoni ma setgħetx tinbidel"
 
@@ -983,16 +997,16 @@ msgstr "Ma setax itella' dan id-dokument. Jekk jogħġbok ipprova mill-ġdid ikt
 msgid "Could not load your flights"
 msgstr "It-titjiriet tiegħek ma setgħux jitgħabbew"
 
-#: src/components/SettingsDialog.tsx:291
+#: src/components/SettingsDialog.tsx:292
 msgid "Could not save the profile"
 msgstr "Ma setax jiġi salvat il-profil"
 
-#: src/components/MatchLog.tsx:435
 #: src/components/MatchLog.tsx:441
+#: src/components/MatchLog.tsx:447
 msgid "Could not save the recording"
 msgstr "Ir-reġistrazzjoni ma setgħetx tinħażen"
 
-#: src/components/MissionSetup.tsx:725
+#: src/components/MissionSetup.tsx:739
 msgid "Could not send the message"
 msgstr "Il-messaġġ ma setax jintbagħat"
 
@@ -1012,8 +1026,8 @@ msgstr "Ma setgħetx tinbeda l-awtentikazzjoni mill-ġdid. Jekk jogħġbok erġa
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ma stajniex nivverifikaw b'dak il-kont. Jekk jogħġbok erġa' pprova."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Countermeasures"
 msgstr "Kontromiżuri"
 
@@ -1037,7 +1051,7 @@ msgstr "Oħloq"
 msgid "Create {entityLabel}"
 msgstr "Oħloq {entityLabel}"
 
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:552
 msgid "Create and fly"
 msgstr "Oħloq u tir"
 
@@ -1045,8 +1059,8 @@ msgstr "Oħloq u tir"
 msgid "Create match"
 msgstr "Oħloq partita"
 
-#: src/components/MissionSetup.tsx:1268
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1282
+#: src/components/MissionSetup.tsx:1303
 msgid "Create mission"
 msgstr "Oħloq missjoni"
 
@@ -1069,12 +1083,12 @@ msgstr "Inħoloq {field}"
 msgid "Creating..."
 msgstr "Qed joħloq..."
 
-#: src/components/MissionSetup.tsx:503
-#: src/components/MissionSetup.tsx:509
+#: src/components/MissionSetup.tsx:505
+#: src/components/MissionSetup.tsx:511
 msgid "Credits"
 msgstr "Krediti"
 
-#: src/components/MissionSetup.tsx:1102
+#: src/components/MissionSetup.tsx:1116
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:397
 msgid "Cumulus"
@@ -1093,8 +1107,8 @@ msgstr "Personalizzat"
 msgid "CUT"
 msgstr "PERIKOLUŻ"
 
-#: src/components/SettingsDialog.tsx:180
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
 msgid "Cycle view"
 msgstr "Ibdel il-veduta"
 
@@ -1107,17 +1121,17 @@ msgid "Data conflict"
 msgstr "Kunflitt fid-dejta"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts:14
-#: src/components/MatchLog.tsx:346
+#: src/components/MatchLog.tsx:352
 msgid "Date"
 msgstr "Data"
 
-#: src/components/MissionSetup.tsx:1088
+#: src/components/MissionSetup.tsx:1102
 #: src/components/Multiplayer.tsx:392
 msgid "Day"
 msgstr "Binhar"
 
-#: src/components/MatchLog.tsx:279
-#: src/components/MatchLog.tsx:364
+#: src/components/MatchLog.tsx:283
+#: src/components/MatchLog.tsx:370
 msgid "Deaths"
 msgstr "Mwiet"
 
@@ -1211,7 +1225,7 @@ msgstr "Tħassar {field}"
 msgid "Deleting..."
 msgstr "Qed iħassar..."
 
-#: src/components/MissionSetup.tsx:1038
+#: src/components/MissionSetup.tsx:1052
 msgid "Departure / Recovery"
 msgstr "Tluq / inżul"
 
@@ -1283,13 +1297,13 @@ msgstr "Skonness"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:80
 #: ../../../lib/web/src/components/restore-banner.tsx:86
-#: src/components/MissionSetup.tsx:1246
+#: src/components/MissionSetup.tsx:1260
 #: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Warrab"
 
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:237
 msgid "Display repeater"
 msgstr "Ripetitur tal-iskrin"
 
@@ -1327,10 +1341,6 @@ msgstr "It-tniżżil falla"
 msgid "DOWNWIND 600 FEET"
 msgstr "MAR-RIĦ 600 PIED"
 
-#: src/components/GameCanvas.tsx:597
-msgid "Drag"
-msgstr "Iġbed"
-
 #: src/components/Multiplayer.tsx:514
 msgid "Drone"
 msgstr "Drone"
@@ -1339,7 +1349,7 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Duplikati"
 
-#: src/components/MatchLog.tsx:349
+#: src/components/MatchLog.tsx:355
 msgid "Duration"
 msgstr "Tul ta' żmien"
 
@@ -1402,7 +1412,7 @@ msgstr "Effetti"
 msgid "Effects detail"
 msgstr "Dettall tal-effetti"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:234
 msgid "Eject"
 msgstr "Eject"
 
@@ -1422,12 +1432,12 @@ msgstr "Kodiċi tal-email"
 msgid "EMERG JETT"
 msgstr "TFIGĦ TA' EMERĠENZA"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Emergency jettison (hold)"
 msgstr "Tfigħ ta' emerġenza (żomm)"
 
-#: src/components/Multiplayer.tsx:581
+#: src/components/Multiplayer.tsx:579
 msgid "empty"
 msgstr "vojta"
 
@@ -1444,7 +1454,7 @@ msgstr "Attiva l-ħoss"
 msgid "ENGAGED"
 msgstr "QED NATTAKKA"
 
-#: src/components/MissionSetup.tsx:1005
+#: src/components/MissionSetup.tsx:1019
 msgid "Engagement"
 msgstr "Taqbida"
 
@@ -1491,7 +1501,7 @@ msgstr "Espandi"
 msgid "Expand sidebar"
 msgstr "Espandi s-sidebar"
 
-#: src/components/MissionSetup.tsx:585
+#: src/components/MissionSetup.tsx:593
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Animazzjoni ta' splużjoni <0>“Explosion02HD”</0> minn <1>Unity Technologies</1> (sekwenzi ta' stampi VFX ta' Unity Labs), maħruġa taħt <2>CC0</2>. Modifikat: ikkompressata mill-ġdid għall-web."
 
@@ -1499,8 +1509,8 @@ msgstr "Animazzjoni ta' splużjoni <0>“Explosion02HD”</0> minn <1>Unity Tech
 msgid "Export"
 msgstr "Esporta"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Extend flaps"
 msgstr "Flaps 'il barra"
 
@@ -1516,7 +1526,7 @@ msgstr "URL Estern"
 msgid "Extra large"
 msgstr "Kbir ħafna"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:452
 msgid "F/A-18C reference"
 msgstr "Referenza tal-F/A-18C"
 
@@ -1653,8 +1663,8 @@ msgstr "Spiċċat"
 msgid "fire"
 msgstr "spara"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Fire weapon"
 msgstr "Spara l-arma"
 
@@ -1690,7 +1700,7 @@ msgstr "Ċatta"
 msgid "Flew into the sea"
 msgstr "Tar ġol-baħar"
 
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Titjira"
 
@@ -1702,11 +1712,11 @@ msgstr "IL-QALBA TAT-TITJIR FALLIET"
 msgid "Flight hints"
 msgstr "Suġġerimenti tat-titjir"
 
-#: src/components/MissionSetup.tsx:1273
+#: src/components/MissionSetup.tsx:1287
 msgid "Flight log"
 msgstr "Ġurnal tat-titjiriet"
 
-#: src/components/MatchLog.tsx:270
+#: src/components/MatchLog.tsx:274
 msgid "Flights"
 msgstr "Titjiriet"
 
@@ -1714,8 +1724,8 @@ msgstr "Titjiriet"
 msgid "Flown"
 msgstr "Ittajjar"
 
-#: src/components/MissionSetup.tsx:1262
-#: src/components/MissionSetup.tsx:1302
+#: src/components/MissionSetup.tsx:1276
+#: src/components/MissionSetup.tsx:1316
 msgid "Fly"
 msgstr "Ittajjar"
 
@@ -1728,7 +1738,7 @@ msgid "Framerate counter"
 msgstr "Kontatur tal-framerate"
 
 #: src/components/MatchLog.tsx:153
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1009
 msgid "Free flight"
 msgstr "Titjira ħielsa"
 
@@ -1772,7 +1782,7 @@ msgstr "TNIXXIJA FJUWIL"
 msgid "FUEL LO"
 msgstr "FJUWIL BAXX"
 
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:229
 msgid "Fuel probe"
 msgstr "Sonda tal-fjuwil"
 
@@ -1848,7 +1858,7 @@ msgstr "Kanuni biss"
 msgid "Guns only"
 msgstr "Kanuni biss"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1255
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "L-aċċelerazzjoni grafika tal-ħardwer hija mitfija — iċċekkja s-settings tal-brawżer jew id-drajvers grafiċi."
 
@@ -1864,7 +1874,7 @@ msgstr "Traċċar tar-ras"
 msgid "High"
 msgstr "Għoli"
 
-#: src/components/MissionSetup.tsx:1103
+#: src/components/MissionSetup.tsx:1117
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:398
 msgid "High stratus"
@@ -1897,11 +1907,11 @@ msgstr "GANĊ"
 msgid "Hot"
 msgstr "Sħun"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD altitude source"
 msgstr "Sors tal-altitudni tal-HUD"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:239
 msgid "HUD declutter"
 msgstr "Simplifikazzjoni tal-HUD"
 
@@ -1922,8 +1932,8 @@ msgstr "Imperjali"
 msgid "Import"
 msgstr "Importa"
 
-#: src/components/MissionSetup.tsx:1046
-#: src/components/MissionSetup.tsx:1197
+#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1211
 msgid "In air"
 msgstr "Fl-arja"
 
@@ -1959,7 +1969,7 @@ msgstr "Fjuwil intern"
 msgid "Invalid date"
 msgstr "Data invalida"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Invulnerabbli"
@@ -1968,7 +1978,7 @@ msgstr "Invulnerabbli"
 msgid "INVULNERABLE"
 msgstr "INVULNERABBLI"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1135
 #: src/components/Multiplayer.tsx:467
 msgid "Invulnerable (human players only)"
 msgstr "Invulnerabbli (plejers umani biss)"
@@ -1981,13 +1991,13 @@ msgstr "Jidher li l-paġna li qed tfittex <0/>ma teżistix jew tneħħiet."
 msgid "Item details"
 msgstr "Dettalji tal-oġġett"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Jammer"
 msgstr "Interferitur"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Jettison tanks"
 msgstr "Itfa' t-tankijiet"
 
@@ -1999,8 +2009,8 @@ msgstr "TFIGĦ: ROTI"
 msgid "Join"
 msgstr "Ingħaqad"
 
-#: src/components/MissionSetup.tsx:846
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:860
+#: src/components/MissionSetup.tsx:1283
 msgid "Join server"
 msgstr "Ingħaqad ma’ server"
 
@@ -2009,8 +2019,8 @@ msgid "JOINED"
 msgstr "INGĦAQAD"
 
 #: src/components/MatchLog.tsx:151
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:580
+#: src/components/MissionSetup.tsx:1221
+#: src/components/Multiplayer.tsx:578
 msgid "Joust"
 msgstr "Joust"
 
@@ -2018,7 +2028,7 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, min iwaqqa' l-ewwel jirbaħ"
 
-#: src/components/MissionSetup.tsx:996
+#: src/components/MissionSetup.tsx:1010
 msgid "Joust against bot"
 msgstr "Duell kontra l-bot"
 
@@ -2030,7 +2040,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Issa"
 
-#: src/components/MatchLog.tsx:282
+#: src/components/MatchLog.tsx:286
 msgid "K/D"
 msgstr "K/D"
 
@@ -2050,8 +2060,8 @@ msgstr "QTIL"
 msgid "Killed"
 msgstr "Maqtul"
 
-#: src/components/MatchLog.tsx:276
-#: src/components/MatchLog.tsx:361
+#: src/components/MatchLog.tsx:280
+#: src/components/MatchLog.tsx:367
 msgid "Kills"
 msgstr "Qtil"
 
@@ -2067,8 +2077,8 @@ msgstr "NAR MAGNA XELLUG"
 msgid "L GEAR"
 msgstr "ROTA XELLUG"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Landing gear"
 msgstr "Karrell tal-inżul"
 
@@ -2081,8 +2091,8 @@ msgstr "Kbir"
 msgid "LATE"
 msgstr "TARD"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:233
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
 
@@ -2098,7 +2108,7 @@ msgstr "Tqassim"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:954
 msgid "Leave server"
 msgstr "Ħalli s-server"
 
@@ -2135,8 +2145,8 @@ msgstr "Ċar"
 msgid "lights"
 msgstr "dwal"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:232
 msgid "Lights"
 msgstr "Dwal"
 
@@ -2206,7 +2216,7 @@ msgstr "Ħareġ b'suċċess"
 msgid "Logging out…"
 msgstr "Qed joħroġ…"
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:109
 msgid "Look"
 msgstr "Ħares"
 
@@ -2214,23 +2224,23 @@ msgstr "Ħares"
 msgid "Look / orbit"
 msgstr "Ħares / orbita"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:188
 msgid "Look at target"
 msgstr "Ħares lejn il-mira"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:185
 msgid "Look down"
 msgstr "Ħares 'l isfel"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:186
 msgid "Look left"
 msgstr "Ħares lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:187
 msgid "Look right"
 msgstr "Ħares lejn il-lemin"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:184
 msgid "Look up"
 msgstr "Ħares 'il fuq"
 
@@ -2238,7 +2248,7 @@ msgstr "Ħares 'il fuq"
 msgid "Low"
 msgstr "Baxx"
 
-#: src/components/MissionSetup.tsx:1105
+#: src/components/MissionSetup.tsx:1119
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:400
 msgid "Low stratus"
@@ -2260,7 +2270,7 @@ msgstr "Manwali"
 msgid "map"
 msgstr "mappa"
 
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:240
 msgid "Map"
 msgstr "Mappa"
 
@@ -2278,7 +2288,7 @@ msgstr "Volum ewlieni"
 msgid "Match type"
 msgstr "Tip ta' partita"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:949
 msgid "Matches"
 msgstr "Logħbiet"
 
@@ -2304,8 +2314,8 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:190
-#: src/components/SettingsDialog.tsx:242
+#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:243
 msgid "Menu"
 msgstr "Menu"
 
@@ -2321,7 +2331,7 @@ msgstr "Messaġġ"
 msgid "Message everyone"
 msgstr "Ibgħat messaġġ lil kulħadd"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:784
 msgid "Message players on this server"
 msgstr "Ibgħat messaġġ lill-plejers fuq dan is-server"
 
@@ -2337,7 +2347,7 @@ msgstr "Metriku"
 msgid "Microphone permission denied"
 msgstr "Il-permess tal-mikrofonu ġie miċħud"
 
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MissionSetup.tsx:1118
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:399
 msgid "Mid stratus"
@@ -2347,7 +2357,7 @@ msgstr "Stratus medju"
 msgid "Midair collision"
 msgstr "Ħabta fl-ajru"
 
-#: src/components/MissionSetup.tsx:608
+#: src/components/MissionSetup.tsx:618
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mappa tal-Atoll ta' Midway — l-immaġni fiha data <0>Copernicus Sentinel-2</0> modifikata (2026); il-ġeometrija tal-ajrudrom (runway, passaġġi tat-taxi, aprons) © kontributuri ta' <1>OpenStreetMap</1>, liċenzjata taħt <2>ODbL</2>; data tal-kosta u tas-sikek tal-qroll minn <3>NOAA NCCOS</3> (dominju pubbliku)."
 
@@ -2359,7 +2369,7 @@ msgstr "Tul minimu"
 msgid "MISSILE"
 msgstr "MISSILA"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:568
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Mudell ta' missila <0>“AIM-120C AMRAAM”</0> minn <1>Pippa</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Modifikat: skalat mill-ġdid, orjentat mill-ġdid u ċċentrat għat-tqegħid."
 
@@ -2371,8 +2381,8 @@ msgstr "Il-missjoni spiċċat"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchLog.tsx:293
-#: src/components/MatchLog.tsx:355
+#: src/components/MatchLog.tsx:297
+#: src/components/MatchLog.tsx:361
 msgid "Mode"
 msgstr "Modalità"
 
@@ -2445,7 +2455,7 @@ msgstr "Logħba ġdida"
 msgid "Next image"
 msgstr "Stampa li jmiss"
 
-#: src/components/MissionSetup.tsx:1089
+#: src/components/MissionSetup.tsx:1103
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:393
 msgid "Night"
@@ -2471,7 +2481,7 @@ msgstr "L-ebda kummenti s'issa"
 msgid "No control matches “{query}”."
 msgstr "L-ebda kontroll ma jaqbel ma’ “{query}”."
 
-#: src/components/MatchLog.tsx:382
+#: src/components/MatchLog.tsx:388
 msgid "No flight matches these filters."
 msgstr "L-ebda titjira ma taqbel ma’ dawn il-filtri."
 
@@ -2499,7 +2509,7 @@ msgstr "Ma nstab l-ebda joystick — agħfas kwalunkwe buttuna fuqu biex tqajmu.
 msgid "No matching objects"
 msgstr "L-ebda oġġetti li jaqblu"
 
-#: src/components/Multiplayer.tsx:563
+#: src/components/Multiplayer.tsx:561
 msgid "No open matches — create one."
 msgstr "M'hemm l-ebda partita miftuħa — oħloq waħda."
 
@@ -2555,8 +2565,8 @@ msgstr "Ma nstabu l-ebda utenti"
 msgid "No views"
 msgstr "L-ebda views"
 
-#: src/components/MissionSetup.tsx:747
-#: src/components/Multiplayer.tsx:563
+#: src/components/MissionSetup.tsx:761
+#: src/components/Multiplayer.tsx:561
 msgid "No world server."
 msgstr "M'hemm l-ebda server tad-dinja."
 
@@ -2582,7 +2592,7 @@ msgstr "L-EBDA GRAD"
 #: ../../../lib/web/src/components/person-picker.tsx:329
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:282
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1115
 #: src/components/SettingsDialog.tsx:470
 #: src/components/SettingsDialog.tsx:546
 #: src/components/SettingsDialog.tsx:826
@@ -2614,7 +2624,7 @@ msgstr "Mhux issettjat"
 msgid "Nothing found"
 msgstr "Ma nstab xejn"
 
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:761
 msgid "Nothing yet — say hello."
 msgstr "Għad m'hawn xejn — għid hello."
 
@@ -2623,8 +2633,8 @@ msgstr "Għad m'hawn xejn — għid hello."
 msgid "Notifications: {0}"
 msgstr "Notifiki: {0}"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1038
+#: src/components/MissionSetup.tsx:1205
 #: src/components/Multiplayer.tsx:515
 msgid "Novice"
 msgstr "Beġinner"
@@ -2651,13 +2661,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Mixgħul"
 
-#: src/components/MissionSetup.tsx:1048
-#: src/components/MissionSetup.tsx:1199
+#: src/components/MissionSetup.tsx:1062
+#: src/components/MissionSetup.tsx:1213
 msgid "On carrier"
 msgstr "Fuq il-bastiment"
 
-#: src/components/MissionSetup.tsx:1047
-#: src/components/MissionSetup.tsx:1198
+#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1212
 msgid "On runway"
 msgstr "Fuq il-pista"
 
@@ -2665,7 +2675,7 @@ msgstr "Fuq il-pista"
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Paġna Mhux Misjuba!"
 
-#: src/components/Multiplayer.tsx:580
+#: src/components/Multiplayer.tsx:578
 msgid "Open"
 msgstr "Iftaħ"
 
@@ -2716,20 +2726,12 @@ msgstr "Isem tal-għażla"
 msgid "Options"
 msgstr "Għażliet"
 
-#: src/components/GameCanvas.tsx:597
-msgid "or"
-msgstr "jew"
-
-#: src/components/GameCanvas.tsx:597
-msgid "orbit"
-msgstr "orbita"
-
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
 msgstr "Oħra"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:206
 msgid "Override G limit"
 msgstr "Aqbeż il-limitu G"
 
@@ -2755,7 +2757,7 @@ msgstr "Ġenitur"
 msgid "PARK"
 msgstr "BREJK TAL-IPPARKJAR"
 
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:205
 msgid "Parking brake"
 msgstr "Brejk tal-ipparkjar"
 
@@ -2788,14 +2790,14 @@ msgstr "Mwaqqaf"
 msgid "People"
 msgstr "Nies"
 
-#: src/components/MissionSetup.tsx:676
+#: src/components/MissionSetup.tsx:690
 #: src/components/Multiplayer.tsx:153
 #: src/components/Multiplayer.tsx:331
 msgid "pilot"
 msgstr "bdot"
 
-#: src/components/MissionSetup.tsx:1025
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1039
+#: src/components/MissionSetup.tsx:1206
 #: src/components/Multiplayer.tsx:516
 msgid "Pilot"
 msgstr "Bdot"
@@ -2812,8 +2814,8 @@ msgstr "Identità tal-pilota"
 msgid "Pilot killed"
 msgstr "Il-bdot inqatel"
 
-#: src/components/MatchLog.tsx:460
-#: src/components/MatchLog.tsx:461
+#: src/components/MatchLog.tsx:466
+#: src/components/MatchLog.tsx:467
 msgid "Pin"
 msgstr "Waħħal"
 
@@ -2821,15 +2823,15 @@ msgstr "Waħħal"
 msgid "pitch"
 msgstr "pitch"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:104
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:196
 msgid "Pitch down"
 msgstr "Pitch 'l isfel"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch up"
 msgstr "Pitch 'il fuq"
 
@@ -2837,7 +2839,7 @@ msgstr "Pitch 'il fuq"
 msgid "PLATFORM"
 msgstr "PJATTAFORMA"
 
-#: src/components/MatchLog.tsx:358
+#: src/components/MatchLog.tsx:364
 msgid "Players"
 msgstr "Plejers"
 
@@ -2901,7 +2903,7 @@ msgstr "SONDA BARRA"
 msgid "Processing…"
 msgstr "Qed jiġi pproċessat…"
 
-#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:291
 #: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profil issejvjat"
@@ -2914,8 +2916,8 @@ msgstr "Prompt issejvjat"
 msgid "Properties"
 msgstr "Proprjetajiet"
 
-#: src/components/MissionSetup.tsx:873
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:887
+#: src/components/MissionSetup.tsx:905
 msgid "Public servers"
 msgstr "Servers pubbliċi"
 
@@ -2939,8 +2941,8 @@ msgstr "NAR MAGNA LEMIN"
 msgid "R GEAR"
 msgstr "ROTA LEMIN"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Radar silent"
 msgstr "Radar sieket"
 
@@ -2960,7 +2962,7 @@ msgstr "Erġa' rreġistra ċ-ċwievet tal-aċċess tiegħek fuq dan is-server"
 msgid "REARMED"
 msgstr "ARMAT MILL-ĠDID"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:866
 msgid "Recent"
 msgstr "Reċenti"
 
@@ -2976,7 +2978,7 @@ msgstr "Qed jerġa' jgħaqqad ({retries})..."
 msgid "Record flights"
 msgstr "Irreġistra t-titjiriet"
 
-#: src/components/MatchLog.tsx:447
+#: src/components/MatchLog.tsx:453
 #: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Reġistrazzjoni"
@@ -2989,7 +2991,7 @@ msgstr "Ir-reġistrazzjoni falliet. Jekk jogħġbok erġa' pprova."
 msgid "Recording produced no audio"
 msgstr "Ir-reġistrazzjoni ma fihiex ħoss"
 
-#: src/components/MatchLog.tsx:440
+#: src/components/MatchLog.tsx:446
 msgid "Recording saved"
 msgstr "Ir-reġistrazzjoni nħażnet"
 
@@ -3010,7 +3012,7 @@ msgstr "Qed nirredirezzjona għal-login."
 msgid "Reduce interest"
 msgstr "Naqqas l-interess"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:446
 msgid "Reference"
 msgstr "Referenza"
 
@@ -3096,7 +3098,7 @@ msgstr "Irrinomina kolonna"
 msgid "Rename this board column"
 msgstr "Irrinomina din il-kolonna tal-bord"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:655
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ir-rendering isir minn <0>three.js</0> (liċenzja MIT)."
 
@@ -3122,18 +3124,18 @@ msgstr "Erġa' ibgħat l-email"
 msgid "Reset"
 msgstr "Irrisettja"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Reset master caution"
 msgstr "Irrisettja t-twissija ewlenija"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Reset trim"
 msgstr "Irrisettja t-trim"
 
-#: src/components/SettingsDialog.tsx:181
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 #: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Irrisettja l-veduta"
@@ -3166,7 +3168,7 @@ msgstr "Erġa’ ibda l-missjoni"
 msgid "Restart mission?"
 msgstr "Terġa' tibda l-missjoni?"
 
-#: src/components/MatchLog.tsx:367
+#: src/components/MatchLog.tsx:373
 msgid "Result"
 msgstr "Riżultat"
 
@@ -3174,8 +3176,8 @@ msgstr "Riżultat"
 msgid "Resume"
 msgstr "Kompli"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Retract flaps"
 msgstr "Flaps 'il ġewwa"
 
@@ -3212,15 +3214,15 @@ msgstr "Tarf tal-ġewnaħ tal-lemin"
 msgid "roll"
 msgstr "roll"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:105
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll left"
 msgstr "Roll lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:198
 msgid "Roll right"
 msgstr "Roll lejn il-lemin"
 
@@ -3267,7 +3269,7 @@ msgstr "Issejvja"
 msgid "Saving..."
 msgstr "Qed jiġi ssejvjat..."
 
-#: src/components/MissionSetup.tsx:459
+#: src/components/MissionSetup.tsx:461
 msgid "Sea level"
 msgstr "Livell tal-baħar"
 
@@ -3376,8 +3378,8 @@ msgstr "Agħżel persuna..."
 msgid "Select previous card"
 msgstr "Agħżel il-karta preċedenti"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Select weapon"
 msgstr "Agħżel arma"
 
@@ -3391,7 +3393,7 @@ msgstr "Agħżel..."
 msgid "Selected: <0>{0}</0>"
 msgstr "Magħżul: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:777
+#: src/components/MissionSetup.tsx:791
 msgid "Send"
 msgstr "Ibgħat"
 
@@ -3416,12 +3418,12 @@ msgstr "Ibgħat messaġġ"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchLog.tsx:310
-#: src/components/MatchLog.tsx:352
+#: src/components/MatchLog.tsx:314
+#: src/components/MatchLog.tsx:358
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:732
+#: src/components/MissionSetup.tsx:746
 msgid "Server chat"
 msgstr "Chat tas-server"
 
@@ -3460,7 +3462,7 @@ msgstr "Issettja oriġini u destinazzjoni"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:496
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1284
 #: src/components/SettingsDialog.tsx:1139
 #: src/components/SettingsDialog.tsx:1175
 msgid "Settings"
@@ -3508,7 +3510,7 @@ msgstr "Qed toħroġ..."
 msgid "Single line of text only"
 msgstr "Linja waħda biss ta' test"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:430
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "L-aħjar tlugħ b'magna waħda (Vyse, postkombustjoni)"
 
@@ -3549,13 +3551,13 @@ msgstr "FRN.VL"
 msgid "speed brake"
 msgstr "fren tal-veloċità"
 
-#: src/components/SettingsDialog.tsx:107
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Speed brake"
 msgstr "Fren tal-veloċità"
 
-#: src/components/MissionSetup.tsx:485
+#: src/components/MissionSetup.tsx:487
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Veloċitajiet f'KCAS, bħala firxa minn ħafif (minimu ta' fjuwil, mingħajr tagħbija esterna) sa tqil (piż gross massimu). Id-data nkisbet b'mod sperimentali fil-logħba. Kwalunkwe differenza mill-ajruplan reali tirrifletti żbalji fil-mudell tat-titjira tas-simulatur."
 
@@ -3567,11 +3569,11 @@ msgstr "MIRA MEQRUDA"
 msgid "SPREAD WINGS"
 msgstr "IFTAĦ IL-ĠWIENAĦ"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:435
 msgid "Stall, clean (Vs1)"
 msgstr "Stall, nadif (Vs1)"
 
-#: src/components/MissionSetup.tsx:434
+#: src/components/MissionSetup.tsx:436
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, konfigurazzjoni tal-inżul (Vs0)"
 
@@ -3583,11 +3585,11 @@ msgstr "Ibda"
 msgid "Start the discussion by adding the first comment."
 msgstr "Ibda d-diskussjoni billi żżid l-ewwel kumment."
 
-#: src/components/MissionSetup.tsx:424
+#: src/components/MissionSetup.tsx:426
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "L-aktar tlugħ wieqaf (Vx, 100% spinta)"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:427
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "L-aktar tlugħ wieqaf (Vx, postkombustjoni)"
 
@@ -3622,8 +3624,8 @@ msgstr "Abbona"
 msgid "Sunday"
 msgstr "Il-Ħadd"
 
-#: src/components/MissionSetup.tsx:1027
-#: src/components/MissionSetup.tsx:1194
+#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1208
 #: src/components/Multiplayer.tsx:518
 msgid "Superhuman"
 msgstr "Sopruman"
@@ -3659,7 +3661,7 @@ msgstr "Tikketti"
 msgid "TALLY"
 msgstr "NARA L-GĦADU"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1003
 msgid "Task"
 msgstr "Kompitu"
 
@@ -3672,7 +3674,7 @@ msgid "TEAM"
 msgstr "TIM"
 
 #: src/components/MatchLog.tsx:152
-#: src/components/Multiplayer.tsx:580
+#: src/components/Multiplayer.tsx:578
 msgid "Teams"
 msgstr "Timijiet"
 
@@ -3746,7 +3748,7 @@ msgstr "Is-server irritorna paġna web minflok data."
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Din l-app mhijiex permessa tuża l-passkey tiegħek. Ippermettiha fis-Settings, taħt Permessi."
 
-#: src/components/MissionSetup.tsx:1239
+#: src/components/MissionSetup.tsx:1253
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Dan il-brawżer ma jappoġġjax WebGL 2, għalhekk il-logħba ma tistax taħdem — ipprova brawżer ieħor."
 
@@ -3754,7 +3756,7 @@ msgstr "Dan il-brawżer ma jappoġġjax WebGL 2, għalhekk il-logħba ma tistax 
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Din il-lobby qed tibgħat il-konnessjoni tal-logħba tiegħek lejn server ieħor ({redirectHost}). Kompli biss jekk tafda dan is-server."
 
-#: src/components/MissionSetup.tsx:1243
+#: src/components/MissionSetup.tsx:1257
 msgid "This machine may be too slow for smooth flight."
 msgstr "Din il-magna tista' tkun bil-mod wisq għal titjira mingħajr skossi."
 
@@ -3766,17 +3768,17 @@ msgstr "Dan għad iħassar il-logħba u ċ-chat tagħha b'mod permanenti. Din l-
 msgid "throttle"
 msgstr "throttle"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:107
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Throttle down"
 msgstr "Naqqas it-throttle"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle up"
 msgstr "Żid it-throttle"
 
@@ -3784,19 +3786,15 @@ msgstr "Żid it-throttle"
 msgid "Thursday"
 msgstr "Il-Ħamis"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:434
 msgid "Tightest sustained turn speed"
 msgstr "Veloċità tal-aktar dawra sostnuta stretta"
 
-#: src/components/GameCanvas.tsx:598
-msgid "tilt"
-msgstr "mejjel"
-
-#: src/components/MatchLog.tsx:273
+#: src/components/MatchLog.tsx:277
 msgid "Time"
 msgstr "Ħin"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1096
 msgid "Time of day"
 msgstr "Ħin tal-jum"
 
@@ -3847,31 +3845,31 @@ msgstr "Qed jivvjaġġa"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:110
 msgid "Trim hat"
 msgstr "Kappell tat-trim"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim nose down"
 msgstr "Trim: pruwa 'l isfel"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose up"
 msgstr "Trim: pruwa 'l fuq"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll left"
 msgstr "Trim: rombli xellug"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim roll right"
 msgstr "Trim: rombli lemin"
 
@@ -3930,13 +3928,13 @@ msgstr "Mhux assenjat"
 msgid "Unavailable"
 msgstr "Mhux disponibbli"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Uncage seeker"
 msgstr "Illibera l-fittex"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Undesignate target"
 msgstr "Ħassar l-għażla tal-mira"
 
@@ -3962,23 +3960,23 @@ msgstr "Mhux magħruf"
 msgid "Unlimited"
 msgstr "Mingħajr limitu"
 
-#: src/components/MissionSetup.tsx:1128
+#: src/components/MissionSetup.tsx:1142
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:477
 msgid "Unlimited ammunition"
 msgstr "Munizzjon bla limitu"
 
-#: src/components/MissionSetup.tsx:1128
+#: src/components/MissionSetup.tsx:1142
 msgid "Unlimited ammunition (all players)"
 msgstr "Munizzjon bla limitu (il-plejers kollha)"
 
-#: src/components/MissionSetup.tsx:1135
+#: src/components/MissionSetup.tsx:1149
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:487
 msgid "Unlimited fuel"
 msgstr "Fjuwil bla limitu"
 
-#: src/components/MissionSetup.tsx:1135
+#: src/components/MissionSetup.tsx:1149
 msgid "Unlimited fuel (all players)"
 msgstr "Fjuwil bla limitu (il-plejers kollha)"
 
@@ -4037,7 +4035,7 @@ msgstr "Ivverifika"
 msgid "Verify email address"
 msgstr "Ivverifika l-indirizz tal-email"
 
-#: src/components/MissionSetup.tsx:475
+#: src/components/MissionSetup.tsx:477
 msgid "Vertical"
 msgstr "Vertikali"
 
@@ -4054,11 +4052,7 @@ msgstr "Thumbnail tal-vidjo"
 msgid "Video viewer: {0}"
 msgstr "Viewer tal-vidjo: {0}"
 
-#: src/components/GameCanvas.tsx:592
-msgid "view"
-msgstr "veduta"
-
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Ara"
 
@@ -4118,12 +4112,12 @@ msgstr "Bgħatna kodiċi ta' verifika lil <0>{0}</0>. Daħħal il-kodiċi hawn t
 msgid "weapon"
 msgstr "arma"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:111
 msgid "Weapon select hat"
 msgstr "Kappell tal-għażla tal-arma"
 
 #: src/components/Multiplayer.tsx:411
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Armi"
 
@@ -4135,8 +4129,8 @@ msgstr "Temp"
 msgid "Wednesday"
 msgstr "L-Erbgħa"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:204
 msgid "Wheel brakes"
 msgstr "Freni tar-rota"
 
@@ -4144,8 +4138,8 @@ msgstr "Freni tar-rota"
 msgid "Wind and cockpit airframe"
 msgstr "Riħ u qafas fil-kokpit"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:231
 msgid "Wing fold"
 msgstr "Tiwi tal-ġwienaħ"
 
@@ -4173,12 +4167,12 @@ msgstr "JIRBAĦ"
 msgid "World server"
 msgstr "Server tad-dinja"
 
-#: src/components/MissionSetup.tsx:725
+#: src/components/MissionSetup.tsx:739
 #: src/components/Multiplayer.tsx:166
 msgid "World server not reachable"
 msgstr "Is-server tad-dinja ma jistax jintlaħaq"
 
-#: src/components/MissionSetup.tsx:1011
+#: src/components/MissionSetup.tsx:1025
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, armi ħielsa mal-qsim"
 
@@ -4186,17 +4180,17 @@ msgstr "WVR, armi ħielsa mal-qsim"
 msgid "yaw"
 msgstr "yaw"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:106
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw left"
 msgstr "Yaw lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Yaw right"
 msgstr "Yaw lejn il-lemin"
 
@@ -4220,7 +4214,7 @@ msgstr "L-annessi tiegħek se jintilfu."
 msgid "Your flights appear here once you've flown one."
 msgstr "It-titjiriet tiegħek jidhru hawn ladarba ttir waħda."
 
-#: src/components/Multiplayer.tsx:575
+#: src/components/Multiplayer.tsx:573
 msgid "your offer"
 msgstr "l-offerta tiegħek"
 
@@ -4232,14 +4226,14 @@ msgstr "It-test u l-annessi tiegħek se jintilfu."
 msgid "Your text will be lost."
 msgstr "It-test tiegħek se jintilef."
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:112
 msgid "Zoom"
 msgstr "Żum"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom in"
 msgstr "Kabbar"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:190
 msgid "Zoom out"
 msgstr "Ċekken"

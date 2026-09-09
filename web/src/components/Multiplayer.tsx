@@ -9,7 +9,7 @@
 // The standing "Furball" match is listed first.
 
 import { useCallback, useEffect, useId, useState } from 'react'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { LogIn, Plus, RefreshCw, type LucideIcon } from 'lucide-react'
 import { Button } from '@mochi/web/components/ui/button'
 import {
@@ -339,7 +339,7 @@ export function Multiplayer({
       <div className='text-muted-foreground flex items-center justify-between text-sm'>
         {status ? (
           <span>
-            {status.name} · <Trans>{status.players} flying</Trans>
+            {status.name} · <Plural value={status.players} one='# flying' other='# flying' />
           </span>
         ) : (
           <span>{error || <Trans>Connecting…</Trans>}</span>
@@ -541,9 +541,7 @@ export function Multiplayer({
                 )
               })}
               <div className='text-muted-foreground text-xs tabular-nums'>
-                <Trans>
-                  {placed} of {limit} bots
-                </Trans>
+                <Plural value={placed} one={`# of ${limit} bot`} other={`# of ${limit} bots`} />
               </div>
             </div>
           </div>
@@ -579,9 +577,11 @@ export function Multiplayer({
               <div className='text-muted-foreground truncate text-xs'>
                 {s.mode === 'joust' ? <Trans>Joust</Trans> : s.mode === 'teams' ? <Trans>Teams</Trans> : <Trans>Open</Trans>} ·{' '}
                 {(s.players ?? []).map((p) => p.name).join(', ') || <Trans>empty</Trans>} ·{' '}
-                <Trans>
-                  {(s.players ?? []).length}/{s.capacity} players
-                </Trans>
+                <Plural
+                  value={(s.players ?? []).length}
+                  one={`#/${s.capacity} player`}
+                  other={`#/${s.capacity} players`}
+                />
               </div>
               {/* Non-standard settings only (#19), canonical order — weapons,
                   time, weather, cheats. A fully standard match shows nothing:

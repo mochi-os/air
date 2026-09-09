@@ -3,6 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
+import { useFormat } from '@mochi/web'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Slider } from '@mochi/web/components/ui/slider'
 import { Switch } from '@mochi/web/components/ui/switch'
@@ -41,7 +42,10 @@ export function SliderRow({
   disabled?: boolean
   onChange: (value: number) => void
 }) {
-  const display = (decimals ? value.toFixed(decimals) : String(value)) + (suffix ?? '')
+  // Through useFormat, not toFixed/String: a slider reading "1.5x" must read
+  // "1,5x" for a French or German pilot like every other number in the menu.
+  const { formatNumber } = useFormat()
+  const display = formatNumber(value, decimals) + (suffix ?? '')
   return (
     <div className={`${tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}${disabled ? ' opacity-50' : ''}`}>
       <div className='flex items-center justify-between text-sm'>
