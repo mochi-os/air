@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_CONFIG, TAB_FIELDS, seedStart } from './config'
+import { DEFAULT_CONFIG, TAB_FIELDS, deviceDefaults, profileBindings, seedStart } from './config'
 
 describe('seedStart', () => {
   it('seeds a recovery fuel state for every pattern case', () => {
@@ -71,5 +71,61 @@ describe('DEFAULT_CONFIG', () => {
       }
     }
     expect(missing).toEqual([])
+  })
+})
+
+// An imported joystick profile is the one place arbitrary JSON reaches the
+// stored bindings. It failed open: `typeof null === 'object'` passed the guard,
+// spreading null is legal, and the player was told "Profile saved" while their
+// button map was discarded (#120).
+describe('profileBindings', () => {
+  // The standard gamepad, NOT the generic joystick: the generic profile carries
+  // a single default binding, so a partial-map assertion against it is vacuous -
+  // it passes whether or not the merge happens.
+  const defaults = deviceDefaults('pad', 'standard')
+
+  it('refuses null maps that pass a typeof test', () => {
+    expect(profileBindings({ air: 'joystick', axes: null, buttons: null }, defaults)).toBeNull()
+  })
+
+  it('refuses arrays, which are also typeof object', () => {
+    expect(profileBindings({ air: 'joystick', axes: [], buttons: [] }, defaults)).toBeNull()
+  })
+
+  it('refuses anything that is not a joystick profile', () => {
+    expect(profileBindings(null, defaults)).toBeNull()
+    expect(profileBindings('a string', defaults)).toBeNull()
+    expect(profileBindings({ axes: {}, buttons: {} }, defaults)).toBeNull()
+    expect(profileBindings({ air: 'keyboard', axes: {}, buttons: {} }, defaults)).toBeNull()
+  })
+
+  it('merges a partial button map over the defaults rather than replacing it', () => {
+    // The reachable half: an export predating a binding carries no entry for
+    // it. Adopting the map wholesale left that action unbound on a file that is
+    // perfectly valid.
+    expect(Object.keys(defaults.buttons).length).toBeGreaterThan(1) // or the loop below asserts nothing
+    const bindings = profileBindings({ air: 'joystick', axes: {}, buttons: { fire: '9' } }, defaults)
+    expect(bindings?.buttons.fire).toBe('9')
+    for (const action of Object.keys(defaults.buttons)) {
+      if (action !== 'fire') expect(bindings?.buttons[action]).toBe(defaults.buttons[action])
+    }
+  })
+
+  it('merges a partial axis map over the defaults, as it always did', () => {
+    const bindings = profileBindings({ air: 'joystick', axes: { pitch: '4' }, buttons: {} }, defaults)
+    expect(bindings?.axes.pitch).toBe('4')
+    expect(bindings?.axes.roll).toBe(defaults.axes.roll)
+  })
+
+  it('keeps every binding a full profile declares', () => {
+    const axes = { ...defaults.axes, yaw: '5' }
+    const buttons = { ...defaults.buttons, fire: '2' }
+    expect(profileBindings({ air: 'joystick', axes, buttons }, defaults)).toEqual({ axes, buttons })
+  })
+
+  it('does not alias the defaults it merged over', () => {
+    const bindings = profileBindings({ air: 'joystick', axes: {}, buttons: {} }, defaults)
+    bindings!.buttons.fire = 'edited'
+    expect(deviceDefaults('generic').buttons.fire).not.toBe('edited')
   })
 })

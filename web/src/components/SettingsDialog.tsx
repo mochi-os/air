@@ -45,6 +45,7 @@ import {
   type MissionConfig,
   type StickBindings,
   deviceDefaults,
+  profileBindings,
   profileFor,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
@@ -295,10 +296,9 @@ function JoystickPanel({
     event.target.value = ''
     if (!file) return
     try {
-      const parsed = JSON.parse(await file.text())
-      if (parsed?.air !== 'joystick' || typeof parsed.axes !== 'object' || typeof parsed.buttons !== 'object')
-        throw new Error('not a profile')
-      store({ ...defaults.axes, ...(parsed.axes as Record<string, string>) }, parsed.buttons as Record<string, string>)
+      const bindings = profileBindings(JSON.parse(await file.text()), defaults)
+      if (!bindings) throw new Error('not a profile')
+      store(bindings.axes, bindings.buttons)
       toast.success(t`Profile saved`)
     } catch {
       toast.error(t`Not a joystick profile`)

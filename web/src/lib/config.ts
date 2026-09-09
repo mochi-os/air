@@ -96,6 +96,25 @@ export function deviceDefaults(id: string, mapping = ''): StickBindings {
   return { axes: { ...profile.axes }, buttons: { ...profile.buttons } }
 }
 
+// profileBindings resolves an imported joystick profile against a device's
+// defaults, or null when the file is not one. `typeof value === 'object'` is
+// not the test: it admits null and arrays, and spreading either is legal, so a
+// file declaring null maps imported as a success that stored nothing. Both maps
+// merge OVER the defaults - a profile exported before a binding existed carries
+// no entry for it, and adopting its map wholesale would leave that action
+// unbound.
+export function profileBindings(parsed: unknown, defaults: StickBindings): StickBindings | null {
+  const record = (value: unknown): value is Record<string, unknown> =>
+    !!value && typeof value === 'object' && !Array.isArray(value)
+  if (!record(parsed) || parsed.air !== 'joystick') return null
+  const { axes, buttons } = parsed
+  if (!record(axes) || !record(buttons)) return null
+  return {
+    axes: { ...defaults.axes, ...(axes as Record<string, string>) },
+    buttons: { ...defaults.buttons, ...(buttons as Record<string, string>) },
+  }
+}
+
 // Mission configuration collected by the setup menu and handed to the engine.
 // The index signature lets the engine treat it as a plain config bag (its cfg has
 // a few more baked-in keys, e.g. the catapult spawn pose); the named fields keep
