@@ -76,7 +76,10 @@ export interface Flight {
   structure?: number // whole-airframe element loss, summed: what a hit counter reads
   wing?: number // wing loss the aero flies: what a performance claim rests on
   leak?: number // fuel loss, kg/s
-  fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe
+  fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe / battle / surface
+  // Who ended it, when anyone is credited: the debrief keeps the mechanism in
+  // Fate and gains the attribution here, the way a missile carries Parent.
+  killer?: string
   stick?: number // control-law channels: developer builds only
   stabilator?: number // degrees
   // The weapons channels (#33). Missiles is the stores count, so a launch is a
@@ -216,6 +219,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
           if (d.fate !== undefined) battle += `,Fate=${field(d.fate)}`
+          if (d.killer) battle += `,Killer=${field(d.killer)}`
           if (battle && battled.get(o.id) !== battle) {
             battled.set(o.id, battle)
             line += battle
