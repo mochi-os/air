@@ -113,6 +113,15 @@ def database_upgrade(version):
 		if "cheated" not in columns:
 			mochi.db.execute("alter table matches add column cheated integer not null default 0")
 
+# What one save may carry. Nothing prunes the settings table and config_load
+# decodes every row on every mission-menu open, so an oversized save is
+# permanent: core's 1 MB body admits about 80,000 keys. The honest set is 33
+# (DEFAULT_CONFIG) with a longest name of 15 characters, so these are far above
+# any real client and are a flood ceiling, not a policy on what a setting may be
+# called.
+SETTINGS_MAXIMUM = 200
+SETTINGS_LONGEST = 64
+
 def config_load(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
@@ -139,6 +148,16 @@ def config_save(a):
 	if type(config) != "dict":
 		a.error.label(400, "errors.invalid_request")
 		return
+	# Refuse the whole save rather than writing the keys that fit: a partial
+	# write reported as a success is the worse failure, and no honest client
+	# reaches either ceiling.
+	if len(config) > SETTINGS_MAXIMUM:
+		a.error.label(400, "errors.invalid_request")
+		return
+	for name in config:
+		if len(name) > SETTINGS_LONGEST:
+			a.error.label(400, "errors.invalid_request")
+			return
 	now = mochi.time.now()
 	for name in config:
 		mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated where excluded.updated >= settings.updated", name, json.encode(config[name]), now)
