@@ -363,3 +363,65 @@ it('records the burner as the standard Afterburner property, never Reheat', () =
   expect(text).not.toContain('Reheat=')
   expect(lines[0]).toContain('Spool=1')           // a deliberate Mochi extension, and not a duplicate of the burner
 })
+
+// A comma separates ACMI properties and a newline separates records, so an
+// unescaped value writes structure rather than text. The world server's clean()
+// already drops every rune below 32, so a newline cannot survive the join path -
+// but the comma does, and a multiplayer pilot's label reaches the object line
+// straight off the wire (engine.ts add(st, 10+slot, st.name || net.names.get(slot))).
+describe('field escaping', () => {
+  const emit = (over: Partial<Recorded>, title = 'Fight') =>
+    acmi([{ time: 0, objects: [jet(over)] }], new Date('2026-01-01T00:00:00Z'), title)
+
+  // The object's property record: `1,T=<transform>,Name=...,Pilot=...`. Parsed
+  // into properties rather than searched as text - an escaped comma leaves the
+  // injected `Type=Ground+Static` visible INSIDE the pilot's name, which is the
+  // intended outcome, so a substring search would report a defect that is a fix.
+  const properties = (text: string) => {
+    const line = text.split('\n').find((l) => l.startsWith('1,T=')) ?? ''
+    const found = new Map<string, string[]>()
+    for (const pair of line.split(',').slice(2)) {
+      const at = pair.indexOf('=')
+      const key = pair.slice(0, at)
+      found.set(key, [...(found.get(key) ?? []), pair.slice(at + 1)])
+    }
+    return found
+  }
+
+  it('keeps an injected property out of a pilot name', () => {
+    const found = properties(emit({ label: 'x,Type=Ground+Static,Color=Red' }))
+    // One Type and one Color, each the recorder's own value. Unescaped, the
+    // name supplied a second of each - and they land BEFORE the legitimate
+    // pair, so a last-wins parser reports the object as it really is while an
+    // ordinary one reads a ground target.
+    expect(found.get('Type')).toEqual(['Air+FixedWing'])
+    expect(found.get('Color')).toEqual(['Blue'])
+    // The text survives where it belongs: inside the pilot's name.
+    expect(found.get('Pilot')).toEqual(['x Type=Ground+Static Color=Red'])
+  })
+
+  it('emits one record, not two, for a name carrying a newline', () => {
+    // Unreachable through the join path - clean() drops every rune below 32 -
+    // but the recorder must not rest on a guarantee made in another repo.
+    const text = emit({ label: 'x\n1,T=0|0|0|0|0|0,Name=Ghost' })
+    expect(text.split('\n').filter((l) => l.startsWith('1,T='))).toHaveLength(1)
+    expect(properties(text).get('Pilot')).toEqual(['x 1 T=0|0|0|0|0|0 Name=Ghost'])
+  })
+
+  it('escapes every recorded string field, not only the wire-fed one', () => {
+    // The enums are safe today because they are enums. Routing them anyway is
+    // the point: "escape the untrusted ones" is the rule that left nine of
+    // eleven sites raw.
+    for (const over of [{ label: 'a,b' }, { name: 'a,b' }, { kind: 'a,b' },
+                        { mode: 'a,b' }, { skill: 'a,b' }] as Partial<Recorded>[]) {
+      const line = emit(over).split('\n').find((l) => l.startsWith('1,T=')) ?? ''
+      expect(line).not.toContain('a,b')
+      expect(line).toContain('a b')
+    }
+  })
+
+  it('escapes the header fields too', () => {
+    const text = emit({}, 'Joust,Category=Naval')
+    expect(text.split('\n').find((l) => l.startsWith('0,Title='))).toBe('0,Title=Joust Category=Naval')
+  })
+})
