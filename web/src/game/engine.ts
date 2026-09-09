@@ -38,7 +38,7 @@ import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
+import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { surface as impact_surface } from './impact'
@@ -6475,7 +6475,7 @@ function acm_press(){
 // default_radar: the set at spawn, as default_master has the weapon up - a
 // merge joust commands boresight at 10 nm, a BVR or AMRAAM fight is TWS at 40
 // nm, free flight searches in RWS.
-function merge_joust(){ return cfg.task==="joust"&&cfg.duel!=="bvr"&&!MULTIPLAYER; }
+function merge_joust(){ return boresight(cfg.task,cfg.duel); }   // the rule lives in radar.ts, where a test can reach it
 function radar_scale(){ return merge_joust()?10:40; }   // the merge is inside ten miles from the first frame; everything else searches at the full scale
 function default_radar(){
 	RADAR.sil=false; RADAR.width=0; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";

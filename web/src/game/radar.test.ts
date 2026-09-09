@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { Radar, NM, geometry, aspect_factor, detect_range, paint_probability, pick, WIDTHS } from './radar'
+import { Radar, NM, boresight, geometry, aspect_factor, detect_range, paint_probability, pick, WIDTHS } from './radar'
 
 const wrap = (v: number) => v
 const always = () => 0 // random() below every probability: every crossing paints
@@ -269,5 +269,33 @@ describe('pick', () => {
   it('captures nothing in empty space', () => {
     const candidates = [{ id: 1, azimuth: 0.9, range: 35 * NM }]
     expect(pick(candidates, -0.9, 5 * NM, WIDTHS[0], 40 * NM)).toBe(null)
+  })
+})
+
+// The ACM boresight condition: which missions arm it. A multiplayer joust used
+// to be excluded, so nothing acquired the opponent for the pilot and the radar
+// searched at 40 nm through a knife fight - the same fight the single-player
+// version gets boresight for.
+describe('boresight', () => {
+  it('arms for a merge joust', () => {
+    expect(boresight('joust', 'merge')).toBe(true)
+  })
+
+  it('does not arm for a BVR joust, which searches wide by design', () => {
+    expect(boresight('joust', 'bvr')).toBe(false)
+  })
+
+  it('does not arm for anything that is not a joust', () => {
+    for (const task of ['free', 'carrier', 'runway', '']) {
+      expect(boresight(task, 'merge'), task).toBe(false)
+    }
+  })
+
+  it('depends on the mission shape alone, so multiplayer reads the same as single player', () => {
+    // The whole defect: the caller ANDed in !MULTIPLAYER, and a joust against a
+    // person stopped being a joust as far as the radar was concerned. The rule
+    // takes no such argument, so a caller cannot reintroduce it here.
+    expect(boresight.length).toBe(2)
+    expect(boresight('joust', 'merge')).toBe(boresight('joust', 'merge'))
   })
 })
