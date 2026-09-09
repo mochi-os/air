@@ -7,6 +7,16 @@
 import json, struct, subprocess, sys, os, base64
 from PIL import Image
 
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[3]
+APP = ROOT / "apps" / "air"
+
+
 SRC, DST, MODE = sys.argv[1], sys.argv[2], (sys.argv[3] if len(sys.argv) > 3 else "etc1s")
 WORK = os.path.dirname(os.path.abspath(DST)) or "."
 GLTFPACK = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gltfpack-native")
@@ -48,7 +58,7 @@ wrapper = f"{WORK}/flip_wrap.gltf"
 json.dump(gltf, open(wrapper, "w"))
 out = f"{WORK}/flip_wrap.glb"
 mode = ["-tc", "-tu", "-tj", "8"] if MODE == "uastc" else ["-tc", "-tq", "10", "-tj", "8"]
-env = dict(os.environ, BWRAP_PROJECT="/home/alistair/mochi")
+env = dict(os.environ, BWRAP_PROJECT=os.environ.get("BWRAP_PROJECT", str(ROOT)))
 r = subprocess.run([os.path.expanduser("~/bin/bwrap-build"), GLTFPACK, "-i", wrapper, "-o", out] + mode,
                    capture_output=True, text=True, env=env)
 if r.returncode != 0:

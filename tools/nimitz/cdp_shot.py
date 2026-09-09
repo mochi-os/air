@@ -14,7 +14,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import websocket
 
-ROOT = Path("/home/alistair/mochi")
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
+
+
 UP = ("localhost", 8081)
 PORT = 18099
 DEBUG_PORT = 18123

@@ -1,4 +1,19 @@
 // @ts-nocheck
+//
+// TEMPORARY, and the plan is to remove it. This file is the flight loop, the
+// multiplayer state machine, the damage model and the recorder, and it consumes
+// the untrusted server data every other module validates - so it is exactly the
+// file that should be checked, and `pnpm build` runs tsc -b, which means nothing
+// here is. It is what let a shipped setting go missing from MissionConfig, and
+// no rename in flight.ts / net.ts / stores.ts / acmi.ts is checked against its
+// largest caller.
+//
+// The way out is the way radar.ts, rwr.ts, impact.ts and pipper.ts already came
+// out: lift one self-contained block at a time into a typed module, run the 24
+// suites after each slice, and delete this directive when what remains is small
+// enough to type in place. Pure tables first (CARRIER_MODELS, CLOUDS, the rig
+// tables), then cautions_update. Other sessions edit this file constantly, so
+// each slice has to be checked against work in flight rather than assumed safe.
 // Copyright © 2026 Mochisoft OÜ
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the Mochi
@@ -4277,7 +4292,6 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
-if(DEV_MODE) (globalThis as any).dev_audio=function(){ return audio_state(); };   // dev (#88): the continuous voices' state — the transitions log to dev_sounds, the standing state reads here
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
 	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;
@@ -4335,7 +4349,7 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!ha
 	return { volleys:n, shots }; };
 let growl_force=null;
 if(DEV_MODE) (globalThis as any).dev_growl=(state,strength,seconds)=>{ growl_force={state:+state||0,strength:+strength||0,until:sim_time+(+seconds||6)}; return growl_force; };   // #59: audition the seeker voice from the console — dev_growl(1,0.2) search cold, dev_growl(2,1) lock point-blank burner
-if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // #55: the context's live state, for the strict-autoplay boot test
+if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // dev (#88/#55): the continuous voices' standing state (transitions log to dev_sounds), and the context's live state for the strict-autoplay boot test
 if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way,closure){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
@@ -6704,14 +6718,12 @@ function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
 	.then((n)=>{ net=n; match_started=Date.now();
 		if(n.welcome&&n.welcome.spawn){ apply_own_state(n.welcome.spawn.state); net_waiting=!!n.welcome.spawn.waiting; weapons_hold=n.welcome.spawn.mode==="joust";
-			const rules=n.welcome.parameters||{};   // session-owned weather (#107): the match creator's sky wins over local preferences — every player flies the same clouds and clock
-			if(typeof rules.tod==="string"&&TOD[rules.tod]){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); }
-			if(typeof rules.clouds==="string"&&(rules.clouds==="none"||CLOUDS[rules.clouds])){ cfg.clouds=rules.clouds; apply_clouds(); } }
+			}
 		apply_model_all();   // the welcome names the server-assigned aircraft; re-apply in case the picker had another type
 		const rules=(n.welcome&&n.welcome.parameters)||{};   // the creator's weather + rules apply to every participant
-		if(rules.tod==="day"||rules.tod==="night"){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
-		if(typeof rules.clouds==="string"&&["none","cumulus","high_stratus","low_stratus"].includes(rules.clouds)){
-			cfg.clouds=rules.clouds; apply_clouds(); if(cloud_active()) size_rt(); }   // apply_clouds runs even for "none": it zeroes the overcast/shadow uniforms on the ocean and sky
+		if(typeof rules.tod==="string"&&TOD[rules.tod]){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
+		if(typeof rules.clouds==="string"&&(rules.clouds==="none"||CLOUDS[rules.clouds])){
+			cfg.clouds=rules.clouds; apply_clouds(); if(cloud_active()) size_rt(); }   // apply_clouds runs even for "none": it zeroes the overcast/shadow uniforms on the ocean and sky. Validated against the TABLES, not a hand-copied list: the second list had drifted and silently refused mid_stratus, a preset the match-creation form offers
 		missiles_rule=rules.missiles===true;   // the creator's rule clamps the FLOWN loadout (#17): strip(cfg.stores) when forbidden, the persisted choice untouched
 		assign_loadout(ownship, loadout()); ownship.msl=magazine(); update_rails(ownship, ownship.msl); master=default_master(); default_radar();   // the rule decides the flown loadout, and the loadout decides the weapon that is up when the fight starts, and the radar mode with it
 		cfg.cheats=(rules.cheats&&typeof rules.cheats==="object")?rules.cheats:{};   // the creator's match cheats: the server enforces them; the client mirrors the ammo gates so the HUD counters and the launch gate agree

@@ -5,7 +5,17 @@ world-coordinate vertex soup (n*3, 3) for build_carrier.py's add_soup(deckframe=
 import json, struct
 import numpy as np
 
-ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
+
+ORIG = str(APP / "downloads" / "uss_nimitz_cvn-68_aircraft_carrier.glb")
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 ZONE = (64.5, 73.0, 4.5, 11.5)   # ICCSZONES[0]
 DROP = 0.64 / S                  # 0.64 m flush drop, in world Y units

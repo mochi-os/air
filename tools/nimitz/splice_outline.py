@@ -3,7 +3,17 @@
 polygon must match the drawn deck strip — same source of truth)."""
 import json
 
-ENGINE='/home/alistair/mochi/apps/air/web/src/game/engine.ts'
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
+
+ENGINE = str(APP / "web" / "src" / "game" / "engine.ts")
 O=json.load(open('outline.json'))
 pts=','.join(f"[{f},{l}]" for f,l in O['OUT'])
 s=open(ENGINE).read()

@@ -8,9 +8,9 @@
 // fifty most recent. Raw mode/reason enums are mapped to labels before display.
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { ArrowDown, ArrowUp, ChevronsUpDown, CircleAlert, Download, History, Pin, PinOff, ShieldAlert } from 'lucide-react'
-import { EmptyState, getErrorMessage, shellSaveBlob, toast, useFormat } from '@mochi/web'
+import { EmptyState, getErrorMessage, naturalCompare, shellSaveBlob, toast, useFormat } from '@mochi/web'
 import {
   Select,
   SelectContent,
@@ -236,8 +236,12 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
 
   // The pickers offer only what the rows actually contain: a menu of every mode
   // the game has would mostly filter to nothing.
-  const modes = Array.from(new Set(matches.map((m) => m.mode))).sort()
-  const worlds = Array.from(new Set(matches.map((m) => serverName(m.world)))).sort()
+  // Sorted on what the MENU shows, not the raw key: modeLabel is translated, so
+  // sorting the enum ordered every non-English menu by an invisible English word.
+  const modes = Array.from(new Set(matches.map((m) => m.mode))).sort((a, b) =>
+    naturalCompare(modeLabel(a), modeLabel(b))
+  )
+  const worlds = Array.from(new Set(matches.map((m) => serverName(m.world)))).sort(naturalCompare)
   const filtered = matches.filter(
     (m) => (mode === 'all' || m.mode === mode) && (world === 'all' || serverName(m.world) === world)
   )
@@ -330,9 +334,11 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
               {/* The career line above counts every flight ever, so a filtered
                   table needs its own count or the two read as a contradiction. */}
               <span className='text-muted-foreground text-xs'>
-                <Trans>
-                  {ordered.length} of {matches.length} flights
-                </Trans>
+                <Plural
+                  value={ordered.length}
+                  one={`# of ${formatNumber(matches.length)} flight`}
+                  other={`# of ${formatNumber(matches.length)} flights`}
+                />
               </span>
             </>
           )}

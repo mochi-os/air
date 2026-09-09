@@ -28,7 +28,17 @@ import json, struct
 import numpy as np
 from collections import defaultdict, deque
 
-ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
+
+ORIG = str(APP / "downloads" / "uss_nimitz_cvn-68_aircraft_carrier.glb")
 TEX  = 'decktex12.png'
 OUTFILE = 'nimitz-clean.glb'
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0

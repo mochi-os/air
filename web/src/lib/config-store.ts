@@ -115,7 +115,7 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
 }
 
 // Persist the whole config; the server upserts each key. Best-effort.
-export async function saveConfig(config: MissionConfig): Promise<void> {
+async function saveConfig(config: MissionConfig): Promise<void> {
   // Defer until config/load has established the owning identity: the server
   // requires a matching identity, and a save fired before it is known (or for an
   // anonymous visitor) can't be safely attributed, so don't send one.

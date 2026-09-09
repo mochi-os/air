@@ -11,9 +11,9 @@
 // gun's reach.
 
 export const MUZZLE = 1050 // m/s at the barrel
-export const LENGTH = 2600 // m, the round's drag length at sea level
+const LENGTH = 2600 // m, the round's drag length at sea level
 export const GRAVITY = 9.8
-export const LIFE = 4.0 // s a round stays dangerous, matching battle.Life
+const LIFE = 4.0 // s a round stays dangerous, matching battle.Life
 
 export interface Vector {
   x: number

@@ -15,7 +15,17 @@ import json, struct, os
 import numpy as np
 from collections import defaultdict
 
-PATH='/home/alistair/mochi/apps/air/web/public/aircraft/fa18c/model.glb'
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
+
+PATH = str(APP / "web" / "public" / "aircraft" / "fa18c" / "model.glb")
 VOX=0.15; PROBE=0.25
 
 data=open(PATH,'rb').read()

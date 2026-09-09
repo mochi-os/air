@@ -27,13 +27,23 @@ from PIL import Image
 # means a new unbounded allocation.
 resource.setrlimit(resource.RLIMIT_AS, (8 << 30, 8 << 30))
 
-ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+ORIG = str(APP / "downloads" / "uss_nimitz_cvn-68_aircraft_carrier.glb")
 W, H = 8192, 2400
 FA0, FA1, LA0, LA1 = -172.0, 172.0, -52.0, 48.0
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 
 OUT = [[-166,4.2],[-158,31.2]]   # placeholder; outline.json (from build_carrier) overrides
 import os as _os, json as _json
+
+import os
+from pathlib import Path
+
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine. flipbook.py already
+# resolved its own binary this way.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
+
 if _os.path.exists('outline.json'):
     OUT=_json.load(open('outline.json'))['OUT']
     print(f"using traced outline ({len(OUT)} pts)")
