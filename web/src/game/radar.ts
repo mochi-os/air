@@ -253,3 +253,21 @@ export class Radar {
     this.elevation = Math.max(-1.047, Math.min(1.047, this.elevation + Math.sign(direction) * (5 * Math.PI / 180)))
   }
 }
+
+// boresight: does this mission arm the ACM boresight condition and search at
+// ten miles, rather than the wide free-flight setup? A merge joust is the
+// close-in visual arena from the first frame, so the radar acquires whatever
+// the pilot points at instead of making him work a trackfile ladder.
+//
+// It depends on the mission's SHAPE and nothing else. It used to carry a
+// `&& !MULTIPLAYER` term, which took the setup away from a multiplayer joust -
+// the same fight, against a person instead of a bot - so nothing acquired for
+// the pilot, the display sat on the 40 nm scale through a knife fight, and
+// Enter fell through to a boresight cone that is empty whenever the opponent
+// is not in front of you. The exclusion reads as caution about auto-locking
+// the nearest of many aircraft in a furball, but the ACM modes ARE the furball
+// tool: they exist for the visual arena and take whatever enters the cone,
+// because the pilot's aim is the selection.
+export function boresight(task: string, duel: string): boolean {
+  return task === 'joust' && duel !== 'bvr'
+}
