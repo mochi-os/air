@@ -25,10 +25,26 @@ def database_create():
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
+	# The read paths. matches_replay leads on world, which none of them
+	# constrain, so without these SQLite scans the whole table: match_list on
+	# every log open (scan plus a sort), and the (session, started) lookup on
+	# every save and every pin. A database with statistics can skip-scan the
+	# lookup off matches_replay, but no app database is ever analyzed, so the
+	# plan they actually get is the scan. matches_stored is partial because
+	# pruning only ever reads rows that hold a recording - a few dozen of them.
+	mochi.db.execute("create index if not exists matches_started on matches(started)")
+	mochi.db.execute("create index if not exists matches_session on matches(session, started)")
+	mochi.db.execute("create index if not exists matches_stored on matches(created) where recording != ''")
 
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 11:
+		# Index the three read paths, which had scanned since the table was
+		# created; see database_create for which query each one serves.
+		mochi.db.execute("create index if not exists matches_started on matches(started)")
+		mochi.db.execute("create index if not exists matches_session on matches(session, started)")
+		mochi.db.execute("create index if not exists matches_stored on matches(created) where recording != ''")
 	if version == 10:
 		# `recorded` held the recording's size in bytes; rename it to `size`. The
 		# branches below keep the old name deliberately: they run on databases that
