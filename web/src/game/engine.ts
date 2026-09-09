@@ -9,7 +9,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
-import { publish as publish_recording } from './replay'
+import { identity as replay_identity, publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
   connect as net_dial,
@@ -4079,7 +4079,7 @@ let sim_time=0;
 // (the brain runs in-process in wasm for a local joust) but it is the AI's
 // hand, so a shipped replay does not show it.
 const recorder=new Recorder();
-let record_started=null, record_session="";
+let record_started=null;
 function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
 	const list=[];
@@ -4175,7 +4175,19 @@ function recording_file(){
 		weapons:MULTIPLAYER?"":(missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns"),
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", multiplayer:MULTIPLAYER?1:0, world:MULTIPLAYER?(cfg.world||""):"",
 		callsign:cfg.callsign||"", cheats, effects:String(cfg.effects_quality??2), version:String(flight_version()) };
-	return { text:recorder.render(record_started,"Mochi Air: "+kind,match), session:record_session, kind }; }
+	const row=recording_identity();
+	return { text:recorder.render(record_started,"Mochi Air: "+kind,match), session:row?row.session:"", started:row?row.started:0, kind }; }
+// Which history row this recording belongs to (#118). The recorder ran all
+// match long in multiplayer and then nothing could reach what it produced: it
+// keyed itself "local-"+mission_began while a multiplayer row is written with
+// the SERVER's session and match_started (net_finish), so MatchLog's
+// `replay.session === m.session` never matched and the upload was gated off
+// entirely. Resolved at READ time rather than at mission start, because
+// match_started is only known once net_dial resolves, which is after the
+// recorder has already been cleared for the mission.
+// Null means there is no row to bind to: a multiplayer session that never got
+// a welcome writes none, so an upload would have nothing to attach to.
+function recording_identity(){ return replay_identity(MULTIPLAYER,MULTIPLAYER&&join?join.session:"",match_started,mission_began); }
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
@@ -6287,8 +6299,8 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	// Upload the recording against that row (#213), after net_record and
 	// unawaited: the row must exist for the save to bind to, and the menu never
 	// waits on an upload.
-	if(!MULTIPLAYER&&sortie){ const replay=recording_file();
-		if(replay) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
+	if(sortie){ const replay=recording_file();   // multiplayer included (#118): the row above is what it binds to
+		if(replay&&replay.session) setTimeout(()=>void recording_store(replay.session,replay.started,replay.text),600); }
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
@@ -6750,7 +6762,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
-	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; publish_recording(recording_file);   // a fresh recording per mission (#212)
+	recorder.clear(); record_started=new Date(); publish_recording(recording_file);   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
