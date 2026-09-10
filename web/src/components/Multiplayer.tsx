@@ -339,7 +339,8 @@ export function Multiplayer({
       <div className='text-muted-foreground flex items-center justify-between text-sm'>
         {status ? (
           <span>
-            {status.name} · <Plural value={status.players} one='# flying' other='# flying' />
+            <Plural value={status.present ?? status.players} one='# player' other='# players' /> ·{' '}
+            <Plural value={status.players} one='# flying' other='# flying' />
           </span>
         ) : (
           <span>{error || <Trans>Connecting…</Trans>}</span>

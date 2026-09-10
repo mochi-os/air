@@ -42,6 +42,11 @@ msgstr "{0, plural, other {# 架在飛}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, other {{2} 次中的 # 次飛行}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, other {# 名玩家}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "追逐視角："
 msgid "chat"
 msgstr "聊天"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "聊天"
@@ -3450,10 +3456,6 @@ msgstr "襯線體"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "伺服器"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "伺服器聊天"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# ਉੱਡ ਰਿਹਾ} other {# ਉੱਡ ਰਹੇ}
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {{1} ਵਿੱਚੋਂ # ਉਡਾਣ} other {{2} ਵਿੱਚੋਂ # ਉਡਾਣਾਂ}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# ਖਿਡਾਰੀ} other {# ਖਿਡਾਰੀ}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "ਪਿੱਛਾ ਦ੍ਰਿਸ਼:"
 msgid "chat"
 msgstr "ਚੈਟ"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "ਚੈਟ"
@@ -3450,10 +3456,6 @@ msgstr "ਸੈਰੀਫ"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "ਸਰਵਰ"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "ਸਰਵਰ ਚੈਟ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

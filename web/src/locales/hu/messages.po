@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# repül} other {# repül}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# a(z) {1} repülésből} other {# a(z) {2} repülésből}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# játékos} other {# játékos}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Követő nézet:"
 msgid "chat"
 msgstr "csevegés"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Csevegés"
@@ -3450,10 +3456,6 @@ msgstr "Talpas"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Kiszolgáló"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Szervercsevegés"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

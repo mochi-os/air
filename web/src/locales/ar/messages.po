@@ -42,6 +42,11 @@ msgstr "{0, plural, zero {# يطير} one {# يطير} two {# يطيران} few 
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, zero {# من {1} رحلة} one {# من {1} رحلة} two {# من {2} رحلتين} few {# من {2} رحلات} many {# من {2} رحلة} other {# من {2} رحلة}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, zero {# لاعب} one {# لاعب} two {# لاعبان} few {# لاعبين} many {# لاعبًا} other {# لاعب}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "منظر المطاردة:"
 msgid "chat"
 msgstr "دردشة"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "الدردشة"
@@ -3450,10 +3456,6 @@ msgstr "سيريف"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "الخادم"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "دردشة الخادم"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -42,6 +42,11 @@ msgstr "{0, plural, other {# စီး ပျံသန်းနေသည်}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, other {{2} ခုအနက် # ခု ပျံသန်းမှု}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, other {ကစားသမား # ဦး}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "လိုက်ကြည့်မြင်ကွင်း:"
 msgid "chat"
 msgstr "ချတ်"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "စကားပြောခန်း"
@@ -3450,10 +3456,6 @@ msgstr "ဆာရစ်ဖ်"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "ဆာဗာ"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "ဆာဗာချတ်"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

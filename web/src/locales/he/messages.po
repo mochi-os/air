@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# טס} two {# טסים} many {# טסים} other {# ט�
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# מתוך {1} טיסה} two {# מתוך {2} טיסות} many {# מתוך {2} טיסות} other {# מתוך {2} טיסות}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# שחקן} two {# שחקנים} many {# שחקנים} other {# שחקנים}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "תצוגת מרדף:"
 msgid "chat"
 msgstr "צ'אט"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "צ'אט"
@@ -3450,10 +3456,6 @@ msgstr "סריף"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "שרת"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "צ'אט השרת"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# letí} few {# letia} many {# letí} other {# letí}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# z {1} letu} few {# z {2} letov} many {# z {2} letu} other {# z {2} letov}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# hráč} few {# hráči} many {# hráča} other {# hráčov}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Prenasledovací pohľad:"
 msgid "chat"
 msgstr "chat"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Chat"
@@ -3450,10 +3456,6 @@ msgstr "Pätkové"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Server"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Chat servera"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

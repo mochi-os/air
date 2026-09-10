@@ -42,6 +42,11 @@ msgstr "{0, plural, other {# 機が飛行中}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, other {{2} 件中 # 件のフライト}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, other {# 人のプレイヤー}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "追跡視点："
 msgid "chat"
 msgstr "チャット"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "チャット"
@@ -3450,10 +3456,6 @@ msgstr "セリフ"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "サーバー"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "サーバーチャット"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

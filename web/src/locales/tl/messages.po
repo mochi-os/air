@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# ang lumilipad} other {# ang lumilipad}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# sa {1} paglipad} other {# sa {2} paglipad}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# manlalaro} other {# na manlalaro}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Tanaw sa paghabol:"
 msgid "chat"
 msgstr "chat"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Chat"
@@ -3450,10 +3456,6 @@ msgstr "Serif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Server"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Chat ng server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
