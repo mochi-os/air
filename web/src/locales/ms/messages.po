@@ -42,6 +42,11 @@ msgstr "{0, plural, other {# sedang terbang}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, other {# daripada {2} penerbangan}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, other {# pemain}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Pandangan kejar:"
 msgid "chat"
 msgstr "sembang"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Sembang"
@@ -3450,10 +3456,6 @@ msgstr "Serif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Pelayan"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Sembang pelayan"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# volant} other {# volant}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# de {1} vol} other {# de {2} vols}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# jugador} other {# jugadors}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Vista de persecució:"
 msgid "chat"
 msgstr "xat"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Xat"
@@ -3450,10 +3456,6 @@ msgstr "Serif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Servidor"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Xat del servidor"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -54,7 +54,8 @@ export interface WorldStatus {
   protocol: number
   games: string[]
   sessions: number
-  players: number
+  players: number // in a match: the number flying
+  present?: number // here: on the server page or in a match (older servers omit it)
   address: string
   certificate?: { hash: string; expires: number }
 }

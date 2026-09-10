@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# fluturon} other {# fluturojnë}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# nga {1} fluturim} other {# nga {2} fluturime}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# lojtar} other {# lojtarë}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Pamja e ndjekjes:"
 msgid "chat"
 msgstr "chat"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Bisedë"
@@ -3450,10 +3456,6 @@ msgstr "Me serif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Serveri"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Biseda e serverit"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# iyabhabha} other {# ziyabhabha}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# kwi-{1} inqwelomoya} other {# kwi-{2} iinqwelomoya}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# umdlali} other {# abadlali}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Imbono yokusukela:"
 msgid "chat"
 msgstr "incoko"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Incoko"
@@ -3450,10 +3456,6 @@ msgstr "Iserif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Iseva"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Incoko yeseva"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

@@ -55,6 +55,7 @@ import { Button } from '@mochi/web/components/ui/button'
 import { Label } from '@mochi/web/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@mochi/web/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mochi/web/components/ui/tooltip'
 import {
   Dialog,
   DialogContent,
@@ -66,7 +67,7 @@ import { type MissionConfig, type StationSlot, seedStart } from '../lib/config'
 import { ServerList, ServerRow } from './ServerList'
 import { useServers } from '../hooks/use-servers'
 import { Multiplayer } from './Multiplayer'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   PRESETS,
   asymmetry,
@@ -744,7 +745,7 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   return (
     <div className='flex h-full flex-col'>
       <div className='text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase'>
-        <Trans>Server chat</Trans>
+        <Trans>Chat</Trans>
       </div>
       <div
         ref={boxRef}
@@ -800,21 +801,44 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
 // listing every 30 seconds and cannot sit above an `if (!open) return null` —
 // hooks run either way, so the old shape polled from the moment the front page
 // loaded, for a dialog most sessions never open.
+// bookmarked reads the server a bookmarked URL names (?server=...), so the
+// address bar written on entering a server reopens the app on that server.
+function bookmarked(search: string): string {
+  return (new URLSearchParams(search).get('server') || '').trim()
+}
+
 function ServerFlow({
   onClose,
   config,
   set,
   onChange,
   onJoin,
+  initial,
 }: {
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
   onChange: (config: MissionConfig) => void
   onJoin: (join: Join) => void
+  initial?: string // a server named in the URL: enter it straight away, no list
 }) {
-  const [entered, setEntered] = useState(false)
+  const [entered, setEntered] = useState(!!initial)
   const [address, setAddress] = useState(config.world || '')
+  // The address bar follows the entered server so the page can be bookmarked:
+  // ?server=<address> while on a server, gone again on leaving. Through the
+  // router, not history directly - inside the menu shell's sandboxed iframe a
+  // bare pushState changes nothing the user can see, and the router's calls
+  // are relayed to the top window.
+  const navigate = useNavigate()
+  const bar = (server: string | null) =>
+    void navigate({
+      to: '/',
+      replace: true,
+      search: (prev: Record<string, unknown>) => {
+        const { server: _was, ...rest } = prev
+        return server ? { ...rest, server } : rest
+      },
+    })
   const { servers, version } = useServers()
   const [private_, setPrivate] = useState(false)
   const [world, setWorld] = useState('')
@@ -842,12 +866,22 @@ function ServerFlow({
     const next = { ...config, world: chosen, pilot }
     onChange({ ...next, servers: [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5).join('\n') })
     setEntered(true)
+    bar(chosen)
   }
   const leave = () => {
     void world_withdraw(normalize_server(config.world || default_server()), pilot)
     setEntered(false)
+    bar(null)
     onClose()
   }
+  // A bookmarked server: entered once, on mount, as if picked from the list.
+  const opened = useRef(false)
+  useEffect(() => {
+    if (!initial || opened.current) return
+    opened.current = true
+    enter(initial)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per mount, with the mount's config
+  }, [initial])
   if (!entered) {
     const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
     const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
@@ -946,10 +980,12 @@ function ServerFlow({
       <div className='mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col gap-6 lg:flex-row'>
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='mb-4 flex items-center justify-between'>
-            <div>
-              <h2 className='text-2xl font-semibold tracking-tight'>{world || <Trans>Matches</Trans>}</h2>
-              <p className='text-muted-foreground font-mono text-xs'>{config.world}</p>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <h2 className='text-2xl font-semibold tracking-tight'>{world || <Trans>Matches</Trans>}</h2>
+              </TooltipTrigger>
+              <TooltipContent className='font-mono'>{config.world}</TooltipContent>
+            </Tooltip>
             <Button type='button' variant='outline' onClick={leave}>
               <X className='size-4' />
               <Trans>Leave server</Trans>
@@ -1194,7 +1230,9 @@ export function MissionSetup({
     set('cheats', cheats.current)
   }
 
-  const [dialog, setDialog] = useState<string | null>(null)
+  // A bookmarked server (?server=...) opens straight onto that server's page.
+  const named = useState(() => bookmarked(window.location.search))[0]
+  const [dialog, setDialog] = useState<string | null>(named ? 'server' : null)
   const { t } = useLingui()
   const [verdict] = useState(() => diagnose())
   const [strained] = useShellStorage('air.performance', 0)
@@ -1332,7 +1370,7 @@ export function MissionSetup({
       />
 
       {dialog === 'server' && (
-        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} initial={named || undefined} />
       )}
     </div>
   )

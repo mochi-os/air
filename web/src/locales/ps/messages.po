@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# الوتنه کوي} other {# الوتنه کوي}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# له {1} الوتنې} other {# له {2} الوتنو}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# لوبغاړی} other {# لوبغاړي}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "د تعقیب لید:"
 msgid "chat"
 msgstr "چیټ"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "چټ"
@@ -3450,10 +3456,6 @@ msgstr "سيريف"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "سرور"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "د سرور چیټ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts

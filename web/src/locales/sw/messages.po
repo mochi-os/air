@@ -42,6 +42,11 @@ msgstr "{0, plural, one {# inaruka} other {# zinaruka}}"
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
 msgstr "{0, plural, one {# kati ya {1} safari} other {# kati ya {2} safari}}"
 
+#. placeholder {0}: status.present ?? status.players
+#: src/components/Multiplayer.tsx
+msgid "{0, plural, one {# player} other {# players}}"
+msgstr "{0, plural, one {# mchezaji} other {# wachezaji}}"
+
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
@@ -769,6 +774,7 @@ msgstr "Mwonekano wa kufuatilia:"
 msgid "chat"
 msgstr "gumzo"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
 msgstr "Gumzo"
@@ -3450,10 +3456,6 @@ msgstr "Serif"
 #: src/components/MatchLog.tsx
 msgid "Server"
 msgstr "Seva"
-
-#: src/components/MissionSetup.tsx
-msgid "Server chat"
-msgstr "Chati ya seva"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
