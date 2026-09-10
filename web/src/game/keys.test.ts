@@ -148,6 +148,11 @@ describe('key bindings', () => {
     expect(stick.buttons['jettison.emergency']).toBe('21')
     expect(stick.buttons['trim.right']).toBe('22')
     expect(stick.buttons.select).toBeUndefined() // the cycle key stays on the keyboard; the stick selects positionally
+    // Buttons 2 and 3 as flown (2026-09-10): the G-limit override on 2 and the
+    // target padlock on 3; the view cycle has no stick binding.
+    expect(stick.buttons.override).toBe('2')
+    expect(stick.buttons['look.target']).toBe('3')
+    expect(stick.buttons.view).toBeUndefined()
     expect(stick.buttons['zoom.in']).toBeUndefined()
     expect(stick.buttons['zoom.out']).toBeUndefined()
   })
