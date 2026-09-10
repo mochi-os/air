@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { acmi, position, Recorder, MIDWAY, type Recorded, type Sample, stamp } from './acmi'
+import { acmi, position, Recorder, MIDWAY, type Recorded, type Sample, stamp, channels } from './acmi'
 
 const jet = (over: Partial<Recorded> = {}): Recorded => ({
   id: 1,
@@ -498,5 +498,70 @@ describe('stamp', () => {
     expect(match.task).toBe('free')
     expect(match.duel).toBe('')
     expect(match.bandit).toBe('')
+  })
+})
+
+describe('a multiplayer remote is recorded, not just tracked (#163/#164)', () => {
+  // In the first human-versus-human match the opponent emptied all 578 rounds
+  // and put rounds into the player, and the recording carried neither: a
+  // remote was written as position and attitude alone, so the debrief reported
+  // "no Rounds channel - cannot tell whether it fired" and "rounds taken 0"
+  // for a pilot who had been hit.
+  it('carries what he shot and what landed on him', () => {
+    const out = channels({ spent: 578, struck: 14, speed: 240 })
+    expect(out.rounds).toBe(578)
+    expect(out.struck).toBe(14)
+  })
+
+  it('carries his true airspeed, so it need not be derived from position', () => {
+    // #161: a track with no TAS is finite-differenced, and its extremes are
+    // fiction - 2,812 kt over frames whose recorded truth never passed 656.
+    const out = channels({ speed: 243.7 })
+    expect(out.tas).toBeCloseTo(243.7, 3)
+  })
+
+  it('reports an unfired, unhurt jet as zero rather than omitting the channels', () => {
+    // An absent channel and a zero are different claims: a debrief must be
+    // able to say "he did not shoot", not merely "I cannot tell".
+    const out = channels({})
+    expect(out.rounds).toBe(0)
+    expect(out.struck).toBe(0)
+    expect(out.burning).toBe(false)
+    expect(out.leak).toBe(0)
+  })
+
+  it('reads burning off either engine fire, as the ownship does', () => {
+    expect(channels({ burn: [0, 0.4] }).burning).toBe(true)
+    expect(channels({ burning: true }).burning).toBe(true)
+    expect(channels({ burn: [0, 0] }).burning).toBe(false)
+  })
+
+  it('names his radar mode from the emitter byte', () => {
+    expect(channels({}, { mode: 0, target: -1 }).radar).toBe('sil')
+    expect(channels({}, { mode: 1, target: -1 }).radar).toBe('rws')
+    expect(channels({}, { mode: 2, target: 3 }).radar).toBe('stt')
+    expect(channels({}).radar).toBe('sil') // no emitter report is silence, not a guess
+  })
+
+  it('records his lock only when it is on us', () => {
+    // The emitter byte names one slot. Recording his lock on a third party
+    // would be a claim about a fight this client cannot see.
+    expect(channels({}, { mode: 2, target: 3 }, 3).lock).toBe(1)
+    expect(channels({}, { mode: 2, target: 5 }, 3).lock).toBeUndefined()
+    expect(channels({}, { mode: 2, target: 3 }).lock).toBeUndefined()
+  })
+
+  it('is written through the recorder onto his own object line', () => {
+    // End to end: the mapping reaches the file as the delta-suppressed battle
+    // block, on the remote's object, not the ownship's.
+    const text = acmi(
+      [{ time: 0, objects: [jet({ id: 11, label: 'Chris', data: channels({ spent: 120, struck: 3, speed: 250 }) })] },
+       { time: 0.1, objects: [jet({ id: 11, label: 'Chris', data: channels({ spent: 245, struck: 3, speed: 251 }) })] }],
+      new Date(0), 'Mochi Air: furball'
+    )
+    expect(text).toContain('Rounds=120')
+    expect(text).toContain('Rounds=245') // the step IS the burst
+    expect(text).toContain('Struck=3')
+    expect(text).toMatch(/TAS=25[01]/)
   })
 })

@@ -144,6 +144,55 @@ export interface Match {
   [key: string]: string | number | boolean | undefined
 }
 
+// channels maps a multiplayer remote to the data the recorder writes for it
+// (#163/#164). Pure, and separate from the engine, for the same reason stamp
+// is: the engine cannot be loaded in a test, and this mapping is the part that
+// was missing - a remote used to record as position and attitude alone, so a
+// debrief of the mode where every opponent is a person knew everything about
+// one aircraft and nothing about the other.
+//
+// Every value here already reached the client on the pose wire. Rounds and
+// Struck are the server's own cumulative counts - the belt he has burned, and
+// the rounds that have landed on him - so their steps are his bursts and his
+// wounds, and they survive the recorder's sampling losslessly. TAS is the
+// pose's own speed, which is why a remote no longer has to be
+// finite-differenced from position (#161).
+export function channels(
+  remote: {
+    spent?: number
+    struck?: number
+    speed?: number
+    burning?: boolean
+    burn?: [number, number]
+    thrust?: number
+    leak?: number
+    reheat?: number
+    gear?: number
+    missiles?: number
+  },
+  emitter?: { mode: number; target: number },
+  mine?: number
+): Record<string, string | number | boolean> {
+  const burn = remote.burn ?? [0, 0]
+  const out: Record<string, string | number | boolean> = {
+    rounds: remote.spent ?? 0,
+    struck: remote.struck ?? 0,
+    tas: remote.speed ?? 0,
+    burning: !!remote.burning || Math.max(burn[0] ?? 0, burn[1] ?? 0) > 0,
+    thrust: remote.thrust ?? 0,
+    leak: remote.leak ?? 0,
+    burner: remote.reheat ?? 0,
+    gear: remote.gear ?? 1,
+    missiles: Math.max(0, Math.trunc(remote.missiles ?? 0)),
+    radar: emitter ? (emitter.mode >= 2 ? 'stt' : emitter.mode >= 1 ? 'rws' : 'sil') : 'sil',
+  }
+  // Only a lock on US is ours to record: the emitter byte names one slot, and
+  // claiming his lock on someone else would be a guess about a fight we cannot
+  // see.
+  if (emitter && mine !== undefined && emitter.target === mine) out.lock = 1
+  return out
+}
+
 // stamp decides what the header says the fight WAS: its title and the Match_
 // block a debrief reads to choose its rules. Pure, and separate from the
 // engine, because the engine cannot be loaded in a test and this is the part

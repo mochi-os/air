@@ -17,7 +17,8 @@ import { cbor_encode, cbor_decode } from './cbor'
 import { parseDarts, type Dart } from './darts'
 export { crossHost } from './host'
 
-const PROTOCOL = 2 // 2: the 35-byte pose record — byte 34 carries the emitter state (#30)
+const POSE_RECORD = 37 // the server's fixed pose stride (world/games/air/air.go, pose_record)
+const PROTOCOL = 3 // 3: the 37-byte pose record — the uint16 tail carries the gun expenditure (#163); 2 added byte 34, the emitter state (#30)
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -208,6 +209,7 @@ export interface RemotePose {
   leak: number
   pilot: boolean
   loss: number
+  spent: number // cumulative rounds this aircraft has fired this life (#163)
   kills: number
   deaths: number
   gear: boolean
@@ -533,10 +535,11 @@ export class Net {
   private handle(message: Record<string, unknown>) {
     switch (message.kind) {
       case 'poses': {
-        // The interest-managed pose datagram (#81): fixed 35-byte records —
-        // self first, then the nearest remotes, then the rotating far tail.
-        // Byte 34 is the emitter state (#30); the stride is version-locked by
-        // the join's protocol check, so a mismatched build never parses here.
+        // The interest-managed pose datagram (#81): fixed POSE_RECORD-byte
+        // records — self first, then the nearest remotes, then the rotating
+        // far tail. Byte 34 is the emitter state (#30) and bytes 35-36 the
+        // gun expenditure (#163); the stride is version-locked by the join's
+        // protocol check, so a mismatched build never parses here.
         const blob = message.blob as Uint8Array | undefined
         if (!(blob instanceof Uint8Array)) break
         const at = performance.now()
@@ -548,7 +551,7 @@ export class Net {
         if (!Number.isFinite(this.clock) || Math.abs(offset - this.clock) > 0.25) this.clock = offset
         else this.clock += (offset - this.clock) * 0.08
         const view = new DataView(blob.buffer, blob.byteOffset)
-        for (let base = 0; base + 35 <= blob.byteLength; base += 35) {
+        for (let base = 0; base + POSE_RECORD <= blob.byteLength; base += POSE_RECORD) {
           const slot = view.getUint8(base)
           const flags = view.getUint8(base + 26)
           const tally = this.tallies.get(slot)
@@ -575,6 +578,7 @@ export class Net {
             burn: [view.getUint8(base + 29) / 255, view.getUint8(base + 30) / 255],
             leak: view.getUint8(base + 31) / 10,
             loss: view.getUint16(base + 32, true),
+            spent: view.getUint16(base + 35, true), // cumulative rounds fired this life (#163): the steps are the bursts
             kills: tally?.kills ?? 0,
             deaths: tally?.deaths ?? 0,
           }

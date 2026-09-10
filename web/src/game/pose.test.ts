@@ -12,10 +12,12 @@ vi.mock('@mochi/web', () => ({ createAppClient: () => ({}) }))
 const { Net } = await import('./net')
 type Net = InstanceType<typeof Net>
 
-// The server's 35-byte pose record (world/games/air/air.go, func pose): slot,
+// The server's 37-byte pose record (world/games/air/air.go, func pose): slot,
 // position f32x3, ..., flags at 26, fire bytes at 29/30, leak at 31, the
-// radar emitter at 34 (#30). Only the fields this test asserts on are filled;
-// the rest stay zero — except the emitter byte, whose "nothing" is 63.
+// radar emitter at 34 (#30) and the gun expenditure at 35 (#163). Only the
+// fields this test asserts on are filled; the rest stay zero — except the
+// emitter byte, whose "nothing" is 63.
+const RECORD = 37
 function pose(options: {
   slot: number
   alive?: boolean
@@ -25,8 +27,9 @@ function pose(options: {
   leak?: number
   emitter?: number
   target?: number
+  spent?: number
 }): Uint8Array {
-  const b = new Uint8Array(35)
+  const b = new Uint8Array(RECORD)
   const v = new DataView(b.buffer)
   v.setUint8(0, options.slot)
   let flags = 0
@@ -39,12 +42,13 @@ function pose(options: {
   v.setUint8(30, Math.round((options.fire?.[1] ?? 0) * 255))
   v.setUint8(31, Math.round((options.leak ?? 0) * 10))
   v.setUint8(34, ((options.emitter ?? 0) << 6) | (options.target ?? 63))
+  v.setUint16(35, options.spent ?? 0, true)
   return b
 }
 
 function concat(list: Uint8Array[]): Uint8Array {
-  const out = new Uint8Array(list.length * 35)
-  list.forEach((p, i) => out.set(p, i * 35))
+  const out = new Uint8Array(list.length * RECORD)
+  list.forEach((p, i) => out.set(p, i * RECORD))
   return out
 }
 
@@ -106,9 +110,9 @@ describe('self pose', () => {
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e450000000000003303f47f0000810000980831000099000f00003f'.match(/../g)!.map((h) => parseInt(h, 16))
+      '0000a02d4500e08e450000000000009503f27f0000810000980831000099000f00003ff000'.match(/../g)!.map((h) => parseInt(h, 16))
     )
-    expect(golden.length).toBe(35)
+    expect(golden.length).toBe(RECORD)
     const s = session(0)
     feed(s, golden)
     const mine = s.self()!
@@ -117,6 +121,7 @@ describe('self pose', () => {
     expect(mine.burning).toBe(true)
     expect(mine.leak).toBeCloseTo(1.5, 2)
     expect(mine.alive).toBe(true)
+    expect(mine.spent).toBe(240) // the uint16 tail, from the same encoder run
   })
 
   it('leaves remote decoding alone', () => {
@@ -153,5 +158,33 @@ describe('jamming (#31)', () => {
     feed(s, concat([pose({ slot: 3, jamming: true }), pose({ slot: 5 })]))
     expect(s.remote(3)?.jamming).toBe(true)
     expect(s.remote(5)?.jamming).toBe(false)
+  })
+})
+
+describe('gun expenditure (#163)', () => {
+  // A remote used to record as position and attitude alone, so a debrief of
+  // the first human-versus-human match could not say whether the opponent had
+  // fired - he emptied all 578 rounds and the file showed nothing. The trigger
+  // flag alone cannot answer it: at a 20 Hz snapshot rate a 100 rounds/s belt
+  // falls between samples.
+  it('reads each aircraft\'s cumulative rounds off the record tail', () => {
+    const s = session(0)
+    feed(s, concat([pose({ slot: 0, spent: 40 }), pose({ slot: 3, spent: 578 })]))
+    expect(s.self()!.spent).toBe(40)
+    expect(s.remote(3)!.spent).toBe(578)
+  })
+
+  it('steps with the bursts and never runs backwards', () => {
+    const s = session(0)
+    feed(s, concat([pose({ slot: 3, spent: 120 })]), 60)
+    expect(s.remote(3)!.spent).toBe(120)
+    feed(s, concat([pose({ slot: 3, spent: 245 })]), 120)
+    expect(s.remote(3)!.spent).toBe(245) // the step IS the burst: 125 rounds between snapshots
+  })
+
+  it('a jet that has not fired reports zero, not the neighbour\'s belt', () => {
+    const s = session(0)
+    feed(s, concat([pose({ slot: 3, spent: 578 }), pose({ slot: 5 })]))
+    expect(s.remote(5)!.spent).toBe(0)
   })
 })
