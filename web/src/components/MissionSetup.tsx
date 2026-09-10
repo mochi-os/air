@@ -986,10 +986,6 @@ function ServerFlow({
               </TooltipTrigger>
               <TooltipContent className='font-mono'>{config.world}</TooltipContent>
             </Tooltip>
-            <Button type='button' variant='outline' onClick={leave}>
-              <X className='size-4' />
-              <Trans>Leave server</Trans>
-            </Button>
           </div>
           <Multiplayer
             rules={config.rules}
@@ -1002,6 +998,7 @@ function ServerFlow({
             onServer={(v) => set('world', v)}
             onCallsign={(v) => set('callsign', v)}
             onJoin={onJoin}
+            onLeave={leave}
           />
         </div>
         <div className='flex min-h-0 w-full flex-col max-lg:h-96 lg:w-80'>
