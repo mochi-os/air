@@ -92,7 +92,7 @@ export function textures(parts: Parts): Record<string, { base: Source | null; em
 }
 
 // strip removes every texture reference so parse() never builds a blob URL.
-export function strip(json: any): void {
+function strip(json: any): void {
   for (const m of json.materials || []) {
     if (m.pbrMetallicRoughness) {
       delete m.pbrMetallicRoughness.baseColorTexture
@@ -113,7 +113,7 @@ export function strip(json: any): void {
 }
 
 // parse runs the GLTFLoader (meshopt-aware) over already-clean GLB bytes.
-export function parse(clean: ArrayBuffer): Promise<GLTF> {
+function parse(clean: ArrayBuffer): Promise<GLTF> {
   return new Promise((resolve, reject) => {
     const loader = new GLTFLoader()
     loader.setMeshoptDecoder(MeshoptDecoder)

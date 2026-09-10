@@ -95,7 +95,7 @@ export function authenticated(): Promise<void> {
 // Load the signed-in user's saved settings from the app database. Returns the
 // stored keys, or null when nothing is saved yet (anonymous, or a fresh account)
 // so the caller can seed the server from its current state.
-export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
+async function loadConfig(): Promise<Partial<MissionConfig> | null> {
   try {
     await authenticated()
     const res = await client.get<ConfigPayload | { data: ConfigPayload }>(

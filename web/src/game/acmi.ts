@@ -39,7 +39,7 @@ export interface Recorded {
 // ACMI objects (Weapon+Missile, which TacView flies natively), so a debrief
 // sees who fired, at whom, whether the seeker held, how close it came, and how
 // it ended.
-export interface Round {
+interface Round {
   shooter: number // recorded id of the launcher
   target?: number // recorded id of the target it was fired at, if any
   seeker: string // guidance state: track / loose (lock broken, ballistic) / lure (seduced by a flare) / midcourse / active / pitbull
@@ -56,7 +56,7 @@ export interface Round {
 // Flight is the standard ACMI telemetry set. TacView knows these property
 // names and plots them, which is what makes a recording a handling-analysis
 // tool and not just a 3D replay (#216).
-export interface Flight {
+interface Flight {
   aoa?: number // degrees
   g?: number // load factor
   gear?: number // gear position, 0 down .. 1 up (#86)

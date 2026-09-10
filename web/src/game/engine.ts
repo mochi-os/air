@@ -75,7 +75,6 @@ export interface GameHandle {
 // The recording accessor lives in replay.ts, not here, so the log route can
 // read the buffer without pulling three.js into its chunk. Re-exported for
 // callers that reach for engine.recording.
-export { recording } from './replay'
 
 export function startGame({
   stage,
@@ -2734,8 +2733,19 @@ function apply_orientation(st){ const g=st.group,fwd=st.fwd,up=world_up; const r
 	g.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,trueUp,right)); g.rotateX(st.bank); g.position.copy(st.pos); }
 function local_offset(st,x,y,z){ const right=new THREE.Vector3().crossVectors(st.fwd,world_up).normalize(); const up=new THREE.Vector3().crossVectors(right,st.fwd).normalize();
 	return st.pos.clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
+// presented is where a state is SHOWN to be: for the ownship in multiplayer,
+// the physics position plus the decaying reconciliation offset the airframe
+// mesh already carries (render_offset). Every server correction moves
+// ownship.pos by the divergence, up to twenty times a second, and the mesh
+// hides that behind a ~150 ms decay - but the camera hung off ownship.pos and
+// so did the recorder, so the pit held still while the world jumped, and the
+// recording carried every correction as a position step against a smooth
+// speed. Anything that looks FROM the ownship or records where it was reads
+// this, never ownship.pos.
+const _shown=new THREE.Vector3();
+function presented(st){ if(st===ownship&&MULTIPLAYER) return _shown.copy(st.pos).add(render_offset); return st.pos; }
 function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||new THREE.Vector3().crossVectors(st.fwd,world_up).normalize();
-	return st.pos.clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
+	return presented(st).clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
 
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
@@ -4116,7 +4126,8 @@ function recording_sample(){
 	const recorded_track=(id)=>id==="bandit"?2:(typeof id==="number"?10+id:undefined);   // radar contacts are id "bandit" in SP and the remote SLOT in MP
 	const add=(st,id,label,colour,mode,data,skill=undefined)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
 		const a=attitude(st);
-		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
+		const at=presented(st);
+		list.push({ id, x:at.x, y:at.y, z:at.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
 			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode, data, ...(skill?{skill}:{}) }); };
 	// The ownship's flight data comes from the instrument tail the gauges read
 	// (#216): TacView graphs AOA/G/TAS/IAS/Mach natively. Control-law channels
@@ -4617,7 +4628,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
 	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
@@ -5491,7 +5502,7 @@ function update_flypast(_dt){   // fixed-ground flyby: the jet flies past a stat
 		flyby_pos=ownship.pos.clone().addScaledVector(fwdH,ahead).addScaledVector(rightH,side); flyby_pos.y+=up;
 		const floor=takeoff_surface()+6; if(flyby_pos.y<floor) flyby_pos.y=floor;   // keep the camera above the sea/deck
 	}
-	camera.position.copy(flyby_pos); camera.up.set(0,1,0); camera.lookAt(ownship.pos);
+	camera.position.copy(flyby_pos); camera.up.set(0,1,0); camera.lookAt(presented(ownship));
 }
 
 // ============================================================================ HUD (2D canvas overlay)

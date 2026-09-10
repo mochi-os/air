@@ -12,4 +12,5 @@
 import { msg } from '@lingui/core/macro'
 
 // Head tracking (#57).
+/** @public */
 export const HEAD_MESSAGES = [msg`Head`, msg`Head tracking`, msg`Gain`, msg`Camera unavailable`]

@@ -41,7 +41,7 @@ export function beacon(raw: string): string {
 }
 
 // The engine sets this to report its resolved knobs (render scale, ssaa, msaa).
-export let bench_state: (() => Record<string, unknown>) | null = null
+let bench_state: (() => Record<string, unknown>) | null = null
 export function bench_register(fn: () => Record<string, unknown>): void {
   bench_state = fn
 }

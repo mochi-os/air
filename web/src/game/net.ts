@@ -266,7 +266,7 @@ export interface Welcome {
   players: { slot: number; name: string; identity: string }[]
 }
 
-export interface SpawnState {
+interface SpawnState {
   position: [number, number, number]
   direction: [number, number, number]
   attitude: [number, number, number, number]
