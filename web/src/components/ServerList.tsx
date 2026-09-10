@@ -8,57 +8,12 @@
 // mismatch spelled out, not hidden. Private servers are joined by address from
 // the control beside this list.
 
-import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { createAppClient, useFormat } from '@mochi/web'
+import { useFormat } from '@mochi/web'
 import { Users } from 'lucide-react'
-import { flight_load, flight_version } from '../game/flight'
 import { server_mismatch, server_offline, server_order, type Server } from '../game/servers'
-import { authenticated } from '../lib/config-store'
-
-const client = createAppClient({ appName: 'air' })
 
 export type { Server }
-
-// useServers polls the public listing and loads this client's flight version.
-// It lives outside ServerList so the join dialog can match its recents against
-// the listing. `servers` is null until the first response; a failed fetch
-// resolves to an empty list so the dialog's empty state still applies.
-export function useServers(): { servers: Server[] | null; version: number } {
-  const [servers, setServers] = useState<Server[] | null>(null)
-  const [version, setVersion] = useState(0)
-
-  useEffect(() => {
-    let live = true
-    // The wasm carries the authoritative flight version; load it once so the
-    // compatibility check is against what this client actually flies.
-    void flight_load().then(() => live && setVersion(flight_version()))
-    const load = async () => {
-      try {
-        await authenticated()
-        const res = await client.get<unknown>('-/servers')
-        // The app client returns the response; a Starlark action wraps its
-        // payload in {data:...}, and createAppClient may unwrap one layer —
-        // tolerate either depth rather than guess.
-        const peel = (v: unknown): { servers?: Server[] } =>
-          v && typeof v === 'object' && 'data' in v ? peel((v as { data: unknown }).data) : (v as { servers?: Server[] })
-        if (live) setServers(peel(res).servers ?? [])
-      } catch {
-        if (live) setServers([])
-      }
-    }
-    void load()
-    // The list is cheap and the counts drift; a slow poll keeps it live without
-    // hammering the user's own server.
-    const timer = setInterval(load, 30000)
-    return () => {
-      live = false
-      clearInterval(timer)
-    }
-  }, [])
-
-  return { servers, version }
-}
 
 // ServerRow renders one listed server: name, live player count, and the two
 // disabled states — offline (quiet past two refresh floors) and version

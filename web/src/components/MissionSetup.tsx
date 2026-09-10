@@ -63,7 +63,8 @@ import {
   DialogTrigger,
 } from '@mochi/web/components/ui/dialog'
 import { type MissionConfig, type StationSlot, seedStart } from '../lib/config'
-import { ServerList, ServerRow, useServers } from './ServerList'
+import { ServerList, ServerRow } from './ServerList'
+import { useServers } from '../hooks/use-servers'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import {
