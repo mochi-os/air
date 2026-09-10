@@ -2,12 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // Webcam head tracking (#57): the player's real head pose drives the
 // first-person view, ±25° of real turn sweeping the whole cockpit. Owns the
 // camera session, the landmark worker, and the shaping maths; the ~9 MB runtime
 // loads lazily when tracking starts.
-
 import type { CameraDevice, CameraSession } from '@mochi/web'
 // The worker ships INLINE (a blob of the fully bundled script): the sandboxed
 // shell iframe has an opaque origin, and `new Worker(url)` is refused
@@ -77,7 +75,14 @@ export function shape(angle: number, gain: number, travel: number): number {
 // commented out until the feature returns. @public keeps the dead-export
 // report quiet without deleting them.
 /** @public */
-export type HeadPose = { ok: boolean; yaw: number; pitch: number; x: number; y: number; z: number }
+export type HeadPose = {
+  ok: boolean
+  yaw: number
+  pitch: number
+  x: number
+  y: number
+  z: number
+}
 
 /** @public */
 export type HeadOptions = {
@@ -104,7 +109,9 @@ export type Head = {
 // Resolves once the camera answers; worker readiness follows asynchronously
 // (frames before readiness are simply dropped by the worker).
 /** @public */
-export async function start(options: HeadOptions): Promise<{ head: Head | null; error?: string }> {
+export async function start(
+  options: HeadOptions
+): Promise<{ head: Head | null; error?: string }> {
   const worker: Worker = new LandmarkWorker()
   worker.postMessage({ kind: 'init', base: options.base, model: options.model })
   let live = true
@@ -113,8 +120,15 @@ export async function start(options: HeadOptions): Promise<{ head: Head | null; 
   let died = ''
   worker.onmessage = (event: MessageEvent) => {
     const data = event.data as { kind: string; message?: string } & HeadPose
-    if (data.kind === 'ready') { ready = true; return }
-    if (data.kind === 'dead') { died = data.message ?? 'failed'; finish('landmarker: ' + died); return }
+    if (data.kind === 'ready') {
+      ready = true
+      return
+    }
+    if (data.kind === 'dead') {
+      died = data.message ?? 'failed'
+      finish('landmarker: ' + died)
+      return
+    }
     if (data.kind === 'pose') {
       busy = false
       if (live) options.pose?.(data)
@@ -137,13 +151,30 @@ export async function start(options: HeadOptions): Promise<{ head: Head | null; 
   const { session: opened, opened: result } = await cameraOpen({
     device: options.device,
     frame: (frame) => {
-      if (!live) { try { frame.close() } catch { /* closed */ } return }
+      if (!live) {
+        try {
+          frame.close()
+        } catch {
+          /* closed */
+        }
+        return
+      }
       options.preview?.(frame)
       // One frame in the worker at a time: inference slower than the camera
       // drops frames here rather than queueing transferred bitmaps.
-      if (!ready || busy) { try { frame.close() } catch { /* closed */ } return }
+      if (!ready || busy) {
+        try {
+          frame.close()
+        } catch {
+          /* closed */
+        }
+        return
+      }
       busy = true
-      worker.postMessage({ kind: 'frame', bitmap: frame, at: performance.now() }, [frame])
+      worker.postMessage(
+        { kind: 'frame', bitmap: frame, at: performance.now() },
+        [frame]
+      )
     },
     end: (reason) => finish(reason),
   })
@@ -158,7 +189,10 @@ export async function start(options: HeadOptions): Promise<{ head: Head | null; 
   if (!result.ok) {
     live = false
     worker.terminate()
-    return { head: null, error: result.error ? result.error.message : 'cancelled' }
+    return {
+      head: null,
+      error: result.error ? result.error.message : 'cancelled',
+    }
   }
   return {
     head: {

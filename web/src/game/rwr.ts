@@ -20,7 +20,13 @@ export type RwrEmitter = {
   mode: 1 | 2 // search / STT
   locked: boolean // STT with US as the target
 }
-export type RwrContact = { id: number | string; bearing: number; locked: boolean; missile?: boolean; at: number }
+export type RwrContact = {
+  id: number | string
+  bearing: number
+  locked: boolean
+  missile?: boolean
+  at: number
+}
 
 // RwrSeeker is an active missile seeker painting us — the round's own radar,
 // not its shooter's. Bearing is all a receiver gets.
@@ -46,7 +52,14 @@ export class Rwr {
   }
 
   // step returns how many NEW symbols appeared (the new-threat chirp).
-  step(dt: number, own: { x: number; z: number }, emitters: RwrEmitter[], wrap: (v: number) => number, random: () => number = Math.random, seekers: RwrSeeker[] = []): { fresh: number; missile: boolean } {
+  step(
+    dt: number,
+    own: { x: number; z: number },
+    emitters: RwrEmitter[],
+    wrap: (v: number) => number,
+    random: () => number = Math.random,
+    seekers: RwrSeeker[] = []
+  ): { fresh: number; missile: boolean } {
     this.time += dt
     let fresh = 0
     // Active seekers first: a round hunting US is the loudest thing the
@@ -59,7 +72,13 @@ export class Rwr {
         existing.bearing = bearing
         existing.at = this.time
       } else {
-        this.contacts.push({ id: s.id, bearing, locked: true, missile: true, at: this.time })
+        this.contacts.push({
+          id: s.id,
+          bearing,
+          locked: true,
+          missile: true,
+          at: this.time,
+        })
         fresh++
       }
     }

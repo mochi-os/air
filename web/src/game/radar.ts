@@ -11,10 +11,34 @@
 
 export const NM = 1852
 
-export type RadarTarget = { id: number | string; x: number; y: number; z: number; vx: number; vy: number; vz: number; jamming?: boolean }
+export type RadarTarget = {
+  id: number | string
+  x: number
+  y: number
+  z: number
+  vx: number
+  vy: number
+  vz: number
+  jamming?: boolean
+}
 export type RadarOwn = { x: number; y: number; z: number; heading: number }
-export type Brick = { id: number | string; azimuth: number; range: number; at: number }
-export type Track = { id: number | string; x: number; y: number; z: number; vx: number; vy: number; vz: number; at: number; hits: number }
+export type Brick = {
+  id: number | string
+  azimuth: number
+  range: number
+  at: number
+}
+export type Track = {
+  id: number | string
+  x: number
+  y: number
+  z: number
+  vx: number
+  vy: number
+  vz: number
+  at: number
+  hits: number
+}
 export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
@@ -37,7 +61,11 @@ export const SCALES = [5, 10, 20, 40] // display range scales, nmi
 // geometry resolves a target into the radar's frame: azimuth relative to own
 // heading (the engine's bearing convention: atan2(dx, -dz)), elevation off
 // the horizontal, slant range. wrap is the toroidal minimum-image function.
-export function geometry(own: RadarOwn, target: { x: number; y: number; z: number }, wrap: Wrap) {
+export function geometry(
+  own: RadarOwn,
+  target: { x: number; y: number; z: number },
+  wrap: Wrap
+) {
   const dx = wrap(target.x - own.x)
   const dz = wrap(target.z - own.z)
   const dy = target.y - own.y
@@ -45,25 +73,39 @@ export function geometry(own: RadarOwn, target: { x: number; y: number; z: numbe
   let azimuth = Math.atan2(dx, -dz) - own.heading
   while (azimuth > Math.PI) azimuth -= 2 * Math.PI
   while (azimuth < -Math.PI) azimuth += 2 * Math.PI
-  return { azimuth, elevation: Math.atan2(dy, horizontal || 1), range: Math.hypot(dx, dy, dz) }
+  return {
+    azimuth,
+    elevation: Math.atan2(dy, horizontal || 1),
+    range: Math.hypot(dx, dy, dz),
+  }
 }
 
 // aspect_factor scales detection by the target's aspect: a beam-on fighter is
 // the biggest reflector (1.0), nose/tail the smallest (0.75). A near-stationary
 // target has no meaningful aspect — middle value.
-export function aspect_factor(own: RadarOwn, target: RadarTarget, wrap: Wrap): number {
+export function aspect_factor(
+  own: RadarOwn,
+  target: RadarTarget,
+  wrap: Wrap
+): number {
   const speed = Math.hypot(target.vx, target.vy, target.vz)
   if (speed < 20) return 0.85
   const dx = wrap(target.x - own.x)
   const dy = target.y - own.y
   const dz = wrap(target.z - own.z)
   const d = Math.hypot(dx, dy, dz) || 1
-  const along = Math.abs((target.vx * dx + target.vy * dy + target.vz * dz) / (speed * d))
+  const along = Math.abs(
+    (target.vx * dx + target.vy * dy + target.vz * dz) / (speed * d)
+  )
   return 1 - 0.25 * along
 }
 
 // detect_range: how far this target paints, this look.
-export function detect_range(own: RadarOwn, target: RadarTarget, wrap: Wrap): number {
+export function detect_range(
+  own: RadarOwn,
+  target: RadarTarget,
+  wrap: Wrap
+): number {
   const look = target.y < own.y ? 0.65 : 1 // look-down: sea clutter behind everything below own level
   return BASE * aspect_factor(own, target, wrap) * look
 }
@@ -72,7 +114,9 @@ export function detect_range(own: RadarOwn, target: RadarTarget, wrap: Wrap): nu
 export function paint_probability(range: number, detection: number): number {
   if (range >= detection) return 0
   if (range < 0.55 * detection) return 0.97
-  return 0.97 - (0.97 - 0.15) * ((range - 0.55 * detection) / (0.45 * detection))
+  return (
+    0.97 - (0.97 - 0.15) * ((range - 0.55 * detection) / (0.45 * detection))
+  )
 }
 
 // pick resolves a cursor position onto the nearest candidate within the snap
@@ -88,7 +132,10 @@ export function pick(
   let best: number | string | null = null
   let closest = 0.14 // snap radius in normalised display space
   for (const c of candidates) {
-    const n = Math.hypot((c.azimuth - azimuth) / (2 * half), (c.range - range) / scale)
+    const n = Math.hypot(
+      (c.azimuth - azimuth) / (2 * half),
+      (c.range - range) / scale
+    )
     if (n < closest) {
       closest = n
       best = c.id
@@ -128,11 +175,24 @@ export class Radar {
     return this.sil ? 0 : this.stt != null ? 2 : 1
   }
 
-  step(dt: number, own: RadarOwn, targets: RadarTarget[], wrap: Wrap, random: () => number = Math.random): void {
+  step(
+    dt: number,
+    own: RadarOwn,
+    targets: RadarTarget[],
+    wrap: Wrap,
+    random: () => number = Math.random
+  ): void {
     this.time += dt
     this.bricks = this.bricks.filter((b) => this.time - b.at < BRICK_AGE)
-    this.tracks = this.tracks.filter((t) => this.time - t.at < TRACK_AGE || t.id === this.stt)
-    if (this.ls != null && this.stt == null && !this.tracks.some((t) => t.id === this.ls)) this.ls = null
+    this.tracks = this.tracks.filter(
+      (t) => this.time - t.at < TRACK_AGE || t.id === this.stt
+    )
+    if (
+      this.ls != null &&
+      this.stt == null &&
+      !this.tracks.some((t) => t.id === this.ls)
+    )
+      this.ls = null
     if (this.sil) {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
@@ -149,7 +209,12 @@ export class Radar {
     if (this.stt != null) {
       const target = targets.find((t) => t.id === this.stt)
       const g = target ? geometry(own, target, wrap) : null
-      if (!target || !g || Math.abs(g.azimuth) > GIMBAL || g.range > HOLD * detect_range(own, target, wrap)) {
+      if (
+        !target ||
+        !g ||
+        Math.abs(g.azimuth) > GIMBAL ||
+        g.range > HOLD * detect_range(own, target, wrap)
+      ) {
         this.stt = null // broken lock: back to search; the last trackfile remembers
         this.memory = 0
         return
@@ -158,8 +223,17 @@ export class Radar {
       // fix), the display says MEM, and the lock drops if the condition
       // outlasts the window.
       const speed = Math.hypot(target.vx, target.vy, target.vz)
-      const radial = speed < 1 ? 0 : Math.abs((target.vx * wrap(target.x - own.x) + target.vy * (target.y - own.y) + target.vz * wrap(target.z - own.z)) / Math.max(g.range, 1))
-      const starved = (target.jamming && g.range > BURNTHROUGH) || radial < NOTCH
+      const radial =
+        speed < 1
+          ? 0
+          : Math.abs(
+              (target.vx * wrap(target.x - own.x) +
+                target.vy * (target.y - own.y) +
+                target.vz * wrap(target.z - own.z)) /
+                Math.max(g.range, 1)
+            )
+      const starved =
+        (target.jamming && g.range > BURNTHROUGH) || radial < NOTCH
       if (starved) {
         this.memory += dt
         if (this.memory > MEMORY) {
@@ -175,8 +249,14 @@ export class Radar {
     this.memory = 0
     const half = this.half()
     let az = this.sweep + this.direction * SWEEP * dt
-    if (az > half) { az = half; this.direction = -1 }
-    if (az < -half) { az = -half; this.direction = 1 }
+    if (az > half) {
+      az = half
+      this.direction = -1
+    }
+    if (az < -half) {
+      az = -half
+      this.direction = 1
+    }
     for (const target of targets) {
       const g = geometry(own, target, wrap)
       if (Math.abs(g.elevation - this.elevation) > ELEVATION) continue
@@ -184,11 +264,21 @@ export class Radar {
       // Half-open interval (previous, current]: consecutive frames partition
       // the sweep exactly, so one crossing is one detection roll and never a
       // cluster of duplicates.
-      if ((g.azimuth - this.sweep) * (g.azimuth - az) > 0 || g.azimuth === this.sweep) continue
+      if (
+        (g.azimuth - this.sweep) * (g.azimuth - az) > 0 ||
+        g.azimuth === this.sweep
+      )
+        continue
       const detection = detect_range(own, target, wrap)
       if (g.range >= detection) continue
       if (random() > paint_probability(g.range, detection)) continue
-      if (this.mode === 'rws') this.paint({ id: target.id, azimuth: g.azimuth, range: g.range, at: this.time })
+      if (this.mode === 'rws')
+        this.paint({
+          id: target.id,
+          azimuth: g.azimuth,
+          range: g.range,
+          at: this.time,
+        })
       else this.fix(target)
     }
     this.sweep = az
@@ -210,11 +300,26 @@ export class Radar {
   private fix(target: RadarTarget): void {
     const existing = this.tracks.find((t) => t.id === target.id)
     if (existing) {
-      existing.x = target.x; existing.y = target.y; existing.z = target.z
-      existing.vx = target.vx; existing.vy = target.vy; existing.vz = target.vz
+      existing.x = target.x
+      existing.y = target.y
+      existing.z = target.z
+      existing.vx = target.vx
+      existing.vy = target.vy
+      existing.vz = target.vz
       existing.at = this.time
       existing.hits++
-    } else this.tracks.push({ id: target.id, x: target.x, y: target.y, z: target.z, vx: target.vx, vy: target.vy, vz: target.vz, at: this.time, hits: 1 })
+    } else
+      this.tracks.push({
+        id: target.id,
+        x: target.x,
+        y: target.y,
+        z: target.z,
+        vx: target.vx,
+        vy: target.vy,
+        vz: target.vz,
+        at: this.time,
+        hits: 1,
+      })
   }
 
   // designate climbs the ladder onto a track: in TWS the first designation
@@ -250,7 +355,13 @@ export class Radar {
   // slew moves the elevation band centre by steps of 5°, held inside the
   // ±60° antenna gimbal.
   slew(direction: number): void {
-    this.elevation = Math.max(-1.047, Math.min(1.047, this.elevation + Math.sign(direction) * (5 * Math.PI / 180)))
+    this.elevation = Math.max(
+      -1.047,
+      Math.min(
+        1.047,
+        this.elevation + Math.sign(direction) * ((5 * Math.PI) / 180)
+      )
+    )
   }
 }
 

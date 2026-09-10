@@ -2,9 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_CONFIG, TAB_FIELDS, deviceDefaults, profileBindings, seedStart } from './config'
+import {
+  DEFAULT_CONFIG,
+  TAB_FIELDS,
+  deviceDefaults,
+  profileBindings,
+  seedStart,
+} from './config'
 
 describe('seedStart', () => {
   it('seeds a recovery fuel state for every pattern case', () => {
@@ -19,9 +24,18 @@ describe('seedStart', () => {
     }
   })
   it('seeds the case weather alongside the fuel', () => {
-    expect(seedStart(DEFAULT_CONFIG, 'case1')).toMatchObject({ tod: 'day', clouds: 'none' })
-    expect(seedStart(DEFAULT_CONFIG, 'case2')).toMatchObject({ tod: 'day', clouds: 'mid_stratus' }) // the cases must NOT share a deck: 500 ft is a Case III ceiling
-    expect(seedStart(DEFAULT_CONFIG, 'case3')).toMatchObject({ tod: 'night', clouds: 'low_stratus' })
+    expect(seedStart(DEFAULT_CONFIG, 'case1')).toMatchObject({
+      tod: 'day',
+      clouds: 'none',
+    })
+    expect(seedStart(DEFAULT_CONFIG, 'case2')).toMatchObject({
+      tod: 'day',
+      clouds: 'mid_stratus',
+    }) // the cases must NOT share a deck: 500 ft is a Case III ceiling
+    expect(seedStart(DEFAULT_CONFIG, 'case3')).toMatchObject({
+      tod: 'night',
+      clouds: 'low_stratus',
+    })
   })
   it('leaves weather alone for the launch starts', () => {
     const night = { ...DEFAULT_CONFIG, tod: 'night' as const }
@@ -53,12 +67,12 @@ describe('DEFAULT_CONFIG', () => {
     // JSON.stringify drops the key, and config/save upserts only what arrives —
     // so the stored row keeps its old value while the UI shows the default.
     const dropped = Object.keys(DEFAULT_CONFIG).filter(
-      (key) => (DEFAULT_CONFIG as Record<string, unknown>)[key] === undefined,
+      (key) => (DEFAULT_CONFIG as Record<string, unknown>)[key] === undefined
     )
     expect(dropped).toEqual([])
-    expect(Object.keys(JSON.parse(JSON.stringify(DEFAULT_CONFIG)))).toHaveLength(
-      Object.keys(DEFAULT_CONFIG).length,
-    )
+    expect(
+      Object.keys(JSON.parse(JSON.stringify(DEFAULT_CONFIG)))
+    ).toHaveLength(Object.keys(DEFAULT_CONFIG).length)
   })
 
   it('has a default for every field a Settings tab can reset', () => {
@@ -67,7 +81,8 @@ describe('DEFAULT_CONFIG', () => {
     const missing: string[] = []
     for (const [tab, fields] of Object.entries(TAB_FIELDS)) {
       for (const field of fields) {
-        if ((DEFAULT_CONFIG as Record<string, unknown>)[field] === undefined) missing.push(`${tab}.${field}`)
+        if ((DEFAULT_CONFIG as Record<string, unknown>)[field] === undefined)
+          missing.push(`${tab}.${field}`)
       }
     }
     expect(missing).toEqual([])
@@ -85,18 +100,24 @@ describe('profileBindings', () => {
   const defaults = deviceDefaults('pad', 'standard')
 
   it('refuses null maps that pass a typeof test', () => {
-    expect(profileBindings({ air: 'joystick', axes: null, buttons: null }, defaults)).toBeNull()
+    expect(
+      profileBindings({ air: 'joystick', axes: null, buttons: null }, defaults)
+    ).toBeNull()
   })
 
   it('refuses arrays, which are also typeof object', () => {
-    expect(profileBindings({ air: 'joystick', axes: [], buttons: [] }, defaults)).toBeNull()
+    expect(
+      profileBindings({ air: 'joystick', axes: [], buttons: [] }, defaults)
+    ).toBeNull()
   })
 
   it('refuses anything that is not a joystick profile', () => {
     expect(profileBindings(null, defaults)).toBeNull()
     expect(profileBindings('a string', defaults)).toBeNull()
     expect(profileBindings({ axes: {}, buttons: {} }, defaults)).toBeNull()
-    expect(profileBindings({ air: 'keyboard', axes: {}, buttons: {} }, defaults)).toBeNull()
+    expect(
+      profileBindings({ air: 'keyboard', axes: {}, buttons: {} }, defaults)
+    ).toBeNull()
   })
 
   it('merges a partial button map over the defaults rather than replacing it', () => {
@@ -104,15 +125,22 @@ describe('profileBindings', () => {
     // it. Adopting the map wholesale left that action unbound on a file that is
     // perfectly valid.
     expect(Object.keys(defaults.buttons).length).toBeGreaterThan(1) // or the loop below asserts nothing
-    const bindings = profileBindings({ air: 'joystick', axes: {}, buttons: { fire: '9' } }, defaults)
+    const bindings = profileBindings(
+      { air: 'joystick', axes: {}, buttons: { fire: '9' } },
+      defaults
+    )
     expect(bindings?.buttons.fire).toBe('9')
     for (const action of Object.keys(defaults.buttons)) {
-      if (action !== 'fire') expect(bindings?.buttons[action]).toBe(defaults.buttons[action])
+      if (action !== 'fire')
+        expect(bindings?.buttons[action]).toBe(defaults.buttons[action])
     }
   })
 
   it('merges a partial axis map over the defaults, as it always did', () => {
-    const bindings = profileBindings({ air: 'joystick', axes: { pitch: '4' }, buttons: {} }, defaults)
+    const bindings = profileBindings(
+      { air: 'joystick', axes: { pitch: '4' }, buttons: {} },
+      defaults
+    )
     expect(bindings?.axes.pitch).toBe('4')
     expect(bindings?.axes.roll).toBe(defaults.axes.roll)
   })
@@ -120,11 +148,16 @@ describe('profileBindings', () => {
   it('keeps every binding a full profile declares', () => {
     const axes = { ...defaults.axes, yaw: '5' }
     const buttons = { ...defaults.buttons, fire: '2' }
-    expect(profileBindings({ air: 'joystick', axes, buttons }, defaults)).toEqual({ axes, buttons })
+    expect(
+      profileBindings({ air: 'joystick', axes, buttons }, defaults)
+    ).toEqual({ axes, buttons })
   })
 
   it('does not alias the defaults it merged over', () => {
-    const bindings = profileBindings({ air: 'joystick', axes: {}, buttons: {} }, defaults)
+    const bindings = profileBindings(
+      { air: 'joystick', axes: {}, buttons: {} },
+      defaults
+    )
     bindings!.buttons.fire = 'edited'
     expect(deviceDefaults('generic').buttons.fire).not.toBe('edited')
   })

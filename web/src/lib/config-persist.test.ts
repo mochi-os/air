@@ -2,10 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, it, expect } from 'vitest'
-import { loadOutcome, PendingConfig, RETIRED, stripRetired } from './config-persist'
 import type { MissionConfig } from './config'
+import {
+  loadOutcome,
+  PendingConfig,
+  RETIRED,
+  stripRetired,
+} from './config-persist'
 
 // Minimal stand-ins; PendingConfig only stores/returns the reference.
 const cfg = (fuel: number) => ({ fuel }) as unknown as MissionConfig
@@ -62,11 +66,16 @@ describe('stripRetired', () => {
   })
 
   it('drops the retired missiles boolean the per-station loadout replaced', () => {
-    expect(stripRetired({ fuel: 6000, missiles: false })).toEqual({ fuel: 6000 })
+    expect(stripRetired({ fuel: 6000, missiles: false })).toEqual({
+      fuel: 6000,
+    })
   })
 
   it('leaves a config that carries no retired key untouched', () => {
-    expect(stripRetired({ fuel: 6000, callsign: 'Hornet' })).toEqual({ fuel: 6000, callsign: 'Hornet' })
+    expect(stripRetired({ fuel: 6000, callsign: 'Hornet' })).toEqual({
+      fuel: 6000,
+      callsign: 'Hornet',
+    })
   })
 
   it('copies rather than mutates, so the caller can still read what it strips', () => {

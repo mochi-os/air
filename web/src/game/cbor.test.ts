@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
-
 import { describe, it, expect } from 'vitest'
 import { cbor_encode, cbor_decode, CborError } from './cbor'
 
@@ -43,11 +41,15 @@ describe('cbor_decode hardening', () => {
 
   it('rejects an array whose declared length exceeds the remaining bytes', () => {
     // array (major 4) with 4-byte length 0xffffffff and no elements
-    expect(() => cbor_decode(bytes(0x9a, 0xff, 0xff, 0xff, 0xff))).toThrow(CborError)
+    expect(() => cbor_decode(bytes(0x9a, 0xff, 0xff, 0xff, 0xff))).toThrow(
+      CborError
+    )
   })
 
   it('rejects a map whose declared length exceeds the remaining bytes', () => {
-    expect(() => cbor_decode(bytes(0xba, 0xff, 0xff, 0xff, 0xff))).toThrow(CborError)
+    expect(() => cbor_decode(bytes(0xba, 0xff, 0xff, 0xff, 0xff))).toThrow(
+      CborError
+    )
   })
 
   it('rejects nesting deeper than the limit', () => {
@@ -69,8 +71,12 @@ describe('cbor_decode hardening', () => {
   })
 
   it('rejects non-finite floats (Infinity and NaN)', () => {
-    expect(() => cbor_decode(bytes(0xfb, 0x7f, 0xf0, 0, 0, 0, 0, 0, 0))).toThrow(CborError) // +Inf f64
-    expect(() => cbor_decode(bytes(0xfb, 0x7f, 0xf8, 0, 0, 0, 0, 0, 0))).toThrow(CborError) // NaN f64
+    expect(() =>
+      cbor_decode(bytes(0xfb, 0x7f, 0xf0, 0, 0, 0, 0, 0, 0))
+    ).toThrow(CborError) // +Inf f64
+    expect(() =>
+      cbor_decode(bytes(0xfb, 0x7f, 0xf8, 0, 0, 0, 0, 0, 0))
+    ).toThrow(CborError) // NaN f64
     expect(() => cbor_decode(bytes(0xf9, 0x7c, 0x00))).toThrow(CborError) // +Inf f16
   })
 
@@ -80,12 +86,19 @@ describe('cbor_decode hardening', () => {
 
   it('rejects duplicate map keys', () => {
     // map(2) { "a": 0, "a": 1 } — 0x61 0x61 is text(1) "a"
-    expect(() => cbor_decode(bytes(0xa2, 0x61, 0x61, 0x00, 0x61, 0x61, 0x01))).toThrow(CborError)
+    expect(() =>
+      cbor_decode(bytes(0xa2, 0x61, 0x61, 0x00, 0x61, 0x61, 0x01))
+    ).toThrow(CborError)
   })
 
   it('isolates a __proto__ key on the null prototype, leaving Object.prototype intact', () => {
     // map(1) { "__proto__": 0 } — 0x69 is text(9)
-    const raw = new Uint8Array([0xa1, 0x69, ...new TextEncoder().encode('__proto__'), 0x00])
+    const raw = new Uint8Array([
+      0xa1,
+      0x69,
+      ...new TextEncoder().encode('__proto__'),
+      0x00,
+    ])
     const result = cbor_decode(raw) as Record<string, unknown>
     expect(Object.getPrototypeOf(result)).toBeNull()
     expect(result.__proto__).toBe(0) // an ordinary own property, not the prototype

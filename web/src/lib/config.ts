@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { PRESETS } from '../game/stores'
 
 // One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
@@ -52,18 +51,45 @@ export const PROFILES: StickProfile[] = [
     // The castle POV pair at 8/9 is POSITIONAL weapon select - forward 120C,
     // aft 9M, left GUN, right NAV - so trim lives on the thumbwheel (12/13,
     // forward = nose down) and zoom keeps no stick binding.
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '', weapon: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
+    axes: {
+      pitch: '1',
+      roll: '0',
+      yaw: '2',
+      throttle: '-5',
+      speedbrake: '-6',
+      look: '3',
+      trim: '',
+      weapon: '8',
+      zoom: '',
+    }, // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
     // Buttons 2 and 3 as the user flies them (2026-09-10): 2 is the G-limit
     // override and 3 looks at the target - the padlock is a reflex in a merge,
     // the view cycle is not, so the cycle keeps no stick binding and stays on
     // the keyboard.
-    buttons: { fire: '17', 'brake.wheel': '17', acquire: '15', 'radar.undesignate': '16', flares: '0',
-      gear: '7', hook: '6', atc: '1', override: '2', 'look.target': '3', 'flaps.extend': '4', 'flaps.retract': '5',
-      'view.reset': '18', 'trim.down': '12', 'trim.up': '13',
+    buttons: {
+      fire: '17',
+      'brake.wheel': '17',
+      acquire: '15',
+      'radar.undesignate': '16',
+      flares: '0',
+      gear: '7',
+      hook: '6',
+      atc: '1',
+      override: '2',
+      'look.target': '3',
+      'flaps.extend': '4',
+      'flaps.retract': '5',
+      'view.reset': '18',
+      'trim.down': '12',
+      'trim.up': '13',
       // The base's front-centre diamond: displayed 20-23 in the Joystick tab,
       // stored 0-based as 19-22. Base buttons cannot be reached in a turn, so
       // they carry the deliberate actions.
-      menu: '19', 'trim.left': '20', 'jettison.emergency': '21', 'trim.right': '22' },
+      menu: '19',
+      'trim.left': '20',
+      'jettison.emergency': '21',
+      'trim.right': '22',
+    },
   },
   {
     // The W3C standard gamepad layout, not measured and not needing to be: with
@@ -74,10 +100,34 @@ export const PROFILES: StickProfile[] = [
     // d-pad as button actions.
     name: 'Standard gamepad',
     match: (_id, mapping) => mapping === 'standard',
-    axes: { pitch: '1', roll: '0', yaw: '', throttle: '', speedbrake: '', look: '2', trim: '', weapon: '', zoom: '' },
-    buttons: { fire: '7', 'brake.wheel': '6', gear: '0', flares: '1', select: '2', hook: '3',
-      'yaw.left': '4', 'yaw.right': '5', 'throttle.up': '12', 'throttle.down': '13',
-      'flaps.extend': '15', 'flaps.retract': '14', view: '10', 'look.target': '11', 'view.reset': '9' },
+    axes: {
+      pitch: '1',
+      roll: '0',
+      yaw: '',
+      throttle: '',
+      speedbrake: '',
+      look: '2',
+      trim: '',
+      weapon: '',
+      zoom: '',
+    },
+    buttons: {
+      fire: '7',
+      'brake.wheel': '6',
+      gear: '0',
+      flares: '1',
+      select: '2',
+      hook: '3',
+      'yaw.left': '4',
+      'yaw.right': '5',
+      'throttle.up': '12',
+      'throttle.down': '13',
+      'flaps.extend': '15',
+      'flaps.retract': '14',
+      view: '10',
+      'look.target': '11',
+      'view.reset': '9',
+    },
   },
   {
     // Everything else: the HID convention every stick follows — X roll, Y pitch,
@@ -85,14 +135,26 @@ export const PROFILES: StickProfile[] = [
     // unknown stick; the rest is hand-bound in the Joystick tab.
     name: 'Generic joystick',
     match: () => true,
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '3', speedbrake: '', look: '', trim: '', weapon: '', zoom: '' },
+    axes: {
+      pitch: '1',
+      roll: '0',
+      yaw: '2',
+      throttle: '3',
+      speedbrake: '',
+      look: '',
+      trim: '',
+      weapon: '',
+      zoom: '',
+    },
     buttons: { fire: '0' },
   },
 ]
 
 // profileFor names the built-in profile a pad resolves to (for the Joystick tab).
 export function profileFor(id: string, mapping = ''): StickProfile {
-  return PROFILES.find((p) => p.match(id, mapping)) ?? PROFILES[PROFILES.length - 1]
+  return (
+    PROFILES.find((p) => p.match(id, mapping)) ?? PROFILES[PROFILES.length - 1]
+  )
 }
 
 export function deviceDefaults(id: string, mapping = ''): StickBindings {
@@ -107,7 +169,10 @@ export function deviceDefaults(id: string, mapping = ''): StickBindings {
 // merge OVER the defaults - a profile exported before a binding existed carries
 // no entry for it, and adopting its map wholesale would leave that action
 // unbound.
-export function profileBindings(parsed: unknown, defaults: StickBindings): StickBindings | null {
+export function profileBindings(
+  parsed: unknown,
+  defaults: StickBindings
+): StickBindings | null {
   const record = (value: unknown): value is Record<string, unknown> =>
     !!value && typeof value === 'object' && !Array.isArray(value)
   if (!record(parsed) || parsed.air !== 'joystick') return null
@@ -158,14 +223,26 @@ export interface MissionConfig {
   cheats: Record<string, boolean> // invulnerable (humans only), ammunition, fuel — mission cheats; a multiplayer match takes its own set from the creator
   rules: Record<string, unknown> // the creator's persisted match rules (#17/#32): the weapons class and spacing, with missiles derived for old servers
   duel: 'merge' | 'bvr' // the joust's start (#32): today's merge, or head-on across the derived BVR separation, weapons free
-  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, unknown> | Record<string, StickBindings> | Record<string, StationSlot>
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | Record<string, string>
+    | Record<string, number>
+    | Record<string, boolean>
+    | Record<string, unknown>
+    | Record<string, StickBindings>
+    | Record<string, StationSlot>
 }
 
 // seedStart applies a start choice with everything it defines: the recovery
 // cases seed their weather and every start seeds matching fuel (NATOPS 4.1.7:
 // full internal exceeds the 33,000 lb carrier landing limit). Seeded values
 // stay overridable; re-picking re-seeds.
-export function seedStart(config: MissionConfig, start: MissionConfig['start']): MissionConfig {
+export function seedStart(
+  config: MissionConfig,
+  start: MissionConfig['start']
+): MissionConfig {
   const seeded = { ...config, start }
   if (start === 'case1') {
     seeded.tod = 'day'
@@ -198,7 +275,18 @@ export const TAB_FIELDS: Record<string, string[]> = {
   controls: ['joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
-  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'effects_quality', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],
+  graphics: [
+    'render_scale',
+    'dyn_res',
+    'lod',
+    'shadows',
+    'exterior_detail',
+    'effects_quality',
+    'ocean_segments',
+    'afterburner',
+    'tracers',
+    'framerate',
+  ],
 }
 
 export const DEFAULT_CONFIG: MissionConfig = {
@@ -231,7 +319,14 @@ export const DEFAULT_CONFIG: MissionConfig = {
   effects_quality: 2,
   stores: PRESETS.fox2, // new players fly the Fox 2 preset — six heaters, the armed bot standard's round count (#17, decided 2026-08-05)
   sound: true,
-  volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
+  volume: {
+    master: 80,
+    engine: 100,
+    aircraft: 100,
+    weapons: 100,
+    environment: 100,
+    alerts: 100,
+  },
   framerate: false,
   world: '',
   callsign: '',
@@ -247,14 +342,42 @@ export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'
 // MissionConfig stays a MissionConfig.
 type GraphicsPatch = Pick<
   MissionConfig,
-  'render_scale' | 'ocean_segments' | 'exterior_detail' | 'effects_quality' | 'shadows'
+  | 'render_scale'
+  | 'ocean_segments'
+  | 'exterior_detail'
+  | 'effects_quality'
+  | 'shadows'
 >
 
 export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
-  low: { render_scale: 0.6, ocean_segments: 96, exterior_detail: 1, effects_quality: 0, shadows: false },
-  med: { render_scale: 1.0, ocean_segments: 192, exterior_detail: 3, effects_quality: 1, shadows: false },
-  high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, effects_quality: 2, shadows: true },
-  ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, effects_quality: 3, shadows: true },
+  low: {
+    render_scale: 0.6,
+    ocean_segments: 96,
+    exterior_detail: 1,
+    effects_quality: 0,
+    shadows: false,
+  },
+  med: {
+    render_scale: 1.0,
+    ocean_segments: 192,
+    exterior_detail: 3,
+    effects_quality: 1,
+    shadows: false,
+  },
+  high: {
+    render_scale: 1.0,
+    ocean_segments: 320,
+    exterior_detail: 4,
+    effects_quality: 2,
+    shadows: true,
+  },
+  ultra: {
+    render_scale: 1.5,
+    ocean_segments: 512,
+    exterior_detail: 5,
+    effects_quality: 3,
+    shadows: true,
+  },
 }
 
 // Which preset the current settings ARE, so the Graphics tab can mark the one
@@ -262,11 +385,13 @@ export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
 // comes off a range input so it is compared with a tolerance.
 export function graphicsPreset(config: MissionConfig): GraphicsPreset | null {
   const same = (a: number | boolean, b: number | boolean) =>
-    typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) < 1e-6 : a === b
+    typeof a === 'number' && typeof b === 'number'
+      ? Math.abs(a - b) < 1e-6
+      : a === b
   const keys = Object.keys(GRAPHICS_PRESETS.low) as (keyof GraphicsPatch)[]
   return (
     (Object.keys(GRAPHICS_PRESETS) as GraphicsPreset[]).find((p) =>
-      keys.every((k) => same(config[k], GRAPHICS_PRESETS[p][k])),
+      keys.every((k) => same(config[k], GRAPHICS_PRESETS[p][k]))
     ) ?? null
   )
 }

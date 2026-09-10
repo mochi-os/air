@@ -2,16 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // Sandbox-safe GLB loading, shared by the engine and the setup's loadout
 // preview. The shell's sandboxed iframe rejects blob: URLs, so the loader's own
 // texture path cannot run: strip the texture references, parse, then decode the
 // images in-process.
-
 import * as THREE from 'three'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
-import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 
 export interface Parts {
   json: any
@@ -30,7 +28,9 @@ export function split(ab: ArrayBuffer): Parts {
   let o = 12
   const jsonLen = dv.getUint32(o, true)
   o += 8
-  const json = JSON.parse(new TextDecoder().decode(new Uint8Array(ab, o, jsonLen)))
+  const json = JSON.parse(
+    new TextDecoder().decode(new Uint8Array(ab, o, jsonLen))
+  )
   o += jsonLen
   let bin: Uint8Array | null = null
   if (o < ab.byteLength) {
@@ -68,25 +68,47 @@ export function repack(json: any, bin: Uint8Array | null): ArrayBuffer {
 
 // textures maps each material's baseColor/emissive image bytes by material
 // name, following KTX2 sources into the basisu extension.
-export function textures(parts: Parts): Record<string, { base: Source | null; emissive: Source | null; hadEmissive: boolean }> {
-  const out: Record<string, { base: Source | null; emissive: Source | null; hadEmissive: boolean }> = {}
+export function textures(
+  parts: Parts
+): Record<
+  string,
+  { base: Source | null; emissive: Source | null; hadEmissive: boolean }
+> {
+  const out: Record<
+    string,
+    { base: Source | null; emissive: Source | null; hadEmissive: boolean }
+  > = {}
   const images = parts.json.images || []
   const texturelist = parts.json.textures || []
   const views = parts.json.bufferViews || []
   const image = (ref: any): Source | null => {
     if (!ref || !texturelist[ref.index]) return null
     const t = texturelist[ref.index]
-    const si = t.source != null ? t.source : t.extensions && t.extensions.KHR_texture_basisu ? t.extensions.KHR_texture_basisu.source : null
+    const si =
+      t.source != null
+        ? t.source
+        : t.extensions && t.extensions.KHR_texture_basisu
+          ? t.extensions.KHR_texture_basisu.source
+          : null
     const im = si != null ? images[si] : null
     if (!im || im.bufferView == null || !parts.bin) return null
     const bv = views[im.bufferView]
-    return { bytes: parts.bin.slice(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength), mime: im.mimeType || 'image/jpeg' }
+    return {
+      bytes: parts.bin.slice(
+        bv.byteOffset || 0,
+        (bv.byteOffset || 0) + bv.byteLength
+      ),
+      mime: im.mimeType || 'image/jpeg',
+    }
   }
   for (const m of parts.json.materials || []) {
     if (!m.name) continue
-    const base = image(m.pbrMetallicRoughness && m.pbrMetallicRoughness.baseColorTexture)
+    const base = image(
+      m.pbrMetallicRoughness && m.pbrMetallicRoughness.baseColorTexture
+    )
     const emissive = image(m.emissiveTexture)
-    if (base || emissive) out[m.name] = { base, emissive, hadEmissive: !!m.emissiveTexture }
+    if (base || emissive)
+      out[m.name] = { base, emissive, hadEmissive: !!m.emissiveTexture }
   }
   return out
 }
@@ -103,7 +125,8 @@ function strip(json: any): void {
     delete m.emissiveTexture
     for (const ext of Object.values(m.extensions || {})) {
       for (const key of Object.keys(ext as object)) {
-        if (key.endsWith('Texture')) delete (ext as Record<string, unknown>)[key]
+        if (key.endsWith('Texture'))
+          delete (ext as Record<string, unknown>)[key]
       }
     }
   }
@@ -117,7 +140,9 @@ function parse(clean: ArrayBuffer): Promise<GLTF> {
   return new Promise((resolve, reject) => {
     const loader = new GLTFLoader()
     loader.setMeshoptDecoder(MeshoptDecoder)
-    loader.parse(clean, '', resolve, (error) => reject(new Error((error && (error as ErrorEvent).message) || 'bad glTF')))
+    loader.parse(clean, '', resolve, (error) =>
+      reject(new Error((error && (error as ErrorEvent).message) || 'bad glTF'))
+    )
   })
 }
 
@@ -125,8 +150,14 @@ function parse(clean: ArrayBuffer): Promise<GLTF> {
 // the setup preview. POSE: the stabs' shared parent is authored mid-animation
 // 180°-flipped, so this is its animation END key. GEAR: the landing-gear track
 // family.
-export const POSE: { node: string; quaternion: [number, number, number, number] }[] = [
-  { node: 'elevator_percent_key_AN_238_100', quaternion: [0, -0.996, 0.087, 0] },
+export const POSE: {
+  node: string
+  quaternion: [number, number, number, number]
+}[] = [
+  {
+    node: 'elevator_percent_key_AN_238_100',
+    quaternion: [0, -0.996, 0.087, 0],
+  },
 ]
 export const GEAR = /(^|_)[clr]_(gear|wheel)_AN_/i
 
@@ -148,30 +179,52 @@ export const SCRUBS: RegExp[] = [
 // NEUTRAL: the direct-driven control surfaces' neutral base quaternions (x, y,
 // z, w), mirrored from the engine's rig entries - the authored static poses
 // rest deflected. Keep in sync with AIRCRAFT_MODELS fa18c.
-export const NEUTRAL: { node: string; quaternion: [number, number, number, number] }[] = [
+export const NEUTRAL: {
+  node: string
+  quaternion: [number, number, number, number]
+}[] = [
   { node: 'Elevator_Left_94', quaternion: [0.96593, 0, 0, 0.25882] },
   { node: 'Elevator_right_97', quaternion: [0.96502, 0, 0, 0.26219] },
   { node: 'AileronL_69', quaternion: [-0.17365, 0, 0, 0.98481] },
   { node: 'AileronR_309', quaternion: [-0.17365, 0, 0, 0.98481] },
-  { node: 'rudder_percent_key_AN_Left_319', quaternion: [0, 0.15471, 0, 0.98796] },
-  { node: 'rudder_percent_key_AN_Right_322', quaternion: [0, 0.19423, 0, 0.98096] },
+  {
+    node: 'rudder_percent_key_AN_Left_319',
+    quaternion: [0, 0.15471, 0, 0.98796],
+  },
+  {
+    node: 'rudder_percent_key_AN_Right_322',
+    quaternion: [0, 0.19423, 0, 0.98096],
+  },
 ]
 
 // decode turns captured image bytes into a texture: KTX2 through the transcoder
 // (self-hosted under basis/), everything else through createImageBitmap. glTF
 // UVs are NOT flipped - a flipped decode scrambles the livery atlas.
-async function decode(ktx2: KTX2Loader, src: Source, srgb: boolean): Promise<THREE.Texture> {
+async function decode(
+  ktx2: KTX2Loader,
+  src: Source,
+  srgb: boolean
+): Promise<THREE.Texture> {
   if (src.mime === 'image/ktx2') {
-    const loaderInternal = ktx2 as unknown as { _createTexture(buffer: ArrayBuffer): Promise<THREE.Texture> }
+    const loaderInternal = ktx2 as unknown as {
+      _createTexture(buffer: ArrayBuffer): Promise<THREE.Texture>
+    }
     const bytes = src.bytes
-    const buffer = bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength ? bytes.buffer : bytes.slice().buffer
+    const buffer =
+      bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+        ? bytes.buffer
+        : bytes.slice().buffer
     const texture = await loaderInternal._createTexture(buffer as ArrayBuffer)
-    texture.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace
+    texture.colorSpace = srgb
+      ? THREE.SRGBColorSpace
+      : THREE.LinearSRGBColorSpace
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
     texture.needsUpdate = true
     return texture
   }
-  const bitmap = await createImageBitmap(new Blob([src.bytes as unknown as BlobPart], { type: src.mime }))
+  const bitmap = await createImageBitmap(
+    new Blob([src.bytes as unknown as BlobPart], { type: src.mime })
+  )
   const texture = new THREE.Texture(bitmap as unknown as HTMLImageElement)
   texture.flipY = false
   texture.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace
@@ -186,31 +239,56 @@ async function decode(ktx2: KTX2Loader, src: Source, srgb: boolean): Promise<THR
 // load runs the whole pipeline for a standalone consumer (the setup preview):
 // bytes to a textured scene. The engine keeps its own pipeline with per-jet
 // extras and shares only split/repack/textures.
-export async function load(ab: ArrayBuffer, renderer: THREE.WebGLRenderer): Promise<GLTF> {
+export async function load(
+  ab: ArrayBuffer,
+  renderer: THREE.WebGLRenderer
+): Promise<GLTF> {
   const parts = split(ab)
   const captured = textures(parts)
   strip(parts.json)
   const gltf = await parse(repack(parts.json, parts.bin))
-  const ktx2 = new KTX2Loader().setTranscoderPath('basis/').detectSupport(renderer)
-  const decoded: Record<string, { base: THREE.Texture | null; emissive: THREE.Texture | null; hadEmissive: boolean }> = {}
+  const ktx2 = new KTX2Loader()
+    .setTranscoderPath('basis/')
+    .detectSupport(renderer)
+  const decoded: Record<
+    string,
+    {
+      base: THREE.Texture | null
+      emissive: THREE.Texture | null
+      hadEmissive: boolean
+    }
+  > = {}
   await Promise.all(
     Object.keys(captured).map(async (name) => {
       try {
         decoded[name] = {
-          base: captured[name].base ? await decode(ktx2, captured[name].base!, true) : null,
-          emissive: captured[name].emissive ? await decode(ktx2, captured[name].emissive!, true) : null,
+          base: captured[name].base
+            ? await decode(ktx2, captured[name].base!, true)
+            : null,
+          emissive: captured[name].emissive
+            ? await decode(ktx2, captured[name].emissive!, true)
+            : null,
           hadEmissive: captured[name].hadEmissive,
         }
       } catch (error) {
-        decoded[name] = { base: null, emissive: null, hadEmissive: captured[name].hadEmissive }
-        console.warn('[model] texture decode failed for ' + name, (error as Error)?.message || error)
+        decoded[name] = {
+          base: null,
+          emissive: null,
+          hadEmissive: captured[name].hadEmissive,
+        }
+        console.warn(
+          '[model] texture decode failed for ' + name,
+          (error as Error)?.message || error
+        )
       }
     })
   )
   gltf.scene.traverse((o) => {
     const mesh = o as THREE.Mesh
     if (!mesh.isMesh || !mesh.material) return
-    for (const mm of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+    for (const mm of Array.isArray(mesh.material)
+      ? mesh.material
+      : [mesh.material]) {
       const m = mm as THREE.MeshStandardMaterial
       const d = decoded[m.name]
       if (d && d.base) m.map = d.base
@@ -220,7 +298,10 @@ export async function load(ab: ArrayBuffer, renderer: THREE.WebGLRenderer): Prom
       } else if (d && d.hadEmissive && m.emissive) {
         m.emissive.setRGB(0, 0, 0) // emissive texture stripped and unrestorable: black it out rather than glow flat white — the untextured-white-fuselage failure
       }
-      if (m.metalness !== undefined && !/glass|screen|oleo|gear/i.test(m.name || '')) {
+      if (
+        m.metalness !== undefined &&
+        !/glass|screen|oleo|gear/i.test(m.name || '')
+      ) {
         m.metalness = 0.0
         m.roughness = 0.88
       }

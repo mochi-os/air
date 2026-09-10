@@ -2,19 +2,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { audio_gesture } from '../game/audio'
 import { createFileRoute } from '@tanstack/react-router'
-import { LazyBoundary, shellSetTitle, toast, useShellImmersive } from '@mochi/web'
 import { useLingui } from '@lingui/react/macro'
+import {
+  LazyBoundary,
+  shellSetTitle,
+  toast,
+  useShellImmersive,
+} from '@mochi/web'
 import { MissionSetup } from '../components/MissionSetup'
-import { useMissionConfig } from '../lib/config-store'
+import { audio_gesture } from '../game/audio'
 // Type-only, so the statement is erased at build. Keep it that way: a VALUE
 // import from the engine here would undo the lazy split below.
 import { type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
+import { useMissionConfig } from '../lib/config-store'
 
 // The engine and three.js are by far the largest chunk air ships (1,094 kB
 // raw). Keep it lazy: imported statically it lands in the MENU's chunk. It is
@@ -41,7 +45,12 @@ const GameCanvas = lazy(() =>
 // The Settings tabs are COMPONENT state, not a route: inside the shell iframe
 // every URL change relays a navigation to the parent, stacking a history entry
 // per click (#77).
-type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and the log became their own surfaces
+type SetupTab =
+  | 'general'
+  | 'graphics'
+  | 'sound'
+  | 'controls'
+  | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and the log became their own surfaces
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.
@@ -134,7 +143,9 @@ function Index() {
             )
           }}
         >
-          <Suspense fallback={<div className='fixed inset-0 z-20 bg-[#0a1412]' />}>
+          <Suspense
+            fallback={<div className='fixed inset-0 z-20 bg-[#0a1412]' />}
+          >
             <GameCanvas
               key={gameKey}
               config={config}

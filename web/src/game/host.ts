@@ -10,7 +10,9 @@
 // interchangeable as strings but address the same host.
 function loopback(host: string): boolean {
   const bare = host.replace(/^\[|\]$/g, '') // IPv6 literals arrive bracketed
-  return bare === 'localhost' || bare === '::1' || /^127\.\d+\.\d+\.\d+$/.test(bare)
+  return (
+    bare === 'localhost' || bare === '::1' || /^127\.\d+\.\d+\.\d+$/.test(bare)
+  )
 }
 
 // crossHost returns the transport hostname when it differs from the lobby the

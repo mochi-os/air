@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
 import { Rwr, NM } from './rwr'
 
@@ -12,11 +11,20 @@ const steady = () => 0 // no jitter: his sweep revisits every 2.2 s exactly
 
 // An emitter 12 nmi due north, nose pointing south — straight at us: we sit on
 // the axis of his scan cone.
-const facing = { id: 3, x: 0, z: -12 * NM, nosex: 0, nosez: 1, mode: 1 as const, locked: false }
+const facing = {
+  id: 3,
+  x: 0,
+  z: -12 * NM,
+  nosex: 0,
+  nosez: 1,
+  mode: 1 as const,
+  locked: false,
+}
 
 function run(rwr: Rwr, emitters: Parameters<Rwr['step']>[2], seconds: number) {
   let fresh = 0
-  for (let i = 0; i < seconds * 60; i++) fresh += rwr.step(1 / 60, own, emitters, wrap, steady).fresh
+  for (let i = 0; i < seconds * 60; i++)
+    fresh += rwr.step(1 / 60, own, emitters, wrap, steady).fresh
   return fresh
 }
 

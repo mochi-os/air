@@ -25,16 +25,24 @@ export interface Demise {
   callsign?: string // interpolated into it when the text takes one
 }
 
-export function demise(fate: string | undefined, callsign: string, ejected: boolean): Demise {
+export function demise(
+  fate: string | undefined,
+  callsign: string,
+  ejected: boolean
+): Demise {
   if (ejected) return { text: 'EJECTED' }
   if (fate === 'midair') {
-    return callsign ? { text: 'COLLIDED WITH {callsign}', callsign } : { text: 'COLLIDED' }
+    return callsign
+      ? { text: 'COLLIDED WITH {callsign}', callsign }
+      : { text: 'COLLIDED' }
   }
   if (fate && BATTLE.has(fate)) {
     // No callsign is reachable in multiplayer: the server credits a kill to the
     // last player to damage you within a minute, so a fire that burns longer
     // than that is nobody's.
-    return callsign ? { text: 'DESTROYED BY {callsign}', callsign } : { text: 'DESTROYED' }
+    return callsign
+      ? { text: 'DESTROYED BY {callsign}', callsign }
+      : { text: 'DESTROYED' }
   }
   // sea, building, post, island, probe, the landing verdict, and an
   // unset fate: flown into something.
@@ -57,10 +65,17 @@ export interface Line {
 // reports the credit rather than guessing at a mechanism it was not told.
 // Returns null when the victim has no name, since " crashed" is worse than
 // silence.
-export function report(fate: string | undefined, killer: string, victim: string): Line | null {
+export function report(
+  fate: string | undefined,
+  killer: string,
+  victim: string
+): Line | null {
   if (!victim) return null
   if (fate === 'midair' && killer) {
-    return { text: '{victim} collided with {other}', values: { victim, other: killer } }
+    return {
+      text: '{victim} collided with {other}',
+      values: { victim, other: killer },
+    }
   }
   if (killer && fate && BATTLE.has(fate)) {
     return { text: '{killer} destroyed {victim}', values: { killer, victim } }

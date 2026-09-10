@@ -2,19 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { useEffect, useRef, useState } from 'react'
-import { useLingui } from '@lingui/react'
-import { msg } from '@lingui/core/macro'
-import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
-import { Button } from '@mochi/web/components/ui/button'
-import { LogOut, Play, RotateCcw, Send, Settings as SettingsIcon } from 'lucide-react'
-import { startGame, type GameHandle } from '../game/engine'
-import { KEY_DEFAULTS, pretty } from '../game/keys'
-import { type Join as NetJoin } from '../game/net'
-import { type MissionConfig } from '../lib/config'
-import { SettingsDialog } from './SettingsDialog'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react'
+import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +17,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@mochi/web/components/ui/alert-dialog'
+import { Button } from '@mochi/web/components/ui/button'
+import {
+  LogOut,
+  Play,
+  RotateCcw,
+  Send,
+  Settings as SettingsIcon,
+} from 'lucide-react'
+import { startGame, type GameHandle } from '../game/engine'
 import '../game/game.css'
+import { KEY_DEFAULTS, pretty } from '../game/keys'
+import { type Join as NetJoin } from '../game/net'
+import { type MissionConfig } from '../lib/config'
+import { SettingsDialog } from './SettingsDialog'
 
 // HUD strings the engine draws on the 2D canvas, declared in a React module so
 // Lingui extracts them; the engine receives a `translate`. Aviation tokens
@@ -90,8 +95,12 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   // carries who did what to whom for everyone still flying. Lower case because
   // the names interpolated into these are people's callsigns, which keep the
   // case their owner chose.
-  '{killer} destroyed {victim}': msg({ message: '{killer} destroyed {victim}' }),
-  '{victim} collided with {other}': msg({ message: '{victim} collided with {other}' }),
+  '{killer} destroyed {victim}': msg({
+    message: '{killer} destroyed {victim}',
+  }),
+  '{victim} collided with {other}': msg({
+    message: '{victim} collided with {other}',
+  }),
   '{victim} crashed': msg({ message: '{victim} crashed' }),
   'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
   LIGHTS: msg`LIGHTS`,
@@ -228,7 +237,11 @@ export function GameCanvas({
   const menuRef = useRef<HTMLDivElement>(null)
   // The mission ended at a crash (#240): the engine reports how, and the menu
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
-  const [over, setOver] = useState<{ fate: string; struck: number; seconds: number } | null>(null)
+  const [over, setOver] = useState<{
+    fate: string
+    struck: number
+    seconds: number
+  } | null>(null)
   const [chat, setChat] = useState<string | null>(null) // the open chat prompt's scope, null when closed
   const { t } = useLinguiMacro()
   const hudRef = useRef<HTMLCanvasElement>(null)
@@ -242,12 +255,15 @@ export function GameCanvas({
   const i18nRef = useRef(i18n)
   i18nRef.current = i18n
   // The player's remap wins over the default, exactly as the engine's key_of does.
-  const binding = (action: string) => config?.keys?.[action] ?? KEY_DEFAULTS[action]
+  const binding = (action: string) =>
+    config?.keys?.[action] ?? KEY_DEFAULTS[action]
 
   useEffect(() => {
     const translate = (text: string, values?: Record<string, unknown>) => {
       const descriptor = HUD_MESSAGES[text]
-      return descriptor ? i18nRef.current._(values ? { ...descriptor, values } : descriptor) : text
+      return descriptor
+        ? i18nRef.current._(values ? { ...descriptor, values } : descriptor)
+        : text
     }
     let game: GameHandle
     try {
@@ -262,7 +278,8 @@ export function GameCanvas({
         onExit: () => {
           if (!closingRef.current) onExit?.()
         },
-        onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
+        onConfig: (partial: Record<string, number | string>) =>
+          onConfigRef.current?.(partial),
         onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
         onOver: (result: { fate: string; struck: number; seconds: number }) => {
           setOver(result)
@@ -373,7 +390,9 @@ export function GameCanvas({
           <input
             ref={chatRef}
             maxLength={200}
-            placeholder={chat === 'team' ? t`Message your team` : t`Message everyone`}
+            placeholder={
+              chat === 'team' ? t`Message your team` : t`Message everyone`
+            }
             className='w-96 rounded border border-white/30 bg-black/70 px-2 py-1 font-mono text-sm text-white outline-none placeholder:text-white/40'
             onKeyDown={(e) => {
               e.stopPropagation()
@@ -413,20 +432,25 @@ export function GameCanvas({
               if (e.key === 'Tab') {
                 e.preventDefault()
                 const stops = Array.from(
-                  menuRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? []
+                  menuRef.current?.querySelectorAll<HTMLElement>(
+                    'button:not([disabled])'
+                  ) ?? []
                 )
                 if (stops.length) {
                   // Focus sits on the container itself until the first Tab, and
                   // indexOf returns -1 for it: forward starts at the first
                   // button, back at the LAST one, which the plain modulo turned
                   // into the second to last.
-                  const at = stops.indexOf(document.activeElement as HTMLElement)
+                  const at = stops.indexOf(
+                    document.activeElement as HTMLElement
+                  )
                   const next =
                     at < 0
                       ? e.shiftKey
                         ? stops.length - 1
                         : 0
-                      : (at + (e.shiftKey ? -1 : 1) + stops.length) % stops.length
+                      : (at + (e.shiftKey ? -1 : 1) + stops.length) %
+                        stops.length
                   stops[next].focus()
                 }
               }
@@ -452,11 +476,16 @@ export function GameCanvas({
                 <p className='text-muted-foreground text-sm'>
                   {over.struck > 0 && (
                     <>
-                      <Plural value={over.struck} one='# round taken' other='# rounds taken' />
+                      <Plural
+                        value={over.struck}
+                        one='# round taken'
+                        other='# rounds taken'
+                      />
                       {' · '}
                     </>
                   )}
-                  {Math.floor(over.seconds / 60)}:{String(Math.floor(over.seconds % 60)).padStart(2, '0')}
+                  {Math.floor(over.seconds / 60)}:
+                  {String(Math.floor(over.seconds % 60)).padStart(2, '0')}
                 </p>
               </div>
             )}
@@ -563,14 +592,19 @@ export function GameCanvas({
           onTabChange={setSettingsTab}
         />
       )}
-      <AlertDialog open={confirm !== null} onOpenChange={(v) => !v && setConfirm(null)}>
+      <AlertDialog
+        open={confirm !== null}
+        onOpenChange={(v) => !v && setConfirm(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
               <Trans>Restart mission?</Trans>
             </AlertDialogTitle>
             <AlertDialogDescription>
-              <Trans>The mission will restart. The current flight will not be saved.</Trans>
+              <Trans>
+                The mission will restart. The current flight will not be saved.
+              </Trans>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -595,7 +629,10 @@ export function GameCanvas({
         {HINTS.map(({ actions, label }, index) => (
           <span key={index}>
             {index > 0 && ' · '}
-            <kbd>{actions.map((action) => pretty(binding(action))).join('/')}</kbd> {label}
+            <kbd>
+              {actions.map((action) => pretty(binding(action))).join('/')}
+            </kbd>{' '}
+            {label}
           </span>
         ))}
         {' · '}
@@ -608,13 +645,16 @@ export function GameCanvas({
         </b>{' '}
         <Trans>
           <b>Drag</b> or <kbd>←→</kbd> to orbit
-        </Trans>{' · '}
+        </Trans>
+        {' · '}
         <Trans>
           <kbd>↑↓</kbd> to tilt
-        </Trans>{' · '}
+        </Trans>
+        {' · '}
         <Trans>
           <kbd>−</kbd> to pull back
-        </Trans>{' · '}
+        </Trans>
+        {' · '}
         <Trans>
           <kbd>=</kbd> to move closer
         </Trans>

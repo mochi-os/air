@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
 import { demise, opponent, report } from './fate'
 
@@ -13,12 +12,18 @@ import { demise, opponent, report } from './fate'
 describe('demise', () => {
   it('names the killer for every battle-damage death', () => {
     for (const fate of ['missile', 'fire', 'pilot', 'battle']) {
-      expect(demise(fate, 'BANDIT', false)).toEqual({ text: 'DESTROYED BY {callsign}', callsign: 'BANDIT' })
+      expect(demise(fate, 'BANDIT', false)).toEqual({
+        text: 'DESTROYED BY {callsign}',
+        callsign: 'BANDIT',
+      })
     }
   })
 
   it('names the other aircraft in a midair', () => {
-    expect(demise('midair', 'BANDIT', false)).toEqual({ text: 'COLLIDED WITH {callsign}', callsign: 'BANDIT' })
+    expect(demise('midair', 'BANDIT', false)).toEqual({
+      text: 'COLLIDED WITH {callsign}',
+      callsign: 'BANDIT',
+    })
   })
 
   it('still says what happened when nobody is credited', () => {
@@ -31,7 +36,15 @@ describe('demise', () => {
   })
 
   it('calls flying into something a crash, killer or not', () => {
-    for (const fate of ['sea', 'building', 'post', 'island', 'probe', 'verdict', 'nonesuch']) {
+    for (const fate of [
+      'sea',
+      'building',
+      'post',
+      'island',
+      'probe',
+      'verdict',
+      'nonesuch',
+    ]) {
       expect(demise(fate, 'BANDIT', false)).toEqual({ text: 'CRASHED' })
     }
   })
@@ -61,7 +74,9 @@ describe('report', () => {
 
   it('accepts every battle fate the banner does', () => {
     for (const fate of ['missile', 'fire', 'pilot', 'battle']) {
-      expect(report(fate, 'NUMAN', 'CHRIS')?.text).toBe('{killer} destroyed {victim}')
+      expect(report(fate, 'NUMAN', 'CHRIS')?.text).toBe(
+        '{killer} destroyed {victim}'
+      )
     }
   })
 
@@ -69,12 +84,25 @@ describe('report', () => {
     // Multiplayer: the server credits the last player to damage the victim
     // within a minute and says nothing when nobody qualifies. Naming a killer
     // there would be an invention.
-    expect(report('battle', '', 'CHRIS')).toEqual({ text: '{victim} crashed', values: { victim: 'CHRIS' } })
+    expect(report('battle', '', 'CHRIS')).toEqual({
+      text: '{victim} crashed',
+      values: { victim: 'CHRIS' },
+    })
   })
 
   it('calls flying into something a crash even when someone shot at you', () => {
-    for (const fate of ['sea', 'building', 'post', 'island', 'probe', 'verdict']) {
-      expect(report(fate, 'NUMAN', 'CHRIS')).toEqual({ text: '{victim} crashed', values: { victim: 'CHRIS' } })
+    for (const fate of [
+      'sea',
+      'building',
+      'post',
+      'island',
+      'probe',
+      'verdict',
+    ]) {
+      expect(report(fate, 'NUMAN', 'CHRIS')).toEqual({
+        text: '{victim} crashed',
+        values: { victim: 'CHRIS' },
+      })
     }
   })
 
@@ -95,12 +123,22 @@ describe('report', () => {
 describe('opponent', () => {
   it('reads the bandit verdict as the kill it is', () => {
     // The same token on the ownship is a wrecked landing, and stays a crash.
-    expect(report(opponent('verdict'), 'CHRIS', 'BANDIT')?.text).toBe('{killer} destroyed {victim}')
+    expect(report(opponent('verdict'), 'CHRIS', 'BANDIT')?.text).toBe(
+      '{killer} destroyed {victim}'
+    )
     expect(report('verdict', 'CHRIS', 'CHRIS')?.text).toBe('{victim} crashed')
   })
 
   it('leaves every other fate alone', () => {
-    for (const fate of ['sea', 'building', 'post', 'island', 'fire', 'midair', undefined]) {
+    for (const fate of [
+      'sea',
+      'building',
+      'post',
+      'island',
+      'fire',
+      'midair',
+      undefined,
+    ]) {
       expect(opponent(fate)).toBe(fate)
     }
   })

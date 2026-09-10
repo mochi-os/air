@@ -76,7 +76,10 @@ export function pretty(code: string): string {
   // player ("Shift+KeyB" where the key cap says B).
   if (code.includes('+')) {
     const parts = code.split('+')
-    return parts.slice(0, -1).concat(pretty(parts[parts.length - 1])).join('+')
+    return parts
+      .slice(0, -1)
+      .concat(pretty(parts[parts.length - 1]))
+      .join('+')
   }
   const table: Record<string, string> = {
     Space: 'Space',

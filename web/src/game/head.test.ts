@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
 import { Euro, shape } from './head'
 
@@ -24,7 +23,7 @@ describe('shape', () => {
   })
   it('amplifies: a comfortable head turn sweeps the full view', () => {
     // ~25° of real head yaw must reach beyond 120° of view with default gain.
-    expect(shape(25 * Math.PI / 180, 5, 2.4)).toBeGreaterThan(2.0)
+    expect(shape((25 * Math.PI) / 180, 5, 2.4)).toBeGreaterThan(2.0)
   })
   it('clamps at the view travel', () => {
     expect(shape(1.2, 5, 2.4)).toBe(2.4)

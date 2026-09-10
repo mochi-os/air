@@ -31,7 +31,7 @@ export function frame(payload: Uint8Array): Uint8Array {
 // chunk queue so the cost stays linear regardless of how the peer fragments.
 export async function* frames(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  pending: Uint8Array,
+  pending: Uint8Array
 ): AsyncGenerator<Uint8Array> {
   // Chunks are consumed from the head via an index (head) plus a byte offset
   // into the head chunk (headOffset). Advancing is O(1) and the array is

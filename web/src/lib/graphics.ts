@@ -19,7 +19,9 @@ export type Verdict = 'webgl2' | 'software' | null
 // the mission down.
 function release(gl: WebGL2RenderingContext): void {
   try {
-    const lose = gl.getExtension('WEBGL_lose_context') as { loseContext?: () => void } | null
+    const lose = gl.getExtension('WEBGL_lose_context') as {
+      loseContext?: () => void
+    } | null
     lose?.loseContext?.()
   } catch {
     // No extension, or a context that refuses to be lost. Nothing else to try.
@@ -35,9 +37,16 @@ function probe(create: () => unknown): Verdict {
   }
   if (!gl) return 'webgl2'
   try {
-    const info = gl.getExtension('WEBGL_debug_renderer_info') as { UNMASKED_RENDERER_WEBGL: number } | null
-    const name = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER))
-    if (/swiftshader|llvmpipe|software|basic render/i.test(name)) return 'software'
+    const info = gl.getExtension('WEBGL_debug_renderer_info') as {
+      UNMASKED_RENDERER_WEBGL: number
+    } | null
+    const name = String(
+      info
+        ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)
+        : gl.getParameter(gl.RENDERER)
+    )
+    if (/swiftshader|llvmpipe|software|basic render/i.test(name))
+      return 'software'
   } catch {
     // The renderer name is unreadable — assume accelerated rather than warn on a guess.
   } finally {
@@ -56,7 +65,9 @@ let answer: { verdict: Verdict } | null = null
 export function diagnose(create?: () => unknown): Verdict {
   if (create) return probe(create)
   if (answer) return answer.verdict
-  const verdict = probe(() => document.createElement('canvas').getContext('webgl2'))
+  const verdict = probe(() =>
+    document.createElement('canvas').getContext('webgl2')
+  )
   if (verdict !== 'webgl2') answer = { verdict }
   return verdict
 }

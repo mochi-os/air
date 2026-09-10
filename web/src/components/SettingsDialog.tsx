@@ -2,12 +2,36 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
-import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { useLingui as useI18n } from '@lingui/react'
-import { msg } from '@lingui/core/macro'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from 'react'
 import { type MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
+import { useLingui as useI18n } from '@lingui/react'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { IconButton, shellSaveBlob, toast } from '@mochi/web'
+import { Badge } from '@mochi/web/components/ui/badge'
+import { Button } from '@mochi/web/components/ui/button'
+import { Input } from '@mochi/web/components/ui/input'
+import { Label } from '@mochi/web/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@mochi/web/components/ui/select'
+import { Slider } from '@mochi/web/components/ui/slider'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@mochi/web/components/ui/tabs'
 import {
   Check,
   Download,
@@ -22,20 +46,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react'
-import { Input } from '@mochi/web/components/ui/input'
-import { IconButton, shellSaveBlob, toast } from '@mochi/web'
-import { Badge } from '@mochi/web/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@mochi/web/components/ui/select'
-import { Button } from '@mochi/web/components/ui/button'
-import { Label } from '@mochi/web/components/ui/label'
-import { Slider } from '@mochi/web/components/ui/slider'
+import { KEY_DEFAULTS, pretty } from '../game/keys'
 import {
   DEFAULT_CONFIG,
   GRAPHICS_PRESETS,
@@ -49,9 +60,7 @@ import {
   profileFor,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
-import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
-
 
 // The fields each tab owns, for the per-tab Reset
 interface PadState {
@@ -74,13 +83,23 @@ function useGamepads(): PadState[] {
       const list: PadState[] = []
       for (const p of raw) {
         if (p && p.connected && p.axes.length >= 2)
-          list.push({ id: p.id, mapping: p.mapping ?? '', axes: Array.from(p.axes), buttons: p.buttons.map((b) => b.pressed) })
+          list.push({
+            id: p.id,
+            mapping: p.mapping ?? '',
+            axes: Array.from(p.axes),
+            buttons: p.buttons.map((b) => b.pressed),
+          })
       }
       setPads((old) =>
         old.length === list.length &&
-        old.every((o, i) => o.id === list[i].id && o.axes.every((a, k) => Math.abs(a - list[i].axes[k]) < 0.005) && o.buttons.every((b, k) => b === list[i].buttons[k]))
+        old.every(
+          (o, i) =>
+            o.id === list[i].id &&
+            o.axes.every((a, k) => Math.abs(a - list[i].axes[k]) < 0.005) &&
+            o.buttons.every((b, k) => b === list[i].buttons[k])
+        )
           ? old
-          : list,
+          : list
       )
     }, 120)
     return () => clearInterval(timer)
@@ -88,7 +107,14 @@ function useGamepads(): PadState[] {
   return pads
 }
 
-const GROUP_ORDER = ['flight', 'trim', 'weapons', 'aircraft', 'view', 'comms'] as const
+const GROUP_ORDER = [
+  'flight',
+  'trim',
+  'weapons',
+  'aircraft',
+  'view',
+  'comms',
+] as const
 type Group = (typeof GROUP_ORDER)[number]
 const GROUP_TITLES: Record<Group, ReactNode> = {
   flight: <Trans>Flight</Trans>,
@@ -118,7 +144,7 @@ function AxisMeter({ live }: { live: number }) {
   const percent = Math.round(live * 100)
   return (
     <div className='flex min-w-24 flex-1 items-center gap-2'>
-      <div className='bg-muted relative h-2 flex-1 overflow-hidden rounded border border-border'>
+      <div className='bg-muted border-border relative h-2 flex-1 overflow-hidden rounded border'>
         <div className='bg-foreground/30 absolute top-0 bottom-0 left-1/2 z-10 w-0.5' />
         <div className='bg-foreground/15 absolute top-0 bottom-0 left-1/4 w-px' />
         <div className='bg-foreground/15 absolute top-0 bottom-0 left-3/4 w-px' />
@@ -168,7 +194,11 @@ const BUTTON_ROWS: Row[] = [
   { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
   { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
   { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
-  { id: 'jettison.emergency', label: msg`Emergency jettison (hold)`, group: 'weapons' },
+  {
+    id: 'jettison.emergency',
+    label: msg`Emergency jettison (hold)`,
+    group: 'weapons',
+  },
   { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
   { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
   { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
@@ -219,7 +249,11 @@ const KEY_ROWS: Row[] = [
   { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
   { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
   { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
-  { id: 'jettison.emergency', label: msg`Emergency jettison (hold)`, group: 'weapons' },
+  {
+    id: 'jettison.emergency',
+    label: msg`Emergency jettison (hold)`,
+    group: 'weapons',
+  },
   { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
   { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
   { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
@@ -254,40 +288,78 @@ function JoystickPanel({
   const { i18n } = useI18n()
   const pads = useGamepads()
   const sticks = (config.sticks ?? {}) as Record<string, StickBindings>
-  const known = Array.from(new Set([...pads.map((p) => p.id), ...Object.keys(sticks)]))
-  const active = config.joystick && known.includes(config.joystick) ? config.joystick : (pads[0]?.id ?? known[0] ?? '')
+  const known = Array.from(
+    new Set([...pads.map((p) => p.id), ...Object.keys(sticks)])
+  )
+  const active =
+    config.joystick && known.includes(config.joystick)
+      ? config.joystick
+      : (pads[0]?.id ?? known[0] ?? '')
   const pad = pads.find((p) => p.id === active) ?? null
   const defaults = deviceDefaults(active, pad?.mapping ?? '')
   const saved = sticks[active]
   const axes = { ...defaults.axes, ...(saved?.axes ?? {}) }
-  const buttons = saved?.buttons && Object.keys(saved.buttons).length ? saved.buttons : defaults.buttons
+  const buttons =
+    saved?.buttons && Object.keys(saved.buttons).length
+      ? saved.buttons
+      : defaults.buttons
   const axisCount = pad ? pad.axes.length : 10
   const buttonCount = pad ? pad.buttons.length : 24
   const [detecting, setDetecting] = useState<string | null>(null)
-  const [baseline, setBaseline] = useState<{ axes: number[]; buttons: boolean[] } | null>(null)
+  const [baseline, setBaseline] = useState<{
+    axes: number[]
+    buttons: boolean[]
+  } | null>(null)
 
-  const store = (nextAxes: Record<string, string>, nextButtons: Record<string, string>) => {
-    set('sticks', { ...sticks, [active]: { axes: nextAxes, buttons: nextButtons } })
+  const store = (
+    nextAxes: Record<string, string>,
+    nextButtons: Record<string, string>
+  ) => {
+    set('sticks', {
+      ...sticks,
+      [active]: { axes: nextAxes, buttons: nextButtons },
+    })
   }
   const setAxis = (name: string, value: string) => {
     const next = { ...axes, [name]: value }
     if (value !== '')
-      for (const other of Object.keys(next)) if (other !== name && next[other].replace('-', '') === value.replace('-', '')) next[other] = ''
+      for (const other of Object.keys(next))
+        if (
+          other !== name &&
+          next[other].replace('-', '') === value.replace('-', '')
+        )
+          next[other] = ''
     store(next, buttons)
   }
   const setButton = (action: string, value: string) => {
     const next = { ...buttons, [action]: value }
     if (value !== '')
-      for (const other of Object.keys(next)) if (other !== action && next[other] === value) next[other] = ''
+      for (const other of Object.keys(next))
+        if (other !== action && next[other] === value) next[other] = ''
     store(axes, next)
   }
 
   const fileRef = useRef<HTMLInputElement>(null)
   const exportProfile = async () => {
-    const payload = { air: 'joystick', version: 1, device: active, axes, buttons }
+    const payload = {
+      air: 'joystick',
+      version: 1,
+      device: active,
+      axes,
+      buttons,
+    }
     const name =
-      (active.replace(/\s*\(Vendor:.*$/, '').replace(/[^\w.-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'joystick') + '.json'
-    const saved = await shellSaveBlob(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), name)
+      (active
+        .replace(/\s*\(Vendor:.*$/, '')
+        .replace(/[^\w.-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 60) || 'joystick') + '.json'
+    const saved = await shellSaveBlob(
+      new Blob([JSON.stringify(payload, null, 2)], {
+        type: 'application/json',
+      }),
+      name
+    )
     if (saved) toast.success(t`Profile saved`)
     else toast.error(t`Could not save the profile`)
   }
@@ -347,12 +419,20 @@ function JoystickPanel({
     const i = String(Number(mapped.replace('-', '')) + 1)
     return kind === 'axis' ? t`Axis ${i}` : t`Button ${i}`
   }
-  const shows = (label: MessageDescriptor, mapped: string, kind: 'axis' | 'button') =>
+  const shows = (
+    label: MessageDescriptor,
+    mapped: string,
+    kind: 'axis' | 'button'
+  ) =>
     !hunt ||
     i18n._(label).toLowerCase().includes(hunt) ||
     (mapped !== '' && cap(kind, mapped).toLowerCase().includes(hunt))
-  const axisHits = AXIS_ROWS.filter((row) => shows(row.label, axes[row.id] ?? '', 'axis'))
-  const buttonHits = BUTTON_ROWS.filter((row) => shows(row.label, buttons[row.id] ?? '', 'button'))
+  const axisHits = AXIS_ROWS.filter((row) =>
+    shows(row.label, axes[row.id] ?? '', 'axis')
+  )
+  const buttonHits = BUTTON_ROWS.filter((row) =>
+    shows(row.label, buttons[row.id] ?? '', 'button')
+  )
 
   return (
     <div className='space-y-4'>
@@ -363,18 +443,20 @@ function JoystickPanel({
           belongs to the selected stick, so hiding it would leave the results
           with nothing saying which device they are for. */}
       <section>
-        
-          <div className='flex items-center justify-between'>
-            <SectionLabel>
-              <Trans>Input hardware</Trans>
-            </SectionLabel>
-            {active !== '' && (
-              <Badge variant='outline' className='font-mono text-[10px] text-muted-foreground'>
-                {profileFor(active, pad?.mapping ?? '').name}
-              </Badge>
-            )}
-          </div>
-        
+        <div className='flex items-center justify-between'>
+          <SectionLabel>
+            <Trans>Input hardware</Trans>
+          </SectionLabel>
+          {active !== '' && (
+            <Badge
+              variant='outline'
+              className='text-muted-foreground font-mono text-[10px]'
+            >
+              {profileFor(active, pad?.mapping ?? '').name}
+            </Badge>
+          )}
+        </div>
+
         <div className='space-y-3'>
           {known.length ? (
             <Select value={active} onValueChange={(v) => set('joystick', v)}>
@@ -397,33 +479,53 @@ function JoystickPanel({
               </SelectContent>
             </Select>
           ) : (
-            <div className='text-muted-foreground rounded-lg border border-dashed border-border p-3 text-center text-xs'>
-              <Trans>No joystick detected — press any button on it to wake it up.</Trans>
+            <div className='text-muted-foreground border-border rounded-lg border border-dashed p-3 text-center text-xs'>
+              <Trans>
+                No joystick detected — press any button on it to wake it up.
+              </Trans>
             </div>
           )}
 
           <div className='flex items-center justify-between gap-2 pt-1'>
             <div className='flex shrink-0 gap-1.5'>
-              <Button type='button' size='sm' variant='outline' className='gap-1 text-xs' disabled={active === ''} onClick={exportProfile}>
+              <Button
+                type='button'
+                size='sm'
+                variant='outline'
+                className='gap-1 text-xs'
+                disabled={active === ''}
+                onClick={exportProfile}
+              >
                 <Download className='size-3.5' />
                 <Trans>Export</Trans>
               </Button>
-              <Button type='button' size='sm' variant='outline' className='gap-1 text-xs' disabled={active === ''} onClick={() => fileRef.current?.click()}>
+              <Button
+                type='button'
+                size='sm'
+                variant='outline'
+                className='gap-1 text-xs'
+                disabled={active === ''}
+                onClick={() => fileRef.current?.click()}
+              >
                 <Upload className='size-3.5' />
                 <Trans>Import</Trans>
               </Button>
             </div>
-            <input ref={fileRef} type='file' accept='application/json,.json' className='hidden' onChange={importProfile} />
+            <input
+              ref={fileRef}
+              type='file'
+              accept='application/json,.json'
+              className='hidden'
+              onChange={importProfile}
+            />
           </div>
-
         </div>
       </section>
 
       <section hidden={axisHits.length === 0}>
-
-          <SectionLabel>
-            <Trans>Axis calibration and mapping</Trans>
-          </SectionLabel>
+        <SectionLabel>
+          <Trans>Axis calibration and mapping</Trans>
+        </SectionLabel>
 
         <div className='space-y-2 text-xs'>
           {axisHits.map(({ id, label }) => {
@@ -431,13 +533,21 @@ function JoystickPanel({
             const reversed = value.startsWith('-')
             const index = value.replace('-', '')
             const live = pad && index !== '' ? pad.axes[Number(index)] : null
-            const vertical = PAIRS.has(id) && pad && index !== '' ? (pad.axes[Number(index) + 1] ?? null) : null
+            const vertical =
+              PAIRS.has(id) && pad && index !== ''
+                ? (pad.axes[Number(index) + 1] ?? null)
+                : null
             return (
-              <div key={id} className='flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-2.5'>
-                <span className='w-24 shrink-0 font-medium text-foreground'>{i18n._(label)}</span>
+              <div
+                key={id}
+                className='border-border bg-card flex items-center justify-between gap-3 rounded-lg border p-2.5'
+              >
+                <span className='text-foreground w-24 shrink-0 font-medium'>
+                  {i18n._(label)}
+                </span>
                 {live !== null &&
                   (LEVERS.has(id) ? (
-                    <div className='bg-muted relative h-2 min-w-16 flex-1 overflow-hidden rounded border border-border'>
+                    <div className='bg-muted border-border relative h-2 min-w-16 flex-1 overflow-hidden rounded border'>
                       <div
                         className='absolute top-0 bottom-0 left-0 w-full origin-left rounded transition-transform duration-75'
                         style={{
@@ -448,20 +558,29 @@ function JoystickPanel({
                     </div>
                   ) : PAIRS.has(id) ? (
                     <div className='flex min-w-24 flex-1 items-center gap-1.5'>
-                      <span className='text-muted-foreground shrink-0 text-xs'>↔</span>
+                      <span className='text-muted-foreground shrink-0 text-xs'>
+                        ↔
+                      </span>
                       <AxisMeter live={live} />
-                      <span className='text-muted-foreground shrink-0 text-xs'>↕</span>
+                      <span className='text-muted-foreground shrink-0 text-xs'>
+                        ↕
+                      </span>
                       {vertical !== null ? (
                         <AxisMeter live={vertical} />
                       ) : (
-                        <div className='bg-muted/50 h-2 min-w-12 flex-1 rounded border border-dashed border-border' />
+                        <div className='bg-muted/50 border-border h-2 min-w-12 flex-1 rounded border border-dashed' />
                       )}
                     </div>
                   ) : (
                     <AxisMeter live={live} />
                   ))}
                 <div className='flex shrink-0 items-center gap-1.5'>
-                  <Select value={index === '' ? 'none' : index} onValueChange={(v) => setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)}>
+                  <Select
+                    value={index === '' ? 'none' : index}
+                    onValueChange={(v) =>
+                      setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)
+                    }
+                  >
                     <SelectTrigger size='sm' className='h-8 min-w-24 text-xs'>
                       <SelectValue />
                     </SelectTrigger>
@@ -499,10 +618,16 @@ function JoystickPanel({
                     disabled={!pad}
                     onClick={() => {
                       setBaseline(null)
-                      setDetecting(detecting === 'axis:' + id ? null : 'axis:' + id)
+                      setDetecting(
+                        detecting === 'axis:' + id ? null : 'axis:' + id
+                      )
                     }}
                   >
-                    {detecting === 'axis:' + id ? <Trans>Move…</Trans> : <Trans>Detect</Trans>}
+                    {detecting === 'axis:' + id ? (
+                      <Trans>Move…</Trans>
+                    ) : (
+                      <Trans>Detect</Trans>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -512,10 +637,9 @@ function JoystickPanel({
       </section>
 
       <section hidden={buttonHits.length === 0}>
-
-          <SectionLabel>
-            <Trans>Button mappings</Trans>
-          </SectionLabel>
+        <SectionLabel>
+          <Trans>Button mappings</Trans>
+        </SectionLabel>
 
         <div className='space-y-4'>
           {GROUP_ORDER.map((group) => {
@@ -523,22 +647,43 @@ function JoystickPanel({
             if (!rows.length) return null
             return (
               <div key={group} className='space-y-1.5'>
-                <div className='text-muted-foreground text-xs font-semibold tracking-wider uppercase'>{GROUP_TITLES[group]}</div>
+                <div className='text-muted-foreground text-xs font-semibold tracking-wider uppercase'>
+                  {GROUP_TITLES[group]}
+                </div>
                 <div className='grid gap-2 text-xs sm:grid-cols-2'>
                   {rows.map(({ id, label }) => {
                     const value = buttons[id] ?? ''
-                    const held = pad && value !== '' && pad.buttons[Number(value)]
+                    const held =
+                      pad && value !== '' && pad.buttons[Number(value)]
                     return (
                       <div
                         key={id}
                         className={`flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors ${
-                          held ? 'border-primary bg-primary/10 shadow-xs' : 'border-border bg-card'
+                          held
+                            ? 'border-primary bg-primary/10 shadow-xs'
+                            : 'border-border bg-card'
                         }`}
                       >
-                        <span className={held ? 'text-primary font-bold' : 'text-foreground font-medium'}>{i18n._(label)}</span>
+                        <span
+                          className={
+                            held
+                              ? 'text-primary font-bold'
+                              : 'text-foreground font-medium'
+                          }
+                        >
+                          {i18n._(label)}
+                        </span>
                         <div className='flex shrink-0 items-center gap-1'>
-                          <Select value={value === '' ? 'none' : value} onValueChange={(v) => setButton(id, v === 'none' ? '' : v)}>
-                            <SelectTrigger size='sm' className='h-7 min-w-20 px-2 text-xs'>
+                          <Select
+                            value={value === '' ? 'none' : value}
+                            onValueChange={(v) =>
+                              setButton(id, v === 'none' ? '' : v)
+                            }
+                          >
+                            <SelectTrigger
+                              size='sm'
+                              className='h-7 min-w-20 px-2 text-xs'
+                            >
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -563,10 +708,18 @@ function JoystickPanel({
                             disabled={!pad}
                             onClick={() => {
                               setBaseline(null)
-                              setDetecting(detecting === 'button:' + id ? null : 'button:' + id)
+                              setDetecting(
+                                detecting === 'button:' + id
+                                  ? null
+                                  : 'button:' + id
+                              )
                             }}
                           >
-                            {detecting === 'button:' + id ? <Trans>Press…</Trans> : <Trans>Detect</Trans>}
+                            {detecting === 'button:' + id ? (
+                              <Trans>Press…</Trans>
+                            ) : (
+                              <Trans>Detect</Trans>
+                            )}
                           </Button>
                         </div>
                       </div>
@@ -579,7 +732,9 @@ function JoystickPanel({
         </div>
       </section>
 
-      {axisHits.length === 0 && buttonHits.length === 0 && <NoMatch query={query} />}
+      {axisHits.length === 0 && buttonHits.length === 0 && (
+        <NoMatch query={query} />
+      )}
     </div>
   )
 }
@@ -600,7 +755,10 @@ function SoundPanel({
   config: MissionConfig
   set: (key: string, value: MissionConfig[string]) => void
 }) {
-  const volume = { ...DEFAULT_CONFIG.volume, ...((config.volume ?? {}) as Record<string, number>) }
+  const volume = {
+    ...DEFAULT_CONFIG.volume,
+    ...((config.volume ?? {}) as Record<string, number>),
+  }
   const sound = config.sound !== false
   return (
     <div className='space-y-4'>
@@ -614,7 +772,9 @@ function SoundPanel({
       <SectionLabel>
         <Trans>Master volume</Trans>
       </SectionLabel>
-      <div className={`flex items-center gap-4 p-3${sound ? '' : ' opacity-50'}`}>
+      <div
+        className={`flex items-center gap-4 p-3${sound ? '' : 'opacity-50'}`}
+      >
         <Slider
           value={volume.master}
           min={0}
@@ -622,10 +782,15 @@ function SoundPanel({
           step={5}
           disabled={!sound}
           className='flex-1'
-          onChange={(e) => set('volume', { ...volume, master: parseFloat(e.currentTarget.value) })}
+          onChange={(e) =>
+            set('volume', {
+              ...volume,
+              master: parseFloat(e.currentTarget.value),
+            })
+          }
         />
         <span
-          className='text-foreground bg-muted rounded border border-border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
+          className='text-foreground bg-muted border-border rounded border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
           style={{ fontFamily: 'var(--air-mono)' }}
         >
           {volume.master}%
@@ -659,7 +824,13 @@ function SoundPanel({
 // box. It is sticky at the top of the scroll region: on the Keys tab the match
 // can be forty rows down, and a filter you cannot see while reading the result
 // looks like the app has lost half its controls.
-function SearchBox({ query, onQuery }: { query: string; onQuery: (query: string) => void }) {
+function SearchBox({
+  query,
+  onQuery,
+}: {
+  query: string
+  onQuery: (query: string) => void
+}) {
   const { t } = useLingui()
   return (
     // Logical inset and padding, not left/right: air ships nine RTL locales
@@ -668,7 +839,7 @@ function SearchBox({ query, onQuery }: { query: string; onQuery: (query: string)
     // the Arabic text and the clear button where the magnifier belongs. Same
     // ps-9 the other apps' search fields use.
     <div className='relative'>
-      <Search className='text-muted-foreground pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2' />
+      <Search className='text-muted-foreground pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2' />
       <Input
         value={query}
         placeholder={t`Search controls`}
@@ -681,7 +852,7 @@ function SearchBox({ query, onQuery }: { query: string; onQuery: (query: string)
           type='button'
           variant='ghost'
           label={t`Clear`}
-          className='text-muted-foreground hover:text-foreground absolute top-1/2 end-1 size-7 -translate-y-1/2'
+          className='text-muted-foreground hover:text-foreground absolute end-1 top-1/2 size-7 -translate-y-1/2'
           onClick={() => onQuery('')}
         >
           <X className='size-4' />
@@ -714,7 +885,9 @@ function KeysPanel({
   // The action a rebind took the key away from. Taking it is right - two
   // controls on one chord is worse - but it used to happen in silence, and the
   // row that lost its key is usually scrolled off screen.
-  const [taken, setTaken] = useState<{ from: string; chord: string } | null>(null)
+  const [taken, setTaken] = useState<{ from: string; chord: string } | null>(
+    null
+  )
   const [query, setQuery] = useState('')
   const current = (id: string) => overrides[id] ?? KEY_DEFAULTS[id]
   useEffect(() => {
@@ -742,7 +915,8 @@ function KeysPanel({
       setArming(null)
     }
     window.addEventListener('keydown', capture, { capture: true })
-    return () => window.removeEventListener('keydown', capture, { capture: true })
+    return () =>
+      window.removeEventListener('keydown', capture, { capture: true })
   }, [arming]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const hunt = query.trim().toLowerCase()
@@ -754,7 +928,9 @@ function KeysPanel({
   // BUTTON_ROWS too, and a fallback below for the handful of actions the engine
   // knows that neither tab lists: naming nothing is how this went silent in the
   // first place.
-  const lost = taken ? [...KEY_ROWS, ...BUTTON_ROWS].find((r) => r.id === taken.from) : undefined
+  const lost = taken
+    ? [...KEY_ROWS, ...BUTTON_ROWS].find((r) => r.id === taken.from)
+    : undefined
 
   return (
     <div className='space-y-4'>
@@ -766,10 +942,14 @@ function KeysPanel({
             <span className='flex-1'>
               {lost ? (
                 <Trans>
-                  {pretty(taken.chord)} was on {i18n._(lost.label)}, which is now unbound.
+                  {pretty(taken.chord)} was on {i18n._(lost.label)}, which is
+                  now unbound.
                 </Trans>
               ) : (
-                <Trans>{pretty(taken.chord)} was already taken, and that control is now unbound.</Trans>
+                <Trans>
+                  {pretty(taken.chord)} was already taken, and that control is
+                  now unbound.
+                </Trans>
               )}
             </span>
             <IconButton
@@ -790,16 +970,18 @@ function KeysPanel({
         if (!rows.length) return null
         return (
           <section key={group}>
-
-              <SectionLabel>
-                {GROUP_TITLES[group]}
-              </SectionLabel>
+            <SectionLabel>{GROUP_TITLES[group]}</SectionLabel>
 
             <div>
               <div className='grid gap-2 text-xs sm:grid-cols-2'>
                 {rows.map(({ id, label }) => (
-                  <div key={id} className='flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2'>
-                    <span className='font-medium text-foreground'>{i18n._(label)}</span>
+                  <div
+                    key={id}
+                    className='border-border bg-card flex items-center justify-between gap-2 rounded-lg border px-3 py-2'
+                  >
+                    <span className='text-foreground font-medium'>
+                      {i18n._(label)}
+                    </span>
                     <span className='flex items-center gap-1'>
                       {arming === id ? (
                         <span className='text-primary animate-pulse font-mono text-xs font-semibold'>
@@ -815,7 +997,11 @@ function KeysPanel({
                         className='h-7 px-2 text-xs'
                         onClick={() => setArming(arming === id ? null : id)}
                       >
-                        {arming === id ? <Trans>Cancel</Trans> : <Trans>Set</Trans>}
+                        {arming === id ? (
+                          <Trans>Cancel</Trans>
+                        ) : (
+                          <Trans>Set</Trans>
+                        )}
                       </Button>
                       {current(id) !== 'None' && (
                         <Button
@@ -824,7 +1010,9 @@ function KeysPanel({
                           variant='ghost'
                           className='text-muted-foreground hover:text-destructive h-7 w-7 p-0 text-xs'
                           title={t`None`}
-                          onClick={() => set('keys', { ...overrides, [id]: 'None' })}
+                          onClick={() =>
+                            set('keys', { ...overrides, [id]: 'None' })
+                          }
                         >
                           ✕
                         </Button>
@@ -841,17 +1029,44 @@ function KeysPanel({
       {/* Not rows, so there is nothing here for the search to match: the
           section would just sit under an empty result looking like a hit. */}
       <section hidden={hunt !== ''}>
+        <SectionLabel>
+          <Trans>Fixed flight keys</Trans>
+        </SectionLabel>
 
-          <SectionLabel>
-            <Trans>Fixed flight keys</Trans>
-          </SectionLabel>
-        
         <div>
           <div className='grid gap-x-6 gap-y-2 text-xs sm:grid-cols-2'>
-            <ControlRow action={<Trans>Views</Trans>} keys={<><Key>1</Key>–<Key>5</Key></>} />
-            <ControlRow action={<Trans>Reset view</Trans>} keys={<Key>0</Key>} />
-            <ControlRow action={<Trans>Look / orbit</Trans>} keys={<><Key>←</Key><Key>→</Key><Key>↑</Key><Key>↓</Key></>} />
-            <ControlRow action={<Trans>Camera distance</Trans>} keys={<><Key>−</Key><Key>=</Key></>} />
+            <ControlRow
+              action={<Trans>Views</Trans>}
+              keys={
+                <>
+                  <Key>1</Key>–<Key>5</Key>
+                </>
+              }
+            />
+            <ControlRow
+              action={<Trans>Reset view</Trans>}
+              keys={<Key>0</Key>}
+            />
+            <ControlRow
+              action={<Trans>Look / orbit</Trans>}
+              keys={
+                <>
+                  <Key>←</Key>
+                  <Key>→</Key>
+                  <Key>↑</Key>
+                  <Key>↓</Key>
+                </>
+              }
+            />
+            <ControlRow
+              action={<Trans>Camera distance</Trans>}
+              keys={
+                <>
+                  <Key>−</Key>
+                  <Key>=</Key>
+                </>
+              }
+            />
           </div>
         </div>
       </section>
@@ -861,7 +1076,7 @@ function KeysPanel({
 
 function Key({ children }: { children: ReactNode }) {
   return (
-    <kbd className='bg-muted text-foreground border-border shadow-2xs inline-flex items-center justify-center rounded border px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none'>
+    <kbd className='bg-muted text-foreground border-border inline-flex items-center justify-center rounded border px-1.5 py-0.5 font-mono text-[11px] leading-none font-semibold shadow-2xs'>
       {children}
     </kbd>
   )
@@ -896,11 +1111,10 @@ function GraphicsPanel({
   return (
     <div className='space-y-4'>
       <section>
-        
-          <SectionLabel>
-            <Trans>Graphics preset</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Graphics preset</Trans>
+        </SectionLabel>
+
         <div>
           <div className='grid grid-cols-2 gap-2 sm:grid-cols-4'>
             {presets.map((p) => (
@@ -910,7 +1124,9 @@ function GraphicsPanel({
                 variant={active === p.id ? 'default' : 'outline'}
                 size='sm'
                 className='text-xs font-semibold'
-                onClick={() => onChange({ ...config, ...GRAPHICS_PRESETS[p.id] })}
+                onClick={() =>
+                  onChange({ ...config, ...GRAPHICS_PRESETS[p.id] })
+                }
               >
                 {p.label}
               </Button>
@@ -920,11 +1136,10 @@ function GraphicsPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Detail</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Detail</Trans>
+        </SectionLabel>
+
         <div>
           <div className='grid gap-1 sm:grid-cols-2'>
             <SliderRow
@@ -966,11 +1181,10 @@ function GraphicsPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Effects</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Effects</Trans>
+        </SectionLabel>
+
         <div>
           <div className='grid gap-1 sm:grid-cols-2'>
             <SwitchRow
@@ -1042,13 +1256,12 @@ function GeneralPanel({
   return (
     <div className='space-y-4'>
       <section>
-        
-          <SectionLabel>
-            <Trans>Pilot identity</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Pilot identity</Trans>
+        </SectionLabel>
+
         <div className='space-y-2'>
-          <Label className='text-xs text-muted-foreground uppercase font-medium'>
+          <Label className='text-muted-foreground text-xs font-medium uppercase'>
             <Trans>Callsign</Trans>
           </Label>
           <Input
@@ -1064,11 +1277,10 @@ function GeneralPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Recording</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Recording</Trans>
+        </SectionLabel>
+
         <div>
           <SwitchRow
             id='record'
@@ -1118,8 +1330,10 @@ export function SettingsDialog({
   onTabChange: (tab: string) => void
   guarded?: boolean
 }) {
-  const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
-    onChange({ ...config, [key]: value })
+  const set = <K extends keyof MissionConfig>(
+    key: K,
+    value: MissionConfig[K]
+  ) => onChange({ ...config, [key]: value })
   const identity = useIdentityName()
   const { t } = useLingui()
 
@@ -1167,27 +1381,42 @@ export function SettingsDialog({
         </div>
       }
     >
-      <Tabs variant='underline' value={tab} onValueChange={onTabChange} className='flex flex-col min-h-0 flex-1 space-y-4'>
+      <Tabs
+        variant='underline'
+        value={tab}
+        onValueChange={onTabChange}
+        className='flex min-h-0 flex-1 flex-col space-y-4'
+      >
         <TabsList aria-label={t`Settings`}>
           <TabsTrigger value='general' className='gap-2'>
             <User className='size-4' />
-            <span><Trans>General</Trans></span>
+            <span>
+              <Trans>General</Trans>
+            </span>
           </TabsTrigger>
           <TabsTrigger value='graphics' className='gap-2'>
             <Monitor className='size-4' />
-            <span><Trans>Graphics</Trans></span>
+            <span>
+              <Trans>Graphics</Trans>
+            </span>
           </TabsTrigger>
           <TabsTrigger value='sound' className='gap-2'>
             <Volume2 className='size-4' />
-            <span><Trans>Sound</Trans></span>
+            <span>
+              <Trans>Sound</Trans>
+            </span>
           </TabsTrigger>
           <TabsTrigger value='controls' className='gap-2'>
             <Gamepad2 className='size-4' />
-            <span><Trans>Joystick</Trans></span>
+            <span>
+              <Trans>Joystick</Trans>
+            </span>
           </TabsTrigger>
           <TabsTrigger value='keys' className='gap-2'>
             <Keyboard className='size-4' />
-            <span><Trans>Keys</Trans></span>
+            <span>
+              <Trans>Keys</Trans>
+            </span>
           </TabsTrigger>
         </TabsList>
         <div className='min-h-0 flex-1 overflow-y-auto pr-1'>
@@ -1211,5 +1440,3 @@ export function SettingsDialog({
     </MenuDialog>
   )
 }
-
-

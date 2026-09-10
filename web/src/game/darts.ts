@@ -31,8 +31,16 @@ export const DART_STRIDE = 25
 export function parseDarts(missiles: Uint8Array): Dart[] {
   const list: Dart[] = []
   if (missiles.byteLength % DART_STRIDE !== 0) return list
-  const view = new DataView(missiles.buffer, missiles.byteOffset, missiles.byteLength)
-  for (let base = 0; base + DART_STRIDE <= missiles.byteLength && list.length < DART_MOST; base += DART_STRIDE) {
+  const view = new DataView(
+    missiles.buffer,
+    missiles.byteOffset,
+    missiles.byteLength
+  )
+  for (
+    let base = 0;
+    base + DART_STRIDE <= missiles.byteLength && list.length < DART_MOST;
+    base += DART_STRIDE
+  ) {
     const position: [number, number, number] = [
       view.getFloat32(base, true),
       view.getFloat32(base + 4, true),
@@ -43,11 +51,17 @@ export function parseDarts(missiles: Uint8Array): Dart[] {
       view.getFloat32(base + 16, true),
       view.getFloat32(base + 20, true),
     ]
-    if (!position.every(Number.isFinite) || !velocity.every(Number.isFinite)) continue
+    if (!position.every(Number.isFinite) || !velocity.every(Number.isFinite))
+      continue
     // The shooter byte carries the round's KIND in its high bit (#27):
     // slots stop at 62, so the bit is free and the record stays 25 bytes.
     const who = view.getUint8(base + 24)
-    list.push({ position, velocity, shooter: who & 0x7f, radar: (who & 0x80) !== 0 })
+    list.push({
+      position,
+      velocity,
+      shooter: who & 0x7f,
+      radar: (who & 0x80) !== 0,
+    })
   }
   return list
 }

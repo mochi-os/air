@@ -2,14 +2,32 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, it, expect } from 'vitest'
-import { phase, words, type Round, MENACE_STRIDE, MENACE_MOST, MENACE_HEATER, MENACE_BEATEN } from './menace'
+import {
+  phase,
+  words,
+  type Round,
+  MENACE_STRIDE,
+  MENACE_MOST,
+  MENACE_HEATER,
+  MENACE_BEATEN,
+} from './menace'
 
 const bandit = { name: 'bandit' }
 
 function round(over: Partial<Round> = {}): Round {
-  return { active: true, target: bandit, kind: '9m', px: 1, py: 2, pz: 3, vx: 4, vy: 5, vz: 6, ...over }
+  return {
+    active: true,
+    target: bandit,
+    kind: '9m',
+    px: 1,
+    py: 2,
+    pz: 3,
+    vx: 4,
+    vy: 5,
+    vz: 6,
+    ...over,
+  }
 }
 
 describe('phase', () => {
@@ -43,7 +61,9 @@ describe('phase', () => {
   })
 
   it('keeps a radar round on its phase even when its flags are set', () => {
-    expect(phase(round({ kind: '120c', phase: 3, loose: true, blind: 1.5 }))).toBe(3)
+    expect(
+      phase(round({ kind: '120c', phase: 3, loose: true, blind: 1.5 }))
+    ).toBe(3)
   })
 })
 
@@ -60,7 +80,9 @@ describe('words', () => {
 
   it('declares nothing that does not concern the bandit', () => {
     expect(words([round({ active: false })], bandit)).toEqual([])
-    expect(words([round({ target: { name: 'someone else' } })], bandit)).toEqual([])
+    expect(
+      words([round({ target: { name: 'someone else' } })], bandit)
+    ).toEqual([])
   })
 
   it('caps the declaration rather than growing without bound', () => {

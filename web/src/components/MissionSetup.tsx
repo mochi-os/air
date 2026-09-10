@@ -2,11 +2,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, ChevronRight, ClipboardList, CloudRain, Compass, Crosshair, History, Info, LogIn, MessageSquare, Moon, Plane, PlaneTakeoff, Play, Send, Settings, Ship, Signal, SignalHigh, SignalLow, SignalMedium, Sun, TriangleAlert, type LucideIcon, Users, X } from 'lucide-react'
-import { Input } from '@mochi/web/components/ui/input'
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,21 +21,13 @@ import {
   useFormat,
   useShellStorage,
 } from '@mochi/web'
-import { useIdentityName } from '../lib/config-store'
-import { diagnose } from '../lib/graphics'
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@mochi/web/components/ui/select'
 import { Button } from '@mochi/web/components/ui/button'
-import { Label } from '@mochi/web/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@mochi/web/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@mochi/web/components/ui/tooltip'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@mochi/web/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -38,22 +35,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@mochi/web/components/ui/dialog'
-import { type MissionConfig, type StationSlot, seedStart } from '../lib/config'
-import { ServerList, ServerRow } from './ServerList'
-import { useServers } from '../hooks/use-servers'
-import { Multiplayer } from './Multiplayer'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Input } from '@mochi/web/components/ui/input'
+import { Label } from '@mochi/web/components/ui/label'
 import {
-  PRESETS,
-  asymmetry,
-  matches,
-  normalize,
-  outcome,
-  outcomes,
-  weight,
-  resolve,
-  type Catalog,
-} from '../game/stores'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@mochi/web/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@mochi/web/components/ui/tooltip'
+import {
+  Check,
+  ChevronRight,
+  ClipboardList,
+  CloudRain,
+  Compass,
+  Crosshair,
+  History,
+  Info,
+  LogIn,
+  MessageSquare,
+  Moon,
+  Plane,
+  PlaneTakeoff,
+  Play,
+  Send,
+  Settings,
+  Ship,
+  Signal,
+  SignalHigh,
+  SignalLow,
+  SignalMedium,
+  Sun,
+  TriangleAlert,
+  type LucideIcon,
+  Users,
+  X,
+} from 'lucide-react'
 import { flight_catalog, flight_load } from '../game/flight'
 import {
   default_server,
@@ -65,10 +89,26 @@ import {
   type Join,
   type WorldChatLine,
 } from '../game/net'
-import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
-import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
+import {
+  PRESETS,
+  asymmetry,
+  matches,
+  normalize,
+  outcome,
+  outcomes,
+  weight,
+  resolve,
+  type Catalog,
+} from '../game/stores'
+import { useServers } from '../hooks/use-servers'
+import { type MissionConfig, type StationSlot, seedStart } from '../lib/config'
+import { useIdentityName } from '../lib/config-store'
+import { diagnose } from '../lib/graphics'
+import { Multiplayer } from './Multiplayer'
+import { ServerList, ServerRow } from './ServerList'
 import { SettingsDialog } from './SettingsDialog'
-
+import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
+import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
 
 const LoadoutPreview = lazy(() =>
   import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
@@ -94,13 +134,18 @@ function Segmented<T extends string>({
   options: Choice<T>[]
 }) {
   return (
-    <Tabs variant='segmented' value={value} onValueChange={(v) => onChange(v as T)} className='w-full'>
-      <TabsList className='w-full flex'>
+    <Tabs
+      variant='segmented'
+      value={value}
+      onValueChange={(v) => onChange(v as T)}
+      className='w-full'
+    >
+      <TabsList className='flex w-full'>
         {options.map(({ value: v, label, icon: Icon }) => (
           <TabsTrigger
             key={v}
             value={v}
-            className='flex-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+            className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex-1 text-xs font-semibold'
           >
             {Icon && <Icon className='size-3.5' />}
             {label}
@@ -122,20 +167,34 @@ function Segmented<T extends string>({
 const TILE =
   'hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group outline-none'
 
-function TileFace({ icon: Icon, title }: { icon: LucideIcon; title: ReactNode }) {
+function TileFace({
+  icon: Icon,
+  title,
+}: {
+  icon: LucideIcon
+  title: ReactNode
+}) {
   return (
     <>
       <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
         <Icon className='size-4' />
       </div>
-      <div className='flex-1 min-w-0'>
-        <div className='text-sm font-semibold truncate'>{title}</div>
+      <div className='min-w-0 flex-1'>
+        <div className='truncate text-sm font-semibold'>{title}</div>
       </div>
     </>
   )
 }
 
-function Tile({ icon, title, onOpen }: { icon: LucideIcon; title: ReactNode; onOpen: () => void }) {
+function Tile({
+  icon,
+  title,
+  onOpen,
+}: {
+  icon: LucideIcon
+  title: ReactNode
+  onOpen: () => void
+}) {
   return (
     <Card
       role='button'
@@ -265,9 +324,13 @@ function Armament({
     { name: 'fox3', title: 'Fox 3' },
   ]
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
-  const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
+  const gross = book
+    ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10
+    : 0
   const LAUNCH = 48000
-  const moment = book ? Math.round((Math.abs(asymmetry(loadout, book)) * 7.233) / 10) * 10 : 0
+  const moment = book
+    ? Math.round((Math.abs(asymmetry(loadout, book)) * 7.233) / 10) * 10
+    : 0
   const CATAPULT = 6000
   return (
     <div className='space-y-2.5'>
@@ -292,8 +355,10 @@ function Armament({
               type='button'
               variant={active ? 'default' : 'outline'}
               size='sm'
-              className='gap-1.5 text-xs font-semibold flex-1'
-              onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FULL_FUEL)}
+              className='flex-1 gap-1.5 text-xs font-semibold'
+              onClick={() =>
+                onPreset(structuredClone(PRESETS[entry.name]), FULL_FUEL)
+              }
             >
               {active && <Check className='size-3.5' />}
               {entry.title}
@@ -315,7 +380,8 @@ function Armament({
           return (
             <div key={station} className='space-y-1'>
               <div className='text-muted-foreground text-xs'>
-                {positions[station]} <span className='opacity-60'>{station}</span>
+                {positions[station]}{' '}
+                <span className='opacity-60'>{station}</span>
               </div>
               {dead ? (
                 <div className='text-muted-foreground/60 py-1 text-xs'>—</div>
@@ -324,7 +390,11 @@ function Armament({
                   value={current || 'none'}
                   onValueChange={(v) => {
                     const picked = open.find((o) => (o.id || 'none') === v)
-                    if (picked) onChange({ ...loadout, [String(station)]: structuredClone(picked.slot) })
+                    if (picked)
+                      onChange({
+                        ...loadout,
+                        [String(station)]: structuredClone(picked.slot),
+                      })
                   }}
                 >
                   <SelectTrigger size='sm' className='h-7 w-full px-2 text-xs'>
@@ -332,7 +402,11 @@ function Armament({
                   </SelectTrigger>
                   <SelectContent>
                     {usable.map((o) => (
-                      <SelectItem key={o.id || 'none'} value={o.id || 'none'} className='text-xs'>
+                      <SelectItem
+                        key={o.id || 'none'}
+                        value={o.id || 'none'}
+                        className='text-xs'
+                      >
                         {label(o.id)}
                       </SelectItem>
                     ))}
@@ -351,7 +425,17 @@ function Armament({
         )
       })()}
 
-      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={FULL_FUEL} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
+      <SliderRow
+        label={<Trans>Internal fuel</Trans>}
+        value={fuel}
+        min={1500}
+        max={FULL_FUEL}
+        step={100}
+        decimals={0}
+        suffix=' lb'
+        tight
+        onChange={onFuel}
+      />
 
       {book && (
         <div className='px-3 text-xs'>
@@ -359,7 +443,10 @@ function Armament({
               the fuel label above it. */}
           {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
           <Trans>Gross weight</Trans>{' '}
-          <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+          <span
+            className='tabular-nums'
+            style={{ fontFamily: 'var(--air-mono)' }}
+          >
             {/* jsx-text-ok: cockpit unit annunciation */}
             {formatNumber(gross)} lb
           </span>
@@ -374,7 +461,10 @@ function Armament({
                   CSS transform of the capitalised one: German capitalises its nouns, so
                   Asymmetrie must stay capitalised where English asymmetry does not. */}
               <Trans>asymmetry</Trans>{' '}
-              <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+              <span
+                className='tabular-nums'
+                style={{ fontFamily: 'var(--air-mono)' }}
+              >
                 {/* jsx-text-ok: cockpit unit annunciation */}
                 {formatNumber(moment)} ft·lb
               </span>
@@ -384,13 +474,18 @@ function Armament({
           {gross > LAUNCH && (
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
-              <Trans>{formatNumber(gross - LAUNCH)} lb over maximum launch weight</Trans>
+              <Trans>
+                {formatNumber(gross - LAUNCH)} lb over maximum launch weight
+              </Trans>
             </div>
           )}
           {catapult && moment > CATAPULT && (
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
-              <Trans>{formatNumber(moment - CATAPULT)} ft·lb over the catapult asymmetry limit</Trans>
+              <Trans>
+                {formatNumber(moment - CATAPULT)} ft·lb over the catapult
+                asymmetry limit
+              </Trans>
             </div>
           )}
         </div>
@@ -399,26 +494,83 @@ function Armament({
   )
 }
 
-const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
-  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['186-318', '270-337', '284-343'] },
-  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '229-219', '192-259'] },
-  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['562-576', '445-387', '342-348'] },
-  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['600-530', '463-475', '354-273'] },
-  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['359-433', '366-232', '178-199'] },
-  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['223-263', '225-266', '229-274'] },
-  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['339-386', '337-392', '336-340'] },
-  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['373-470', '408-437', '326-328'] },
-  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-196', '173-197', '186-201'] },
-  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-186', '159-187', '161-191'] },
-  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['110-126', '108-126', '—'] },
-  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '126-147', '—'] },
+const REFERENCE_ROWS: {
+  id: string
+  label: ReactNode
+  cells: [string, string, string]
+}[] = [
+  {
+    id: 'vx-mil',
+    label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>,
+    cells: ['186-318', '270-337', '284-343'],
+  },
+  {
+    id: 'vx-ab',
+    label: <Trans>Steepest climb (Vx, afterburner)</Trans>,
+    cells: ['Vertical', '229-219', '192-259'],
+  },
+  {
+    id: 'vy-mil',
+    label: <Trans>Best climb (Vy, 100% thrust)</Trans>,
+    cells: ['562-576', '445-387', '342-348'],
+  },
+  {
+    id: 'vy-ab',
+    label: <Trans>Best climb (Vy, afterburner)</Trans>,
+    cells: ['600-530', '463-475', '354-273'],
+  },
+  {
+    id: 'vyse',
+    label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>,
+    cells: ['359-433', '366-232', '178-199'],
+  },
+  {
+    id: 'glide',
+    label: <Trans>Best glide (engines out)</Trans>,
+    cells: ['223-263', '225-266', '229-274'],
+  },
+  {
+    id: 'corner',
+    label: <Trans>Corner speed (best instant turn)</Trans>,
+    cells: ['339-386', '337-392', '336-340'],
+  },
+  {
+    id: 'sustained',
+    label: <Trans>Best sustained turn speed</Trans>,
+    cells: ['373-470', '408-437', '326-328'],
+  },
+  {
+    id: 'tightest',
+    label: <Trans>Tightest sustained turn speed</Trans>,
+    cells: ['167-196', '173-197', '186-201'],
+  },
+  {
+    id: 'vs1',
+    label: <Trans>Stall, clean (Vs1)</Trans>,
+    cells: ['159-186', '159-187', '161-191'],
+  },
+  {
+    id: 'vs0',
+    label: <Trans>Stall, landing config (Vs0)</Trans>,
+    cells: ['110-126', '108-126', '—'],
+  },
+  {
+    id: 'vapp',
+    label: <Trans>Approach, on-speed (Vapp)</Trans>,
+    cells: ['126-148', '126-147', '—'],
+  },
 ]
 
 function ReferenceDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type='button' variant='ghost' size='sm' className='text-muted-foreground hover:text-foreground text-xs gap-1.5 h-7 px-2'>
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          className='text-muted-foreground hover:text-foreground h-7 gap-1.5 px-2 text-xs'
+        >
           <Compass className='size-3.5' />
           <Trans>Reference</Trans>
         </Button>
@@ -432,7 +584,7 @@ function ReferenceDialog() {
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead>
-              <tr className='text-muted-foreground border-b border-border text-left'>
+              <tr className='text-muted-foreground border-border border-b text-left'>
                 <th className='py-1.5 pr-3 font-medium'></th>
                 <th className='px-3 py-1.5 text-right font-medium'>
                   <Trans>Sea level</Trans>
@@ -447,10 +599,16 @@ function ReferenceDialog() {
             </thead>
             <tbody>
               {REFERENCE_ROWS.map((row) => (
-                <tr key={row.id} className='border-b border-border/40 border-dashed last:border-0'>
+                <tr
+                  key={row.id}
+                  className='border-border/40 border-b border-dashed last:border-0'
+                >
                   <td className='py-1.5 pr-3 whitespace-nowrap'>{row.label}</td>
                   {row.cells.map((cell, i) => (
-                    <td key={i} className='text-muted-foreground px-3 py-1.5 text-right tabular-nums whitespace-nowrap'>
+                    <td
+                      key={i}
+                      className='text-muted-foreground px-3 py-1.5 text-right whitespace-nowrap tabular-nums'
+                    >
                       {cell === 'Vertical' ? <Trans>Vertical</Trans> : cell}
                     </td>
                   ))}
@@ -462,9 +620,10 @@ function ReferenceDialog() {
         <div className='text-muted-foreground space-y-1 text-xs leading-relaxed'>
           <p>
             <Trans>
-              Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum
-              gross). Data derived experimentally in-game. Any differences from the real aircraft
-              reflect simulator flight model errors.
+              Speeds in KCAS, as a range from light (minimum fuel, no stores) to
+              heavy (maximum gross). Data derived experimentally in-game. Any
+              differences from the real aircraft reflect simulator flight model
+              errors.
             </Trans>
           </p>
         </div>
@@ -477,7 +636,12 @@ function CreditsDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type='button' variant='ghost' size='sm' className='text-muted-foreground hover:text-foreground text-xs gap-1.5 h-7 px-2'>
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          className='text-muted-foreground hover:text-foreground h-7 gap-1.5 px-2 text-xs'
+        >
           <Info className='size-3.5' />
           <Trans>Credits</Trans>
         </Button>
@@ -491,9 +655,10 @@ function CreditsDialog() {
         <div className='text-muted-foreground space-y-3 text-sm'>
           <p className='leading-relaxed'>
             <Trans>
-              Aircraft model <b>“F/A-18C Hornet”</b> by <b>CreadorDeMu</b> (Sketchfab), licensed
-              under <b>CC BY 4.0</b>. Modified: reoriented and rescaled, unused texture payload
-              removed, external stores split into a separate file, one shroud mesh mirrored.
+              Aircraft model <b>“F/A-18C Hornet”</b> by <b>CreadorDeMu</b>{' '}
+              (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: reoriented
+              and rescaled, unused texture payload removed, external stores
+              split into a separate file, one shroud mesh mirrored.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -518,8 +683,9 @@ function CreditsDialog() {
           <p className='leading-relaxed'>
             <Trans>
               Aircraft carrier <b>“USS Nimitz CVN-68 Aircraft Carrier”</b> by{' '}
-              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified:
-              rescaled, reoriented, sunk to the waterline, and simplified for the web.
+              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under{' '}
+              <b>CC BY 4.0</b>. Modified: rescaled, reoriented, sunk to the
+              waterline, and simplified for the web.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -543,8 +709,9 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Missile model <b>“AIM-120C AMRAAM”</b> by <b>Pippa</b> (Sketchfab), licensed under{' '}
-              <b>CC BY 4.0</b>. Modified: rescaled, reoriented, and centred for placement.
+              Missile model <b>“AIM-120C AMRAAM”</b> by <b>Pippa</b>{' '}
+              (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: rescaled,
+              reoriented, and centred for placement.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -568,8 +735,9 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Explosion animation <b>“Explosion02HD”</b> by <b>Unity Technologies</b> (Unity Labs
-              VFX image sequences), released under <b>CC0</b>. Modified: recompressed for the web.
+              Explosion animation <b>“Explosion02HD”</b> by{' '}
+              <b>Unity Technologies</b> (Unity Labs VFX image sequences),
+              released under <b>CC0</b>. Modified: recompressed for the web.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -593,10 +761,11 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Midway Atoll map — imagery contains modified <b>Copernicus Sentinel-2</b> data (2026);
-              airfield geometry (runway, taxiways, aprons) © <b>OpenStreetMap</b> contributors,
-              licensed under <b>ODbL</b>; coastline and reef data from <b>NOAA NCCOS</b> (public
-              domain).
+              Midway Atoll map — imagery contains modified{' '}
+              <b>Copernicus Sentinel-2</b> data (2026); airfield geometry
+              (runway, taxiways, aprons) © <b>OpenStreetMap</b> contributors,
+              licensed under <b>ODbL</b>; coastline and reef data from{' '}
+              <b>NOAA NCCOS</b> (public domain).
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -689,7 +858,8 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
         const reply = await world_chat(address, cursor.current)
         if (!alive) return
         cursor.current = reply.sequence
-        if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+        if (reply.lines.length)
+          setLounge((have) => [...have, ...reply.lines].slice(-100))
         setUp(true)
       } catch {
         if (alive) setUp(false)
@@ -721,12 +891,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       stuck.current = true
       const reply = await world_chat(address, cursor.current)
       cursor.current = reply.sequence
-      if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+      if (reply.lines.length)
+        setLounge((have) => [...have, ...reply.lines].slice(-100))
       setError('')
       setUp(true)
     } catch (e) {
       setUp(false)
-      setError(up ? getErrorMessage(e, t`Could not send the message`) : t`World server not reachable`)
+      setError(
+        up
+          ? getErrorMessage(e, t`Could not send the message`)
+          : t`World server not reachable`
+      )
     }
   }
 
@@ -742,25 +917,35 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
         // it, and scrollTop lands fractional at some zoom levels.
         onScroll={(e) => {
           const box = e.currentTarget
-          stuck.current = box.scrollHeight - box.scrollTop - box.clientHeight < 24
+          stuck.current =
+            box.scrollHeight - box.scrollTop - box.clientHeight < 24
         }}
-        className='flex-1 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-card p-2.5 text-sm'
+        className='border-border bg-card flex-1 space-y-0.5 overflow-y-auto rounded-lg border p-2.5 text-sm'
       >
         {lounge.length === 0 && (
           <div className='text-muted-foreground text-xs'>
-            {up ? <Trans>Nothing yet — say hello.</Trans> : <Trans>No world server.</Trans>}
+            {up ? (
+              <Trans>Nothing yet — say hello.</Trans>
+            ) : (
+              <Trans>No world server.</Trans>
+            )}
           </div>
         )}
         {lounge.map((line) =>
           line.event === 'made' ? (
-            <div key={line.sequence} className='text-muted-foreground text-xs italic'>
+            <div
+              key={line.sequence}
+              className='text-muted-foreground text-xs italic'
+            >
               <Trans>
                 {line.name} created “{line.label}”
               </Trans>
             </div>
           ) : (
             <div key={line.sequence} className='break-words'>
-              <span className='text-muted-foreground font-medium'>{line.name}: </span>
+              <span className='text-muted-foreground font-medium'>
+                {line.name}:{' '}
+              </span>
               {line.text}
             </div>
           )
@@ -770,7 +955,10 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-lg border p-1 focus-within:ring-1'>
         {/* The wordless placeholder: it marks the box as somewhere to write
             whether or not there is anything in it, and needs no translation. */}
-        <MessageSquare className='text-muted-foreground ml-2 size-4 shrink-0' aria-hidden='true' />
+        <MessageSquare
+          className='text-muted-foreground ml-2 size-4 shrink-0'
+          aria-hidden='true'
+        />
         <label className='min-w-0 flex-1'>
           <span className='sr-only'>
             <Trans>Message</Trans>
@@ -847,7 +1035,10 @@ function ServerFlow({
     if (!entered) return
     const abort = new AbortController()
     setWorld('')
-    world_status(normalize_server(config.world || default_server()), abort.signal)
+    world_status(
+      normalize_server(config.world || default_server()),
+      abort.signal
+    )
       .then((s) => setWorld(s.name))
       .catch(() => {})
     return () => abort.abort()
@@ -861,11 +1052,18 @@ function ServerFlow({
   const minted = useRef('')
   if (!config.pilot && !minted.current) minted.current = crypto.randomUUID()
   const pilot = config.pilot || minted.current
-  const recents = String(config.servers ?? '').split('\n').filter(Boolean)
+  const recents = String(config.servers ?? '')
+    .split('\n')
+    .filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
     const next = { ...config, world: chosen, pilot }
-    onChange({ ...next, servers: [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5).join('\n') })
+    onChange({
+      ...next,
+      servers: [chosen, ...recents.filter((r) => r !== chosen)]
+        .slice(0, 5)
+        .join('\n'),
+    })
     setEntered(true)
     bar(chosen)
   }
@@ -873,10 +1071,16 @@ function ServerFlow({
   // away, an address typed wrong - would otherwise sit in the list for good,
   // and the list is the first thing read when choosing where to fly.
   const forget = (server: string) => {
-    onChange({ ...config, servers: recents.filter((r) => r !== server).join('\n') })
+    onChange({
+      ...config,
+      servers: recents.filter((r) => r !== server).join('\n'),
+    })
   }
   const leave = () => {
-    void world_withdraw(normalize_server(config.world || default_server()), pilot)
+    void world_withdraw(
+      normalize_server(config.world || default_server()),
+      pilot
+    )
     setEntered(false)
     bar(null)
     onClose()
@@ -890,13 +1094,22 @@ function ServerFlow({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once per mount, with the mount's config
   }, [initial])
   if (!entered) {
-    const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
-    const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
+    const matched = (r: string) =>
+      (servers ?? []).find(
+        (s) => normalize_server(s.address) === normalize_server(r)
+      )
+    const publics = (servers ?? []).filter(
+      (s) =>
+        !recents.some(
+          (r) => normalize_server(r) === normalize_server(s.address)
+        )
+    )
     // servers is null until the first response lands. Without a state of its
     // own that showed the private-server card alone, which reads as "there are
     // no public servers" — the answer this dialog does not have yet.
     const listing = servers === null
-    const bare = servers !== null && publics.length === 0 && recents.length === 0
+    const bare =
+      servers !== null && publics.length === 0 && recents.length === 0
     const entry = private_ || bare
     return (
       <MenuDialog open onClose={onClose} title={<Trans>Join server</Trans>}>
@@ -915,16 +1128,31 @@ function ServerFlow({
                     <div key={r} className='flex items-center gap-1.5'>
                       <div className='min-w-0 flex-1'>
                         {s ? (
-                          <ServerRow server={s} version={version} onPick={(a) => enter(a)} />
+                          <ServerRow
+                            server={s}
+                            version={version}
+                            onPick={(a) => enter(a)}
+                          />
                         ) : (
-                          <Button type='button' variant='outline' className='w-full justify-start font-mono text-sm' onClick={() => enter(r)}>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            className='w-full justify-start font-mono text-sm'
+                            onClick={() => enter(r)}
+                          >
                             {r}
                           </Button>
                         )}
                       </div>
                       {/* Beside the row, not inside it: the row is itself a
                           button, and a button cannot hold another. */}
-                      <Button type='button' variant='ghost' size='icon' aria-label={t`Remove ${r}`} onClick={() => forget(r)}>
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='icon'
+                        aria-label={t`Remove ${r}`}
+                        onClick={() => forget(r)}
+                      >
                         <X className='size-4' />
                       </Button>
                     </div>
@@ -959,7 +1187,11 @@ function ServerFlow({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ServerList servers={publics} version={version} onPick={(a) => enter(a)} />
+                <ServerList
+                  servers={publics}
+                  version={version}
+                  onPick={(a) => enter(a)}
+                />
               </CardContent>
             </Card>
           )}
@@ -967,9 +1199,11 @@ function ServerFlow({
             <button
               type='button'
               onClick={() => setPrivate(!private_)}
-              className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors'
+              className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase transition-colors'
             >
-              <ChevronRight className={`size-4 transition-transform ${entry ? 'rotate-90' : ''}`} />
+              <ChevronRight
+                className={`size-4 transition-transform ${entry ? 'rotate-90' : ''}`}
+              />
               <Trans>Connect to private server</Trans>
             </button>
             {entry && (
@@ -1000,9 +1234,13 @@ function ServerFlow({
           <div className='mb-4 flex items-center justify-between'>
             <Tooltip>
               <TooltipTrigger asChild>
-                <h2 className='text-2xl font-semibold tracking-tight'>{world || <Trans>Matches</Trans>}</h2>
+                <h2 className='text-2xl font-semibold tracking-tight'>
+                  {world || <Trans>Matches</Trans>}
+                </h2>
               </TooltipTrigger>
-              <TooltipContent className='font-mono'>{config.world}</TooltipContent>
+              <TooltipContent className='font-mono'>
+                {config.world}
+              </TooltipContent>
             </Tooltip>
           </div>
           <Multiplayer
@@ -1027,7 +1265,6 @@ function ServerFlow({
   )
 }
 
-
 function MissionPanel({
   config,
   set,
@@ -1046,20 +1283,28 @@ function MissionPanel({
   }, [anyCheat])
 
   return (
-    <div className='space-y-6 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:space-y-0'>
+    <div className='space-y-6 sm:grid sm:grid-cols-2 sm:space-y-0 sm:gap-x-6'>
       <div className='space-y-4'>
         <section>
           <div className='space-y-3'>
             <div className='space-y-1.5'>
-              <Label className='text-xs text-muted-foreground uppercase font-medium'>
+              <Label className='text-muted-foreground text-xs font-medium uppercase'>
                 <Trans>Task</Trans>
               </Label>
               <Segmented
                 value={config.task}
                 onChange={(v) => set('task', v)}
                 options={[
-                  { value: 'free', label: <Trans>Free flight</Trans>, icon: Plane },
-                  { value: 'joust', label: <Trans>Joust against bot</Trans>, icon: Crosshair },
+                  {
+                    value: 'free',
+                    label: <Trans>Free flight</Trans>,
+                    icon: Plane,
+                  },
+                  {
+                    value: 'joust',
+                    label: <Trans>Joust against bot</Trans>,
+                    icon: Crosshair,
+                  },
                 ]}
               />
             </div>
@@ -1067,30 +1312,57 @@ function MissionPanel({
             {config.task === 'joust' && (
               <div className='space-y-2 pt-1'>
                 <div className='space-y-1'>
-                  <Label className='text-xs text-muted-foreground uppercase font-medium'>
+                  <Label className='text-muted-foreground text-xs font-medium uppercase'>
                     <Trans>Engagement</Trans>
                   </Label>
                   <Picker
                     value={config.duel === 'bvr' ? 'bvr' : 'merge'}
                     onChange={(v) => set('duel', v as 'merge' | 'bvr')}
                     options={[
-                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans>, icon: START_ICONS.merge },
-                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans>, icon: START_ICONS.bvr },
+                      {
+                        value: 'merge',
+                        label: <Trans>WVR, fight's on at the pass</Trans>,
+                        icon: START_ICONS.merge,
+                      },
+                      {
+                        value: 'bvr',
+                        label: <Trans>BVR, fight's on from the start</Trans>,
+                        icon: START_ICONS.bvr,
+                      },
                     ]}
                   />
                 </div>
                 <div className='space-y-1'>
-                  <Label className='text-xs text-muted-foreground uppercase font-medium'>
+                  <Label className='text-muted-foreground text-xs font-medium uppercase'>
                     <Trans>Bandit</Trans>
                   </Label>
                   <Picker
-                    value={String(config.bandit || 'pilot') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
+                    value={
+                      String(config.bandit || 'pilot') as
+                        'novice' | 'pilot' | 'ace' | 'superhuman'
+                    }
                     onChange={(v) => set('bandit', v)}
                     options={[
-                      { value: 'novice', label: <Trans>Novice</Trans>, icon: SignalLow },
-                      { value: 'pilot', label: <Trans>Pilot</Trans>, icon: SignalMedium },
-                      { value: 'ace', label: <Trans>Ace</Trans>, icon: SignalHigh },
-                      { value: 'superhuman', label: <Trans>Superhuman</Trans>, icon: Signal },
+                      {
+                        value: 'novice',
+                        label: <Trans>Novice</Trans>,
+                        icon: SignalLow,
+                      },
+                      {
+                        value: 'pilot',
+                        label: <Trans>Pilot</Trans>,
+                        icon: SignalMedium,
+                      },
+                      {
+                        value: 'ace',
+                        label: <Trans>Ace</Trans>,
+                        icon: SignalHigh,
+                      },
+                      {
+                        value: 'superhuman',
+                        label: <Trans>Superhuman</Trans>,
+                        icon: Signal,
+                      },
                     ]}
                   />
                 </div>
@@ -1100,7 +1372,7 @@ function MissionPanel({
             {config.task === 'free' && (
               <div className='space-y-2 pt-1'>
                 <div className='space-y-1'>
-                  <Label className='text-xs text-muted-foreground uppercase font-medium'>
+                  <Label className='text-muted-foreground text-xs font-medium uppercase'>
                     <Trans>Departure / Recovery</Trans>
                   </Label>
                   <Picker
@@ -1109,19 +1381,43 @@ function MissionPanel({
                       onChange(seedStart(config, v as MissionConfig['start']))
                     }}
                     options={[
-                      { value: 'air', label: <Trans>In air</Trans>, icon: Plane },
-                      { value: 'runway', label: <Trans>On runway</Trans>, icon: PlaneTakeoff },
-                      { value: 'carrier', label: <Trans>On carrier</Trans>, icon: Ship },
-                      { value: 'case1', label: <Trans>Case I (day)</Trans>, icon: Sun },
-                      { value: 'case2', label: <Trans>Case II (weather)</Trans>, icon: CloudRain },
-                      { value: 'case3', label: <Trans>Case III (night)</Trans>, icon: Moon },
+                      {
+                        value: 'air',
+                        label: <Trans>In air</Trans>,
+                        icon: Plane,
+                      },
+                      {
+                        value: 'runway',
+                        label: <Trans>On runway</Trans>,
+                        icon: PlaneTakeoff,
+                      },
+                      {
+                        value: 'carrier',
+                        label: <Trans>On carrier</Trans>,
+                        icon: Ship,
+                      },
+                      {
+                        value: 'case1',
+                        label: <Trans>Case I (day)</Trans>,
+                        icon: Sun,
+                      },
+                      {
+                        value: 'case2',
+                        label: <Trans>Case II (weather)</Trans>,
+                        icon: CloudRain,
+                      },
+                      {
+                        value: 'case3',
+                        label: <Trans>Case III (night)</Trans>,
+                        icon: Moon,
+                      },
                     ]}
                   />
                 </div>
 
                 {config.start === 'carrier' && (
                   <div className='space-y-1'>
-                    <Label className='text-xs text-muted-foreground uppercase font-medium'>
+                    <Label className='text-muted-foreground text-xs font-medium uppercase'>
                       <Trans>Catapult</Trans>
                     </Label>
                     <Segmented
@@ -1144,31 +1440,59 @@ function MissionPanel({
         <section>
           <div className='grid grid-cols-2 gap-2.5'>
             <div className='space-y-1'>
-              <Label className='text-xs text-muted-foreground uppercase font-medium'>
+              <Label className='text-muted-foreground text-xs font-medium uppercase'>
                 <Trans>Time of day</Trans>
               </Label>
               <Picker
                 value={config.tod}
                 onChange={(v) => set('tod', v)}
                 options={[
-                  { value: 'day', label: <Trans>Day</Trans>, icon: TOD_ICONS.day },
-                  { value: 'night', label: <Trans>Night</Trans>, icon: TOD_ICONS.night },
+                  {
+                    value: 'day',
+                    label: <Trans>Day</Trans>,
+                    icon: TOD_ICONS.day,
+                  },
+                  {
+                    value: 'night',
+                    label: <Trans>Night</Trans>,
+                    icon: TOD_ICONS.night,
+                  },
                 ]}
               />
             </div>
             <div className='space-y-1'>
-              <Label className='text-xs text-muted-foreground uppercase font-medium'>
+              <Label className='text-muted-foreground text-xs font-medium uppercase'>
                 <Trans>Clouds</Trans>
               </Label>
               <Picker
                 value={config.clouds}
                 onChange={(v) => set('clouds', v)}
                 options={[
-                  { value: 'none', label: <Trans>None</Trans>, icon: CLOUD_ICONS.none },
-                  { value: 'cumulus', label: <Trans>Cumulus</Trans>, icon: CLOUD_ICONS.cumulus },
-                  { value: 'high_stratus', label: <Trans>High stratus</Trans>, icon: CLOUD_ICONS.high_stratus },
-                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans>, icon: CLOUD_ICONS.mid_stratus },
-                  { value: 'low_stratus', label: <Trans>Low stratus</Trans>, icon: CLOUD_ICONS.low_stratus },
+                  {
+                    value: 'none',
+                    label: <Trans>None</Trans>,
+                    icon: CLOUD_ICONS.none,
+                  },
+                  {
+                    value: 'cumulus',
+                    label: <Trans>Cumulus</Trans>,
+                    icon: CLOUD_ICONS.cumulus,
+                  },
+                  {
+                    value: 'high_stratus',
+                    label: <Trans>High stratus</Trans>,
+                    icon: CLOUD_ICONS.high_stratus,
+                  },
+                  {
+                    value: 'mid_stratus',
+                    label: <Trans>Mid stratus</Trans>,
+                    icon: CLOUD_ICONS.mid_stratus,
+                  },
+                  {
+                    value: 'low_stratus',
+                    label: <Trans>Low stratus</Trans>,
+                    icon: CLOUD_ICONS.low_stratus,
+                  },
                 ]}
               />
             </div>
@@ -1177,31 +1501,51 @@ function MissionPanel({
 
         <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
           <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex w-full items-center gap-1.5 text-xs font-medium tracking-wide uppercase'>
-            <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
+            <ChevronRight
+              className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`}
+            />
             <Trans>Cheats</Trans>
           </CollapsibleTrigger>
           <CollapsibleContent>
-                <SwitchRow
-                  id='cheat-invulnerable'
-                  tight
-                  label={config.task === 'free' ? <Trans>Invulnerable</Trans> : <Trans>Invulnerable (human players only)</Trans>}
-                  checked={!!(config.cheats ?? {}).invulnerable}
-                  onChange={(v) => setCheat('invulnerable', v)}
-                />
-                <SwitchRow
-                  id='cheat-ammunition'
-                  tight
-                  label={config.task === 'free' ? <Trans>Unlimited ammunition</Trans> : <Trans>Unlimited ammunition (all players)</Trans>}
-                  checked={!!(config.cheats ?? {}).ammunition}
-                  onChange={(v) => setCheat('ammunition', v)}
-                />
-                <SwitchRow
-                  id='cheat-fuel'
-                  tight
-                  label={config.task === 'free' ? <Trans>Unlimited fuel</Trans> : <Trans>Unlimited fuel (all players)</Trans>}
-                  checked={!!(config.cheats ?? {}).fuel}
-                  onChange={(v) => setCheat('fuel', v)}
-                />
+            <SwitchRow
+              id='cheat-invulnerable'
+              tight
+              label={
+                config.task === 'free' ? (
+                  <Trans>Invulnerable</Trans>
+                ) : (
+                  <Trans>Invulnerable (human players only)</Trans>
+                )
+              }
+              checked={!!(config.cheats ?? {}).invulnerable}
+              onChange={(v) => setCheat('invulnerable', v)}
+            />
+            <SwitchRow
+              id='cheat-ammunition'
+              tight
+              label={
+                config.task === 'free' ? (
+                  <Trans>Unlimited ammunition</Trans>
+                ) : (
+                  <Trans>Unlimited ammunition (all players)</Trans>
+                )
+              }
+              checked={!!(config.cheats ?? {}).ammunition}
+              onChange={(v) => setCheat('ammunition', v)}
+            />
+            <SwitchRow
+              id='cheat-fuel'
+              tight
+              label={
+                config.task === 'free' ? (
+                  <Trans>Unlimited fuel</Trans>
+                ) : (
+                  <Trans>Unlimited fuel (all players)</Trans>
+                )
+              }
+              checked={!!(config.cheats ?? {}).fuel}
+              onChange={(v) => setCheat('fuel', v)}
+            />
           </CollapsibleContent>
         </Collapsible>
       </div>
@@ -1235,8 +1579,10 @@ export function MissionSetup({
   onStart: () => void
   onJoin: (join: Join) => void
 }) {
-  const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
-    onChange({ ...config, [key]: value })
+  const set = <K extends keyof MissionConfig>(
+    key: K,
+    value: MissionConfig[K]
+  ) => onChange({ ...config, [key]: value })
 
   const cheats = useRef<Record<string, boolean>>({})
   cheats.current = { ...((config.cheats as Record<string, boolean>) ?? {}) }
@@ -1246,7 +1592,9 @@ export function MissionSetup({
   }
 
   // A bookmarked server (?server=...) opens straight onto that server's page.
-  const [dialog, setDialog] = useState<string | null>(bookmarked(window.location.search) ? 'server' : null)
+  const [dialog, setDialog] = useState<string | null>(
+    bookmarked(window.location.search) ? 'server' : null
+  )
   const { t } = useLingui()
   const [verdict] = useState(() => diagnose())
   const [strained] = useShellStorage('air.performance', 0)
@@ -1271,7 +1619,8 @@ export function MissionSetup({
   const started =
     config.task === 'joust' ? (
       <>
-        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'pilot')] ?? BANDITS.pilot}
+        <Trans>Joust</Trans> ·{' '}
+        {BANDITS[String(config.bandit || 'pilot')] ?? BANDITS.pilot}
         {config.duel === 'bvr' ? ' · BVR' : ''}
       </>
     ) : (
@@ -1279,7 +1628,7 @@ export function MissionSetup({
     )
 
   return (
-    <div className='bg-background fixed inset-0 z-50 overflow-y-auto overflow-x-hidden'>
+    <div className='bg-background fixed inset-0 z-50 overflow-x-hidden overflow-y-auto'>
       <div className='flex min-h-full items-center justify-center p-6'>
         <div className='relative z-10 w-full max-w-lg space-y-6'>
           <div className='flex items-center gap-2.5'>
@@ -1295,59 +1644,92 @@ export function MissionSetup({
             >
               <path d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z' />
             </svg>
-            <h1 className='text-2xl font-bold tracking-tight'>{/* jsx-text-ok: app name */}Air</h1>
+            <h1 className='text-2xl font-bold tracking-tight'>
+              {/* jsx-text-ok: app name */}Air
+            </h1>
           </div>
 
-        {alert && dismissed !== alert && (
-          <div className='flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600'>
-            <TriangleAlert className='mt-0.5 size-4 shrink-0' />
-            <div className='flex-1'>
-              {alert === 'webgl2' ? (
-                <Trans>This browser does not support WebGL 2, so the game cannot run — try a different browser.</Trans>
-              ) : alert === 'software' ? (
-                <Trans>Hardware graphics acceleration is off — check browser settings or graphics drivers.</Trans>
-              ) : (
-                <Trans>This machine may be too slow for smooth flight.</Trans>
-              )}
+          {alert && dismissed !== alert && (
+            <div className='flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600'>
+              <TriangleAlert className='mt-0.5 size-4 shrink-0' />
+              <div className='flex-1'>
+                {alert === 'webgl2' ? (
+                  <Trans>
+                    This browser does not support WebGL 2, so the game cannot
+                    run — try a different browser.
+                  </Trans>
+                ) : alert === 'software' ? (
+                  <Trans>
+                    Hardware graphics acceleration is off — check browser
+                    settings or graphics drivers.
+                  </Trans>
+                ) : (
+                  <Trans>This machine may be too slow for smooth flight.</Trans>
+                )}
+              </div>
+              <Button
+                type='button'
+                variant='ghost'
+                size='icon'
+                className='size-6 shrink-0'
+                aria-label={t`Dismiss`}
+                onClick={() => setDismissed(alert)}
+              >
+                <X className='size-4' />
+              </Button>
             </div>
-            <Button type='button' variant='ghost' size='icon' className='size-6 shrink-0' aria-label={t`Dismiss`} onClick={() => setDismissed(alert)}>
-              <X className='size-4' />
-            </Button>
+          )}
+
+          <Card
+            className='border-primary/40 hover:border-primary cursor-pointer py-0 shadow-sm transition-all hover:shadow-md'
+            onClick={onStart}
+          >
+            <CardContent className='flex items-center justify-between px-5 py-3.5'>
+              <span className='text-foreground font-mono text-sm'>
+                {started}
+              </span>
+              <Button size='lg' className='gap-2 px-6 font-bold'>
+                <Play className='size-5 fill-current' />
+                <Trans>Fly</Trans>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <div className='grid grid-cols-2 gap-3'>
+            <Tile
+              icon={ClipboardList}
+              title={<Trans>Create mission</Trans>}
+              onOpen={() => setDialog('mission')}
+            />
+            <Tile
+              icon={Users}
+              title={<Trans>Join server</Trans>}
+              onOpen={() => setDialog('server')}
+            />
+            <Tile
+              icon={Settings}
+              title={<Trans>Settings</Trans>}
+              onOpen={() => setDialog('settings')}
+            />
+            <Link
+              to='/log'
+              search={(prev) => prev}
+              className='group/tile contents'
+            >
+              <Card
+                className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}
+              >
+                <TileFace icon={History} title={<Trans>Flight log</Trans>} />
+              </Card>
+            </Link>
           </div>
-        )}
 
-        <Card
-          className='border-primary/40 hover:border-primary py-0 transition-all cursor-pointer shadow-sm hover:shadow-md'
-          onClick={onStart}
-        >
-          <CardContent className='px-5 py-3.5 flex items-center justify-between'>
-            <span className='text-foreground font-mono text-sm'>
-              {started}
-            </span>
-            <Button size='lg' className='gap-2 font-bold px-6'>
-              <Play className='size-5 fill-current' />
-              <Trans>Fly</Trans>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <div className='grid grid-cols-2 gap-3'>
-          <Tile icon={ClipboardList} title={<Trans>Create mission</Trans>} onOpen={() => setDialog('mission')} />
-          <Tile icon={Users} title={<Trans>Join server</Trans>} onOpen={() => setDialog('server')} />
-          <Tile icon={Settings} title={<Trans>Settings</Trans>} onOpen={() => setDialog('settings')} />
-          <Link to='/log' search={(prev) => prev} className='contents group/tile'>
-            <Card className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}>
-              <TileFace icon={History} title={<Trans>Flight log</Trans>} />
-            </Card>
-          </Link>
+          <div className='text-muted-foreground border-border flex items-center justify-center gap-2 border-t pt-4 text-xs'>
+            <ReferenceDialog />
+            <span>•</span>
+            <CreditsDialog />
+          </div>
         </div>
-
-        <div className='text-muted-foreground border-border flex items-center justify-center gap-2 border-t pt-4 text-xs'>
-          <ReferenceDialog />
-          <span>•</span>
-          <CreditsDialog />
-        </div>
-      </div>
       </div>
 
       <MenuDialog
@@ -1371,7 +1753,12 @@ export function MissionSetup({
           </div>
         }
       >
-        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
+        <MissionPanel
+          config={config}
+          set={set}
+          setCheat={setCheat}
+          onChange={onChange}
+        />
       </MenuDialog>
 
       <SettingsDialog
@@ -1384,7 +1771,13 @@ export function MissionSetup({
       />
 
       {dialog === 'server' && (
-        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+        <ServerFlow
+          onClose={close}
+          config={config}
+          set={set}
+          onChange={onChange}
+          onJoin={onJoin}
+        />
       )}
     </div>
   )

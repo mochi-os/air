@@ -2,9 +2,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
-import { Radar, NM, boresight, geometry, aspect_factor, detect_range, paint_probability, pick, WIDTHS } from './radar'
+import {
+  Radar,
+  NM,
+  boresight,
+  geometry,
+  aspect_factor,
+  detect_range,
+  paint_probability,
+  pick,
+  WIDTHS,
+} from './radar'
 
 const wrap = (v: number) => v
 const always = () => 0 // random() below every probability: every crossing paints
@@ -16,7 +25,8 @@ const own = { x: 0, y: 3000, z: 0, heading: 0 }
 const beam = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 250, vy: 0, vz: 0 }
 
 function swept(radar: Radar, targets = [beam], seconds = 4, random = always) {
-  for (let i = 0; i < seconds * 60; i++) radar.step(1 / 60, own, targets, wrap, random)
+  for (let i = 0; i < seconds * 60; i++)
+    radar.step(1 / 60, own, targets, wrap, random)
 }
 
 describe('geometry', () => {
@@ -34,12 +44,17 @@ describe('geometry', () => {
 describe('detection', () => {
   it('sees a beam target further than a nose-on one', () => {
     const nose = { ...beam, vx: 0, vz: 250 } // running straight at us
-    expect(detect_range(own, beam, wrap)).toBeGreaterThan(detect_range(own, nose, wrap))
+    expect(detect_range(own, beam, wrap)).toBeGreaterThan(
+      detect_range(own, nose, wrap)
+    )
     expect(aspect_factor(own, nose, wrap)).toBeCloseTo(0.75, 2)
   })
   it('pays the look-down penalty only below own level', () => {
     const low = { ...beam, y: 500 }
-    expect(detect_range(own, low, wrap)).toBeCloseTo(detect_range(own, beam, wrap) * 0.65, 0)
+    expect(detect_range(own, low, wrap)).toBeCloseTo(
+      detect_range(own, beam, wrap) * 0.65,
+      0
+    )
   })
   it('paints surely close in, marginally at the edge, never beyond', () => {
     expect(paint_probability(10 * NM, 40 * NM)).toBeCloseTo(0.97, 2)
@@ -189,7 +204,13 @@ describe('STT', () => {
 
   it('a radiating emitter draws a bearing-only strobe (#31)', () => {
     const radar = new Radar()
-    radar.step(1 / 60, own, [{ ...beam, x: 5 * NM, jamming: true }], wrap, always)
+    radar.step(
+      1 / 60,
+      own,
+      [{ ...beam, x: 5 * NM, jamming: true }],
+      wrap,
+      always
+    )
     expect(radar.strobes.length).toBe(1)
     expect(radar.strobes[0]).toBeGreaterThan(0) // off to the right, bearing only
     radar.step(1 / 60, own, [beam], wrap, always)

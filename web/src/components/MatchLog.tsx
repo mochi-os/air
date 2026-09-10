@@ -2,15 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The flight log: every flight this player has recorded (match_list), with a
 // career summary aggregated SERVER-side over all of them and a table of the
 // fifty most recent. Raw mode/reason enums are mapped to labels before display.
-
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
-import { ArrowDown, ArrowUp, ChevronsUpDown, CircleAlert, Download, History, Pin, PinOff, ShieldAlert } from 'lucide-react'
-import { EmptyState, getErrorMessage, naturalCompare, shellSaveBlob, toast, useFormat } from '@mochi/web'
+import {
+  EmptyState,
+  getErrorMessage,
+  naturalCompare,
+  shellSaveBlob,
+  toast,
+  useFormat,
+} from '@mochi/web'
+import { Button } from '@mochi/web/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -26,8 +31,24 @@ import {
   TableHeader,
   TableRow,
 } from '@mochi/web/components/ui/table'
-import { log, recording_load, recording_pin, type MatchRow, type MatchTotals } from '../game/net'
-import { Button } from '@mochi/web/components/ui/button'
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  CircleAlert,
+  Download,
+  History,
+  Pin,
+  PinOff,
+  ShieldAlert,
+} from 'lucide-react'
+import {
+  log,
+  recording_load,
+  recording_pin,
+  type MatchRow,
+  type MatchTotals,
+} from '../game/net'
 
 // Replay is the in-memory recording the engine still holds for this session's
 // flights - the fallback for a row whose upload has not landed yet.
@@ -40,7 +61,11 @@ export interface Replay {
 // save writes the recording out. shellSaveBlob posts the blob to the parent
 // shell inside the sandboxed iframe (where an anchor download is silently
 // dropped) and falls back to a direct anchor outside it.
-async function save(replay: Replay, started: number, done: (ok: boolean) => void) {
+async function save(
+  replay: Replay,
+  started: number,
+  done: (ok: boolean) => void
+) {
   // YYYYMMDD_HHMMSS in LOCAL time: the name should match the clock the player
   // flew by, and sorts chronologically in a downloads folder.
   const at = new Date(started)
@@ -49,7 +74,9 @@ async function save(replay: Replay, started: number, done: (ok: boolean) => void
     `${at.getFullYear()}${pad(at.getMonth() + 1)}${pad(at.getDate())}` +
     `_${pad(at.getHours())}${pad(at.getMinutes())}${pad(at.getSeconds())}`
   const name = `${stamp}.acmi`
-  done(await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name))
+  done(
+    await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name)
+  )
 }
 
 // serverName shows just the host of a lobby URL; the full URL is noise.
@@ -84,10 +111,20 @@ function SortHead({
   children: ReactNode
 }) {
   const active = sort.key === column
-  const Arrow = !active ? ChevronsUpDown : sort.direction === 'asc' ? ArrowUp : ArrowDown
+  const Arrow = !active
+    ? ChevronsUpDown
+    : sort.direction === 'asc'
+      ? ArrowUp
+      : ArrowDown
   return (
     <TableHead
-      aria-sort={active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+      aria-sort={
+        active
+          ? sort.direction === 'asc'
+            ? 'ascending'
+            : 'descending'
+          : 'none'
+      }
       className={right ? 'text-right' : undefined}
     >
       <button
@@ -96,7 +133,14 @@ function SortHead({
         // first": newest flight, longest flight, most kills. Clicking the
         // column already in force is what flips it.
         onClick={() =>
-          onSort(active ? { key: column, direction: sort.direction === 'asc' ? 'desc' : 'asc' } : { key: column, direction: 'desc' })
+          onSort(
+            active
+              ? {
+                  key: column,
+                  direction: sort.direction === 'asc' ? 'desc' : 'asc',
+                }
+              : { key: column, direction: 'desc' }
+          )
         }
         className={`hover:text-foreground focus-visible:ring-ring/50 -mx-1 flex w-full items-center gap-1 rounded px-1 outline-none focus-visible:ring-[3px] ${
           right ? 'justify-end' : ''
@@ -105,9 +149,13 @@ function SortHead({
         {/* On a right-aligned column the arrow goes BEFORE the label, so the
             label itself ends flush with the numbers below it. Trailing it there
             pushed every heading an arrow's width off its own column. */}
-        {right && <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />}
+        {right && (
+          <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />
+        )}
         {children}
-        {!right && <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />}
+        {!right && (
+          <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />
+        )}
       </button>
     </TableHead>
   )
@@ -190,7 +238,11 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
       <div className='space-y-4' aria-busy='true'>
         <div className='flex flex-wrap gap-x-4 gap-y-1'>
           {[64, 72, 52, 60, 44].map((w, i) => (
-            <div key={i} className='bg-muted h-4 animate-pulse rounded' style={{ width: w }} />
+            <div
+              key={i}
+              className='bg-muted h-4 animate-pulse rounded'
+              style={{ width: w }}
+            />
           ))}
         </div>
         <div className='space-y-2'>
@@ -241,9 +293,13 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
   const modes = Array.from(new Set(matches.map((m) => m.mode))).sort((a, b) =>
     naturalCompare(modeLabel(a), modeLabel(b))
   )
-  const worlds = Array.from(new Set(matches.map((m) => serverName(m.world)))).sort(naturalCompare)
+  const worlds = Array.from(
+    new Set(matches.map((m) => serverName(m.world)))
+  ).sort(naturalCompare)
   const filtered = matches.filter(
-    (m) => (mode === 'all' || m.mode === mode) && (world === 'all' || serverName(m.world) === world)
+    (m) =>
+      (mode === 'all' || m.mode === mode) &&
+      (world === 'all' || serverName(m.world) === world)
   )
   const rank = (m: MatchRow): number => {
     switch (sort.key) {
@@ -260,7 +316,9 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
     }
   }
   // Copied first: sort() works in place, and matches is the state array.
-  const ordered = [...filtered].sort((a, b) => (rank(a) - rank(b)) * (sort.direction === 'asc' ? 1 : -1))
+  const ordered = [...filtered].sort(
+    (a, b) => (rank(a) - rank(b)) * (sort.direction === 'asc' ? 1 : -1)
+  )
   const filtering = mode !== 'all' || world !== 'all'
   const clear = () => {
     setMode('all')
@@ -285,7 +343,6 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
         <span>
           <Trans>K/D</Trans>: {formatNumber(ratio, 2)}
         </span>
-
       </div>
 
       {/* Only worth showing once there is something to narrow: one server and
@@ -328,7 +385,13 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
           )}
           {filtering && (
             <>
-              <Button type='button' variant='ghost' size='sm' className='text-muted-foreground' onClick={clear}>
+              <Button
+                type='button'
+                variant='ghost'
+                size='sm'
+                className='text-muted-foreground'
+                onClick={clear}
+              >
                 <Trans>Clear</Trans>
               </Button>
               {/* The career line above counts every flight ever, so a filtered
@@ -384,9 +447,16 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
               {/* Inside the table, not above it: the headers stay put so it
                   reads as this table with nothing in it, not as a page that
                   has lost its flights. */}
-              <TableCell colSpan={10} className='text-muted-foreground py-8 text-center text-sm'>
+              <TableCell
+                colSpan={10}
+                className='text-muted-foreground py-8 text-center text-sm'
+              >
                 <Trans>No flight matches these filters.</Trans>{' '}
-                <button type='button' className='text-primary hover:underline' onClick={clear}>
+                <button
+                  type='button'
+                  className='text-primary hover:underline'
+                  onClick={clear}
+                >
                   <Trans>Clear</Trans>
                 </button>
               </TableCell>
@@ -402,7 +472,9 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                   and summed server-side for the career total above — so the
                   row reads on the same clock as the summary. */}
               <TableCell className='text-right tabular-nums'>
-                {m.ended > m.started ? clock((m.ended - m.started) / 1000) : '—'}
+                {m.ended > m.started
+                  ? clock((m.ended - m.started) / 1000)
+                  : '—'}
               </TableCell>
               <TableCell>{serverName(m.world)}</TableCell>
               <TableCell>{modeLabel(m.mode)}</TableCell>
@@ -411,8 +483,12 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
               <TableCell className='text-right tabular-nums'>
                 {formatNumber(Number(m.players) || 0)}
               </TableCell>
-              <TableCell className='text-right tabular-nums'>{formatNumber(m.kills)}</TableCell>
-              <TableCell className='text-right tabular-nums'>{formatNumber(m.deaths)}</TableCell>
+              <TableCell className='text-right tabular-nums'>
+                {formatNumber(m.kills)}
+              </TableCell>
+              <TableCell className='text-right tabular-nums'>
+                {formatNumber(m.deaths)}
+              </TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
               <TableCell className='text-muted-foreground'>
                 {m.cheated ? <ShieldAlert className='size-4' /> : null}
@@ -435,16 +511,23 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                         // in-memory buffer covers a flight whose upload has not
                         // landed yet.
                         const text =
-                          (m.recording ? await recording_load(m.recording) : null) ??
-                          (replay && replay.session === m.session ? replay.text : null)
+                          (m.recording
+                            ? await recording_load(m.recording)
+                            : null) ??
+                          (replay && replay.session === m.session
+                            ? replay.text
+                            : null)
                         if (!text) {
                           toast.error(t`Could not save the recording`)
                           return
                         }
-                        save({ text, session: m.session, kind: m.mode }, m.started, (ok) =>
-                          ok
-                            ? toast.success(t`Recording saved`)
-                            : toast.error(t`Could not save the recording`)
+                        save(
+                          { text, session: m.session, kind: m.mode },
+                          m.started,
+                          (ok) =>
+                            ok
+                              ? toast.success(t`Recording saved`)
+                              : toast.error(t`Could not save the recording`)
                         )
                       })()
                     }
@@ -483,12 +566,19 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                           setMatches((rows) =>
                             rows
                               ? rows.map((r) =>
-                                  r.session === m.session && r.started === m.started ? { ...r, pinned: value } : r
+                                  r.session === m.session &&
+                                  r.started === m.started
+                                    ? { ...r, pinned: value }
+                                    : r
                                 )
                               : rows
                           )
                         apply(wanted ? 1 : 0)
-                        const stored = await recording_pin(m.session, m.started, wanted)
+                        const stored = await recording_pin(
+                          m.session,
+                          m.started,
+                          wanted
+                        )
                         if (stored === null) {
                           apply(wanted ? 0 : 1)
                           toast.error(t`Could not change the recording`)
@@ -498,7 +588,11 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                       })()
                     }
                   >
-                    {m.pinned === 1 ? <PinOff className='size-4' /> : <Pin className='size-4' />}
+                    {m.pinned === 1 ? (
+                      <PinOff className='size-4' />
+                    ) : (
+                      <Pin className='size-4' />
+                    )}
                   </Button>
                 ) : null}
               </TableCell>
