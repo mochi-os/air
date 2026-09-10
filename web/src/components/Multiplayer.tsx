@@ -10,7 +10,7 @@
 
 import { useCallback, useEffect, useId, useState } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
-import { LogIn, Plus, RefreshCw, type LucideIcon } from 'lucide-react'
+import { LogIn, Plus, RefreshCw, type LucideIcon, X } from 'lucide-react'
 import { Button } from '@mochi/web/components/ui/button'
 import {
   Dialog,
@@ -66,7 +66,7 @@ function deviations(parameters: Record<string, unknown> | undefined): string[] {
   if (parameters.weapons === 'guns' || (parameters.weapons == null && parameters.missiles === false)) out.push('guns')
   if (parameters.weapons === 'fox2') out.push('fox2')
   if (parameters.start === 'bvr') out.push('bvr')
-  if (parameters.spaced === true) out.push('spaced')
+  if (parameters.spaced === true) out.push('spaced') // teams: anchored sides
   if (parameters.tod === 'night') out.push('night')
   if (parameters.clouds === 'cumulus' || parameters.clouds === 'high_stratus' || parameters.clouds === 'mid_stratus' || parameters.clouds === 'low_stratus') out.push(String(parameters.clouds))
   const cheats = (parameters.cheats ?? {}) as Record<string, unknown>
@@ -81,7 +81,7 @@ const DEVIATIONS: Record<string, React.ReactNode> = {
   guns: <Trans>Guns only</Trans>,
   fox2: 'Fox 2',
   bvr: 'BVR',
-  spaced: <Trans>Spaced</Trans>,
+  spaced: <Trans>Anchored sides</Trans>, // the chip reuses the switch's own words rather than a second string to translate
   night: <Trans>Night</Trans>,
   cumulus: <Trans>Cumulus</Trans>,
   high_stratus: <Trans>High stratus</Trans>,
@@ -98,6 +98,7 @@ export function Multiplayer({
   onServer,
   onCallsign,
   onJoin,
+  onLeave,
   pilot,
   hideServer,
   rules,
@@ -109,6 +110,7 @@ export function Multiplayer({
   onServer: (value: string) => void
   onCallsign: (value: string) => void
   onJoin: (join: Join) => void
+  onLeave?: () => void // the server page's way out, on the panel's bottom row with the list's other actions
   pilot?: string // this player's stable offer token (#77)
   hideServer?: boolean // the server page owns the address and the callsign (Settings does): show only the match list and its controls
   rules?: Record<string, unknown> // the creator's persisted match rules (#17/#32): the weapons class (missiles derived for old servers), spacing
@@ -239,7 +241,8 @@ export function Multiplayer({
         // bots: per-level counts {drone, novice, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
         // weapons is the class rule (#32); missiles stays derived so old servers and old rows keep their meaning.
         parameters: { tod, clouds, weapons, missiles: weapons !== 'guns',
-          ...(mode === 'joust' ? { start } : { spaced }),
+          ...(mode === 'joust' ? { start } : {}),
+          ...(mode === 'teams' ? { spaced } : {}), // anchored sides: the teams start rule (an open match places arrivals clear of the fight, always)
           bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
       })
       enter({
@@ -336,7 +339,7 @@ export function Multiplayer({
         </div>
       )}
 
-      <div className='text-muted-foreground flex items-center justify-between text-sm'>
+      <div className='text-muted-foreground flex items-center text-sm'>
         {status ? (
           <span>
             <Plural value={status.present ?? status.players} one='# player' other='# players' /> ·{' '}
@@ -345,216 +348,7 @@ export function Multiplayer({
         ) : (
           <span>{error || <Trans>Connecting…</Trans>}</span>
         )}
-        <div className='flex gap-2'>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            disabled={refreshing}
-            onClick={() => {
-              setRefreshing(true)
-              void refresh().finally(() => setRefreshing(false))
-            }}
-          >
-            <RefreshCw className={`size-4${refreshing ? ' animate-spin' : ''}`} />
-            <Trans>Refresh</Trans>
-          </Button>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            disabled={!status}
-            onClick={() => setMaking((v) => !v)}
-          >
-            <Plus className='size-4' />
-            <Trans>Create match</Trans>
-          </Button>
-        </div>
       </div>
-
-      {making && (
-        <div className='space-y-3 rounded-md border p-3'>
-          <div className='grid gap-3 sm:grid-cols-2'>
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Match type</Trans>
-              </div>
-              <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'furball' | 'joust' | 'teams')}>
-                <Option group={group + 'mode'} value='furball' icon={MODE_ICONS.furball} label={<Trans>Open — anyone may join or leave</Trans>} />
-                <Option group={group + 'mode'} value='joust' icon={MODE_ICONS.joust} label={<Trans>Joust — 1v1, first kill wins</Trans>} />
-                <Option group={group + 'mode'} value='teams' icon={MODE_ICONS.teams} label={<Trans>Teams — red versus blue</Trans>} />
-              </RadioGroup>
-            </div>
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Weather</Trans>
-              </div>
-              <RadioGroup value={tod} onValueChange={(v) => setTod(v as 'day' | 'night')}>
-                <Option group={group + 'tod'} value='day' icon={TOD_ICONS.day} label={<Trans>Day</Trans>} />
-                <Option group={group + 'tod'} value='night' icon={TOD_ICONS.night} label={<Trans>Night</Trans>} />
-              </RadioGroup>
-              <RadioGroup value={clouds} onValueChange={setClouds}>
-                <Option group={group + 'clouds'} value='none' icon={CLOUD_ICONS.none} label={<Trans>Clear</Trans>} />
-                <Option group={group + 'clouds'} value='cumulus' icon={CLOUD_ICONS.cumulus} label={<Trans>Cumulus</Trans>} />
-                <Option group={group + 'clouds'} value='high_stratus' icon={CLOUD_ICONS.high_stratus} label={<Trans>High stratus</Trans>} />
-                <Option group={group + 'clouds'} value='mid_stratus' icon={CLOUD_ICONS.mid_stratus} label={<Trans>Mid stratus</Trans>} />
-                <Option group={group + 'clouds'} value='low_stratus' icon={CLOUD_ICONS.low_stratus} label={<Trans>Low stratus</Trans>} />
-              </RadioGroup>
-            </div>
-          </div>
-          {/* A GRID of named groups, not one flex row. Twelve controls on a
-              single unwrapped row overflowed every narrow viewport, and this is
-              the surface a host drives while other people wait in the lobby.
-              Every header reuses an msgid the app already ships. */}
-          <div className='grid gap-4 sm:grid-cols-2'>
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Weapons</Trans>
-              </div>
-              <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
-                <Option group={group + 'weapons'} value='guns' icon={WEAPON_ICONS.guns} label={<Trans>Guns only</Trans>} />
-                <Option group={group + 'weapons'} value='fox2' icon={WEAPON_ICONS.fox2} label='Fox 2' />
-                <Option group={group + 'weapons'} value='open' icon={WEAPON_ICONS.open} label={<Trans>Unlimited</Trans>} />
-              </RadioGroup>
-              <div className='flex items-center gap-2 pt-1'>
-                <Label htmlFor='rule-fuel' className='font-normal'>
-                  <Trans>Fuel</Trans>
-                </Label>
-                <NumberField
-                  id='rule-fuel'
-                  min={1500}
-                  max={10800}
-                  step={100}
-                  value={fuel}
-                  onChange={setFuel}
-                  className='h-8 w-24'
-                />
-                <span className='text-muted-foreground text-xs'>
-                  <Trans>lb</Trans>
-                </span>
-              </div>
-            </div>
-
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Start</Trans>
-              </div>
-              {mode === 'joust' ? (
-                <RadioGroup value={start} onValueChange={(v) => setStart(v as 'merge' | 'bvr')}>
-                  <Option group={group + 'start'} value='merge' icon={START_ICONS.merge} label={<Trans>Merge — fight on at the pass</Trans>} />
-                  <Option group={group + 'start'} value='bvr' icon={START_ICONS.bvr} label={<Trans>BVR — weapons free from spawn</Trans>} />
-                </RadioGroup>
-              ) : (
-                <div className='flex items-center gap-2'>
-                  <Switch id='rule-spaced' checked={spaced} onCheckedChange={setSpaced} />
-                  <Label htmlFor='rule-spaced' className='font-normal'>
-                    {mode === 'teams' ? <Trans>Anchored sides</Trans> : <Trans>Spaced spawns</Trans>}
-                  </Label>
-                </div>
-              )}
-            </div>
-
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Cheats</Trans>
-              </div>
-              <div className='flex items-center gap-2'>
-                <Switch
-                  id='rule-invulnerable'
-                  checked={!!cheats.invulnerable}
-                  onCheckedChange={(v) => setCheats((c) => ({ ...c, invulnerable: v }))}
-                />
-                <Label htmlFor='rule-invulnerable' className='font-normal'>
-                  <Trans>Invulnerable (human players only)</Trans>
-                </Label>
-              </div>
-              <div className='flex items-center gap-2'>
-                <Switch
-                  id='rule-ammunition'
-                  checked={!!cheats.ammunition}
-                  onCheckedChange={(v) => setCheats((c) => ({ ...c, ammunition: v }))}
-                />
-                <Label htmlFor='rule-ammunition' className='font-normal'>
-                  <Trans>Unlimited ammunition</Trans>
-                </Label>
-              </div>
-              <div className='flex items-center gap-2'>
-                <Switch
-                  id='rule-fuel-unlimited'
-                  checked={!!cheats.fuel}
-                  onCheckedChange={(v) => setCheats((c) => ({ ...c, fuel: v }))}
-                />
-                <Label htmlFor='rule-fuel-unlimited' className='font-normal'>
-                  <Trans>Unlimited fuel</Trans>
-                </Label>
-              </div>
-            </div>
-
-            <div className='space-y-2'>
-              <div className='text-muted-foreground text-xs font-medium uppercase'>
-                <Trans>Bots</Trans>
-              </div>
-              {(mode === 'teams' ? (['red', 'blue'] as const) : (['all'] as const)).map((side) => {
-                const counts = side === 'blue' ? blueBots : bots
-                const update = side === 'blue' ? setBlueBots : setBots
-                // The cap used to be enforced by REFUSING the edit that broke
-                // it, which looked like a dead input box: the typed number
-                // vanished and nothing said why. Each box now carries the room
-                // actually left as its own ceiling, and the count under the
-                // grid says where that ceiling is.
-                return (
-                  <div key={side} className='space-y-1'>
-                    {mode === 'teams' && (
-                      <Label className='text-muted-foreground text-xs font-normal'>
-                        {side === 'red' ? <Trans>Red bots</Trans> : <Trans>Blue bots</Trans>}
-                      </Label>
-                    )}
-                    <div className='grid grid-cols-5 gap-1'>
-                      {(
-                        [
-                          ['drone', t`Drone`],
-                          ['novice', t`Novice`],
-                          ['pilot', t`Pilot`],
-                          ['ace', t`Ace`],
-                          ['superhuman', t`Superhuman`],
-                        ] as const
-                      ).map(([level, label]) => (
-                        <div key={level} className='min-w-0'>
-                          <Label
-                            htmlFor={'bots-' + side + '-' + level}
-                            className='text-muted-foreground block truncate text-xs font-normal'
-                            title={label}
-                          >
-                            {label}
-                          </Label>
-                          <NumberField
-                            id={'bots-' + side + '-' + level}
-                            min={0}
-                            max={BOTS - (placed - counts[level])}
-                            value={counts[level]}
-                            onChange={(value) => update((b) => ({ ...b, [level]: value }))}
-                            className='h-8 w-full'
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
-              <div className='text-muted-foreground text-xs tabular-nums'>
-                <Plural value={placed} one={`# of ${limit} bot`} other={`# of ${limit} bots`} />
-              </div>
-            </div>
-          </div>
-
-          <div className='flex justify-end border-t pt-3'>
-            <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>
-              <Plus className='size-4' />
-              <Trans>Create and fly</Trans>
-            </Button>
-          </div>
-        </div>
-      )}
 
       <div className='min-h-0 flex-1 divide-y overflow-y-auto rounded-md border'>
         {sessions.length === 0 && (
@@ -649,6 +443,227 @@ export function Multiplayer({
             </div>
           </div>
         ))}
+      </div>
+
+      {making && (
+        <div className='space-y-3 rounded-md border p-3'>
+          <div className='grid gap-3 sm:grid-cols-2'>
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Match type</Trans>
+              </div>
+              <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'furball' | 'joust' | 'teams')}>
+                <Option group={group + 'mode'} value='furball' icon={MODE_ICONS.furball} label={<Trans>Open — anyone may join or leave</Trans>} />
+                <Option group={group + 'mode'} value='joust' icon={MODE_ICONS.joust} label={<Trans>Joust — 1v1, first kill wins</Trans>} />
+                <Option group={group + 'mode'} value='teams' icon={MODE_ICONS.teams} label={<Trans>Teams — red versus blue</Trans>} />
+              </RadioGroup>
+            </div>
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Weather</Trans>
+              </div>
+              <RadioGroup value={tod} onValueChange={(v) => setTod(v as 'day' | 'night')}>
+                <Option group={group + 'tod'} value='day' icon={TOD_ICONS.day} label={<Trans>Day</Trans>} />
+                <Option group={group + 'tod'} value='night' icon={TOD_ICONS.night} label={<Trans>Night</Trans>} />
+              </RadioGroup>
+              <RadioGroup value={clouds} onValueChange={setClouds}>
+                <Option group={group + 'clouds'} value='none' icon={CLOUD_ICONS.none} label={<Trans>Clear</Trans>} />
+                <Option group={group + 'clouds'} value='cumulus' icon={CLOUD_ICONS.cumulus} label={<Trans>Cumulus</Trans>} />
+                <Option group={group + 'clouds'} value='high_stratus' icon={CLOUD_ICONS.high_stratus} label={<Trans>High stratus</Trans>} />
+                <Option group={group + 'clouds'} value='mid_stratus' icon={CLOUD_ICONS.mid_stratus} label={<Trans>Mid stratus</Trans>} />
+                <Option group={group + 'clouds'} value='low_stratus' icon={CLOUD_ICONS.low_stratus} label={<Trans>Low stratus</Trans>} />
+              </RadioGroup>
+            </div>
+          </div>
+          {/* A GRID of named groups, not one flex row. Twelve controls on a
+              single unwrapped row overflowed every narrow viewport, and this is
+              the surface a host drives while other people wait in the lobby.
+              Every header reuses an msgid the app already ships. */}
+          <div className='grid gap-4 sm:grid-cols-2'>
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Weapons</Trans>
+              </div>
+              <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
+                <Option group={group + 'weapons'} value='guns' icon={WEAPON_ICONS.guns} label={<Trans>Guns only</Trans>} />
+                <Option group={group + 'weapons'} value='fox2' icon={WEAPON_ICONS.fox2} label='Fox 2' />
+                <Option group={group + 'weapons'} value='open' icon={WEAPON_ICONS.open} label={<Trans>Unlimited</Trans>} />
+              </RadioGroup>
+              <div className='flex items-center gap-2 pt-1'>
+                <Label htmlFor='rule-fuel' className='font-normal'>
+                  <Trans>Fuel</Trans>
+                </Label>
+                <NumberField
+                  id='rule-fuel'
+                  min={1500}
+                  max={10800}
+                  step={100}
+                  value={fuel}
+                  onChange={setFuel}
+                  className='h-8 w-24'
+                />
+                <span className='text-muted-foreground text-xs'>
+                  <Trans>lb</Trans>
+                </span>
+              </div>
+            </div>
+
+            {/* An open match has no start rule to choose: arrivals are placed
+                clear of the fight and pointed at it, always. */}
+            {mode !== 'furball' && (
+              <div className='space-y-2'>
+                <div className='text-muted-foreground text-xs font-medium uppercase'>
+                  <Trans>Start</Trans>
+                </div>
+                {mode === 'joust' ? (
+                  <RadioGroup value={start} onValueChange={(v) => setStart(v as 'merge' | 'bvr')}>
+                    <Option group={group + 'start'} value='merge' icon={START_ICONS.merge} label={<Trans>Merge — fight on at the pass</Trans>} />
+                    <Option group={group + 'start'} value='bvr' icon={START_ICONS.bvr} label={<Trans>BVR — weapons free from spawn</Trans>} />
+                  </RadioGroup>
+                ) : (
+                  <div className='flex items-center gap-2'>
+                    <Switch id='rule-spaced' checked={spaced} onCheckedChange={setSpaced} />
+                    <Label htmlFor='rule-spaced' className='font-normal'>
+                      <Trans>Anchored sides</Trans>
+                    </Label>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Cheats</Trans>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-invulnerable'
+                  checked={!!cheats.invulnerable}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, invulnerable: v }))}
+                />
+                <Label htmlFor='rule-invulnerable' className='font-normal'>
+                  <Trans>Invulnerable (human players only)</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-ammunition'
+                  checked={!!cheats.ammunition}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, ammunition: v }))}
+                />
+                <Label htmlFor='rule-ammunition' className='font-normal'>
+                  <Trans>Unlimited ammunition</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-fuel-unlimited'
+                  checked={!!cheats.fuel}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, fuel: v }))}
+                />
+                <Label htmlFor='rule-fuel-unlimited' className='font-normal'>
+                  <Trans>Unlimited fuel</Trans>
+                </Label>
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Bots</Trans>
+              </div>
+              {(mode === 'teams' ? (['red', 'blue'] as const) : (['all'] as const)).map((side) => {
+                const counts = side === 'blue' ? blueBots : bots
+                const update = side === 'blue' ? setBlueBots : setBots
+                // The cap used to be enforced by REFUSING the edit that broke
+                // it, which looked like a dead input box: the typed number
+                // vanished and nothing said why. Each box now carries the room
+                // actually left as its own ceiling, and the count under the
+                // grid says where that ceiling is.
+                return (
+                  <div key={side} className='space-y-1'>
+                    {mode === 'teams' && (
+                      <Label className='text-muted-foreground text-xs font-normal'>
+                        {side === 'red' ? <Trans>Red bots</Trans> : <Trans>Blue bots</Trans>}
+                      </Label>
+                    )}
+                    <div className='grid grid-cols-5 gap-1'>
+                      {(
+                        [
+                          ['drone', t`Drone`],
+                          ['novice', t`Novice`],
+                          ['pilot', t`Pilot`],
+                          ['ace', t`Ace`],
+                          ['superhuman', t`Superhuman`],
+                        ] as const
+                      ).map(([level, label]) => (
+                        <div key={level} className='min-w-0'>
+                          <Label
+                            htmlFor={'bots-' + side + '-' + level}
+                            className='text-muted-foreground block truncate text-xs font-normal'
+                            title={label}
+                          >
+                            {label}
+                          </Label>
+                          <NumberField
+                            id={'bots-' + side + '-' + level}
+                            min={0}
+                            max={BOTS - (placed - counts[level])}
+                            value={counts[level]}
+                            onChange={(value) => update((b) => ({ ...b, [level]: value }))}
+                            className='h-8 w-full'
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+              <div className='text-muted-foreground text-xs tabular-nums'>
+                <Plural value={placed} one={`# of ${limit} bot`} other={`# of ${limit} bots`} />
+              </div>
+            </div>
+          </div>
+
+          <div className='flex justify-end gap-2 border-t pt-3'>
+            <Button type='button' variant='outline' size='sm' disabled={busy} onClick={() => setMaking(false)}>
+              <X className='size-4' />
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>
+              <Plus className='size-4' />
+              <Trans>Create and fly</Trans>
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* The page's actions on one row at the bottom, level with the chat's
+          input beside it and right-justified with the list: the way out at
+          the far left, away from the chat's Send, then the two that act on
+          the list, the constructive one last. */}
+      <div className='flex justify-end gap-2'>
+        {onLeave && (
+          <Button type='button' variant='outline' onClick={onLeave}>
+            <X className='size-4' />
+            <Trans>Leave server</Trans>
+          </Button>
+        )}
+        <Button
+          type='button'
+          variant='outline'
+          disabled={refreshing}
+          onClick={() => {
+            setRefreshing(true)
+            void refresh().finally(() => setRefreshing(false))
+          }}
+        >
+          <RefreshCw className={`size-4${refreshing ? ' animate-spin' : ''}`} />
+          <Trans>Refresh</Trans>
+        </Button>
+        <Button type='button' variant='outline' disabled={!status} onClick={() => setMaking((v) => !v)}>
+          <Plus className='size-4' />
+          <Trans>Create match</Trans>
+        </Button>
       </div>
     </div>
   )
