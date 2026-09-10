@@ -26,7 +26,10 @@ wasm: web/src/assets/flight.wasm
 clean:
 	rm -rf web/dist
 
-web/dist/index.html: web/src/assets/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null)
+# Everything the web build reads: the source and public trees, the shared
+# library, the files at the top of web/ (index.html, package.json, the vite
+# and tsconfig files) and the workspace lockfile.
+web/dist/index.html: web/src/assets/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null) $(shell find web -maxdepth 1 -type f 2>/dev/null) $(wildcard ../../pnpm-lock.yaml)
 	bash -c 'cd web && if [ -x "$(SAFE_PNPM)" ]; then "$(SAFE_PNPM)" run build; else pnpm run build; fi'
 # The flight simulation core, compiled for the browser from the world repo.
 # Lands in src/assets so Vite content-hashes it into the bundle (no manual
