@@ -58,7 +58,7 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
-import { Recorder, stamp } from './acmi'
+import { Recorder, stamp, channels } from './acmi'
 
 export type GameConfig = Record<string, unknown>
 
@@ -4178,7 +4178,12 @@ function recording_sample(){
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
-		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
+		// Everything the wire already told us about him (#163/#164), mapped by
+		// acmi.channels so the mapping is testable without the engine.
+		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange",undefined,
+			channels({ spent:st.spent, struck:st.struck, speed:st.speed, burning:st.burning, burn:st.burn,
+				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, missiles:st.msl },
+				net.emitters.get(slot), net.slot)); } }
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
 	// number), never reused within a recording. Shooter and target use the
@@ -6599,7 +6604,16 @@ function net_event(e){ const slot=Number(e.slot);
 	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); break;   // the server saw the merge (#87)
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_flare(st); } break;
 	case "chaff": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_chaff(st); } break;   // separate events from separate magazines (#43): a human's key sends both while both last, a bot's programme sends the one it chose
-	case "hit": if(net&&slot===net.slot&&e.count){ hit_flash=Math.min(1,hit_flash+0.25*Number(e.count)); audio_hit(Number(e.count)); } break;   // the server says rounds are landing on us
+	case "hit": { const count=Number(e.count)||0; if(!count) break;   // the server says rounds are landing on someone, and says how many
+		// The count is ground truth and cumulative: its steps ARE the hits, so
+		// it survives the recorder's 10 Hz sampling losslessly. The single
+		// player cascade at battle_fly keeps its own tally; in multiplayer the
+		// server owns the battle and this event is the only place the number
+		// exists, so an unaccumulated one left every MP recording reading zero
+		// rounds taken however hard the fight went (#163).
+		if(net&&slot===net.slot){ ownship.struck=(ownship.struck||0)+count; hit_flash=Math.min(1,hit_flash+0.25*count); audio_hit(count); }
+		else { const st=remotes.get(slot); if(st) st.struck=(st.struck||0)+count; }
+		break; }
 	case "eject": case "pilot":
 		if(net&&slot===net.slot&&!(e.kind==="eject"&&ejected)) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));   // our own eject already shows the banner
 		break;   // the airframe flies on as a wreck; the kill event handles scoring and the fireball
@@ -6701,6 +6715,12 @@ function net_frame(dt){
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.jamming=!!pose.jamming;   // #31: the flag the RDR page strobes and the STT MEM logic feed on
+		// The battle channels the pose already carries (#163): the recorder
+		// writes these for a remote exactly as it does for the ownship, so an
+		// MP debrief reads his damage and his expenditure as ground truth
+		// rather than inferring them from his flight path.
+		st.spent=pose.spent||0; st.leak=pose.leak||0; st.thrust=pose.thrust||0;
+		st.burn=pose.burn; st.burning=!!pose.burning; st.reheat=pose.reheat||0;
 		st.name=pose.name; st.group.visible=pose.alive;
 		{ const team=net.teams.get(slot)||"";
 			if(st.livery!==team&&model_active){ apply_livery(st.group,team); st.livery=team; } }
