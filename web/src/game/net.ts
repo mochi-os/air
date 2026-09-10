@@ -2,19 +2,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // Multiplayer networking: lobby helpers, the WebTransport data plane (framed
 // control stream, CBOR datagrams), remote-aircraft interpolation ~100 ms behind
 // live, and match history. World servers are open and UNTRUSTED, and identity
 // is self-asserted.
-
 import { createAppClient, getAppPath, useAuthStore } from '@mochi/web'
 import { authenticated } from '../lib/config-store'
+import { cbor_encode, cbor_decode } from './cbor'
+import { parseDarts, type Dart } from './darts'
 import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
-import { cbor_encode, cbor_decode } from './cbor'
-import { parseDarts, type Dart } from './darts'
+
 export { crossHost } from './host'
 
 const POSE_RECORD = 37 // the server's fixed pose stride (world/games/air/air.go, pose_record)
@@ -23,7 +22,11 @@ const PROTOCOL = 3 // 3: the 37-byte pose record — the uint16 tail carries the
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
 function isEnvelope(message: unknown): message is Record<string, unknown> {
-  return typeof message === 'object' && message !== null && typeof (message as { kind?: unknown }).kind === 'string'
+  return (
+    typeof message === 'object' &&
+    message !== null &&
+    typeof (message as { kind?: unknown }).kind === 'string'
+  )
 }
 
 // MAX_SLOT bounds a slot index from an untrusted server - a slot is a map key
@@ -31,7 +34,11 @@ function isEnvelope(message: unknown): message is Record<string, unknown> {
 const MAX_SLOT = 256
 
 function validSlot(value: unknown): boolean {
-  return Number.isInteger(value) && (value as number) >= 0 && (value as number) < MAX_SLOT
+  return (
+    Number.isInteger(value) &&
+    (value as number) >= 0 &&
+    (value as number) < MAX_SLOT
+  )
 }
 
 // finiteScore keeps only the finite numeric entries of an untrusted score map,
@@ -81,7 +88,8 @@ export interface WorldSession {
 export function normalize_server(address: string): string {
   let a = address.trim().replace(/\/+$/, '')
   if (!a) return a
-  if (!/^https?:\/\//.test(a)) a = (location.protocol === 'https:' ? 'https://' : 'http://') + a
+  if (!/^https?:\/\//.test(a))
+    a = (location.protocol === 'https:' ? 'https://' : 'http://') + a
   if (!/:\d+$/.test(a)) a += ':4433'
   return a
 }
@@ -103,17 +111,34 @@ function withTimeout(signal?: AbortSignal): AbortSignal {
   return signal ? AbortSignal.any([signal, timeout]) : timeout
 }
 
-export async function world_status(server: string, signal?: AbortSignal): Promise<WorldStatus> {
-  const response = await fetch(server + '/status', { mode: 'cors', signal: withTimeout(signal) })
+export async function world_status(
+  server: string,
+  signal?: AbortSignal
+): Promise<WorldStatus> {
+  const response = await fetch(server + '/status', {
+    mode: 'cors',
+    signal: withTimeout(signal),
+  })
   if (!response.ok) throw new Error('status ' + response.status)
   return (await response.json()) as WorldStatus
 }
 
-export async function world_sessions(server: string, game: string, signal?: AbortSignal, pilot?: string): Promise<WorldSession[]> {
+export async function world_sessions(
+  server: string,
+  game: string,
+  signal?: AbortSignal,
+  pilot?: string
+): Promise<WorldSession[]> {
   // The pilot token rides the poll: on the server side the match-list request
   // IS the heartbeat that keeps this player's own offer alive (#77).
-  const query = '/sessions?game=' + encodeURIComponent(game) + (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
-  const response = await fetch(server + query, { mode: 'cors', signal: withTimeout(signal) })
+  const query =
+    '/sessions?game=' +
+    encodeURIComponent(game) +
+    (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
+  const response = await fetch(server + query, {
+    mode: 'cors',
+    signal: withTimeout(signal),
+  })
   if (!response.ok) throw new Error('status ' + response.status)
   const body = (await response.json()) as { sessions: WorldSession[] }
   return body.sessions ?? []
@@ -121,8 +146,20 @@ export async function world_sessions(server: string, game: string, signal?: Abor
 
 export async function world_create(
   server: string,
-  request: { game: string; mode: string; label: string; name?: string; pilot?: string; capacity?: number; parameters?: Record<string, unknown> }
-): Promise<{ session: string; address: string; certificate?: { hash: string } }> {
+  request: {
+    game: string
+    mode: string
+    label: string
+    name?: string
+    pilot?: string
+    capacity?: number
+    parameters?: Record<string, unknown>
+  }
+): Promise<{
+  session: string
+  address: string
+  certificate?: { hash: string }
+}> {
   const response = await fetch(server + '/sessions', {
     method: 'POST',
     mode: 'cors',
@@ -134,10 +171,17 @@ export async function world_create(
   // surface as a JSON parse error instead of the status. Failed creates do
   // answer JSON ({error}).
   if (!response.ok) {
-    const failure = (await response.json().catch(() => null)) as { error?: string } | null
+    const failure = (await response.json().catch(() => null)) as {
+      error?: string
+    } | null
     throw new Error(failure?.error || 'status ' + response.status)
   }
-  const body = (await response.json()) as { error?: string; session: string; address: string; certificate?: { hash: string } }
+  const body = (await response.json()) as {
+    error?: string
+    session: string
+    address: string
+    certificate?: { hash: string }
+  }
   if (body.error) throw new Error(body.error)
   return body
 }
@@ -145,7 +189,10 @@ export async function world_create(
 // world_withdraw retires this pilot's own offer immediately — leaving the
 // server page, or joining somebody else's match. The server's heartbeat
 // timeout is only the backstop for a tab that vanished without saying so.
-export async function world_withdraw(server: string, pilot: string): Promise<void> {
+export async function world_withdraw(
+  server: string,
+  pilot: string
+): Promise<void> {
   await fetch(server + '/withdraw', {
     method: 'POST',
     mode: 'cors',
@@ -167,13 +214,24 @@ export interface WorldChatLine {
   label?: string
 }
 
-export async function world_chat(server: string, since: number, signal?: AbortSignal): Promise<{ lines: WorldChatLine[]; sequence: number }> {
-  const response = await fetch(server + '/chat?since=' + since, { mode: 'cors', signal: withTimeout(signal) })
+export async function world_chat(
+  server: string,
+  since: number,
+  signal?: AbortSignal
+): Promise<{ lines: WorldChatLine[]; sequence: number }> {
+  const response = await fetch(server + '/chat?since=' + since, {
+    mode: 'cors',
+    signal: withTimeout(signal),
+  })
   if (!response.ok) throw new Error('status ' + response.status)
   return (await response.json()) as { lines: WorldChatLine[]; sequence: number }
 }
 
-export async function world_say(server: string, name: string, text: string): Promise<void> {
+export async function world_say(
+  server: string,
+  name: string,
+  text: string
+): Promise<void> {
   const response = await fetch(server + '/chat', {
     method: 'POST',
     mode: 'cors',
@@ -265,7 +323,16 @@ export interface Welcome {
   rate: { tick: number; snapshot: number }
   seed: number
   parameters?: Record<string, unknown>
-  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string; waiting?: boolean; mode?: string; team?: string; score?: Record<string, number> }
+  spawn: {
+    state?: SpawnState
+    wrap?: number
+    model?: number
+    aircraft?: string
+    waiting?: boolean
+    mode?: string
+    team?: string
+    score?: Record<string, number>
+  }
   players: { slot: number; name: string; identity: string }[]
 }
 
@@ -296,10 +363,24 @@ export class Net {
   private snapshots: Snapshot[] = []
   private rings = new Map<number, TimedPose[]>() // per-slot pose history (#81)
   private clock = NaN // EMA of (local seconds - server tick seconds): the jitter-filtered clock the pose timeline runs on
-  private glide = new Map<number, { x: number; y: number; z: number; ox: number; oy: number; oz: number; at: number }>() // per-slot discontinuity smoothing: raw stream memory + decaying offset
+  private glide = new Map<
+    number,
+    {
+      x: number
+      y: number
+      z: number
+      ox: number
+      oy: number
+      oz: number
+      at: number
+    }
+  >() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
-  racks = new Map<number, Record<string, { fixture: string; stores: string[] }>>() // slot -> granted loadout (#17, roster events) — how remotes render each other's stores
+  racks = new Map<
+    number,
+    Record<string, { fixture: string; stores: string[] }>
+  >() // slot -> granted loadout (#17, roster events) — how remotes render each other's stores
   racksRevision = 0 // bumped on every roster stores update (#18) — the engine re-applies remote loadouts when it moves, so a mid-flight jettison shows
   score: Record<string, number> = {} // teams mode running score (welcome + kill events)
   darts: Dart[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
@@ -371,7 +452,10 @@ export class Net {
       oz *= 40 / cap
     }
     this.glide.set(slot, { x, y, z, ox, oy, oz, at: now })
-    return { ...pose, position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)] }
+    return {
+      ...pose,
+      position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)],
+    }
   }
 
   // self is the player's OWN latest pose, sent first in every poses datagram
@@ -416,8 +500,10 @@ export class Net {
       })
     }
     const span = when(b) - when(a)
-    const t = span > 0.001 ? Math.min(1, Math.max(0, (target - when(a)) / span)) : 1
-    const unwrap = (from: number, to: number) => from + this.shortest(from, to) * t
+    const t =
+      span > 0.001 ? Math.min(1, Math.max(0, (target - when(a)) / span)) : 1
+    const unwrap = (from: number, to: number) =>
+      from + this.shortest(from, to) * t
     const lerp = (from: number, to: number) => from + (to - from) * t
     return this.soften(slot, {
       ...pb,
@@ -436,7 +522,8 @@ export class Net {
   // prediction reconciliation, or null when there is nothing new.
   correction(): { sequence: number; core: Float64Array } | null {
     const newest = this.snapshots[this.snapshots.length - 1]
-    if (!newest || !newest.core || newest.acknowledged <= this.corrected) return null
+    if (!newest || !newest.core || newest.acknowledged <= this.corrected)
+      return null
     this.corrected = newest.acknowledged
     return { sequence: newest.acknowledged, core: newest.core }
   }
@@ -448,7 +535,10 @@ export class Net {
   time(): number {
     const newest = this.snapshots[this.snapshots.length - 1]
     if (!newest) return 0
-    return newest.tick / (this.welcome?.rate?.tick || 60) + (performance.now() - newest.at) / 1000
+    return (
+      newest.tick / (this.welcome?.rate?.tick || 60) +
+      (performance.now() - newest.at) / 1000
+    )
   }
 
   // slots lists the remote slots with a reasonably fresh pose — the far tail
@@ -468,7 +558,7 @@ export class Net {
   // own returns the newest authoritative state for our aircraft.
   own(): RemotePose | null {
     const ring = this.rings.get(this.slot)
-    return ring?.length ? ring[ring.length - 1].pose : null   // self rides first in every poses datagram
+    return ring?.length ? ring[ring.length - 1].pose : null // self rides first in every poses datagram
   }
 
   shortest(from: number, to: number): number {
@@ -484,7 +574,9 @@ export class Net {
   chat(text: string, scope: string) {
     try {
       this.writer?.write(frame(cbor_encode({ kind: 'chat', text, scope })))
-    } catch { /* already gone */ }
+    } catch {
+      /* already gone */
+    }
   }
 
   // jettison reports a stores departure (#18): station numbers with 'stores'
@@ -494,7 +586,9 @@ export class Net {
   jettison(stations: { station: number; what: string }[]) {
     try {
       this.writer?.write(frame(cbor_encode({ kind: 'jettison', stations })))
-    } catch { /* already gone */ }
+    } catch {
+      /* already gone */
+    }
   }
 
   // radar reports the own emitter state (#30) on change: 0 silent, 1 search,
@@ -503,21 +597,30 @@ export class Net {
   radar(mode: number, target: number) {
     try {
       this.writer?.write(frame(cbor_encode({ kind: 'radar', mode, target })))
-    } catch { /* already gone */ }
+    } catch {
+      /* already gone */
+    }
   }
 
   leave() {
     this.closed = true
     try {
       this.writer?.write(frame(cbor_encode({ kind: 'leave' })))
-    } catch { /* already gone */ }
+    } catch {
+      /* already gone */
+    }
     try {
       this.transport.close()
-    } catch { /* already gone */ }
+    } catch {
+      /* already gone */
+    }
   }
 
   // start runs the reader pumps after a successful handshake.
-  start(writer: WritableStreamDefaultWriter<Uint8Array>, messages: AsyncGenerator<Uint8Array>) {
+  start(
+    writer: WritableStreamDefaultWriter<Uint8Array>,
+    messages: AsyncGenerator<Uint8Array>
+  ) {
     this.writer = writer
     this.datagrams = this.transport.datagrams.writable.getWriter()
     void this.control(messages)
@@ -548,22 +651,38 @@ export class Net {
         // Smooth the local-to-server clock offset: interpolating on ARRIVAL
         // times fed every network jitter wobble straight into aircraft motion.
         const offset = at / 1000 - tick / 60
-        if (!Number.isFinite(this.clock) || Math.abs(offset - this.clock) > 0.25) this.clock = offset
+        if (
+          !Number.isFinite(this.clock) ||
+          Math.abs(offset - this.clock) > 0.25
+        )
+          this.clock = offset
         else this.clock += (offset - this.clock) * 0.08
         const view = new DataView(blob.buffer, blob.byteOffset)
-        for (let base = 0; base + POSE_RECORD <= blob.byteLength; base += POSE_RECORD) {
+        for (
+          let base = 0;
+          base + POSE_RECORD <= blob.byteLength;
+          base += POSE_RECORD
+        ) {
           const slot = view.getUint8(base)
           const flags = view.getUint8(base + 26)
           const tally = this.tallies.get(slot)
           const pose: RemotePose = {
-            position: [view.getFloat32(base + 1, true), view.getFloat32(base + 5, true), view.getFloat32(base + 9, true)],
+            position: [
+              view.getFloat32(base + 1, true),
+              view.getFloat32(base + 5, true),
+              view.getFloat32(base + 9, true),
+            ],
             attitude: [
               view.getInt16(base + 13, true) / 32767,
               view.getInt16(base + 15, true) / 32767,
               view.getInt16(base + 17, true) / 32767,
               view.getInt16(base + 19, true) / 32767,
             ],
-            direction: [view.getInt8(base + 21) / 127, view.getInt8(base + 22) / 127, view.getInt8(base + 23) / 127],
+            direction: [
+              view.getInt8(base + 21) / 127,
+              view.getInt8(base + 22) / 127,
+              view.getInt8(base + 23) / 127,
+            ],
             speed: view.getUint16(base + 24, true) / 10,
             name: this.names.get(slot) ?? '',
             alive: !!(flags & 1),
@@ -575,7 +694,10 @@ export class Net {
             burning: !!(flags & 32),
             reheat: view.getUint8(base + 27) / 255,
             speedbrake: view.getUint8(base + 28) / 255,
-            burn: [view.getUint8(base + 29) / 255, view.getUint8(base + 30) / 255],
+            burn: [
+              view.getUint8(base + 29) / 255,
+              view.getUint8(base + 30) / 255,
+            ],
             leak: view.getUint8(base + 31) / 10,
             loss: view.getUint16(base + 32, true),
             spent: view.getUint16(base + 35, true), // cumulative rounds fired this life (#163): the steps are the bursts
@@ -588,7 +710,10 @@ export class Net {
           // Three.js. Attitude/direction/speed are int-derived and finite.
           if (!pose.position.every(Number.isFinite)) continue
           const emitter = view.getUint8(base + 34) // #30: high two bits the mode, low six the locked slot (63 = none)
-          this.emitters.set(slot, { mode: (emitter >> 6) & 3, target: (emitter & 63) === 63 ? -1 : emitter & 63 })
+          this.emitters.set(slot, {
+            mode: (emitter >> 6) & 3,
+            target: (emitter & 63) === 63 ? -1 : emitter & 63,
+          })
           let ring = this.rings.get(slot)
           if (!ring) {
             ring = []
@@ -613,7 +738,10 @@ export class Net {
         if (!Number.isFinite(tick)) break
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
-        if (bytes instanceof Uint8Array && bytes.byteLength >= 456 + (SIZE - 57) * 2) {
+        if (
+          bytes instanceof Uint8Array &&
+          bytes.byteLength >= 456 + (SIZE - 57) * 2
+        ) {
           // The wire core: 57 base words at full float64 precision, then the
           // damage tail quantised to uint16 (unit-interval losses; the final
           // word is shed mass at kg/8000) — full float64 burst the datagram
@@ -623,7 +751,10 @@ export class Net {
           let bad = false
           for (let i = 0; i < 57; i++) {
             const w = view.getFloat64(i * 8, true)
-            if (!Number.isFinite(w)) { bad = true; break } // a non-finite core word would poison the WASM prediction
+            if (!Number.isFinite(w)) {
+              bad = true
+              break
+            } // a non-finite core word would poison the WASM prediction
             expanded[i] = w
           }
           if (!bad) {
@@ -641,7 +772,9 @@ export class Net {
         this.snapshots.push({
           at: performance.now(),
           tick,
-          acknowledged: Number.isFinite(Number(message.acknowledged)) ? Number(message.acknowledged) : 0,
+          acknowledged: Number.isFinite(Number(message.acknowledged))
+            ? Number(message.acknowledged)
+            : 0,
           core,
         })
         if (this.snapshots.length > 40) this.snapshots.shift()
@@ -652,16 +785,21 @@ export class Net {
         if (typeof event !== 'object' || event === null) break // an event must be an object before it reaches the engine handler
         const ev = event as Record<string, unknown>
         if (ev.kind === 'roster' && validSlot(ev.slot)) {
-          this.names.set(ev.slot as number, String(ev.name ?? ''))   // names arrive out of the hot path (#81)
+          this.names.set(ev.slot as number, String(ev.name ?? '')) // names arrive out of the hot path (#81)
           if (ev.team) this.teams.set(ev.slot as number, String(ev.team))
           if (ev.stores && typeof ev.stores === 'object') {
-            this.racks.set(ev.slot as number, ev.stores as Record<string, { fixture: string; stores: string[] }>)
+            this.racks.set(
+              ev.slot as number,
+              ev.stores as Record<string, { fixture: string; stores: string[] }>
+            )
             this.racksRevision++
           }
         }
         if (ev.kind === 'kill' && ev.score) this.score = finiteScore(ev.score)
-        if (ev.kind === 'kill' && validSlot(ev.slot)) {   // scores are counted, not shipped per snapshot (#81)
-          const victim = ev.slot as number, killer = Number(ev.by)
+        if (ev.kind === 'kill' && validSlot(ev.slot)) {
+          // scores are counted, not shipped per snapshot (#81)
+          const victim = ev.slot as number,
+            killer = Number(ev.by)
           const down = this.tallies.get(victim) ?? { kills: 0, deaths: 0 }
           down.deaths++
           this.tallies.set(victim, down)
@@ -690,7 +828,9 @@ export class Net {
     }
     try {
       this.transport.close()
-    } catch { /* already closing */ }
+    } catch {
+      /* already closing */
+    }
   }
 
   private async control(messages: AsyncGenerator<Uint8Array>) {
@@ -716,7 +856,8 @@ export class Net {
   private async receive() {
     let malformed = 0
     try {
-      const reader = this.transport.datagrams.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
+      const reader =
+        this.transport.datagrams.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
       for (;;) {
         const { value, done } = await reader.read()
         if (done) return
@@ -736,7 +877,9 @@ export class Net {
           }
         }
       }
-    } catch { /* reader gone; transport.closed fires the handler */ }
+    } catch {
+      /* reader gone; transport.closed fires the handler */
+    }
   }
 }
 
@@ -776,7 +919,9 @@ function deadline<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
   const expiry = new Promise<never>((_, reject) => {
     timer = setTimeout(() => reject(new Error(label + ' timeout')), ms)
   })
-  return Promise.race([work, expiry]).finally(() => clearTimeout(timer)) as Promise<T>
+  return Promise.race([work, expiry]).finally(() =>
+    clearTimeout(timer)
+  ) as Promise<T>
 }
 
 export async function connect(join: Join, handlers: Handlers): Promise<Net> {
@@ -790,11 +935,26 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   const transport = new WebTransport(join.address, options)
   try {
     await deadline(transport.ready, CONNECT_DEADLINE, 'connect')
-    const stream = await deadline(transport.createBidirectionalStream(), CONNECT_DEADLINE, 'stream')
-    const writer = stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
-    const reader = stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
+    const stream = await deadline(
+      transport.createBidirectionalStream(),
+      CONNECT_DEADLINE,
+      'stream'
+    )
+    const writer =
+      stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
+    const reader =
+      stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
     await writer.write(
-      frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', stores: join.stores ?? {}, protocol: PROTOCOL }))
+      frame(
+        cbor_encode({
+          kind: 'join',
+          session: join.session,
+          name: join.name,
+          team: join.team ?? '',
+          stores: join.stores ?? {},
+          protocol: PROTOCOL,
+        })
+      )
     )
     // The handshake and the established connection share ONE bounded frame
     // reader (the same size caps and chunk-queue apply to the welcome/refuse):
@@ -804,7 +964,8 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     const opening = await deadline(messages.next(), WELCOME_DEADLINE, 'welcome')
     if (opening.done) throw new Error('closed')
     const first = cbor_decode(opening.value) as Record<string, unknown>
-    if (first.kind === 'refuse') throw new Error(String(first.reason ?? 'refused'))
+    if (first.kind === 'refuse')
+      throw new Error(String(first.reason ?? 'refused'))
     if (first.kind !== 'welcome') throw new Error('protocol')
     // Validate the welcome before it becomes our identity: an out-of-range or
     // non-integer slot corrupts every slot-keyed map, and players must be a
@@ -818,10 +979,13 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     for (const p of players) {
       if (typeof p !== 'object' || p === null) continue
       const record = p as { slot?: unknown; name?: unknown }
-      if (validSlot(record.slot)) net.names.set(record.slot as number, String(record.name ?? '')) // players present before us; later joiners arrive via roster events
+      if (validSlot(record.slot))
+        net.names.set(record.slot as number, String(record.name ?? '')) // players present before us; later joiners arrive via roster events
     }
-    const spawn = first.spawn as { wrap?: unknown; team?: unknown; score?: unknown } | undefined
-    if (spawn && spawn.wrap !== undefined) net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
+    const spawn = first.spawn as
+      { wrap?: unknown; team?: unknown; score?: unknown } | undefined
+    if (spawn && spawn.wrap !== undefined)
+      net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
     if (spawn?.team) net.teams.set(slot, String(spawn.team))
     if (spawn?.score) net.score = finiteScore(spawn.score)
     net.start(writer, messages)
@@ -832,7 +996,9 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     // left dangling.
     try {
       transport.close()
-    } catch { /* already closing */ }
+    } catch {
+      /* already closing */
+    }
     throw error
   }
 }
@@ -866,10 +1032,21 @@ export async function record(match: {
       method: 'POST',
       keepalive: true,
       credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: token.startsWith('Bearer ') ? token : 'Bearer ' + token } : {}) },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token
+          ? {
+              Authorization: token.startsWith('Bearer ')
+                ? token
+                : 'Bearer ' + token,
+            }
+          : {}),
+      },
       body: JSON.stringify(match),
     })
-  } catch { /* anonymous or offline — history is best-effort */ }
+  } catch {
+    /* anonymous or offline — history is best-effort */
+  }
 }
 
 // MatchRow is one recorded match as match_list returns it (players is the
@@ -896,16 +1073,28 @@ export interface MatchRow {
 // summing the rows on screen understates a career. recording_store uploads a
 // gzipped ACMI as multipart: the 1 MB non-multipart body cap would reject
 // anything but the shortest sortie.
-export async function recording_store(session: string, started: number, text: string): Promise<boolean> {
+export async function recording_store(
+  session: string,
+  started: number,
+  text: string
+): Promise<boolean> {
   try {
-    const gz = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'))
+    const gz = new Blob([text])
+      .stream()
+      .pipeThrough(new CompressionStream('gzip'))
     const body = new FormData()
     body.append('session', session)
     body.append('started', String(started))
     // The type matters: a typeless Blob arrives as a part the attachment API does not take as a file.
     const bytes = await new Response(gz).arrayBuffer()
-    body.append('recording', new Blob([bytes], { type: 'application/gzip' }), 'flight.acmi.gz')
-    const res = (await client.post('-/recording/save', body)) as { data?: { saved?: boolean } }
+    body.append(
+      'recording',
+      new Blob([bytes], { type: 'application/gzip' }),
+      'flight.acmi.gz'
+    )
+    const res = (await client.post('-/recording/save', body)) as {
+      data?: { saved?: boolean }
+    }
     return !!(res?.data?.saved ?? (res as { saved?: boolean })?.saved)
   } catch {
     return false // best effort: the player can still save the in-memory copy
@@ -920,7 +1109,9 @@ export async function recording_load(id: string): Promise<string | null> {
       params: { id },
       responseType: 'blob',
     })
-    const stream = (res.data as Blob).stream().pipeThrough(new DecompressionStream('gzip'))
+    const stream = (res.data as Blob)
+      .stream()
+      .pipeThrough(new DecompressionStream('gzip'))
     return await new Response(stream).text()
   } catch {
     return null
@@ -929,7 +1120,11 @@ export async function recording_load(id: string): Promise<string | null> {
 
 // Returns what the server stored, or null if the call failed - the caller
 // toggles optimistically and needs to know whether to keep the new state.
-export async function recording_pin(session: string, started: number, pinned: boolean): Promise<boolean | null> {
+export async function recording_pin(
+  session: string,
+  started: number,
+  pinned: boolean
+): Promise<boolean | null> {
   try {
     const res = (await client.post('-/recording/pin', {
       session,
@@ -952,7 +1147,10 @@ export interface MatchTotals {
 
 // log throws on failure: swallowing it here rendered a 401 as the
 // legitimate "No flights yet" empty state.
-export async function log(): Promise<{ matches: MatchRow[]; totals: MatchTotals | null }> {
+export async function log(): Promise<{
+  matches: MatchRow[]
+  totals: MatchTotals | null
+}> {
   await authenticated()
   const res = (await client.get('-/match/list')) as {
     data?: { matches?: MatchRow[]; totals?: MatchTotals }

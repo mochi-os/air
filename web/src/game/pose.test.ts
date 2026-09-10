@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, it, expect, vi } from 'vitest'
 
 // net.ts reaches @mochi/web for the lobby REST client, which drags in the
@@ -61,16 +60,23 @@ function session(slot: number) {
 }
 
 function feed(s: Net, blob: Uint8Array, tick = 60) {
-  ;(s as unknown as { handle(m: Record<string, unknown>): void }).handle({ kind: 'poses', blob, tick })
+  ;(s as unknown as { handle(m: Record<string, unknown>): void }).handle({
+    kind: 'poses',
+    blob,
+    tick,
+  })
 }
 
 describe('self pose', () => {
   it('surfaces the ownship damage the cockpit annunciates (#40)', () => {
     const s = session(3)
-    feed(s, concat([
-      pose({ slot: 3, fire: [0.6, 0], burning: true, leak: 1.5 }), // self first, as the server packs it
-      pose({ slot: 7 }),
-    ]))
+    feed(
+      s,
+      concat([
+        pose({ slot: 3, fire: [0.6, 0], burning: true, leak: 1.5 }), // self first, as the server packs it
+        pose({ slot: 7 }),
+      ])
+    )
     const mine = s.self()
     expect(mine).not.toBeNull()
     expect(mine!.burn[0]).toBeCloseTo(0.6, 1)
@@ -110,7 +116,9 @@ describe('self pose', () => {
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e450000000000009503f27f0000810000980831000099000f00003ff000'.match(/../g)!.map((h) => parseInt(h, 16))
+      '0000a02d4500e08e450000000000009503f27f0000810000980831000099000f00003ff000'
+        .match(/../g)!
+        .map((h) => parseInt(h, 16))
     )
     expect(golden.length).toBe(RECORD)
     const s = session(0)
@@ -126,20 +134,29 @@ describe('self pose', () => {
 
   it('leaves remote decoding alone', () => {
     const s = session(0)
-    feed(s, concat([pose({ slot: 0 }), pose({ slot: 5, fire: [0.4, 0.4], burning: true })]))
+    feed(
+      s,
+      concat([
+        pose({ slot: 0 }),
+        pose({ slot: 5, fire: [0.4, 0.4], burning: true }),
+      ])
+    )
     expect(s.slots()).toContain(5)
     expect(s.slots()).not.toContain(0) // your own jet is never drawn from the wire
   })
 })
 
 describe('emitters (#30)', () => {
-  it('reads each slot\'s radar state from byte 34 — the RWR\'s feed', () => {
+  it("reads each slot's radar state from byte 34 — the RWR's feed", () => {
     const s = session(0)
-    feed(s, concat([
-      pose({ slot: 0 }),
-      pose({ slot: 3, emitter: 2, target: 0 }), // slot 3 has us locked
-      pose({ slot: 5, emitter: 1 }), // slot 5 is searching
-    ]))
+    feed(
+      s,
+      concat([
+        pose({ slot: 0 }),
+        pose({ slot: 3, emitter: 2, target: 0 }), // slot 3 has us locked
+        pose({ slot: 5, emitter: 1 }), // slot 5 is searching
+      ])
+    )
     expect(s.emitters.get(3)).toEqual({ mode: 2, target: 0 })
     expect(s.emitters.get(5)).toEqual({ mode: 1, target: -1 })
     expect(s.emitters.get(0)).toEqual({ mode: 0, target: -1 })
@@ -167,9 +184,12 @@ describe('gun expenditure (#163)', () => {
   // fired - he emptied all 578 rounds and the file showed nothing. The trigger
   // flag alone cannot answer it: at a 20 Hz snapshot rate a 100 rounds/s belt
   // falls between samples.
-  it('reads each aircraft\'s cumulative rounds off the record tail', () => {
+  it("reads each aircraft's cumulative rounds off the record tail", () => {
     const s = session(0)
-    feed(s, concat([pose({ slot: 0, spent: 40 }), pose({ slot: 3, spent: 578 })]))
+    feed(
+      s,
+      concat([pose({ slot: 0, spent: 40 }), pose({ slot: 3, spent: 578 })])
+    )
     expect(s.self()!.spent).toBe(40)
     expect(s.remote(3)!.spent).toBe(578)
   })
@@ -182,7 +202,7 @@ describe('gun expenditure (#163)', () => {
     expect(s.remote(3)!.spent).toBe(245) // the step IS the burst: 125 rounds between snapshots
   })
 
-  it('a jet that has not fired reports zero, not the neighbour\'s belt', () => {
+  it("a jet that has not fired reports zero, not the neighbour's belt", () => {
     const s = session(0)
     feed(s, concat([pose({ slot: 3, spent: 578 }), pose({ slot: 5 })]))
     expect(s.remote(5)!.spent).toBe(0)

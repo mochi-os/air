@@ -114,10 +114,14 @@ interface Flight {
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
-export function position(x: number, z: number): { longitude: number; latitude: number } {
+export function position(
+  x: number,
+  z: number
+): { longitude: number; latitude: number } {
   const latitude = MIDWAY.latitude - z / METRES_PER_DEGREE // +z is south
   const longitude =
-    MIDWAY.longitude + x / (METRES_PER_DEGREE * Math.cos((MIDWAY.latitude * Math.PI) / 180))
+    MIDWAY.longitude +
+    x / (METRES_PER_DEGREE * Math.cos((MIDWAY.latitude * Math.PI) / 180))
   return { longitude, latitude }
 }
 
@@ -184,7 +188,13 @@ export function channels(
     burner: remote.reheat ?? 0,
     gear: remote.gear ?? 1,
     missiles: Math.max(0, Math.trunc(remote.missiles ?? 0)),
-    radar: emitter ? (emitter.mode >= 2 ? 'stt' : emitter.mode >= 1 ? 'rws' : 'sil') : 'sil',
+    radar: emitter
+      ? emitter.mode >= 2
+        ? 'stt'
+        : emitter.mode >= 1
+          ? 'rws'
+          : 'sil'
+      : 'sil',
   }
   // Only a lock on US is ours to record: the emitter byte names one slot, and
   // claiming his lock on someone else would be a guess about a fight we cannot
@@ -224,7 +234,11 @@ export function stamp(fight: {
   // The kind names the fight for the title, the history row and the file: a
   // multiplayer match by its mode, a single-player joust by the bandit it was
   // flown against, anything else a flight.
-  const kind = fight.multiplayer ? fight.mode || 'furball' : joust ? 'joust-' + (fight.bandit || 'ace') : 'flight'
+  const kind = fight.multiplayer
+    ? fight.mode || 'furball'
+    : joust
+      ? 'joust-' + (fight.bandit || 'ace')
+      : 'flight'
   return {
     kind,
     match: {
@@ -250,7 +264,12 @@ export function stamp(fight: {
   }
 }
 
-export function acmi(samples: Sample[], started: Date, title: string, match?: Match): string {
+export function acmi(
+  samples: Sample[],
+  started: Date,
+  title: string,
+  match?: Match
+): string {
   const out: string[] = [
     'FileType=text/acmi/tacview',
     'FileVersion=2.2',
@@ -314,14 +333,16 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         // minutes and step at hits, which is exactly where a debrief looks.
         {
           let battle = ''
-          if (d.struck !== undefined) battle += `,Struck=${Math.round(d.struck)}`
+          if (d.struck !== undefined)
+            battle += `,Struck=${Math.round(d.struck)}`
           if (d.burning !== undefined) battle += `,Burning=${d.burning ? 1 : 0}`
           if (d.thrust !== undefined) battle += `,Thrust=${round(d.thrust, 2)}`
           // Structure is the whole-airframe element total; Wing is the
           // aero-relevant wing loss the flight model actually flies. These were
           // one channel named `Wing` carrying the total (#103), which is what
           // made a fight's damage impossible to attribute from the recording.
-          if (d.structure !== undefined) battle += `,Structure=${round(d.structure, 2)}`
+          if (d.structure !== undefined)
+            battle += `,Structure=${round(d.structure, 2)}`
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
           if (d.fate !== undefined) battle += `,Fate=${field(d.fate)}`
@@ -332,11 +353,16 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
           }
         }
         if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
-        if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`
+        if (d.stabilator !== undefined)
+          line += `,Stabilator=${round(d.stabilator, 2)}`
         if (d.lateral !== undefined) line += `,Lateral=${round(d.lateral, 3)}`
         // Configuration (#86): holds for minutes, steps at the moments an
         // approach debrief needs — which pitch law the FCS was flying.
-        if (d.gear !== undefined || d.flaps !== undefined || d.trim !== undefined) {
+        if (
+          d.gear !== undefined ||
+          d.flaps !== undefined ||
+          d.trim !== undefined
+        ) {
           const state = `${round(d.gear ?? 1, 2)}|${d.flaps ?? 0}|${round(d.trim ?? 0, 3)}`
           if (landed.get(o.id) !== state) {
             landed.set(o.id, state)
@@ -363,7 +389,8 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         }
         // Throttle and burner change constantly under a pilot's hand: written
         // every sample, like the flight data.
-        if (d.throttle !== undefined) line += `,Throttle=${round(d.throttle, 2)}`
+        if (d.throttle !== undefined)
+          line += `,Throttle=${round(d.throttle, 2)}`
         if (d.burner !== undefined) line += `,Afterburner=${round(d.burner, 2)}`
         if (d.spool !== undefined) line += `,Spool=${round(d.spool, 2)}`
         // The sensor picture is delta-suppressed as one group: it holds for
@@ -373,9 +400,11 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
           if (d.radar !== undefined) sensed += `,Radar=${field(d.radar)}`
           if (d.lock !== undefined) sensed += `,Lock=${d.lock.toString(16)}`
           if (d.rwrlock !== undefined) sensed += `,RwrLock=${d.rwrlock ? 1 : 0}`
-          if (d.rwrmissile !== undefined) sensed += `,RwrMissile=${d.rwrmissile ? 1 : 0}`
+          if (d.rwrmissile !== undefined)
+            sensed += `,RwrMissile=${d.rwrmissile ? 1 : 0}`
           if (d.jammer !== undefined) sensed += `,Jammer=${d.jammer ? 1 : 0}`
-          if (d.target !== undefined) sensed += `,Target=${d.target.toString(16)}`
+          if (d.target !== undefined)
+            sensed += `,Target=${d.target.toString(16)}`
           if (sensed && sensed_last.get(o.id) !== sensed) {
             sensed_last.set(o.id, sensed)
             line += sensed
@@ -390,10 +419,12 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
       if (r) {
         let guide = `,Seeker=${field(r.seeker)}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
-        if (r.fate !== undefined) guide += `,Fate=${field(r.fate)},Killed=${r.killed ? 1 : 0}`
+        if (r.fate !== undefined)
+          guide += `,Fate=${field(r.fate)},Killed=${r.killed ? 1 : 0}`
         if (r.burst !== undefined) {
           guide += `,Burst=${round(r.burst, 1)},Closure=${round(r.closure ?? 0, 0)},When=${round(r.when ?? 0, 2)}`
-          if (r.off) guide += `,Off=${round(r.off.ahead, 1)}|${round(r.off.above, 1)}|${round(r.off.right, 1)}`
+          if (r.off)
+            guide += `,Off=${round(r.off.ahead, 1)}|${round(r.off.above, 1)}|${round(r.off.right, 1)}`
           // Judged (#85): the miss as the damage core measured it. Burst is the
           // client's continuous CPA; a fusing where the two disagree is the
           // client/core position split that let a 2.0 m detonation do nothing.
@@ -413,7 +444,8 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         if (r) {
           // ACMI's own parent/target linkage, in the object ids the file uses.
           line += `,Parent=${r.shooter.toString(16)}`
-          if (r.target !== undefined) line += `,LockedTarget=${r.target.toString(16)}`
+          if (r.target !== undefined)
+            line += `,LockedTarget=${r.target.toString(16)}`
         }
       }
       out.push(line)
