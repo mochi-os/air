@@ -5,7 +5,7 @@
 
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, ChevronRight, ClipboardList, CloudRain, Compass, Crosshair, History, Info, LogIn, Moon, Plane, PlaneTakeoff, Play, Send, Settings, Ship, Signal, SignalHigh, SignalLow, SignalMedium, Sun, TriangleAlert, type LucideIcon, Users, X } from 'lucide-react'
+import { Check, ChevronRight, ClipboardList, CloudRain, Compass, Crosshair, History, Info, LogIn, MessageSquare, Moon, Plane, PlaneTakeoff, Play, Send, Settings, Ship, Signal, SignalHigh, SignalLow, SignalMedium, Sun, TriangleAlert, type LucideIcon, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import {
   Collapsible,
@@ -648,6 +648,12 @@ function CreditsDialog() {
   )
 }
 
+// A touch screen, where focusing a text field raises the keyboard over the
+// match list uninvited. Asking what the device IS NOT, rather than what it is:
+// a headless browser reports neither hover nor a fine pointer, so a positive
+// test disables the focus in every probe that would otherwise check it.
+const TOUCH = '(pointer: coarse)'
+
 function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -665,6 +671,13 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const stuck = useRef(true)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
+
+  // The server page's one text control, and typing is what most people came
+  // back for: put the caret in it when the page opens. Not on a touch screen,
+  // where focusing raises the keyboard over the match list uninvited.
+  useEffect(() => {
+    if (!matchMedia(TOUCH).matches) lineRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     cursor.current = 0
@@ -755,6 +768,9 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       </div>
       {error && <div className='text-destructive mt-1 text-xs'>{error}</div>}
       <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-lg border p-1 focus-within:ring-1'>
+        {/* The wordless placeholder: it marks the box as somewhere to write
+            whether or not there is anything in it, and needs no translation. */}
+        <MessageSquare className='text-muted-foreground ml-2 size-4 shrink-0' aria-hidden='true' />
         <label className='min-w-0 flex-1'>
           <span className='sr-only'>
             <Trans>Message</Trans>
