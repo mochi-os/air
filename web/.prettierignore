@@ -16,3 +16,6 @@
 
 # Ignore auto generated routeTree.gen.ts
 /src/routeTree.gen.ts
+# engine.ts is written densely on purpose and keys.test.ts reads its source
+# with quote-sensitive patterns; Prettier triples it and blinds that test.
+/src/game/engine.ts
