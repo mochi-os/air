@@ -754,7 +754,7 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
         )}
       </div>
       {error && <div className='text-destructive mt-1 text-xs'>{error}</div>}
-      <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-xl border p-1 focus-within:ring-1'>
+      <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-lg border p-1 focus-within:ring-1'>
         <label className='min-w-0 flex-1'>
           <span className='sr-only'>
             <Trans>Message</Trans>
