@@ -53,9 +53,13 @@ export const PROFILES: StickProfile[] = [
     // aft 9M, left GUN, right NAV - so trim lives on the thumbwheel (12/13,
     // forward = nose down) and zoom keeps no stick binding.
     axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '', weapon: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
+    // Buttons 2 and 3 as the user flies them (2026-09-10): 2 is the G-limit
+    // override and 3 looks at the target - the padlock is a reflex in a merge,
+    // the view cycle is not, so the cycle keeps no stick binding and stays on
+    // the keyboard.
     buttons: { fire: '17', 'brake.wheel': '17', acquire: '15', 'radar.undesignate': '16', flares: '0',
-      gear: '7', hook: '6', atc: '1', override: '3', 'flaps.extend': '4', 'flaps.retract': '5',
-      view: '2', 'view.reset': '18', 'trim.down': '12', 'trim.up': '13',
+      gear: '7', hook: '6', atc: '1', override: '2', 'look.target': '3', 'flaps.extend': '4', 'flaps.retract': '5',
+      'view.reset': '18', 'trim.down': '12', 'trim.up': '13',
       // The base's front-centre diamond: displayed 20-23 in the Joystick tab,
       // stored 0-based as 19-22. Base buttons cannot be reached in a turn, so
       // they carry the deliberate actions.
