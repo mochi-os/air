@@ -813,15 +813,19 @@ function ServerFlow({
   set,
   onChange,
   onJoin,
-  initial,
 }: {
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
   onChange: (config: MissionConfig) => void
   onJoin: (join: Join) => void
-  initial?: string // a server named in the URL: enter it straight away, no list
 }) {
+  // A server named in the URL is entered straight away, no list - and read
+  // HERE, at each opening of the dialog, not once when the menu mounted: the
+  // menu stays mounted across leaving a server, so a snapshot taken at its
+  // mount kept naming a server the player had since left, and reopening the
+  // dialog walked straight back into it instead of offering the list.
+  const initial = bookmarked(window.location.search)
   const [entered, setEntered] = useState(!!initial)
   const [address, setAddress] = useState(config.world || '')
   // The address bar follows the entered server so the page can be bookmarked:
@@ -1246,8 +1250,7 @@ export function MissionSetup({
   }
 
   // A bookmarked server (?server=...) opens straight onto that server's page.
-  const named = useState(() => bookmarked(window.location.search))[0]
-  const [dialog, setDialog] = useState<string | null>(named ? 'server' : null)
+  const [dialog, setDialog] = useState<string | null>(bookmarked(window.location.search) ? 'server' : null)
   const { t } = useLingui()
   const [verdict] = useState(() => diagnose())
   const [strained] = useShellStorage('air.performance', 0)
@@ -1385,7 +1388,7 @@ export function MissionSetup({
       />
 
       {dialog === 'server' && (
-        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} initial={named || undefined} />
+        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
       )}
     </div>
   )
