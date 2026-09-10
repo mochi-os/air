@@ -73,8 +73,13 @@ export function shape(angle: number, gain: number, travel: number): number {
   return Math.max(-travel, Math.min(travel, out))
 }
 
+// The head-tracking entry points are parked: engine.ts keeps their import
+// commented out until the feature returns. @public keeps the dead-export
+// report quiet without deleting them.
+/** @public */
 export type HeadPose = { ok: boolean; yaw: number; pitch: number; x: number; y: number; z: number }
 
+/** @public */
 export type HeadOptions = {
   /** Vendored runtime directory and model, app-relative. */
   base: string
@@ -89,6 +94,7 @@ export type HeadOptions = {
   end?: (reason: string) => void
 }
 
+/** @public */
 export type Head = {
   stop: () => void
   devices: CameraDevice[]
@@ -97,6 +103,7 @@ export type Head = {
 // start opens the camera and the worker and runs the pipeline until stop().
 // Resolves once the camera answers; worker readiness follows asynchronously
 // (frames before readiness are simply dropped by the worker).
+/** @public */
 export async function start(options: HeadOptions): Promise<{ head: Head | null; error?: string }> {
   const worker: Worker = new LandmarkWorker()
   worker.postMessage({ kind: 'init', base: options.base, model: options.model })

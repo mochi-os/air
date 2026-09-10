@@ -8,7 +8,7 @@
 
 // loopback recognises every spelling of "this machine": the names are not
 // interchangeable as strings but address the same host.
-export function loopback(host: string): boolean {
+function loopback(host: string): boolean {
   const bare = host.replace(/^\[|\]$/g, '') // IPv6 literals arrive bracketed
   return bare === 'localhost' || bare === '::1' || /^127\.\d+\.\d+\.\d+$/.test(bare)
 }
