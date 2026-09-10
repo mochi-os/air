@@ -542,11 +542,6 @@ export function GameCanvas({
               {/* A MISSION is yours to leave; a MATCH continues without you. */}
               {join ? <Trans>Exit match</Trans> : <Trans>Exit mission</Trans>}
             </Button>
-            {join && (
-              <p className='text-muted-foreground text-center text-xs'>
-                <Trans>The match continues behind this menu.</Trans>
-              </p>
-            )}
           </div>
         </div>
       )}
