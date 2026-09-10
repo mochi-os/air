@@ -58,7 +58,7 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
-import { Recorder } from './acmi'
+import { Recorder, stamp } from './acmi'
 
 export type GameConfig = Record<string, unknown>
 
@@ -4201,15 +4201,19 @@ function recording_sample(){
 // recording_file renders what is buffered; null when nothing was captured.
 function recording_file(){
 	if(!recorder.length||!record_started) return null;
-	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"ace")):"flight";
 	// The match block (#33 debrief): the fight's rules in the header, so a
 	// debrief knows what it is judging — a "survived" under the invulnerable
-	// cheat is not a survival, and a fox2 furball has no AMRAAM story.
-	const cheats=Object.entries((cfg.cheats||{}) as Record<string,boolean>).filter(([,on])=>on).map(([c])=>c).join("+");
-	const match={ task:cfg.task||"", duel:cfg.task==="joust"?(cfg.duel||"merge"):"", bandit:cfg.task==="joust"?(cfg.bandit||"ace"):"",
-		weapons:MULTIPLAYER?"":(missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns"),
-		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", multiplayer:MULTIPLAYER?1:0, world:MULTIPLAYER?(cfg.world||""):"",
-		callsign:cfg.callsign||"", cheats, effects:String(cfg.effects_quality??2), version:String(flight_version()) };
+	// cheat is not a survival, and a fox2 furball has no AMRAAM story. The
+	// decision itself is acmi.ts's stamp(), which is testable; this supplies
+	// the facts, and in multiplayer they come from the WELCOME rather than
+	// cfg (#171: cfg says "joust" for every match and names the last bot the
+	// player flew against in single player).
+	const armed=missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns";
+	const {kind,match}=stamp({ multiplayer:MULTIPLAYER,
+		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
+		duel:cfg.duel||"", bandit:cfg.bandit||"", weapons:armed,
+		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
+		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version() });
 	const row=recording_identity();
 	return { text:recorder.render(record_started,"Mochi Air: "+kind,match), session:row?row.session:"", started:row?row.started:0, kind }; }
 // Which history row this recording belongs to (#118). The recorder ran all
@@ -4314,6 +4318,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
+if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
 	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;

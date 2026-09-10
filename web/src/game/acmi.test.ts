@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { acmi, position, Recorder, MIDWAY, type Recorded, type Sample } from './acmi'
+import { acmi, position, Recorder, MIDWAY, type Recorded, type Sample, stamp } from './acmi'
 
 const jet = (over: Partial<Recorded> = {}): Recorded => ({
   id: 1,
@@ -423,5 +423,80 @@ describe('field escaping', () => {
   it('escapes the header fields too', () => {
     const text = emit({}, 'Joust,Category=Naval')
     expect(text.split('\n').find((l) => l.startsWith('0,Title='))).toBe('0,Title=Joust Category=Naval')
+  })
+})
+
+describe('stamp', () => {
+  // Everything a fight is, minus what each case is about.
+  const fight = {
+    multiplayer: false,
+    mode: 'joust',
+    duel: 'bvr',
+    bandit: 'superhuman',
+    weapons: 'fox2',
+    start: 'air',
+    clouds: 'none',
+    tod: 'day',
+    world: 'https://mochi-os.org:4433',
+    callsign: 'Little Nellie',
+    cheats: { invulnerable: false, fuel: true },
+    effects: 2,
+    version: 41,
+  }
+
+  it('names a single-player joust by the bandit it was flown against', () => {
+    const { kind, match } = stamp(fight)
+    expect(kind).toBe('joust-superhuman')
+    expect(match.task).toBe('joust')
+    expect(match.duel).toBe('bvr')
+    expect(match.bandit).toBe('superhuman')
+    expect(match.multiplayer).toBe(0)
+    expect(match.world).toBe('') // a single-player flight has no server, whatever the menu last held
+  })
+
+  it('names a multiplayer match by the mode the SERVER says it is', () => {
+    // The engine forces cfg.task="joust" for every multiplayer session and
+    // cfg.duel/cfg.bandit are the player's last single-player settings, so
+    // this used to record a furball against a person as "joust-ace" (#171).
+    const { kind, match } = stamp({ ...fight, multiplayer: true, mode: 'furball', weapons: 'guns' })
+    expect(kind).toBe('furball')
+    expect(match.task).toBe('furball')
+    expect(match.multiplayer).toBe(1)
+    expect(match.world).toBe('https://mochi-os.org:4433')
+  })
+
+  it('claims no bandit and no duel shape in a multiplayer match — there is neither', () => {
+    const { match } = stamp({ ...fight, multiplayer: true, mode: 'furball' })
+    expect(match.bandit).toBe('') // acmi() omits an empty field, so the header carries no Match_bandit at all
+    expect(match.duel).toBe('')
+  })
+
+  it('carries the multiplayer weapons rule, which the header used to leave blank', () => {
+    expect(stamp({ ...fight, multiplayer: true, mode: 'furball', weapons: 'guns' }).match.weapons).toBe('guns')
+    expect(stamp({ ...fight, multiplayer: true, mode: 'teams', weapons: 'open' }).match.weapons).toBe('open')
+  })
+
+  it('keeps a multiplayer joust a joust, and still names no bandit', () => {
+    const { kind, match } = stamp({ ...fight, multiplayer: true, mode: 'joust' })
+    expect(kind).toBe('joust')
+    expect(match.task).toBe('joust')
+    expect(match.bandit).toBe('')
+  })
+
+  it('falls back to a furball when the welcome named no mode', () => {
+    expect(stamp({ ...fight, multiplayer: true, mode: '' }).kind).toBe('furball')
+  })
+
+  it('records only the cheats that were ON', () => {
+    expect(stamp(fight).match.cheats).toBe('fuel')
+    expect(stamp({ ...fight, cheats: undefined }).match.cheats).toBe('')
+  })
+
+  it('writes a free flight as a flight, with no duel and no bandit', () => {
+    const { kind, match } = stamp({ ...fight, mode: 'free' })
+    expect(kind).toBe('flight')
+    expect(match.task).toBe('free')
+    expect(match.duel).toBe('')
+    expect(match.bandit).toBe('')
   })
 })
