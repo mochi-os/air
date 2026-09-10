@@ -5,32 +5,7 @@
 
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import {
-  Check,
-  ChevronRight,
-  CloudRain,
-  Compass,
-  Crosshair,
-  History,
-  ClipboardList,
-  Info,
-  LogIn,
-  Moon,
-  Plane,
-  PlaneTakeoff,
-  Play,
-  Settings,
-  Ship,
-  Signal,
-  SignalHigh,
-  SignalLow,
-  SignalMedium,
-  Sun,
-  TriangleAlert,
-  Users,
-  X,
-  type LucideIcon,
-} from 'lucide-react'
+import { Check, ChevronRight, ClipboardList, CloudRain, Compass, Crosshair, History, Info, LogIn, Moon, Plane, PlaneTakeoff, Play, Send, Settings, Ship, Signal, SignalHigh, SignalLow, SignalMedium, Sun, TriangleAlert, type LucideIcon, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import {
   Collapsible,
@@ -779,17 +754,22 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
         )}
       </div>
       {error && <div className='text-destructive mt-1 text-xs'>{error}</div>}
-      <div className='mt-2 flex gap-2'>
-        <Input
-          ref={lineRef}
-          maxLength={200}
-          placeholder={t`Message players on this server`}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') void say()
-          }}
-        />
-        <Button type='button' variant='outline' onClick={() => void say()}>
-          <LogIn className='size-4' />
+      <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-xl border p-1 focus-within:ring-1'>
+        <label className='min-w-0 flex-1'>
+          <span className='sr-only'>
+            <Trans>Message</Trans>
+          </span>
+          <Input
+            ref={lineRef}
+            maxLength={200}
+            className='border-0 bg-transparent shadow-none focus-visible:ring-0'
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') void say()
+            }}
+          />
+        </label>
+        <Button type='button' size='sm' onClick={() => void say()}>
+          <Send className='size-4' />
           <Trans>Send</Trans>
         </Button>
       </div>
