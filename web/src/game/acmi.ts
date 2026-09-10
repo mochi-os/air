@@ -144,6 +144,63 @@ export interface Match {
   [key: string]: string | number | boolean | undefined
 }
 
+// stamp decides what the header says the fight WAS: its title and the Match_
+// block a debrief reads to choose its rules. Pure, and separate from the
+// engine, because the engine cannot be loaded in a test and this is the part
+// that was wrong (#171).
+//
+// In multiplayer the SERVER is the authority. The client forces cfg.task to
+// "joust" for every match at module init, and cfg.duel and cfg.bandit are the
+// player's last SINGLE-PLAYER settings, so a furball against a person recorded
+// as "joust-ace" - named after a bot that was not in it - and a debrief read
+// the opening seconds under a merge weapons hold that never applied. The
+// welcome carries the real mode and the match's weapons rule; both are already
+// used elsewhere in the client, so nothing new has to reach the recorder.
+export function stamp(fight: {
+  multiplayer: boolean
+  mode: string // multiplayer: the welcome's session mode. Single player: cfg.task
+  duel: string // single player only: the joust's start shape
+  bandit: string // single player only: the bandit's tier - a multiplayer match has none
+  weapons: string // 'guns' | 'fox2' | 'open'
+  start: string
+  clouds: string
+  tod: string
+  world: string
+  callsign: string
+  cheats: Record<string, boolean> | undefined
+  effects: number | undefined
+  version: number
+}): { kind: string; match: Match } {
+  const joust = !fight.multiplayer && fight.mode === 'joust'
+  // The kind names the fight for the title, the history row and the file: a
+  // multiplayer match by its mode, a single-player joust by the bandit it was
+  // flown against, anything else a flight.
+  const kind = fight.multiplayer ? fight.mode || 'furball' : joust ? 'joust-' + (fight.bandit || 'ace') : 'flight'
+  return {
+    kind,
+    match: {
+      task: fight.multiplayer ? fight.mode || 'furball' : fight.mode || '',
+      // A duel shape and a bandit belong to a single-player joust and to
+      // nothing else: empty here means "there was none", and acmi() omits it.
+      duel: joust ? fight.duel || 'merge' : '',
+      bandit: joust ? fight.bandit || 'ace' : '',
+      weapons: fight.weapons,
+      start: fight.start,
+      clouds: fight.clouds,
+      tod: fight.tod,
+      multiplayer: fight.multiplayer ? 1 : 0,
+      world: fight.multiplayer ? fight.world : '',
+      callsign: fight.callsign,
+      cheats: Object.entries(fight.cheats ?? {})
+        .filter(([, on]) => on)
+        .map(([name]) => name)
+        .join('+'),
+      effects: String(fight.effects ?? 2),
+      version: String(fight.version),
+    },
+  }
+}
+
 export function acmi(samples: Sample[], started: Date, title: string, match?: Match): string {
   const out: string[] = [
     'FileType=text/acmi/tacview',
