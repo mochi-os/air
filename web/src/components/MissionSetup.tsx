@@ -840,6 +840,7 @@ function ServerFlow({
       },
     })
   const { servers, version } = useServers()
+  const { t } = useLingui()
   const [private_, setPrivate] = useState(false)
   const [world, setWorld] = useState('')
   useEffect(() => {
@@ -867,6 +868,12 @@ function ServerFlow({
     onChange({ ...next, servers: [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5).join('\n') })
     setEntered(true)
     bar(chosen)
+  }
+  // A server joined once - a test instance, a friend's machine that has gone
+  // away, an address typed wrong - would otherwise sit in the list for good,
+  // and the list is the first thing read when choosing where to fly.
+  const forget = (server: string) => {
+    onChange({ ...config, servers: recents.filter((r) => r !== server).join('\n') })
   }
   const leave = () => {
     void world_withdraw(normalize_server(config.world || default_server()), pilot)
@@ -904,12 +911,23 @@ function ServerFlow({
               <CardContent className='flex flex-col gap-1.5'>
                 {recents.map((r) => {
                   const s = matched(r)
-                  return s ? (
-                    <ServerRow key={r} server={s} version={version} onPick={(a) => enter(a)} />
-                  ) : (
-                    <Button key={r} type='button' variant='outline' className='justify-start font-mono text-sm' onClick={() => enter(r)}>
-                      {r}
-                    </Button>
+                  return (
+                    <div key={r} className='flex items-center gap-1.5'>
+                      <div className='min-w-0 flex-1'>
+                        {s ? (
+                          <ServerRow server={s} version={version} onPick={(a) => enter(a)} />
+                        ) : (
+                          <Button type='button' variant='outline' className='w-full justify-start font-mono text-sm' onClick={() => enter(r)}>
+                            {r}
+                          </Button>
+                        )}
+                      </div>
+                      {/* Beside the row, not inside it: the row is itself a
+                          button, and a button cannot hold another. */}
+                      <Button type='button' variant='ghost' size='icon' aria-label={t`Remove ${r}`} onClick={() => forget(r)}>
+                        <X className='size-4' />
+                      </Button>
+                    </div>
                   )
                 })}
               </CardContent>
