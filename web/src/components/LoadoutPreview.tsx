@@ -2,22 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The setup dialog's live jet: a head-on render of the airframe wearing the
 // edited loadout. Parsed prototypes are cached at module scope so reopening the
 // dialog costs one scene assembly; rendering is on demand, one frame per
 // loadout change.
-
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { asset } from '../game/preload'
+import amraam_model_url from '../assets/aim120c.glb?url'
+import fa18c_model_url from '../assets/fa18c.glb?url'
+import stores_model_url from '../assets/stores.glb?url'
 import { load, NEUTRAL, POSE, SCRUBS } from '../game/model'
+import { asset } from '../game/preload'
 import { ANCHORS, TIPS, entries, normalize } from '../game/stores'
 import { normalize_round, amraam_anchor, amraam_aim } from '../game/weapons'
 import type { StationSlot } from '../lib/config'
-import fa18c_model_url from '../assets/fa18c.glb?url'
-import stores_model_url from '../assets/stores.glb?url'
-import amraam_model_url from '../assets/aim120c.glb?url'
 
 let airframe: THREE.Group | null = null
 let racks: THREE.Group | null = null
@@ -26,7 +24,11 @@ let loading: Promise<void> | null = null
 
 function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
   loading ??= (async () => {
-    const [jet, stores, round] = await Promise.all([asset(fa18c_model_url), asset(stores_model_url), asset(amraam_model_url)])
+    const [jet, stores, round] = await Promise.all([
+      asset(fa18c_model_url),
+      asset(stores_model_url),
+      asset(amraam_model_url),
+    ])
     const parsed = await load(jet, renderer)
     airframe = parsed.scene
     for (const fix of POSE) {
@@ -40,9 +42,15 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
     // these per-frame, the preview poses them once.
     const mixer = new THREE.AnimationMixer(airframe)
     for (const family of SCRUBS) {
-      const tracks = parsed.animations.flatMap((clip) => clip.tracks.filter((track) => family.test(track.name.slice(0, track.name.lastIndexOf('.')))))
+      const tracks = parsed.animations.flatMap((clip) =>
+        clip.tracks.filter((track) =>
+          family.test(track.name.slice(0, track.name.lastIndexOf('.')))
+        )
+      )
       if (!tracks.length) continue
-      const action = mixer.clipAction(new THREE.AnimationClip('prep', -1, tracks))
+      const action = mixer.clipAction(
+        new THREE.AnimationClip('prep', -1, tracks)
+      )
       action.play()
       action.paused = true
       action.time = tracks[0].times[0]
@@ -83,7 +91,11 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
         tips[name] = true
         continue
       }
-      if (name.startsWith('rail') || name.startsWith('twin') || name.startsWith('pylon')) {
+      if (
+        name.startsWith('rail') ||
+        name.startsWith('twin') ||
+        name.startsWith('pylon')
+      ) {
         const piece = racks?.getObjectByName('Pylon_' + station)
         if (piece) holder.add(piece.clone(true))
       } else if (name.startsWith('tank')) {
@@ -103,13 +115,21 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
           holder.add(piece)
         }
       } else if (ANCHORS[name]) {
-        const source = jet.getObjectByName(station < 5 ? TIPS.tip1 : TIPS.tip9) as THREE.Mesh | null
+        const source = jet.getObjectByName(
+          station < 5 ? TIPS.tip1 : TIPS.tip9
+        ) as THREE.Mesh | null
         if (source && source.isMesh) {
           if (!source.geometry.boundingBox) source.geometry.computeBoundingBox()
-          const centre = source.geometry.boundingBox!.getCenter(new THREE.Vector3())
+          const centre = source.geometry.boundingBox!.getCenter(
+            new THREE.Vector3()
+          )
           const round = new THREE.Mesh(source.geometry, source.material)
           const anchor = ANCHORS[name]
-          round.position.set(anchor[0] - centre.x, anchor[1] - centre.y, anchor[2] - centre.z)
+          round.position.set(
+            anchor[0] - centre.x,
+            anchor[1] - centre.y,
+            anchor[2] - centre.z
+          )
           holder.add(round)
         }
       }
@@ -127,7 +147,10 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
 // INDEX (the split stores models share one vertex buffer across stations).
 // Bounding-box corners overshoot the silhouette and pixel readback fails
 // silently on some machines, so sampled geometry it is.
-function extent(wrap: THREE.Group, camera: THREE.PerspectiveCamera): { width: number; height: number; middle: number } | null {
+function extent(
+  wrap: THREE.Group,
+  camera: THREE.PerspectiveCamera
+): { width: number; height: number; middle: number } | null {
   camera.updateMatrixWorld(true)
   wrap.updateMatrixWorld(true)
   const v = new THREE.Vector3()
@@ -151,7 +174,11 @@ function extent(wrap: THREE.Group, camera: THREE.PerspectiveCamera): { width: nu
     }
   })
   if (widest < 0) return null
-  return { width: widest, height: Math.max(Math.abs(low), Math.abs(high)), middle: (low + high) / 2 }
+  return {
+    width: widest,
+    height: Math.max(Math.abs(low), Math.abs(high)),
+    middle: (low + high) / 2,
+  }
 }
 
 // FULLEST is the maximal carriage envelope. The camera is framed once against
@@ -174,13 +201,19 @@ const FULLEST = normalize({
 // zoom and vertical centring (each correction changes what it corrected, so it
 // loops to convergence). The slight from-below pitch keeps the centerline tank
 // visible.
-function frame(camera: THREE.PerspectiveCamera, wrap: THREE.Group, aspect: number): void {
+function frame(
+  camera: THREE.PerspectiveCamera,
+  wrap: THREE.Group,
+  aspect: number
+): void {
   const box = new THREE.Box3().setFromObject(wrap)
   const centre = box.getCenter(new THREE.Vector3())
   const size = box.getSize(new THREE.Vector3())
   const vertical = Math.tan((camera.fov * Math.PI) / 360)
   const pitch = Math.tan((3 * Math.PI) / 180)
-  let distance = Math.max(size.z / 2 / (vertical * aspect), size.y / 2 / vertical) * 1.06 + size.x / 4
+  let distance =
+    Math.max(size.z / 2 / (vertical * aspect), size.y / 2 / vertical) * 1.06 +
+    size.x / 4
   let level = centre.y
   const aim = () => {
     camera.position.set(centre.x + distance, level - distance * pitch, centre.z)
@@ -198,9 +231,19 @@ function frame(camera: THREE.PerspectiveCamera, wrap: THREE.Group, aspect: numbe
   }
 }
 
-export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot> }) {
+export function LoadoutPreview({
+  stores,
+}: {
+  stores: Record<string, StationSlot>
+}) {
   const mount = useRef<HTMLDivElement>(null)
-  const state = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; jet: THREE.Group; wrap: THREE.Group } | null>(null)
+  const state = useRef<{
+    renderer: THREE.WebGLRenderer
+    scene: THREE.Scene
+    camera: THREE.PerspectiveCamera
+    jet: THREE.Group
+    wrap: THREE.Group
+  } | null>(null)
   const wanted = useRef(stores)
   wanted.current = stores
   const shape = JSON.stringify(normalize(stores))
@@ -216,7 +259,11 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     const height = host.clientHeight || Math.round(width / 2.9)
     let renderer: THREE.WebGLRenderer
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        preserveDrawingBuffer: true,
+      })
     } catch {
       return // no WebGL 2 (#55): the setup dialog stands without its preview; the menu banner explains
     }

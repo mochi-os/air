@@ -21,9 +21,21 @@ export interface Vector {
   z: number
 }
 
-const minus = (a: Vector, b: Vector): Vector => ({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z })
-const plus = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z })
-const scale = (a: Vector, k: number): Vector => ({ x: a.x * k, y: a.y * k, z: a.z * k })
+const minus = (a: Vector, b: Vector): Vector => ({
+  x: a.x - b.x,
+  y: a.y - b.y,
+  z: a.z - b.z,
+})
+const plus = (a: Vector, b: Vector): Vector => ({
+  x: a.x + b.x,
+  y: a.y + b.y,
+  z: a.z + b.z,
+})
+const scale = (a: Vector, k: number): Vector => ({
+  x: a.x * k,
+  y: a.y * k,
+  z: a.z * k,
+})
 const dot = (a: Vector, b: Vector): number => a.x * b.x + a.y * b.y + a.z * b.z
 const size = (a: Vector): number => Math.hypot(a.x, a.y, a.z)
 const unit = (a: Vector): Vector => scale(a, 1 / (size(a) || 1))
@@ -60,10 +72,20 @@ export function launch(bore: Vector, own: Vector): Vector {
 // timing solves how long the round is in the air before it meets the target,
 // accounting for the target's own motion during that time. Independent of the
 // bore, so `aim` and `impact` share one answer and stay exact inverses.
-function timing(muzzle: Vector, v0: number, target: Vector, drift: Vector, altitude: number): number {
+function timing(
+  muzzle: Vector,
+  v0: number,
+  target: Vector,
+  drift: Vector,
+  altitude: number
+): number {
   let t = flight(size(minus(target, muzzle)), v0, altitude)
   for (let pass = 0; pass < 6; pass++) {
-    const lead = plus(minus(plus(target, scale(drift, t)), muzzle), { x: 0, y: 0.5 * GRAVITY * t * t, z: 0 })
+    const lead = plus(minus(plus(target, scale(drift, t)), muzzle), {
+      x: 0,
+      y: 0.5 * GRAVITY * t * t,
+      z: 0,
+    })
     t = flight(size(lead), v0, altitude)
   }
   return t
@@ -77,7 +99,7 @@ export function impact(
   own: Vector,
   target: Vector,
   drift: Vector,
-  altitude: number,
+  altitude: number
 ): { point: Vector; seconds: number } {
   const u = launch(bore, own)
   const v0 = size(u)
@@ -89,18 +111,32 @@ export function impact(
 
 // aim answers the pilot's question: which way must the nose point for the rounds
 // to arrive on the target? The pipper says this by sitting on him.
-export function aim(muzzle: Vector, own: Vector, target: Vector, drift: Vector, altitude: number): Vector {
+export function aim(
+  muzzle: Vector,
+  own: Vector,
+  target: Vector,
+  drift: Vector,
+  altitude: number
+): Vector {
   let bore = unit(minus(target, muzzle))
   for (let pass = 0; pass < 8; pass++) {
     const v0 = size(launch(bore, own))
     const t = timing(muzzle, v0, target, drift, altitude)
     // The path the round must fly: to where he will be, plus the gravity drop.
-    const path = unit(plus(minus(plus(target, scale(drift, t)), muzzle), { x: 0, y: 0.5 * GRAVITY * t * t, z: 0 }))
+    const path = unit(
+      plus(minus(plus(target, scale(drift, t)), muzzle), {
+        x: 0,
+        y: 0.5 * GRAVITY * t * t,
+        z: 0,
+      })
+    )
     // The barrel that puts the LAUNCH vector on that path. |bore·MUZZLE + own|
     // = speed along `path`, so solve the quadratic for that speed and subtract
     // the jet's own motion back out.
     const along = dot(path, own)
-    const speed = along + Math.sqrt(Math.max(along * along - dot(own, own) + MUZZLE * MUZZLE, 0))
+    const speed =
+      along +
+      Math.sqrt(Math.max(along * along - dot(own, own) + MUZZLE * MUZZLE, 0))
     bore = unit(minus(scale(path, speed), own))
   }
   return bore

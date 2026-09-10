@@ -23,12 +23,26 @@ export function cbor_encode(value: unknown): Uint8Array {
   const head = (major: number, length: number) => {
     if (length < 24) parts.push((major << 5) | length)
     else if (length < 0x100) parts.push((major << 5) | 24, length)
-    else if (length < 0x10000) parts.push((major << 5) | 25, length >> 8, length & 0xff)
-    else parts.push((major << 5) | 26, (length >>> 24) & 0xff, (length >>> 16) & 0xff, (length >>> 8) & 0xff, length & 0xff)
+    else if (length < 0x10000)
+      parts.push((major << 5) | 25, length >> 8, length & 0xff)
+    else
+      parts.push(
+        (major << 5) | 26,
+        (length >>> 24) & 0xff,
+        (length >>> 16) & 0xff,
+        (length >>> 8) & 0xff,
+        length & 0xff
+      )
   }
   const put = (v: unknown) => {
-    if (v === null || v === undefined) { parts.push(0xf6); return }
-    if (typeof v === 'boolean') { parts.push(v ? 0xf5 : 0xf4); return }
+    if (v === null || v === undefined) {
+      parts.push(0xf6)
+      return
+    }
+    if (typeof v === 'boolean') {
+      parts.push(v ? 0xf5 : 0xf4)
+      return
+    }
     if (typeof v === 'number') {
       if (Number.isSafeInteger(v) && Math.abs(v) < 0x100000000) {
         if (v >= 0) head(0, v)
@@ -41,12 +55,26 @@ export function cbor_encode(value: unknown): Uint8Array {
       }
       return
     }
-    if (typeof v === 'string') { const bytes = text_encoder.encode(v); head(3, bytes.length); for (const x of bytes) parts.push(x); return }
-    if (Array.isArray(v)) { head(4, v.length); for (const item of v) put(item); return }
+    if (typeof v === 'string') {
+      const bytes = text_encoder.encode(v)
+      head(3, bytes.length)
+      for (const x of bytes) parts.push(x)
+      return
+    }
+    if (Array.isArray(v)) {
+      head(4, v.length)
+      for (const item of v) put(item)
+      return
+    }
     if (typeof v === 'object') {
-      const entries = Object.entries(v as Record<string, unknown>).filter(([, x]) => x !== undefined)
+      const entries = Object.entries(v as Record<string, unknown>).filter(
+        ([, x]) => x !== undefined
+      )
       head(5, entries.length)
-      for (const [k, x] of entries) { put(k); put(x) }
+      for (const [k, x] of entries) {
+        put(k)
+        put(x)
+      }
       return
     }
     parts.push(0xf6)
@@ -67,18 +95,39 @@ export function cbor_decode(bytes: Uint8Array): unknown {
 
   const length = (info: number): number => {
     if (info < 24) return info
-    if (info === 24) { need(1); return view.getUint8(at++) }
-    if (info === 25) { need(2); const v = view.getUint16(at); at += 2; return v }
-    if (info === 26) { need(4); const v = view.getUint32(at); at += 4; return v }
-    if (info === 27) { need(8); const v = Number(view.getBigUint64(at)); at += 8; return v }
+    if (info === 24) {
+      need(1)
+      return view.getUint8(at++)
+    }
+    if (info === 25) {
+      need(2)
+      const v = view.getUint16(at)
+      at += 2
+      return v
+    }
+    if (info === 26) {
+      need(4)
+      const v = view.getUint32(at)
+      at += 4
+      return v
+    }
+    if (info === 27) {
+      need(8)
+      const v = Number(view.getBigUint64(at))
+      at += 8
+      return v
+    }
     // 28, 29, 30 are reserved; 31 is indefinite-length — neither is supported.
     throw new CborError(`unsupported length ${info}`)
   }
 
   const half = (): number => {
     need(2)
-    const h = view.getUint16(at); at += 2
-    const sign = h & 0x8000 ? -1 : 1, exponent = (h >> 10) & 0x1f, fraction = h & 0x3ff
+    const h = view.getUint16(at)
+    at += 2
+    const sign = h & 0x8000 ? -1 : 1,
+      exponent = (h >> 10) & 0x1f,
+      fraction = h & 0x3ff
     if (exponent === 0) return sign * fraction * 2 ** -24
     if (exponent === 31) return fraction ? NaN : sign * Infinity
     return sign * (1024 + fraction) * 2 ** (exponent - 25)
@@ -93,22 +142,39 @@ export function cbor_decode(bytes: Uint8Array): unknown {
     if (depth > MAX_DEPTH) throw new CborError('nesting too deep')
     need(1)
     const first = view.getUint8(at++)
-    const major = first >> 5, info = first & 0x1f
+    const major = first >> 5,
+      info = first & 0x1f
     switch (major) {
-      case 0: return length(info)
-      case 1: return -1 - length(info)
-      case 2: { const n = length(info); need(n); const v = bytes.slice(at, at + n); at += n; return v }
-      case 3: { const n = length(info); need(n); const v = text_decoder.decode(bytes.subarray(at, at + n)); at += n; return v }
+      case 0:
+        return length(info)
+      case 1:
+        return -1 - length(info)
+      case 2: {
+        const n = length(info)
+        need(n)
+        const v = bytes.slice(at, at + n)
+        at += n
+        return v
+      }
+      case 3: {
+        const n = length(info)
+        need(n)
+        const v = text_decoder.decode(bytes.subarray(at, at + n))
+        at += n
+        return v
+      }
       case 4: {
         const n = length(info)
-        if (n > MAX_ELEMENTS || n > remaining()) throw new CborError('array too large') // each element is >= 1 byte
+        if (n > MAX_ELEMENTS || n > remaining())
+          throw new CborError('array too large') // each element is >= 1 byte
         const list = new Array(n)
         for (let i = 0; i < n; i++) list[i] = item(depth + 1)
         return list
       }
       case 5: {
         const n = length(info)
-        if (n > MAX_ELEMENTS || n > remaining()) throw new CborError('map too large') // each pair is >= 2 bytes
+        if (n > MAX_ELEMENTS || n > remaining())
+          throw new CborError('map too large') // each pair is >= 2 bytes
         const map: Record<string, unknown> = Object.create(null) // null prototype: a __proto__ key is a normal own key, not the prototype
         for (let i = 0; i < n; i++) {
           const key = String(item(depth + 1))
@@ -122,8 +188,18 @@ export function cbor_decode(bytes: Uint8Array): unknown {
         if (info === 21) return true
         if (info === 22 || info === 23) return null
         if (info === 25) return finite(half())
-        if (info === 26) { need(4); const v = view.getFloat32(at); at += 4; return finite(v) }
-        if (info === 27) { need(8); const v = view.getFloat64(at); at += 8; return finite(v) }
+        if (info === 26) {
+          need(4)
+          const v = view.getFloat32(at)
+          at += 4
+          return finite(v)
+        }
+        if (info === 27) {
+          need(8)
+          const v = view.getFloat64(at)
+          at += 8
+          return finite(v)
+        }
         throw new CborError(`unsupported simple ${info}`)
       default:
         throw new CborError(`unsupported major ${major}`)

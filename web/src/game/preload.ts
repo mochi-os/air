@@ -2,15 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // Single-flight loader for the big flight assets (models + flight core). The
 // menu calls preload() on open and the engine consumes the SAME in-flight
 // fetches through asset(), so nothing downloads twice. Bytes are counted to
 // drive the loading screen and stall signal.
-
-import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
+import nimitz_model_url from '../assets/nimitz.glb?url'
 
 interface Load {
   promise: Promise<ArrayBuffer>
@@ -27,7 +25,13 @@ function begin(url: string): Load {
   const existing = loads.get(url)
   if (existing) return existing
   moved = performance.now() // a fresh fetch starts the stall clock now, not at the last byte of some earlier download
-  const load: Load = { promise: Promise.resolve(new ArrayBuffer(0)), received: 0, total: 0, done: false, failed: false }
+  const load: Load = {
+    promise: Promise.resolve(new ArrayBuffer(0)),
+    received: 0,
+    total: 0,
+    done: false,
+    failed: false,
+  }
   load.promise = (async () => {
     try {
       const response = await fetch(url)
@@ -96,7 +100,8 @@ export function progress(): { percent: number; failed: boolean; idle: number } {
     outstanding = outstanding || (!load.done && !load.failed)
   }
   return {
-    percent: total > 0 ? Math.min(100, Math.floor((received / total) * 100)) : 0,
+    percent:
+      total > 0 ? Math.min(100, Math.floor((received / total) * 100)) : 0,
     failed,
     // A stall needs OUTSTANDING work with no bytes moving: with every download
     // complete (a restart off cache fetches nothing) the idle clock would

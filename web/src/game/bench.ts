@@ -55,12 +55,27 @@ if (active) {
   }
   send({ debug: 'bench-module-loaded' })
   addEventListener('unhandledrejection', (e) => {
-    send({ debug: 'unhandledrejection', reason: String((e as PromiseRejectionEvent).reason).slice(0, 400) })
+    send({
+      debug: 'unhandledrejection',
+      reason: String((e as PromiseRejectionEvent).reason).slice(0, 400),
+    })
   })
-  addEventListener('error', (e) => {
-    const ev = e as ErrorEvent
-    if (ev.message) send({ debug: 'error', message: String(ev.message).slice(0, 300), file: String(ev.filename || '').split('/').pop(), line: ev.lineno })
-  }, true)
+  addEventListener(
+    'error',
+    (e) => {
+      const ev = e as ErrorEvent
+      if (ev.message)
+        send({
+          debug: 'error',
+          message: String(ev.message).slice(0, 300),
+          file: String(ev.filename || '')
+            .split('/')
+            .pop(),
+          line: ev.lineno,
+        })
+    },
+    true
+  )
 
   const sample = parseFloat(params.get('bench') || '12') || 12
   const warm = parseFloat(params.get('benchwarm') || '10') || 10
@@ -80,22 +95,27 @@ if (active) {
       dpr: devicePixelRatio,
       back: canvas ? [canvas.width, canvas.height] : null,
       frames: s.length,
-      avg: +(sum / s.length).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
-      median: +(s[s.length >> 1] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
-      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
-      fps: +(1000 / (sum / s.length)).toFixed(1),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      avg: +(sum / s.length).toFixed(2), // i18n-format-ok: developer benchmark payload, never shown to a user
+      median: +(s[s.length >> 1] || 0).toFixed(2), // i18n-format-ok: developer benchmark payload, never shown to a user
+      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2), // i18n-format-ok: developer benchmark payload, never shown to a user
+      fps: +(1000 / (sum / s.length)).toFixed(1), // i18n-format-ok: developer benchmark payload, never shown to a user
     }
     try {
       const gl = canvas?.getContext('webgl2') || canvas?.getContext('webgl')
       const dbg = gl?.getExtension('WEBGL_debug_renderer_info')
       out.gpu = dbg && gl ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : '?'
-    } catch { out.gpu = '?' }
+    } catch {
+      out.gpu = '?'
+    }
     if (bench_state) {
       const state = bench_state()
       for (const [k, v] of Object.entries(state)) {
         if (k.startsWith('acc_') && typeof v === 'number') {
-          const base = typeof state0?.[k] === 'number' ? (state0[k] as number) : 0
-          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)   // i18n-format-ok: developer benchmark payload, never shown to a user
+          const base =
+            typeof state0?.[k] === 'number' ? (state0[k] as number) : 0
+          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(
+            2
+          ) // i18n-format-ok: developer benchmark payload, never shown to a user
         } else {
           out[k] = v
         }
@@ -104,13 +124,21 @@ if (active) {
     send(out)
   }
   const tick = (now: number) => {
-    if (!t0) { t0 = now; prev = now; requestAnimationFrame(tick); return }
+    if (!t0) {
+      t0 = now
+      prev = now
+      requestAnimationFrame(tick)
+      return
+    }
     const dt = now - prev
     prev = now
     if (now - t0 > warm * 1000) {
       if (!state0 && bench_state) state0 = bench_state()
       deltas.push(dt)
-      if (now - t0 > (warm + sample) * 1000) { finish(); return }
+      if (now - t0 > (warm + sample) * 1000) {
+        finish()
+        return
+      }
     }
     requestAnimationFrame(tick)
   }

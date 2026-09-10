@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // Face landmarker WORKER (#57): inference runs here, off the render thread, so
 // it cannot inflate the frame times the dyn-res governor watches. The CPU
 // (WASM-SIMD) delegate is deliberate - the GPU delegate would contend with the
@@ -12,18 +11,26 @@
 // {kind:'frame', bitmap, at}   transferred ImageBitmap + ms clock Protocol out:
 // {kind:'ready'} | {kind:'dead', message} {kind:'pose', ok, yaw, pitch, x, y,
 // z, at}   radians / metres-ish
-
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'
 
 let landmarker: FaceLandmarker | null = null
 
 self.onmessage = (event: MessageEvent) => {
-  const data = event.data as { kind: string; base?: string; model?: string; bitmap?: ImageBitmap; at?: number }
+  const data = event.data as {
+    kind: string
+    base?: string
+    model?: string
+    bitmap?: ImageBitmap
+    at?: number
+  }
   if (data.kind === 'init') {
-    FilesetResolver.forVisionTasks((data.base as string).replace(/\/$/, ''))   // the resolver appends '/<file>' itself — a trailing slash 404s as '//'
+    FilesetResolver.forVisionTasks((data.base as string).replace(/\/$/, '')) // the resolver appends '/<file>' itself — a trailing slash 404s as '//'
       .then((files) =>
         FaceLandmarker.createFromOptions(files, {
-          baseOptions: { modelAssetPath: data.model as string, delegate: 'CPU' },
+          baseOptions: {
+            modelAssetPath: data.model as string,
+            delegate: 'CPU',
+          },
           runningMode: 'VIDEO',
           numFaces: 1,
           outputFacialTransformationMatrixes: true,
@@ -53,7 +60,9 @@ self.onmessage = (event: MessageEvent) => {
       // the face's local axes in camera space, so yaw and pitch fall out of
       // where the face's +z points. Signs give positive yaw when the player
       // turns left and positive pitch looking up.
-      const zx = matrix[8], zy = matrix[9], zz = matrix[10]
+      const zx = matrix[8],
+        zy = matrix[9],
+        zz = matrix[10]
       const yaw = Math.atan2(zx, zz)
       const pitch = Math.atan2(zy, Math.hypot(zx, zz))
       self.postMessage({
@@ -67,7 +76,11 @@ self.onmessage = (event: MessageEvent) => {
         at: data.at,
       })
     } finally {
-      try { bitmap.close() } catch { /* transferred bitmaps are ours to close */ }
+      try {
+        bitmap.close()
+      } catch {
+        /* transferred bitmaps are ours to close */
+      }
     }
   }
 }

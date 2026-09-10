@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, it, expect } from 'vitest'
 
 // bench.ts reads location at import time, and the suite runs in the node
@@ -17,7 +16,9 @@ describe('beacon', () => {
   it('accepts a destination on the page own origin', () => {
     expect(beacon('collect')).toBe('https://mochi-os.org/air/collect')
     expect(beacon('/collect')).toBe('https://mochi-os.org/collect')
-    expect(beacon('https://mochi-os.org/collect?run=3')).toBe('https://mochi-os.org/collect?run=3')
+    expect(beacon('https://mochi-os.org/collect?run=3')).toBe(
+      'https://mochi-os.org/collect?run=3'
+    )
   })
 
   it('refuses another origin', () => {
@@ -25,7 +26,7 @@ describe('beacon', () => {
     // page error, and a text/plain beacon crosses origins silently.
     expect(beacon('https://evil.example/collect')).toBe('')
     expect(beacon('//evil.example/collect')).toBe('')
-    expect(beacon('http://mochi-os.org/collect')).toBe('')       // scheme differs
+    expect(beacon('http://mochi-os.org/collect')).toBe('') // scheme differs
     expect(beacon('https://mochi-os.org:8443/collect')).toBe('') // port differs
     expect(beacon('https://mochi-os.org.evil.example/x')).toBe('')
   })

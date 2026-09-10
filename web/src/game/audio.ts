@@ -14,28 +14,61 @@ let master: GainNode | null = null
 let enabled = true
 // Mixer buses (#73): every voice routes through one; the menu's Sound tab
 // drives the levels (0..1). Master multiplies into the enable ramp.
-const BUSES = ['engine', 'aircraft', 'weapons', 'environment', 'alerts'] as const
+const BUSES = [
+  'engine',
+  'aircraft',
+  'weapons',
+  'environment',
+  'alerts',
+] as const
 type Bus = (typeof BUSES)[number]
 const buses: Partial<Record<Bus, GainNode>> = {}
-const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weapons: 1, environment: 1, alerts: 1 }
+const levels: Record<string, number> = {
+  master: 1,
+  engine: 1,
+  aircraft: 1,
+  weapons: 1,
+  environment: 1,
+  alerts: 1,
+}
 // one-shot routing
 const SHOT_BUS: Record<string, Bus> = {
-  gun: 'weapons', gunspin: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons', flyby: 'weapons',
-  hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft', pump: 'aircraft', lock: 'aircraft', door: 'aircraft',
-  caution: 'alerts', warning: 'alerts', horn: 'alerts', law: 'alerts',
+  gun: 'weapons',
+  gunspin: 'weapons',
+  explosion: 'weapons',
+  launch: 'weapons',
+  flare: 'weapons',
+  flyby: 'weapons',
+  hit: 'aircraft',
+  catapult: 'aircraft',
+  trap: 'aircraft',
+  touchdown: 'aircraft',
+  servo: 'aircraft',
+  eject: 'aircraft',
+  pump: 'aircraft',
+  lock: 'aircraft',
+  door: 'aircraft',
+  caution: 'alerts',
+  warning: 'alerts',
+  horn: 'alerts',
+  law: 'alerts',
 }
 function bus(name: Bus): GainNode {
   return buses[name] ?? (master as GainNode)
 }
 // audio_volumes applies the menu mix (values 0..100); cheap enough per frame.
-export function audio_volumes(volume: Record<string, number> | undefined): void {
+export function audio_volumes(
+  volume: Record<string, number> | undefined
+): void {
   if (!context) return
   for (const name of ['master', ...BUSES]) {
-    const v = volume && volume[name] !== undefined ? Number(volume[name]) / 100 : 1
+    const v =
+      volume && volume[name] !== undefined ? Number(volume[name]) / 100 : 1
     if (levels[name] !== v) {
       levels[name] = v
-      if (name === 'master') { if (master && enabled) master.gain.setTargetAtTime(v, now(), 0.05) }
-      else buses[name as Bus]?.gain.setTargetAtTime(v, now(), 0.05)
+      if (name === 'master') {
+        if (master && enabled) master.gain.setTargetAtTime(v, now(), 0.05)
+      } else buses[name as Bus]?.gain.setTargetAtTime(v, now(), 0.05)
     }
   }
 }
@@ -45,12 +78,31 @@ interface Voice {
   gain: GainNode
   tune?: (value: number) => void
 }
-const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
+const engines: {
+  whine: OscillatorNode
+  second: OscillatorNode
+  whineGain: GainNode
+  rumble: BiquadFilterNode
+  hiss: BiquadFilterNode
+  hissGain: GainNode
+  gain: GainNode
+}[] = []
 let burner: Voice | null = null
-let seeker: { carrier: OscillatorNode; second: OscillatorNode; chop: OscillatorNode; depth: GainNode; chopped: GainNode; gain: GainNode } | null = null
+let seeker: {
+  carrier: OscillatorNode
+  second: OscillatorNode
+  chop: OscillatorNode
+  depth: GainNode
+  chopped: GainNode
+  gain: GainNode
+} | null = null
 let alr: { osc: OscillatorNode; gain: GainNode } | null = null
 let departure: { osc: OscillatorNode; gain: GainNode } | null = null
-let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
+let wind: {
+  source: AudioBufferSourceNode
+  filter: BiquadFilterNode
+  gain: GainNode
+} | null = null
 let buffet: Voice | null = null
 let fire: Voice | null = null
 let deck: Voice | null = null
@@ -90,8 +142,24 @@ export function audio_gesture(): void {
 
 // audio_state reports the context's live condition for the developer probe
 // (#55): whether it exists, whether it is running, and the enable flag.
-export function audio_state(): { context: string; enabled: boolean; ecs: boolean; gun: boolean; outside: boolean; hot: number; sea: boolean } {
-  return { context: context ? context.state : 'none', enabled, ecs: ecsOn, gun: gunFiring, outside: outsideView, hot: [...heat.values()].filter(Boolean).length, sea: seaOn }
+export function audio_state(): {
+  context: string
+  enabled: boolean
+  ecs: boolean
+  gun: boolean
+  outside: boolean
+  hot: number
+  sea: boolean
+} {
+  return {
+    context: context ? context.state : 'none',
+    enabled,
+    ecs: ecsOn,
+    gun: gunFiring,
+    outside: outsideView,
+    hot: [...heat.values()].filter(Boolean).length,
+    sea: seaOn,
+  }
 }
 
 let lastEnable: boolean | null = null
@@ -112,7 +180,11 @@ export function audio_enable(on: boolean): void {
 
 function noise(length: number, brown: boolean): AudioBuffer {
   const c = context as AudioContext
-  const buffer = c.createBuffer(1, Math.floor(c.sampleRate * length), c.sampleRate)
+  const buffer = c.createBuffer(
+    1,
+    Math.floor(c.sampleRate * length),
+    c.sampleRate
+  )
   const data = buffer.getChannelData(0)
   let last = 0
   for (let i = 0; i < data.length; i++) {
@@ -145,7 +217,12 @@ function build(): void {
   master = c.createGain()
   master.gain.value = enabled ? levels.master : 0
   master.connect(c.destination)
-  for (const name of BUSES) { const g = c.createGain(); g.gain.value = levels[name]; g.connect(master); buses[name] = g }
+  for (const name of BUSES) {
+    const g = c.createGain()
+    g.gain.value = levels[name]
+    g.connect(master)
+    buses[name] = g
+  }
   noiseBuffer = noise(2.0, false)
   brownBuffer = noise(2.0, true)
 
@@ -263,7 +340,10 @@ function build(): void {
     filter.type = 'bandpass'
     filter.frequency.value = 450
     filter.Q.value = 0.5
-    looper(brownBuffer).connect(filter).connect(gain).connect(bus('environment'))
+    looper(brownBuffer)
+      .connect(filter)
+      .connect(gain)
+      .connect(bus('environment'))
     sea = { gain }
   }
 
@@ -377,7 +457,11 @@ function build(): void {
     carrier.gain.value = 0.5
     wobble.connect(depth).connect(carrier.gain)
     wobble.start()
-    source.connect(filter).connect(carrier).connect(gain).connect(bus('aircraft'))
+    source
+      .connect(filter)
+      .connect(carrier)
+      .connect(gain)
+      .connect(bus('aircraft'))
     buffet = { gain }
   }
 
@@ -394,7 +478,8 @@ function build(): void {
       data[i] = last * 2.5
       if (Math.random() < 0.0004) {
         const burst = Math.min(220, data.length - i)
-        for (let k = 0; k < burst; k++) data[i + k] += (Math.random() * 2 - 1) * Math.exp(-k / 40) * 0.8
+        for (let k = 0; k < burst; k++)
+          data[i + k] += (Math.random() * 2 - 1) * Math.exp(-k / 40) * 0.8
         i += burst - 1
       }
     }
@@ -422,7 +507,11 @@ function build(): void {
     carrier.gain.value = 0.7
     swell.connect(depth).connect(carrier.gain)
     swell.start()
-    source.connect(filter).connect(carrier).connect(gain).connect(bus('environment'))
+    source
+      .connect(filter)
+      .connect(carrier)
+      .connect(gain)
+      .connect(bus('environment'))
     deck = { gain }
   }
 
@@ -432,13 +521,21 @@ function build(): void {
 // bake pre-renders every one-shot into a named buffer.
 async function bake(): Promise<void> {
   const c = context as AudioContext
-  const render = async (length: number, fill: (data: Float32Array, rate: number) => void): Promise<AudioBuffer> => {
-    const offline = new OfflineAudioContext(1, Math.ceil(c.sampleRate * length), c.sampleRate)
+  const render = async (
+    length: number,
+    fill: (data: Float32Array, rate: number) => void
+  ): Promise<AudioBuffer> => {
+    const offline = new OfflineAudioContext(
+      1,
+      Math.ceil(c.sampleRate * length),
+      c.sampleRate
+    )
     const buffer = offline.createBuffer(1, offline.length, offline.sampleRate)
     fill(buffer.getChannelData(0), offline.sampleRate)
     return buffer
   }
-  const decay = (i: number, rate: number, t: number) => Math.exp(-i / (rate * t))
+  const decay = (i: number, rate: number, t: number) =>
+    Math.exp(-i / (rate * t))
 
   // M61 burr: 100 rounds/s — each round a 3 ms crack over a 140 Hz thump.
   // The M61 from inside: at 6,000 rpm the repetition fuses into one deep
@@ -449,8 +546,11 @@ async function bake(): Promise<void> {
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
       low = (low + 0.06 * white) / 1.06
-      const comb = 0.55 + 0.45 * Math.max(0, Math.sin((i / r) * 2 * Math.PI * 100))
-      d[i] = (low * 2.6 + white * 0.35) * comb * 0.75 + Math.sin((i / r) * 2 * Math.PI * 100) * 0.18
+      const comb =
+        0.55 + 0.45 * Math.max(0, Math.sin((i / r) * 2 * Math.PI * 100))
+      d[i] =
+        (low * 2.6 + white * 0.35) * comb * 0.75 +
+        Math.sin((i / r) * 2 * Math.PI * 100) * 0.18
     }
   })
   // Trigger release: the rotary cluster winds down — a falling whir under a
@@ -461,14 +561,24 @@ async function bake(): Promise<void> {
       const f = 95 - 65 * (i / d.length)
       phase += (2 * Math.PI * f) / r
       const comb = 0.5 + 0.5 * Math.max(0, Math.sin(phase))
-      d[i] = ((Math.random() * 2 - 1) * 0.3 + Math.sin((i / r) * 2 * Math.PI * 55) * 0.25) * comb * decay(i, r, 0.35)
+      d[i] =
+        ((Math.random() * 2 - 1) * 0.3 +
+          Math.sin((i / r) * 2 * Math.PI * 55) * 0.25) *
+        comb *
+        decay(i, r, 0.35)
     }
   })
   // Rounds striking us: a metallic clank cluster.
   shots.hit = await render(0.25, (d, r) => {
-    for (const [f, a] of [[2100, 0.5], [3400, 0.3], [820, 0.6]] as [number, number][])
-      for (let i = 0; i < d.length; i++) d[i] += Math.sin((i / r) * 2 * Math.PI * f) * decay(i, r, 0.03) * a
-    for (let i = 0; i < r * 0.01; i++) d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.004) * 0.8
+    for (const [f, a] of [
+      [2100, 0.5],
+      [3400, 0.3],
+      [820, 0.6],
+    ] as [number, number][])
+      for (let i = 0; i < d.length; i++)
+        d[i] += Math.sin((i / r) * 2 * Math.PI * f) * decay(i, r, 0.03) * a
+    for (let i = 0; i < r * 0.01; i++)
+      d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.004) * 0.8
   })
   // Explosion: crack into a long low rumble (distance shaping at play time).
   shots.explosion = await render(2.2, (d, r) => {
@@ -491,7 +601,8 @@ async function bake(): Promise<void> {
   })
   // Flare pop.
   shots.flare = await render(0.3, (d, r) => {
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * decay(i, r, 0.05) * 0.5
+    for (let i = 0; i < d.length; i++)
+      d[i] = (Math.random() * 2 - 1) * decay(i, r, 0.05) * 0.5
   })
   // Missile flyby (#80): the bow-shock crack of a supersonic round passing
   // close, into a fast roar that sweeps down as it recedes — faster and
@@ -510,7 +621,8 @@ async function bake(): Promise<void> {
     const clunk = (at: number, f: number, a: number) => {
       const base = Math.floor(at * r)
       for (let i = 0; i < r * 0.15 && base + i < d.length; i++)
-        d[base + i] += Math.sin((i / r) * 2 * Math.PI * f) * decay(i, r, 0.04) * a
+        d[base + i] +=
+          Math.sin((i / r) * 2 * Math.PI * f) * decay(i, r, 0.04) * a
     }
     clunk(0, 70, 1.0)
     let last = 0
@@ -530,23 +642,33 @@ async function bake(): Promise<void> {
       const white = Math.random() * 2 - 1
       low = (low + 0.05 * white) / 1.05
       phase += (2 * Math.PI * (85 - 35 * (i / d.length))) / r
-      const groan = Math.sin(phase) * (0.55 + 0.45 * Math.sin((i / r) * 2 * Math.PI * 7.3))
+      const groan =
+        Math.sin(phase) * (0.55 + 0.45 * Math.sin((i / r) * 2 * Math.PI * 7.3))
       d[i] = low * 3.0 * decay(i, r, 0.5) + groan * decay(i, r, 0.3) * 0.28
-      if (i < r * 1.1) d[i] += white * (0.3 + 0.25 * Math.sin((i / r) * 2 * Math.PI * 13)) * decay(i, r, 0.4) * 0.5
+      if (i < r * 1.1)
+        d[i] +=
+          white *
+          (0.3 + 0.25 * Math.sin((i / r) * 2 * Math.PI * 13)) *
+          decay(i, r, 0.4) *
+          0.5
     }
   })
   // Touchdown: a thump and a tyre chirp.
   shots.touchdown = await render(0.5, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       d[i] += Math.sin((i / r) * 2 * Math.PI * 55) * decay(i, r, 0.09) * 1.0
-      if (i < r * 0.06) d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.02) * 0.45
+      if (i < r * 0.06)
+        d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.02) * 0.45
     }
   })
   // Actuator servo: a soft falling whine for gear/flap/hook travel.
   shots.servo = await render(1.8, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       const f = 420 - 90 * (i / d.length)
-      d[i] = (Math.sin((i / r) * 2 * Math.PI * f) + 0.3 * Math.sin((i / r) * 2 * Math.PI * f * 2.01)) * 0.09
+      d[i] =
+        (Math.sin((i / r) * 2 * Math.PI * f) +
+          0.3 * Math.sin((i / r) * 2 * Math.PI * f * 2.01)) *
+        0.09
     }
   })
   // Gear cycle (#88): the hydraulic pump pulse repeated through the transit,
@@ -556,7 +678,9 @@ async function bake(): Promise<void> {
   shots.pump = await render(0.55, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       const env = Math.min(1, i / (r * 0.05)) * decay(i, r, 0.4)
-      const hum = Math.sin((i / r) * 2 * Math.PI * 84) * 0.5 + Math.sin((i / r) * 2 * Math.PI * 173) * 0.35
+      const hum =
+        Math.sin((i / r) * 2 * Math.PI * 84) * 0.5 +
+        Math.sin((i / r) * 2 * Math.PI * 173) * 0.35
       d[i] = (hum + (Math.random() * 2 - 1) * 0.22) * env * 0.24 // the transit pump was inaudible under the engine floor (#88 mix audit)
     }
   })
@@ -565,7 +689,9 @@ async function bake(): Promise<void> {
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
       low = (low + 0.09 * white) / 1.09
-      d[i] = low * 5.2 * decay(i, r, 0.05) + Math.sin((i / r) * 2 * Math.PI * 62) * decay(i, r, 0.09) * 0.5
+      d[i] =
+        low * 5.2 * decay(i, r, 0.05) +
+        Math.sin((i / r) * 2 * Math.PI * 62) * decay(i, r, 0.09) * 0.5
     }
   })
   shots.door = await render(0.34, (d, r) => {
@@ -593,7 +719,11 @@ async function bake(): Promise<void> {
     const beep = (at: number) => {
       const base = Math.floor(at * r)
       for (let i = 0; i < r * 0.18 && base + i < d.length; i++)
-        d[base + i] += Math.sin((i / r) * 2 * Math.PI * 1000) * Math.min(1, i / (r * 0.01)) * decay(i, r, 0.12) * 0.35
+        d[base + i] +=
+          Math.sin((i / r) * 2 * Math.PI * 1000) *
+          Math.min(1, i / (r * 0.01)) *
+          decay(i, r, 0.12) *
+          0.35
     }
     beep(0)
     beep(0.28)
@@ -605,7 +735,11 @@ async function bake(): Promise<void> {
     const beep = (at: number) => {
       const base = Math.floor(at * r)
       for (let i = 0; i < r * 0.12 && base + i < d.length; i++)
-        d[base + i] += Math.sin((i / r) * 2 * Math.PI * 1600) * Math.min(1, i / (r * 0.006)) * decay(i, r, 0.1) * 0.4
+        d[base + i] +=
+          Math.sin((i / r) * 2 * Math.PI * 1600) *
+          Math.min(1, i / (r * 0.006)) *
+          decay(i, r, 0.1) *
+          0.4
     }
     beep(0)
     beep(0.18)
@@ -613,7 +747,11 @@ async function bake(): Promise<void> {
   })
   // Gear warning horn: a slow insistent low beep (looped while active).
   shots.horn = await render(1.0, (d, r) => {
-    for (let i = 0; i < r * 0.55; i++) d[i] = Math.sin((i / r) * 2 * Math.PI * 250) * Math.min(1, i / (r * 0.01), (r * 0.55 - i) / (r * 0.02)) * 0.3
+    for (let i = 0; i < r * 0.55; i++)
+      d[i] =
+        Math.sin((i / r) * 2 * Math.PI * 250) *
+        Math.min(1, i / (r * 0.01), (r * 0.55 - i) / (r * 0.02)) *
+        0.3
   })
   // Radar-altimeter low-altitude warning: an urgent descending whoop, twice.
   shots.law = await render(0.9, (d, r) => {
@@ -622,7 +760,10 @@ async function bake(): Promise<void> {
       let phase = 0
       for (let i = 0; i < r * 0.3 && base + i < d.length; i++) {
         phase += (2 * Math.PI * (1500 - 950 * (i / (r * 0.3)))) / r
-        d[base + i] += Math.sin(phase) * Math.min(1, i / (r * 0.008), (r * 0.3 - i) / (r * 0.02)) * 0.42
+        d[base + i] +=
+          Math.sin(phase) *
+          Math.min(1, i / (r * 0.008), (r * 0.3 - i) / (r * 0.02)) *
+          0.42
       }
     }
     whoop(0)
@@ -633,7 +774,15 @@ async function bake(): Promise<void> {
 // play a named one-shot at a volume, optionally lowpassed (distance dulling).
 // playAt: a one-shot with a POSITION — the panner contributes direction only
 // (rolloff zero), so the hand-shaped distance curves (#66) keep the loudness.
-function playAt(name: string, volume: number, x: number, y: number, z: number, lowpass?: number, delay?: number): void {
+function playAt(
+  name: string,
+  volume: number,
+  x: number,
+  y: number,
+  z: number,
+  lowpass?: number,
+  delay?: number
+): void {
   const log = (globalThis as any).dev_sounds
   if (log) log.push(name)
   if (!context || !master || !shots[name] || context.state !== 'running') return
@@ -659,7 +808,12 @@ function playAt(name: string, volume: number, x: number, y: number, z: number, l
   source.start(now() + (delay || 0))
 }
 
-function play(name: string, volume: number, lowpass?: number, delay?: number): void {
+function play(
+  name: string,
+  volume: number,
+  lowpass?: number,
+  delay?: number
+): void {
   const log = (globalThis as any).dev_sounds
   if (log) log.push(name) // armed by probes: headless Chrome never grants the user activation an AudioContext needs, so the intent is the testable surface
   if (!context || !master || !shots[name] || context.state !== 'running') return
@@ -707,20 +861,44 @@ export function audio_frame(state: {
     engine.hiss.frequency.setTargetAtTime(350 + 2500 * level, t, smooth)
     engine.hissGain.gain.setTargetAtTime(0.08 + 0.5 * level * level, t, smooth)
     engine.whine.frequency.setTargetAtTime(2200 + 5200 * level, t, smooth)
-    engine.second.frequency.setTargetAtTime((2200 + 5200 * level) * 1.26, t, smooth)   // the other spool, geared apart
-    engine.whineGain.gain.setTargetAtTime((0.018 + 0.055 * level) * (e ? 0.92 : 1), t, smooth)   // the whine EMERGES with power — the audible spool-up pitch; per-side offset keeps the pair shimmering
+    engine.second.frequency.setTargetAtTime(
+      (2200 + 5200 * level) * 1.26,
+      t,
+      smooth
+    ) // the other spool, geared apart
+    engine.whineGain.gain.setTargetAtTime(
+      (0.018 + 0.055 * level) * (e ? 0.92 : 1),
+      t,
+      smooth
+    ) // the whine EMERGES with power — the audible spool-up pitch; per-side offset keeps the pair shimmering
     engine.gain.gain.setTargetAtTime(0.06 + 0.3 * level * level, t, smooth)
   }
   burner?.gain.gain.setTargetAtTime(0.5 * state.stage, t, smooth)
   if (wind) {
     const v = Math.min(1, state.speed / 320)
     const rough = state.drag ?? 0 // hung gear: louder, lower, rougher airstream
-    wind.filter.frequency.setTargetAtTime((200 + 2600 * v) * (1 - 0.25 * rough), t, smooth)
+    wind.filter.frequency.setTargetAtTime(
+      (200 + 2600 * v) * (1 - 0.25 * rough),
+      t,
+      smooth
+    )
     wind.gain.gain.setTargetAtTime((0.28 + 0.4 * rough) * v * v, t, smooth)
   }
-  buffet?.gain.gain.setTargetAtTime(Math.max(0, Math.min(1, (state.alpha - 14) / 12)) * 0.9, t, smooth)
-  ecs?.gain.gain.setTargetAtTime(ecsOn && !outsideView ? 0.045 + 0.02 * state.spool : 0, t, 1.2) // interior-only: the air-conditioning does not follow the camera outside
-  crackle?.gain.gain.setTargetAtTime(outsideView ? 0.5 * state.stage : 0, t, smooth)
+  buffet?.gain.gain.setTargetAtTime(
+    Math.max(0, Math.min(1, (state.alpha - 14) / 12)) * 0.9,
+    t,
+    smooth
+  )
+  ecs?.gain.gain.setTargetAtTime(
+    ecsOn && !outsideView ? 0.045 + 0.02 * state.spool : 0,
+    t,
+    1.2
+  ) // interior-only: the air-conditioning does not follow the camera outside
+  crackle?.gain.gain.setTargetAtTime(
+    outsideView ? 0.5 * state.stage : 0,
+    t,
+    smooth
+  )
   sea?.gain.gain.setTargetAtTime(seaOn ? 0.06 : 0, t, 1.5)
   fire?.gain.gain.setTargetAtTime(0.7 * state.burn, t, smooth)
   deck?.gain.gain.setTargetAtTime(state.wow ? 0.12 : 0, t, 0.4)
@@ -731,7 +909,12 @@ export function audio_frame(state: {
 // balance fades, the exterior panner carries the plant from the airframe's
 // position (panned and distance-faded past a fixed flypast camera), the
 // burner crackles, and the ECS stays behind in the cockpit.
-export function audio_view(outside: boolean, x: number, y: number, z: number): void {
+export function audio_view(
+  outside: boolean,
+  x: number,
+  y: number,
+  z: number
+): void {
   if (outside !== outsideView) {
     outsideView = outside
     const log = (globalThis as any).dev_sounds
@@ -779,14 +962,34 @@ export function audio_hit(count: number): void {
 // sharp CRACK and a felt thump through the airframe; by 600 m it is a dull
 // thud at the edge of the cockpit ambient, and beyond that nothing survives
 // canopy, engines and helmet. Sound is slow, so it arrives late.
-export function audio_explosion(distance: number, x?: number, y?: number, z?: number): void {
+export function audio_explosion(
+  distance: number,
+  x?: number,
+  y?: number,
+  z?: number
+): void {
   if (distance > 700) return
   const range = Math.max(0, Math.min(1, 1 - distance / 700))
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
   // toward the raw buffer inside 150 m and dulls fast beyond it.
   const crack = Math.max(0, Math.min(1, 1 - distance / 150))
-  if (x !== undefined) playAt('explosion', 0.4 + 1.0 * range * range, x, y as number, z as number, 500 + 7500 * crack + 2500 * range * range, distance / 343)
-  else play('explosion', 0.4 + 1.0 * range * range, 500 + 7500 * crack + 2500 * range * range, distance / 343)
+  if (x !== undefined)
+    playAt(
+      'explosion',
+      0.4 + 1.0 * range * range,
+      x,
+      y as number,
+      z as number,
+      500 + 7500 * crack + 2500 * range * range,
+      distance / 343
+    )
+  else
+    play(
+      'explosion',
+      0.4 + 1.0 * range * range,
+      500 + 7500 * crack + 2500 * range * range,
+      distance / 343
+    )
   if (crack > 0) play('hit', 0.5 * crack, undefined, distance / 343) // the blast overpressure felt through the structure, on the same channel as taking rounds
 }
 
@@ -812,7 +1015,8 @@ let pumpAt = -1
 // The transit's hydraulic pump, repeated horn-style while the gear travels.
 export function audio_gear(travel: boolean): void {
   if (!travel) return
-  const t = context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
+  const t =
+    context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
   if (pumpAt < 0 || t - pumpAt > 0.48) {
     pumpAt = t
     play('pump', 0.9)
@@ -844,7 +1048,11 @@ export function audio_departure(yawing: number, steady: boolean): void {
   if (!departure || !context || context.state !== 'running') return
   const t = now()
   const active = steady || yawing > 0
-  departure.osc.frequency.setTargetAtTime(yawing > 0 ? 500 + 500 * Math.min(yawing, 1) : 600, t, 0.05)
+  departure.osc.frequency.setTargetAtTime(
+    yawing > 0 ? 500 + 500 * Math.min(yawing, 1) : 600,
+    t,
+    0.05
+  )
   departure.gain.gain.setTargetAtTime(active ? 0.07 : 0, t, 0.05)
 }
 
@@ -854,12 +1062,27 @@ export function audio_departure(yawing: number, steady: boolean): void {
 // growl louder, higher and angrier as the shot improves, in both states.
 // audio_flyby (#80): an enemy round passing close without fusing. distance is
 // the closest approach in metres; a burning motor arrives louder and brighter.
-export function audio_flyby(distance: number, burning: boolean, x?: number, y?: number, z?: number): void {
+export function audio_flyby(
+  distance: number,
+  burning: boolean,
+  x?: number,
+  y?: number,
+  z?: number
+): void {
   const range = Math.max(0, Math.min(1, 1 - distance / 200))
   if (range <= 0) return
   const crack = Math.max(0, Math.min(1, 1 - distance / 60))
   const volume = (0.25 + 0.75 * range * range) * (burning ? 1.25 : 1)
-  if (x !== undefined) playAt('flyby', volume, x, y as number, z as number, 900 + 9000 * crack + 2000 * range, distance / 343)
+  if (x !== undefined)
+    playAt(
+      'flyby',
+      volume,
+      x,
+      y as number,
+      z as number,
+      900 + 9000 * crack + 2000 * range,
+      distance / 343
+    )
   else play('flyby', volume, 900 + 9000 * crack + 2000 * range, distance / 343)
 }
 
@@ -871,7 +1094,9 @@ export function audio_seeker(state: number, strength = 0): void {
   // Growl: ~700 Hz rising toward ~950 as the seeker drinks (the real F-16 tape sits
   // at 700-990), with a small unsteady wander; the 64 Hz chop stays hard. Lock: the
   // ~2,956 Hz SEAM sing, steady, warbled at 242 Hz with a shallower swing.
-  const base = lock ? 2956 : 700 + heat * 250 + Math.sin(t * 3.1) * 12 + Math.sin(t * 7.7) * 6
+  const base = lock
+    ? 2956
+    : 700 + heat * 250 + Math.sin(t * 3.1) * 12 + Math.sin(t * 7.7) * 6
   seeker.carrier.frequency.setTargetAtTime(base, t, 0.03)
   seeker.second.frequency.setTargetAtTime(base * 2, t, 0.03)
   seeker.chop.frequency.setTargetAtTime(lock ? 242 : 64, t, 0.05)
@@ -881,7 +1106,11 @@ export function audio_seeker(state: number, strength = 0): void {
   seeker.depth.gain.setTargetAtTime(lock ? 0.55 : 0.88, t, 0.05)
   // A ~3 kHz sine reads far louder than 700 Hz at equal amplitude: the lock
   // level sits lower.
-  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : (lock ? 0.09 : 0.13) * (0.7 + 0.5 * heat), t, 0.05)
+  seeker.gain.gain.setTargetAtTime(
+    state === 0 ? 0 : (lock ? 0.09 : 0.13) * (0.7 + 0.5 * heat),
+    t,
+    0.05
+  )
 }
 
 // The RWR in the headset (#28): call every frame like the seeker — the lock
@@ -889,7 +1118,11 @@ export function audio_seeker(state: number, strength = 0): void {
 export function audio_rwr(lock: boolean): void {
   if (!alr || !context || context.state !== 'running') return
   const t = now()
-  alr.gain.gain.setTargetAtTime(lock ? (Math.floor(t * 8) % 2 ? 0.1 : 0.015) : 0, t, 0.02)
+  alr.gain.gain.setTargetAtTime(
+    lock ? (Math.floor(t * 8) % 2 ? 0.1 : 0.015) : 0,
+    t,
+    0.02
+  )
 }
 
 // New-threat chirp (#28): two quick high beeps when a symbol first appears on
@@ -950,7 +1183,14 @@ interface Distant {
 const hearer = { x: 0, y: 0, z: 0 }
 const distants = new Map<string, Distant>()
 
-export function audio_remote(key: string, x: number, y: number, z: number, closure: number, reheat: boolean): void {
+export function audio_remote(
+  key: string,
+  x: number,
+  y: number,
+  z: number,
+  closure: number,
+  reheat: boolean
+): void {
   heat.set(key, reheat) // the ledger a probe can read: which contacts are audibly in reheat
   if (!context || !master || context.state !== 'running') return
   let d = distants.get(key)
@@ -981,13 +1221,19 @@ export function audio_remote(key: string, x: number, y: number, z: number, closu
   // 180 m at real closure, the passer gets the same near-pass roar a missile
   // earned in #80 — the Doppler hum alone undersold a jet tearing past.
   const range = Math.hypot(x - hearer.x, y - hearer.y, z - hearer.z)
-  if (d.range !== undefined && range > d.range && d.range < 180 && closure > 80 && t - (d.passAt ?? -9) > 5) {
+  if (
+    d.range !== undefined &&
+    range > d.range &&
+    d.range < 180 &&
+    closure > 80 &&
+    t - (d.passAt ?? -9) > 5
+  ) {
     d.passAt = t
     audio_flyby(d.range, reheat, x, y, z)
   }
   d.range = range
   const doppler = Math.max(0.7, Math.min(1.3, 1 + closure / 343))
-  d.filter.frequency.setTargetAtTime((reheat ? 900 : 600) * doppler, t, smooth)   // Doppler bends the roar's colour — noise has no pitch to bend
+  d.filter.frequency.setTargetAtTime((reheat ? 900 : 600) * doppler, t, smooth) // Doppler bends the roar's colour — noise has no pitch to bend
   d.gain.gain.setTargetAtTime(reheat ? 0.75 : 0.5, t, smooth)
 }
 
@@ -1001,7 +1247,17 @@ export function audio_remote_drop(key: string): void {
 }
 
 // The listener rides the camera.
-export function audio_listener(x: number, y: number, z: number, fx: number, fy: number, fz: number, ux: number, uy: number, uz: number): void {
+export function audio_listener(
+  x: number,
+  y: number,
+  z: number,
+  fx: number,
+  fy: number,
+  fz: number,
+  ux: number,
+  uy: number,
+  uz: number
+): void {
   if (!context || context.state !== 'running') return
   const l = context.listener
   const t = now()

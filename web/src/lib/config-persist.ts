@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The load-completion decision for the mission config, isolated from the React
 // hook so it is unit testable. On config/load: an edit made while it was in
 // flight -> FLUSH (persist and keep it), a saved config -> APPLY, nothing saved

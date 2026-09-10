@@ -2,14 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // useServers polls the public world-server listing and loads this client's
 // flight version. It lives apart from ServerList so the join dialog can match
 // its recents against the listing, and apart from any component so fast
 // refresh keeps working for the files that render it. `servers` is null until
 // the first response; a failed fetch resolves to an empty list so the dialog's
 // empty state still applies.
-
 import { useEffect, useState } from 'react'
 import { createAppClient } from '@mochi/web'
 import { flight_load, flight_version } from '../game/flight'
@@ -35,7 +33,9 @@ export function useServers(): { servers: Server[] | null; version: number } {
         // payload in {data:...}, and createAppClient may unwrap one layer —
         // tolerate either depth rather than guess.
         const peel = (v: unknown): { servers?: Server[] } =>
-          v && typeof v === 'object' && 'data' in v ? peel((v as { data: unknown }).data) : (v as { servers?: Server[] })
+          v && typeof v === 'object' && 'data' in v
+            ? peel((v as { data: unknown }).data)
+            : (v as { servers?: Server[] })
         if (live) setServers(peel(res).servers ?? [])
       } catch {
         if (live) setServers([])

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, it, expect } from 'vitest'
 import { atc_step, ATC_ONSPEED, ATC_LEAST, ATC_MOST } from './atc'
 
@@ -10,7 +9,10 @@ import { atc_step, ATC_ONSPEED, ATC_LEAST, ATC_MOST } from './atc'
 // point accelerates the jet, and alpha falls as speed rises (level flight at
 // fixed lift). Crude, but it has the essential property the law must respect:
 // MORE power LOWERS alpha. Constants chosen for on-speed at throttle 0.55.
-function simulate(alpha0: number, seconds: number): { alpha: number; throttle: number; overshoot: number } {
+function simulate(
+  alpha0: number,
+  seconds: number
+): { alpha: number; throttle: number; overshoot: number } {
   const dt = 1 / 60
   let speed = 70 - (alpha0 - ATC_ONSPEED) * 2.5 // slow when alpha high
   let throttle = 0.4

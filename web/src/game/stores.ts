@@ -62,9 +62,11 @@ export function points(fixture: string): number {
 // families.
 export function options(station: number, fixture: string): string[] {
   if (station === 1 || station === 9) return ['', '9m']
-  if (station === 4 || station === 6) return fixture === 'rail' ? ['', '120c'] : ['']
+  if (station === 4 || station === 6)
+    return fixture === 'rail' ? ['', '120c'] : ['']
   if (fixture === 'rail' || fixture === 'twin') return ['', '9m', '120c']
-  if (fixture === 'pylon') return station === 5 ? ['', 'tank'] : ['', 'tank', '9m', '120c']
+  if (fixture === 'pylon')
+    return station === 5 ? ['', 'tank'] : ['', 'tank', '9m', '120c']
   return ['']
 }
 
@@ -93,12 +95,21 @@ export function entries(station: number, slot: Slot): string[] {
 // all nine stations present, unknown fixtures and stores dropped, point
 // counts matched to the fixture, tips locked to their rail.
 export function normalize(raw: unknown): Loadout {
-  const source = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
+  const source = (raw && typeof raw === 'object' ? raw : {}) as Record<
+    string,
+    unknown
+  >
   const out: Loadout = {}
   for (let station = 1; station <= 9; station++) {
-    const entry = (source[String(station)] ?? {}) as { fixture?: unknown; stores?: unknown }
+    const entry = (source[String(station)] ?? {}) as {
+      fixture?: unknown
+      stores?: unknown
+    }
     const allowed = STATIONS[station].fixtures
-    let fixture = typeof entry.fixture === 'string' && allowed.includes(entry.fixture) ? entry.fixture : allowed[0]
+    let fixture =
+      typeof entry.fixture === 'string' && allowed.includes(entry.fixture)
+        ? entry.fixture
+        : allowed[0]
     if (STATIONS[station].locked) fixture = allowed[0]
     const wanted = Array.isArray(entry.stores) ? entry.stores : []
     const stores: string[] = []
@@ -144,7 +155,8 @@ export function migrate(missiles: boolean): Loadout {
 // the setup highlights the matching preset button without storing a name.
 export function matches(loadout: Loadout): string {
   for (const [name, preset] of Object.entries(PRESETS)) {
-    if (JSON.stringify(normalize(loadout)) === JSON.stringify(preset)) return name
+    if (JSON.stringify(normalize(loadout)) === JSON.stringify(preset))
+      return name
   }
   return ''
 }
@@ -166,7 +178,9 @@ export function strip(loadout: Loadout): Loadout {
   const out = normalize(loadout)
   for (let station = 1; station <= 9; station++) {
     const slot = out[String(station)]
-    slot.stores = slot.stores.map((id) => (id === '9m' || id === '120c' ? '' : id))
+    slot.stores = slot.stores.map((id) =>
+      id === '9m' || id === '120c' ? '' : id
+    )
   }
   return out
 }
@@ -183,7 +197,10 @@ export function amraams(loadout: Loadout): string[] {
       if (slot.fixture === 'twin') {
         if (slot.stores[0] === '120c') names.push('120c' + station + 'a')
         if (slot.stores[1] === '120c') names.push('120c' + station + 'b')
-      } else if ((slot.fixture === 'rail' || slot.fixture === 'pylon') && slot.stores[0] === '120c') {
+      } else if (
+        (slot.fixture === 'rail' || slot.fixture === 'pylon') &&
+        slot.stores[0] === '120c'
+      ) {
         names.push('120c' + station)
       }
       return names
@@ -214,7 +231,11 @@ export function eject(loadout: Loadout, name: string): boolean {
 // empties the mounts and the fixture stays, 'rack' clears the fixture with
 // everything on it (the real RACK/LCHR position — rail missiles leave only
 // this way, the rail has no ejector). Wingtips (1/9) never jettison.
-export function jettison(loadout: Loadout, station: number, what: 'stores' | 'rack'): Loadout {
+export function jettison(
+  loadout: Loadout,
+  station: number,
+  what: 'stores' | 'rack'
+): Loadout {
   const out = normalize(loadout)
   if (station < 2 || station > 8) return out
   const slot = out[String(station)]
@@ -257,7 +278,8 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
     })
     for (let round = 0; queues.some((q) => round < q.names.length); round++) {
       for (const q of queues) {
-        if (round < q.names.length) out.push({ station: q.station, name: q.names[round] })
+        if (round < q.names.length)
+          out.push({ station: q.station, name: q.names[round] })
       }
     }
   }
@@ -271,7 +293,10 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
 // the airframe GLB's wingtip AIM-9 nodes (Object_145 is the PORT tip). ANCHORS
 // is in stores.glb/model.glb space, where POSITIVE x is PORT; a mesh translates
 // by (anchor - its own centre).
-export const TIPS: Record<string, string> = { tip9: 'Object_542', tip1: 'Object_145' }
+export const TIPS: Record<string, string> = {
+  tip9: 'Object_542',
+  tip1: 'Object_145',
+}
 export const ANCHORS: Record<string, [number, number, number]> = {
   '9m2': [3.61, -0.38, -1.28],
   '9m2a': [3.76, -0.42, -1.28],
@@ -316,13 +341,41 @@ export function outcomes(station: number): Outcome[] {
       { id: '120c', slot: { fixture: 'rail', stores: ['120c'] } },
       { id: '120c2', slot: { fixture: 'twin', stores: ['120c', '120c'] } },
       { id: 'pylon', slot: { fixture: 'rail', stores: [''] } },
-      { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
-      { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
-      { id: '120c1', slot: { fixture: 'twin', stores: ['120c', ''] }, hidden: true },
-      { id: '120c1b', slot: { fixture: 'twin', stores: ['', '120c'] }, hidden: true },
-      { id: 'mixed', slot: { fixture: 'twin', stores: ['9m', '120c'] }, hidden: true },
-      { id: 'mixedb', slot: { fixture: 'twin', stores: ['120c', '9m'] }, hidden: true },
-      { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
+      {
+        id: 'twin1',
+        slot: { fixture: 'twin', stores: ['9m', ''] },
+        hidden: true,
+      },
+      {
+        id: 'twin1b',
+        slot: { fixture: 'twin', stores: ['', '9m'] },
+        hidden: true,
+      },
+      {
+        id: '120c1',
+        slot: { fixture: 'twin', stores: ['120c', ''] },
+        hidden: true,
+      },
+      {
+        id: '120c1b',
+        slot: { fixture: 'twin', stores: ['', '120c'] },
+        hidden: true,
+      },
+      {
+        id: 'mixed',
+        slot: { fixture: 'twin', stores: ['9m', '120c'] },
+        hidden: true,
+      },
+      {
+        id: 'mixedb',
+        slot: { fixture: 'twin', stores: ['120c', '9m'] },
+        hidden: true,
+      },
+      {
+        id: 'twin0',
+        slot: { fixture: 'twin', stores: ['', ''] },
+        hidden: true,
+      },
     ]
   }
   if (station === 4 || station === 6) {
@@ -340,13 +393,41 @@ export function outcomes(station: number): Outcome[] {
       { id: '120c', slot: { fixture: 'pylon', stores: ['120c'] } },
       { id: '120c2', slot: { fixture: 'twin', stores: ['120c', '120c'] } },
       { id: 'pylon', slot: { fixture: 'pylon', stores: [''] } },
-      { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
-      { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
-      { id: '120c1', slot: { fixture: 'twin', stores: ['120c', ''] }, hidden: true },
-      { id: '120c1b', slot: { fixture: 'twin', stores: ['', '120c'] }, hidden: true },
-      { id: 'mixed', slot: { fixture: 'twin', stores: ['9m', '120c'] }, hidden: true },
-      { id: 'mixedb', slot: { fixture: 'twin', stores: ['120c', '9m'] }, hidden: true },
-      { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
+      {
+        id: 'twin1',
+        slot: { fixture: 'twin', stores: ['9m', ''] },
+        hidden: true,
+      },
+      {
+        id: 'twin1b',
+        slot: { fixture: 'twin', stores: ['', '9m'] },
+        hidden: true,
+      },
+      {
+        id: '120c1',
+        slot: { fixture: 'twin', stores: ['120c', ''] },
+        hidden: true,
+      },
+      {
+        id: '120c1b',
+        slot: { fixture: 'twin', stores: ['', '120c'] },
+        hidden: true,
+      },
+      {
+        id: 'mixed',
+        slot: { fixture: 'twin', stores: ['9m', '120c'] },
+        hidden: true,
+      },
+      {
+        id: 'mixedb',
+        slot: { fixture: 'twin', stores: ['120c', '9m'] },
+        hidden: true,
+      },
+      {
+        id: 'twin0',
+        slot: { fixture: 'twin', stores: ['', ''] },
+        hidden: true,
+      },
     ]
   }
   if (station === 5) {
@@ -380,7 +461,12 @@ export interface Catalog {
   index: Map<string, number>
 }
 
-export function resolve(raw: { stores: Fitment[]; default: number; internal: number; empty: number }): Catalog {
+export function resolve(raw: {
+  stores: Fitment[]
+  default: number
+  internal: number
+  empty: number
+}): Catalog {
   const index = new Map<string, number>()
   raw.stores.forEach((entry, i) => index.set(entry.name, i))
   return { ...raw, index }
@@ -390,12 +476,25 @@ export function resolve(raw: { stores: Fitment[]; default: number; internal: num
 // (rounds() order) and `expended` AMRAAMs (amraams() order) already away.
 // Fixtures and tanks always attach; tips ride their catalog bits so the bare
 // jet stays a subset.
-export function mask(loadout: Loadout, fired: number, book: Catalog, expended = 0): number {
+export function mask(
+  loadout: Loadout,
+  fired: number,
+  book: Catalog,
+  expended = 0
+): number {
   let bits = 0
-  const spent = new Set(rounds(loadout).slice(0, Math.max(0, fired)).map((r) => r.name))
-  for (const name of amraams(loadout).slice(0, Math.max(0, expended))) spent.add(name)
+  const spent = new Set(
+    rounds(loadout)
+      .slice(0, Math.max(0, fired))
+      .map((r) => r.name)
+  )
+  for (const name of amraams(loadout).slice(0, Math.max(0, expended)))
+    spent.add(name)
   for (let station = 1; station <= 9; station++) {
-    for (const name of entries(station, loadout[String(station)] ?? { fixture: '', stores: [] })) {
+    for (const name of entries(
+      station,
+      loadout[String(station)] ?? { fixture: '', stores: [] }
+    )) {
       if (spent.has(name)) continue
       const bit = book.index.get(name)
       if (bit !== undefined) bits += 2 ** bit // NOT |=: the catalog outgrew 32 bits and JS bitwise is int32; f64 addition is exact here (unique names, bits far below 2^53)
@@ -408,11 +507,17 @@ export function mask(loadout: Loadout, fired: number, book: Catalog, expended = 
 // gross-weight line and the CHKLST page both build on it. Fired rounds and
 // burned external fuel are the caller's concern (they pass fired > 0 or read
 // the live external state instead).
-export function weight(loadout: Loadout, book: Catalog): { hardware: number; fuel: number } {
+export function weight(
+  loadout: Loadout,
+  book: Catalog
+): { hardware: number; fuel: number } {
   let hardware = 0
   let fuel = 0
   for (let station = 1; station <= 9; station++) {
-    for (const name of entries(station, loadout[String(station)] ?? { fixture: '', stores: [] })) {
+    for (const name of entries(
+      station,
+      loadout[String(station)] ?? { fixture: '', stores: [] }
+    )) {
       const bit = book.index.get(name)
       if (bit === undefined) continue
       hardware += book.stores[bit].mass
@@ -428,10 +533,15 @@ export function weight(loadout: Loadout, book: Catalog): { hardware: number; fue
 export function asymmetry(loadout: Loadout, book: Catalog): number {
   let moment = 0
   for (let station = 1; station <= 9; station++) {
-    for (const name of entries(station, loadout[String(station)] ?? { fixture: '', stores: [] })) {
+    for (const name of entries(
+      station,
+      loadout[String(station)] ?? { fixture: '', stores: [] }
+    )) {
       const bit = book.index.get(name)
       if (bit === undefined) continue
-      moment += (book.stores[bit].mass + book.stores[bit].fuel) * (book.stores[bit].lateral ?? 0)
+      moment +=
+        (book.stores[bit].mass + book.stores[bit].fuel) *
+        (book.stores[bit].lateral ?? 0)
     }
   }
   return moment

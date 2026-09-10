@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -17,7 +16,8 @@ const catalogue = () => {
   const source = read('../components/GameCanvas.tsx')
   const block = source.slice(source.indexOf('const HUD_MESSAGES'))
   const keys = new Set<string>()
-  const entry = /^\s+(?:([A-Za-z_][A-Za-z0-9_]*)|'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*msg`/gm
+  const entry =
+    /^\s+(?:([A-Za-z_][A-Za-z0-9_]*)|'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*msg`/gm
   for (const found of block.slice(0, block.indexOf('\n}\n')).matchAll(entry)) {
     keys.add((found[1] ?? found[2] ?? found[3]).replace(/\\(.)/g, '$1'))
   }
@@ -27,10 +27,14 @@ const catalogue = () => {
 const translated = () => {
   const source = read('./engine.ts')
   const keys = new Set<string>()
-  for (const found of source.matchAll(/translate\(\s*"((?:[^"\\]|\\.)*)"\s*\)/g)) {
+  for (const found of source.matchAll(
+    /translate\(\s*"((?:[^"\\]|\\.)*)"\s*\)/g
+  )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
-  for (const found of source.matchAll(/translate\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g)) {
+  for (const found of source.matchAll(
+    /translate\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g
+  )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
   return keys
@@ -47,7 +51,9 @@ describe('HUD_MESSAGES', () => {
     // PARK, PROBE, CANOPY and WINGS shipped untranslated next to GEAR and HOOK
     // in the same corner stack (#109).
     const have = catalogue()
-    const missing = [...translated()].filter((key) => !have.has(key) && !VERBATIM.includes(key)).sort()
+    const missing = [...translated()]
+      .filter((key) => !have.has(key) && !VERBATIM.includes(key))
+      .sort()
     expect(missing).toEqual([])
   })
 

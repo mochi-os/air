@@ -43,13 +43,26 @@ export function phase(round: Round): number {
 // words builds the declaration: position, velocity, shooter (0 the player, 1
 // the bandit), phase. Only rounds that concern the bandit are declared — its
 // own, and the player's aimed at it.
-export function words(rounds: Round[], bandit: unknown, most: number = MENACE_MOST): number[] {
+export function words(
+  rounds: Round[],
+  bandit: unknown,
+  most: number = MENACE_MOST
+): number[] {
   const out: number[] = []
   for (const round of rounds) {
     if (!round.active) continue
     if (round.target !== bandit && !round.enemy) continue
     if (out.length >= most) break
-    out.push(round.px, round.py, round.pz, round.vx, round.vy, round.vz, round.enemy ? 1 : 0, phase(round))
+    out.push(
+      round.px,
+      round.py,
+      round.pz,
+      round.vx,
+      round.vy,
+      round.vz,
+      round.enemy ? 1 : 0,
+      phase(round)
+    )
   }
   return out
 }

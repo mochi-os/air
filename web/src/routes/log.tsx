@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The flight log at its own address (/air/log/), declared in app.json the
 // same way the root page is. It is a DESTINATION, not an overlay, so it has no
 // Close button: Back is how you leave a page.
-
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { BackButton } from '@mochi/web/components/layout/back-button'
@@ -27,7 +25,12 @@ function Log() {
             knows that history.back() is a silent no-op inside the shell's
             sandboxed iframe. A bespoke Link to '/' had none of that. */}
         <div className='mb-4 flex items-center gap-3'>
-          <BackButton label={t`Back`} onFallback={() => void navigate({ to: '/', search: (prev) => prev })} />
+          <BackButton
+            label={t`Back`}
+            onFallback={() =>
+              void navigate({ to: '/', search: (prev) => prev })
+            }
+          />
           <h2 className='text-2xl font-semibold tracking-tight'>
             <Trans>Log</Trans>
           </h2>

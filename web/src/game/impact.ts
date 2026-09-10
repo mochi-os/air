@@ -31,11 +31,19 @@ export interface Island {
 }
 
 // inside: is this point within the building's footprint polygon?
-export function inside(x: number, z: number, poly: [number, number][]): boolean {
+export function inside(
+  x: number,
+  z: number,
+  poly: [number, number][]
+): boolean {
   let within = false
   for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const xi = poly[i][0], zi = poly[i][1], xj = poly[j][0], zj = poly[j][1]
-    if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) within = !within
+    const xi = poly[i][0],
+      zi = poly[i][1],
+      xj = poly[j][0],
+      zj = poly[j][1]
+    if (zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi)
+      within = !within
   }
   return within
 }
@@ -48,16 +56,30 @@ export function surface(
   floor: number,
   buildings: Building[],
   posts: Post[],
-  island?: Island,
+  island?: Island
 ): string {
-  if (p.y <= (floor > -1e8 ? floor + 2 : 6)) return floor > -1e8 ? 'ground' : 'sea'
+  if (p.y <= (floor > -1e8 ? floor + 2 : 6))
+    return floor > -1e8 ? 'ground' : 'sea'
   for (const b of buildings) {
-    if (p.y < b.topY + 2 && p.x > b.minx && p.x < b.maxx && p.z > b.minz && p.z < b.maxz && inside(p.x, p.z, b.pts)) return 'building'
+    if (
+      p.y < b.topY + 2 &&
+      p.x > b.minx &&
+      p.x < b.maxx &&
+      p.z > b.minz &&
+      p.z < b.maxz &&
+      inside(p.x, p.z, b.pts)
+    )
+      return 'building'
   }
   for (const m of posts) {
     if (p.y < m.y1 && Math.hypot(p.x - m.x, p.z - m.z) < m.r + 4) return 'post'
   }
-  if (island && p.y < 80 && Math.abs(p.x - island.x) < 160 && Math.abs(p.z - island.z) < 160) {
+  if (
+    island &&
+    p.y < 80 &&
+    Math.abs(p.x - island.x) < 160 &&
+    Math.abs(p.z - island.z) < 160
+  ) {
     const h = island.height(p.x, p.z)
     if (h > island.deck + 4 && p.y < h) return 'island'
   }

@@ -2,14 +2,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
-import { useFormat } from '@mochi/web'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Slider } from '@mochi/web/components/ui/slider'
-import { Switch } from '@mochi/web/components/ui/switch'
+import { useFormat } from '@mochi/web'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@mochi/web/components/ui/dialog'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@mochi/web/components/ui/dialog'
+import { Slider } from '@mochi/web/components/ui/slider'
+import { Switch } from '@mochi/web/components/ui/switch'
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -47,11 +51,13 @@ export function SliderRow({
   const { formatNumber } = useFormat()
   const display = formatNumber(value, decimals) + (suffix ?? '')
   return (
-    <div className={`${tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}${disabled ? ' opacity-50' : ''}`}>
+    <div
+      className={`${tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}${disabled ? 'opacity-50' : ''}`}
+    >
       <div className='flex items-center justify-between text-sm'>
         <Label className='text-card-foreground font-medium'>{label}</Label>
         <span
-          className='text-foreground bg-muted rounded border border-border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
+          className='text-foreground bg-muted border-border rounded border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
           style={{ fontFamily: 'var(--air-mono)' }}
         >
           {display}
@@ -98,7 +104,10 @@ export function NumberField({
 
   const settle = () => {
     const parsed = Number(draft)
-    const next = draft.trim() === '' || !Number.isFinite(parsed) ? value : Math.max(min, Math.min(max, parsed))
+    const next =
+      draft.trim() === '' || !Number.isFinite(parsed)
+        ? value
+        : Math.max(min, Math.min(max, parsed))
     setDraft(String(next))
     if (next !== value) onChange(next)
   }
@@ -120,7 +129,13 @@ export function NumberField({
         // Live only while the typed number is already inside the range; a
         // half-typed one waits for blur rather than being rewritten under the
         // cursor.
-        if (text.trim() !== '' && Number.isFinite(parsed) && parsed >= min && parsed <= max && parsed !== value)
+        if (
+          text.trim() !== '' &&
+          Number.isFinite(parsed) &&
+          parsed >= min &&
+          parsed <= max &&
+          parsed !== value
+        )
           onChange(parsed)
       }}
       onBlur={settle}
@@ -145,8 +160,17 @@ export function SwitchRow({
   onChange: (value: boolean) => void
 }) {
   return (
-    <div className={tight ? 'flex items-center justify-between gap-4 px-3 py-1' : 'flex items-center justify-between gap-4 p-3'}>
-      <Label htmlFor={id} className='text-card-foreground cursor-pointer text-sm font-medium'>
+    <div
+      className={
+        tight
+          ? 'flex items-center justify-between gap-4 px-3 py-1'
+          : 'flex items-center justify-between gap-4 p-3'
+      }
+    >
+      <Label
+        htmlFor={id}
+        className='text-card-foreground cursor-pointer text-sm font-medium'
+      >
         {label}
       </Label>
       <Switch id={id} checked={checked} onCheckedChange={onChange} />
@@ -184,14 +208,16 @@ export function MenuDialog({
         onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
         className={`${
           wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'
-        }${steady ? ' h-[min(53rem,calc(100svh-2rem))]' : ''}`}
+        }${steady ? 'h-[min(53rem,calc(100svh-2rem))]' : ''}`}
       >
-        <DialogHeader className='border-b border-border pb-3'>
+        <DialogHeader className='border-border border-b pb-3'>
           <DialogTitle className='text-lg font-semibold tracking-tight'>
             {title}
           </DialogTitle>
         </DialogHeader>
-        <div className='flex min-h-0 flex-1 flex-col overflow-y-auto pt-2'>{children}</div>
+        <div className='flex min-h-0 flex-1 flex-col overflow-y-auto pt-2'>
+          {children}
+        </div>
         {/* Outside the scroller: a footer holds the dialog's primary action,
             which must never scroll out of reach with the body. */}
         {footer && <div className='border-border border-t pt-2'>{footer}</div>}

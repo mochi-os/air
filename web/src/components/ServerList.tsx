@@ -2,16 +2,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The public world-server list on the join page (#14), players-first. A server
 // whose flight version differs from this client's wasm is greyed with the
 // mismatch spelled out, not hidden. Private servers are joined by address from
 // the control beside this list.
-
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useFormat } from '@mochi/web'
 import { Users } from 'lucide-react'
-import { server_mismatch, server_offline, server_order, type Server } from '../game/servers'
+import {
+  server_mismatch,
+  server_offline,
+  server_order,
+  type Server,
+} from '../game/servers'
 
 export type { Server }
 
@@ -19,7 +22,15 @@ export type { Server }
 // disabled states — offline (quiet past two refresh floors) and version
 // mismatch, the one message the list must be precise about: why a server the
 // player can see is one they cannot join.
-export function ServerRow({ server, version, onPick }: { server: Server; version: number; onPick: (address: string) => void }) {
+export function ServerRow({
+  server,
+  version,
+  onPick,
+}: {
+  server: Server
+  version: number
+  onPick: (address: string) => void
+}) {
   const { t } = useLingui()
   const { formatNumber } = useFormat()
   const offline = server_offline(server, Date.now() / 1000)
@@ -31,7 +42,9 @@ export function ServerRow({ server, version, onPick }: { server: Server; version
       disabled={disabled}
       onClick={() => onPick(server.address)}
       className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
-        disabled ? 'border-input text-muted-foreground/60 cursor-not-allowed' : 'border-input hover:bg-muted'
+        disabled
+          ? 'border-input text-muted-foreground/60 cursor-not-allowed'
+          : 'border-input hover:bg-muted'
       }`}
     >
       <span className='min-w-0 flex-1 truncate'>{server.name}</span>
@@ -51,7 +64,15 @@ export function ServerRow({ server, version, onPick }: { server: Server; version
   )
 }
 
-export function ServerList({ servers, version, onPick }: { servers: Server[]; version: number; onPick: (address: string) => void }) {
+export function ServerList({
+  servers,
+  version,
+  onPick,
+}: {
+  servers: Server[]
+  version: number
+  onPick: (address: string) => void
+}) {
   const sorted = server_order(servers, Date.now() / 1000)
 
   return (

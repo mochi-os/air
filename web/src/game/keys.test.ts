@@ -2,15 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-
-import { KEY_DEFAULTS, pretty } from './keys'
 import { PROFILES, profileFor } from '../lib/config'
+import { KEY_DEFAULTS, pretty } from './keys'
 
-const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8')
+const read = (relative: string) =>
+  readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8')
 
 // The engine and the menu's Keys tab share KEY_DEFAULTS, so the tables cannot
 // disagree; these tests guard the two remaining ways the sets can fall out of
@@ -18,9 +17,13 @@ const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, 
 describe('key bindings', () => {
   it('binds every action the engine dispatches', () => {
     const engine = read('./engine.ts')
-    const used = new Set(Array.from(engine.matchAll(/key_of\("([\w.]+)"\)/g), (m) => m[1]))
+    const used = new Set(
+      Array.from(engine.matchAll(/key_of\("([\w.]+)"\)/g), (m) => m[1])
+    )
     expect(used.size).toBeGreaterThan(20) // the scan found the call sites at all
-    const unbound = [...used].filter((action) => !(action in KEY_DEFAULTS)).sort()
+    const unbound = [...used]
+      .filter((action) => !(action in KEY_DEFAULTS))
+      .sort()
     expect(unbound).toEqual([])
   })
 
@@ -30,16 +33,28 @@ describe('key bindings', () => {
     // each `{ id: '...'` inside them. A row whose id has no default renders as
     // '—', telling the player a working control is unbound.
     for (const table of ['KEY_ROWS', 'BUTTON_ROWS']) {
-      const block = new RegExp(`const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`).exec(settings)
+      const block = new RegExp(
+        `const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`
+      ).exec(settings)
       expect(block, `${table} not found`).toBeTruthy()
-      const ids = Array.from(block![1].matchAll(/\{\s*id:\s*'([\w.]+)'/g), (m) => m[1])
+      const ids = Array.from(
+        block![1].matchAll(/\{\s*id:\s*'([\w.]+)'/g),
+        (m) => m[1]
+      )
       expect(ids.length).toBeGreaterThan(10)
       // The four look DIRECTIONS carry no key: the pad drives the camera
       // directly and the keyboard uses the fixed arrow keys. look.target is NOT
       // exempt - it is a bound hold and must own a key for a pad button to
       // replay.
-      const keyless = new Set(['look.up', 'look.down', 'look.left', 'look.right'])
-      const missing = ids.filter((id) => !keyless.has(id) && !(id in KEY_DEFAULTS)).sort()
+      const keyless = new Set([
+        'look.up',
+        'look.down',
+        'look.left',
+        'look.right',
+      ])
+      const missing = ids
+        .filter((id) => !keyless.has(id) && !(id in KEY_DEFAULTS))
+        .sort()
       expect(missing, `${table} rows with no default binding`).toEqual([])
     }
   })
@@ -66,22 +81,32 @@ describe('key bindings', () => {
     const block = /const HINTS: \{[\s\S]*?\n\]/.exec(canvas)
     expect(block, 'HINTS not found').toBeTruthy()
     // Only the `actions: [...]` arrays — a label may be a plain string ('ATC').
-    const actions = Array.from(block![0].matchAll(/actions:\s*\[([^\]]*)\]/g)).flatMap((m) =>
-      Array.from(m[1].matchAll(/'([\w.]+)'/g), (q) => q[1]),
-    )
+    const actions = Array.from(
+      block![0].matchAll(/actions:\s*\[([^\]]*)\]/g)
+    ).flatMap((m) => Array.from(m[1].matchAll(/'([\w.]+)'/g), (q) => q[1]))
     expect(actions.length).toBeGreaterThan(15)
     // Every legend must name an action that exists AND is actually bound —
     // the line previously advertised a key that had moved to another control.
     const unknown = actions.filter((a) => !(a in KEY_DEFAULTS)).sort()
     expect(unknown, 'help line names actions with no binding').toEqual([])
     const unbound = actions.filter((a) => KEY_DEFAULTS[a] === 'None').sort()
-    expect(unbound, 'help line offers actions that are unbound, drawn as a dash').toEqual([])
+    expect(
+      unbound,
+      'help line offers actions that are unbound, drawn as a dash'
+    ).toEqual([])
     // The controls this help line exists to teach.
-    for (const action of ['flares', 'flaps.extend', 'trim.up']) expect(actions).toContain(action)
+    for (const action of ['flares', 'flaps.extend', 'trim.up'])
+      expect(actions).toContain(action)
     // No hand-written key caps left: a bare <kbd>F</kbd> is how it went stale.
     // The number row is the one legitimate literal (views are not rebindable).
-    const caps = Array.from(canvas.matchAll(/<kbd>([A-Za-z][\w/]*)<\/kbd>/g), (m) => m[1])
-    expect(caps, 'hand-written key caps drift; derive them from the bindings').toEqual([])
+    const caps = Array.from(
+      canvas.matchAll(/<kbd>([A-Za-z][\w/]*)<\/kbd>/g),
+      (m) => m[1]
+    )
+    expect(
+      caps,
+      'hand-written key caps drift; derive them from the bindings'
+    ).toEqual([])
   })
 
   it('shows both halves of every axis pair the engine reads as a pair', () => {
@@ -91,14 +116,26 @@ describe('key bindings', () => {
     // one, because pushing it up moves nothing on screen.
     const engine = read('./engine.ts')
     const paired = new Set(
-      Array.from(engine.matchAll(/bind\.axes\.(\w+)\s*\?\?\s*""[\s\S]{0,200}?hi\s*\+\s*1/g), (m) => m[1]),
+      Array.from(
+        engine.matchAll(
+          /bind\.axes\.(\w+)\s*\?\?\s*""[\s\S]{0,200}?hi\s*\+\s*1/g
+        ),
+        (m) => m[1]
+      )
     )
     expect(paired.size).toBeGreaterThan(0) // the scan found the pair reads at all
     const settings = read('../components/SettingsDialog.tsx')
-    const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(settings)
+    const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(
+      settings
+    )
     expect(declared, 'PAIRS not found').toBeTruthy()
-    const shown = new Set(Array.from(declared![1].matchAll(/'([\w.]+)'/g), (m) => m[1]))
-    expect([...paired].sort(), 'engine pair reads vs PAIRS in the settings tab').toEqual([...shown].sort())
+    const shown = new Set(
+      Array.from(declared![1].matchAll(/'([\w.]+)'/g), (m) => m[1])
+    )
+    expect(
+      [...paired].sort(),
+      'engine pair reads vs PAIRS in the settings tab'
+    ).toEqual([...shown].sort())
   })
 
   it('binds only real actions in the built-in device maps', () => {
@@ -106,33 +143,62 @@ describe('key bindings', () => {
     // button to nothing at all, silently — there is no error, the button simply
     // does not work, and it looks like a hardware fault.
     const config = read('../lib/config.ts')
-    const block = /export const PROFILES: StickProfile\[\] = \[([\s\S]*?)\n\]/.exec(config)
+    const block =
+      /export const PROFILES: StickProfile\[\] = \[([\s\S]*?)\n\]/.exec(config)
     expect(block, 'PROFILES not found').toBeTruthy()
-    const maps = Array.from(block![1].matchAll(/buttons:\s*\{([\s\S]*?)\},?\n/g))
-    expect(maps.length, 'every profile must declare a button map').toBeGreaterThan(2)
-    const actions = maps.flatMap((m) => Array.from(m[1].matchAll(/'?([\w.]+)'?\s*:\s*'/g), (q) => q[1]))
+    const maps = Array.from(
+      block![1].matchAll(/buttons:\s*\{([\s\S]*?)\},?\n/g)
+    )
+    expect(
+      maps.length,
+      'every profile must declare a button map'
+    ).toBeGreaterThan(2)
+    const actions = maps.flatMap((m) =>
+      Array.from(m[1].matchAll(/'?([\w.]+)'?\s*:\s*'/g), (q) => q[1])
+    )
     expect(actions.length).toBeGreaterThan(10)
     const engine = read('./engine.ts')
-    const special = new Set(Array.from(engine.matchAll(/action===["']([\w.]+)["']/g), (m) => m[1]))
+    const special = new Set(
+      Array.from(engine.matchAll(/action===["']([\w.]+)["']/g), (m) => m[1])
+    )
     const looks = new Set(['look.up', 'look.down', 'look.left', 'look.right'])
-    const unknown = actions.filter((a) => !(a in KEY_DEFAULTS) && !special.has(a) && !looks.has(a)).sort()
-    expect(unknown, 'device map binds actions the engine does not know').toEqual([])
+    const unknown = actions
+      .filter((a) => !(a in KEY_DEFAULTS) && !special.has(a) && !looks.has(a))
+      .sort()
+    expect(
+      unknown,
+      'device map binds actions the engine does not know'
+    ).toEqual([])
   })
 
   it('resolves each device to the right built-in profile, most specific first', () => {
-    expect(profileFor('Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)', '').name).toContain('VelocityOne')
-    expect(profileFor('Xbox Wireless Controller (STANDARD GAMEPAD)', 'standard').name).toBe('Standard gamepad')
+    expect(
+      profileFor(
+        'Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)',
+        ''
+      ).name
+    ).toContain('VelocityOne')
+    expect(
+      profileFor('Xbox Wireless Controller (STANDARD GAMEPAD)', 'standard').name
+    ).toBe('Standard gamepad')
     expect(profileFor('Some Unknown Stick', '').name).toBe('Generic joystick')
     // Order matters: a MEASURED model must beat the generic standard layout even
     // when the browser also reports the pad as standard, or a known stick would
     // silently take the gamepad map.
-    expect(profileFor('VelocityOne Flightstick', 'standard').name).toContain('VelocityOne')
+    expect(profileFor('VelocityOne Flightstick', 'standard').name).toContain(
+      'VelocityOne'
+    )
     // The last profile is the catch-all, so resolution can never return nothing.
-    expect(PROFILES[PROFILES.length - 1].match('anything at all', '')).toBe(true)
+    expect(PROFILES[PROFILES.length - 1].match('anything at all', '')).toBe(
+      true
+    )
   })
 
   it('flies the BVR loop from the VelocityOne stick: castle selects, 15 acquires, 16 steps, 17 fires', () => {
-    const stick = profileFor('Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)', '')
+    const stick = profileFor(
+      'Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)',
+      ''
+    )
     expect(stick.axes.weapon).toBe('8')
     expect(stick.axes.trim).toBe('')
     expect(stick.axes.zoom).toBe('')
@@ -172,7 +238,11 @@ describe('key bindings', () => {
       const index = Number(value.replace('-', ''))
       expect(index, `${axis} axis index`).toBeGreaterThanOrEqual(0)
       // look is a PAIR and reads index+1, so it must leave room for its second half.
-      expect(index + (axis === 'look' || axis === 'trim' || axis === 'weapon' ? 1 : 0), `${axis} axis index`).toBeLessThanOrEqual(3)
+      expect(
+        index +
+          (axis === 'look' || axis === 'trim' || axis === 'weapon' ? 1 : 0),
+        `${axis} axis index`
+      ).toBeLessThanOrEqual(3)
     }
   })
 
@@ -182,14 +252,22 @@ describe('key bindings', () => {
     // indexes pad.axes/pad.buttons and travels in exported profiles.
     const settings = read('../components/SettingsDialog.tsx')
     for (const kind of ['axisOptions', 'buttonOptions']) {
-      const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(settings)
+      const block = new RegExp(
+        `${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`
+      ).exec(settings)
       expect(block, `${kind} list not found`).toBeTruthy()
       const body = block![1]
       // stored: the raw option, never the incremented one
-      expect(body, `${kind} must store the raw index`).toMatch(/value=\{option\}/)
-      expect(body, `${kind} must not store an incremented index`).not.toMatch(/value=\{[^}]*\+\s*1[^}]*\}/)
+      expect(body, `${kind} must store the raw index`).toMatch(
+        /value=\{option\}/
+      )
+      expect(body, `${kind} must not store an incremented index`).not.toMatch(
+        /value=\{[^}]*\+\s*1[^}]*\}/
+      )
       // displayed: option + 1
-      expect(body, `${kind} must display 1-based`).toMatch(/Number\(option\)\s*\+\s*1/)
+      expect(body, `${kind} must display 1-based`).toMatch(
+        /Number\(option\)\s*\+\s*1/
+      )
     }
   })
 

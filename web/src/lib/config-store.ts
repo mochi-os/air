@@ -2,12 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
+import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 import { loadOutcome, PendingConfig, stripRetired } from './config-persist'
-import { migrate, normalize } from '../game/stores'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -46,7 +45,9 @@ function resolve_identity(): void {
   // harness. The client carries the shell's token, which core accepts.
   authenticated()
     .then(() =>
-      client.get<{ identity?: { name?: string } }>('/_/identity', { baseURL: '/' })
+      client.get<{ identity?: { name?: string } }>('/_/identity', {
+        baseURL: '/',
+      })
     ) // same race as loadConfig: fired before the shell's token lands, this went out bare and the callsign default stayed blank
     .then((res) => unwrap<{ identity?: { name?: string } }>(res)) // the client may hand back the body or {data}: unwrap knows both, as loadConfig does
     .then((body) => {
@@ -177,10 +178,16 @@ export function useMissionConfig(): [
         const legacy = saved as MissionConfig & { missiles?: boolean }
         // Read `missiles` BEFORE stripping — it still decides which preset a
         // pre-#17 save migrates to; stripRetired copies, so it survives here.
-        const stores = normalize(legacy.stores ?? migrate(legacy.missiles !== false))
+        const stores = normalize(
+          legacy.stores ?? migrate(legacy.missiles !== false)
+        )
         // Every retired key goes, not just this one. A setting deleted from the
         // menu leaves its saved VALUE behind, and `sens` proved what that costs.
-        setStored({ ...DEFAULT_CONFIG, ...stripRetired(legacy), stores } as MissionConfig)
+        setStored({
+          ...DEFAULT_CONFIG,
+          ...stripRetired(legacy),
+          stores,
+        } as MissionConfig)
       } else {
         void saveConfig(pending.current()) // first run on this account — seed the server
       }

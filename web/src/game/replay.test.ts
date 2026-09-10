@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { describe, expect, it } from 'vitest'
 import { identity } from './replay'
 
@@ -13,7 +12,10 @@ import { identity } from './replay'
 // `replay.session === m.session` and the upload binds on (session, started).
 describe('identity', () => {
   it('keys a single-player recording on the local pair', () => {
-    expect(identity(false, '', 0, 1700)).toEqual({ session: 'local-1700', started: 1700 })
+    expect(identity(false, '', 0, 1700)).toEqual({
+      session: 'local-1700',
+      started: 1700,
+    })
   })
 
   it('keys a multiplayer recording on the world session and the match start', () => {
@@ -41,6 +43,9 @@ describe('identity', () => {
   })
 
   it('still produces a single-player row when the world session is absent', () => {
-    expect(identity(false, '', 0, 42)).toEqual({ session: 'local-42', started: 42 })
+    expect(identity(false, '', 0, 42)).toEqual({
+      session: 'local-42',
+      started: 42,
+    })
   })
 })

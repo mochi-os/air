@@ -2,10 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
-import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
-import { normalize_round, node_centre, amraam_anchor, amraam_aim, AMRAAM_LENGTH } from './weapons'
+import { describe, expect, it } from 'vitest'
+import {
+  normalize_round,
+  node_centre,
+  amraam_anchor,
+  amraam_aim,
+  AMRAAM_LENGTH,
+} from './weapons'
 
 // A synthetic download-shaped round: a 2-long cylinder along X with a cone at
 // +x — the nose — in arbitrary units, off-centre. What Sketchfab hands us.
@@ -55,7 +60,23 @@ describe('normalize_round', () => {
 describe('amraam_anchor', () => {
   function labelled(name: string, at: [number, number, number]): THREE.Mesh {
     const g = new THREE.BufferGeometry()
-    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([at[0], at[1], at[2], at[0] + 0.1, at[1], at[2], at[0], at[1] + 0.1, at[2]]), 3))
+    g.setAttribute(
+      'position',
+      new THREE.BufferAttribute(
+        new Float32Array([
+          at[0],
+          at[1],
+          at[2],
+          at[0] + 0.1,
+          at[1],
+          at[2],
+          at[0],
+          at[1] + 0.1,
+          at[2],
+        ]),
+        3
+      )
+    )
     const mesh = new THREE.Mesh(g)
     mesh.name = name
     return mesh
@@ -90,7 +111,7 @@ describe('amraam_anchor', () => {
 })
 
 describe('amraam_aim', () => {
-  it('leans the round to the source round\'s long axis; inboards borrow the wing; no source means upright', () => {
+  it("leans the round to the source round's long axis; inboards borrow the wing; no source means upright", () => {
     const root = new THREE.Group()
     const n = 40
     const arr = new Float32Array(n * 3)
@@ -109,7 +130,9 @@ describe('amraam_aim', () => {
     const nose = new THREE.Vector3(0, 0, 1).applyQuaternion(amraam_aim(root, 2))
     expect(nose.z).toBeCloseTo(Math.cos(pitch), 2)
     expect(nose.y).toBeCloseTo(Math.sin(pitch), 2)
-    const inboard = new THREE.Vector3(0, 0, 1).applyQuaternion(amraam_aim(root, 3))
+    const inboard = new THREE.Vector3(0, 0, 1).applyQuaternion(
+      amraam_aim(root, 3)
+    )
     expect(inboard.y).toBeCloseTo(Math.sin(pitch), 2)
     expect(amraam_aim(root, 5).equals(new THREE.Quaternion())).toBe(true)
   })
@@ -118,7 +141,9 @@ describe('amraam_aim', () => {
 describe('node_centre', () => {
   it('is index-aware: two nodes sharing one vertex buffer get their own centroids', () => {
     // one buffer holding two triangles far apart; each node indexes ONE
-    const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0, 0, 11, 0, 0, 10, 1, 0])
+    const positions = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0, 0, 11, 0, 0, 10, 1, 0,
+    ])
     const make = (indices: number[]) => {
       const g = new THREE.BufferGeometry()
       g.setAttribute('position', new THREE.BufferAttribute(positions, 3))
@@ -126,8 +151,10 @@ describe('node_centre', () => {
       return new THREE.Mesh(g)
     }
     const root = new THREE.Group()
-    const near = make([0, 1, 2]); near.name = 'Missile_4'
-    const far = make([3, 4, 5]); far.name = 'Missile_6'
+    const near = make([0, 1, 2])
+    near.name = 'Missile_4'
+    const far = make([3, 4, 5])
+    far.name = 'Missile_6'
     root.add(near, far)
     expect(node_centre(root, 'Missile_4')!.x).toBeLessThan(1)
     expect(node_centre(root, 'Missile_6')!.x).toBeGreaterThan(9)

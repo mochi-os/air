@@ -25,8 +25,14 @@ const GAIN_RATE = 0.6 // throttle/s per (degree/second) of alpha rate
 
 // atc_step returns the next throttle command holding on-speed alpha.
 // alpha and alphaRate in degrees and degrees/second; throttle 0..1 (idle..MIL).
-export function atc_step(throttle: number, alpha: number, alphaRate: number, dt: number): number {
+export function atc_step(
+  throttle: number,
+  alpha: number,
+  alphaRate: number,
+  dt: number
+): number {
   const rate = Math.max(-10, Math.min(10, alphaRate)) // a spike (gust, catapult, state snap) must not slam the levers
-  const command = throttle + ((alpha - ATC_ONSPEED) * GAIN_ERROR + rate * GAIN_RATE) * dt
+  const command =
+    throttle + ((alpha - ATC_ONSPEED) * GAIN_ERROR + rate * GAIN_RATE) * dt
   return Math.min(ATC_MOST, Math.max(ATC_LEAST, command))
 }

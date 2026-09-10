@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -188,7 +187,6 @@ if (!rootElement.innerHTML) {
           <ThemeProvider>
             <RouterProvider router={router} />
           </ThemeProvider>
-
         </I18nProvider>
       </QueryClientProvider>
     </StrictMode>

@@ -2,19 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-
 // The flight simulation core: a Go blade-element model compiled to wasm, shared
 // with the authoritative world server. Layouts mirror
 // world/games/air/flight/encode.go and world/wasm/main.go exactly; a mismatch
 // is a version bump, not a patch.
-
 import { getErrorMessage } from '@mochi/web'
+import flight_wasm_url from '../assets/flight.wasm?url'
 // Vite content-hashes these into the bundle (assets/flight-<hash>.wasm): the
 // URL changes exactly when the bytes do, so stale-cache pairing of an old wasm
 // with a fresh engine.js (the #72 trap-topple report) is impossible by
 // construction — no manual version bumps, no cache:'reload'.
 import wasm_exec_url from '../assets/wasm_exec.js?url'
-import flight_wasm_url from '../assets/flight.wasm?url'
 import { asset } from './preload'
 import type { Fitment } from './stores'
 
@@ -105,10 +103,26 @@ interface Core {
   frame(input: Uint8Array, output: Uint8Array): string
   mark(input: Uint8Array): string
   ack(sequence: number, state: Uint8Array): number
-  level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
+  level(
+    x: number,
+    y: number,
+    z: number,
+    dx: number,
+    dz: number,
+    speed: number,
+    fuel: number
+  ): string
   stores(mask: number): string
   catalog(aircraft: string): string
-  approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
+  approach(
+    x: number,
+    y: number,
+    z: number,
+    dx: number,
+    dz: number,
+    slope: number,
+    fuel: number
+  ): number
   clear(): string
   hulk(index: number, aircraft: string, stores?: number): boolean
   volley(input: Uint8Array, output: Uint8Array): number
@@ -132,10 +146,12 @@ interface Core {
 }
 
 declare global {
-   
   var air_flight: Core | undefined
-   
-  var Go: new () => { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> }
+
+  var Go: new () => {
+    importObject: WebAssembly.Imports
+    run(instance: WebAssembly.Instance): Promise<void>
+  }
 }
 
 let core: Core | null = null
@@ -182,7 +198,9 @@ async function load_core(): Promise<void> {
     // panic causes; every later export call then throws. Reset the loader so
     // the next mission instantiates a fresh Go program from the cached bytes.
     void go.run(instance).then(() => {
-      console.error('flight core exited — a panic killed the Go program; the next mission boots a fresh core')
+      console.error(
+        'flight core exited — a panic killed the Go program; the next mission boots a fresh core'
+      )
       core = null
       loading = null
       failure = 'flight core exited'
@@ -193,7 +211,8 @@ async function load_core(): Promise<void> {
       // 30 s, not a snappier 5: the Go runtime's first-boot main-thread slice is at the
       // mercy of machine load (busy laptops, software rasterizers, headless captures),
       // and a slow boot must not be declared a terminal core failure
-      if (performance.now() - started > 30000) throw new Error('flight core did not export')
+      if (performance.now() - started > 30000)
+        throw new Error('flight core did not export')
       await new Promise((r) => setTimeout(r, 10))
     }
     core = globalThis.air_flight
@@ -257,7 +276,7 @@ function fill(controls: Controls, count: number): void {
     (controls.starboard ? 512 : 0)
   input[6] = controls.sequence
   input[7] = count
-  input[8] = controls.reheat   // analog reheat (flag bit 1 retired)
+  input[8] = controls.reheat // analog reheat (flag bit 1 retired)
   input[9] = controls.trim
   input[10] = controls.flap
   input[11] = controls.lean
@@ -271,7 +290,10 @@ export const steps = { value: 0 }
 // flight_frame advances the model by elapsed wall seconds at the fixed
 // timestep and returns the state+instrument buffer (valid until the next
 // call).
-export function flight_frame(controls: Controls, elapsed: number): Float64Array {
+export function flight_frame(
+  controls: Controls,
+  elapsed: number
+): Float64Array {
   accumulator += Math.max(0, elapsed)
   let count = Math.floor(accumulator / DT)
   if (count > CAP) {
@@ -306,7 +328,15 @@ export function flight_ack(sequence: number, state: Float64Array): number {
 
 // flight_level places the model in trimmed level flight — the
 // transient-free air spawn.
-export function flight_level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): void {
+export function flight_level(
+  x: number,
+  y: number,
+  z: number,
+  dx: number,
+  dz: number,
+  speed: number,
+  fuel: number
+): void {
   core?.level(x, y, z, dx, dz, speed, fuel)
   accumulator = 0
 }
@@ -327,7 +357,13 @@ const battle_output = new Float64Array(64)
 const battle_output_bytes = new Uint8Array(battle_output.buffer)
 
 // Event mask bits (world/wasm/battle.go).
-export const BATTLE = { fire: 1, pilot: 2, explode: 4, jam: 8, shed: 16 } as const
+export const BATTLE = {
+  fire: 1,
+  pilot: 2,
+  explode: 4,
+  jam: 8,
+  shed: 16,
+} as const
 
 export interface Aim {
   position: { x: number; y: number; z: number }
@@ -348,20 +384,41 @@ const bandit_bytes = new Uint8Array(bandit_out.buffer)
 const menace = new Float64Array(64)
 const menace_bytes = new Uint8Array(menace.buffer)
 
-export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean; missiles: boolean; weapons?: string; fuel?: number }): boolean {
+export function bandit_init(config: {
+  level: string
+  seed: number
+  wrap: number
+  sky: string
+  night: boolean
+  missiles: boolean
+  weapons?: string
+  fuel?: number
+}): boolean {
   if (!core?.bandit_init) return false
   const error = core.bandit_init(JSON.stringify(config))
   if (error) console.error('bandit init:', error)
   return !error
 }
 
-export function bandit_spawn(position: { x: number; y: number; z: number }, velocity: { x: number; y: number; z: number }): void {
-  core?.bandit_place?.(JSON.stringify({ position: [position.x, position.y, position.z], velocity: [velocity.x, velocity.y, velocity.z] }))
+export function bandit_spawn(
+  position: { x: number; y: number; z: number },
+  velocity: { x: number; y: number; z: number }
+): void {
+  core?.bandit_place?.(
+    JSON.stringify({
+      position: [position.x, position.y, position.z],
+      velocity: [velocity.x, velocity.y, velocity.z],
+    })
+  )
 }
 
 // bandit_mirror reflects the player into the bandit's arena: the encoded own
 // state, whether the player is firing (tracer perception), and alive.
-export function bandit_mirror(state: Float64Array, firing: boolean, alive: boolean): void {
+export function bandit_mirror(
+  state: Float64Array,
+  firing: boolean,
+  alive: boolean
+): void {
   if (!core?.bandit_mirror) return
   mirror.set(state.subarray(0, SIZE))
   mirror[SIZE] = (firing ? 1 : 0) | (alive ? 2 : 0)
@@ -381,12 +438,29 @@ export function bandit_menace(shots: number[]): void {
 // bandit_step advances one 60 Hz frame and returns the bandit's encoded state
 // plus its decisions for that frame. The client owns any launched round from
 // the launch frame on.
-export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean; heater: boolean; chaff: boolean } | null {
+export function bandit_step(): {
+  state: Float64Array
+  fire: boolean
+  flare: boolean
+  launch: boolean
+  emitter: number
+  locked: boolean
+  heater: boolean
+  chaff: boolean
+} | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes)
   if (typeof flags !== 'number' || flags < 0) return null
-  return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0,
-    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0, heater: (flags & 64) !== 0, chaff: (flags & 128) !== 0 }
+  return {
+    state: bandit_out,
+    fire: (flags & 1) !== 0,
+    flare: (flags & 2) !== 0,
+    launch: (flags & 4) !== 0,
+    emitter: (flags >> 3) & 3,
+    locked: (flags & 32) !== 0,
+    heater: (flags & 64) !== 0,
+    chaff: (flags & 128) !== 0,
+  }
 }
 
 // bandit_coast flies the DEAD bandit one frame on the real model: no thinking,
@@ -404,7 +478,11 @@ export function bandit_mode(): string {
   return core?.bandit_mode ? core.bandit_mode() : ''
 }
 
-export function battle_hulk(index: number, aircraft: string, stores?: number): boolean {
+export function battle_hulk(
+  index: number,
+  aircraft: string,
+  stores?: number
+): boolean {
   return !!core?.hulk(index, aircraft, stores ?? 0)
 }
 
@@ -413,30 +491,53 @@ export function battle_hulk(index: number, aircraft: string, stores?: number): b
 // a hulk has none, so the client pushes the bandit's mask as rounds leave —
 // an empty rail must stop being a cook-off target.
 export function battle_racks(index: number, stores: number): boolean {
-  return !!(core?.racks && core.racks(index, stores))   // optional export: an older core simply has no rails to set
+  return !!(core?.racks && core.racks(index, stores)) // optional export: an older core simply has no rails to set
 }
 
 // battle_volley fires REAL rounds into the shared airborne set: identity 0 =
 // the ownship shooting, 1 = the bandit. battle_fly resolves them tick by tick.
 export function battle_volley(
   identity: number,
-  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number }; right?: { x: number; y: number; z: number }; velocity?: { x: number; y: number; z: number } },
+  shooter: {
+    position: { x: number; y: number; z: number }
+    forward: { x: number; y: number; z: number }
+    up: { x: number; y: number; z: number }
+    right?: { x: number; y: number; z: number }
+    velocity?: { x: number; y: number; z: number }
+  },
   rounds: number,
-  tick: number,
+  tick: number
 ): void {
   if (!core) return
   const b = battle_input
   b[0] = identity
-  b[1] = shooter.position.x; b[2] = shooter.position.y; b[3] = shooter.position.z
-  b[4] = shooter.forward.x; b[5] = shooter.forward.y; b[6] = shooter.forward.z
-  b[7] = shooter.up.x; b[8] = shooter.up.y; b[9] = shooter.up.z
+  b[1] = shooter.position.x
+  b[2] = shooter.position.y
+  b[3] = shooter.position.z
+  b[4] = shooter.forward.x
+  b[5] = shooter.forward.y
+  b[6] = shooter.forward.z
+  b[7] = shooter.up.x
+  b[8] = shooter.up.y
+  b[9] = shooter.up.z
   // right = forward x up when the caller carries no basis
-  const rx = shooter.right?.x ?? shooter.forward.y * shooter.up.z - shooter.forward.z * shooter.up.y
-  const ry = shooter.right?.y ?? shooter.forward.z * shooter.up.x - shooter.forward.x * shooter.up.z
-  const rz = shooter.right?.z ?? shooter.forward.x * shooter.up.y - shooter.forward.y * shooter.up.x
-  b[10] = rx; b[11] = ry; b[12] = rz
-  b[13] = shooter.velocity?.x ?? 0; b[14] = shooter.velocity?.y ?? 0; b[15] = shooter.velocity?.z ?? 0
-  b[16] = rounds; b[17] = tick
+  const rx =
+    shooter.right?.x ??
+    shooter.forward.y * shooter.up.z - shooter.forward.z * shooter.up.y
+  const ry =
+    shooter.right?.y ??
+    shooter.forward.z * shooter.up.x - shooter.forward.x * shooter.up.z
+  const rz =
+    shooter.right?.z ??
+    shooter.forward.x * shooter.up.y - shooter.forward.y * shooter.up.x
+  b[10] = rx
+  b[11] = ry
+  b[12] = rz
+  b[13] = shooter.velocity?.x ?? 0
+  b[14] = shooter.velocity?.y ?? 0
+  b[15] = shooter.velocity?.z ?? 0
+  b[16] = rounds
+  b[17] = tick
   core.volley(battle_input_bytes, battle_output_bytes)
 }
 
@@ -446,23 +547,38 @@ export function battle_volley(
 export function battle_fly(
   dt: number,
   invulnerable: boolean,
-  aim: Aim | null,
-): { bandit: number; own: number; impacts: { x: number; y: number; z: number }[] } {
+  aim: Aim | null
+): {
+  bandit: number
+  own: number
+  impacts: { x: number; y: number; z: number }[]
+} {
   if (!core) return { bandit: 0, own: 0, impacts: [] }
   const b = battle_input
   b[0] = dt
   b[1] = invulnerable ? 1 : 0
   b[2] = aim ? 1 : 0
   if (aim) {
-    b[3] = aim.position.x; b[4] = aim.position.y; b[5] = aim.position.z
-    b[6] = aim.quaternion.w; b[7] = aim.quaternion.x; b[8] = aim.quaternion.y; b[9] = aim.quaternion.z
-    b[10] = aim.velocity?.x ?? 0; b[11] = aim.velocity?.y ?? 0; b[12] = aim.velocity?.z ?? 0
+    b[3] = aim.position.x
+    b[4] = aim.position.y
+    b[5] = aim.position.z
+    b[6] = aim.quaternion.w
+    b[7] = aim.quaternion.x
+    b[8] = aim.quaternion.y
+    b[9] = aim.quaternion.z
+    b[10] = aim.velocity?.x ?? 0
+    b[11] = aim.velocity?.y ?? 0
+    b[12] = aim.velocity?.z ?? 0
   }
   core.fly(battle_input_bytes, battle_output_bytes)
   const count = Math.min(battle_output[2] || 0, 8)
   const impacts: { x: number; y: number; z: number }[] = []
   for (let n = 0; n < count; n++) {
-    impacts.push({ x: battle_output[3 + 3 * n], y: battle_output[4 + 3 * n], z: battle_output[5 + 3 * n] })
+    impacts.push({
+      x: battle_output[3 + 3 * n],
+      y: battle_output[4 + 3 * n],
+      z: battle_output[5 + 3 * n],
+    })
   }
   return { bandit: battle_output[0], own: battle_output[1], impacts }
 }
@@ -472,36 +588,85 @@ export function battle_fly(
 // radii with the cube root of the charge: WARHEAD.heater is the 9M's 9.4 kg
 // (the default), WARHEAD.radar the AIM-120's 22 kg directed-fragmentation charge.
 export const WARHEAD = { heater: 1.0, radar: 2.0 }
-export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater, closure = 0): { kill: boolean; mask: number; impacts: { x: number; y: number; z: number }[]; judged: number; spot: { x: number; y: number; z: number } } {
-  if (!core) return { kill: false, mask: 0, impacts: [], judged: -1, spot: { x: 0, y: 0, z: 0 } }
+export function battle_blast(
+  target: number,
+  point: { x: number; y: number; z: number },
+  aim: Aim | null,
+  identity: number,
+  tick: number,
+  class_ = WARHEAD.heater,
+  closure = 0
+): {
+  kill: boolean
+  mask: number
+  impacts: { x: number; y: number; z: number }[]
+  judged: number
+  spot: { x: number; y: number; z: number }
+} {
+  if (!core)
+    return {
+      kill: false,
+      mask: 0,
+      impacts: [],
+      judged: -1,
+      spot: { x: 0, y: 0, z: 0 },
+    }
   const b = battle_input
   b[0] = target
-  b[1] = point.x; b[2] = point.y; b[3] = point.z
+  b[1] = point.x
+  b[2] = point.y
+  b[3] = point.z
   if (aim) {
-    b[4] = aim.position.x; b[5] = aim.position.y; b[6] = aim.position.z
-    b[7] = aim.quaternion.w; b[8] = aim.quaternion.x; b[9] = aim.quaternion.y; b[10] = aim.quaternion.z
+    b[4] = aim.position.x
+    b[5] = aim.position.y
+    b[6] = aim.position.z
+    b[7] = aim.quaternion.w
+    b[8] = aim.quaternion.x
+    b[9] = aim.quaternion.y
+    b[10] = aim.quaternion.z
   }
-  b[11] = identity; b[12] = tick; b[13] = class_; b[14] = closure // missile-target relative speed at the fuse (#57): fragments gain head-on, lose astern; 0 keeps the 650 m/s anchor
+  b[11] = identity
+  b[12] = tick
+  b[13] = class_
+  b[14] = closure // missile-target relative speed at the fuse (#57): fragments gain head-on, lose astern; 0 keeps the 650 m/s anchor
   core.blast(battle_input_bytes, battle_output_bytes)
   // Words 2.. are where the fragments LANDED, in the target's body frame —
   // the difference between a fireball he flies through and steel in him.
   const impacts: { x: number; y: number; z: number }[] = []
   const count = Math.min(battle_output[2] | 0, 10)
   for (let h = 0; h < count; h++) {
-    impacts.push({ x: battle_output[3 + h * 3], y: battle_output[4 + h * 3], z: battle_output[5 + h * 3] })
+    impacts.push({
+      x: battle_output[3 + h * 3],
+      y: battle_output[4 + h * 3],
+      z: battle_output[5 + h * 3],
+    })
   }
   // Diagnostic tail (#85): the miss and target position as the wasm judge
   // measured them — the channel that catches a client/core position split.
   const tail = 3 + count * 3
-  return { kill: battle_output[0] !== 0, mask: battle_output[1], impacts,
-    judged: battle_output[tail], spot: { x: battle_output[tail + 1], y: battle_output[tail + 2], z: battle_output[tail + 3] } }
+  return {
+    kill: battle_output[0] !== 0,
+    mask: battle_output[1],
+    impacts,
+    judged: battle_output[tail],
+    spot: {
+      x: battle_output[tail + 1],
+      y: battle_output[tail + 2],
+      z: battle_output[tail + 3],
+    },
+  }
 }
 
 // battle_progress runs the damage cascade one frame; the returned view is valid
 // until the next call. Layout: 0-5 ownship (fire L, fire R, burning, killed,
 // mask, leak); 6+i*9.. per hulk (adds thrust loss, wing loss, element total
 // before leak).
-export function battle_progress(throttle: number, tick: number, reset: boolean, secure: number): Float64Array {
+export function battle_progress(
+  throttle: number,
+  tick: number,
+  reset: boolean,
+  secure: number
+): Float64Array {
   if (!core) return battle_output
   battle_input[0] = throttle
   battle_input[1] = tick
@@ -543,52 +708,112 @@ export interface RoundState {
   least: number // closest approach to the target so far, m
 }
 
-export function round_launch(slot: number, position: { x: number; y: number; z: number }, velocity: { x: number; y: number; z: number }, estimate: Aimed | null, wrap: number, loft: boolean): void {
+export function round_launch(
+  slot: number,
+  position: { x: number; y: number; z: number },
+  velocity: { x: number; y: number; z: number },
+  estimate: Aimed | null,
+  wrap: number,
+  loft: boolean
+): void {
   if (!core) return
   const r = round_input
   r[0] = slot
-  r[1] = position.x; r[2] = position.y; r[3] = position.z
-  r[4] = velocity.x; r[5] = velocity.y; r[6] = velocity.z
+  r[1] = position.x
+  r[2] = position.y
+  r[3] = position.z
+  r[4] = velocity.x
+  r[5] = velocity.y
+  r[6] = velocity.z
   r[7] = estimate ? 0 : 1
   if (estimate) {
-    r[8] = estimate.position.x; r[9] = estimate.position.y; r[10] = estimate.position.z
-    r[11] = estimate.velocity.x; r[12] = estimate.velocity.y; r[13] = estimate.velocity.z
+    r[8] = estimate.position.x
+    r[9] = estimate.position.y
+    r[10] = estimate.position.z
+    r[11] = estimate.velocity.x
+    r[12] = estimate.velocity.y
+    r[13] = estimate.velocity.z
   }
   r[14] = wrap
   r[15] = loft ? 1 : 0
   core.round_launch(round_input_bytes)
 }
 
-export function round_step(slot: number, dt: number, support: Aimed | null, truth: Aimed | null): RoundState | null {
+export function round_step(
+  slot: number,
+  dt: number,
+  support: Aimed | null,
+  truth: Aimed | null
+): RoundState | null {
   if (!core) return null
   const r = round_input
   r[0] = slot
   r[1] = dt
   r[2] = support ? 1 : 0
   if (support) {
-    r[3] = support.position.x; r[4] = support.position.y; r[5] = support.position.z
-    r[6] = support.velocity.x; r[7] = support.velocity.y; r[8] = support.velocity.z
+    r[3] = support.position.x
+    r[4] = support.position.y
+    r[5] = support.position.z
+    r[6] = support.velocity.x
+    r[7] = support.velocity.y
+    r[8] = support.velocity.z
   }
   r[9] = truth ? 1 : 0
   if (truth) {
-    r[10] = truth.position.x; r[11] = truth.position.y; r[12] = truth.position.z
-    r[13] = truth.velocity.x; r[14] = truth.velocity.y; r[15] = truth.velocity.z
+    r[10] = truth.position.x
+    r[11] = truth.position.y
+    r[12] = truth.position.z
+    r[13] = truth.velocity.x
+    r[14] = truth.velocity.y
+    r[15] = truth.velocity.z
   }
-  if (core.round_step(round_input_bytes, round_output_bytes) != null) return null
+  if (core.round_step(round_input_bytes, round_output_bytes) != null)
+    return null
   const o = round_output
   return {
-    alive: o[0] > 0.5, phase: o[1], x: o[2], y: o[3], z: o[4], vx: o[5], vy: o[6], vz: o[7],
-    range: o[8], stale: o[9], time: o[10], life: o[11], fused: o[12] > 0.5, mach: o[13], least: o[14],
+    alive: o[0] > 0.5,
+    phase: o[1],
+    x: o[2],
+    y: o[3],
+    z: o[4],
+    vx: o[5],
+    vy: o[6],
+    vz: o[7],
+    range: o[8],
+    stale: o[9],
+    time: o[10],
+    life: o[11],
+    fused: o[12] > 0.5,
+    mach: o[13],
+    least: o[14],
   }
 }
 
-export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aero: number; max: number; escape: number; minimum: number; active: number } | null {
+export function round_ladder(
+  shooter: Aimed,
+  target: Aimed,
+  wrap: number
+): {
+  aero: number
+  max: number
+  escape: number
+  minimum: number
+  active: number
+} | null {
   if (!core) return null
   const r = round_input
-  r[0] = shooter.position.x; r[1] = shooter.position.y; r[2] = shooter.position.z
-  r[3] = shooter.velocity.x; r[4] = shooter.velocity.y; r[5] = shooter.velocity.z
-  r[6] = target.position.x; r[7] = target.position.y; r[8] = target.position.z
-  r[9] = target.velocity.x; r[10] = target.velocity.y; r[11] = target.velocity.z
+  r[0] = shooter.position.x
+  r[1] = shooter.position.y
+  r[2] = shooter.position.z
+  r[3] = shooter.velocity.x
+  r[4] = shooter.velocity.y
+  r[5] = shooter.velocity.z
+  r[6] = target.position.x
+  r[7] = target.position.y
+  r[8] = target.position.z
+  r[9] = target.velocity.x
+  r[10] = target.velocity.y
+  r[11] = target.velocity.z
   r[12] = wrap
   core.round_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
@@ -599,15 +824,38 @@ export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aer
 // the outermost arrival range against the target flying on as now, capped by
 // seeker lock at this aspect; escape the no-escape rung; minimum the arming
 // floor.
-export function heater_ladder(shooter: Aimed, target: Aimed, swing: { x: number; y: number; z: number }, lit: number, wrap: number): { aero: number; max: number; escape: number; minimum: number; active: number } | null {
+export function heater_ladder(
+  shooter: Aimed,
+  target: Aimed,
+  swing: { x: number; y: number; z: number },
+  lit: number,
+  wrap: number
+): {
+  aero: number
+  max: number
+  escape: number
+  minimum: number
+  active: number
+} | null {
   if (!core?.heater_ladder) return null
   const r = round_input
-  r[0] = shooter.position.x; r[1] = shooter.position.y; r[2] = shooter.position.z
-  r[3] = shooter.velocity.x; r[4] = shooter.velocity.y; r[5] = shooter.velocity.z
-  r[6] = target.position.x; r[7] = target.position.y; r[8] = target.position.z
-  r[9] = target.velocity.x; r[10] = target.velocity.y; r[11] = target.velocity.z
-  r[12] = swing.x; r[13] = swing.y; r[14] = swing.z
-  r[15] = lit; r[16] = wrap
+  r[0] = shooter.position.x
+  r[1] = shooter.position.y
+  r[2] = shooter.position.z
+  r[3] = shooter.velocity.x
+  r[4] = shooter.velocity.y
+  r[5] = shooter.velocity.z
+  r[6] = target.position.x
+  r[7] = target.position.y
+  r[8] = target.position.z
+  r[9] = target.velocity.x
+  r[10] = target.velocity.y
+  r[11] = target.velocity.z
+  r[12] = swing.x
+  r[13] = swing.y
+  r[14] = swing.z
+  r[15] = lit
+  r[16] = wrap
   core.heater_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
@@ -616,13 +864,23 @@ export function heater_ladder(shooter: Aimed, target: Aimed, swing: { x: number;
 // round_distract offers the seeker a chaff bloom (#29). The core's doppler
 // gate decides: in the notch it seduces, out of it the velocity gate
 // rejects it. Returns whether it took.
-export function round_distract(slot: number, bloom: { x: number; y: number; z: number }, truth: Aimed): boolean {
+export function round_distract(
+  slot: number,
+  bloom: { x: number; y: number; z: number },
+  truth: Aimed
+): boolean {
   if (!core) return false
   const r = round_input
   r[0] = slot
-  r[1] = bloom.x; r[2] = bloom.y; r[3] = bloom.z
-  r[4] = truth.position.x; r[5] = truth.position.y; r[6] = truth.position.z
-  r[7] = truth.velocity.x; r[8] = truth.velocity.y; r[9] = truth.velocity.z
+  r[1] = bloom.x
+  r[2] = bloom.y
+  r[3] = bloom.z
+  r[4] = truth.position.x
+  r[5] = truth.position.y
+  r[6] = truth.position.z
+  r[7] = truth.velocity.x
+  r[8] = truth.velocity.y
+  r[9] = truth.velocity.z
   return core.round_distract(round_input_bytes) === true
 }
 
@@ -643,11 +901,21 @@ export function flight_stores(mask: number): void {
 // flight_catalog reads the named aircraft's fitment catalog from the core:
 // the mask bit order, per-entry mass/drag/fuel, the default (bare) mask, and
 // the internal fuel capacity and empty mass for gross-weight arithmetic.
-export function flight_catalog(aircraft: string): { stores: Fitment[]; default: number; internal: number; empty: number } | null {
+export function flight_catalog(aircraft: string): {
+  stores: Fitment[]
+  default: number
+  internal: number
+  empty: number
+} | null {
   const raw = core?.catalog(aircraft)
   if (!raw) return null
   try {
-    return JSON.parse(raw) as { stores: Fitment[]; default: number; internal: number; empty: number }
+    return JSON.parse(raw) as {
+      stores: Fitment[]
+      default: number
+      internal: number
+      empty: number
+    }
   } catch {
     return null
   }
@@ -657,6 +925,14 @@ export function flight_catalog(aircraft: string): { stores: Fitment[]; default: 
 // spawn. The glideslope is in DEGREES below the horizon; it returns the
 // throttle holding the trim, so the client's lever starts where the core put
 // the engines.
-export function flight_approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number {
+export function flight_approach(
+  x: number,
+  y: number,
+  z: number,
+  dx: number,
+  dz: number,
+  slope: number,
+  fuel: number
+): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
 }
