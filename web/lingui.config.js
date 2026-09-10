@@ -22,5 +22,9 @@ export default {
     'en-ca': 'en',
   },
   format: 'po',
+  // Origins name the file only. With line numbers every edit that shifts a
+  // line in lib/web rewrites all 106 catalogues in every app, and the CI
+  // drift check fails on that alone.
+  formatOptions: { origins: true, lineNumbers: false },
   compileNamespace: 'es',
 }
