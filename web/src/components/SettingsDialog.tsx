@@ -867,10 +867,6 @@ function Key({ children }: { children: ReactNode }) {
   )
 }
 
-// #57 parked: keeps the head-tracking catalog entries referenced while head
-// tracking is parked, so `lingui extract --clean` preserves their translations.
-export const HEAD_MESSAGES = [msg`Head`, msg`Head tracking`, msg`Gain`, msg`Camera unavailable`]
-
 function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
   return (
     <div className='flex items-center justify-between gap-4 py-1'>
