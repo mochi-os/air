@@ -17,7 +17,7 @@ import { sanitizeWrap, minimumImage, fold } from './wrap'
 export { crossHost } from './host'
 
 const POSE_RECORD = 37 // the server's fixed pose stride (world/games/air/air.go, pose_record)
-const PROTOCOL = 3 // 3: the 37-byte pose record — the uint16 tail carries the gun expenditure (#163); 2 added byte 34, the emitter state (#30)
+const PROTOCOL = 1 // 1: the 37-byte pose record — byte 34 the emitter state (#30), the uint16 tail the gun expenditure (#163). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184).
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
