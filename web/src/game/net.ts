@@ -314,6 +314,12 @@ export interface InputSample {
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
+  // How many fixed 1/60 steps the core integrated this sample for (#176). The
+  // client has always recorded it against the mark ring; sending it lets the
+  // server apply the sample for the same number of ticks, so the state the
+  // snapshot acknowledges is the state the prediction actually reached. A
+  // frame that produced two steps, or none, was the whole divergence.
+  steps: number
 }
 
 export interface Welcome {
