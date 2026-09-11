@@ -3682,7 +3682,7 @@ function compass(dx,dz){ return String(Math.round((Math.atan2(dx,-dz)*180/Math.P
 function ship_course(){ return compass(CARRIER_C,-CARRIER_S); }
 function ship_downwind(){ return compass(-CARRIER_C,CARRIER_S); }
 function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat); return compass(b.x-a.x,b.z-a.z); }
-let hint_rows=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight
+let hint_rows=null, hint_key=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight. hint_key is what it is showing, so a set that has ended can take its own line down without touching another's (#189)
 function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
 	// One row where it fits; the longer teachings wrap at clause marks to at
 	// most two. The slot never fades, so there is no clock to outrun.
@@ -3698,9 +3698,15 @@ function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=
 		while(line.length>78){ const cut=line.lastIndexOf(": ",78); if(cut<1) break; rows.push(line.slice(0,cut+1)); line=line.slice(cut+2); }
 	}
 	if(line) rows.push(line);
-	hint_rows=rows;
+	hint_rows=rows; hint_key=key;
 	if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); for(const row of rows) log.push(String(row)); }   // the probes keep reading hints here, as they did when hints rode comm()
 }
+// A hint stands until the next replaces it — but the LAST hint of a set has no
+// next, so it stood for the rest of the sortie (#189: the departure line sat on
+// the HUD all the way to the tanker). Retiring is keyed on what the slot is
+// actually showing: leaving the field cannot take down a bolter's call, and
+// leaving the carrier pattern cannot take down the marshal's.
+function hint_retire(...keys){ if(hint_key!=null&&keys.indexOf(hint_key)>=0) hint_rows=hint_key=null; }
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
 // The field's roll-out headings, from the airfield the map built — the #90
@@ -3720,6 +3726,7 @@ function hints_runway(st){
 	const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the runway, -1 downwind
 	if(on_ground()){
 		if(hinted[HINT.papi]&&ownship.speed>35){ hint(HINT.rollout); return; }
+		if(ownship.speed<4) hint_retire(HINT.rollout);   // stopped: the aerobrake is flown and the line is stale
 		if(st!=="runway"||hinted[HINT.rollout]) return;
 		if(ownship.speed<4&&over_runway(ownship.pos)) hint(HINT.lineup,"Runway "+runway_heading()+": half flaps, trim set; run up to military power, brakes off");
 		if(hinted[HINT.lineup]&&kt>110) hint(HINT.rotate);
@@ -3730,7 +3737,7 @@ function hints_runway(st){
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
 	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
-	if(range>6*1852||feet>3000) return;
+	if(range>6*1852||feet>3000){ hint_retire(HINT.depart,HINT.rollout); return; }   // clear of the field: the takeoff set is finished and nothing downstream can replace its last line
 	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
 	if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
@@ -3760,6 +3767,7 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
 		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty,"The 45: 325-375'; straighten into the groove, "+ship_groove()+", look for the ball, fly the ball with power");
+		if(range>6*1852) hint_retire(HINT.side,HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.ball,HINT.bolt,HINT.wave);   // the pattern is 1 NM wide: 6 out is an abandoned circuit, not a groove
 	}
 	if(st==="case2"&&range<5*1852) hint(HINT.needle);
 	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
@@ -4339,6 +4347,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
@@ -5361,7 +5370,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={}; hint_rows=null;   // and the flight hints (#70)
+	hinted={}; hint_rows=hint_key=null;   // and the flight hints (#70)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
@@ -5423,7 +5432,8 @@ function reset_ownship(){
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
 	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
-	flap_select=(st==="case2")?2:0;   // the flap switch follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
+	flap_select=(st==="case2")?2:(st==="runway")?1:0;   // HALF on the runway: NATOPS takes off on HALF flap, and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
+	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(st==="joust"){ const bvr=cfg.duel==="bvr"; const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
@@ -5641,7 +5651,7 @@ let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
-function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
+function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS ENTER TO LAUNCH / N WIRE)
 // ---- the AIM-120's launch zone (#27) ---- The DLZ ladder as the real HUD
 // draws it: a staff with carets for the four ranges, the target's range as a
 // moving caret, SHOOT steady between Rmax and Rne and flashing inside, the
