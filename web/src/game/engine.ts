@@ -3729,7 +3729,7 @@ function hints_runway(st){
 	if(hinted[HINT.cleanup]&&kt>280) hint(HINT.depart,"Climb out on runway heading "+runway_heading()+" at 350 knots");
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
-	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around); runway_recoach(); return; }
+	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
 	if(range>6*1852||feet>3000) return;
 	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
@@ -3764,7 +3764,7 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 	if(st==="case2"&&range<5*1852) hint(HINT.needle);
 	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
 	if(st==="case3"&&marshal){
-		if(marshal.commenced) hint(HINT.push);
+		if(marshal.commenced) hint(HINT.push,"Commencing: turn inbound "+ship_groove()+", 250 knots, 4000 FPM down to platform at 5000'");
 		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
 		if(marshal.platform) hint(HINT.level);
 		if(marshal.dirty) hint(HINT.gate,"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM; final bearing "+ship_groove());
@@ -5062,7 +5062,7 @@ function fly_player(dt){
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
-	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt); }
+	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt,"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind, "+ship_downwind()); }
 	prev_wow=ownship.grounded;
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
@@ -5337,7 +5337,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave,"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck, "+ship_groove()); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -5403,7 +5403,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
 		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff");
-		hint(HINT.stack); }
+		hint(HINT.stack,"Case III: marshal at 6000' and 250 knots on the final bearing "+ship_groove()+"; the HUD clock counts down to your push time; commence on zero"); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
