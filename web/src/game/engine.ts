@@ -4278,8 +4278,9 @@ function cautions_update(){
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
 	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
+let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
-let law_active=false;   // the warning is LIVE this frame: drives the repeating aural AND the flashing break-X on HUD/helmet (#243 — the user flew into the sea padlocked, gear up, in silence)
+let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity
 // (#239) - one connected clumped plume, darkest and warmest at the head, paling
@@ -4337,7 +4338,7 @@ if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownsh
 if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
-	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
@@ -5008,12 +5009,26 @@ function fly_player(dt){
 			audio_prev.gear=gear; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
 			const sink=-(ownship.vely??0);   // m/s down
-			// Gear down it is the 250 ft call — the descent is declared
-			// deliberate. gearTarget is the RETRACTION target (0 = down, 1 =
-			// up, as the spawn and the gear horn read it): the old branches
-			// were keyed backwards, so a gear-up fight only ever had the 250
-			// ft call — one second of warning at the crash flight's sink.
-			const dirty=(ownship.gearTarget??0)<=0.5&&agl<250&&sink>2;
+			// Gear down it is the index call, and it sounds ONCE (#187). The
+			// real APN-194 compares radar altitude against a pilot-set low
+			// altitude index — normally 200 ft, 40 for a cat shot — and the
+			// gear decides the manner: gear UP and below the index the tone
+			// repeats until reset, gear DOWN it sounds once as the jet
+			// descends through it, because the descent is declared. #47 made
+			// the aural repeat, which is right for the escape case below and
+			// was applied to both, so every approach flew its whole glideslope
+			// under a repeating tone and a flashing break-X.
+			//
+			// No sink gate: the real trigger is altitude against the index and
+			// nothing else. The old `sink>2` (about 400 fpm) was met by every
+			// stabilised approach — on-speed at 135 kt down a 3.5° slope sinks
+			// 4.2 m/s — so it excluded nothing it was meant to.
+			//
+			// gearTarget is the RETRACTION target (0 = down, 1 = up, as the
+			// spawn and the gear horn read it): the old branches were keyed
+			// backwards, so a gear-up fight only ever had the index call — one
+			// second of warning at the crash flight's sink.
+			const dirty=(ownship.gearTarget??0)<=0.5&&agl<200;
 			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
@@ -5029,9 +5044,17 @@ function fly_player(dt){
 				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
 				const required=sink*1.0+sink*(upright/Math.PI)+pull;
 				return agl/3.28084<Math.max(91,required); })();
-			law_active=(dirty||closure)&&!ownship.grounded&&!ownship.launching&&crash_t<=0;
-			if(law_armed&&law_active) { audio_law(); }   // repeats while below the index (#47) — it played once and went silent for the rest of the descent
-			else if(agl>400&&!law_active) law_armed=true; }
+			const flying=!ownship.grounded&&!ownship.launching&&crash_t<=0;
+			// law_active is the ESCAPE warning and carries the whole
+			// presentation: the repeating aural (#47) and the break-X. The
+			// index call below is aural only and gear-down only, as the jet's
+			// is — a warning light on the altimeter face, not a symbol across
+			// the HUD (#187).
+			law_active=closure&&flying;
+			const declared=dirty&&flying;
+			if(law_active){ audio_law(); law_calls++; } // repeats while below: the escape margin is gone and stays gone until the pilot fixes it
+			else if(declared&&law_armed){ audio_law(); law_calls++; law_armed=false; }   // one call per descent through the index, then quiet: the approach is the pilot's
+			if(agl>400&&!law_active&&!declared) law_armed=true; }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
@@ -6190,12 +6213,17 @@ function draw_hud(){
 		let cy=HH-118;
 		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
 	}
-	if(law_active&&running&&(performance.now()%500)<280){   // the break-X (#243): the real jet's unmissable altitude call, flashed across HUD and helmet alike — numbers are exactly what a padlocked pilot stops reading
-		hctx.strokeStyle="#ff5040"; hctx.lineWidth=5; hctx.beginPath();
-		hctx.moveTo(HW/2-110,HH/2-110); hctx.lineTo(HW/2+110,HH/2+110);
-		hctx.moveTo(HW/2+110,HH/2-110); hctx.lineTo(HW/2-110,HH/2+110); hctx.stroke();
-		hctx.fillStyle="#ff5040"; hctx.font="bold 30px monospace"; hctx.textAlign="center";
-		hctx.fillText("ALTITUDE",HW/2,HH/2+160); }   // annunciator-verbatim, like the caution panel: real Hornet warnings read in English in every operator's cockpit
+	// The low-altitude break-X and its ALTITUDE banner are GONE (#187, ruled
+	// 2026-09-11: "highly distracting, and completely unrealistic"). They were
+	// #243's answer to a padlocked gear-up flight into the sea in silence, and
+	// the silence was the real defect — but the remedy was invented, not
+	// modelled. The Hornet's low-altitude indication is a warning light on the
+	// radar altimeter's own face; nothing goes on the HUD, and an X across a
+	// Hornet display means the data is invalid, which is close to the opposite
+	// of what this was saying. The warning is the AURAL, as it is in the jet:
+	// one call descending through the index with the gear down, repeating
+	// while the escape margin is gone. Do not put it back on the glass without
+	// a modelled instrument to put it on.
 	if(hit_flash>0){   // rounds are landing on us (#239): an edge-weighted vignette, not a flat wash —
 		// the pain lives at the periphery and the pilot keeps the picture. In single
 		// player the shooter is known, so the vignette centre shifts AWAY from the
