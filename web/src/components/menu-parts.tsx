@@ -52,7 +52,10 @@ export function SliderRow({
   const display = formatNumber(value, decimals) + (suffix ?? '')
   return (
     <div
-      className={`${tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}${disabled ? 'opacity-50' : ''}`}
+      className={[
+        tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3',
+        disabled ? 'opacity-50' : '',
+      ].join(' ')}
     >
       <div className='flex items-center justify-between text-sm'>
         <Label className='text-card-foreground font-medium'>{label}</Label>
@@ -206,9 +209,15 @@ export function MenuDialog({
         // alternative it suggests is to write the sentence back.
         aria-describedby={undefined}
         onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
-        className={`${
-          wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'
-        }${steady ? 'h-[min(53rem,calc(100svh-2rem))]' : ''}`}
+        // Joined, not interpolated: prettier-plugin-tailwindcss trims the
+        // whitespace inside a quoted class string, so a leading space carrying
+        // the separator does not survive a reformat — which is how this became
+        // `sm:max-w-4xlh-[...]`, one nonsense class, and the dialog fell back to
+        // the default width.
+        className={[
+          wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl',
+          steady ? 'h-[min(53rem,calc(100svh-2rem))]' : '',
+        ].join(' ')}
       >
         <DialogHeader className='border-border border-b pb-3'>
           <DialogTitle className='text-lg font-semibold tracking-tight'>
