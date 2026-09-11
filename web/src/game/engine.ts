@@ -6666,7 +6666,11 @@ function net_frame(dt){
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };
-	const sequence=net.input(sample);
+	// The step count rides the sample (#176): the server applies it for exactly
+	// the ticks the core integrated, so the acknowledged state and the marked
+	// state are the same instant. marked_steps is reset by the mark below, so
+	// this read and that one see the same number.
+	const sequence=net.input({...sample, steps:marked_steps});
 	if(sequence>0){ flare_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
