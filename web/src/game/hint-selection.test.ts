@@ -85,6 +85,23 @@ describe('a mission that briefed no recovery still gets one (#204)', () => {
   })
 })
 
+describe('the Case III letdown is coached where the marshal procedure flies it', () => {
+  const carrier = body('hints_carrier')
+
+  it('reaches every Case III rung from outside the pattern', () => {
+    // The commence is called at 20 NM, the platform at 5,000 ft and the
+    // dirty-up at 10 NM. A range return ahead of the case3 branch - the 6 NM
+    // guard the visual pattern needs - left every one of them unreachable.
+    const branch = carrier.indexOf('kase==="case3"')
+    expect(branch, 'no case3 branch').toBeGreaterThan(0)
+    expect(carrier.slice(0, branch)).not.toMatch(/if\(range>[^)]*\)\s*return/)
+  })
+
+  it('still holds the visual pattern inside 6 NM', () => {
+    expect(carrier).toMatch(/kase==="case1"&&range<=6\*1852/)
+  })
+})
+
 describe('the catapult launch is coached, and owns the centre banner it replaced', () => {
   const launch = body('hints_launch')
 
