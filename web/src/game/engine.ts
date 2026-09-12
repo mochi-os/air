@@ -3689,7 +3689,7 @@ function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=c
 const STACK_PITCH=18;
 let hud_stack={pitch:STACK_PITCH,left:[],right:[]};   // dev (#186): what each stack laid out this frame, and the step it should be using, so a probe can measure the spacing a canvas will not report
 function stack_draw(rows,x,base){ const laid=[]; let cy=base;
-	for(const [colour,text] of rows){ hctx.fillStyle=colour; hctx.fillText(text,x,cy); laid.push({text:String(text),y:cy}); cy-=STACK_PITCH; }
+	for(const [colour,text] of rows){ hctx.fillStyle=colour; hctx.fillText(text,x,cy); laid.push({text:String(text),y:cy,colour:String(colour)}); cy-=STACK_PITCH; }
 	return laid; }
 let hint_rows=null, hint_key=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight. hint_key is what it is showing, so a set that has ended can take its own line down without touching another's (#189)
 function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
@@ -3876,8 +3876,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; flap_armed=sim_time+4; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
-		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; flap_armed=sim_time+4; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
+		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; flap_armed=sim_time+4; }   // no notice: the legend shows the selection AND its travel now (#199), and the centre banner is for what the glass cannot say   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
+		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; flap_armed=sim_time+4; }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
@@ -6282,7 +6282,13 @@ function draw_hud(){
 			if((ownship.speedbrake??0)>0.02) rows.push([AM,translate("SPD BK")]);
 			if(stab_cycle>0) rows.push([AM,"STAB "+stab_cycle]);   // Shift+E calibration state
 			if((ownship.fold??0)>0.02) rows.push([AM,translate("WINGS")]);   // amber, above SPD BK: not a flight configuration
-			if(flap_select>0) rows.push([GR,translate(flap_select===1?"FLAPS HALF":"FLAPS FULL")]);   // the switch's non-AUTO positions only: AUTO is the silent default
+			// The SWITCH, not the surfaces (#199, ruled 2026-09-12). The real panel's
+			// HALF and FULL lights indicate switch position and are explicitly not an
+			// indication of actual flap position; a Hornet pilot reads the real angle
+			// off the FCS format, which this jet also has (the DDI's TEF row). Two lit
+			// states and one unlit: nothing here means AUTO, the way neither light lit
+			// means AUTO in the cockpit.
+			if(flap_select>0) rows.push([GR,translate(flap_select===1?"FLAPS HALF":"FLAPS FULL")]);
 			if(parking) rows.push([AM,translate("PARK")]);   // the parking brake holds the mains: amber, like a caution
 			const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
 			const parts=[];
