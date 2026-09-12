@@ -349,6 +349,10 @@ msgstr "ਏਅਰਕ੍ਰਾਫਟ ਕੈਰੀਅਰ <0>“USS Nimitz CVN-68 A
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "ਹਵਾਈ ਜਹਾਜ਼ ਮਾਡਲ <0>“F/A-18C Hornet”</0> <1>CreadorDeMu</1> (Sketchfab) ਵੱਲੋਂ, <2>CC BY 4.0</2> ਤਹਿਤ ਲਾਇਸੰਸਸ਼ੁਦਾ। ਸੋਧਿਆ ਗਿਆ: ਮੁੜ-ਦਿਸ਼ਾ ਦਿੱਤੀ ਅਤੇ ਮੁੜ-ਪੈਮਾਨਾ ਕੀਤਾ, ਅਣਵਰਤਿਆ ਟੈਕਸਚਰ ਡਾਟਾ ਹਟਾਇਆ ਗਿਆ, ਬਾਹਰੀ ਲਟਕਵੇਂ ਸਾਜ਼ੋ-ਸਮਾਨ ਨੂੰ ਵੱਖਰੀ ਫ਼ਾਈਲ ਵਿੱਚ ਵੱਖ ਕੀਤਾ ਗਿਆ, ਇੱਕ ਸ਼ਰਾਊਡ ਮੈਸ਼ ਨੂੰ ਸ਼ੀਸ਼ੇ-ਰੂਪ ਵਿੱਚ ਉਲਟਾਇਆ ਗਿਆ।"
 
+#: src/components/SettingsDialog.tsx
+msgid "Alerts"
+msgstr "ਚੇਤਾਵਨੀਆਂ"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "ਸਾਰੇ ਮੋਡ"
@@ -364,6 +368,10 @@ msgstr "ਕਿਸੇ ਨੂੰ ਵੀ {entityLabel} ਖੋਜਣ ਦੀ ਆਗ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "ਇਸ ਅਨੁਸਾਰ ਛਾਂਟਣ ਦੀ ਆਗਿਆ ਦਿਓ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Ambient"
+msgstr "ਆਲਾ-ਦੁਆਲਾ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "An error occurred"
@@ -532,10 +540,6 @@ msgstr "ਸਭ ਤੋਂ ਵਧੀਆ ਸਰਕਣ (ਇੰਜਣ ਬੰਦ)"
 msgid "Best sustained turn speed"
 msgstr "ਸਭ ਤੋਂ ਵਧੀਆ ਲਗਾਤਾਰ ਮੋੜ ਗਤੀ"
 
-#: src/components/SettingsDialog.tsx
-msgid "Betty and RWR alerts"
-msgstr "Betty ਅਤੇ RWR ਚੇਤਾਵਨੀਆਂ"
-
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
 msgstr "ਬਿੰਗੋ ਈਂਧਨ"
@@ -679,10 +683,6 @@ msgid "Cancelled"
 msgstr "ਰੱਦ ਕੀਤਾ ਗਿਆ"
 
 #: src/components/SettingsDialog.tsx
-msgid "Cannons and ordnance"
-msgstr "ਤੋਪਾਂ ਅਤੇ ਗੋਲਾ-ਬਾਰੂਦ"
-
-#: src/components/SettingsDialog.tsx
 msgid "Canopy"
 msgstr "ਕੈਨੋਪੀ"
 
@@ -710,10 +710,6 @@ msgstr "ਕੈਨੋਪੀ ਖੁੱਲ੍ਹੀ"
 #: ../../../lib/web/src/components/attachment-composer.tsx
 msgid "Caption"
 msgstr "ਕੈਪਸ਼ਨ"
-
-#: src/components/SettingsDialog.tsx
-msgid "Carrier and ambient"
-msgstr "ਕੈਰੀਅਰ ਅਤੇ ਮਾਹੌਲ"
 
 #: src/components/MissionSetup.tsx
 msgid "Case I"
@@ -1493,8 +1489,8 @@ msgid "Engagement"
 msgstr "ਮੁਕਾਬਲਾ"
 
 #: src/components/SettingsDialog.tsx
-msgid "Engine and afterburner"
-msgstr "ਇੰਜਣ ਅਤੇ ਆਫਟਰਬਰਨਰ"
+msgid "Engine"
+msgstr "ਇੰਜਣ"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Enter banner text (markdown supported)..."
@@ -4129,6 +4125,7 @@ msgstr "ਹਥਿਆਰ ਚੋਣ ਹੈਟ"
 
 #: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
 msgid "Weapons"
 msgstr "ਹਥਿਆਰ"
 
@@ -4146,8 +4143,8 @@ msgid "Wheel brakes"
 msgstr "ਪਹੀਆ ਬ੍ਰੇਕ"
 
 #: src/components/SettingsDialog.tsx
-msgid "Wind and cockpit airframe"
-msgstr "ਹਵਾ ਅਤੇ ਜਹਾਜ਼ ਦਾ ਢਾਂਚਾ"
+msgid "Wind"
+msgstr "ਹਵਾ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx

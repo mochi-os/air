@@ -3716,6 +3716,18 @@ function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=
 // actually showing: leaving the field cannot take down a bolter's call, and
 // leaving the carrier pattern cannot take down the marshal's.
 function hint_retire(...keys){ if(hint_key!=null&&keys.indexOf(hint_key)>=0) hint_rows=hint_key=null; }
+// The departure is over, so anything from here is an ARRIVAL. The arrival set
+// opens on a window the CLIMB-OUT also satisfies - aligned, on the centreline,
+// 500-1,150 ft, within 2,200 m of the runway start - so departing tripped the
+// initial, then the break, then the dirty-up, and a pilot who had just taken
+// off was handed a landing checklist (#196). Two ways out of the departure, and
+// neither can be true while climbing away straight ahead: CLIMB above the
+// pattern the window belongs to, or TURN off the runway heading. The low field
+// circuit needs the second (it never leaves 600 ft); the straight-out departure
+// needs the first (it never turns). Distance cannot serve either one: the box
+// edge at 2,200 m falls inside the climb through 500-1,150 ft, and the 6 NM /
+// 3,000 ft guard is further still than a circuit ever goes.
+let field_left=false;
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
 // The field's roll-out headings, from the airfield the map built — the #90
@@ -3754,6 +3766,8 @@ function hints_runway(st){
 	// and the circuit re-arms so the next pattern is coached again.
 	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
 	if(range>6*1852||feet>3000){ hint_retire(HINT.depart,HINT.rollout); return; }   // clear of the field: the takeoff set is finished and nothing downstream can replace its last line
+	if((hinted[HINT.depart]&&feet>1200)||fdot<-0.5) field_left=true;   // climbed above the pattern, or turned off the runway heading
+	if(st==="runway"&&hinted[HINT.rotate]&&!field_left) return;   // still departing: the arrival set belongs to the pilot coming back (#196)
 	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
 	if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
@@ -5392,7 +5406,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={}; hint_rows=hint_key=null;   // and the flight hints (#70)
+	hinted={}; hint_rows=hint_key=null; field_left=false;   // and the flight hints (#70)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
