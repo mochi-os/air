@@ -648,7 +648,7 @@ const CLOUD_FIELD=`
 			float braw=remap(n.r, wf-1.0, 1.0, 0.0, 1.0);
 			float base=braw*prof;
 				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
-				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
+				float d=remap(base, 1.0-cov*cm, 1.0, 0.0, 1.0)*cov;   // the air-start clearing raises the THRESHOLD: cells shrink and vanish toward it at full density, where scaling density turned every cloud in the 5-10 km ring into translucent fog
 			if(d<=0.0) return 0.0;
 			// hb: erosion character by height - raw detail low in the cell, inverted
 			// high up (rounded bottoms, ragged tops). Flat decks take the top's
@@ -663,9 +663,9 @@ const CLOUD_FIELD=`
 					det=det*0.85+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.15*(1.0-smoothstep(0.15,0.35,lod)); }
 				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
 			}
-				d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
-				d=max(smoothstep(0.05,0.52,d), d*0.30);   // sharpen: defined lobe rims instead of uniform wool — but thin margins SURVIVE the knee as translucent veils (the reference photo mixes dense cores with dissipating wisps you can half-see through; a pure knee makes everything opaque)
-			return clamp(d,0.0,1.0)*uDensity*cm;   // cm: the air-start clearing thins its fade ring like natural dissipation
+				d=remap(d, er*estr*(1.0+mix(0.8,1.1,uFlat)*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid. Cumulus rims erode less than a deck's (0.8 against 1.1): at 1.1 every top frayed into feathery fringe
+				d=max(smoothstep(mix(0.06,0.05,uFlat),mix(0.42,0.52,uFlat),d), d*mix(0.18,0.30,uFlat));   // sharpen: defined lobe rims instead of uniform wool — but thin margins SURVIVE the knee as translucent veils (the reference photo mixes dense cores with dissipating wisps you can half-see through; a pure knee makes everything opaque). Cumulus takes a narrower knee and a thinner veil than a deck: at the deck's values its edges read as diffuse wisps
+			return clamp(d,0.0,1.0)*uDensity;
 		}
 `;
 
