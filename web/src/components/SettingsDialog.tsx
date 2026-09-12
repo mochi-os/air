@@ -741,11 +741,11 @@ function JoystickPanel({
 
 const VOLUME_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'master', label: <Trans>Master volume</Trans> },
-  { id: 'engine', label: <Trans>Engine and afterburner</Trans> },
-  { id: 'aircraft', label: <Trans>Wind and cockpit airframe</Trans> },
-  { id: 'weapons', label: <Trans>Cannons and ordnance</Trans> },
-  { id: 'environment', label: <Trans>Carrier and ambient</Trans> },
-  { id: 'alerts', label: <Trans>Betty and RWR alerts</Trans> },
+  { id: 'engine', label: <Trans>Engine</Trans> },
+  { id: 'aircraft', label: <Trans>Wind</Trans> },
+  { id: 'weapons', label: <Trans>Weapons</Trans> },
+  { id: 'environment', label: <Trans>Ambient</Trans> },
+  { id: 'alerts', label: <Trans>Alerts</Trans> },
 ]
 
 function SoundPanel({

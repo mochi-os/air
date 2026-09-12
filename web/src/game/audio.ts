@@ -962,34 +962,36 @@ export function audio_hit(count: number): void {
 // sharp CRACK and a felt thump through the airframe; by 600 m it is a dull
 // thud at the edge of the cockpit ambient, and beyond that nothing survives
 // canopy, engines and helmet. Sound is slow, so it arrives late.
+// How far a detonation carries. Artillery is heard tens of kilometres away; 5 km
+// is the conservative end of honest for a missile warhead, and past it the
+// report is lost under the engine anyway.
+export const BLAST_REACH = 5000
 export function audio_explosion(
   distance: number,
   x?: number,
   y?: number,
   z?: number
 ): void {
-  if (distance > 700) return
-  const range = Math.max(0, Math.min(1, 1 - distance / 700))
+  // #192: a pilot who had fought for weeks had never heard one. The chain was
+  // intact; the reach was the defect. A warhead this size carries for miles in
+  // open air, and the old gate went silent past 700 m — inside a missile fight
+  // almost every burst is further out than that, so the cue effectively never
+  // fired. It also fell off a cliff: 0.4 at 699 m, nothing at 701.
+  if (distance > BLAST_REACH) return
+  // Pressure falls as 1/r, anchored at the near field so #66's close-in tuning
+  // is untouched, and faded to nothing at the edge so the gate is a horizon
+  // rather than a wall.
+  const near = 150 / Math.max(distance, 150)
+  const fade = Math.max(0, Math.min(1, 1 - distance / BLAST_REACH))
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
-  // toward the raw buffer inside 150 m and dulls fast beyond it.
+  // toward the raw buffer inside 150 m. Beyond it the air itself eats the highs,
+  // so a distant burst arrives as a rumble, not a quiet crack.
   const crack = Math.max(0, Math.min(1, 1 - distance / 150))
+  const level = (0.1 + 1.3 * near) * fade
+  const cutoff = 180 + 7800 * crack + 1200 * fade * fade
   if (x !== undefined)
-    playAt(
-      'explosion',
-      0.4 + 1.0 * range * range,
-      x,
-      y as number,
-      z as number,
-      500 + 7500 * crack + 2500 * range * range,
-      distance / 343
-    )
-  else
-    play(
-      'explosion',
-      0.4 + 1.0 * range * range,
-      500 + 7500 * crack + 2500 * range * range,
-      distance / 343
-    )
+    playAt('explosion', level, x, y as number, z as number, cutoff, distance / 343)
+  else play('explosion', level, cutoff, distance / 343)
   if (crack > 0) play('hit', 0.5 * crack, undefined, distance / 343) // the blast overpressure felt through the structure, on the same channel as taking rounds
 }
 
