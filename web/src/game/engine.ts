@@ -3682,6 +3682,15 @@ function compass(dx,dz){ return String(Math.round((Math.atan2(dx,-dz)*180/Math.P
 function ship_course(){ return compass(CARRIER_C,-CARRIER_S); }
 function ship_downwind(){ return compass(-CARRIER_C,CARRIER_S); }
 function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat); return compass(b.x-a.x,b.z-a.z); }
+// One pitch for every stacked HUD legend, and one function that lays a stack
+// out. Fixed per-row y values are what produced both the holes in the
+// configuration column and the odd 12 px step between the cautions and the
+// stores counters (#186): the pitch has to be stated once.
+const STACK_PITCH=18;
+let hud_stack={pitch:STACK_PITCH,left:[],right:[]};   // dev (#186): what each stack laid out this frame, and the step it should be using, so a probe can measure the spacing a canvas will not report
+function stack_draw(rows,x,base){ const laid=[]; let cy=base;
+	for(const [colour,text] of rows){ hctx.fillStyle=colour; hctx.fillText(text,x,cy); laid.push({text:String(text),y:cy}); cy-=STACK_PITCH; }
+	return laid; }
 let hint_rows=null, hint_key=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight. hint_key is what it is showing, so a set that has ended can take its own line down without touching another's (#189)
 function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
 	// One row where it fits; the longer teachings wrap at clause marks to at
@@ -3734,6 +3743,13 @@ function hints_runway(st){
 	}
 	if(hinted[HINT.rotate]&&!hinted[HINT.cleanup]&&feet>40) hint(HINT.cleanup);
 	if(hinted[HINT.cleanup]&&kt>280) hint(HINT.depart,"Climb out on runway heading "+runway_heading()+" at 350 knots");
+	// Retire on the instruction being FLOWN, not on leaving the coaching area:
+	// the departure line appears at 280 knots and the field guard below is 6 NM
+	// or 3,000 ft away, which is a minute of climb with a finished line on the
+	// glass. Once the jet is at the speed and on the heading the line asked for,
+	// it has been read and obeyed. The guard stays as the backstop for a pilot
+	// who never gets there.
+	if(hinted[HINT.depart]&&kt>340&&fdot>0.5) hint_retire(HINT.depart);
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
 	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
@@ -4347,6 +4363,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
@@ -5028,16 +5045,21 @@ function fly_player(dt){
 			// was applied to both, so every approach flew its whole glideslope
 			// under a repeating tone and a flashing break-X.
 			//
-			// No sink gate: the real trigger is altitude against the index and
-			// nothing else. The old `sink>2` (about 400 fpm) was met by every
-			// stabilised approach — on-speed at 135 kt down a 3.5° slope sinks
-			// 4.2 m/s — so it excluded nothing it was meant to.
+			// DESCENDING through the index, which is what the call is: the
+			// real one sounds on the way down and the index is set to 40 ft for
+			// a cat shot precisely so a launch does not trip it. #187 dropped
+			// the old `sink>2` on the grounds that a stabilised approach sinks
+			// 4.2 m/s and so was never excluded by it — true, but the gate was
+			// keeping the TAKEOFF quiet, and without it every rotation got the
+			// call as the jet climbed through 200 ft with the gear still down.
+			// 0.5 m/s is the honest reading of "descending" rather than the old
+			// 400 fpm, which was high enough to look arbitrary.
 			//
 			// gearTarget is the RETRACTION target (0 = down, 1 = up, as the
 			// spawn and the gear horn read it): the old branches were keyed
 			// backwards, so a gear-up fight only ever had the index call — one
 			// second of warning at the crash flight's sink.
-			const dirty=(ownship.gearTarget??0)<=0.5&&agl<200;
+			const dirty=(ownship.gearTarget??0)<=0.5&&agl<200&&sink>0.5;
 			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
@@ -6197,31 +6219,54 @@ function draw_hud(){
 	// ---- gear / hook status (bottom-right) ----
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
 	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
+	// One PACKED stack, not a slot per state: every row used to carry a
+	// hard-coded y, so a state that was quiet left a hole — airborne with the
+	// brake in and no calibration running, the empty PARK, STAB and SPD BK
+	// slots opened the gaps between TRIM, FLAPS and GEAR the pilot asked about.
+	// Two rows also shared HH-124, so folded wings overprinted the flap legend.
+	// Built bottom-up so GEAR and HOOK, the two that matter on every approach,
+	// keep the place they have always had.
 	hctx.textAlign="right"; hctx.font="13px monospace";
-	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
-	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
-	if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
-	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }
-	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),HW-40,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default
-	if(parking){ hctx.fillStyle=AM; hctx.fillText(translate("PARK"),HW-40,HH-142); }   // the parking brake holds the mains: amber, like a caution
-	{ const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
-		const parts=[];
-		if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
-		if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));   // i18n-format-ok: canvas HUD glyph: bank angle, fixed-format like the real instrument
-		if(parts.length){ hctx.fillStyle=GR; hctx.fillText("TRIM "+parts.join(" "),HW-40,HH-160); } }   // amber whenever the air brake is out (keys.md §3)
-	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
+	{ const rows=[];   // bottom of the stack first
+		if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
+		if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
+		if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
+			if((ownship.speedbrake??0)>0.02) rows.push([AM,translate("SPD BK")]);
+			if(stab_cycle>0) rows.push([AM,"STAB "+stab_cycle]);   // Shift+E calibration state
+			if((ownship.fold??0)>0.02) rows.push([AM,translate("WINGS")]);   // amber, above SPD BK: not a flight configuration
+			if(flap_select>0) rows.push([GR,translate(flap_select===1?"FLAPS HALF":"FLAPS FULL")]);   // the switch's non-AUTO positions only: AUTO is the silent default
+			if(parking) rows.push([AM,translate("PARK")]);   // the parking brake holds the mains: amber, like a caution
+			const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
+			const parts=[];
+			if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
+			if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));   // i18n-format-ok: canvas HUD glyph: bank angle, fixed-format like the real instrument
+			if(parts.length) rows.push([GR,"TRIM "+parts.join(" ")]); }
+		hud_stack.right=stack_draw(rows,HW-40,HH-52); }
+	if(!authentic){   // the beacons keep their own group below the configuration, at their own tighter pitch
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
-	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); }   // below PROBE
-	if((ownship.fold??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("WINGS"),HW-40,HH-124); } }   // amber, above SPD BK: not a flight configuration
+	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); } }   // below PROBE
 
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
 	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
 	{ const RD="#ff5050";   // the stack renders the sim-step model (#47) — building it here left the tone dead outside this view
 		hctx.textAlign="left"; hctx.font="13px monospace";
-		let cy=HH-118;
-		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
+		// Cautions, the cheat flag and the team score are ONE stack, packed
+		// upward from a single pitch above the stores counters. They used to be
+		// three blocks with hard-coded y values: the cautions started 12 px
+		// above GUN where everything else steps 18 (#186, the crowding the
+		// pilot reported), and INVULNERABLE at HH-124 and the RED/BLUE score at
+		// HH-160/-142 sat inside the cautions' upward path, so three cautions
+		// overprinted them.
+		const rows=[];   // bottom of the stack first
+		for(const [,label,red] of caution_list) rows.push([red?RD:AM,label]);
+		if(cheat("invulnerable")) rows.push([GR,translate("INVULNERABLE")]);   // a cheat mission announces itself, to multiplayer joiners as much as the mission owner
+		if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): the running totals above the stores legend
+			rows.push(["#5a86ff","BLUE "+(net.score.blue||0)]);
+			rows.push(["#ff5a48","RED "+(net.score.red||0)]); }
+		hud_stack.left=stack_draw(rows,40,HH-106-STACK_PITCH);   // one pitch above GUN, the top of the counters
+		hctx.fillStyle=GR;
 	}
 	// The low-altitude break-X and its ALTITUDE banner are GONE (#187, ruled
 	// 2026-09-11: "highly distracting, and completely unrealistic"). They were
@@ -6248,13 +6293,9 @@ function draw_hud(){
 
 	// ---- weapon legend (bottom-left) ----
 	// Cheats show in the symbology: ∞ replaces the counters the cheat makes
-	// meaningless, and INVULNERABLE sits just above — so a cheat mission
-	// announces itself, to multiplayer joiners as much as the mission owner.
+	// meaningless, and INVULNERABLE rides the caution stack above — drawn there
+	// with the team score, so nothing can land on top of a caution.
 	hctx.textAlign="left"; hctx.font="13px monospace";
-	if(cheat("invulnerable")){ hctx.fillStyle=GR; hctx.fillText(translate("INVULNERABLE"),40,HH-124); }
-	if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): red and blue running totals above the stores legend
-		hctx.fillStyle="#ff5a48"; hctx.fillText("RED "+(net.score.red||0),40,HH-160);
-		hctx.fillStyle="#5a86ff"; hctx.fillText("BLUE "+(net.score.blue||0),40,HH-142); hctx.fillStyle=GR; }
 	if(!authentic&&(comms.length||(hint_rows&&cfg.hints!==false))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
 		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
