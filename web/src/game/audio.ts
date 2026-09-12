@@ -662,13 +662,21 @@ async function bake(): Promise<void> {
     }
   })
   // Actuator servo: a soft falling whine for gear/flap/hook travel.
-  shots.servo = await render(1.8, (d, r) => {
+  // The trailing-edge actuator, repeated through the travel the way the gear
+  // pump is (#193). It used to be a single 1.8 s glide at CONSTANT amplitude:
+  // no attack, no decay, so the buffer ended at full level on an arbitrary
+  // phase and the last sample was a step — the click the pilot reported. An
+  // electric screw actuator under air load is a strained whirr, not a tone, so
+  // the harmonics are rough and there is broadband noise riding them.
+  shots.servo = await render(0.5, (d, r) => {
     for (let i = 0; i < d.length; i++) {
-      const f = 420 - 90 * (i / d.length)
-      d[i] =
-        (Math.sin((i / r) * 2 * Math.PI * f) +
-          0.3 * Math.sin((i / r) * 2 * Math.PI * f * 2.01)) *
-        0.09
+      const env = Math.min(1, i / (r * 0.04)) * Math.min(1, (d.length - i) / (r * 0.06))
+      const f = 300 + 30 * Math.sin((i / r) * 2 * Math.PI * 7) // the load beats as the surface runs
+      const whirr =
+        Math.sin((i / r) * 2 * Math.PI * f) * 0.5 +
+        Math.sin((i / r) * 2 * Math.PI * f * 1.97) * 0.3 +
+        Math.sin((i / r) * 2 * Math.PI * f * 0.5) * 0.25
+      d[i] = (whirr + (Math.random() * 2 - 1) * 0.3) * env * 0.085
     }
   })
   // Gear cycle (#88): the hydraulic pump pulse repeated through the transit,
@@ -1010,8 +1018,21 @@ export function audio_trap(): void {
 export function audio_touchdown(): void {
   play('touchdown', 0.85)
 }
-export function audio_servo(): void {
-  play('servo', 0.5)
+let servoAt = -1
+// The flaps running out or in, repeated through the travel like the gear pump
+// (#193). It was one fixed shot on the KEYPRESS: the same length whichever way
+// the switch moved, however far the surfaces actually went — and silent for the
+// AUTO schedule, which moves the same surfaces. What the pilot hears now is the
+// travel itself, so a selection that the schedule has already flown (HALF at
+// rotation alpha, per #91) is properly quiet.
+export function audio_servo(travel: boolean): void {
+  if (!travel) return
+  const t =
+    context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
+  if (servoAt < 0 || t - servoAt > 0.42) {
+    servoAt = t
+    play('servo', 0.55)
+  }
 }
 let pumpAt = -1
 // The transit's hydraulic pump, repeated horn-style while the gear travels.

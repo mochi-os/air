@@ -3762,6 +3762,11 @@ function hints_runway(st){
 	// it has been read and obeyed. The guard stays as the backstop for a pilot
 	// who never gets there.
 	if(hinted[HINT.depart]&&kt>340&&fdot>0.5) hint_retire(HINT.depart);
+	// ...or on the crosswind turn. A circuit never reaches 340 knots, never
+	// leaves 6 NM and never climbs through 3,000 ft, so a pilot flying the
+	// pattern had the departure line on the glass all the way to final (#198).
+	// Turning off the runway heading ends the departure whatever the speed.
+	if(hinted[HINT.depart]&&fdot<-0.5) hint_retire(HINT.depart);
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
 	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
@@ -3770,10 +3775,16 @@ function hints_runway(st){
 	if(st==="runway"&&hinted[HINT.rotate]&&!field_left) return;   // still departing: the arrival set belongs to the pilot coming back (#196)
 	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
-	if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
-	if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.dirty);
+	// The break is ONE way into the pattern, not the only one. A closed traffic
+	// circuit - upwind, crosswind, downwind, base, final - never re-flies the
+	// initial, so a chain hanging off it left the whole arrival set unreachable
+	// and nothing ever replaced the departure line (#198). Downwind geometry is
+	// the other entry: on the reciprocal, at pattern height, beside the field.
+	const circuit=fdot<-0.7&&feet>350&&feet<1150&&lateral<3200;
+	if(hinted[HINT.brk]||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
+	if((hinted[HINT.brk]||hinted[HINT.downwind])&&kt<285&&!down) hint(HINT.dirty);
 	if(hinted[HINT.dirty]&&down) hint(HINT.donut);
-	if(down&&fdot<-0.5&&along<300&&along>-1800&&lateral>900&&lateral<3200) hint(HINT.numbers);
+	if(down&&fdot<-0.5&&along<300&&along>-1800&&lateral>400&&lateral<3200) hint(HINT.numbers);   // 400 m, not 900: the floor is there to say BESIDE the runway rather than over it, and a 60 m strip is cleared long before half a mile — a tight pattern flown inside 900 sailed straight past the abeam call (#198)
 	if(hinted[HINT.numbers]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
 	if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.papi,"Final: runway heading "+runway_heading()+"; the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point");
 }
@@ -3865,8 +3876,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; audio_servo(); notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
-		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; audio_servo(); notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
+		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; flap_armed=sim_time+4; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
+		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; flap_armed=sim_time+4; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
@@ -4315,6 +4326,7 @@ function cautions_update(){
 	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
 	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
+let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
@@ -4380,7 +4392,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -5047,6 +5059,28 @@ function fly_player(dt){
 				if(gear<=0.03&&audio_prev.gear>0.03) audio_gearlock();   // three staggered downlock thunks
 				if(gear>=0.97&&audio_prev.gear<0.97) audio_geardoor(); }   // the doors close over the stowed gear
 			audio_prev.gear=gear; }
+		{ const droop=(last_out||[])[STATE.flap]||0;   // the trailing edge's ACTUAL travel, rad, straight off the core — the same word the DDI's TEF row reads
+			// The flaps are heard RUNNING, not selected (#193). The old sound was one
+			// fixed shot on the keypress: the same length whichever way the switch
+			// moved, however far the surfaces went, and silent for the AUTO schedule
+			// moving the same surfaces. Now the SELECTION says whether and the TRAVEL
+			// says how long.
+			//
+			// Rate alone cannot tell the two apart, measured: with the switch at AUTO
+			// the schedule reaches 0.1930 rad/s under a hard pull against a selection's
+			// 1.1725 — six times, not the two orders a first reading at HALF suggested.
+			// That reading was wrong because at HALF past ~15 degrees of alpha the
+			// droop is SATURATED and does not move at all (0.0000 rad/s measured), so
+			// the configuration that looked quiet was one where there was nothing to
+			// hear. Hence the arming: the schedule creeping through a turn is silent
+			// because no selection armed it, and a selection the schedule has already
+			// flown (HALF at rotation alpha, per #91) is silent because nothing moves.
+			// The window outlasts a full trailing-edge run several times over and
+			// exists only so a selection that moves nothing cannot leave the sound
+			// armed for the next manoeuvre.
+			if(audio_prev.droop!==undefined&&dt>0)
+				audio_servo(sim_time<flap_armed&&Math.abs(droop-audio_prev.droop)/dt>0.1);
+			audio_prev.droop=droop; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
 			const sink=-(ownship.vely??0);   // m/s down
 			// Gear down it is the index call, and it sounds ONCE (#187). The
