@@ -177,12 +177,13 @@ const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").repla
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 const PANEL_POINT=DEV_MODE&&new URLSearchParams(location.search).get("panelpoint")==="1";   // cockpit clicks that miss the DDIs report the panel point hit (group-frame y,z on the dev HUD + clipboard) — feeds &radalt=y,z calibration
 const INDEXER_TEST=DEV_MODE?(new URLSearchParams(location.search).get("indexertest")||""):"";   // "1": force all three AoA lamps lit; "2": also depth-free draw-on-top — the render-vs-depth bisect
-// Benchmark overrides (#148, developer mode only): &ssaa=1.0 / &msaa=0 / &dynres=0|1
+// Benchmark overrides (#148, developer mode only): &ssaa=1.0 / &msaa=0 / &dynres=0|1 / &cloudshadow=0
 // pin the startup-read quality knobs so a single build can A/B each one; &bench=S
 // (below, with &benchto=) samples frame times and beacons the stats out.
 const BENCH_PARAMS=DEV_MODE?new URLSearchParams(location.search):null;
 const SSAA_OVERRIDE=BENCH_PARAMS?parseFloat(BENCH_PARAMS.get("ssaa")||""):NaN;
 const MSAA_OFF=BENCH_PARAMS?.get("msaa")==="0";
+const CLOUD_SHADOW_OFF=BENCH_PARAMS?.get("cloudshadow")==="0";   // skips the cloud shadow pass and its fetch, the cloud layer itself unchanged
 const TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
 let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
 let menu_hold=false, game_paused=false;   // menu_hold = the Esc popup freeze; the popup is the ONLY pause UI (the old P-pause banner/controls-window plumbing was dead code whose banner drew UNDER the popup)
@@ -251,6 +252,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	col_sundisc.setHex(p.disc); sky_horizon.setHex(p.hor); sky_zenith.setHex(p.zen); col_deep.setHex(p.deep); col_shallow.setHex(p.shal);
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
+	apply_light_balance();   // re-derive the cloud lighting against this time of day's lights
 	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; cloud_mat.uniforms.uSunGain.value=p.sunI/TOD.day.sunI; stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
@@ -258,6 +260,33 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 }
+// Beam-versus-ambient balance under a cloud layer, applied PER FRAGMENT by the
+// receivers (cloud_shadow_receive) and never to the global lights: a jet marshalling
+// above a Case III deck is in full sun, and switching the sun off scene-wide would
+// render it, and its cockpit, flat and dark. The absolute darkness of a cloud shadow
+// is what the ambient alone amounts to once the beam is gated away, so the two are
+// derived together, and in LUMINANCE, not intensity: the warm sun is near-white
+// (0.91) while the sky and ambient colours are blue and dark (0.65, 0.08), so
+// intensities alone overstate the ambient by half. For flat ground at 60° the clear
+// balance is beam 1.90 against ambient 0.61, a fully gated core at 0.244 of open sun.
+// A cumulus field adds diffuse light scattered off its sunlit flanks, IN PROPORTION TO
+// THE BEAM: calibrated so the daylight core lands on the preset's minimum (x1.03), the
+// same fraction of a moonbeam lifts the night ambient x1.17 and leaves a moonlit shadow
+// core near 0.07 - forcing the daylight ratio at night instead would lift a dark sky's
+// ambient more than fivefold and turn every shaded wall grey. An overcast passes ~25% of what
+// falls on it, beam and sky alike, as diffuse light, so its level holds at any hour.
+const luminance=(colour)=>colour.r*0.2126+colour.g*0.7152+colour.b*0.0722;   // three stores Color linear (ColorManagement is on), so these are true Rec.709 weights
+const light_flux=(beam,beamColour,elevation,sky,skyColour,ambient,ambientColour)=>({   // flat ground: an upward normal takes the hemisphere's sky colour in full
+	beam:beam*luminance(beamColour)*Math.max(elevation,0.05), indirect:sky*luminance(skyColour)+ambient*luminance(ambientColour) });
+function apply_light_balance(){ const p=CLOUDS[cfg.clouds];
+	const ambient=cloud_shadow_uniforms.u_shadow_ambient.value, deck=cloud_shadow_uniforms.u_shadow_deck.value;
+	if(!p){ ambient.set(1.0,1.0); deck.set(0,0,0,0); return; }
+	const {beam,indirect}=light_flux(sun.intensity,sun.color,sun_dir.y,hemi.intensity,hemi.color,amb.intensity,amb.color);   // the live time of day, so a variable one needs no new arithmetic here
+	if(p.flat>0.5){   // overcast: tau ~27 through a 610 m deck passes 1e-14 of the beam, so below it there is no beam and no shadow to cast - the ambient carries the whole level, and its flatness is why an overcast day is shadowless
+		deck.set(p.base,p.top,1,0); ambient.set(1.0,(p.shadow.minimum+p.shadow.maximum)*0.5*(beam+indirect)/indirect); return; }
+	const c=new THREE.Color(), day=TOD.day, noon=light_flux(day.sunI,c.setHex(day.sunCol).clone(),new THREE.Vector3(...day.sun).normalize().y,day.hi,c.setHex(day.hs).clone(),day.ai,c.setHex(day.ac).clone());
+	const scatter=Math.max(0,(p.shadow.minimum*noon.beam/(1.0-p.shadow.minimum)-noon.indirect)/noon.beam);   // the fraction of the beam the sunlit field sends back down as diffuse
+	deck.set(p.base,p.top,0,0); ambient.set(1.0+scatter*beam/indirect,1.0); }
 
 // Tileable water detail texture, generated at init (no asset): RG = surface-normal
 // slope of a periodic multi-wave heightfield (the per-pixel ripple detail at three
@@ -304,11 +333,36 @@ function build_water_detail(){
 	return tex;
 }
 const col_deep2=new THREE.Color(0x11424e);
+const cloud_shadow_uniforms={ u_shadow:{value:null}, u_shadow_sun:{value:sun_dir},
+	u_shadow_patch:{value:new THREE.Vector4(0,0,1,0)},      // xy patch centre, z extent (both written by cloud_shadow_render before any receiver samples), w strength (0 = no cloud shadow at all)
+	u_shadow_level:{value:new THREE.Vector2(1.0,1.0)},       // the preset's linear illumination: minimum under full cloud .. maximum in the open (equal under an overcast, which is uniform)
+	u_shadow_deck:{value:new THREE.Vector4(0,0,0,0)},        // x cloud base, y top, z 1 under an overcast deck
+	u_shadow_ambient:{value:new THREE.Vector2(1.0,1.0)} };   // ambient luminance scale: x in the open (a cumulus field lifts it), y below an overcast deck
+// The one resolve, shared by the sea and by every ground material, because the two
+// live in DIFFERENT colour spaces on the same canvas: ocean_mat and sky_mat write
+// gl_FragColor display-referred (they bypass the renderer's ACES, as the glint's own
+// soft knee notes), while MeshStandardMaterial land is linear, ACES-tone-mapped and
+// sRGB-encoded on the way out. cloud_shadow_open() hands back beam openness and each
+// receiver converts it itself - one shared multiplier would be wrong in one of them.
+const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_sun; uniform vec4 u_shadow_patch; uniform vec2 u_shadow_level; uniform vec4 u_shadow_deck; uniform vec2 u_shadow_ambient;
+	float cloud_shadow_below(vec3 world){   // -> 1 = beneath the overcast deck, 0 = above it (or no deck)
+		if(u_shadow_deck.z<=0.0) return 0.0;   // early out: base and top are both zero with no deck, and smoothstep with equal edges is undefined
+		return 1.0-smoothstep(u_shadow_deck.x,u_shadow_deck.y,world.y); }
+	float cloud_shadow_open(vec3 world){   // -> 1 = full beam, 0 = fully shadowed by a cumulus field
+		if(u_shadow_patch.w<=0.0) return 1.0;
+		vec2 g=world.xz-u_shadow_sun.xz*(world.y/max(u_shadow_sun.y,0.05));   // project down the sun ray to the ground plane the map was marched from: exact for the sea, and it keeps the deck, the runway and the buildings right too
+		vec2 uv=(g-u_shadow_patch.xy)/u_shadow_patch.z+0.5;
+		float rim=1.0-smoothstep(0.35,0.5,length(uv-0.5));   // dissolve over the outer 30% of the radius, into haze that is already 70-90% complete: shadows thin out with distance instead of stopping, and the square's corners never show
+		if(rim<=0.0) return 1.0;
+		float ground=1.0-smoothstep(u_shadow_deck.x*0.5,u_shadow_deck.x,world.y);   // the map is the shadow ON THE GROUND: exact for the sea, the land and the ship, and progressively wrong for anything climbing toward the cloud base, where the cloud above it is no longer the column above the ground
+		return mix(1.0, texture2D(u_shadow,uv).r, u_shadow_patch.w*ground*rim); }
+	float cloud_shadow_level(float open){ return mix(u_shadow_level.x,u_shadow_level.y,open); }`;   // linear fraction of open-sun illumination
+
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)}, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
-		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0}, u_cloud_flat:{value:0.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
+		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
@@ -321,7 +375,8 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid,u_cloud_flat; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_flat; uniform sampler2D u_water,u_detail; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+		`+CLOUD_SHADOW_RESOLVE+`
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point. MUST mirror the vertex W0/W1 exactly: sin(kx - wt), W0 = the crossing NW ground swell, W1 = the longest wind-sea train
 			float h=2.0*sin(dot(normalize(vec2(-0.12,-0.99)),p)*(6.2831853/420.0)-u_time*(60.0/420.0));
@@ -346,7 +401,6 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 c=textureGrad(u_detail,uv+hashcell(i+vec2(0.0,1.0))+drift,dx,dy).rg-0.5;
 			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
 		}
-		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
 			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
@@ -386,15 +440,16 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float shallow=clamp((body.g-0.25)*2.2,0.0,1.0);   // turquoise/foam → damp the sky reflection so the colour shows
 			vec3 refl=sky_at(reflect(-V,N));
 			refl=mix(refl, vec3(dot(refl,vec3(0.333)))*0.90, u_cloud_flat*0.85);   // under an OVERCAST the sea reflects a grey ceiling, not the procedural blue sky — the water's blue cast was the residual "blue horizon" under the stratus
-			// --- cloud shadows: one sample of the raymarcher's own base field at cloud-mid height along the sun ray
-			float shade=1.0;
-			if(u_cloud_on>0.5){
-				vec3 cp=v_world+L*((u_cloud_mid-v_world.y)/max(L.y,0.2)); vec3 sp=cp+vec3(u_time*8.0,0.0,u_time*3.0);
-				vec4 n=texture(u_cloudnoise,sp*1.6667e-4); float wf=n.g*0.625+n.b*0.25+n.a*0.125;
-				float dcl=remap(remap(n.r,wf-1.0,1.0,0.0,1.0)*0.7, 1.0-u_cloud_cover, 1.0, 0.0, 1.0)*u_cloud_cover;
-				shade=mix(1.0,exp(-dcl*4.0),0.5); }
+			// --- cloud shadows, from the shared ground map (cloud_shadow_render): the full
+			// dens() field the raymarcher draws - cell gate, vertical profile and spawn
+			// clearings included - so a shadow only ever sits under drawn cloud. A raw
+			// noise tap against flat coverage shadows the gaps between cloud streets.
+			// The sea writes display-referred (see the glint's soft knee below), so the
+			// linear level is encoded on the way out; land applies the same openness in
+			// linear space instead.
+			float shade=pow(cloud_shadow_level(cloud_shadow_open(v_world)),1.0/2.2);
 			body*=shade;
-			vec3 col=mix(body,refl*mix(shade,1.0,0.5),fres*mix(1.0,0.35,shallow));
+			vec3 col=mix(body,refl*mix(shade,1.0,0.25),fres*mix(1.0,0.35,shallow));   // the reflection takes three-quarters of the shading. A shadow leaves the reflected sky itself unchanged, but from altitude the reflection is most of a grazing sea, and at half a cumulus shadow on deep water read as a 5% smudge
 			// --- Cox-Munk style glint: slope-space Beckmann, corridor stretched along the sun azimuth,
 			// wind-roughened, calmed in the lagoon; granular sparkle emerges from the detail normals.
 			vec3 H=normalize(L+V);
@@ -412,7 +467,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float spark=exp(-dot(dv2,dv2)/(rs*rs));
 			float g=env*(0.10+2.8*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
-			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*shade*shade;
+			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*(1.0-0.85*u_cloud_flat)*shade*shade;   // a specular corridor needs the BEAM and an overcast has none: shade*shade alone still passed ~28% of the glitter path under a solid 300 ft deck (u_glint is per time-of-day, not per preset)
 			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
 			// --- subsurface transmission: light through the thin water near a crest reaches the
 			// viewer when looking toward the sun's far side — the blue-green glow that makes
@@ -477,14 +532,20 @@ build_ocean(cfg.ocean_segments);
 
 // cloud layer types (rendered by the raymarch pass below)
 const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
-	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45 },   // fair-weather broken trade-wind sky (user-preferred). (A cumulonimbus preset lived here 2026-07-05/06 and was removed entirely — recover from git if ever revisited)
-	high_stratus: { base:1829, top:2439, high:2439, cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // altostratus deck 6,000-8,000 ft: dogfights descend through it and LOSE each other inside (dense enough to white-out; occasional thin spots for re-acquisition). Base above the 5,000 ft free-flight spawn
-	mid_stratus:  { base:305,  top:915,  high:915,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE II deck, 1,000-3,000 ft: the NATOPS Case II band (ceiling at or above 1,000 ft but below Case I's 3,000). The Case II spawn is INSIDE it at 1,200 ft, so the level segment is flown on instruments and the glideslope descent breaks out at ~2.7 NM — enough to finish visually, which is what the procedure requires
-	low_stratus:  { base:91,   top:701,  high:701,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE III deck, 300-2,300 ft: a 300 ft ceiling puts the break-out at ~0.8 NM, exactly on the 0.75 NM ball call — see the ball or call CLARA. All three stratus decks are 610 m (2,000 ft) thick so they are ONE cloud at three heights - identical thickness, cover and density means identical lighting, which is what stopped the thicker decks reading darker than the thin one. Marshal at angels 6 stays above this top, the penetration enters IMC at 2,300 ft, and the level segment, the glideslope intercept and the whole final are flown on instruments (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
+	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45, shadow:{minimum:0.25, maximum:1.00} },   // fair-weather broken trade-wind sky (user-preferred). (A cumulonimbus preset lived here 2026-07-05/06 and was removed entirely — recover from git if ever revisited)
+	high_stratus: { base:1829, top:2439, high:2439, cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3, shadow:{minimum:0.25, maximum:0.25} },   // altostratus deck 6,000-8,000 ft: dogfights descend through it and LOSE each other inside (dense enough to white-out; occasional thin spots for re-acquisition). Base above the 5,000 ft free-flight spawn
+	mid_stratus:  { base:305,  top:915,  high:915,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3, shadow:{minimum:0.25, maximum:0.25} },   // CASE II deck, 1,000-3,000 ft: the NATOPS Case II band (ceiling at or above 1,000 ft but below Case I's 3,000). The Case II spawn is INSIDE it at 1,200 ft, so the level segment is flown on instruments and the glideslope descent breaks out at ~2.7 NM — enough to finish visually, which is what the procedure requires
+	low_stratus:  { base:91,   top:701,  high:701,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3, shadow:{minimum:0.25, maximum:0.25} },   // CASE III deck, 300-2,300 ft: a 300 ft ceiling puts the break-out at ~0.8 NM, exactly on the 0.75 NM ball call — see the ball or call CLARA. All three stratus decks are 610 m (2,000 ft) thick so they are ONE cloud at three heights - identical thickness, cover and density means identical lighting, which is what stopped the thicker decks reading darker than the thin one. Marshal at angels 6 stays above this top, the penetration enters IMC at 2,300 ft, and the level segment, the glideslope intercept and the whole final are flown on instruments (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
-	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
 	ocean_mat.uniforms.u_cloud_flat.value=p?p.flat:0.0;   // overcast presets grey the sea's far silvering + reflection (scattered cumulus leaves the sunny sea alone)
+	// Cloud shadows on land and sea. Strength fades the whole effect out at a low sun
+	// rather than clamping the projection: below ~3° of elevation the march length runs
+	// away as 1/sin and the beam it would gate has already gone, so there is nothing
+	// left to cast. Today's presets sit at 60°, so this is 1.0 and changes nothing.
+	cloud_shadow_uniforms.u_shadow_patch.value.w=p&&p.flat<=0.5&&!CLOUD_SHADOW_OFF?THREE.MathUtils.smoothstep(sun_dir.y,0.02,0.10):0.0;   // an overcast is uniform (see the shadow pass): strength 0 means no fetch, and the level alone carries it
+	cloud_shadow_uniforms.u_shadow_level.value.set(p?p.shadow.minimum:1.0, p?p.shadow.maximum:1.0);   // set for "none" too, or a sea cleared of stratus keeps the deck's half brightness
+	apply_light_balance();
 	// Cloud horizon band (sky dome + cloud skybg in lockstep): overcast = full-strength wide deck-grey;
 	// scattered presets = partial narrow bright haze scaled by coverage (the distant unresolved field).
 	const ovc=p?Math.max(p.flat,Math.min(1.0,1.6*p.cover)*(1.0-p.flat)):0.0, ovct=p?(p.flat>0.5?1.02:1.10):1.02, ovcw=p?(p.flat>0.5?0.28:0.14):0.28;   // scattered strength 1.6x cover (cumulus ~0.67): at 0.3 the band vanished on a real display
@@ -493,8 +554,7 @@ function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	if(!p) return;
 	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
 	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat;
-	cloud_mat.uniforms.uGate.value.set(p.gate[0],p.gate[1]); cloud_mat.uniforms.uDark.value=p.dark;
-	ocean_mat.uniforms.u_cloud_cover.value=p.cover; ocean_mat.uniforms.u_cloud_mid.value=(p.base+p.top)*0.5; }
+	cloud_mat.uniforms.uGate.value.set(p.gate[0],p.gate[1]); cloud_mat.uniforms.uDark.value=p.dark; }   // cloud_shadow_mat shares these uniform objects, so the shadow pass marches this preset without a second write
 const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 
 // ---- volumetric clouds: raymarched, composited against scene depth ----
@@ -514,40 +574,43 @@ function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf
 		rt.texture.minFilter=THREE.LinearFilter; rt.texture.magFilter=THREE.LinearFilter; }
 	else if(rt.width!==hw||rt.height!==hh){ rt.setSize(hw,hh); rt_march.setSize(hw,hh); rt_hist[0].setSize(hw,hh); rt_hist[1].setSize(hw,hh); hist_valid=false; } }
 const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
-const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, glslVersion:THREE.GLSL3,   // GLSL3 for MRT: the pass writes colour AND a reprojection-depth attachment (explicit outs replace gl_FragColor)
-	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
-		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour}, uSunGain:{value:1.0}, uDip:{value:0.0}, uDebug:{value:0.0}, uJitter:{value:0.0},
-		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05},
-		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45}, uOvc:{value:0.0}, uOvcT:{value:1.02}, uOvcW:{value:0.28},
-		uClear:{value:[   // spawn clearings (xy world centre, z inner radius², w outer radius²): no cumulus/Cb ON a spawn spot. World CONSTANTS, so the shared multiplayer cloud field stays identical on every client
-			new THREE.Vector4(CARRIER.x, CARRIER.z, 25.0e6, 100.0e6),                                     // carrier (cat spots + landing spawn astern)
-			new THREE.Vector4(-1125, 2898, 25.0e6, 100.0e6),                                              // Sand Island runway (reset_ownship's fallback centroid)
-			new THREE.Vector4(-1125+Math.sin(68*Math.PI/180)*15000, 2898-Math.cos(68*Math.PI/180)*15000, 25.0e6, 100.0e6),   // free-flight air start (same formula as reset_ownship)
-			new THREE.Vector4(0, 0, 25.0e6, 100.0e6) ] } },                                               // joust merge / multiplayer spawn ring (ring=2778 m about the origin)
-	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
-	fragmentShader:`varying vec2 vUv;
-		layout(location=0) out vec4 oColor;   // premultiplied cloud light + transmittance
-		layout(location=1) out vec4 oDepth;   // R: transmittance-weighted mean march distance / 45 km, G: accumulated alpha (validity)
-		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
-		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith,uFog; uniform mat4 uInvVP;
-		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uJitter,uDip,uOvc,uOvcT,uOvcW,uSunGain;
-			uniform vec2 uGate;
-		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+// The cloud density field, shared VERBATIM by the raymarcher and the ground shadow
+// pass (cloud_shadow_mat below): ONE field definition, so the shadow that lands on
+// the sea and the island is cast by the cloud the pilot can actually see. The two
+// materials also share these uniform OBJECTS by reference, so apply_clouds writes
+// each preset exactly once and no copy can drift.
+const cloud_field_uniforms={ tNoise:{value:null}, tDetail:{value:null}, uTime:{value:0},
+	uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42},
+	uDensity:{value:1.0}, uFlat:{value:0.0}, uDark:{value:0.45}, uGate:{value:new THREE.Vector2(0.22,0.50)},
+	// Air spawns, the only places a jet starts at cloud height. The free-flight start
+	// (5,000 ft) sits INSIDE the 600-2,400 m cumulus slab, so it gets a full clearing.
+	// The merge (15,000 ft, single-player joust and the multiplayer ring alike) is two
+	// kilometres above ordinary cumulus and only a tower can reach it, so there only
+	// the towers are capped: fair-weather cumulus still drifts over the atoll below and
+	// shadows it. Every piece of Midway's land lies within 5 km of the merge, so a full
+	// clearing there kept all of it cloud-free and shadowless. The runway and the carrier
+	// start below the base and need neither. xy world centre, z inner radius², w outer
+	// radius². World CONSTANTS, so the shared multiplayer cloud field stays identical on
+	// every client.
+	uClear:{value:new THREE.Vector4(-1125+Math.sin(68*Math.PI/180)*15000, 2898-Math.cos(68*Math.PI/180)*15000, 25.0e6, 100.0e6)},   // free-flight air start (same formula as reset_ownship)
+	uMerge:{value:new THREE.Vector4(0, 0, 25.0e6, 100.0e6)} };   // joust merge / multiplayer spawn ring (ring=2778 m about the origin)                                               // joust merge / multiplayer spawn ring (ring=2778 m about the origin)
+const CLOUD_FIELD_UNIFORMS=`uniform highp sampler3D tNoise,tDetail;
+		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uDark;
+		uniform vec2 uGate; uniform vec4 uClear,uMerge;`;
+const CLOUD_FIELD=`
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
-		float hg(float c,float g){ float g2=g*g; return (1.0-g2)/pow(1.0+g2-2.0*g*c,1.5); }
 		// Trade-wind cumulus field: flat bases at uBase, most cells capped by the inversion at uTop, a minority of
 		// vigorous cells towering to uHigh (per-cell vigour from low-frequency noise). Density: Perlin-Worley base
 		// remapped by coverage, eroded at the edges by high-frequency Worley — the cauliflower billows.
 		vec4 cellfield(vec2 xz){ vec2 q=vec2((xz.x*0.958+xz.y*0.286)*0.62, -xz.x*0.286+xz.y*0.958);   // cells stretched ~1.6x along the wind: STREETS of distinct cells — stronger stretch fuses them into worm-chains
 			return texture(tNoise, vec3(q*2.0833e-5, 0.37)); }   // ~8 km cell pattern
 		float vigour(vec2 xz){ return cellfield(xz).g; }   // .g drives cell placement; .b/.a (worley octaves at the same fetch — free) become per-cell CHARACTER fields below
-		uniform vec4 uClear[4];   // spawn clearings — see the uniform block
-		float clearing(vec2 xz){ float m=1.0;
-			for(int i=0;i<4;i++){ vec2 cd=xz-uClear[i].xy; m*=smoothstep(uClear[i].z,uClear[i].w,dot(cd,cd)); }
-			return mix(m,1.0,uFlat); }   // stratus overcast keeps its unbroken sheet — a hole punched in an overcast reads as a bug, not a clearing
-		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.52,0.68,vig)), uTop, uFlat); }   // NARROW ramp: height plateaus just inside a vigorous cell, so the flanks rise as near-vertical walls — the old wide ramp (0.48-0.82) made height track the vigour falloff and every tower rendered as a smooth cone
+		float clearing(vec2 xz){ vec2 cd=xz-uClear.xy;   // the free-flight start: no cumulus at all
+			return mix(smoothstep(uClear.z,uClear.w,dot(cd,cd)),1.0,uFlat); }   // stratus overcast keeps its unbroken sheet — a hole punched in an overcast reads as a bug, not a clearing
+		float top_at(float vig, vec2 xz){ vec2 md=xz-uMerge.xy;   // the merge: cumulus, but every cell capped at the inversion, so no tower reaches 15,000 ft
+			return mix(mix(uTop,uHigh,smoothstep(0.52,0.68,vig)*smoothstep(uMerge.z,uMerge.w,dot(md,md))), uTop, uFlat); }   // NARROW ramp: height plateaus just inside a vigorous cell, so the flanks rise as near-vertical walls — the old wide ramp (0.48-0.82) made height track the vigour falloff and every tower rendered as a smooth cone
 		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
-			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // spawn clearings: nothing to march inside them
+			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // the air-start clearing: nothing to march inside it
 				vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
 				vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
 				float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
@@ -555,7 +618,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			vec4 lb=texture(tNoise, sp*9.0e-5+vec3(0.63,0.42,0.11));   // GIANT lobe field, ~2 km features: a few HUGE bulging masses first, billows second, texture last
 			float attach=smoothstep(uGate.x-0.02,uGate.x+0.06,vig);   // perturbations SCULPT existing cells only: unmasked, a strong lobe over near-gate vigour conjures isolated round puffs floating in mid-air with no tower beneath
 			vig=clamp(vig+((lb.g-0.5)*(0.05+0.13*hh)+(w.r-0.5)*0.04)*(1.0-uFlat)*attach,0.0,1.0);   // FLANK TURRETS, two scales: km-class lobes (amplitude growing with height — flat bases, billowing flared heads) + fine 3D scalloping (both TRUE 3D fields — an xz-only field paints vertical cliff striations, found twice)
-			float top=top_at(vig);
+			float top=top_at(vig,p.xz);
 			float tA=smoothstep(0.25,0.75,cf.b), tB=smoothstep(0.25,0.75,cf.a);   // per-cell character (smooth low-frequency fields, same fetch as vigour): every cell no longer bakes from an identical recipe
 			float tallf=smoothstep(uTop,uHigh,top);   // 0 = modest dome, 1 = vigorous tower
 			if(tallf>0.02){   // the HEAD is a cluster of giant turrets, not one dome. The turret field
@@ -602,8 +665,25 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			}
 				d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
 				d=max(smoothstep(0.05,0.52,d), d*0.30);   // sharpen: defined lobe rims instead of uniform wool — but thin margins SURVIVE the knee as translucent veils (the reference photo mixes dense cores with dissipating wisps you can half-see through; a pure knee makes everything opaque)
-			return clamp(d,0.0,1.0)*uDensity*cm;   // cm: spawn clearings thin the fade ring like natural dissipation
+			return clamp(d,0.0,1.0)*uDensity*cm;   // cm: the air-start clearing thins its fade ring like natural dissipation
 		}
+`;
+
+const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, glslVersion:THREE.GLSL3,   // GLSL3 for MRT: the pass writes colour AND a reprojection-depth attachment (explicit outs replace gl_FragColor)
+	uniforms:{ ...cloud_field_uniforms, tDepth:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
+		uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour},
+		uSunGain:{value:1.0}, uDip:{value:0.0}, uDebug:{value:0.0}, uJitter:{value:0.0}, uExposure:{value:1.05},
+		uOvc:{value:0.0}, uOvcT:{value:1.02}, uOvcW:{value:0.28} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv;
+		layout(location=0) out vec4 oColor;   // premultiplied cloud light + transmittance
+		layout(location=1) out vec4 oDepth;   // R: transmittance-weighted mean march distance / 45 km, G: accumulated alpha (validity)
+		uniform sampler2D tDepth;
+		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith,uFog; uniform mat4 uInvVP;
+		uniform float uExposure,uDebug,uJitter,uDip,uOvc,uOvcT,uOvcW,uSunGain;
+		`+CLOUD_FIELD_UNIFORMS+`
+		float hg(float c,float g){ float g2=g*g; return (1.0-g2)/pow(1.0+g2-2.0*g*c,1.5); }
+		`+CLOUD_FIELD+`
 		// The blend layer expects display-encoded premultiplied light; reproduce three's exact ACESFilmic + sRGB.
 		vec3 rrtodt(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
 		vec3 aces(vec3 color){
@@ -650,7 +730,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 								float powder=1.0-exp(-ld*0.028);   // Beer-powder: darkened crinkles on sun-facing billows
 								float sun=(0.22+0.78*powder)*(phv.x*exp(-ld*0.010)+0.45*phv.y*exp(-ld*0.005))
 								         +0.22*phv.z*exp(-ld*0.0022);   // multi-scatter octaves; powder gates the first two — gap-slipping light samples otherwise flood the field white
-								float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig)-uBase),0.0,1.0);
+								float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig,pos.xz)-uBase),0.0,1.0);
 								// Sky-dome ambient: cumulus shadows are BLUE (sky-lit), with a warm whisper
 								// bounced into the bases; both dim deep inside the mass (sun-march depth proxy).
 								vec3 suncol=mix(uSunCol,vec3(1.0),0.25)*uSunGain;   // uSunGain = TOD sun intensity / day: the disc COLOUR barely dims at night (a bright moon), but the light it casts must — without this, moonlit clouds rendered like noon. Clouds see a more NEUTRAL sun than the disc: the warm tint compounds through gain+powder+bounce, and near clouds (no aerial haze to blue them) rendered BROWN against the sky
@@ -715,10 +795,132 @@ function build_cloud_noise(){
 		for(let z=0;z<size;z++){ gen_mat.uniforms.uZ.value=(z+0.5)/size; renderer.setRenderTarget(t3,z); renderer.render(gs,fs_cam); }
 		renderer.setRenderTarget(null); return t3.texture; };
 	cloud_mat.uniforms.tNoise.value=mk(128,0);
-	ocean_mat.uniforms.u_cloudnoise.value=cloud_mat.uniforms.tNoise.value;   // the ocean's cloud shadows sample the same field the raymarcher renders
+	// cloud_shadow_mat shares tNoise/tDetail through cloud_field_uniforms, so the
+	// shadow pass marches the identical field with no second assignment here.
 	cloud_mat.uniforms.tDetail.value=mk(64,1);
 }
 build_cloud_noise();
+
+// ---- cloud shadow map: ground transmittance, marched UP the sun ray ----
+// One world-space patch of beam transmittance, rebuilt on a cadence and read by
+// every ground receiver (the sea, the island, the airfield, the ship). Marching UP
+// from the ground beats building a light-space shadow map, because dens() is
+// analytic everywhere: the march legally walks out of the patch to reach whatever
+// is casting, and at a low sun that matters - a 5,000 m cumulus top at 10° of
+// elevation throws its shadow 28 km downsun. A light-space frustum would have to
+// enclose the caster, and at 1° there is nothing finite to enclose.
+// R: beam transmittance exp(-tau). Near-BINARY, and correctly so - cloud is opaque
+// over tens of metres, which is why a real cumulus shadow has a sharp edge. The
+// bilinear filter softens it over one 49 m texel: wider than the sun's ~17 m
+// penumbra, about the width of a real cloud's own ragged margin.
+// Stratus is not marched at all. A deck's column density measured flat - median and
+// 90th percentile both 0.749 of a full column, 10th 0.71, on every deck and patch -
+// because the deck saturates dens(): the striations in its sky are lighting and
+// erosion in the view march, not optical depth. Multiple scattering would blur what
+// little there is over one to two deck heights anyway, so an overcast darkens land
+// and sea UNIFORMLY, from apply_light_balance and u_shadow_level alone.
+const CLOUD_SHADOW_RESOLUTION=[512,512,1024,1024];   // by effects_quality
+const CLOUD_SHADOW_CADENCE=[4,3,2,2];                // frames between rebuilds: the map is world-space, so camera motion never stales it, and the field drifts at 8 m/s - well under one 49 m texel in 4 frames, so rebuilding every frame buys nothing visible at any quality
+const CLOUD_SHADOW_EXTENT=50000;   // one patch at EVERY altitude, sized to the sea's haze rather than to the view: the rim sits 25 km out, where the sea is 90% fogged (1-exp(-(6e-5 r)^2)) at any slant range, so it is hidden by construction - the cloud march's own 90 km cutoff works the same way. A smaller patch leaves shadows stopping at a line under clouds that are still plainly drawn; 49 m texels still resolve a km-scale cloud shadow
+let rt_shadow=null, shadow_frame=0, shadow_fill:number|null=null;   // shadow_fill: dev only, see dev_clouds
+const cloud_shadow_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
+	uniforms:{ ...cloud_field_uniforms, uSun:{value:sun_dir}, uPatch:{value:cloud_shadow_uniforms.u_shadow_patch.value} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv; uniform vec3 uSun; uniform vec4 uPatch;
+		`+CLOUD_FIELD_UNIFORMS+`
+		`+CLOUD_FIELD+`
+		void main(){
+			vec2 xz=uPatch.xy+(vUv-0.5)*uPatch.z;
+			float ly=max(uSun.y,0.05);   // a FLOOR, not the projection clamp this replaces: below ~3° the whole pass is faded out by apply_clouds instead, because the march length runs away as 1/sin and the beam it would gate has already gone
+			float slabTop=uHigh;   // only cumulus is marched (uFlat is 0 here)
+			float t0=uBase/ly, path=(slabTop-uBase)/ly;   // ground at y=0 -> slab entry, then straight through
+			int n=int(clamp(path/260.0,4.0,20.0));   // ~260 m target stride: 19 samples through the 4,400 m cumulus slab at 60°; below ~50° the cap holds at 20 and the stride lengthens instead
+			float dt=path/float(n), depth=0.0;
+			for(int i=0;i<20;i++){ if(i>=n) break;
+				depth+=dens(vec3(xz.x,0.0,xz.y)+uSun*(t0+(float(i)+0.5)*dt), 0.8)*dt; }   // lod 0.8 skips the two fine erosion octaves: their features are smaller than one shadow texel and would only shimmer
+			gl_FragColor=vec4(exp(-depth*0.09), 0.0, 0.0, 1.0); }` });   // 0.09: the raymarcher's own per-metre extinction, so the shadow agrees with the cloud casting it
+const cloud_shadow_scene=new THREE.Scene(); cloud_shadow_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cloud_shadow_mat));
+function cloud_shadow_render(){   // from render_frame, while clouds are active
+	const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), size=CLOUD_SHADOW_RESOLUTION[q];
+	if(!rt_shadow||rt_shadow.width!==size){ if(rt_shadow) rt_shadow.dispose();
+		rt_shadow=new THREE.WebGLRenderTarget(size,size,{depthBuffer:false});
+		rt_shadow.texture.minFilter=THREE.LinearFilter; rt_shadow.texture.magFilter=THREE.LinearFilter;   // bilinear: the patch is far coarser than the screen, and a nearest fetch shows its texels as blocks on the sea - it is also what supplies the penumbra
+		cloud_shadow_uniforms.u_shadow.value=rt_shadow.texture; shadow_frame=0; }
+	if(shadow_frame++%CLOUD_SHADOW_CADENCE[q]!==0) return;   // between rebuilds the receivers keep reading the map's OWN centre and extent, so a stale map is merely off-centre by metres, never misregistered
+	const texel=CLOUD_SHADOW_EXTENT/size, patch=cloud_shadow_uniforms.u_shadow_patch.value;
+	patch.x=Math.round(camera.position.x/texel)*texel; patch.y=Math.round(camera.position.z/texel)*texel; patch.z=CLOUD_SHADOW_EXTENT;   // snapped to the texel grid: unsnapped, every frame's sub-texel shift makes the whole field crawl
+	const target=renderer.getRenderTarget();
+	renderer.setRenderTarget(rt_shadow); renderer.render(cloud_shadow_scene,fs_cam);
+	if(DEV_MODE&&shadow_fill!==null){ const keep=renderer.getClearColor(new THREE.Color()), alpha=renderer.getClearAlpha();
+		renderer.setClearColor(new THREE.Color(shadow_fill,0,0),1); renderer.clear(true,false,false); renderer.setClearColor(keep,alpha); }
+	renderer.setRenderTarget(target);
+}
+// dev: switch the preset live, the camera staying where it is. dev_approach does the
+// same but also parks the jet on the carrier glideslope, which takes an island A/B out
+// of view. clock is the shared drift clock: it only advances while the cloud path is
+// rendering, so two reads a moment apart are the readiness signal for a PARKED jet,
+// where dev_nav's position never moves. fill pins the shadow map's transmittance to 0
+// (fully shadowed) or 1 (open) over the whole patch, so a probe can judge a RECEIVER
+// against a known map wherever the jet is, whatever the real cloud overhead; null
+// marches the field again.
+if(DEV_MODE) (globalThis as any).dev_clouds=(name?:string|null, fill?:number|null)=>{
+	if(name!==undefined&&name!==null){ cfg.clouds=name; apply_clouds(); hist_valid=false; }
+	if(fill!==undefined){ shadow_fill=fill; shadow_frame=0; }
+	return { clouds:cfg.clouds, clock:cloud_field_uniforms.uTime.value, active:!!cloud_active(), fill:shadow_fill }; };
+// dev: march the shadow map at an ARBITRARY patch and read it back, so a probe can
+// assert the field where the cloud actually is instead of having to fly there —
+// the free-flight start sits in a clearing, so the patch around it is legitimately empty.
+if(DEV_MODE) (globalThis as any).dev_shadow=(x:number,z:number,extent:number)=>{
+	cloud_shadow_render(); if(!rt_shadow) return null;
+	const size=rt_shadow.width, patch=cloud_shadow_uniforms.u_shadow_patch.value, keep=patch.clone();
+	patch.set(x,z,extent,patch.w);
+	const target=renderer.getRenderTarget();
+	renderer.setRenderTarget(rt_shadow); renderer.render(cloud_shadow_scene,fs_cam);
+	const pixels=new Uint8Array(size*size*4); renderer.readRenderTargetPixels(rt_shadow,0,0,size,size,pixels);
+	renderer.setRenderTarget(target); patch.copy(keep); shadow_frame=0;   // the map now holds the PROBE's patch: rebuild at the camera's on the next frame
+	const count=size*size; let transmittance=0, shadowed=0;
+	for(let i=0;i<count;i++){ const beam=pixels[i*4]/255; transmittance+=beam; if(beam<0.5) shadowed++; }
+	return { transmittance:transmittance/count, shadowed:shadowed/count, strength:patch.w,
+		level:[cloud_shadow_uniforms.u_shadow_level.value.x,cloud_shadow_uniforms.u_shadow_level.value.y],
+		compiles:{ ...cloud_shadow_compiles }, receivers:cloud_shadow_receivers.size,
+		ambient:[cloud_shadow_uniforms.u_shadow_ambient.value.x,cloud_shadow_uniforms.u_shadow_ambient.value.y],
+		deck:[cloud_shadow_uniforms.u_shadow_deck.value.x,cloud_shadow_uniforms.u_shadow_deck.value.y,cloud_shadow_uniforms.u_shadow_deck.value.z],
+		light:{ sun:sun.intensity, hemi:hemi.intensity, ambient:amb.intensity } };
+};
+// Ground receivers. Land, the airfield, the buildings and the ship are
+// MeshStandardMaterial, so the cloud lighting is injected into three's own: the beam
+// is gated where the map says cumulus stands between this point and the sun, or where
+// the point is beneath an overcast deck, and the ambient takes apply_light_balance's
+// scale - lifted in a cumulus field, greyed and held at the deck's level below an
+// overcast. All of it keys off world position, so a material that is NOT a receiver
+// keeps plain clear-sky lighting rather than inheriting the ground's. Aircraft are
+// not receivers yet: under an overcast the altitude gate above would light them
+// correctly as it stands, but a cumulus shadow on a jet inside the layer needs a
+// partial integral through the slab, not this ground map.
+const cloud_shadow_receivers=new Set();
+const cloud_shadow_compiles={ injected:0, missed:0 };   // read by dev_shadow: a missed token only reaches console.warn, which a headless probe never sees
+function cloud_shadow_receive(material){ if(!material||cloud_shadow_receivers.has(material)) return material;
+	cloud_shadow_receivers.add(material);
+	material.onBeforeCompile=(sh)=>{
+		for(const key in cloud_shadow_uniforms) sh.uniforms[key]=cloud_shadow_uniforms[key];
+		sh.vertexShader="varying vec3 v_shadow_world;\n"+sh.vertexShader
+			.replace("#include <project_vertex>","#include <project_vertex>\n\tv_shadow_world=(modelMatrix*vec4(transformed,1.0)).xyz;");
+		// onBeforeCompile runs BEFORE three expands #include chunks, so the beam gate cannot
+		// be spliced into the directional-light loop by name: the loop is still one
+		// unexpanded "#include <lights_fragment_begin>" line. The chunk is inlined here with
+		// the gate already in it - a replace aimed at the loop's own text would match
+		// nothing and fail silently.
+		const begin=THREE.ShaderChunk.lights_fragment_begin.replace("getDirectionalLightInfo( directionalLight, directLight );","getDirectionalLightInfo( directionalLight, directLight );\n\t\tdirectLight.color*=shadow_beam;");
+		sh.fragmentShader="varying vec3 v_shadow_world;\n"+CLOUD_SHADOW_RESOLVE+"\n"+sh.fragmentShader
+			.replace("#include <lights_fragment_begin>","float shadow_below=cloud_shadow_below(v_shadow_world), shadow_beam=cloud_shadow_open(v_shadow_world)*(1.0-shadow_below);\n"+begin)
+			.replace("#include <lights_fragment_end>","irradiance=mix(irradiance,vec3(dot(irradiance,vec3(0.2126,0.7152,0.0722))),0.85*shadow_below)*mix(u_shadow_ambient.x,u_shadow_ambient.y,shadow_below);   // below a deck the illuminant is grey cloud, not blue sky: luminance-preserving, at the sea's own 0.85 overcast greying\n\t#include <lights_fragment_end>");
+		// Every token targets THREE r160's exact chunk text, as the sized-particle
+		// injection does; a reworded upgrade would otherwise drop cloud shadows silently.
+		const landed=sh.vertexShader.includes("v_shadow_world=(modelMatrix")&&sh.fragmentShader.includes("directLight.color*=shadow_beam")&&sh.fragmentShader.includes("irradiance=mix(irradiance");
+		cloud_shadow_compiles[landed?"injected":"missed"]++;
+		if(!landed) console.warn("cloud shadow injection missed a token — THREE chunk text changed; land is NOT receiving cloud shadows");
+	};
+	return material; }
 const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, transparent:true,
 	blending:THREE.CustomBlending, blendSrc:THREE.OneFactor, blendDst:THREE.OneMinusSrcAlphaFactor,   // canvas = cloud.rgb + canvas*tr — the same premultiplied maths the RT composite used, done by the blender over the DIRECT scene render
 	uniforms:{ tCloud:{value:null}, tDepthLow:{value:null}, tDepthHigh:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)}, uNear:{value:0.1}, uFar:{value:130000.0} },
@@ -794,6 +996,7 @@ function render_frame(){
 		cloud_mat.uniforms.uCamPos.value.copy(camera.position); cloud_mat.uniforms.uInvVP.value.copy(invVP);
 		cloud_mat.uniforms.uJitter.value=(++cloud_frame*0.61803398875)%1;   // golden-ratio jitter sequence for the march offsets — see the accumulation pass
 		cloud_mat.uniforms.uTime.value=(MULTIPLAYER&&net&&net.time)?net.time():sim_time;   // multiplayer: clouds drift on the SHARED session clock — a local mission clock puts every player's cloud field in a different place, and hiding in cloud must mean the same cloud for everyone
+		if(cloud_shadow_uniforms.u_shadow_patch.value.w>0.0) cloud_shadow_render();   // before the VISIBLE scene render below, and after the shared cloud clock above: the sea and the land sample the map in the same frame the cloud above them is marched
 		renderer.setRenderTarget(rt_march); renderer.render(fs_scene,fs_cam);   // the raymarch (colour + reprojection depth)
 		const hr=1-hist_write;
 		acc_mat.uniforms.tCur.value=rt_march.texture[0]; acc_mat.uniforms.tAux.value=rt_march.texture[1]; acc_mat.uniforms.tHist.value=rt_hist[hr].texture;
@@ -2284,7 +2487,7 @@ async function init_carrier_model(){
 			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch{ /* texture optional */ } }
 			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch{ /* texture optional */ } }
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
-				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
+				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
 			carrier_model=grp; scene.add(grp);
 			/* procedural carrier removed; nothing to hide */
 			const yd=(SHIP.yaw-(SHIP.bow??90))*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading (yaw - bow: the deck-ops frame, see the nimitz config)
@@ -2868,8 +3071,8 @@ const HARBOUR={minx:140,maxx:720,minz:2430,maxz:2725}, QUAY=2.0, QUAY_APRON=5;  
 function in_harbour(x,z){ return x>HARBOUR.minx&&x<HARBOUR.maxx&&z>HARBOUR.minz&&z<HARBOUR.maxz; }
 function build_islands(polygons, ground, half){
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
-	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
-	const skirtMat=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0,side:THREE.DoubleSide});   // the same imagery flows down the beach (its surf/shallow pixels land on the slope)
+	const material=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0}));   // Sentinel-2 imagery, planar-mapped by world position
+	const skirtMat=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0,side:THREE.DoubleSide}));   // the same imagery flows down the beach (its surf/shallow pixels land on the slope)
 	for(const polygon of island_polygons){
 		const shape=new THREE.Shape(); shape.moveTo(polygon[0][0],-polygon[0][1]); for(let i=1;i<polygon.length;i++) shape.lineTo(polygon[i][0],-polygon[i][1]);   // shape (x,-z): after rotateX the island rises +y, z un-mirrored
 		const geometry=new THREE.ExtrudeGeometry(shape,{depth:ISLAND_H,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
@@ -2948,7 +3151,7 @@ function merge_uv(geos){   // merge_geometries drops uv; this keeps position+nor
 function build_airfield(af){
 	obstacles.aprons=(af.aprons||[]).map(a=>a.points);   // apron polygons double as a landing surface at apron height
 	const tex=asphalt_texture();
-	const asphalt=new THREE.MeshStandardMaterial({map:tex,roughness:0.96,metalness:0.0,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+	const asphalt=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:tex,roughness:0.96,metalness:0.0,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
 	// all ground surfaces (aprons + taxiways + stopways) merged into ONE mesh at ONE height. Floats ~1.5 m above the
 	// island: read fine for the runway/taxiways; the apron area keeps some z-fighting we accept (buildings cover it, #49).
 	const gy=ISLAND_H+AIRFIELD_FLOAT;
@@ -3037,12 +3240,12 @@ function rectangularity(pts){   // footprint area / oriented-bounding-box area (
 function build_buildings(af){   // OSM footprints → textured walls + gable/flat roofs on the island
 	if(!af.buildings || !af.buildings.length) return;
 	const wallTex=wall_texture();
-	const litMat=em=>{ const m=new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05,emissive:0xffffff,emissiveIntensity:0,emissiveMap:em}); window_mats.push(m); return m; };   // lit windows appear at night (emissiveIntensity toggled in update_papi)
+	const litMat=em=>{ const m=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05,emissive:0xffffff,emissiveIntensity:0,emissiveMap:em})); window_mats.push(m); return m; };   // lit windows appear at night (emissiveIntensity toggled in update_papi)
 	const wallMat=litMat(wall_emissive(false)), fullMat=litMat(wall_emissive(true));   // most buildings: a random scatter of lit windows; a few: every window lit
-	const darkMat=new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05});   // ~a quarter of buildings are completely dark
-	const tankMat=new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.6,metalness:0.4});   // storage tanks: bare corrugated metal, no windows, never lit
-	const roofMat=new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.7,metalness:0.3});     // light metal roof
-	const hangarMat=new THREE.MeshStandardMaterial({map:roof_texture(true),roughness:0.65,metalness:0.35});  // dark metal (hangar)
+	const darkMat=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05}));   // ~a quarter of buildings are completely dark
+	const tankMat=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.6,metalness:0.4}));   // storage tanks: bare corrugated metal, no windows, never lit
+	const roofMat=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.7,metalness:0.3}));     // light metal roof
+	const hangarMat=cloud_shadow_receive(new THREE.MeshStandardMaterial({map:roof_texture(true),roughness:0.65,metalness:0.35}));  // dark metal (hangar)
 	const walls=[], fulls=[], darks=[], tanks=[], roofs=[], hroofs=[];
 	for(const b of af.buildings){
 		let pts=b.points; if(pts.length>3 && pts[0][0]===pts[pts.length-1][0] && pts[0][1]===pts[pts.length-1][1]) pts=pts.slice(0,-1);
@@ -3099,14 +3302,14 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 	const nPlus=number_plus??(Math.round(hdeg/10)%36||36);                   // painted number for heading H (override for magnetic-based names, e.g. Midway 06/24)
 	const nMinus=number_minus??(Math.round(((hdeg+180)%360)/10)%36||36);     // the reciprocal end
 	// runway surface (local +y == fwd == the +y/canvas-top end; nMinus is painted there, nPlus at the -y end)
-	const rmesh=new THREE.Mesh(new THREE.PlaneGeometry(W,L),new THREE.MeshStandardMaterial({map:runway_texture(nMinus,nPlus),roughness:0.95,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+	const rmesh=new THREE.Mesh(new THREE.PlaneGeometry(W,L),cloud_shadow_receive(new THREE.MeshStandardMaterial({map:runway_texture(nMinus,nPlus),roughness:0.95,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2})));
 	rmesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(right,fwd,up));
 	rmesh.position.set(o.x,y,o.z); rmesh.receiveShadow=true; scene.add(rmesh);
 	// control tower (concrete base + glass cab + roof), offset to the side near midfield
 	if(tower){
 	const tp=new THREE.Vector3(o.x,0,o.z).addScaledVector(right,110).addScaledVector(fwd,150);
 	const tg=[]; tg.push(new THREE.CylinderGeometry(6,8,34,12).translate(tp.x,o.h+17,tp.z));
-	const base=new THREE.Mesh(merge_geometries(tg),new THREE.MeshStandardMaterial({color:0xbfc4c8,roughness:0.8})); base.castShadow=true; scene.add(base);
+	const base=new THREE.Mesh(merge_geometries(tg),cloud_shadow_receive(new THREE.MeshStandardMaterial({color:0xbfc4c8,roughness:0.8}))); base.castShadow=true; scene.add(base);
 	const cab=new THREE.Mesh(new THREE.CylinderGeometry(9,7.5,7,12),new THREE.MeshStandardMaterial({color:0x1c2024,metalness:0.4,roughness:0.4})); cab.position.set(tp.x,o.h+37,tp.z); scene.add(cab);
 	const roof=new THREE.Mesh(new THREE.CylinderGeometry(10,10,1.5,12),new THREE.MeshStandardMaterial({color:0x44494e})); roof.position.set(tp.x,o.h+41,tp.z); scene.add(roof);
 	for(const [phase,col] of [[0,0xffffff],[1,0x28ff40]]){ const b=glow_points([tp.x,o.h+42.6,tp.z],col,9); b.userData.phase=phase; b.visible=false; beacon_lights.push(b); }   // aerodrome beacon on the cab roof: alternating white/green at night
@@ -6536,7 +6739,7 @@ if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 	let submit_ms=0;
 	const raw_render=renderer.render.bind(renderer);
 	renderer.render=(s,c)=>{ const t0=performance.now(); raw_render(s,c); submit_ms+=performance.now()-t0; };
-	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds,   // i18n-format-ok: developer benchmark payload, never shown to a user
+	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds, shadow:cloud_shadow_uniforms.u_shadow_patch.value.w>0, effects:cfg.effects_quality,   // i18n-format-ok: developer benchmark payload, never shown to a user
 		acc_submit:+submit_ms.toFixed(1), draws:renderer.info.render.calls, tris:renderer.info.render.triangles, progs:(renderer.info.programs||[]).length, texs:renderer.info.memory.textures, geoms:renderer.info.memory.geometries }));   // i18n-format-ok: developer benchmark payload, never shown to a user
 }
 
