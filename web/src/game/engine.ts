@@ -3872,15 +3872,15 @@ function hints_carrier(st){
 	const rx=wrap_axis(ownship.pos.x-CARRIER.x), rz=wrap_axis(ownship.pos.z-CARRIER.z);
 	const range=Math.hypot(rx,rz);
 	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
-	// The recovery set coaches inside the pattern, the way the field's does
-	// inside its own 6 NM (#204). Keyed on the mission start this needed no
-	// guard - only a jet spawned on the approach ever ran it - but on proximity
-	// any mission that is merely nearer the ship than the island arrives here,
-	// and the ungated lines (the on-speed donut has no geometry of its own)
-	// fired on a jet 6 NM out and heading away, spending a one-shot it would
-	// want on the real approach.
-	if(range>6*1852) return;
-	if(kase==="case1"){
+	// The visual pattern coaches inside 6 NM, the way the field's does inside
+	// its own (#204). On proximity any mission that is merely nearer the ship
+	// than the island arrives here, and the pattern's ungated lines (the
+	// on-speed donut has no geometry of its own) fired on a jet 6 NM out and
+	// heading away, spending a one-shot it would want on the real approach.
+	// The guard is the pattern's alone: Case II gates on its own ranges, and
+	// the Case III rungs follow the marshal procedure, which commences at 20 NM
+	// and dirties up at 10 - a ship-wide 6 NM return left all of them dark.
+	if(kase==="case1"&&range<=6*1852){
 		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
 		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
 		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
