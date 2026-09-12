@@ -3671,8 +3671,18 @@ const HINT={
 	papi:"Final: the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point",
 	rollout:"Touchdown: throttle idle; hold the nose at 10° to aerobrake, lower it at 100 knots and brake",
 	around:"Go around: full power, boards in, wings level, climb straight ahead to 600'",
+	// The catapult launch. The deck half of a carrier sortie had two centre
+	// banner prompts and no coaching at all, so the one thing about it a pilot
+	// cannot guess — that the jet flies ITSELF off the cat, and pulling makes
+	// it worse — was never taught. Power follows the same weight board the
+	// kneeboard reads (NATOPS 8.2.7): MAX is required at 45,000 lb and above,
+	// below it the technique is the pilot's choice and military is the call.
+	tension:"Hooked up: brakes off, wipe out the controls, run up to military power",
+	salute:"Hands off flight controls, press Enter to salute and launch",
+	flyaway:"Hands on controls, let the jet fly away at 16\u00b0 nose up",   // the trim board row this jet launches in (fa18c.go Control.Flyaway); the law captures it, the pilot does not fly it
 };
 const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
+const LAUNCH=[HINT.tension,HINT.salute,HINT.flyaway,HINT.cleanup];   // the deck set: its last line is the clean-up, which nothing downstream replaces, so leaving the ship has to retire it (#189)
 const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.ninety,HINT.papi,HINT.rollout,HINT.around];   // the field circuit (#91): re-armed by a go-around, so a touch-and-go session is coached every pattern
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
@@ -3727,7 +3737,7 @@ function hint_retire(...keys){ if(hint_key!=null&&keys.indexOf(hint_key)>=0) hin
 // needs the first (it never turns). Distance cannot serve either one: the box
 // edge at 2,200 m falls inside the climb through 500-1,150 ft, and the 6 NM /
 // 3,000 ft guard is further still than a circuit ever goes.
-let field_left=false;
+let field_left=false, ship_left=false;   // left the surface the mission STARTED from: until then the arrival set for that surface is a jet being told to land on the runway it is rolling down (#196), or to break over the ship it just launched from (#204)
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
 // The field's roll-out headings, from the airfield the map built — the #90
@@ -3746,7 +3756,7 @@ function hints_runway(st){
 	const feet=(ownship.pos.y-ap.sy)*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
 	const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the runway, -1 downwind
 	if(on_ground()){
-		if(hinted[HINT.papi]&&ownship.speed>35){ hint(HINT.rollout); return; }
+		if((hinted[HINT.papi]||hinted[HINT.donut])&&ownship.speed>35){ hint(HINT.rollout); return; }   // donut as well as papi: an arrival that was coached on-speed but never got a final still touches down, and the aerobrake line is the one that matters on the rollout. Neither can have fired before a takeoff roll - the arrival chain is unreachable on the ground - so this cannot mistake a departure for a landing
 		if(ownship.speed<4) hint_retire(HINT.rollout);   // stopped: the aerobrake is flown and the line is stale
 		if(st!=="runway"||hinted[HINT.rollout]) return;
 		if(ownship.speed<4&&over_runway(ownship.pos)) hint(HINT.lineup,"Runway "+runway_heading()+": half flaps, trim set; run up to military power, brakes off");
@@ -3782,20 +3792,95 @@ function hints_runway(st){
 	// the other entry: on the reciprocal, at pattern height, beside the field.
 	const circuit=fdot<-0.7&&feet>350&&feet<1150&&lateral<3200;
 	if(hinted[HINT.brk]||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
+	// The third way in (#205). The initial wants the jet OVER the field at
+	// pattern height and the circuit wants the reciprocal, so a straight-in -
+	// on the runway axis, miles out, descending - reached neither, and because
+	// every later rung chains off those two the whole set stayed dark through
+	// the touchdown line. It is how a pilot arrives from anywhere else: back
+	// from the ship, out of a fight, off a ferry. It joins at the configuration
+	// rung, since there is no break, no downwind and no 90 to coach.
+	// The far gate is 2,500 m, not the 1,200 the first cut used: a closed
+	// pattern's UPWIND leg is the same geometry as a straight-in - on the
+	// runway heading, short of the threshold, at pattern height - and at 1,200
+	// the two overlapped, so the climb-out consumed the dirty-up call and the
+	// downwind that followed had nothing left to give (runwaycheck went 24/25).
+	// A pattern never reaches 2,500 m out on the runway heading; a straight-in
+	// is coached from there inward, which is where the configuration call belongs.
+	const straight=fdot>0.7&&lateral<900&&along<-2500&&along>-9000&&feet>150&&feet<2500;
+	if(straight&&!hinted[HINT.initial]&&!hinted[HINT.downwind]){
+		if(!down&&kt<285) hint(HINT.dirty);
+		else if(down) hint(HINT.donut); }
 	if((hinted[HINT.brk]||hinted[HINT.downwind])&&kt<285&&!down) hint(HINT.dirty);
 	if(hinted[HINT.dirty]&&down) hint(HINT.donut);
 	if(down&&fdot<-0.5&&along<300&&along>-1800&&lateral>400&&lateral<3200) hint(HINT.numbers);   // 400 m, not 900: the floor is there to say BESIDE the runway rather than over it, and a 60 m strip is cleared long before half a mile — a tight pattern flown inside 900 sailed straight past the abeam call (#198)
 	if(hinted[HINT.numbers]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
-	if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.papi,"Final: runway heading "+runway_heading()+"; the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point");
+	// The pattern rolls into the groove out of the 90; the straight-in is
+	// already on the line and reads the PAPI from a good deal further out.
+	const groove=hinted[HINT.ninety]?(fdot>0.55&&feet<430):(straight&&hinted[HINT.donut]&&fdot>0.7&&feet<900);
+	if(groove) hint(HINT.papi,"Final: runway heading "+runway_heading()+"; the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point");
 }
+// Which set coaches is decided by WHERE THE JET IS, not by how the mission
+// started (#204, ruled 2026-09-12). Departure is the one exception and stays
+// with the start, because a jet can only depart the surface it began on.
+// Keying the whole thing on the Start selector is what left a carrier launch
+// to an island landing uncoached from end to end, and what left a deck-start
+// bolter holding a line nothing could retire (#190): the case split asked how
+// the sortie began when the only question that matters is what lies ahead.
 function hints_watch(){ if(cfg.hints===false||!running) return;
-	const st=mission_start();
-	if(st!=="case1"&&st!=="case2"&&st!=="case3"){ hints_runway(st); return; }
+	const st=mission_start(), ap=airports[0];
+	const ship=Math.hypot(wrap_axis(ownship.pos.x-CARRIER.x),wrap_axis(ownship.pos.z-CARRIER.z));
+	const field=ap?Math.hypot(wrap_axis(ownship.pos.x-ap.start.x),wrap_axis(ownship.pos.z-ap.start.z)):Infinity;
+	if(!ship_left&&(ship>3*1852||(ownship.pos.y-CARRIER.deckY)*3.28084>1500)) ship_left=true;
+	// Retiring a set's last line belongs HERE, not inside the set, because a
+	// pilot leaves a pattern by flying away from it - which is the moment
+	// proximity hands the coaching to the other surface. Left in the case I
+	// branch, the ship's retirement became unreachable the instant the island
+	// was the nearer of the two, and the 45 stood on the glass 15 NM out.
+	if(ship>6*1852) hint_retire(...CIRCUIT,HINT.side,...LAUNCH);
+	if(field>6*1852) hint_retire(...RUNWAY);
+	// A deck launch is coached by the launch set until it has left the ship;
+	// only then does proximity decide, and the recovery pattern becomes
+	// reachable. Without that the Case I set would open on a jet in the
+	// holdback and tell it to break over a bow it has not crossed.
+	if(st==="carrier"&&!ship_left) return hints_launch();
+	if(field<=ship) hints_runway(st); else hints_carrier(st);
+}
+// The catapult launch, from the holdback to the clean-up. Keyed on the START,
+// like every departure: a jet can only be shot off the ship it began on.
+function hints_launch(){
+	const ls=launch_status();
+	if(ls===1) hint(HINT.tension,"Hooked up: brakes off, wipe out the controls, run up to "+(gross_weight()>=45000?"full afterburner":"military power"));   // NATOPS 8.2.7 weight board, the same rule the kneeboard's CAT line reads
+	if(ls===2) hint(HINT.salute);
+	// Hands come OFF for the stroke (the salute line) and back ON once the jet
+	// is flying. The flyaway capture holds the attitude either way (#197), so
+	// the coaching is to let it: aft stick off the cat fights the law that is
+	// already flying the jet away.
+	// Height above the DECK, not on_ground(): a jet spotted on the cat reads as
+	// airborne (ownship.grounded is not set for a carrier deck), so gating the
+	// hands-off call on on_ground() raised it while the jet was still sitting
+	// in the holdback at 28 knots - a call about a shot that had not happened.
+	const up=(ownship.pos.y-CARRIER.deckY)*3.28084;
+	if(hinted[HINT.salute]&&up>50) hint(HINT.flyaway,"Hands on controls, let the jet fly away at 16\u00b0 nose up, heading "+ship_course());
+	if(hinted[HINT.flyaway]&&up>200) hint(HINT.cleanup);
+}
+function hints_carrier(st){
 	if(on_ground()) return;
+	// The case start says which recovery was BRIEFED. A mission that briefed
+	// none - a deck launch, a runway departure, a free flight - still flies the
+	// visual pattern home, so it is coached as Case I rather than not at all.
+	const kase=(st==="case2"||st==="case3")?st:"case1";
 	const rx=wrap_axis(ownship.pos.x-CARRIER.x), rz=wrap_axis(ownship.pos.z-CARRIER.z);
 	const range=Math.hypot(rx,rz);
 	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
-	if(st==="case1"){
+	// The recovery set coaches inside the pattern, the way the field's does
+	// inside its own 6 NM (#204). Keyed on the mission start this needed no
+	// guard - only a jet spawned on the approach ever ran it - but on proximity
+	// any mission that is merely nearer the ship than the island arrives here,
+	// and the ungated lines (the on-speed donut has no geometry of its own)
+	// fired on a jet 6 NM out and heading away, spending a one-shot it would
+	// want on the real approach.
+	if(range>6*1852) return;
+	if(kase==="case1"){
 		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
 		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
 		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
@@ -3808,11 +3893,10 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
 		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty,"The 45: 325-375'; straighten into the groove, "+ship_groove()+", look for the ball, fly the ball with power");
-		if(range>6*1852) hint_retire(HINT.side,HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.ball,HINT.bolt,HINT.wave);   // the pattern is 1 NM wide: 6 out is an abandoned circuit, not a groove
 	}
-	if(st==="case2"&&range<5*1852) hint(HINT.needle);
-	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
-	if(st==="case3"&&marshal){
+	if(kase==="case2"&&range<5*1852) hint(HINT.needle);
+	if(kase==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
+	if(kase==="case3"&&marshal){
 		if(marshal.commenced) hint(HINT.push,"Commencing: turn inbound "+ship_groove()+", 250 knots, 4000 FPM down to platform at 5000'");
 		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
 		if(marshal.platform) hint(HINT.level);
@@ -5440,7 +5524,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={}; hint_rows=hint_key=null; field_left=false;   // and the flight hints (#70)
+	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false;   // and the flight hints (#70)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
@@ -5929,7 +6013,11 @@ function draw_hud(){
 			const cursor_y=deck_y_at(carrier_model,bx,bz,-1e9);   // the measuring cursor belongs to the DECK: off the ship the fallback (deck height) hangs it in the sky over the island runway
 			dev_cursor.position.set(bx, cursor_y+0.06, bz); dev_cursor.visible=cursor_y>-1e8; }
 		}
-	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
+	// The launch prompts are COACHING now (the launch hint set), so the centre
+	// banner keeps them only for a pilot who has turned coaching off — without
+	// that fallback, hints=off leaves a jet sitting on the cat with nothing on
+	// screen saying which key fires the shot.
+	if(net_notice_t<=0&&cfg.hints===false){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px monospace";
 	hctx.textAlign="center"; hctx.textBaseline="middle";
