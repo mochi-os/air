@@ -3637,7 +3637,7 @@ const HINT={
 	brk:"Break: level turn, throttle idle, speed brake out; pull 1 g per 100 knots",
 	roll:"Roll out beside the ship 0.9 to 1.1 NM out",
 	form:"Below 250 knots: gear, full flaps, hook; descend to 600' and slow to on-speed",
-	donut:"On-speed is 8.1 alpha: trim until the amber donut lights beside the HUD; fly speed with trim, height with power",
+	donut:"Trim for amber light beside HUD (8.1° AOA), power for height",
 	wing:"Level at 600' downwind; keep the ship 0.9 to 1.1 NM off your wing",
 	abeam:"Ship abeam: bank 27-30\u00b0, start down at 200-300 FPM",
 	ninety:"The 90: 450', 500 FPM",
@@ -3668,7 +3668,7 @@ const HINT={
 	downwind:"Roll out downwind, a mile abeam the runway",
 	dirty:"Below 250 knots: gear, full flaps; descend to 600' and slow to on-speed",
 	numbers:"Abeam the numbers at 600': bank 27-30°, start down at 200-300 FPM",
-	papi:"Final: the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point",
+	papi:"Final: power for two red, two white on PAPI",
 	rollout:"Touchdown: throttle idle; hold the nose at 10° to aerobrake, lower it at 100 knots and brake",
 	around:"Go around: full power, boards in, wings level, climb straight ahead to 600'",
 	// The catapult launch. The deck half of a carrier sortie had two centre
@@ -3817,7 +3817,7 @@ function hints_runway(st){
 	// The pattern rolls into the groove out of the 90; the straight-in is
 	// already on the line and reads the PAPI from a good deal further out.
 	const groove=hinted[HINT.ninety]?(fdot>0.55&&feet<430):(straight&&hinted[HINT.donut]&&fdot>0.7&&feet<900);
-	if(groove) hint(HINT.papi,"Final: runway heading "+runway_heading()+"; the PAPI beside the touchdown zone shows two red, two white on glidepath; fly it on-speed to the aim point");
+	if(groove) hint(HINT.papi,"Final: runway heading "+runway_heading()+", power for two red, two white on PAPI");
 }
 // Which set coaches is decided by WHERE THE JET IS, not by how the mission
 // started (#204, ruled 2026-09-12). Departure is the one exception and stays
@@ -4411,7 +4411,8 @@ function cautions_update(){
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
 	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
-let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
+let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
+let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
 let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
@@ -4465,7 +4466,7 @@ if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownsh
 	const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 	return { x:+ownship.pos.x.toFixed(1), z:+ownship.pos.z.toFixed(1), alt:+(ownship.pos.y*3.28084).toFixed(0), hdg:+hdg.toFixed(1), bank:+bank.toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		kcas:+((ownship.cas??ownship.speed)*1.94384).toFixed(0), vy:+(ownship.vely??0).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
-		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2),  // i18n-format-ok: dev probe payload, never rendered to a user
+		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2), throttle:+(ownship.throttle??0).toFixed(2), burner:+(ownship.burner??0).toFixed(2),  // i18n-format-ok: dev probe payload, never rendered to a user
 		grounded:!!ownship.grounded, trapped:!!ownship.trapped, crash:crash_t>0,
 		line:{ ax:+a.x.toFixed(1), az:+a.z.toFixed(1), bx:+b.x.toFixed(1), bz:+b.z.toFixed(1), deck:+(CARRIER.deckY||20).toFixed(1) } };  // i18n-format-ok: dev probe payload, never rendered to a user
 };   // dev (#89): the navigation picture the scripted circuit/approach probes fly against — position, heading, bank, configuration, and the landing line's world geometry (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
@@ -5191,7 +5192,7 @@ function fly_player(dt){
 			// spawn and the gear horn read it): the old branches were keyed
 			// backwards, so a gear-up fight only ever had the index call — one
 			// second of warning at the crash flight's sink.
-			const dirty=(ownship.gearTarget??0)<=0.5&&agl<200&&sink>0.5;
+			const dirty=(ownship.gearTarget??0)<=0.5&&agl<law_index&&sink>0.5;
 			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
@@ -5217,7 +5218,15 @@ function fly_player(dt){
 			const declared=dirty&&flying;
 			if(law_active){ audio_law(); law_calls++; } // repeats while below: the escape margin is gone and stays gone until the pilot fixes it
 			else if(declared&&law_armed){ audio_law(); law_calls++; law_armed=false; }   // one call per descent through the index, then quiet: the approach is the pilot's
-			if(agl>400&&!law_active&&!declared) law_armed=true; }
+			// Armed only from ABOVE the index, since the call is a descent through
+			// it. A jet spawned on the surface starts below any index: heavy, it
+			// settles onto its struts before weight-on-wheels latches, and that
+			// settle read as a descent. The cat shot's 40 ft index arms as the jet
+			// leaves the deck, so the settle off the bow is quiet and a settle
+			// toward the water is not; climbing away restores the pattern's 200.
+			if(!law_active&&!declared){
+				if(agl>400){ law_armed=true; law_index=200; }
+				else if(law_index<200&&agl>law_index) law_armed=true; } }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
@@ -5525,6 +5534,7 @@ function reset_ownship(){
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false;   // and the flight hints (#70)
+	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
