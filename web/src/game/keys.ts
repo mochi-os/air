@@ -20,7 +20,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'throttle.down': 'BracketLeft',
   fire: 'Space', // renamed from 'guns': the trigger serves the SELECTED weapon, not only the cannon.
   select: 'Tab', // the biggest left-edge key, and clear of X's Shift-chord neighbour (Shift+X secures an engine)
-  uncage: 'Delete', // CIA <-> VISUAL for the AIM-120 (#27); the 9M's SEAM slaving joins it later — one switch on the real jet
+  uncage: 'Delete', // one switch on the real jet: CIA <-> VISUAL for the AIM-120 (#27), the velocity vector cage in NAV; the 9M's SEAM slaving joins it later
   acquire: 'Enter',
   launch: 'Enter',
   'brake.wheel': 'KeyB',
