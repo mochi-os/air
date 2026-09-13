@@ -185,6 +185,9 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     expect(launch).toMatch(/hooked&&ls===0&&!ownship\.launching\)\{\s*hint_retire\(HINT\.tension,HINT\.salute\)/)
     // Forgotten as well as retired, so a jet that hooks up again is coached again.
     expect(launch).toMatch(/delete hinted\[HINT\.tension\];\s*delete hinted\[HINT\.salute\]/)
+    // Latched from the core only: the spot-based reading before it runs, then
+    // the core's free jet until weight-on-wheels, looked like an unhook at spawn.
+    expect(launch).toMatch(/hooked=flight_active&&ls>0;/)
   })
 
   it('reads the run-up power off the same weight board the kneeboard does', () => {

@@ -4153,7 +4153,10 @@ function hints_launch(ship){ hinting="launch";
 	// too, so a drop that starts the stroke is not an unhook: the flyaway line
 	// waits on the salute's record.
 	if(hooked&&ls===0&&!ownship.launching){ hint_retire(HINT.tension,HINT.salute); delete hinted[HINT.tension]; delete hinted[HINT.salute]; }
-	hooked=ls>0;
+	// Hooked by the core only: before it runs the jet reads as on the cat from
+	// its spot alone, and the core then reports it free until weight-on-wheels
+	// lets it hook up, a drop that blanked the shot call at every deck start.
+	hooked=flight_active&&ls>0;
 	// The run-up and shot lines say what the throttle is doing now, not a step
 	// taken once: the jet is handed over at military, so the shot line was spent
 	// at the hookup, and a pilot who came off power and ran back up was left
