@@ -7529,7 +7529,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
   // Re-enter a game paused by Esc (running was set false; state is preserved).
   // Re-applies any settings changed in the menu that take effect live — axis
   // bindings, render scale, shadows, time of day. Mission, start, clouds and
-  // ocean detail only take effect on a Restart (a fresh start_mission).
+  // ocean detail only take effect on the next mission (a fresh start_mission).
   function resume(updated) {
     if (updated) {
       Object.assign(cfg, updated)
