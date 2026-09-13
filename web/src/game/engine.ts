@@ -4789,6 +4789,16 @@ const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vect
 function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_quality??2)<1) return; const cap=[0,10,28,56][Math.max(0,Math.min(3,cfg.effects_quality|0))];
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
+// The HUD trim readout shows the PA pitch datum, which the core holds only in its PA law, so it follows
+// that law's own trigger (flight/fcs.go), mirrored because the law state never crosses the wire: the flap
+// switch at HALF or FULL, the deck's takeoff-leg latch (set on the wheels under 40 m/s, cleared by a
+// clean-up with the gear handle up past 92.6 m/s CAS on AUTO), or the wheels within the last 3 s. The gear
+// is not in it, so the landing-symbology gate above is the wrong source for the readout.
+let law_halfleg=false, law_wheels=-Infinity, trim_manual=false;
+function trim_law(){
+	if(ownship.grounded){ law_wheels=sim_time; if((ownship.speed??0)<40) law_halfleg=true; }
+	if((ownship.gearTarget??0)>=0.5&&(ownship.cas??ownship.speed??0)>92.6&&flap_select<1) law_halfleg=false;
+	return flap_select>=1||law_halfleg||sim_time-law_wheels<3; }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
@@ -5881,6 +5891,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
+	law_halfleg=false; law_wheels=-Infinity; trim_manual=false;   // a fresh core starts with no takeoff-leg latch and no wheel timer
 		const O=carrier_world(0,0), F=carrier_world(100,0);
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 		const dist=3*1852;
@@ -6374,10 +6385,10 @@ function draw_hud(){
 	// vector, zenith/nadir, gun cross (A/A only), waterline (landing), the
 	// velocity vector with its 8° limit, E-bracket, and ILS deviation bars.
 	const ppd=HH/camera.fov;                      // true pixels per degree at the camera's LIVE field (tracks the pit's wide base and the zoom ease alike)
-	// Landing symbology follows the FLAP state, not the gear handle — the same
-	// virtual flap switch as the FCS law (flight/fcs.go): HALF/FULL armed with
-	// the gear below 125 m/s CAS, AUTO passing 92.6 clean (180 KCAS) or 135
-	// dirty. Mirrored here because the law state never crosses the wire.
+	// Landing symbology is still inferred from the gear: a virtual flap schedule
+	// armed with the gear down below 125 m/s CAS and dropped passing 92.6 clean
+	// (180 KCAS) or 135 dirty, from before the client had a flap switch. The FCS
+	// law follows the switch instead, so the trim readout reads trim_law().
 	{ const geardown=(ownship.gear??1)<0.5, kcas=ownship.cas??ownship.speed;
 		if(hud_pa){ if((!geardown&&kcas>92.6)||kcas>135) hud_pa=false; }
 		else if(geardown&&kcas<125) hud_pa=true; }
@@ -6390,6 +6401,7 @@ function draw_hud(){
 	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
 	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
 	// approach. A crawling jet's velocity has no meaningful direction, and
+	trim_manual=trim_law();
 	// vel_dir switches from the nose to the velocity at 0.5 m/s, which snapped
 	// the marker and the ladder sideways in a slow taxi turn: the flight path
 	// fades from the nose to the velocity over the first 2 m/s instead.
@@ -6746,7 +6758,7 @@ function draw_hud(){
 			if(parking) rows.push([AM,translate("PARK")]);   // the parking brake holds the mains: amber, like a caution
 			const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
 			const parts=[];
-			if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
+			if(trim_manual&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
 			if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));   // i18n-format-ok: canvas HUD glyph: bank angle, fixed-format like the real instrument
 			if(parts.length) rows.push([GR,"TRIM "+parts.join(" ")]); }
 		hud_stack.right=stack_draw(rows,HW-40,HH-52); }
