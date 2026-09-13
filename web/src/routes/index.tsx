@@ -81,7 +81,7 @@ function exitFullscreen() {
 }
 
 // Menu ↔ game state machine. Once a mission starts the game stays mounted and
-// alive; Escape pauses it and overlays the menu (Resume / Restart). "In flight"
+// alive; Escape pauses it and overlays the menu (Resume / Exit). "In flight"
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const { t } = useLingui()
@@ -170,8 +170,8 @@ function Index() {
                 setConfig({ ...config, ...partial })
               }}
               onAgain={() => {
-                // Fly again after the mission ended at a crash (#240) or Restart
-                // from the pause menu: a fresh mount, same setup.
+                // Fly again after the mission ended at a crash (#240): a fresh
+                // mount, same setup.
                 setGameKey((k) => k + 1)
                 enterFlight()
               }}

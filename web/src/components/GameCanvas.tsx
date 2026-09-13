@@ -7,16 +7,6 @@ import { type MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react'
 import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@mochi/web/components/ui/alert-dialog'
 import { Button } from '@mochi/web/components/ui/button'
 import {
   LogOut,
@@ -225,10 +215,9 @@ export function GameCanvas({
   const [menu, setMenu] = useState(false)
   const [settings, setSettings] = useState(false)
   const [settingsTab, setSettingsTab] = useState('general')
-  const [confirm, setConfirm] = useState<'restart' | null>(null)
   // Unmount is not the pilot leaving. stop() ends through the engine's own
   // exit_match, which logs the flight and its recording and THEN reports
-  // onExit — so the keyed remount behind Fly again and Restart had the
+  // onExit — so the keyed remount behind Fly again had the
   // OUTGOING mission tell the route to leave the game, and the fresh mission
   // was torn down the frame after it began loading its map. Only the
   // cleanup-borne call is swallowed; the menu's Exit mission runs
@@ -352,7 +341,7 @@ export function GameCanvas({
   // that one needs the window listener, and only for events window itself is
   // the target of.
   useEffect(() => {
-    if (!settings && !confirm) return
+    if (!settings) return
     const fence = (e: KeyboardEvent) => e.stopPropagation()
     const padFence = (e: KeyboardEvent) => {
       if (e.target === window) e.stopPropagation()
@@ -367,7 +356,7 @@ export function GameCanvas({
       window.removeEventListener('keydown', padFence, { capture: true })
       window.removeEventListener('keyup', padFence, { capture: true })
     }
-  }, [settings, confirm])
+  }, [settings])
 
   const send = () => {
     const words = chatRef.current?.value.trim()
@@ -539,30 +528,13 @@ export function GameCanvas({
               <SettingsIcon className='size-4' />
               <Trans>Settings</Trans>
             </Button>
-            {/* In flight only. Once the mission is over, Fly again IS the
-                restart, and the two ran the same onAgain() — except Restart
-                never cleared `over`, so the effect above reopened this menu
-                over the fresh mission. Its confirmation was wrong here too: it
-                warns the flight will not be saved, and a finished flight is
-                already in the log. */}
-            {!join && !over && (
-              <Button
-                type='button'
-                variant='outline'
-                className='h-12 justify-start text-base'
-                onClick={() => setConfirm('restart')}
-              >
-                <RotateCcw className='size-4' />
-                <Trans>Restart mission</Trans>
-              </Button>
-            )}
             <Button
               type='button'
               variant='outline'
               className='h-12 justify-start text-base'
               onClick={() => {
                 // No confirmation: exiting SAVES the flight to the log, so there
-                // is nothing to lose — only Restart, which discards it, asks.
+                // is nothing to lose.
                 setMenu(false)
                 handleRef.current?.exit()
               }}
@@ -592,37 +564,6 @@ export function GameCanvas({
           onTabChange={setSettingsTab}
         />
       )}
-      <AlertDialog
-        open={confirm !== null}
-        onOpenChange={(v) => !v && setConfirm(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              <Trans>Restart mission?</Trans>
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              <Trans>
-                The mission will restart. The current flight will not be saved.
-              </Trans>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              <Trans>Cancel</Trans>
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                setMenu(false)
-                onAgain?.()
-                setConfirm(null)
-              }}
-            >
-              <Trans>Restart</Trans>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>; the action beside each is prose and stays wrapped. The two <b> below
             are emphasis on translated text, not keys. Legends derive from the binding table - hand-written ones went stale. */}
