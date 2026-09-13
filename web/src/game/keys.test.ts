@@ -275,4 +275,12 @@ describe('key bindings', () => {
     expect(pretty('None')).toBe('—')
     expect(pretty(KEY_DEFAULTS['trim.reset'])).toBe('—')
   })
+
+  it('puts chat on the backtick key, with chat to everyone on its Shift chord', () => {
+    expect(KEY_DEFAULTS.chat).toBe('Backquote')
+    expect(KEY_DEFAULTS.shout).toBe('Shift+Backquote')
+    // the key cap's glyph, not the raw KeyboardEvent code, in the help line and settings
+    expect(pretty(KEY_DEFAULTS.chat)).toBe('`')
+    expect(pretty(KEY_DEFAULTS.shout)).toBe('Shift+`')
+  })
 })

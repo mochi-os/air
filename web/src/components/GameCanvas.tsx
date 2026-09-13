@@ -14,6 +14,7 @@ import {
   RotateCcw,
   Send,
   Settings as SettingsIcon,
+  X,
 } from 'lucide-react'
 import { startGame, type GameHandle } from '../game/engine'
 import '../game/game.css'
@@ -307,13 +308,27 @@ export function GameCanvas({
     if (!join) handleRef.current?.pause(menu)
   }, [menu, join])
 
+  // Close the chat prompt, dropping any unsent words: Escape, the X, and the
+  // Escape the browser takes in fullscreen all end here.
+  const dismiss = () => {
+    if (chatRef.current) chatRef.current.value = ''
+    setChat(null)
+  }
+
   // Escape in browser fullscreen belongs to the browser: it exits fullscreen
   // before (or instead of) reaching the page. Losing fullscreen therefore
   // OPENS the menu popup — set, not toggled, so it converges with the
-  // engine's own Esc handling whichever of the two fires.
+  // engine's own Esc handling whichever of the two fires. With the chat
+  // prompt open that Escape was meant for the prompt, whose own Escape
+  // handler never sees the key in fullscreen: close the prompt instead.
   useEffect(() => {
     const fell = () => {
-      if (!document.fullscreenElement) setMenu(true)
+      if (document.fullscreenElement) return
+      if (chatRef.current) {
+        dismiss()
+        return
+      }
+      setMenu(true)
     }
     document.addEventListener('fullscreenchange', fell)
     return () => document.removeEventListener('fullscreenchange', fell)
@@ -361,8 +376,7 @@ export function GameCanvas({
   const send = () => {
     const words = chatRef.current?.value.trim()
     if (words && chat != null) handleRef.current?.chat(words, chat)
-    if (chatRef.current) chatRef.current.value = ''
-    setChat(null)
+    dismiss()
   }
 
   return (
@@ -386,12 +400,17 @@ export function GameCanvas({
             onKeyDown={(e) => {
               e.stopPropagation()
               if (e.key === 'Enter') send()
-              if (e.key === 'Escape') {
-                if (chatRef.current) chatRef.current.value = ''
-                setChat(null)
-              }
+              if (e.key === 'Escape') dismiss()
             }}
           />
+          <button
+            type='button'
+            aria-label={t`Close`}
+            className='rounded border border-white/30 bg-black/70 p-1 text-white/70 hover:text-white'
+            onClick={dismiss}
+          >
+            <X className='size-4' />
+          </button>
         </div>
       )}
       {menu && (
