@@ -4422,15 +4422,27 @@ function throttle_from_lever(){   // mission start: seed the throttle from the p
 	lever.armed=true; lever.rest=value;
 	const power=1-THREE.MathUtils.clamp((value+1)/2,0,1);
 	ownship.throttle=Math.min(1,power/0.75); ownship.burner=THREE.MathUtils.clamp((power-0.75)/0.25,0,1); }
-function pad_lever(pad,entry,name){   // "N"/"-N" axis entry -> travel fraction 0..1 (0 = the raw LOW end after the reverse negation), or null when unbound/untouched
+function pad_lever(pad,entry,name,current){   // "N"/"-N" axis entry -> travel fraction 0..1 (0 = the raw LOW end after the reverse negation), or null when unbound or not holding its control
 	const text=String(entry??""); if(text==="") return null;
 	const index=Math.abs(+text); if(!(pad.axes.length>index)) return null;
 	const value=(text.startsWith("-")?-1:1)*pad.axes[index];
+	const travel=THREE.MathUtils.clamp((value+1)/2,0,1);
 	const lever=pad_levers[name]||(pad_levers[name]={ rest:undefined, armed:false });
-	if(!lever.armed){ if(lever.rest===undefined) lever.rest=value;
-		if(Math.abs(value-lever.rest)<=0.15) return null;   // keyboard stays in charge until a DELIBERATE sweep — in-flight jitter once armed the brake and snapped it to the parked lever position
+	// Soft takeover. A lever that does not hold its control (the keyboard or ATC took it, or the stick dropped
+	// out) takes it back only where it meets the setting it would command - `current`, in the same travel
+	// units - within 1% or by moving through it, and only once the pilot has moved it: ATC driving the throttle
+	// past a parked lever must not hand the throttle to that lever. So taking over never jumps the control, a
+	// small correction near the setting takes effect at once, and jitter cannot arm a lever parked elsewhere.
+	if(!lever.armed){
+		const gap=travel-current;
+		if(lever.rest===undefined){ lever.rest=travel; lever.last=travel; lever.gap=gap; return null; }
+		const touched=Math.abs(travel-lever.rest)>0.005;
+		const crossed=Math.sign(gap)!==Math.sign(lever.gap)&&travel!==lever.last&&Math.abs(travel-lever.last)<0.1;   // moving through it, not a phantom-centre jump over it
+		lever.gap=gap; lever.last=travel;
+		if(!(touched&&(Math.abs(gap)<=0.01||crossed))) return null;
 		lever.armed=true; }
-	return THREE.MathUtils.clamp((value+1)/2,0,1); }   // the plain ±1 HID range, 1:1 across the travel (the VelocityOne reads clean ±1.00 at its stops; end margins just made dead zones). NEVER normalise by the observed sweep: treating the advancing edge as an end stop commanded full afterburner at half throttle travel
+	lever.last=travel;
+	return travel; }   // the plain ±1 HID range, 1:1 across the travel (the VelocityOne reads clean ±1.00 at its stops; end margins just made dead zones). NEVER normalise by the observed sweep: treating the advancing edge as an end stop commanded full afterburner at half throttle travel
 
 // A reconnected stick must earn control again: most sticks report a phantom
 // centre until a control is moved, and with `armed` still true the phantom went
@@ -4494,10 +4506,10 @@ function read_input(dt){
 		pp=ax("pitch");   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
-		{ const p=(test_active||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle");   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
+		{ const p=(test_active||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75));   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
-		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
+		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0);   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
 		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0;   // level states, re-read below every frame — pad_weapon is NOT among them: it is the castle's last position, kept across frames so a held castle selects on the press edge only
 		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
@@ -6732,6 +6744,8 @@ function draw_hud(){
 	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-5,tgcy-tgh/2,10,tgh);
 	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-5,tgcy+tgh/2-fh,10,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
+	{ const lever=pad_levers.throttle; if(lever&&!lever.armed&&lever.last!==undefined){ const ly=tgcy+tgh/2-tgh*(1-lever.last);   // where the physical lever is while it does not hold the throttle: move it to the bar to take over
+		hctx.beginPath(); hctx.moveTo(tgx+7,ly); hctx.lineTo(tgx+13,ly-4); hctx.lineTo(tgx+13,ly+4); hctx.closePath(); hctx.fill(); } }
 	hctx.beginPath(); hctx.moveTo(tgx-5,tgcy+tgh/2-tgh*0.75); hctx.lineTo(tgx+5,tgcy+tgh/2-tgh*0.75); hctx.stroke();   // MIL detent tick
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
