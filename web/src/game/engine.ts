@@ -58,7 +58,9 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
-import { Recorder, stamp, channels } from './acmi'
+import { Recorder, stamp, channels, MIDWAY } from './acmi'
+import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
+import { STAR_COUNT, STAR_DATA } from './stars'
 
 export type GameConfig = Record<string, unknown>
 
@@ -234,12 +236,34 @@ const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false
 		float s=max(dot(d,normalize(u_sun)),0.0); col+=u_sun_col*pow(s,220.0)*1.4; col+=u_sun_col*pow(s,8.0)*0.18; gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
 
-// stars (night only)
+// stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
+// placed by ./sky for the map origin at local midnight on today's date, the hour a full moon
+// stands due south and high as the night moon here does. Each star is a fixed-pixel Gaussian
+// sprite sized and brightened by magnitude and tinted by colour: world-sized points came out
+// about half a pixel wide and flickered as the view moved, which read as twinkling.
+const star_catalogue=sky_decode(STAR_DATA,STAR_COUNT), STAR_RADIUS=16000;
 const star_geo=new THREE.BufferGeometry();
-{ const N=1400, pos=new Float32Array(N*3); for(let i=0;i<N;i++){ const u=Math.random(), th=Math.random()*Math.PI*2, r=16000, el=u*u*1.0, sq=Math.sqrt(1-el*el);
-	pos[i*3]=r*sq*Math.cos(th); pos[i*3+1]=200+r*el; pos[i*3+2]=r*sq*Math.sin(th); } star_geo.setAttribute("position",new THREE.BufferAttribute(pos,3)); }
-const stars=new THREE.Points(star_geo,new THREE.PointsMaterial({color:0xffffff,size:16,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false,fog:false}));
+{ const n=star_catalogue.length, brightness=new Float32Array(n), size=new Float32Array(n), colour=new Float32Array(n*3);
+	star_catalogue.forEach((s,i)=>{ const l=sky_light(s.magnitude), c=sky_tint(s.colour); brightness[i]=l.brightness; size[i]=l.size; colour.set(c,i*3); });
+	star_geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(n*3),3)); star_geo.setAttribute("brightness",new THREE.BufferAttribute(brightness,1));
+	star_geo.setAttribute("size",new THREE.BufferAttribute(size,1)); star_geo.setAttribute("colour",new THREE.BufferAttribute(colour,3)); }
+const stars=new THREE.Points(star_geo,new THREE.ShaderMaterial({ transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+	uniforms:{ u_opacity:{value:0}, u_scale:{value:1} },   // u_scale: drawing-buffer lines / 1080, so a star keeps its size on a 4K screen and through dynamic resolution
+	vertexShader:`attribute float brightness,size; attribute vec3 colour; uniform float u_scale; varying vec3 v_light;
+		void main(){ gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+			float up=position.y/${STAR_RADIUS}.0;
+			v_light=colour*brightness*smoothstep(0.0,0.12,up);   // extinction: a star fades through the thick air of its last ~7 deg, and is not drawn below the horizon
+			gl_PointSize=up>0.0?size*u_scale:0.0; }`,
+	fragmentShader:`uniform float u_opacity; varying vec3 v_light;
+		void main(){ vec2 c=gl_PointCoord*2.0-1.0; float r2=dot(c,c); if(r2>1.0) discard;
+			gl_FragColor=vec4(v_light*exp(-r2*2.0)*u_opacity,1.0); }` }));   // display-referred, as the sky dome it sits in front of
 stars.frustumCulled=false; scene.add(stars);
+function sky_place(latitude,longitude){   // re-placed once the map's own origin is known
+	const local=sky_sidereal(sky_midnight(new Date(),longitude))+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
+	star_catalogue.forEach((s,i)=>{ const d=sky_direction(s,latitude,local); pos[i*3]=d[0]*STAR_RADIUS; pos[i*3+1]=d[1]*STAR_RADIUS; pos[i*3+2]=d[2]*STAR_RADIUS; });
+	star_geo.attributes.position.needsUpdate=true; }
+sky_place(MIDWAY.latitude,MIDWAY.longitude);
+const star_buffer=new THREE.Vector2();
 
 // time-of-day presets + apply
 const TOD={
@@ -253,7 +277,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	apply_light_balance();   // re-derive the cloud lighting against this time of day's lights
-	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
+	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
 	ocean_mat.uniforms.u_seafog.value.setHex(p.fog).lerp(new THREE.Color(p.deep), 0.42);   // the sea's distance colour: mildly darker than the sky so the horizon line reads, but light enough that the approach to it SILVERS the way grazing Fresnel really behaves — the defect to avoid is a stripe (brighter than the water beyond it), not brightness itself   // the sea's distance colour: a deep slate CONTINUING the rolled-off mid-band's darkness — a merely-dimmed pale grey sits BRIGHTER than the mid band and reads as a white stripe before the horizon
@@ -715,6 +739,12 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			// past its rim a below-horizon ray would march kilometres of cloud beyond
 			// the water, painting the rim as a hard seam across the field.
 			if(ray.y<-1.0e-4) sceneDist=min(sceneDist,(0.0-uCamPos.y)/ray.y);
+			float open=1.0;   // uBlackout below 1 is a deck at night: its light is the share of the moonbeam that reaches the camera through the cloud between it and the moon
+			if(uBlackout<0.999){   // marched from the camera, so the fog stays dark until the jet is out of the dense layer wherever that layer's top lies. A ramp on the preset's geometric top lit the fog near the top as a grey glow, which then gave way to the dark sky on breaking out
+				vec3 beam=normalize(vec3(uSun.x,max(uSun.y,0.2),uSun.z)); float slab=mix(uHigh,uTop,uFlat);
+				float tb=max(0.0,(uBase-40.0-uCamPos.y)/beam.y), tau=0.0;   // from below the deck, start at its base
+				for(int i=0;i<14;i++){ vec3 q=uCamPos+beam*(tb+10.0); if(q.y>slab||tau>12.0) break; tau+=dens(q,0.0)*20.0*0.72; tb+=20.0; }   // 280 m of 20 m taps at EIGHT times the view march's extinction: the thin cloud left above the jet clears well before the fog around it, which is seen along paths many times longer, so at the true extinction the fog still glowed for the last 150 ft and at four times for the last 50. Deeper in the deck the beam is long gone either way
+				open=exp(-tau); }
 			vec3 cloudc=vec3(0.0); float ctr=1.0; float aw=0.0, adist=0.0;   // aw/adist: alpha-weighted mean march distance — the accumulation pass reprojects each pixel at this depth
 			if(uDebug<0.5){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
 				float slabTop=mix(uHigh,uTop,uFlat);
@@ -733,6 +763,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 						vec3 phv=vec3( mix(hg(cosT,0.55),hg(cosT,-0.2),0.35),
 						               mix(hg(cosT,0.30),hg(cosT,-0.11),0.35),
 						               mix(hg(cosT,0.17),hg(cosT,-0.06),0.35) );
+						float sunTop=0.22*(phv.x+0.45*phv.y+phv.z);   // the beam term below at zero optical depth: what a deck's top surface receives
 					for(int i=0;i<68;i++){ if(t>t1||tr<0.03) break;
 						float dt=clamp(t*0.105,110.0,2600.0);   // adaptive stride sized so 68 steps reach cfar from INSIDE the slab (t0=0) — an earlier 60..420 m schedule exhausted at ~13 km in flight and big cells popped in. Strides this coarse are only safe because each is sampled stochastically (ts below) and ~10 jittered frames accumulate; the 96->68 step cut bought the frame rate back after dens() grew the lobe/anvil fetches
 						float ts=t+ign*dt;   // stochastic sample WITHIN the stride: the per-frame ign rotation then decorrelates the march shells at EVERY range — jittering only the ray start leaves far shells correlated, accumulating as horizontal washboard across distant towers
@@ -745,6 +776,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 								float powder=1.0-exp(-ld*0.028);   // Beer-powder: darkened crinkles on sun-facing billows
 								float sun=(0.22+0.78*powder)*(phv.x*exp(-ld*0.010)+0.45*phv.y*exp(-ld*0.005))
 								         +0.22*phv.z*exp(-ld*0.0022);   // multi-scatter octaves; powder gates the first two — gap-slipping light samples otherwise flood the field white
+								sun=mix(sun,min(sun,sunTop),uFlat);   // a deck is lit from its top, so nothing inside it is lit more than its top. Powder darkens the top itself (no depth for in-scatter to build), which left a band a hundred metres down lit twice as strongly: fog just below the top read twice as bright as the top seen from above, and a night climb went light before breaking out into a dark sky. Deeper samples are already below the cap, so the underside is untouched
 								float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig,pos.xz)-uBase),0.0,1.0);
 								// Sky-dome ambient: cumulus shadows are BLUE (sky-lit), with a warm whisper
 								// bounced into the bases; both dim deep inside the mass (sun-march depth proxy).
@@ -766,7 +798,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 					// (An analytic under-storm horizon mist lived here 2026-07-06 and was removed by request:
 					// four rounds of geometry/hue fixes never fully hid the sea/sky line to the pilot's eye.)
-			oColor=vec4(cloudc*uBlackout,ctr);   // premultiplied, so the deck darkens without letting the sky behind it through
+			oColor=vec4(cloudc*mix(uBlackout,1.0,open),ctr);   // premultiplied, so the deck darkens without letting the sky behind it through
 			float tmean=aw>1.0e-4?adist/aw:0.0;   // 0 = no cloud on this ray; the accumulation pass reprojects those at a nominal far distance
 			oDepth=vec4(clamp(tmean/100000.0,0.0,1.0), clamp(aw,0.0,1.0), 0.0, 1.0);
 		}` });
@@ -900,7 +932,7 @@ if(DEV_MODE) (globalThis as any).dev_shadow=(x:number,z:number,extent:number)=>{
 		compiles:{ ...cloud_shadow_compiles }, receivers:cloud_shadow_receivers.size,
 		ambient:[cloud_shadow_uniforms.u_shadow_ambient.value.x,cloud_shadow_uniforms.u_shadow_ambient.value.y],
 		deck:[cloud_shadow_uniforms.u_shadow_deck.value.x,cloud_shadow_uniforms.u_shadow_deck.value.y,cloud_shadow_uniforms.u_shadow_deck.value.z],
-		light:{ sun:sun.intensity, hemi:hemi.intensity, ambient:amb.intensity, foam:ocean_mat.uniforms.u_light.value, clouds:cloud_mat.uniforms.uSunGain.value, hour:cloud_shadow_uniforms.u_shadow_hour.value, blackout:cloud_mat.uniforms.uBlackout.value } };
+		light:{ sun:sun.intensity, hemi:hemi.intensity, ambient:amb.intensity, foam:ocean_mat.uniforms.u_light.value, clouds:cloud_mat.uniforms.uSunGain.value, hour:cloud_shadow_uniforms.u_shadow_hour.value, blackout:sky_mat.uniforms.u_blackout.value } };
 };
 // Ground receivers. Land, the airfield, the buildings and the ship are
 // MeshStandardMaterial, so the cloud lighting is injected into three's own: the beam
@@ -1007,12 +1039,14 @@ function render_frame(){
 	// Below an overcast deck at night everything but lights blacks out: the deck blocks the
 	// moon the night scene is lit by. Tied to the CAMERA for the sky and the deck, so a
 	// moonlit deck top seen from above stays visible; the sea and the land are always
-	// below a deck and read u_shadow_hour themselves. It has to reach exactly 0, not near
-	// it: a colour-managed desktop (GNOME 50 maps sRGB to a gamma-2.2 panel) shows 1/255 as
-	// 6 and 3/255 as 11, so a scene held at 1-4/255 read as a lit grey ceiling over a grey sea.
+	// below a deck and read u_shadow_hour themselves. The cloud pass takes the hour's
+	// light as its floor and opens from it by the moonbeam it marches to the camera.
+	// It has to reach exactly 0, not near it: a colour-managed desktop (GNOME 50 maps sRGB
+	// to a gamma-2.2 panel) shows 1/255 as 6 and 3/255 as 11, so a scene held at 1-4/255
+	// read as a lit grey ceiling over a grey sea.
 	{ const deck=CLOUDS[cfg.clouds], hour=cloud_shadow_uniforms.u_shadow_hour.value;
 		const blackout=deck&&deck.flat>0.5?1+(hour-1)*(1-THREE.MathUtils.smoothstep(camera.position.y,deck.base,deck.top)):1;
-		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=blackout; stars.material.opacity=(TOD[cfg.tod]||TOD.day).stars*blackout; }
+		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=deck&&deck.flat>0.5?hour:1; stars.material.uniforms.u_opacity.value=(TOD[cfg.tod]||TOD.day).stars*blackout; renderer.getDrawingBufferSize(star_buffer); stars.material.uniforms.u_scale.value=Math.max(1,star_buffer.y/1080); }
 	if(cloud_active()){ size_rt();
 		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera);
 		scene.overrideMaterial=null;   // depth-only pass at the cloud buffer's resolution, used for cloud occlusion — no colour, no lighting or textures
@@ -3064,6 +3098,7 @@ async function generate_world(){
 		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
 		const map=await (await fetch(base+"map.json")).json();
 		WORLD_WRAP=map.wrap||0;
+		if(Array.isArray(map.origin)) sky_place(map.origin[0],map.origin[1]);   // the stars stand over the map's real position
 		// --- single Sentinel-2 texture for the ocean AND the islands (reef/lagoon/breakers + land) ---
 		const texture=await new THREE.TextureLoader().loadAsync(base+"map.jpg");
 		texture.flipY=false; texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping; texture.colorSpace=THREE.SRGBColorSpace;
@@ -4757,6 +4792,11 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
 	const axes={ right:own?ownship.right:(bandit.right||world_up.clone().cross(bandit.fwd).normalize()), ahead:t.fwd, behind:t.fwd.clone().negate(), above:own?ownship.up:(bandit.up||world_up) };
+if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest catalogue stars on screen now, projected to canvas pixels, so a probe can check a star is drawn where the sky has it
+	const pos=star_geo.attributes.position.array, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new THREE.Vector3(), out=[];
+	star_catalogue.forEach((s,i)=>{ if(pos[i*3+1]<STAR_RADIUS*0.12) return; v.set(pos[i*3],pos[i*3+1],pos[i*3+2]).add(camera.position).project(camera);
+		if(v.z<1&&Math.abs(v.x)<0.95&&Math.abs(v.y)<0.95) out.push({ magnitude:s.magnitude, ascension:s.ascension*180/Math.PI, declination:s.declination*180/Math.PI, x:(v.x+1)/2*w, y:(1-v.y)/2*h, altitude:Math.asin(pos[i*3+1]/STAR_RADIUS)*180/Math.PI }); });
+	return out.sort((a,b)=>a.magnitude-b.magnitude).slice(0,count); };
 	const along=axes[way&&axes[way]?way:"right"];
 	let kills=0, wounds=0, fragments=0, judged=-1;
 	for(let k=0;k<n;k++){
