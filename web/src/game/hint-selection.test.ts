@@ -51,12 +51,15 @@ describe('the arrival set follows the jet, not the Start selector (#204)', () =>
     // Without this a cat shot is told to break over the bow it just crossed —
     // the ship analogue of #196, where the arrival set armed during the
     // takeoff climb-out and told a departing pilot to lower the gear. The deck
-    // is the LAUNCH set's, and it keeps it until the jet is clear of the ship.
-    expect(watch).toMatch(/st==="carrier"&&!ship_left\) return hints_launch\(\)/)
+    // is the LAUNCH set's, and it keeps it through the departure it coaches.
+    expect(watch).toMatch(/st==="carrier"&&!ship_left\) return hints_launch\(ship\)/)
   })
 
   it('re-arms that latch with the rest of the hint state on a restart', () => {
     expect(source).toMatch(/field_left=ship_left=false/)
+    // A respawn onto the cat with the last shot's stroke still recorded would
+    // raise the hand-off-stick line in the holdback.
+    expect(source).toMatch(/field_left=ship_left=false; stroked=false; rising=null;/)
   })
 })
 
@@ -85,6 +88,50 @@ describe('a mission that briefed no recovery still gets one (#204)', () => {
   })
 })
 
+describe('the Case I pattern does not coach a departure', () => {
+  const carrier = body('hints_carrier')
+
+  it('opens the side, break and on-speed lines only at pattern height', () => {
+    // Once the launch set hands a departing jet over, a climb-out on the ship's
+    // course is nearer the ship than the island, and these three had no height
+    // of their own: the climb-out was told to hold 800' and break.
+    expect(carrier).toMatch(/const low=feet<1150;/)
+    expect(carrier).toMatch(/if\(low&&along>-1400&&along<\d+&&fdot>0\.3&&!hinted\[HINT\.brk\]\) hint\(HINT\.side\)/)
+    expect(carrier).toMatch(/if\(low&&range<950\) hint\(HINT\.brk\)/)
+    expect(carrier).toMatch(/if\(low&&down\) hint\(HINT\.donut\)/)
+  })
+
+  it('stops coaching the side once the jet is past the bow', () => {
+    // A low departure ahead of the ship flies its course too.
+    expect(carrier).toMatch(/along>-1400&&along<\d+&&fdot>0\.3/)
+  })
+})
+
+describe('the break stands on the glass until the roll-out', () => {
+  const runway = body('hints_runway')
+  const carrier = body('hints_carrier')
+
+  it('holds the roll-out and the dirty-up calls until the nose has come round', () => {
+    // Keyed on the break alone, the field's roll-out call replaced the break
+    // in the frame it fired, and a break flown below 285 knots lost its line
+    // to the dirty-up call the same way, on both surfaces.
+    expect(runway).toMatch(/if\(\(hinted\[HINT\.brk\]&&fdot<-0\.7\)\|\|circuit\) hint\(HINT\.downwind,/)
+    expect(runway).toMatch(/if\(hinted\[HINT\.downwind\]&&kt<285&&!down\) hint\(HINT\.dirty\);/)
+    expect(carrier).toMatch(/if\(hinted\[HINT\.roll\]&&kt<285&&!down\) hint\(HINT\.form\);/)
+  })
+
+  it('retires only the lines a surface raised itself', () => {
+    // The break and the 90 are one key in both patterns, and each surface's
+    // 6 NM retirement took the other surface's break and 90 down every frame.
+    expect(source).toMatch(/hint_rows=rows; hint_key=key; hint_since=sim_time; hint_set=hinting;/)
+    expect(runway).toMatch(/^unction hints_runway\(st\)\{ hinting="runway";/)
+    expect(carrier).toMatch(/^unction hints_carrier\(st\)\{ hinting="carrier";/)
+    expect(body('hints_launch')).toMatch(/^unction hints_launch\(ship\)\{ hinting="launch";/)
+    expect(watch).toMatch(/if\(ship>6\*1852&&hint_set!=="runway"\) hint_retire\(\.\.\.CIRCUIT,HINT\.side,\.\.\.LAUNCH\);/)
+    expect(watch).toMatch(/if\(field>6\*1852&&hint_set==="runway"\) hint_retire\(\.\.\.RUNWAY\);/)
+  })
+})
+
 describe('the Case III letdown is coached where the marshal procedure flies it', () => {
   const carrier = body('hints_carrier')
 
@@ -109,10 +156,35 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     expect(launch).not.toBe('')
   })
 
-  it('walks the deck sequence: tension, salute, the shot, the clean-up', () => {
-    for (const key of ['tension', 'salute', 'flyaway', 'cleanup']) {
+  it('hands the deck start over on HALF flap, as the clean-up line assumes', () => {
+    // NATOPS 8.2.5 charts launch trim for HALF flaps, the core latches HALF on
+    // deck (flight/fcs.go halfleg), and the clean-up says "flaps to auto" - a
+    // switch left in AUTO on the cat read wrong on the legend and made that
+    // line an instruction to do nothing.
+    expect(source).toMatch(/flap_select=\(st==="case2"\)\?2:\(st==="runway"\|\|st==="carrier"\)\?1:0;/)
+  })
+
+  it('walks the sequence: tension, salute, the shot, the clean-up, the departure', () => {
+    for (const key of ['tension', 'salute', 'flyaway', 'positive', 'clearing', 'climb']) {
       expect(launch, `${key} never raised`).toMatch(new RegExp(`hint\\(HINT\\.${key}`))
     }
+  })
+
+  it('lets the run-up and shot lines follow the throttle both ways', () => {
+    // The jet is handed over at military, so the shot line is spent at the
+    // hookup, and a pilot who came off power and ran back up was left reading
+    // the run-up instruction. Each line has to re-arm the other.
+    expect(launch).toMatch(/ls===1\)\{\s*delete hinted\[HINT\.salute\]/)
+    expect(launch).toMatch(/ls===2\)\{\s*delete hinted\[HINT\.tension\]/)
+  })
+
+  it('takes the deck lines down when the crew unhooks the jet without a shot', () => {
+    // A tension abort or a taxi off the shuttle ends the hookup, and nothing
+    // else retires "Hooked up" while the jet sits on the deck. The stroke ends
+    // the hookup too and must not count: the flyaway line waits on the salute.
+    expect(launch).toMatch(/hooked&&ls===0&&!ownship\.launching\)\{\s*hint_retire\(HINT\.tension,HINT\.salute\)/)
+    // Forgotten as well as retired, so a jet that hooks up again is coached again.
+    expect(launch).toMatch(/delete hinted\[HINT\.tension\];\s*delete hinted\[HINT\.salute\]/)
   })
 
   it('reads the run-up power off the same weight board the kneeboard does', () => {
@@ -122,12 +194,53 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     expect(launch).toMatch(/gross_weight\(\)>=45000/)
   })
 
-  it('takes the hands off for the stroke and puts them back for the climb-out', () => {
-    // Both halves matter and they are on DIFFERENT lines: off the controls for
-    // the shot, back on once the jet is flying. Asserting "hands off" alone
-    // would now match the salute and pass whatever the flyaway said.
-    expect(source).toMatch(/salute:"Hands off flight controls/)
-    expect(source).toMatch(/flyaway:"Hands on controls/)
+  it('takes the hand off the stick for the stroke and puts it back on a positive rate', () => {
+    // NATOPS 8.2.8: throttles held, the stick left alone while the jet rotates
+    // itself, the gear up once a positive rate of climb is established. The
+    // old lines put the hand back on the stick first and the gear call last.
+    expect(source).toMatch(/salute:"Throttles held, head back, hand off stick;/)
+    expect(source).toMatch(/flyaway:"Off the cat: hand off stick,/)
+    expect(source).toMatch(/positive:"Positive rate: take stick, gear up, flaps auto"/)
+  })
+
+  it('keys the shot lines on the stroke and the climb rate, not a height above the deck', () => {
+    // A military-power shot settles below the deck off the bow, and the old
+    // deck + 50 ft and + 200 ft gates held the lines six and nine seconds late.
+    expect(launch).not.toMatch(/CARRIER\.deckY/)
+    expect(launch).toMatch(/if\(ownship\.launching\) stroked=true;/)
+    expect(launch).toMatch(/if\(!ownship\.launching\) hint\(HINT\.flyaway\);/)
+    expect(launch).toMatch(/\(ownship\.vely\?\?0\)>0\.508/)
+    expect(launch).toMatch(/sim_time-rising>=1&&\(hint_key!==HINT\.flyaway\|\|sim_time-hint_since>=2\)\) hint\(HINT\.positive\)/)
+  })
+
+  it('shows the departure once clean, after the gear call has been read', () => {
+    expect(launch).toMatch(/const clean=\(ownship\.gearTarget\?\?0\)>0\.5&&flap_select===0;/)
+    expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|sim_time-hint_since>=3\)\) hint\(HINT\.clearing,"Clearing turn "\+\(cat_idx<2\?"right":"left"\)/)
+  })
+
+  it('ends the departure at 7 miles, or when the pilot leaves it', () => {
+    // Each minimum read is the slot's age at the moment of the test: a single
+    // age taken at the top of the set was the previous line's, and it took the
+    // climb call down in the frame that raised it.
+    expect(launch).not.toMatch(/const age=/)
+    // P-816 Case I: 500' and 300 knots paralleling the ship's course to 7 DME.
+    expect(launch).toMatch(/if\(ship>7\*1852\) hint\(HINT\.climb\);/)
+    expect(launch).toMatch(/else if\(feet>3000\|\|course<0\)\{ hint_retire\(HINT\.clearing\); ship_left=true; \}/)
+    expect(launch).toMatch(/if\(hinted\[HINT\.climb\]&&hint_key!==HINT\.climb\) ship_left=true;/)
+    expect(launch).toMatch(/if\(!hinted\[HINT\.clearing\]&&\(ship>7\*1852\|\|feet>3000\)\)\{ hint_retire\(\.\.\.LAUNCH\); ship_left=true; \}/)
+    expect(watch).not.toMatch(/ship_left=true/)
+  })
+
+  it('reads every line for five seconds unless it waits on the pilot', () => {
+    // One standard display time, applied where every set is dispatched, so a
+    // line with nothing to wait for cannot stand on the glass for minutes.
+    expect(source).toMatch(/const HINT_DWELL=5;/)
+    expect(watch).toMatch(/if\(hint_key!=null&&!WAITING\.has\(hint_key\)&&sim_time-hint_since>=HINT_DWELL\) hint_rows=hint_key=null;/)
+    // The lines whose end the sets track from the pilot doing what they say.
+    const waiting = source.match(/const WAITING=new Set\(\[([^\]]*)\]\)/)?.[1] ?? ''
+    expect(waiting.split(',').map((key) => key.replace('HINT.', '')).sort()).toEqual(
+      ['brk', 'cleanup', 'depart', 'dirty', 'flyaway', 'form', 'lineup', 'positive', 'rollout', 'rotate', 'salute', 'tension'],
+    )
   })
 
   it('names the attitude the law actually captures', () => {
@@ -142,8 +255,8 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     expect(source).toMatch(/net_notice_t<=0&&cfg\.hints===false/)
   })
 
-  it('retires its last line on leaving the ship', () => {
-    // The clean-up is the set's last, and nothing downstream replaces it (#189).
+  it('retires its deck lines on leaving the ship', () => {
+    // Nothing downstream replaces the clean-up line if the pilot never flies it (#189).
     expect(source).toMatch(/const LAUNCH=\[/)
     expect(watch).toMatch(/\.\.\.LAUNCH/)
   })

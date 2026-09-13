@@ -22,7 +22,7 @@ const HEADED: Record<string, string> = {
   wake: 'ship_course',          // Case I: up the wake
   roll: 'ship_downwind',        // the break's roll-out
   forty: 'ship_groove',         // the 45, straightening into the groove
-  flyaway: 'ship_course',      // off the cat: the shot climbs out on the ship's course
+  clearing: 'ship_course',     // the Case I departure parallels the ship's course
   final: 'ship_groove',         // Case II: level on final
   stack: 'ship_groove',         // Case III: the marshal's final bearing
   push: 'ship_groove',          // commencing: the letdown turns inbound

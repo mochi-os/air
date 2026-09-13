@@ -2758,6 +2758,7 @@ function trigger_amraam(){
 	if(launch_amraam(ownship,target,amraam_visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phase 2)
+let caged=false;   // the same switch in the NAV master mode: the velocity vector caged to the HUD centreline (NATOPS I-2-102 item 10)
 let jammer_armed=false;   // XMIT (#31): the standing decision; jammer_loud() is whether it radiates right now
 function jammer_loud(){ return jammer_armed && (RWR.locked()||RWR.warned()); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
 // launch_amraam (#27 phase 2): the round separates off its rail or ejector
@@ -3945,13 +3946,28 @@ const HINT={
 	// it worse — was never taught. Power follows the same weight board the
 	// kneeboard reads (NATOPS 8.2.7): MAX is required at 45,000 lb and above,
 	// below it the technique is the pilot's choice and military is the call.
-	tension:"Hooked up: brakes off, wipe out the controls, run up to military power",
-	salute:"Hands off flight controls, press Enter to salute and launch",
-	flyaway:"Hands on controls, let the jet fly away at 16\u00b0 nose up",   // the trim board row this jet launches in (fa18c.go Control.Flyaway); the law captures it, the pilot does not fly it
+	// The order is NATOPS 8.2.8's: left hand on the throttles and the stick left
+	// alone through the stroke, the jet rotating itself (a restrained stick
+	// invites PIO), gear and flaps once a positive rate of climb is established.
+	// The departure is CNATRA P-816's Case I: a clearing turn (right off the bow
+	// cats, left off the waist), then parallel the ship's course at 500' and 300
+	// knots to 7 DME, then climb on course.
+	tension:"Hooked up: run up to military power, wipe out controls",
+	salute:"Throttles held, head back, hand off stick; press Enter to salute and launch",
+	flyaway:"Off the cat: hand off stick, let jet rotate 16\u00b0 nose up",   // the trim board row this jet launches in (fa18c.go Control.Flyaway); the law captures it, the pilot does not fly it
+	positive:"Positive rate: take stick, gear up, flaps auto",
+	clearing:"Clearing turn right, then parallel the ship's course at 500', 300 knots to 7 miles",
+	climb:"7 miles: climb on course",
 };
 const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
-const LAUNCH=[HINT.tension,HINT.salute,HINT.flyaway,HINT.cleanup];   // the deck set: its last line is the clean-up, which nothing downstream replaces, so leaving the ship has to retire it (#189)
+const LAUNCH=[HINT.tension,HINT.salute,HINT.flyaway,HINT.positive];   // the deck set up to the clean-up, retired on leaving the ship (#189); the departure's own lines end by the departure's rules, which run to 7 NM
 const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.ninety,HINT.papi,HINT.rollout,HINT.around];   // the field circuit (#91): re-armed by a go-around, so a touch-and-go session is coached every pattern
+// A line is read in HINT_DWELL seconds and then leaves the glass, unless it is
+// waiting on the pilot doing what it says - running up, the shot, the climb, the
+// clean-up, the takeoff roll, the break, the gear - which the sets track, and
+// which ends it or brings the next line.
+const HINT_DWELL=5;
+const WAITING=new Set([HINT.tension,HINT.salute,HINT.flyaway,HINT.positive,HINT.lineup,HINT.rotate,HINT.cleanup,HINT.depart,HINT.rollout,HINT.brk,HINT.dirty,HINT.form]);
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
 // hull course, the downwind its reciprocal, and the groove the angled deck's
@@ -3965,10 +3981,18 @@ function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=c
 // configuration column and the odd 12 px step between the cautions and the
 // stores counters (#186): the pitch has to be stated once.
 const STACK_PITCH=18;
+let hud_ladder={horizon:null,marker:null,limited:false,bore:null,axis:[],caged:false,ghost:null};   // dev: where the horizon bar, the ladder's centre line and the velocity vector were drawn this frame, so a probe can see the ladder leave its marker
 let hud_stack={pitch:STACK_PITCH,left:[],right:[]};   // dev (#186): what each stack laid out this frame, and the step it should be using, so a probe can measure the spacing a canvas will not report
 function stack_draw(rows,x,base){ const laid=[]; let cy=base;
 	for(const [colour,text] of rows){ hctx.fillStyle=colour; hctx.fillText(text,x,cy); laid.push({text:String(text),y:cy,colour:String(colour)}); cy-=STACK_PITCH; }
 	return laid; }
+let hint_since=0;   // sim time the slot's line went up, so a set can hold a line for a minimum read before the next replaces it
+// Which set raised the slot's line, so a surface's retirement takes down only
+// its own: the break and the 90 are one key in the ship's pattern and the
+// field's, the two surfaces sit 11 NM apart, and each one's 6 NM retirement
+// cleared the other's break and 90 in the frame they went up. Lines raised
+// outside the sets (spawn briefs, bolter, wave-off, the ball) take the last set.
+let hinting="carrier", hint_set=null;
 let hint_rows=null, hint_key=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight. hint_key is what it is showing, so a set that has ended can take its own line down without touching another's (#189)
 function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
 	// One row where it fits; the longer teachings wrap at clause marks to at
@@ -3985,7 +4009,7 @@ function hint(key,text){ if(cfg.hints===false||hinted[key]) return; hinted[key]=
 		while(line.length>78){ const cut=line.lastIndexOf(": ",78); if(cut<1) break; rows.push(line.slice(0,cut+1)); line=line.slice(cut+2); }
 	}
 	if(line) rows.push(line);
-	hint_rows=rows; hint_key=key;
+	hint_rows=rows; hint_key=key; hint_since=sim_time; hint_set=hinting;
 	if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); for(const row of rows) log.push(String(row)); }   // the probes keep reading hints here, as they did when hints rode comm()
 }
 // A hint stands until the next replaces it — but the LAST hint of a set has no
@@ -4005,6 +4029,8 @@ function hint_retire(...keys){ if(hint_key!=null&&keys.indexOf(hint_key)>=0) hin
 // needs the first (it never turns). Distance cannot serve either one: the box
 // edge at 2,200 m falls inside the climb through 500-1,150 ft, and the 6 NM /
 // 3,000 ft guard is further still than a circuit ever goes.
+let hooked=false;   // attached to a catapult on the last hint frame: the launch set reads an unhook off the drop
+let stroked=false, rising=null;   // the launch set's shot: whether a catapult stroke has run, and the sim time the climb rate last went positive (null while it is not)
 let field_left=false, ship_left=false;   // left the surface the mission STARTED from: until then the arrival set for that surface is a jet being told to land on the runway it is rolling down (#196), or to break over the ship it just launched from (#204)
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
@@ -4016,7 +4042,7 @@ function runway_reciprocal(){ const ap=airports[0]; return ap?compass(-ap.dir.x,
 // same fuzzy windows against the runway's own frame. The takeoff set runs for
 // runway starts; the arrival set arms for any non-carrier mission inside 6 NM
 // of the field below 3,000', which is how a free flight practises circuits.
-function hints_runway(st){
+function hints_runway(st){ hinting="runway";
 	const ap=airports[0]; if(!ap) return;
 	const rx=wrap_axis(ownship.pos.x-ap.start.x), rz=wrap_axis(ownship.pos.z-ap.start.z);
 	const hx=ap.dir.x, hz=ap.dir.z;
@@ -4058,8 +4084,11 @@ function hints_runway(st){
 	// initial, so a chain hanging off it left the whole arrival set unreachable
 	// and nothing ever replaced the departure line (#198). Downwind geometry is
 	// the other entry: on the reciprocal, at pattern height, beside the field.
+	// After the break the roll-out call waits for the nose to come round, as the
+	// ship's does: raised on the break alone, it replaced the break line in the
+	// frame the break fired, and the pilot never saw it.
 	const circuit=fdot<-0.7&&feet>350&&feet<1150&&lateral<3200;
-	if(hinted[HINT.brk]||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
+	if((hinted[HINT.brk]&&fdot<-0.7)||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
 	// The third way in (#205). The initial wants the jet OVER the field at
 	// pattern height and the circuit wants the reciprocal, so a straight-in -
 	// on the runway axis, miles out, descending - reached neither, and because
@@ -4078,7 +4107,7 @@ function hints_runway(st){
 	if(straight&&!hinted[HINT.initial]&&!hinted[HINT.downwind]){
 		if(!down&&kt<285) hint(HINT.dirty);
 		else if(down) hint(HINT.donut); }
-	if((hinted[HINT.brk]||hinted[HINT.downwind])&&kt<285&&!down) hint(HINT.dirty);
+	if(hinted[HINT.downwind]&&kt<285&&!down) hint(HINT.dirty);   // downwind, not the break: a break entered below 285 knots lost its line to this in the same frame
 	if(hinted[HINT.dirty]&&down) hint(HINT.donut);
 	if(down&&fdot<-0.5&&along<300&&along>-1800&&lateral>400&&lateral<3200) hint(HINT.numbers);   // 400 m, not 900: the floor is there to say BESIDE the runway rather than over it, and a 60 m strip is cleared long before half a mile — a tight pattern flown inside 900 sailed straight past the abeam call (#198)
 	if(hinted[HINT.numbers]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
@@ -4095,43 +4124,67 @@ function hints_runway(st){
 // bolter holding a line nothing could retire (#190): the case split asked how
 // the sortie began when the only question that matters is what lies ahead.
 function hints_watch(){ if(cfg.hints===false||!running) return;
+	if(hint_key!=null&&!WAITING.has(hint_key)&&sim_time-hint_since>=HINT_DWELL) hint_rows=hint_key=null;
 	const st=mission_start(), ap=airports[0];
 	const ship=Math.hypot(wrap_axis(ownship.pos.x-CARRIER.x),wrap_axis(ownship.pos.z-CARRIER.z));
 	const field=ap?Math.hypot(wrap_axis(ownship.pos.x-ap.start.x),wrap_axis(ownship.pos.z-ap.start.z)):Infinity;
-	if(!ship_left&&(ship>3*1852||(ownship.pos.y-CARRIER.deckY)*3.28084>1500)) ship_left=true;
 	// Retiring a set's last line belongs HERE, not inside the set, because a
 	// pilot leaves a pattern by flying away from it - which is the moment
 	// proximity hands the coaching to the other surface. Left in the case I
 	// branch, the ship's retirement became unreachable the instant the island
 	// was the nearer of the two, and the 45 stood on the glass 15 NM out.
-	if(ship>6*1852) hint_retire(...CIRCUIT,HINT.side,...LAUNCH);
-	if(field>6*1852) hint_retire(...RUNWAY);
-	// A deck launch is coached by the launch set until it has left the ship;
-	// only then does proximity decide, and the recovery pattern becomes
-	// reachable. Without that the Case I set would open on a jet in the
-	// holdback and tell it to break over a bow it has not crossed.
-	if(st==="carrier"&&!ship_left) return hints_launch();
+	if(ship>6*1852&&hint_set!=="runway") hint_retire(...CIRCUIT,HINT.side,...LAUNCH);
+	if(field>6*1852&&hint_set==="runway") hint_retire(...RUNWAY);
+	// A deck launch is coached by the launch set through its departure, and
+	// only when that is over (hints_launch sets ship_left) does proximity
+	// decide. Without that the Case I set would open on a jet in the holdback
+	// and tell it to break over a bow it has not crossed; ended at 3 NM or
+	// 1,500 ft, it also dropped a departure that runs at 500' to 7 miles.
+	if(st==="carrier"&&!ship_left) return hints_launch(ship);
 	if(field<=ship) hints_runway(st); else hints_carrier(st);
 }
-// The catapult launch, from the holdback to the clean-up. Keyed on the START,
-// like every departure: a jet can only be shot off the ship it began on.
-function hints_launch(){
+// The catapult launch, from the holdback to the end of the departure. Keyed on
+// the START, like every departure: a jet can only be shot off the ship it began on.
+function hints_launch(ship){ hinting="launch";
 	const ls=launch_status();
-	if(ls===1) hint(HINT.tension,"Hooked up: brakes off, wipe out the controls, run up to "+(gross_weight()>=45000?"full afterburner":"military power"));   // NATOPS 8.2.7 weight board, the same rule the kneeboard's CAT line reads
-	if(ls===2) hint(HINT.salute);
-	// Hands come OFF for the stroke (the salute line) and back ON once the jet
-	// is flying. The flyaway capture holds the attitude either way (#197), so
-	// the coaching is to let it: aft stick off the cat fights the law that is
-	// already flying the jet away.
-	// Height above the DECK, not on_ground(): a jet spotted on the cat reads as
-	// airborne (ownship.grounded is not set for a carrier deck), so gating the
-	// hands-off call on on_ground() raised it while the jet was still sitting
-	// in the holdback at 28 knots - a call about a shot that had not happened.
-	const up=(ownship.pos.y-CARRIER.deckY)*3.28084;
-	if(hinted[HINT.salute]&&up>50) hint(HINT.flyaway,"Hands on controls, let the jet fly away at 16\u00b0 nose up, heading "+ship_course());
-	if(hinted[HINT.flyaway]&&up>200) hint(HINT.cleanup);
+	// Unhooked without a shot - a tension abort, or taxiing off the shuttle -
+	// the deck lines describe a hookup that no longer exists, and nothing else
+	// takes them down while the jet is on the deck. The shot ends the hookup
+	// too, so a drop that starts the stroke is not an unhook: the flyaway line
+	// waits on the salute's record.
+	if(hooked&&ls===0&&!ownship.launching){ hint_retire(HINT.tension,HINT.salute); delete hinted[HINT.tension]; delete hinted[HINT.salute]; }
+	hooked=ls>0;
+	// The run-up and shot lines say what the throttle is doing now, not a step
+	// taken once: the jet is handed over at military, so the shot line was spent
+	// at the hookup, and a pilot who came off power and ran back up was left
+	// reading the run-up instruction. Each line re-arms the other.
+	if(ls===1){ delete hinted[HINT.salute]; hint(HINT.tension,"Hooked up: run up to "+(gross_weight()>=45000?"full afterburner":"military power")+", wipe out controls"); }   // NATOPS 8.2.7 weight board, the same rule the kneeboard's CAT line reads
+	if(ls===2){ delete hinted[HINT.tension]; hint(HINT.salute); }
+	// Everything after the salute is keyed on the shot having run, not on a
+	// height: a military-power shot settles below the deck off the bow, and the
+	// old deck + 50 ft and + 200 ft gates held the hand-off-stick line six
+	// seconds past the stroke it is about, and the gear call nine.
+	if(ownship.launching) stroked=true;
+	if(!stroked) return;
+	const feet=ownship.pos.y*3.28084;
+	if(!ownship.launching) hint(HINT.flyaway);   // the end of the stroke
+	// Positive rate: 100 fpm held for a second, and the rotation line read for
+	// at least two first.
+	if((ownship.vely??0)>0.508){ if(rising===null) rising=sim_time; } else rising=null;
+	if(hinted[HINT.flyaway]&&rising!==null&&sim_time-rising>=1&&(hint_key!==HINT.flyaway||sim_time-hint_since>=2)) hint(HINT.positive);
+	// Clean - gear handle up, flaps auto - and the gear call read for at least
+	// three seconds: then the departure.
+	const clean=(ownship.gearTarget??0)>0.5&&flap_select===0;
+	if(hinted[HINT.positive]&&clean&&(hint_key!==HINT.positive||sim_time-hint_since>=3)) hint(HINT.clearing,"Clearing turn "+(cat_idx<2?"right":"left")+", then parallel "+ship_course()+" at 500', 300 knots to 7 miles");
+	if(hinted[HINT.clearing]&&!hinted[HINT.climb]){
+		const O=carrier_world(0,0), F=carrier_world(100,0), course=ownship.fwd.x*(F.x-O.x)+ownship.fwd.z*(F.z-O.z);
+		if(ship>7*1852) hint(HINT.climb);
+		else if(feet>3000||course<0){ hint_retire(HINT.clearing); ship_left=true; } }   // gone above the departure or turned more than 90\u00b0 off it: the pilot has left it
+	if(hinted[HINT.climb]&&hint_key!==HINT.climb) ship_left=true;   // the climb call read and gone: the departure is over
+	// Never cleaned up: the departure's own bounds still end the set.
+	if(!hinted[HINT.clearing]&&(ship>7*1852||feet>3000)){ hint_retire(...LAUNCH); ship_left=true; }
 }
-function hints_carrier(st){
+function hints_carrier(st){ hinting="carrier";
 	if(on_ground()) return;
 	// The case start says which recovery was BRIEFED. A mission that briefed
 	// none - a deck launch, a runway departure, a free flight - still flies the
@@ -4152,11 +4205,17 @@ function hints_carrier(st){
 		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
 		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
 		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
-		if(along>-1400&&fdot>0.3&&!hinted[HINT.brk]) hint(HINT.side);   // drawing level with the ship, still inbound
-		if(range<950) hint(HINT.brk);
+		// The pattern's own height band, the field's 1,150 ft ceiling: once the
+		// launch set hands a departing jet over, a climb-out on the ship's course
+		// is nearer the ship than the island, and these lines - the side
+		// with no height and no bow, the break with only a range, the donut with
+		// only the gear - coached the departure as an arrival.
+		const low=feet<1150;
+		if(low&&along>-1400&&along<160&&fdot>0.3&&!hinted[HINT.brk]) hint(HINT.side);   // drawing level with the ship, still inbound, not yet past the bow
+		if(low&&range<950) hint(HINT.brk);
 		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll,"Roll out downwind: "+ship_downwind()+", beside the ship 0.9 to 1.1 NM out");   // the nose has come around downwind
-		if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.form);
-		if(down) hint(HINT.donut);
+		if(hinted[HINT.roll]&&kt<285&&!down) hint(HINT.form);   // after the roll-out: keyed on the break, a slow break lost its line to this in the same frame
+		if(low&&down) hint(HINT.donut);
 		if(down&&feet<750&&fdot<-0.5&&range>1000) hint(HINT.wing);
 		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
@@ -4183,7 +4242,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
-		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; notice(amraam_visual?"VISUAL":"CIA"); } }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
+		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; notice(amraam_visual?"VISUAL":"CIA"); } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
 		if(ch===key_of("jammer")){ jammer_armed=!jammer_armed; notice(jammer_armed?"JAMMER ARMED":"JAMMER OFF"); }   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")) acm_press();   // #30: the castle-switch stand-in
@@ -4734,7 +4793,7 @@ if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownsh
 	const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 	return { x:+ownship.pos.x.toFixed(1), z:+ownship.pos.z.toFixed(1), alt:+(ownship.pos.y*3.28084).toFixed(0), hdg:+hdg.toFixed(1), bank:+bank.toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		kcas:+((ownship.cas??ownship.speed)*1.94384).toFixed(0), vy:+(ownship.vely??0).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
-		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2), throttle:+(ownship.throttle??0).toFixed(2), burner:+(ownship.burner??0).toFixed(2),  // i18n-format-ok: dev probe payload, never rendered to a user
+		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2), throttle:+(ownship.throttle??0).toFixed(2), burner:+(ownship.burner??0).toFixed(2), clock:sim_time,  // i18n-format-ok: dev probe payload, never rendered to a user
 		grounded:!!ownship.grounded, trapped:!!ownship.trapped, crash:crash_t>0,
 		line:{ ax:+a.x.toFixed(1), az:+a.z.toFixed(1), bx:+b.x.toFixed(1), bz:+b.z.toFixed(1), deck:+(CARRIER.deckY||20).toFixed(1) } };  // i18n-format-ok: dev probe payload, never rendered to a user
 };   // dev (#89): the navigation picture the scripted circuit/approach probes fly against — position, heading, bank, configuration, and the landing line's world geometry (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
@@ -4742,6 +4801,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
 if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
@@ -4930,6 +4990,7 @@ if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownsh
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
 if(DEV_MODE) (globalThis as any).dev_place=function(x,y,z,dx,dz,speed){ flight_level(+x,+y,+z,+dx,+dz,+speed,(ownship.fuel??2450)); };   // #91 probe: relocate to a pattern station in trimmed level flight
 if(DEV_MODE) (globalThis as any).dev_field=function(){ const ap=airports[0]; return ap?{x:ap.start.x,y:ap.sy,z:ap.start.z,dx:ap.dir.x,dz:ap.dir.z}:null; };   // #91 probe: the airfield frame the runway hints fly against
+if(DEV_MODE) (globalThis as any).dev_ship=function(){ const O=carrier_world(0,0), F=carrier_world(100,0), l=Math.hypot(F.x-O.x,F.z-O.z)||1; return {x:O.x,z:O.z,dx:(F.x-O.x)/l,dz:(F.z-O.z)/l}; };   // probe: the ship frame the Case I hints fly against - the hull's centre and its course
 let paint_force=-1;   // #102: -1 = the brain's own radar; 0/1/2 force the SP bandit's emitter, so RWR/jammer cockpit-truth probes stop depending on when the doctrine chooses to lock
 if(DEV_MODE) (globalThis as any).dev_paint=function(mode){ paint_force=[0,1,2].includes(+mode)?+mode:-1; return paint_force; };
 const spawn_report={burst:0,soot:0};   // cumulative explosion spawn counts — the pool total also carries debris micro-trail wisps (~60/s after a burst), so sequencing is only measurable from exact counters (#92)
@@ -5806,7 +5867,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false;   // and the flight hints (#70)
+	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null;   // and the flight hints (#70)
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
@@ -5869,7 +5930,7 @@ function reset_ownship(){
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
 	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
-	flap_select=(st==="case2")?2:(st==="runway")?1:0;   // HALF on the runway: NATOPS takes off on HALF flap, and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
+	flap_select=(st==="case2")?2:(st==="runway"||st==="carrier")?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
@@ -6321,9 +6382,35 @@ function draw_hud(){
 	const bore=glass?(proj_dir(ownship.fwd)||[cx,cy]):[cx,cy];   // boresight on screen — shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
 	if(flight_symbols){
-	const ladFwd=new THREE.Vector3(ownship.vel_dir.x,0,ownship.vel_dir.z);
+	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
+	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
+	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
+	// approach. A crawling jet's velocity has no meaningful direction, and
+	// vel_dir switches from the nose to the velocity at 0.5 m/s, which snapped
+	// the marker and the ladder sideways in a slow taxi turn: the flight path
+	// fades from the nose to the velocity over the first 2 m/s instead.
+	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(ownship.fwd,Math.max(0,2-ownship.speed));
+	if(path.lengthSq()>1e-9) path.normalize(); else path.copy(ownship.fwd);
+	// NATOPS I-2-102 item 10: at its limit the marker flashes, and that is all
+	// - the ghost belongs to the NAV cage. Caged, the marker sits on the HUD's
+	// vertical centreline and a ghost marks the true flight path whenever it is
+	// more than 2° away, limited and flashing like the marker.
+	const limit=p=>{ const dx=p[0]-bore[0], dy=p[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd; return r>rmax?[[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax],true]:[p,false]; };
+	const cage=caged&&master==="nav";
+	fpm=proj_dir(path);
+	let fpm_limited=false, ghost=null, ghost_limited=false;
+	if(fpm){ const truth=fpm;
+		if(cage) fpm=[bore[0],truth[1]];
+		[fpm,fpm_limited]=limit(fpm);
+		if(cage&&Math.abs(truth[0]-bore[0])>2*ppd) [ghost,ghost_limited]=limit(truth); }
+	// The ladder rotates about the velocity vector (NATOPS I-2-102), so it hangs
+	// on the marker as drawn, limit included: on the unlimited flight path a
+	// slow pivot swung it far off the nose while the marker sat at its limit.
+	const marked=fpm?new THREE.Vector3(fpm[0]/HW*2-1,1-fpm[1]/HH*2,0.5).unproject(camera).sub(camera.position):path;
+	const ladFwd=new THREE.Vector3(marked.x,0,marked.z);
 	if(ladFwd.lengthSq()<0.0025) ladFwd.set(ownship.fwd.x,0,ownship.fwd.z);   // near-vertical flight: fall back to the nose azimuth
 	if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); const rightH=new THREE.Vector3().crossVectors(ladFwd,world_up).normalize();   // fwd × up = out the RIGHT wing (up × fwd pointed left and inverted the ladder)
+		if(DEV_MODE){ hud_ladder.axis=[]; for(let q=-60;q<=60;q+=0.5){ const P=proj_dir(dir_at(ladFwd,rightH,0,q*D2R)); if(P) hud_ladder.axis.push(P); } }   // dev: the ladder's centre line on screen, so a probe can check the marker sits on it
 		for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
 			if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
 				hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7,0,Math.PI*2); hctx.stroke();
@@ -6332,6 +6419,7 @@ function draw_hud(){
 			const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
 			const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
 			const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
+			if(p===0) hud_ladder.horizon=[midx,midy];
 			const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
 			const gap=p===0?30:22;
 			hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
@@ -6354,22 +6442,13 @@ function draw_hud(){
 	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(bore[0]-16,bore[1]); hctx.lineTo(bore[0]-6,bore[1]); hctx.lineTo(bore[0],bore[1]+7); hctx.lineTo(bore[0]+6,bore[1]); hctx.lineTo(bore[0]+16,bore[1]); hctx.stroke(); }
 
-	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
-	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
-	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
-	// approach.
-	fpm=proj_dir(ownship.vel_dir);
-	let fpm_limited=false, fpm_true=null;
-	if(fpm){ const dx=fpm[0]-bore[0], dy=fpm[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd;
-		if(r>rmax){ fpm_true=fpm; fpm=[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax]; fpm_limited=true; }
+	// ---- the velocity vector, placed above with the ladder that hangs on it ----
+	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost;
 		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
 			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
-		// Ghost velocity vector: when the marker cages, the real jet keeps a
-		// ghost at the TRUE flight path — losing it exactly at high crab and
-		// alpha, where it is most displaced, is how a caged marker flies you
-		// into the ground. Dashed and steady, while the caged one flashes.
-		if(fpm_true){ hctx.strokeStyle=GR; hctx.setLineDash([3,3]); hctx.beginPath(); hctx.arc(fpm_true[0],fpm_true[1],6,0,Math.PI*2);
-			hctx.moveTo(fpm_true[0]-6,fpm_true[1]); hctx.lineTo(fpm_true[0]-14,fpm_true[1]); hctx.moveTo(fpm_true[0]+6,fpm_true[1]); hctx.lineTo(fpm_true[0]+14,fpm_true[1]); hctx.moveTo(fpm_true[0],fpm_true[1]-6); hctx.lineTo(fpm_true[0],fpm_true[1]-12); hctx.stroke(); hctx.setLineDash([]); } }
+		// The ghost, dashed so it cannot be taken for the caged marker it stands beside.
+		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3,3]); hctx.beginPath(); hctx.arc(ghost[0],ghost[1],6,0,Math.PI*2);
+			hctx.moveTo(ghost[0]-6,ghost[1]); hctx.lineTo(ghost[0]-14,ghost[1]); hctx.moveTo(ghost[0]+6,ghost[1]); hctx.lineTo(ghost[0]+14,ghost[1]); hctx.moveTo(ghost[0],ghost[1]-6); hctx.lineTo(ghost[0],ghost[1]-12); hctx.stroke(); hctx.setLineDash([]); } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
