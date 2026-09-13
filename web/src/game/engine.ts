@@ -4246,18 +4246,18 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
-		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; notice(amraam_visual?"VISUAL":"CIA"); } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
-		if(ch===key_of("jammer")){ jammer_armed=!jammer_armed; notice(jammer_armed?"JAMMER ARMED":"JAMMER OFF"); }   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
-		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
+		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
+		if(ch===key_of("jammer")) jammer_armed=!jammer_armed;   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
+		if(ch===key_of("radar.silent")) RADAR.sil=!RADAR.sil;   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")) acm_press();   // #30: the castle-switch stand-in
 		if(ch===key_of("select")) set_master(next_master());   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN, skipping any weapon with nothing left to fire. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
-		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
+		if(ch===key_of("reject")) declutter=(declutter+1)%3;     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
 		if(ch===key_of("fire")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
-		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
-		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
-		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
+		if(ch===key_of("probe")) ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1;   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
+		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
+		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && (ownship.flares>0||ownship.chaff>0||cheat("ammunition")) && (ownship.squish??0)<0.1){   // the mixed programme (#29): one key, a flare AND a bloom, each from its own magazine while it lasts (#43)
 			if(ownship.flares>0||cheat("ammunition")){ dispense_flare(ownship); if(!cheat("ammunition")) ownship.flares--; }
 			if(ownship.chaff>0||cheat("ammunition")){ dispense_chaff(ownship); if(!cheat("ammunition")) ownship.chaff--; }
@@ -4274,7 +4274,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
-			if(k==="Digit2"){ if(cfg.view==="hud"){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); } else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
+			if(k==="Digit2"){ if(cfg.view==="hud") declutter=(declutter+1)%3; else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
 			if(k==="Digit3") set_view("ddi");        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
 			if(k==="Digit4") set_view("chase");      // 4 Chase
 			if(k==="Digit5") set_view("flypast");    // 5 Flypast
@@ -4293,13 +4293,13 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; flap_armed=sim_time+4; }   // no notice: the legend shows the selection AND its travel now (#199), and the centre banner is for what the glass cannot say   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
 		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; flap_armed=sim_time+4; }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
-		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
+		if(ch===key_of("brake.parking")) parking=!parking;   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
-		if(ch===key_of("dump")){ fuel_dump=!fuel_dump; notice("FUEL DUMP "+(fuel_dump?"ON":"OFF")); }   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
-		if(ch===key_of("secure.port")){ secured[0]=!secured[0]; notice(secured[0]?"L ENG SECURED":"L ENG RELIGHT"); }   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
-		if(ch===key_of("secure.starboard")){ secured[1]=!secured[1]; notice(secured[1]?"R ENG SECURED":"R ENG RELIGHT"); }
+		if(ch===key_of("dump")) fuel_dump=!fuel_dump;   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
+		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
+		if(ch===key_of("secure.starboard")) secured[1]=!secured[1];
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
@@ -4727,7 +4727,16 @@ function cautions_update(){
 	if(!cheat("fuel")){ const total=(ownship.fuel??0)+(ownship.external??0);
 		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
 		else if(total>0&&total<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
-	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
+	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }
+	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
+	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
+	// spread and locked (2.11.1); PARK BRK only with the brake set and both engines above about 80% rpm (2.10.3.4);
+	// CANOPY while it is not down and locked (2.15.1.1.5); PROBE UNLK while the probe is not fully in with the
+	// switch at RETRACT. A normally extended probe and the fuel dump switch have no light.
+	if((ownship.foldTarget??0)>0.5||(ownship.fold??0)>0.02) push("WING UNLK");
+	{ const g=ownship.gauges||{}; if(parking&&(g.rpmL??0)>80&&(g.rpmR??0)>80) push("PARK BRK"); }
+	if((ownship.canopyTarget??0)>0.5||(ownship.canopy??0)>0.02) push("CANOPY");
+	if((ownship.probeTarget??0)<0.5&&(ownship.probe??0)>0.02) push("PROBE UNLK");   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
 	if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3) push(["NOSE GEAR","L GEAR","R GEAR"][leg],harm>0.7); }
 	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
@@ -4780,15 +4789,6 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.ttl[k]=smoke.life[k]=1.4+Math.random()*0.8; smoke.sz[k]=0.26+Math.random()*0.10; smoke.gr[k]=0.55;   // fuel vapour: pale, fast-swelling, quick to thin (#239)
 	smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
 let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
-let _spark_count=0;   // dev: how many strike flashes have been spawned
-const impact_marks=[];
-function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
-	g.addColorStop(0,"rgba(8,8,7,.95)"); g.addColorStop(.28,"rgba(35,25,16,.9)"); g.addColorStop(.62,"rgba(70,48,26,.35)"); g.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
-const impact_mark_mat=new THREE.MeshBasicMaterial({map:impact_mark_texture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,side:THREE.DoubleSide,toneMapped:false});
-const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vector3(0,0,1); const _v2=new THREE.Vector3();   // _v2: the mark-normal scratch — its definition was lost in an interleaved commit, and the first gun hit after that threw ReferenceError and killed the whole frame loop
-function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_quality??2)<1) return; const cap=[0,10,28,56][Math.max(0,Math.min(3,cfg.effects_quality|0))];
-	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
-	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 // The HUD trim readout shows the PA pitch datum, which the core holds only in its PA law, so it follows
 // that law's own trigger (flight/fcs.go), mirrored because the law state never crosses the wire: the flap
 // switch at HALF or FULL, the deck's takeoff-leg latch (set on the wheels under 40 m/s, cleared by a
@@ -4799,6 +4799,15 @@ function trim_law(){
 	if(ownship.grounded){ law_wheels=sim_time; if((ownship.speed??0)<40) law_halfleg=true; }
 	if((ownship.gearTarget??0)>=0.5&&(ownship.cas??ownship.speed??0)>92.6&&flap_select<1) law_halfleg=false;
 	return flap_select>=1||law_halfleg||sim_time-law_wheels<3; }
+let _spark_count=0;   // dev: how many strike flashes have been spawned
+const impact_marks=[];
+function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
+	g.addColorStop(0,"rgba(8,8,7,.95)"); g.addColorStop(.28,"rgba(35,25,16,.9)"); g.addColorStop(.62,"rgba(70,48,26,.35)"); g.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
+const impact_mark_mat=new THREE.MeshBasicMaterial({map:impact_mark_texture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,side:THREE.DoubleSide,toneMapped:false});
+const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vector3(0,0,1); const _v2=new THREE.Vector3();   // _v2: the mark-normal scratch — its definition was lost in an interleaved commit, and the first gun hit after that threw ReferenceError and killed the whole frame loop
+function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_quality??2)<1) return; const cap=[0,10,28,56][Math.max(0,Math.min(3,cfg.effects_quality|0))];
+	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
+	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
@@ -5799,9 +5808,9 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt); }   // air-brake ease for the aircraft the core doesn't fly
 	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
 	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
-	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13){ st.canopyTarget=0; notice(translate("CANOPY CLOSING")); }   // the takeoff roll closes an open canopy before the airflow does it destructively
+	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13) st.canopyTarget=0;   // the takeoff roll closes an open canopy before the airflow does it destructively
 	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
-	if(st===ownship && (st.foldTarget??0)>0.5 && st.speed>13){ st.foldTarget=0; notice(translate("WINGS SPREADING")); }   // rolling for takeoff spreads folded wings before the airflow rips them
+	if(st===ownship && (st.foldTarget??0)>0.5 && st.speed>13) st.foldTarget=0;   // rolling for takeoff spreads folded wings before the airflow rips them
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
 	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
@@ -5882,6 +5891,7 @@ function reset_ownship(){
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null;   // and the flight hints (#70)
+	law_halfleg=false; law_wheels=-Infinity; trim_manual=false;   // a fresh core starts with no takeoff-leg latch and no wheel timer
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
@@ -5891,7 +5901,6 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
-	law_halfleg=false; law_wheels=-Infinity; trim_manual=false;   // a fresh core starts with no takeoff-leg latch and no wheel timer
 		const O=carrier_world(0,0), F=carrier_world(100,0);
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 		const dist=3*1852;
@@ -6392,6 +6401,7 @@ function draw_hud(){
 	{ const geardown=(ownship.gear??1)<0.5, kcas=ownship.cas??ownship.speed;
 		if(hud_pa){ if((!geardown&&kcas>92.6)||kcas>135) hud_pa=false; }
 		else if(geardown&&kcas<125) hud_pa=true; }
+	trim_manual=trim_law();
 	const pa=hud_pa;                              // landing symbology gate (flaps HALF/FULL)
 	let fpm=null;
 	const bore=glass?(proj_dir(ownship.fwd)||[cx,cy]):[cx,cy];   // boresight on screen — shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
@@ -6401,7 +6411,6 @@ function draw_hud(){
 	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
 	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
 	// approach. A crawling jet's velocity has no meaningful direction, and
-	trim_manual=trim_law();
 	// vel_dir switches from the nose to the velocity at 0.5 m/s, which snapped
 	// the marker and the ladder sideways in a slow taxi turn: the flight path
 	// fades from the nose to the velocity over the first 2 m/s instead.
@@ -6747,7 +6756,11 @@ function draw_hud(){
 		if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
 			if((ownship.speedbrake??0)>0.02) rows.push([AM,translate("SPD BK")]);
 			if(stab_cycle>0) rows.push([AM,"STAB "+stab_cycle]);   // Shift+E calibration state
-			if((ownship.fold??0)>0.02) rows.push([AM,translate("WINGS")]);   // amber, above SPD BK: not a flight configuration
+			// Wing fold and the parking brake follow their handles, not the panels or the brakes
+			// (NATOPS 2.11.1, 2.10.3.4): the jet shows no in-motion state for either. WING UNLK
+			// comes on as the handle leaves LOCK and goes out only once the panels are spread and
+			// the handle is back in, so WINGS lights from the fold command until then.
+			if((ownship.foldTarget??0)>0.5||(ownship.fold??0)>0.02) rows.push([GR,translate("WINGS")]);
 			// The SWITCH, not the surfaces (#199, ruled 2026-09-12). The real panel's
 			// HALF and FULL lights indicate switch position and are explicitly not an
 			// indication of actual flap position; a Hornet pilot reads the real angle
@@ -6755,12 +6768,23 @@ function draw_hud(){
 			// states and one unlit: nothing here means AUTO, the way neither light lit
 			// means AUTO in the cockpit.
 			if(flap_select>0) rows.push([GR,translate(flap_select===1?"FLAPS HALF":"FLAPS FULL")]);
-			if(parking) rows.push([AM,translate("PARK")]);   // the parking brake holds the mains: amber, like a caution
+			if(parking) rows.push([GR,translate("PARK")]);   // the handle's position: the real jet has no brake-set light, only the PARK BRK caution with the throttles up
 			const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
 			const parts=[];
 			if(trim_manual&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
 			if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));   // i18n-format-ok: canvas HUD glyph: bank angle, fixed-format like the real instrument
-			if(parts.length) rows.push([GR,"TRIM "+parts.join(" ")]); }
+			if(parts.length) rows.push([GR,"TRIM "+parts.join(" ")]);
+			// Switch states the centre banner used to announce: configuration is a state, so it
+			// lives here where it can be read back, and the banner keeps the events. SIL, the
+			// jammer, the ACM condition and the reject level read as the DDI and the switch
+			// legends print them.
+			if(fuel_dump) rows.push([GR,translate("FUEL DUMP")]);
+			if(secured[0]) rows.push([AM,translate("L ENG SECURED")]);
+			if(secured[1]) rows.push([AM,translate("R ENG SECURED")]);
+			if(RADAR.sil) rows.push([GR,"SIL"]);
+			if(jammer_armed) rows.push(jammer_loud()?[AM,"XMIT"]:[GR,"JAM ARM"]);
+			if(RADAR.auto) rows.push([GR,RADAR.acm==="vacq"?"ACM VACQ":"ACM BST"]);
+			if(declutter>0) rows.push([GR,"REJ "+declutter]); }
 		hud_stack.right=stack_draw(rows,HW-40,HH-52); }
 	if(!authentic){   // the beacons keep their own group below the configuration, at their own tighter pitch
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
@@ -7096,9 +7120,9 @@ function acquire_acm(auto){
 // search radar. The commanded condition acquires by itself (radar_step); Enter
 // still steps the cone and Backspace still undesignates while it holds.
 function acm_press(){
-	if(!RADAR.auto){ RADAR.auto=true; RADAR.acm="bst"; notice("ACM BORESIGHT"); }
-	else if(RADAR.acm==="bst"){ RADAR.acm="vacq"; notice("ACM VERTICAL"); }
-	else { RADAR.auto=false; RADAR.acm="bst"; notice("ACM OFF"); } }
+	if(!RADAR.auto){ RADAR.auto=true; RADAR.acm="bst"; }
+	else if(RADAR.acm==="bst") RADAR.acm="vacq";
+	else { RADAR.auto=false; RADAR.acm="bst"; } }
 // default_radar: the set at spawn, as default_master has the weapon up - a
 // merge joust commands boresight at 10 nm, a BVR or AMRAAM fight is TWS at 40
 // nm, free flight searches in RWS.
