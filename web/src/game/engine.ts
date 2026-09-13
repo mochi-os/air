@@ -4075,8 +4075,13 @@ function hints_runway(st){ hinting="runway";
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
 	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
+	// Left the field: climbed above the pattern, turned off the runway heading, or
+	// flew clear of the coaching area. The last is the departure flown as its own
+	// line asks, 350 knots straight out and low, which never climbs or turns
+	// inside 6 NM; latched only by those two, it came back for the initial with
+	// the arrival set still held for a jet taking off.
+	if((hinted[HINT.depart]&&feet>1200)||fdot<-0.5||range>6*1852||feet>3000) field_left=true;
 	if(range>6*1852||feet>3000){ hint_retire(HINT.depart,HINT.rollout); return; }   // clear of the field: the takeoff set is finished and nothing downstream can replace its last line
-	if((hinted[HINT.depart]&&feet>1200)||fdot<-0.5) field_left=true;   // climbed above the pattern, or turned off the runway heading
 	if(st==="runway"&&hinted[HINT.rotate]&&!field_left) return;   // still departing: the arrival set belongs to the pilot coming back (#196)
 	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);

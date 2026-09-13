@@ -55,6 +55,19 @@ describe('the arrival set follows the jet, not the Start selector (#204)', () =>
     expect(watch).toMatch(/st==="carrier"&&!ship_left\) return hints_launch\(ship\)/)
   })
 
+  it('counts a departure flown clear of the field as having left it', () => {
+    // The departure line asks for 350 knots on the runway heading, and flown low
+    // and straight out that never climbs above the pattern or turns inside 6 NM.
+    // The latch sat after the coaching-area return, so a jet that left that way
+    // came back for the initial with its arrival set still held.
+    const runway = body('hints_runway')
+    const latch = runway.indexOf('field_left=true')
+    const exit = runway.indexOf('if(range>6*1852||feet>3000){')
+    expect(runway).toMatch(/\|\|range>6\*1852\|\|feet>3000\) field_left=true;/)
+    expect(latch, 'the latch is set before the coaching-area return').toBeGreaterThan(0)
+    expect(latch).toBeLessThan(exit)
+  })
+
   it('re-arms that latch with the rest of the hint state on a restart', () => {
     expect(source).toMatch(/field_left=ship_left=false/)
     // A respawn onto the cat with the last shot's stroke still recorded would
