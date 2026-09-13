@@ -3955,7 +3955,7 @@ const HINT={
 	// knots to 7 DME, then climb on course.
 	tension:"Hooked up: run up to military power, wipe out controls",
 	salute:"Throttles held, head back, hand off stick; press Enter to salute and launch",
-	flyaway:"Off the cat: hand off stick, let jet rotate 16\u00b0 nose up",   // the trim board row this jet launches in (fa18c.go Control.Flyaway); the law captures it, the pilot does not fly it
+	flyaway:"Off the cat: hand off stick, let jet rotate 12\u00b0 nose up",   // NATOPS 8.3.6's "monitor rotation of the aircraft to 12° nose up": the law rotates the jet to the launch trim's reference AOA (fa18c.go Control.Capture), the pilot does not fly it
 	positive:"Positive rate: take stick, gear up, flaps auto",
 	clearing:"Clearing turn right, then parallel the ship's course at 500', 300 knots to 7 miles",
 	climb:"7 miles: climb on course",
@@ -4804,13 +4804,17 @@ let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-sym
 // The HUD trim readout shows the PA pitch datum, which the core holds only in its PA law, so it follows
 // that law's own trigger (flight/fcs.go), mirrored because the law state never crosses the wire: the flap
 // switch at HALF or FULL, the deck's takeoff-leg latch (set on the wheels under 40 m/s, cleared by a
-// clean-up with the gear handle up past 92.6 m/s CAS on AUTO), or the wheels within the last 3 s. The gear
-// is not in it, so the landing-symbology gate above is the wrong source for the readout.
-let law_halfleg=false, law_wheels=-Infinity, trim_manual=false;
+// clean-up with the gear handle up past 92.6 m/s CAS on AUTO), or the wheels within the last 3 s. Either
+// of the first two yields above ~240 KCAS, where NATOPS 11.1.1 hands the jet to AUTO whatever the switch
+// says (set past 126 m/s CAS, cleared under 121). The gear is not in it, so the landing-symbology gate
+// above is the wrong source for the readout.
+let law_halfleg=false, law_wheels=-Infinity, law_fast=false, trim_manual=false;
 function trim_law(){
+	const cas=ownship.cas??ownship.speed??0;
 	if(ownship.grounded){ law_wheels=sim_time; if((ownship.speed??0)<40) law_halfleg=true; }
-	if((ownship.gearTarget??0)>=0.5&&(ownship.cas??ownship.speed??0)>92.6&&flap_select<1) law_halfleg=false;
-	return flap_select>=1||law_halfleg||sim_time-law_wheels<3; }
+	if((ownship.gearTarget??0)>=0.5&&cas>92.6&&flap_select<1) law_halfleg=false;
+	if(cas>126) law_fast=true; else if(cas<121) law_fast=false;
+	return ((flap_select>=1||law_halfleg)&&!law_fast)||sim_time-law_wheels<3; }
 let _spark_count=0;   // dev: how many strike flashes have been spawned
 const impact_marks=[];
 function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
@@ -5903,7 +5907,7 @@ function reset_ownship(){
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null;   // and the flight hints (#70)
-	law_halfleg=false; law_wheels=-Infinity; trim_manual=false;   // a fresh core starts with no takeoff-leg latch and no wheel timer
+	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
@@ -7443,6 +7447,7 @@ function start_mission(){
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	{ const pounds=parseFloat(devq.get("fuel")||""); if(pounds>0) cfg.fuel=pounds; }   // &fuel=<lb> — headless fuel pin: ?fly=1 mounts with the saved config or the defaults, whichever arrives first, and the catapult shot flown at 2,100 lb and at 10,800 lb are different shots
 	const storesq=devq.get("stores");   // &stores=gun|fox2|fox3|tanks|right|spam|heat — headless loadout hook (#17): the presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the ten-round AMRAAM twin fit, and the ten-heater fit (#27)
 	if(storesq){ const extra={
 		tanks:{ 1:{fixture:"rail",stores:["9m"]}, 3:{fixture:"pylon",stores:["tank"]}, 5:{fixture:"pylon",stores:["tank"]}, 7:{fixture:"pylon",stores:["tank"]}, 9:{fixture:"rail",stores:["9m"]} },
