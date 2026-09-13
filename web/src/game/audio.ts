@@ -3,11 +3,22 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Game audio (#73): everything is synthesized - continuous sources (engines,
-// wind, fires) as live Web Audio graphs modulated per frame from the flight
-// core, one-shots pre-rendered at startup with an OfflineAudioContext; no
-// recorded assets. The context starts suspended until the first user gesture;
-// every entry point is safe to call before init or with audio off.
+// Game audio (#73): synthesized - continuous sources (engines, wind, fires) as
+// live Web Audio graphs modulated per frame from the flight core, one-shots
+// pre-rendered at startup with an OfflineAudioContext. The one recorded asset
+// is the voice alerts (voice.ts), spoken by Piper's public-domain LJ Speech
+// voice through tools/voice.py and decoded when the context is built. The
+// context starts suspended until the first user gesture; every entry point is
+// safe to call before init or with audio off.
+import bingo from '../assets/voice/bingo.mp3?url'
+import check_gear from '../assets/voice/check-gear.mp3?url'
+import engine_fire_left from '../assets/voice/engine-fire-left.mp3?url'
+import engine_fire_right from '../assets/voice/engine-fire-right.mp3?url'
+import engine_left from '../assets/voice/engine-left.mp3?url'
+import engine_right from '../assets/voice/engine-right.mp3?url'
+import flight_controls from '../assets/voice/flight-controls.mp3?url'
+import fuel_low from '../assets/voice/fuel-low.mp3?url'
+import type { Message } from './voice'
 
 let context: AudioContext | null = null
 let master: GainNode | null = null
@@ -109,6 +120,17 @@ let deck: Voice | null = null
 
 // Pre-rendered one-shot buffers.
 const shots: Record<string, AudioBuffer> = {}
+const RECORDINGS: Record<Message, string> = {
+  'ENGINE FIRE LEFT': engine_fire_left,
+  'ENGINE FIRE RIGHT': engine_fire_right,
+  'CHECK GEAR': check_gear,
+  'FLIGHT CONTROLS': flight_controls,
+  'ENGINE LEFT': engine_left,
+  'ENGINE RIGHT': engine_right,
+  'FUEL LOW': fuel_low,
+  BINGO: bingo,
+}
+const voices = new Map<Message, AudioBuffer>()
 let ecs: { gain: GainNode } | null = null
 let ecsOn = false
 let gunFiring = false
@@ -216,7 +238,20 @@ function build(): void {
   const c = context
   master = c.createGain()
   master.gain.value = enabled ? levels.master : 0
-  master.connect(c.destination)
+  // The mix is built hot: full afterburner alone peaked at -0.7 dBFS, so any
+  // alert on top of it clipped. The headroom stage takes 9 dB off everything
+  // after the Sound sliders (0.33, less the limiter's 0.56 dB of make-up
+  // gain), and the limiter only catches what still stacks past full scale,
+  // such as a voice alert over the gun and the burner.
+  const headroom = c.createGain()
+  headroom.gain.value = 0.33
+  const limiter = c.createDynamicsCompressor()
+  limiter.threshold.value = -1
+  limiter.knee.value = 0
+  limiter.ratio.value = 20
+  limiter.attack.value = 0.003
+  limiter.release.value = 0.25
+  master.connect(headroom).connect(limiter).connect(c.destination)
   for (const name of BUSES) {
     const g = c.createGain()
     g.gain.value = levels[name]
@@ -516,6 +551,22 @@ function build(): void {
   }
 
   void bake()
+  void listen()
+}
+
+// listen decodes the voice alert recordings.
+async function listen(): Promise<void> {
+  const c = context as AudioContext
+  await Promise.all(
+    Object.entries(RECORDINGS).map(async ([message, url]) => {
+      try {
+        const data = await (await fetch(url)).arrayBuffer()
+        voices.set(message as Message, await c.decodeAudioData(data))
+      } catch {
+        // stays missing, and the master caution tone covers its caution
+      }
+    })
+  )
 }
 
 // bake pre-renders every one-shot into a named buffer.
@@ -1061,6 +1112,29 @@ export function audio_caution(): void {
 }
 export function audio_warning(): void {
   play('warning', 0.95)
+}
+
+// audio_voiced reports whether a voice alert's recording is ready to play.
+export function audio_voiced(message: Message): boolean {
+  return voices.has(message)
+}
+
+// audio_voice plays a voice alert on the alerts bus and returns its length in
+// seconds, which the queue waits out whether or not the context is running.
+export function audio_voice(message: Message): number {
+  const log = (globalThis as any).dev_sounds
+  if (log) log.push(`voice:${message}`)
+  const buffer = voices.get(message)
+  if (!buffer) return 0
+  if (context && context.state === 'running') {
+    const source = context.createBufferSource()
+    source.buffer = buffer
+    const gain = context.createGain()
+    gain.gain.value = 1.8 // 8 dB over the engine at full afterburner: speech needs a clearer margin than a tone
+    source.connect(gain).connect(bus('alerts'))
+    source.start()
+  }
+  return buffer.duration
 }
 
 // audio_departure drives the departure/AoA warning each frame (NATOPS

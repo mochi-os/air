@@ -24,6 +24,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
+import { SPOKEN, voice_queue, voice_step } from './voice'
 import { identity as replay_identity, publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
@@ -46,7 +47,7 @@ import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { demise, opponent, report } from './fate'
-import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -4728,11 +4729,14 @@ const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:u
 // and view-independent; the tone, the glareshield lamp and the HUD stack all
 // read it. NATOPS 2.17.2.1: the tone fires on any new caution key, the light
 // clears when pressed and re-arms on the next. Warnings (red) carry their own
-// tone (2.17.3).
+// tone. A caution with a voice alert is announced instead of toned, and a FIRE
+// warning has only its voice (2.17.3); the tone backs the voice up, so a key
+// whose recording is not ready still gets it.
 let caution_list=[];        // [key, label, red] rows, sim-step fresh — the renderers' source
 let caution_keys=new Set(); // keys present last step (the new-key edge)
 let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
-let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on)
+let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on), as a tone while the voice cannot say it
+const voice=voice_queue();  // the voice alerts (voice.ts)
 function cautions_update(){
 	const rows=[]; const core=last_out;
 	const push=(key,red)=>rows.push([key,translate(key),!!red]);
@@ -4759,17 +4763,26 @@ function cautions_update(){
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
 		if(torn||core[STATE.stress]>2) push("STRUCTURE"); }
 	caution_list=rows;
-	let freshCaution=false, freshWarning=false;
-	for(const [key,,red] of rows) if(!caution_keys.has(key)){ if(red) freshWarning=true; else freshCaution=true; }
+	let fresh=false, freshCaution=false, freshWarning=false;
+	for(const [key,,red] of rows) if(!caution_keys.has(key)){ fresh=true;
+		if(SPOKEN[key]?.every(audio_voiced)) continue;
+		if(red) freshWarning=true; else freshCaution=true; }
 	caution_keys=new Set(rows.map(r=>r[0]));
-	if(freshWarning){ caution_lamp=true; audio_warning(); }
-	else if(freshCaution){ caution_lamp=true; audio_caution(); }
+	if(fresh) caution_lamp=true;
+	if(freshWarning) audio_warning();
+	else if(freshCaution) audio_caution();
 	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
-	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
+	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0;
+	const active=new Set();
+	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
+	if(gpws.gear) active.add("CHECK GEAR");
+	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
+	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
+let gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
 let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
@@ -4845,6 +4858,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_voice=(message)=>{ if(message) audio_voice(message); return { clock:sim_time, until:voice.until, gear:gpws.gear, wheels:gpws.wheels, waveoff:gpws.waveoff }; };   // dev: the voice alert queue and the GPWS gear-up landing state; given a message, plays it outside the queue to audition the mix
 if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
 if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest catalogue stars on screen now, projected to canvas pixels, so a probe can check a star is drawn where the sky has it
 	const pos=star_geo.attributes.position.array, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new THREE.Vector3(), out=[];
@@ -5587,6 +5601,14 @@ function fly_player(dt){
 				const required=sink*1.0+sink*(upright/Math.PI)+pull;
 				return agl/3.28084<Math.max(91,required); })();
 			const flying=!ownship.grounded&&!ownship.launching&&crash_t<=0;
+			// GPWS below 150 ft (NATOPS 2.17.5.2, 2.17.5.4): CHECK GEAR while descending under 200 knots
+			// with the gear not down and locked, once 60 s have passed since weight on wheels or a
+			// waveoff - a climb above 1,000 fpm held for 5 s below both 500 ft and 200 knots.
+			{ const slow=(ownship.cas??ownship.speed)<102.9;   // 200 knots in m/s
+				if(ownship.grounded) gpws.wheels=sim_time;
+				if(-sink>5.08&&agl<500&&slow){ if(gpws.climb<0) gpws.climb=sim_time; else if(sim_time-gpws.climb>5) gpws.waveoff=sim_time; }
+				else gpws.climb=-1;
+				gpws.gear=flying&&agl<150&&sink>0.5&&slow&&(ownship.gear??1)>=0.02&&sim_time-Math.max(gpws.wheels,gpws.waveoff)>60; }
 			// law_active is the ESCAPE warning and carries the whole
 			// presentation: the repeating aural (#47) and the break-X. The
 			// index call below is aural only and gear-down only, as the jet's

@@ -16,7 +16,7 @@ import { describe, expect, it } from 'vitest'
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const catalogue = readFileSync(fileURLToPath(new URL('../components/GameCanvas.tsx', import.meta.url)), 'utf8')
 
-const stackCode = /\n\t\{ const rows=\[\];   \/\/ bottom of the stack first\n[\s\S]*?\n\t\thud_stack\.right=stack_draw\(rows,HW-40,HH-52\); \}\n/.exec(source)?.[0] ?? ''
+const stackCode = /\n\t\{ const rows=\[\]; {3}\/\/ bottom of the stack first\n[\s\S]*?\n\t\thud_stack\.right=stack_draw\(rows,HW-40,HH-52\); \}\n/.exec(source)?.[0] ?? ''
 const cautionCode = /\n\tif\(\(ownship\.foldTarget\?\?0\)>0\.5\|\|\(ownship\.fold\?\?0\)>0\.02\) push\("WING UNLK"\);[\s\S]*?push\("PROBE UNLK"\);/.exec(source)?.[0] ?? ''
 
 interface Jet { hook?: number; gear?: number; speedbrake?: number; fold?: number; foldTarget?: number; canopy?: number; canopyTarget?: number; probe?: number; probeTarget?: number; gauges?: { rpmL: number; rpmR: number } }
