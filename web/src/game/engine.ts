@@ -766,7 +766,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 						float sunTop=0.22*(phv.x+0.45*phv.y+phv.z);   // the beam term below at zero optical depth: what a deck's top surface receives
 					for(int i=0;i<68;i++){ if(t>t1||tr<0.03) break;
 						float dt=clamp(t*0.105,110.0,2600.0);   // adaptive stride sized so 68 steps reach cfar from INSIDE the slab (t0=0) — an earlier 60..420 m schedule exhausted at ~13 km in flight and big cells popped in. Strides this coarse are only safe because each is sampled stochastically (ts below) and ~10 jittered frames accumulate; the 96->68 step cut bought the frame rate back after dens() grew the lobe/anvil fetches
-						float ts=t+ign*dt;   // stochastic sample WITHIN the stride: the per-frame ign rotation then decorrelates the march shells at EVERY range — jittering only the ray start leaves far shells correlated, accumulating as horizontal washboard across distant towers
+						if(i==0) dt*=max(ign,0.05);   // the first stride is a jittered FRACTION of one, which moves every later boundary by that same fraction of its own stride (strides grow with distance, so an absolute start offset would move the far ones by nothing). Jittering only the sample inside a fixed stride leaves the boundaries at fixed distances: each opacity step lands on the same shells every frame, and on a cloud base seen edge-on those shells are horizontal stripes no amount of accumulation removes
+						float ts=t+ign*dt;   // stochastic sample WITHIN the stride
 						vec3 pos=uCamPos+ray*ts;
 						float lod=clamp(ts/26000.0,0.0,1.0); float d=dens(pos,lod);   // detail persists to range: the LOD fade also fades the SHADOW micro-structure, leaving distant towers uniform white against a detailed near one
 						if(d>0.01){
@@ -3098,8 +3099,8 @@ async function generate_world(){
 	try{
 		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
 		const map=await (await fetch(base+"map.json")).json();
-		WORLD_WRAP=map.wrap||0;
 		if(Array.isArray(map.origin)) sky_place(map.origin[0],map.origin[1]);   // the stars stand over the map's real position
+		WORLD_WRAP=map.wrap||0;
 		// --- single Sentinel-2 texture for the ocean AND the islands (reef/lagoon/breakers + land) ---
 		const texture=await new THREE.TextureLoader().loadAsync(base+"map.jpg");
 		texture.flipY=false; texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping; texture.colorSpace=THREE.SRGBColorSpace;
@@ -4805,6 +4806,11 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
+if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest catalogue stars on screen now, projected to canvas pixels, so a probe can check a star is drawn where the sky has it
+	const pos=star_geo.attributes.position.array, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new THREE.Vector3(), out=[];
+	star_catalogue.forEach((s,i)=>{ if(pos[i*3+1]<STAR_RADIUS*0.12) return; v.set(pos[i*3],pos[i*3+1],pos[i*3+2]).add(camera.position).project(camera);
+		if(v.z<1&&Math.abs(v.x)<0.95&&Math.abs(v.y)<0.95) out.push({ magnitude:s.magnitude, ascension:s.ascension*180/Math.PI, declination:s.declination*180/Math.PI, x:(v.x+1)/2*w, y:(1-v.y)/2*h, altitude:Math.asin(pos[i*3+1]/STAR_RADIUS)*180/Math.PI }); });
+	return out.sort((a,b)=>a.magnitude-b.magnitude).slice(0,count); };
 if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
@@ -4855,11 +4861,6 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
 	const axes={ right:own?ownship.right:(bandit.right||world_up.clone().cross(bandit.fwd).normalize()), ahead:t.fwd, behind:t.fwd.clone().negate(), above:own?ownship.up:(bandit.up||world_up) };
-if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest catalogue stars on screen now, projected to canvas pixels, so a probe can check a star is drawn where the sky has it
-	const pos=star_geo.attributes.position.array, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new THREE.Vector3(), out=[];
-	star_catalogue.forEach((s,i)=>{ if(pos[i*3+1]<STAR_RADIUS*0.12) return; v.set(pos[i*3],pos[i*3+1],pos[i*3+2]).add(camera.position).project(camera);
-		if(v.z<1&&Math.abs(v.x)<0.95&&Math.abs(v.y)<0.95) out.push({ magnitude:s.magnitude, ascension:s.ascension*180/Math.PI, declination:s.declination*180/Math.PI, x:(v.x+1)/2*w, y:(1-v.y)/2*h, altitude:Math.asin(pos[i*3+1]/STAR_RADIUS)*180/Math.PI }); });
-	return out.sort((a,b)=>a.magnitude-b.magnitude).slice(0,count); };
 	const along=axes[way&&axes[way]?way:"right"];
 	let kills=0, wounds=0, fragments=0, judged=-1;
 	for(let k=0;k<n;k++){
