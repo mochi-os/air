@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 
 // The HUD trim readout shows the PA pitch datum, which the flight core holds
 // only in its PA law (world/games/air/flight/fcs.go:
-// pa := in.Flap >= 1 || m.halfleg || m.rolling > 0). The readout used to follow
+// pa := ((in.Flap >= 1 || m.halfleg) && !m.fast) || m.rolling > 0). The readout used to follow
 // the HUD's gear-driven landing-symbology gate, which hid the datum with the
 // flaps down and the gear up, and showed a stale one with the gear down on AUTO.
 // engine.ts cannot be imported (WebGL at module scope), so trim_law() is read as
@@ -20,7 +20,7 @@ interface Jet { grounded: boolean; speed: number; cas: number; gearTarget: numbe
 // A fresh law mirror; step() is one frame at a time and flap setting.
 function mirror() {
   if (!law) throw new Error('trim_law() not found in engine.ts')
-  return new Function(`let law_halfleg=false, law_wheels=-Infinity, sim_time=0, flap_select=0, ownship=null;
+  return new Function(`let law_halfleg=false, law_wheels=-Infinity, law_fast=false, sim_time=0, flap_select=0, ownship=null;
     ${law}
     return (jet, time, flap) => { ownship=jet; sim_time=time; flap_select=flap; return trim_law(); };`)() as
     (jet: Jet, time: number, flap: number) => boolean
@@ -53,6 +53,18 @@ describe('the HUD trim readout follows the PA law, not the gear', () => {
     expect(step({ grounded: true, speed: 60, cas: 60, gearTarget: 1 }, 0, 0)).toBe(true) // fast on the wheels: no latch, the timer runs
     expect(step(airborne(95, 'up'), 2.9, 0)).toBe(true)
     expect(step(airborne(95, 'up'), 3.1, 0)).toBe(false)
+  })
+
+  it('hides it above the ~240 KCAS AUTO handover whatever the flap switch says', () => {
+    // NATOPS 11.1.1, the core's m.fast: past 126 m/s CAS the jet flies the
+    // up-and-away law with HALF selected, and the PA datum is not in use. The
+    // band either side keeps a speed on the line from flickering the readout.
+    const step = mirror()
+    expect(step(airborne(110, 'down'), 10, 1)).toBe(true) // HALF at 214 KCAS
+    expect(step(airborne(130, 'down'), 11, 1)).toBe(false) // 253 KCAS: AUTO
+    expect(step(airborne(123, 'down'), 12, 1)).toBe(false) // 239 KCAS slowing: still inside the band
+    expect(step(airborne(119, 'down'), 13, 1)).toBe(true) // 231 KCAS: PA again
+    expect(step(airborne(124, 'down'), 14, 1)).toBe(true) // 241 KCAS accelerating: still inside the band
   })
 
   it('gates the readout on the mirror, not on the landing-symbology gate', () => {

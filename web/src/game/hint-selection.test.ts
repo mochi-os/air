@@ -246,10 +246,12 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     )
   })
 
-  it('names the attitude the law actually captures', () => {
-    // fa18c.go sets Control.Flyaway to 16 degrees for this jet's weight row.
-    // The runway set's 8 degrees is the ROTATION, a different number.
-    expect(source).toMatch(/flyaway:"[^"]*16\\u00b0 nose up/)
+  it('coaches the rotation NATOPS monitors, not the launch trim setting', () => {
+    // NATOPS 8.3.6: "monitor rotation of the aircraft to 12° nose up". The 16°
+    // on the trim board (fa18c.go Control.Flyaway) is the stabilator setting,
+    // which the FCS turns into a reference AOA of about 10°; the jet is never
+    // held at 16° of pitch.
+    expect(source).toMatch(/flyaway:"Off the cat: hand off stick, let jet rotate 12\\u00b0 nose up"/)
   })
 
   it('leaves the centre banner to a pilot who turned coaching off', () => {
