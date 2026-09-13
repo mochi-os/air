@@ -69,6 +69,11 @@ FENCE_KILL = [(-90.2,-33.2,21.7,23.4,-0.4,1.1),(-48.2,-42.8,16.2,19.2,-0.4,1.1),
 # guts the dome's own mid-shell, so kill only DARK prims (the bulwark) in the
 # full box; the generated railing_ring stands in for it.
 FENCE_KILL_DARK = [(54.1,57.9,-44.8,-41.1,-0.4,1.2),(-153.3,-148.5,23.0,28.3,-0.4,1.1)]
+# those two radome platforms' footprints (their DOME_KEEP boxes). The life-raft
+# detector clusters white material_37 near the rim, and a radome is white
+# material_37 near the rim: unexempted, the port dome read as a raft rack and
+# lost its inboard half, the stern dome all of it.
+DOME_PLATFORMS = [(53.7,58.3,-45.2,-40.7),(-153.7,-148.1,22.9,28.7)]
 # aircraft-elevator platform footprints: the strip owns the surface, so EVERYTHING in the
 # band dies regardless of facing — the orientation-gated rules leave vertical/metallic
 # under-machinery shards visible through part-killed platform tops. Saturated paint
@@ -173,6 +178,8 @@ ISL=(ISL[0],ISL[1],_lat(ISL[2]),_lat(ISL[3]))
 ICCSZONES=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in ICCSZONES]
 KEEP_HAND=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in KEEP_HAND]
 DOME_KEEP=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in DOME_KEEP]
+DOME_PLATFORMS=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in DOME_PLATFORMS]
+def on_dome_platform(f,l): return any(f0<f<f1 and l0<l<l1 for f0,f1,l0,l1 in DOME_PLATFORMS)
 FENCE_KILL=[(f0,f1,_lat(l0),_lat(l1),h0,h1) for f0,f1,l0,l1,h0,h1 in FENCE_KILL]
 FENCE_KILL_DARK=[(f0,f1,_lat(l0),_lat(l1),h0,h1) for f0,f1,l0,l1,h0,h1 in FENCE_KILL_DARK]
 # OLS datum-arm trim: the model's green-datum bar (8.1 m) overhangs the flight
@@ -387,7 +394,7 @@ for mi2,nis in inst.items():
             w=(world[ni][:3,:3]@v.T).T+world[ni][:3,3]
             fa=(w[:,0]-CX)*S; la=(w[:,2]-CZ)*S; hh=(w[:,1]-DECKY)*S
             for k in range(0,len(w),3):   # sparse sample is enough for clustering
-                if -2.0<hh[k]<1.2:
+                if -2.0<hh[k]<1.2 and not on_dome_platform(fa[k],la[k]):
                     s,dd=arc_project(fa[k],la[k])
                     if dd<4.0: raftpts.append((s,fa[k],la[k]))
 raftpts.sort()
@@ -471,6 +478,7 @@ for mi2,nis in inst.items():
                 # the stbd-forward zone bbox spans the elevator notches: without this
                 # bound it swallows deck-interior fittings up to 19 m inboard
                 if arc_project(fa[i3],la[i3])[1]>3.2: rz[i3]=False
+                elif on_dome_platform(fa[i3],la[i3]): rz[i3]=False   # a neighbouring rack's zone margin must not reach a radome either
             fkill|=rz
             if not (col is not None and (max(col[:3])-min(col[:3]))>0.12):   # saturated border paint survives
                 # any tri touching the platform band dies unless rooted deep (hull fascia
