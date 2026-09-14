@@ -32,10 +32,23 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     // the caged one. A ghost on every limited marker read as a cage that was
     // never selected.
     expect(source).toMatch(/if\(master==="120c"\)\{[^}]*\} else if\(master==="nav"\) caged=!caged;/)
-    expect(conformal).toMatch(/const cage=caged&&master==="nav";/)
+    expect(conformal).toMatch(/const cage=master==="nav"\?caged:!pa;/)
     expect(conformal).toMatch(/if\(cage\) fpm=\[bore\[0\],truth\[1\]\];/)
     expect(conformal).toMatch(/if\(cage&&Math\.abs\(truth\[0\]-bore\[0\]\)>2\*ppd\) \[ghost,ghost_limited\]=limit\(truth\);/)
     expect(conformal).not.toMatch(/fpm_true/)
+  })
+
+  it('cages on the key in NAV, always in the A/A masters, never with the landing symbology', () => {
+    // ED manual: "In A/A it is always caged"; the uncage key only toggles NAV.
+    const line = /const cage=[^\n]*;/.exec(conformal)?.[0] ?? ''
+    const cage = new Function('master', 'pa', 'caged', `${line} return cage;`) as (master: string, pa: boolean, caged: boolean) => boolean
+    expect(cage('nav', false, true)).toBe(true)
+    expect(cage('nav', false, false)).toBe(false)
+    for (const master of ['gun', '9m', '120c']) {
+      expect(cage(master, false, false)).toBe(true)
+      expect(cage(master, false, true)).toBe(true)
+      expect(cage(master, true, true)).toBe(false)
+    }
   })
 
   it('references the ladder to the marker as drawn, limit included', () => {
