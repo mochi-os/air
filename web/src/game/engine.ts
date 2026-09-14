@@ -7297,13 +7297,14 @@ function net_event(e){ const slot=Number(e.slot);
 			// credits the last player to damage us inside a minute, else nobody -
 			// and it does not carry WHICH weapon, so the fate says only that battle
 			// damage did it. The recording keeps the rounds themselves.
-			const by=Number(e.by); const named=by>=0?(net.names.get(by)||""):"";
-			crash_ownship("battle",named); }   // an uncredited kill (by<0) is still battle damage: terrain is caught locally by check_collisions, which runs in multiplayer too, so what reaches here is a wound the wire cannot attribute - the banner says DESTROYED without inventing either a shooter or a surface
+			const by=Number(e.by), midair=e.cause==="midair";   // a midair names the other jet, and credits nobody
+			const named=midair?(net.names.get(Number(e.other))||""):(by>=0?(net.names.get(by)||""):"");
+			crash_ownship(midair?"midair":"battle",named); }   // an uncredited kill (by<0) is still battle damage: terrain is caught locally by check_collisions, which runs in multiplayer too, so what reaches here is a wound the wire cannot attribute - the banner says DESTROYED without inventing either a shooter or a surface
 		else { if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]);
 			const st=remotes.get(slot); if(st) st.group.visible=false;
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
-		if(net){ const by=Number(e.by); const named=by>=0&&by!==slot?(net.names.get(by)||""):"";   // every death in the match, named for everyone flying it or watching it: the wire says who is credited, and an uncredited death reads as a crash rather than inventing a mechanism the server did not send
-			feed("battle", named, net.names.get(slot)||""); }
+		if(net){ const by=Number(e.by), midair=e.cause==="midair"; const named=midair?(net.names.get(Number(e.other))||""):(by>=0&&by!==slot?(net.names.get(by)||""):"");   // every death in the match, named for everyone flying it or watching it: the wire says who is credited, and an uncredited death reads as a crash rather than inventing a mechanism the server did not send
+			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
 		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, ownship.msl); }   // in a joust the match-starting double-respawn releases the waiting room
