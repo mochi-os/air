@@ -13,7 +13,8 @@ import { describe, expect, it } from 'vitest'
 // runs the status stack.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const block = /\n\t\t\tif\(pip\)\{ hctx\.strokeStyle=GR;[\s\S]*?hctx\.fillText\("SHOOT",pip\[0\],[^\n]*\); \} \}/.exec(source)?.[0] ?? ''
-const data = /\n\t\/\/ ---- gun ranging data[\s\S]*?,top\+3\.3\*ppdv\); \}/.exec(source)?.[0] ?? ''
+const data = /\n\t\/\/ ---- target ranging data[\s\S]*?,top\+3\.3\*ppdv\); \}/.exec(source)?.[0] ?? ''
+const legend = /\n\t\{ \/\/ The selected weapon and its count[\s\S]*?hctx\.textAlign="left"; \}\n/.exec(source)?.[0] ?? ''
 
 interface Arc { x: number; y: number; r: number; start: number; end: number; fill: boolean }
 interface Line { from: [number, number]; to: [number, number] }
@@ -88,9 +89,9 @@ describe('the gun director reticle', () => {
 // The ranging data under the altitude box, as text with its right edge and
 // baseline: [text, x, y].
 function readouts(world: { master?: string; boxed?: boolean; declutter?: number; rng: number; vc: number }): [string, number, number][] {
-  if (!data) throw new Error('gun ranging data block not found in engine.ts')
+  if (!data) throw new Error('target ranging data block not found in engine.ts')
   const run = new Function('w', `const text=[]; const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y]); } };
-    const master=w.master??'gun', boxed=w.boxed===false?null:{}, declutter=w.declutter||0, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
+    const master=w.master??'gun', aa=master!=='nav', boxed=w.boxed===false?null:{}, declutter=w.declutter||0, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
     ${data}
     return text;`) as (w: object) => [string, number, number][]
   return run(world)
@@ -121,9 +122,49 @@ describe('the gun ranging data under the altitude box', () => {
     expect(ft[1]).toBeGreaterThan(584)
   })
 
-  it('shows only in the gun master with a boxed target, and never under REJ', () => {
+  it('shows in every A/A master with a boxed target, not in NAV, and never under REJ', () => {
     expect(readouts({ rng: 500, vc: 0, boxed: false })).toEqual([])
-    expect(readouts({ rng: 500, vc: 0, master: '9m' })).toEqual([])
+    expect(readouts({ rng: 500, vc: 0, master: '9m' }).map(([t]) => t)).toEqual(['RDR', '0V', 'c', '1640 FT'])
+    expect(readouts({ rng: 500, vc: 0, master: '120c' })).toHaveLength(4)
+    expect(readouts({ rng: 500, vc: 0, master: 'nav' })).toEqual([])
     expect(readouts({ rng: 500, vc: 0, declutter: 1 })).toEqual([])
+  })
+
+  it('is the only range and closure readout: the older miles-and-knots block is gone', () => {
+    expect(source).not.toMatch(/\(rng\/1852\)\.toFixed\(1\)\+" NM",lx/)
+    expect(source).not.toMatch(/Math\.round\(vc\*1\.94384\)\+" kt"/)
+  })
+})
+
+// The selected-weapon block as text with its x, baseline and alignment.
+function weapon(master: string, guns = false): { align: string; text: [string, number, number, string][] } {
+  if (!legend) throw new Error('selected weapon block not found in engine.ts')
+  const run = new Function('master', 'guns', `const text=[]; let align='left'; const hctx={ fillStyle:'', get textAlign(){ return align; }, set textAlign(v){ align=v; }, fillText(t,x,y){ text.push([t,x,y,align]); } };
+    const aa=master!=='nav', cx=500, cy=400, ppdv=20, AM='a', GR='g', amraam_visual=false, input={guns}, cheat=()=>false, translate=(t)=>t;
+    const ownship={ rounds:572, msl:2, amraam:6 };
+    ${legend}
+    return { align, text };`) as (master: string, guns: boolean) => { align: string; text: [string, number, number, string][] }
+  return run(master, guns)
+}
+
+describe('the selected weapon block', () => {
+  it('centres the gun over its rounds at the bottom of the field', () => {
+    const { text, align } = weapon('gun')
+    expect(text.map(([t]) => t)).toEqual(['GUN', '572'])
+    expect(text.every(([, x]) => x === 500)).toBe(true)
+    expect(text.every((row) => row[3] === 'center')).toBe(true)
+    expect(text[1][2]).toBeGreaterThan(text[0][2]) // the count on the line below the name
+    expect(align).toBe('left') // and the alignment handed back for what follows
+  })
+
+  it("puts a missile's count beside its name on one line", () => {
+    expect(weapon('9m').text).toEqual([['9M 2', 500, 400 + 7.2 * 20, 'center']])
+    expect(weapon('120c').text.map(([t]) => t)).toEqual(['120C 6'])
+  })
+
+  it('keeps NAV below the bank scale, which the A/A masters do not draw', () => {
+    const [nav] = weapon('nav').text
+    expect(nav[0]).toBe('NAV')
+    expect(nav[2]).toBeGreaterThan(400 + 7.85 * 20) // the scale's pointer reaches 7.4 deg plus its tick
   })
 })

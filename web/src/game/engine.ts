@@ -6738,11 +6738,11 @@ function draw_hud(){
 		else { hctx.font="600 21px monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
 		if(radar){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
 		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
-	// ---- gun ranging data (boxed target): the ranging source, the closure and the
-	// range, stacked under the altitude box where the jet puts them - RDR (the
-	// radar is the only ranging the game has), Vc in knots with a minus for an
+	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
+	// and the range, stacked under the altitude box where the jet puts them - RDR
+	// (the radar is the only ranging the game has), Vc in knots with a minus for an
 	// opening target, the range in feet inside a mile and in miles beyond ----
-	if(master==="gun"&&boxed&&!declutter){ const right=lx+96, top=wly+30;
+	if(aa&&boxed&&!declutter){ const right=lx+96, top=wly+30;
 		hctx.fillStyle=GR; hctx.font="13px monospace"; hctx.textAlign="right";
 		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
 		const knots=Math.round(vc*1.94384/10)*10;
@@ -6788,14 +6788,17 @@ function draw_hud(){
 	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
 		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px monospace";
 		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
-	if(boxed&&aa){   // designated-target range and closure: fixed right-side data block, like the radar-track readouts on the real HUD — never text glued to the target
-		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);   // i18n-format-ok: canvas HUD glyph: range in nautical miles, fixed-format like the real instrument
-		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",lx,cy+6.3*ppdv); }
-	{ const ly=cy+7.2*ppdv; const bxl=ax-84;
-		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN")+" "+(cheat("ammunition")?"\u221e":ownship.rounds),bxl,ly); hctx.fillStyle=GR; }
-		else if(master==="9m") hctx.fillText("9M "+(cheat("ammunition")?"\u221e":ownship.msl),bxl,ly);
-		else if(master==="120c"){ hctx.fillText("120C "+(cheat("ammunition")?"\u221e":Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),bxl,ly); }
-		else hctx.fillText("NAV",bxl,ly); }
+	{ // The selected weapon and its count, centred at the bottom of the field as the
+		// jet's data block is: the gun's rounds on a line under the name, a missile's
+		// count beside it. NAV has no weapon block on the real HUD; its word sits
+		// below the bank scale, which the A/A masters do not draw.
+		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
+		hctx.textAlign="center";
+		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); hctx.fillStyle=GR; }
+		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
+		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
+		else hctx.fillText("NAV",cx,ly);
+		hctx.textAlign="left"; }
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
