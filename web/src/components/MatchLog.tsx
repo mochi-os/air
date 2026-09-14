@@ -49,6 +49,7 @@ import {
   type MatchRow,
   type MatchTotals,
 } from '../game/net'
+import { server_label } from '../game/servers'
 
 // Replay is the in-memory recording the engine still holds for this session's
 // flights - the fallback for a row whose upload has not landed yet.
@@ -77,15 +78,6 @@ async function save(
   done(
     await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name)
   )
-}
-
-// serverName shows just the host of a lobby URL; the full URL is noise.
-function serverName(world: string): string {
-  try {
-    return new URL(world).host
-  } catch {
-    return world
-  }
 }
 
 // The columns worth ordering by: when the flight was, how long it ran, and how
@@ -294,12 +286,12 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
     naturalCompare(modeLabel(a), modeLabel(b))
   )
   const worlds = Array.from(
-    new Set(matches.map((m) => serverName(m.world)))
+    new Set(matches.map((m) => server_label(m.world, m.title)))
   ).sort(naturalCompare)
   const filtered = matches.filter(
     (m) =>
       (mode === 'all' || m.mode === mode) &&
-      (world === 'all' || serverName(m.world) === world)
+      (world === 'all' || server_label(m.world, m.title) === world)
   )
   const rank = (m: MatchRow): number => {
     switch (sort.key) {
@@ -476,7 +468,7 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                   ? clock((m.ended - m.started) / 1000)
                   : '—'}
               </TableCell>
-              <TableCell>{serverName(m.world)}</TableCell>
+              <TableCell>{server_label(m.world, m.title)}</TableCell>
               <TableCell>{modeLabel(m.mode)}</TableCell>
               {/* tabular-nums like the Duration column beside them: without it
                   a 1 and a 0 are different widths and the column edge wobbles. */}

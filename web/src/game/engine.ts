@@ -7311,7 +7311,7 @@ function net_event(e){ const slot=Number(e.slot);
 		break; }
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true;
-	if(net&&match_started){ net_record({ world:join.server, session:join.session,
+	if(net&&match_started){ net_record({ world:join.server, title:join.title||"", session:join.session,
 		mode:String(net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode||"furball"),   // the session's real mode (this recorded every match as a joust before)
 		team:net.teams.get(net.slot)||"",
 		started:match_started, ended:Date.now(), reason,

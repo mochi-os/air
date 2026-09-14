@@ -269,6 +269,7 @@ export function Multiplayer({
       if (pilot && !target?.mine) void world_withdraw(address, pilot)
       enter({
         server: address,
+        title: status.name,
         address: status.address,
         certificate: status.certificate,
         session,
@@ -305,6 +306,7 @@ export function Multiplayer({
       })
       enter({
         server: address,
+        title: status?.name ?? '',
         address: made.address,
         certificate: made.certificate ?? status?.certificate,
         session: made.session,

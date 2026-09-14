@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
 import {
+  server_label,
   server_mismatch,
   server_offline,
   server_order,
@@ -85,5 +86,19 @@ describe('server_order', () => {
     const servers = [server('a', 1), server('b', 9)]
     server_order(servers, now)
     expect(servers.map((s) => s.name)).toEqual(['a', 'b'])
+  })
+})
+
+describe('the name a flight log gives a server', () => {
+  it('is the name the server gave when the flight was flown', () => {
+    expect(server_label('https://mochi-os.org:4433', 'Mochi')).toBe('Mochi')
+  })
+
+  it('falls back to the host of the address for a flight recorded before names were kept', () => {
+    expect(server_label('https://mochi-os.org:4433', '')).toBe('mochi-os.org:4433')
+  })
+
+  it('passes a value that is not an address through, as a single-player flight is marked', () => {
+    expect(server_label('local', '')).toBe('local')
   })
 })
