@@ -3905,7 +3905,7 @@ function call_the_ball(){
 const HINT={
 	wake:"Case I: fly up wake, 800', 350 knots",
 	side:"Starboard side: hold 800'; break past bow",
-	brk:"Break: level turn, throttle idle, boards out; pull 1 g per 100 knots",
+	brk:"Break: level turn, throttle idle, boards out, pull 1 g per 100 knots",
 	roll:"Roll out downwind: 0.9-1.1 NM abeam ship",
 	form:"Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed",
 	donut:"Trim for amber light beside HUD (8.1° AOA), power for height",
@@ -3931,17 +3931,17 @@ const HINT={
 	// "Rotate at 140" rests on the measured minimum liftoff of 116-119 KCAS
 	// (TestRotateFlap): the model's rotation is tail-authority-limited and
 	// nearly weight-flat, so one honest number beats a fitted fiction.
-	lineup:"Half flaps, trim set; run up to military power, brakes off",
-	rotate:"140 knots: rotate smoothly to 8° nose up",
+	lineup:"On runway: half flaps, run up to military power, brakes off",
+	rotate:"140 knots: rotate to 8° nose up",
 	cleanup:"Positive rate: gear up; flaps auto passing 250 knots",
 	depart:"Climb out: runway heading, 350 knots",
 	initial:"Initial: over runway, 800', 350 knots",
-	downwind:"Roll out downwind: 1 NM abeam runway",
+	downwind:"Roll out downwind: 800', 1 NM abeam runway",
 	dirty:"Below 250 knots: gear, full flaps; descend to 600', slow to on-speed",
 	numbers:"Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM",
 	papi:"Final: power for two red, two white on PAPI",
 	rollout:"Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake",
-	around:"Go around: full power, boards in, wings level; climb straight ahead to 600'",
+	around:"Go around: full power, boards in, wings level, climb straight ahead to 600'",
 	// The catapult launch. The deck half of a carrier sortie had two centre
 	// banner prompts and no coaching at all, so the one thing about it a pilot
 	// cannot guess — that the jet flies ITSELF off the cat, and pulling makes
@@ -4033,6 +4033,7 @@ function hint_retire(...keys){ if(hint_key!=null&&keys.indexOf(hint_key)>=0) hin
 // 3,000 ft guard is further still than a circuit ever goes.
 let hooked=false;   // attached to a catapult on the last hint frame: the launch set reads an unhook off the drop
 let stroked=false, rising=null;   // the launch set's shot: whether a catapult stroke has run, and the sim time the climb rate last went positive (null while it is not)
+let upwind=false;   // climbing out from a go-around: the overhead entry waits until the jet has turned off the runway heading
 let field_left=false, ship_left=false;   // left the surface the mission STARTED from: until then the arrival set for that surface is a jet being told to land on the runway it is rolling down (#196), or to break over the ship it just launched from (#204)
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function runway_recoach(){ for(const key of RUNWAY) delete hinted[key]; }
@@ -4055,7 +4056,7 @@ function hints_runway(st){ hinting="runway";
 		if((hinted[HINT.papi]||hinted[HINT.donut])&&ownship.speed>35){ hint(HINT.rollout); return; }   // donut as well as papi: an arrival that was coached on-speed but never got a final still touches down, and the aerobrake line is the one that matters on the rollout. Neither can have fired before a takeoff roll - the arrival chain is unreachable on the ground - so this cannot mistake a departure for a landing
 		if(ownship.speed<4) hint_retire(HINT.rollout);   // stopped: the aerobrake is flown and the line is stale
 		if(st!=="runway"||hinted[HINT.rollout]) return;
-		if(ownship.speed<4&&over_runway(ownship.pos)) hint(HINT.lineup,"Runway "+runway_heading()+": half flaps, trim set; run up to military power, brakes off");
+		if(ownship.speed<4&&over_runway(ownship.pos)) hint(HINT.lineup);
 		if(hinted[HINT.lineup]&&kt>110) hint(HINT.rotate);
 		return;
 	}
@@ -4075,7 +4076,7 @@ function hints_runway(st){ hinting="runway";
 	if(hinted[HINT.depart]&&fdot<-0.5) hint_retire(HINT.depart);
 	// The go-around: power back on, low and slow in the landing configuration —
 	// and the circuit re-arms so the next pattern is coached again.
-	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level; climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); return; }
+	if(hinted[HINT.papi]&&down&&feet<500&&ownship.throttle>0.95&&(ownship.vely??0)>2){ hint(HINT.around,"Go around: full power, boards in, wings level, climb on runway heading "+runway_heading()+" to 600'"); runway_recoach(); upwind=true; return; }
 	// Left the field: climbed above the pattern, turned off the runway heading, or
 	// flew clear of the coaching area. The last is the departure flown as its own
 	// line asks, 350 knots straight out and low, which never climbs or turns
@@ -4084,7 +4085,11 @@ function hints_runway(st){ hinting="runway";
 	if((hinted[HINT.depart]&&feet>1200)||fdot<-0.5||range>6*1852||feet>3000) field_left=true;
 	if(range>6*1852||feet>3000){ hint_retire(HINT.depart,HINT.rollout); return; }   // clear of the field: the takeoff set is finished and nothing downstream can replace its last line
 	if(st==="runway"&&hinted[HINT.rotate]&&!field_left) return;   // still departing: the arrival set belongs to the pilot coming back (#196)
-	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over runway, "+runway_heading()+", 800', 350 knots");
+	// A go-around re-arms the pattern, and its own upwind then met the initial's
+	// geometry passing 500 ft, so a closed pattern was coached as an overhead
+	// break. The overhead entry waits for the crosswind turn.
+	if(fdot<0.5) upwind=false;
+	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]&&!upwind) hint(HINT.initial,"Initial: over runway, "+runway_heading()+", 800', 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
 	// The break is ONE way into the pattern, not the only one. A closed traffic
 	// circuit - upwind, crosswind, downwind, base, final - never re-flies the
@@ -4095,7 +4100,7 @@ function hints_runway(st){ hinting="runway";
 	// ship's does: raised on the break alone, it replaced the break line in the
 	// frame the break fired, and the pilot never saw it.
 	const circuit=fdot<-0.7&&feet>350&&feet<1150&&lateral<3200;
-	if((hinted[HINT.brk]&&fdot<-0.7)||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", 1 NM abeam runway");
+	if((hinted[HINT.brk]&&fdot<-0.7)||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", 800', 1 NM abeam runway");
 	// The third way in (#205). The initial wants the jet OVER the field at
 	// pattern height and the circuit wants the reciprocal, so a straight-in -
 	// on the runway axis, miles out, descending - reached neither, and because
@@ -5936,7 +5941,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null;   // and the flight hints (#70)
+	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)

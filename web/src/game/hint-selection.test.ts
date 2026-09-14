@@ -10,7 +10,9 @@ import { describe, expect, it } from 'vitest'
 // reported the same way: a flight that earned coaching and got none. engine.ts
 // cannot be imported (WebGL at module scope), so it is read as text, as
 // hint-headings.test.ts and hud-catalogue.test.ts do.
-const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+// AIR_ENGINE_SOURCE points a negative control at a scratch copy of engine.ts,
+// so the pre-fix text never has to be swapped into the shared tree.
+const source = readFileSync(process.env.AIR_ENGINE_SOURCE ?? fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 
 // The body of one top-level `function name(` up to the next one, so an
 // assertion about hints_watch cannot be satisfied by hints_runway.
@@ -142,6 +144,20 @@ describe('the break stands on the glass until the roll-out', () => {
     expect(body('hints_launch')).toMatch(/^unction hints_launch\(ship\)\{ hinting="launch";/)
     expect(watch).toMatch(/if\(ship>6\*1852&&hint_set!=="runway"\) hint_retire\(\.\.\.CIRCUIT,HINT\.side,\.\.\.LAUNCH\);/)
     expect(watch).toMatch(/if\(field>6\*1852&&hint_set==="runway"\) hint_retire\(\.\.\.RUNWAY\);/)
+  })
+})
+
+describe('a go-around does not coach its own upwind as an overhead entry', () => {
+  const runway = body('hints_runway')
+
+  it('holds the initial off from the go-around until the crosswind turn', () => {
+    // The go-around re-arms the pattern, and its upwind met the initial's
+    // geometry passing 500 ft: a closed pattern was told to fly an initial and
+    // then a break, which stood on the slot until the roll-out.
+    expect(runway).toMatch(/runway_recoach\(\); upwind=true; return; \}/)
+    expect(runway).toMatch(/if\(fdot<0\.5\) upwind=false;/)
+    expect(runway).toMatch(/&&!hinted\[HINT\.brk\]&&!upwind\) hint\(HINT\.initial,/)
+    expect(source).toMatch(/rising=null; upwind=false;/)
   })
 })
 
