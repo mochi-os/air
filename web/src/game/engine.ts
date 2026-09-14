@@ -58,6 +58,7 @@ import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
+import hornet_font_url from '../assets/hornet.woff2?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY } from './acmi'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
@@ -6230,7 +6231,7 @@ let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
-function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS ENTER TO LAUNCH / N WIRE)
+function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px 'Hornet Display', monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS ENTER TO LAUNCH / N WIRE)
 // ---- the AIM-120's launch zone (#27) ---- The DLZ ladder as the real HUD
 // draws it: a staff with carets for the four ranges, the target's range as a
 // moving caret, SHOOT steady between Rmax and Rne and flashing inside, the
@@ -6293,7 +6294,7 @@ function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; retu
 function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
-	hctx.save(); hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
+	hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
 	if(z&&z.aero>0){
 		const top=cy-3.0*ppdv, bottom=cy+3.0*ppdv, sx=ax-30;
 		const scale=Math.max(z.aero,z.range)*1.05;
@@ -6326,10 +6327,10 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	if(cue) hud_cue=cue;   // the radar cue's own words: steady / flash / break
 	if(cue==="break"){ hctx.strokeStyle=AM; hctx.lineWidth=3; const r=28;   // breakaway X: too close to shoot
 		hctx.beginPath(); hctx.moveTo(cx-r,cy-r); hctx.lineTo(cx+r,cy+r); hctx.moveTo(cx+r,cy-r); hctx.lineTo(cx-r,cy+r); hctx.stroke(); }
-	else if(cue&&(cue==="steady"||(sim_time*4)%2<1)){ hctx.fillStyle=GR; hctx.font="18px monospace"; hctx.textAlign="center";
+	else if(cue&&(cue==="steady"||(sim_time*4)%2<1)){ hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
 		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); }
 	if(flying.length){   // one line per supported round: A-time to the seeker's wake, then T-time
-		hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 		let y=cy+3.6*ppdv;
 		for(const m of flying.slice(0,4)){
 			const active=(m.phase??0)>=1, reach=m.rangeToGo??0, speed=Math.hypot(m.vx,m.vy,m.vz)||1;
@@ -6444,7 +6445,7 @@ function draw_hud(){
 	// screen saying which key fires the shot.
 	if(net_notice_t<=0&&cfg.hints===false){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
-	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px monospace";
+	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace";
 	hctx.textAlign="center"; hctx.textBaseline="middle";
 
 	// ---- conformal symbology (#133): 5° pitch ladder referenced to the velocity
@@ -6512,7 +6513,7 @@ function draw_hud(){
 			const tick=p===0?0:(p>0?9:-9);                     // outer end-ticks point toward the horizon
 			for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
 				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); if(tick) hctx.lineTo(x1,y1+tick); hctx.stroke(); }
-			if(p!==0){ hctx.setLineDash([]); hctx.font="11px monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance
+			if(p!==0){ hctx.setLineDash([]); hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance
 				for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
 					hctx.fillText(String(Math.abs(p)),x1+half*14,y1+(p>0?tick*0.6:tick*0.6)); } }
 			hctx.restore(); } }
@@ -6610,7 +6611,7 @@ function draw_hud(){
 		if(sd>1e-4){ const ux=cs.x/sd, uy=-cs.y/sd;
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2;
 			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18,bore[1]+uy*18); hctx.lineTo(bore[0]+ux*70,bore[1]+uy*70); hctx.stroke(); hctx.lineWidth=1.5;
-			hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.textAlign="center";
+			hctx.fillStyle=GR; hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="center";
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
@@ -6645,7 +6646,7 @@ function draw_hud(){
 				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*(R-dash),pip[1]+Math.sin(tick)*(R-dash)); hctx.lineTo(pip[0]+Math.cos(tick)*(R+dash),pip[1]+Math.sin(tick)*(R+dash)); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0) hud_cue="gun";
-				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
+				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
 					hctx.fillText("SHOOT",pip[0],pip[1]-R-12); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
@@ -6667,10 +6668,10 @@ function draw_hud(){
 		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
 		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
-		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
+		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
 			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); }
 		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
-			hctx.save(); hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
+			hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
 			const top=bore[1]-3.0*ppd, bottom=bore[1]+3.0*ppd, sx=bore[0]+9*ppd;   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
 			const scale=Math.max(zone.max,zone.range)*1.05;
 			const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
@@ -6702,7 +6703,7 @@ function draw_hud(){
 	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
 	if(declutter<2){
 	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
-	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px monospace";
+	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
 	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
 	hctx.beginPath(); hctx.moveTo(cx-halfd*hppx,hty); hctx.lineTo(cx+halfd*hppx,hty); hctx.stroke();
 	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
@@ -6723,7 +6724,7 @@ function draw_hud(){
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
 	if(!declutter){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
 		hctx.strokeRect(ax-84,wly,84,30);
-		hctx.font="600 20px monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); }
+		hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); }
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084; const lx=cx+4.2*ppdv;
@@ -6735,32 +6736,32 @@ function draw_hud(){
 		const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
 		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
-			hctx.font="600 16px monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
-			hctx.font="600 21px monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
-		else { hctx.font="600 21px monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
-		if(radar){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
-		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
+			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
+			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
+		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
+		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
+		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
 	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
 	// and the range, stacked under the altitude box where the jet puts them - RDR
 	// (the radar is the only ranging the game has), Vc in knots with a minus for an
 	// opening target, the range in feet inside a mile and in miles beyond ----
 	if(aa&&boxed&&!declutter){ const right=lx+96, top=wly+30;
-		hctx.fillStyle=GR; hctx.font="13px monospace"; hctx.textAlign="right";
+		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
 		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
 		const knots=Math.round(vc*1.94384/10)*10;
 		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		hctx.font="10px monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
-		hctx.font="13px monospace"; hctx.textAlign="right";
+		hctx.font="10px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
+		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
 		const feet=rng*3.28084;
 		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 
 	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"||pa){ hctx.font="13px monospace"; hctx.textAlign="left";   // NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
+	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left";   // NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
 		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+2,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
-	{ hctx.font="13px monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
+	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
 		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
 		if(atc_on){ hctx.fillStyle=AM; hctx.fillText("ATC",bxl,dy); hctx.fillStyle=GR; dy+=17; }   // ATC advisory below the airspeed column, like the real HUD; the slot is free in the landing configuration (Mach/g deleted) and it rides the glass transform in cockpit view
 		if(!declutter&&!pa){ const core=last_out;
@@ -6784,11 +6785,11 @@ function draw_hud(){
 		hctx.lineWidth=1.5; }
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
-	hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
 		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
-		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px monospace";
+		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
 		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
@@ -6805,13 +6806,13 @@ function draw_hud(){
 	// from mission start on the sim clock, as the DCS references show it ("10:02ET"),
 	// the hour prefixed once there is one. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
 	if(declutter<2){ const elapsed=Math.max(0,Math.floor(sim_time-mission_zero)), two=(v)=>String(v).padStart(2,"0");
-		hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 		hctx.fillText((elapsed>=3600?Math.floor(elapsed/3600)+":":"")+two(Math.floor(elapsed/60)%60)+":"+two(elapsed%60)+"ET",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
 	if(bingo_low()&&(sim_time*2)%2<1){
-		hctx.font="600 17px monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
+		hctx.font="17px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
 	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
@@ -6820,10 +6821,10 @@ function draw_hud(){
 	{ const lever=pad_levers.throttle; if(lever&&!lever.armed&&lever.last!==undefined){ const ly=tgcy+tgh/2-tgh*(1-lever.last);   // where the physical lever is while it does not hold the throttle: move it to the bar to take over
 		hctx.beginPath(); hctx.moveTo(tgx+7,ly); hctx.lineTo(tgx+13,ly-4); hctx.lineTo(tgx+13,ly+4); hctx.closePath(); hctx.fill(); } }
 	hctx.beginPath(); hctx.moveTo(tgx-5,tgcy+tgh/2-tgh*0.75); hctx.lineTo(tgx+5,tgcy+tgh/2-tgh*0.75); hctx.stroke();   // MIL detent tick
-	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
+	hctx.font="11px 'Hornet Display', monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
-	hctx.font="15px monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
-	if((ownship.stage??0)>0.05){ hctx.font="11px monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); } }
+	hctx.font="15px 'Hornet Display', monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
+	if((ownship.stage??0)>0.05){ hctx.font="11px 'Hornet Display', monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); } }
 	if(glass) hctx.restore(); }   // end of the on-glass instrument cluster
 
 	// ---- gear / hook status (bottom-right) ----
@@ -6836,7 +6837,7 @@ function draw_hud(){
 	// Two rows also shared HH-124, so folded wings overprinted the flap legend.
 	// Built bottom-up so GEAR and HOOK, the two that matter on every approach,
 	// keep the place they have always had.
-	hctx.textAlign="right"; hctx.font="13px monospace";
+	hctx.textAlign="right"; hctx.font="13px 'Hornet Display', monospace";
 	{ const rows=[];   // bottom of the stack first
 		if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
 		if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
@@ -6882,7 +6883,7 @@ function draw_hud(){
 	// Read straight from the core's damage words, so it works identically in SP and MP.
 	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
 	{ const RD="#ff5050";   // the stack renders the sim-step model (#47) — building it here left the tone dead outside this view
-		hctx.textAlign="left"; hctx.font="13px monospace";
+		hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
 		// Cautions, the cheat flag and the team score are ONE stack, packed
 		// upward from a single pitch above the stores counters. They used to be
 		// three blocks with hard-coded y values: the cautions started 12 px
@@ -6926,7 +6927,7 @@ function draw_hud(){
 	// Cheats show in the symbology: ∞ replaces the counters the cheat makes
 	// meaningless, and INVULNERABLE rides the caution stack above — drawn there
 	// with the team score, so nothing can land on top of a caution.
-	hctx.textAlign="left"; hctx.font="13px monospace";
+	hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
 	if(!authentic&&(comms.length||(hint_rows&&cfg.hints!==false))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
 		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
@@ -7559,7 +7560,14 @@ function start_mission(){
 		}catch(e){ console.warn("shot preset failed", e); } }, 6000); }
 	try{ window.focus(); stage.focus(); }catch{ /* focus best-effort */ }
 }
-function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready(); }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm
+// The HUD face: Hornet Display, a recreation of the stroke font the jet's HUD and
+// DDIs draw (Mørkvitnir, MIT - assets/hornet-license.txt), registered before the
+// first frame. A failed load falls back to the system monospace rather than
+// holding the LOADING screen.
+let face_ready=false;
+{ const face=new FontFace("Hornet Display","url("+hornet_font_url+")"); document.fonts.add(face);
+	face.load().then(()=>{ face_ready=true; },(e)=>{ console.warn("HUD font failed to load:",e); face_ready=true; }); }   // i18n-format-ok: developer console output, never shown to a user
+function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready() && face_ready; }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm, HUD face
 
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size();
@@ -7586,7 +7594,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	audio_enable(cfg.sound!==false && running && !game_paused);   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
 	audio_volumes(cfg.volume);
 	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
-		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
+		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready(), face:face_ready };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
 		if(assets_ready()){ loading=false;
