@@ -4849,6 +4849,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
+if(DEV_MODE) (globalThis as any).dev_recorder=()=>({ samples:recorder.length, started:!!record_started, record:!!cfg.record, running, paused:game_paused, multiplayer:MULTIPLAYER, clock:sim_time });   // dev: is the recorder sampling, and if not, which gate holds it
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
 	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;
