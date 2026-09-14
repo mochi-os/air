@@ -39,6 +39,18 @@ export function server_mismatch(server: Server, version: number): boolean {
 // server_order sorts a listing set the way the join page shows it: offline
 // listings last, then busiest first. Version-mismatched servers keep their
 // place - they are shown greyed with the reason, never hidden or demoted.
+// server_label names a flight's server in the log: the name the server gave
+// when the flight was flown, else the host of its URL, else the raw value (a
+// single-player flight's "local").
+export function server_label(world: string, title: string): string {
+  if (title) return title
+  try {
+    return new URL(world).host
+  } catch {
+    return world
+  }
+}
+
 export function server_order(servers: Server[], now: number): Server[] {
   return [...servers].sort((a, b) => {
     const first = server_offline(a, now) ? 1 : 0

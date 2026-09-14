@@ -20,7 +20,7 @@ def database_create():
 	# already per-user, so no account column is needed. `updated` versions each
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, pinned integer not null default 0)")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, pinned integer not null default 0, title text not null default '')")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
@@ -39,6 +39,12 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 12:
+		# The server's name as its status gave it when the flight was flown, so
+		# the log can show it instead of the address; older rows keep ''.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "title" not in columns:
+			mochi.db.execute("alter table matches add column title text not null default ''")
 	if version == 11:
 		# Index the three read paths, which had scanned since the table was
 		# created; see database_create for which query each one serves.
@@ -176,6 +182,7 @@ def match_record(a):
 		a.error.label(401, "errors.not_logged_in")
 		return
 	world = a.input("world", "")[:256]
+	title = a.input("title", "")[:128]
 	session = a.input("session", "")[:64]
 	if not world or not session:
 		a.error.label(400, "errors.missing_field")
@@ -185,8 +192,8 @@ def match_record(a):
 	# was the first record.
 	started = whole(a, "started")
 	id = mochi.uid()
-	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
-		id, world, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
+	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
+		id, world, title, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
 		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), mochi.time.now())
 	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
 	return {"data": {"stored": stored}}
@@ -199,7 +206,7 @@ def match_list(a):
 	if not a.user:
 		a.error.label(401, "errors.not_logged_in")
 		return
-	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, size, pinned from matches order by started desc limit 50")
+	matches = mochi.db.rows("select world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, size, pinned from matches order by started desc limit 50")
 	# Totals span every row, not the fifty listed, and include cheated flights (a
 	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
 	# 1000.

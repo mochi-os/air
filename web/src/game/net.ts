@@ -245,6 +245,7 @@ export async function world_say(
 // Join is everything the engine needs to enter a session.
 export interface Join {
   server: string // lobby base URL (for match records)
+  title: string // the server's name, as its status gives it (for the flight log)
   address: string // WebTransport URL
   certificate?: { hash: string }
   session: string
@@ -1017,6 +1018,7 @@ const client = createAppClient({ appName: 'air' })
 // authenticated app connection (fails silently for anonymous players).
 export async function record(match: {
   world: string
+  title: string
   session: string
   mode: string
   team: string
@@ -1059,6 +1061,7 @@ export async function record(match: {
 // participant count as a string; cheated is 0/1).
 export interface MatchRow {
   world: string
+  title: string // the server's name when the flight was flown, '' before it was recorded
   session: string
   recording: string // attachment id, '' when nothing is stored
   size: number
