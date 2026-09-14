@@ -3903,28 +3903,28 @@ function call_the_ball(){
 // relevance. English-only by design until the wording survives flight
 // testing; translation follows before the task closes.
 const HINT={
-	wake:"Case I: fly up the ship's wake at 800' and 350 knots",
-	side:"Hold 800' past the right side; break after the bow",
-	brk:"Break: level turn, throttle idle, speed brake out; pull 1 g per 100 knots",
-	roll:"Roll out beside the ship 0.9 to 1.1 NM out",
-	form:"Below 250 knots: gear, full flaps, hook; descend to 600' and slow to on-speed",
+	wake:"Case I: fly up wake, 800', 350 knots",
+	side:"Starboard side: hold 800'; break past bow",
+	brk:"Break: level turn, throttle idle, boards out; pull 1 g per 100 knots",
+	roll:"Roll out downwind: 0.9-1.1 NM abeam ship",
+	form:"Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed",
 	donut:"Trim for amber light beside HUD (8.1° AOA), power for height",
-	wing:"Level at 600' downwind; keep the ship 0.9 to 1.1 NM off your wing",
+	wing:"Downwind: level at 600'; ship 0.9-1.1 NM off wing",
 	abeam:"Ship abeam: bank 27-30\u00b0, start down at 200-300 FPM",
 	ninety:"The 90: 450', 500 FPM",
-	forty:"The 45: 325-375'; straighten into the groove, look for the ball, fly the ball with power",
-	final:"Case II: level on final at 1200', gear and flaps down; hold on-speed at 8.1 alpha, near 140 knots",
-	needle:"The needles on the HUD are glideslope and centreline: hold the velocity vector where they cross",
-	slope:"Glideslope alive: start down; 2 NM 800', 1 NM 400', half a NM 200'",
-	stack:"Case III: marshal at 6000' and 250 knots; the HUD clock counts down to your push time; commence on zero",
-	push:"Commencing: 250 knots, 4000 FPM down to platform at 5000'",
-	floor:"Descending below 5000': keep FPM a smaller number than your altitude",
+	forty:"The 45: 325-375', roll into groove; find ball, fly ball with power",
+	final:"Case II: level on final, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots",
+	needle:"HUD needles: glideslope and centreline; hold velocity vector where they cross",
+	slope:"Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'",
+	stack:"Case III: marshal 6000', 250 knots; commence when HUD clock reaches zero",
+	push:"Commencing: 250 knots; 4000 FPM down to 5000' platform",
+	floor:"Below 5000': keep FPM less than altitude",
 	level:"Platform: 2000 FPM; level at 1200'",
-	gate:"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM",
-	check:"Fly the needles down: 3 NM 1200', 2 NM 800', 1 NM 400'",
-	ball:"PADDLES calls the ball here; answer looking at the lens, then fly the ball all the way to touchdown",
-	wave:"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck",
-	bolt:"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind",
+	gate:"10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM",
+	check:"Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'",
+	ball:"Ball call: answer looking at lens; fly ball to touchdown",
+	wave:"Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck",
+	bolt:"Bolter: full power, boards in, hook down; climb to 600', turn downwind",
 	// The runway set (#91): field pattern coaching in the same voice. Numbers
 	// from the same doctrine family — HALF flap takeoff and FULL flap landing
 	// per NATOPS, the 600' field pattern, on-speed 8.1 alpha ashore as afloat.
@@ -3932,16 +3932,16 @@ const HINT={
 	// (TestRotateFlap): the model's rotation is tail-authority-limited and
 	// nearly weight-flat, so one honest number beats a fitted fiction.
 	lineup:"Half flaps, trim set; run up to military power, brakes off",
-	rotate:"Rotate at 140 knots: smoothly to 8° nose up",
-	cleanup:"Positive rate: gear up; flaps to auto passing 250 knots",
-	depart:"Climb out on runway heading at 350 knots",
-	initial:"Initial: over the runway at 800' and 350 knots",
-	downwind:"Roll out downwind, a mile abeam the runway",
-	dirty:"Below 250 knots: gear, full flaps; descend to 600' and slow to on-speed",
-	numbers:"Abeam the numbers at 600': bank 27-30°, start down at 200-300 FPM",
+	rotate:"140 knots: rotate smoothly to 8° nose up",
+	cleanup:"Positive rate: gear up; flaps auto passing 250 knots",
+	depart:"Climb out: runway heading, 350 knots",
+	initial:"Initial: over runway, 800', 350 knots",
+	downwind:"Roll out downwind: 1 NM abeam runway",
+	dirty:"Below 250 knots: gear, full flaps; descend to 600', slow to on-speed",
+	numbers:"Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM",
 	papi:"Final: power for two red, two white on PAPI",
-	rollout:"Touchdown: throttle idle; hold the nose at 10° to aerobrake, lower it at 100 knots and brake",
-	around:"Go around: full power, boards in, wings level, climb straight ahead to 600'",
+	rollout:"Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake",
+	around:"Go around: full power, boards in, wings level; climb straight ahead to 600'",
 	// The catapult launch. The deck half of a carrier sortie had two centre
 	// banner prompts and no coaching at all, so the one thing about it a pilot
 	// cannot guess — that the jet flies ITSELF off the cat, and pulling makes
@@ -3955,7 +3955,7 @@ const HINT={
 	// cats, left off the waist), then parallel the ship's course at 500' and 300
 	// knots to 7 DME, then climb on course.
 	tension:"Hooked up: run up to military power, wipe out controls",
-	salute:"Throttles held, head back, hand off stick; press Enter to salute and launch",
+	salute:"Hand off stick; press enter to salute and launch",
 	flyaway:"Off the cat: hand off stick, let jet rotate 12\u00b0 nose up",   // NATOPS 8.3.6's "monitor rotation of the aircraft to 12° nose up": the law rotates the jet to the launch trim's reference AOA (fa18c.go Control.Capture), the pilot does not fly it
 	positive:"Positive rate: take stick, gear up, flaps auto",
 	clearing:"Clearing turn right, then parallel the ship's course at 500', 300 knots to 7 miles",
@@ -4060,7 +4060,7 @@ function hints_runway(st){ hinting="runway";
 		return;
 	}
 	if(hinted[HINT.rotate]&&!hinted[HINT.cleanup]&&feet>40) hint(HINT.cleanup);
-	if(hinted[HINT.cleanup]&&kt>280) hint(HINT.depart,"Climb out on runway heading "+runway_heading()+" at 350 knots");
+	if(hinted[HINT.cleanup]&&kt>280) hint(HINT.depart,"Climb out: runway heading "+runway_heading()+", 350 knots");
 	// Retire on the instruction being FLOWN, not on leaving the coaching area:
 	// the departure line appears at 280 knots and the field guard below is 6 NM
 	// or 3,000 ft away, which is a minute of climb with a finished line on the
@@ -4084,7 +4084,7 @@ function hints_runway(st){ hinting="runway";
 	if((hinted[HINT.depart]&&feet>1200)||fdot<-0.5||range>6*1852||feet>3000) field_left=true;
 	if(range>6*1852||feet>3000){ hint_retire(HINT.depart,HINT.rollout); return; }   // clear of the field: the takeoff set is finished and nothing downstream can replace its last line
 	if(st==="runway"&&hinted[HINT.rotate]&&!field_left) return;   // still departing: the arrival set belongs to the pilot coming back (#196)
-	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over the runway at 800', runway heading "+runway_heading()+", 350 knots");
+	if(fdot>0.5&&lateral<700&&feet>500&&feet<1150&&Math.abs(along)<2200&&!hinted[HINT.brk]) hint(HINT.initial,"Initial: over runway, "+runway_heading()+", 800', 350 knots");
 	if(hinted[HINT.initial]&&along>600&&fdot>0.3) hint(HINT.brk);
 	// The break is ONE way into the pattern, not the only one. A closed traffic
 	// circuit - upwind, crosswind, downwind, base, final - never re-flies the
@@ -4095,7 +4095,7 @@ function hints_runway(st){ hinting="runway";
 	// ship's does: raised on the break alone, it replaced the break line in the
 	// frame the break fired, and the pilot never saw it.
 	const circuit=fdot<-0.7&&feet>350&&feet<1150&&lateral<3200;
-	if((hinted[HINT.brk]&&fdot<-0.7)||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", a mile abeam the runway");
+	if((hinted[HINT.brk]&&fdot<-0.7)||circuit) hint(HINT.downwind,"Roll out downwind: "+runway_reciprocal()+", 1 NM abeam runway");
 	// The third way in (#205). The initial wants the jet OVER the field at
 	// pattern height and the circuit wants the reciprocal, so a straight-in -
 	// on the runway axis, miles out, descending - reached neither, and because
@@ -4223,21 +4223,21 @@ function hints_carrier(st){ hinting="carrier";
 		const low=feet<1150;
 		if(low&&along>-1400&&along<160&&fdot>0.3&&!hinted[HINT.brk]) hint(HINT.side);   // drawing level with the ship, still inbound, not yet past the bow
 		if(low&&range<950) hint(HINT.brk);
-		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll,"Roll out downwind: "+ship_downwind()+", beside the ship 0.9 to 1.1 NM out");   // the nose has come around downwind
+		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll,"Roll out downwind: "+ship_downwind()+", 0.9-1.1 NM abeam ship");   // the nose has come around downwind
 		if(hinted[HINT.roll]&&kt<285&&!down) hint(HINT.form);   // after the roll-out: keyed on the break, a slow break lost its line to this in the same frame
 		if(low&&down) hint(HINT.donut);
 		if(down&&feet<750&&fdot<-0.5&&range>1000) hint(HINT.wing);
 		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
-		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty,"The 45: 325-375'; straighten into the groove, "+ship_groove()+", look for the ball, fly the ball with power");
+		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty,"The 45: 325-375', roll into groove, "+ship_groove()+"; find ball, fly ball with power");
 	}
 	if(kase==="case2"&&range<5*1852) hint(HINT.needle);
 	if(kase==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
 	if(kase==="case3"&&marshal){
-		if(marshal.commenced) hint(HINT.push,"Commencing: turn inbound "+ship_groove()+", 250 knots, 4000 FPM down to platform at 5000'");
+		if(marshal.commenced) hint(HINT.push,"Commencing: inbound "+ship_groove()+", 250 knots; 4000 FPM down to 5000' platform");
 		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
 		if(marshal.platform) hint(HINT.level);
-		if(marshal.dirty) hint(HINT.gate,"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM; final bearing "+ship_groove());
+		if(marshal.dirty) hint(HINT.gate,"10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing "+ship_groove());
 		if(range<3.2*1852) hint(HINT.check);
 	}
 }
@@ -5634,7 +5634,7 @@ function fly_player(dt){
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
-	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt,"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind, "+ship_downwind()); }
+	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt,"Bolter: full power, boards in, hook down; climb to 600', turn downwind, "+ship_downwind()); }
 	prev_wow=ownship.grounded;
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
@@ -5909,7 +5909,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave,"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck, "+ship_groove()); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave,"Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, "+ship_groove()); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -5953,7 +5953,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false };
-		hint(HINT.wake,"Case I: fly up the ship's wake: "+ship_course()+", 800', 350 knots"); }   // side follows at its position — one hint at a time in the slot
+		hint(HINT.wake,"Case I: fly up wake, "+ship_course()+", 800', 350 knots"); }   // side follows at its position — one hint at a time in the slot
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
@@ -5965,7 +5965,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R));   // attitude = on-speed alpha over the level path (pre-core fallback)
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false };   // Case II starts configured on the final bearing: only the ball remains
-		hint(HINT.final,"Case II: level on final: "+ship_groove()+", 1200', gear and flaps down; hold on-speed at 8.1 alpha, near 140 knots"); }   // needle follows a mile in — one hint at a time in the slot
+		hint(HINT.final,"Case II: level on final, "+ship_groove()+", 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"); }   // needle follows a mile in — one hint at a time in the slot
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
@@ -5977,7 +5977,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
 		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff");
-		hint(HINT.stack,"Case III: marshal at 6000' and 250 knots on the final bearing "+ship_groove()+"; the HUD clock counts down to your push time; commence on zero"); }
+		hint(HINT.stack,"Case III: marshal 6000', 250 knots, final bearing "+ship_groove()+"; commence when HUD clock reaches zero"); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn

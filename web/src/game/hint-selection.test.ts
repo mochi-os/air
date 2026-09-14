@@ -171,7 +171,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
 
   it('hands the deck start over on HALF flap, as the clean-up line assumes', () => {
     // NATOPS 8.2.5 charts launch trim for HALF flaps, the core latches HALF on
-    // deck (flight/fcs.go halfleg), and the clean-up says "flaps to auto" - a
+    // deck (flight/fcs.go halfleg), and the clean-up says "flaps auto" - a
     // switch left in AUTO on the cat read wrong on the legend and made that
     // line an instruction to do nothing.
     expect(source).toMatch(/flap_select=\(st==="case2"\)\?2:\(st==="runway"\|\|st==="carrier"\)\?1:0;/)
@@ -214,7 +214,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // NATOPS 8.2.8: throttles held, the stick left alone while the jet rotates
     // itself, the gear up once a positive rate of climb is established. The
     // old lines put the hand back on the stick first and the gear call last.
-    expect(source).toMatch(/salute:"Throttles held, head back, hand off stick;/)
+    expect(source).toMatch(/salute:"Hand off stick; press enter to salute and launch"/)
     expect(source).toMatch(/flyaway:"Off the cat: hand off stick,/)
     expect(source).toMatch(/positive:"Positive rate: take stick, gear up, flaps auto"/)
   })
