@@ -174,6 +174,8 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'Ball call: answer, fly ball to touchdown': msg`Ball call: answer, fly ball to touchdown`,
   'Wave-off: full power, boards in, wings level, climb, {heading}': msg({ message: "Wave-off: full power, boards in, wings level, climb, {heading}" }),
   'Bolter: full power, boards in, hook down, climb to 600\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}" }),
+  'Wave-off: full power, boards in, wings level, climb to 1200\', {heading}': msg({ message: "Wave-off: full power, boards in, wings level, climb to 1200', {heading}" }),
+  'Bolter: full power, boards in, hook down, climb to 1200\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}" }),
   'On runway: half flaps, run up to military power, brakes off': msg`On runway: half flaps, run up to military power, brakes off`,
   '140 knots: rotate to 8° nose up': msg`140 knots: rotate to 8° nose up`,
   'Positive rate: gear up; flaps auto passing 250 knots': msg`Positive rate: gear up; flaps auto passing 250 knots`,
