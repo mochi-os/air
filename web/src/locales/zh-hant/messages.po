@@ -186,9 +186,17 @@ msgstr "<0>拖曳</0> 或 <1>←→</1> 環繞"
 msgid "1 WIRE"
 msgstr "1號攔阻索"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: 起落架，襟翼全放，尾鉤; 6 NM 前達到進場攻角 8.1° AOA; 最後進場方位 {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 小時"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 節: 抬前輪，機頭上仰 8°"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "3號攔阻索"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 英里: 沿航向爬升"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "已有錄音正在進行。"
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "正橫跑道數字，600': 坡度 27-30°，以 200-300 FPM 開始下降"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "返回"
 msgid "Back to home"
 msgstr "返回首頁"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "呼叫光球: 注視透鏡作答; 跟住光球直到接地"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "敵機"
@@ -523,6 +543,18 @@ msgstr "已更新橫幅"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "低於250 — 起落架和襟翼"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "低於 250 節: 起落架，襟翼全放，尾鉤; 下降到 600'，減速至進場攻角"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "低於 250 節: 起落架，襟翼全放; 下降到 600'，減速至進場攻角"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "低於 5000': 保持 FPM 小於高度"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "棋盤"
 msgid "BOLTER"
 msgstr "逃逸復飛"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "未掛索: 滿推力，減速板收回，尾鉤放下; 爬升到 600'，轉入順風邊，{heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "向右急轉"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "準備好即可轉彎"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "破入轉彎: 平飛轉彎，油門收怠速，減速板放出，每 100 節拉 1 g"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "情況 I (晝間)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: 沿艦尾尾流飛行，{heading}，800'，350 節"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "情況 II (氣象)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: 最後進場平飛，{heading}，1200'，起落架與襟翼放下; 進場攻角 8.1° AOA，約 140 節"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "情況 III (夜間)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: 待命 6000'，250 節，最後進場方位 {heading}; HUD 計時歸零即開始進場"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "全部清除"
 msgid "Clear search"
 msgstr "清除搜尋"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "向{side}做脫離轉彎，隨後在 500' 平行於 {heading}，300 節飛至 7 英里"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "爬升離場: 跑道航向 {heading}，350 節"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "命令選擇區"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "開始進場"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "開始進場: 向內 {heading}，250 節; 以 4000 FPM 下降至 5000' 平台高度"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "下載失敗"
 msgid "DOWNWIND 600 FEET"
 msgstr "順風邊 600英尺"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "順風邊: 600' 平飛; 軍艦在翼側 0.9-1.1 NM"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "無人機"
@@ -1674,6 +1742,10 @@ msgstr "戰鬥開始"
 msgid "Files"
 msgstr "檔案"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "最後進場: 跑道航向 {heading}，用油門保持 PAPI 兩紅兩白"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "完成帳號遷移"
@@ -1756,6 +1828,10 @@ msgstr "起飛"
 msgid "Fly again"
 msgstr "再飛一次"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "跟隨指針下降: 3 NM 1200'，2 NM 800'，1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "影格率計數器"
@@ -1817,6 +1893,10 @@ msgstr "加油探管"
 msgid "Fuel tank"
 msgstr "副油箱"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "後燃器全開"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "混戰"
@@ -1841,6 +1921,14 @@ msgstr "起落架"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "一般"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "下滑道啟動: 開始下降; 2 NM 800'，1 NM 400'，0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "重飛: 滿推力，減速板收回，機翼改平，沿跑道航向 {heading} 爬升至 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "僅機砲"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "僅機砲"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "鬆開駕駛桿; 按 enter 敬禮並彈射"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "尾鉤"
 msgid "HOOK"
 msgstr "尾鉤"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "已掛彈射器: 推油門至 {power}，全行程檢查操縱面"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "熱門"
@@ -1941,6 +2037,10 @@ msgstr "HUD高度來源"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUD簡化顯示"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUD 指針: 下滑道與中線; 將速度向量保持在兩者交叉處"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "空中"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "包括匿名使用者"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "初始進場: 跑道上空，{heading}，800'，350 節"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "磅"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "離開伺服器"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "左"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "空中相撞"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途島環礁地圖 — 影像包含經過修改的 <0>Copernicus Sentinel-2</0> 資料（2026）；機場幾何資料（跑道、滑行道、停機坪）© <1>OpenStreetMap</1> 貢獻者，依據 <2>ODbL</2> 授權；海岸線與珊瑚礁資料來自 <3>NOAA NCCOS</3>（公有領域）。"
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "軍用推力"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "數字"
 msgid "Ocean detail"
 msgstr "海洋細節"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "脫離彈射器: 鬆開駕駛桿，讓飛機上仰 12°"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "離線"
@@ -2697,6 +2813,10 @@ msgstr "在航艦上"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "在跑道上"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "跑道上: 襟翼半放，推油門至軍用推力，鬆煞車"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "上仰"
 msgid "PLATFORM"
 msgstr "平台"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "平台高度: 2000 FPM; 1200' 平飛"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "玩家"
@@ -2884,6 +3008,14 @@ msgstr "請再試一次。"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "請稍候片刻，然後再試一次。"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "爬升率為正: 收起落架; 過 250 節襟翼置自動"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "爬升率為正: 握桿，收起落架，襟翼置自動"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "撤銷存取權限"
 msgid "Revoke RSS access?"
 msgstr "撤銷 RSS 存取權嗎？"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "右"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "滾轉"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "向左滾轉"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "改平進入順風邊: {heading}，正橫軍艦 0.9-1.1 NM"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "改平進入順風邊: {heading}，800'，正橫跑道 1 NM"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "設定"
 msgid "Shadows"
 msgstr "陰影"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "軍艦正橫: 坡度 27-30°，以 200-300 FPM 開始下降"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "顯示類別"
@@ -3580,6 +3728,10 @@ msgstr "失速，乾淨構型 (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "失速，著陸構型 (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "右舷: 保持 800'; 過艦艏後破入轉彎"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "無法傳送。檔案可能太大，或您的連線失敗。請嘗試較
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "檔案太大，無法上傳。請移除或縮小檔案後再試。"
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45 位: 325-375'，轉入著艦航道，{heading}; 找到光球，用油門跟住光球"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90 位: 450'，500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "相機已在使用中"
@@ -3829,6 +3989,10 @@ msgstr "要求次數過多"
 msgid "Top"
 msgstr "頂端"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "接地: 油門收怠速; 機頭上仰 10° 氣動減速，100 節時放下機頭，煞車"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "曳光彈"
@@ -3844,6 +4008,10 @@ msgstr "配平"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "配平"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "配平至 HUD 旁琥珀燈點亮 (8.1° AOA)，用油門控制高度"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "僅關注的"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "重飛"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "強制重飛: 滿推力，減速板收回，機翼改平，保持姿態; 沿斜角甲板爬升，{heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

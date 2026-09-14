@@ -247,7 +247,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
 
   it('shows the departure once clean, after the gear call has been read', () => {
     expect(launch).toMatch(/const clean=\(ownship\.gearTarget\?\?0\)>0\.5&&flap_select===0;/)
-    expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|sim_time-hint_since>=3\)\) hint\(HINT\.clearing,"Clearing turn "\+\(cat_idx<2\?"right":"left"\)/)
+    expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|sim_time-hint_since>=3\)\) hint\(HINT\.clearing,\{side:cat_idx<2\?translate\("right"\):translate\("left"\)/)
   })
 
   it('ends the departure at 7 miles, or when the pilot leaves it', () => {

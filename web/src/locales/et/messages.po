@@ -186,9 +186,17 @@ msgstr "<0>Lohista</0> või <1>←→</1> tiirlemiseks"
 msgid "1 WIRE"
 msgstr "TROSS 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: telik, täisklapid, konks; on-speed 8.1° AOA 6 NM juures; lõppkurss {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 tundi"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 sõlme: tõsta nina 8° üles"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "TROSS 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 miili: tõus kursil"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Salvestamine on juba pooleli."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Raja numbrite traaversil, 600': kalle 27-30°, alusta laskumist 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Tagasi"
 msgid "Back to home"
 msgstr "Tagasi avalehele"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Ball-kutse: vasta läätse vaadates; lenda balli maandumiseni"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Bandiit"
@@ -523,6 +543,18 @@ msgstr "Bänner uuendatud"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ALLA 250 — TELIK JA KLAPID"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "Alla 250 sõlme: telik, täisklapid, konks; lasku 600', aeglusta on-speed'ini"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "Alla 250 sõlme: telik, täisklapid; lasku 600', aeglusta on-speed'ini"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "Alla 5000': hoia FPM kõrgusest väiksem"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Laud"
 msgid "BOLTER"
 msgstr "BOLTER"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: täisvõimsus, õhupidurid sisse, konks alla; tõuse 600', pööra allatuule sirgele, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "JÄRSULT PAREMALE"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "PÖÖRE KUI VALMIS"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: horisontaalpööre, gaas tühikäigule, õhupidurid välja, tõmba 1 g iga 100 sõlme kohta"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Juhtum I (päev)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: lenda mööda kiiluvett, {heading}, 800', 350 sõlme"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Juhtum II (ilm)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: tasandu lõppsirgel, {heading}, 1200', telik ja klapid all; on-speed 8.1° AOA, umbes 140 sõlme"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Juhtum III (öö)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: ooteala 6000', 250 sõlme, lõppkurss {heading}; alusta, kui HUD-i kell jõuab nullini"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Tühjenda kõik"
 msgid "Clear search"
 msgstr "Tühjenda otsing"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Vabastav pööre {side}, siis paralleelselt {heading} kõrgusel 500', 300 sõlme kuni 7 miili"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Tõus: raja kurss {heading}, 350 sõlme"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Käsupalett"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "ALUSTAN"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Alustan: sissetulek {heading}, 250 sõlme; 4000 FPM laskumist kuni 5000' platvormini"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Allalaadimine ebaõnnestus"
 msgid "DOWNWIND 600 FEET"
 msgstr "ALLATUULT 600 JALGA"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Allatuule sirge: tasandu 600'; laev 0.9-1.1 NM tiivast"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Droon"
@@ -1674,6 +1742,10 @@ msgstr "LAHING ALGAS"
 msgid "Files"
 msgstr "Failid"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Lõppsirge: raja kurss {heading}, võimsus kahe punase ja kahe valge jaoks PAPI-l"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Lõpeta konto koliminen"
@@ -1756,6 +1828,10 @@ msgstr "Lenda"
 msgid "Fly again"
 msgstr "Lenda uuesti"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Järgi nõelu laskumisel: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Kaadrisageduse loendur"
@@ -1817,6 +1893,10 @@ msgstr "Kütusesond"
 msgid "Fuel tank"
 msgstr "Kütusepaak"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "täis järelpõleti"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "ŠASSII"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Üldine"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Liugtee aktiivne: alusta laskumist; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Kordusring: täisvõimsus, õhupidurid sisse, tiivad tasa, tõus raja kursil {heading} kuni 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Ainult kahurid"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Ainult kahurid"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Käsi kangilt ära; vajuta enter, et saluteerida ja startida"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "konks"
 msgid "HOOK"
 msgstr "KONKS"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Katapuldis: {power}, liiguta juhtpinnad läbi"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Kuum"
@@ -1941,6 +2037,10 @@ msgstr "HUD-i kõrguse allikas"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUD-i lihtsustamine"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUD-i nõelad: liugtee ja keskjoon; hoia kiirusvektorit nende ristumiskohas"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Õhus"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Kaasa arvatud anonüümsed kasutajad"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Algsirge: üle raja, {heading}, 800', 350 sõlme"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Lahku serverist"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "vasakule"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Kokkupõrge õhus"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway atolli kaart — pildid sisaldavad muudetud <0>Copernicus Sentinel-2</0> andmeid (2026); lennuvälja geomeetria (lennurada, ruleerimisteed, perroonid) © <1>OpenStreetMap</1> kaastöölised, litsentsitud <2>ODbL</2> alusel; ranniku- ja rifiandmed pärinevad <3>NOAA NCCOS</3>-lt (avalik omand)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "sõjaline võimsus"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Number"
 msgid "Ocean detail"
 msgstr "Ookeani detailsus"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Katapuldilt: käsi kangilt ära, lase lennukil tõusta 12° ninaga üles"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "ühenduseta"
@@ -2697,6 +2813,10 @@ msgstr "Lennukikandjal"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Lennurajal"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "Rajal: pooled klapid, sõjaline võimsus, pidurid lahti"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Nina üles"
 msgid "PLATFORM"
 msgstr "PLATVORM"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Platvorm: 2000 FPM; tasandu 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Mängijad"
@@ -2884,6 +3008,14 @@ msgstr "Proovi uuesti."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Palun oota hetk ja proovi uuesti."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Positiivne tõus: telik üles; klapid auto 250 sõlme juures"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Positiivne tõus: võta kang, telik üles, klapid auto"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Tühista juurdepääs"
 msgid "Revoke RSS access?"
 msgstr "Kas tühistada RSS-i juurdepääs?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "paremale"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Veere"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Kalle vasakule"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Tasandu allatuule sirgel: {heading}, 0.9-1.1 NM laeva traaversil"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Tasandu allatuule sirgel: {heading}, 800', 1 NM raja traaversil"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Seaded"
 msgid "Shadows"
 msgstr "Varjud"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Laev traaversil: kalle 27-30°, alusta laskumist 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Näita klasse"
@@ -3580,6 +3728,10 @@ msgstr "Stall, puhas konfiguratsioon (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, maandumiskonfiguratsioon (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Tüürpoordi pool: hoia 800'; alusta break'i pärast vööri"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Saatmine ebaõnnestus. Failid võivad olla liiga suured või ühendus ka
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "See oli üleslaadimiseks liiga suur. Eemaldage või vähendage faile ja proovige uuesti."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45: 325-375', pööra groove'i, {heading}; leia ball, lenda balli võimsusega"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Kaamera on juba kasutusel"
@@ -3829,6 +3989,10 @@ msgstr "Liiga palju päringuid"
 msgid "Top"
 msgstr "Üles"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Maandumine: gaas tühikäigule; aerodünaamiline pidurdus 10° ninatõusuga, lase nina alla 100 sõlme juures, pidurda"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Trasseerkuulid"
@@ -3844,6 +4008,10 @@ msgstr "trimm"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Trimm"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Trimmi kollase tule järgi HUD-i kõrval (8.1° AOA), võimsusega kõrgust"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Ainult jälgitud"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "KATKESTA MAANDUMINE"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: täisvõimsus, õhupidurid sisse, tiivad tasa, hoia asendit; tõus üle kaldteki, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

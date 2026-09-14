@@ -186,9 +186,17 @@ msgstr "<0>ドラッグ</0> または <1>←→</1> で旋回"
 msgid "1 WIRE"
 msgstr "1番ワイヤー"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: ギア、フルフラップ、フック; 6 NMまでにオンスピード8.1° AOA; 最終方位 {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12時間"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140ノット: 機首を8°上げる"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "3番ワイヤー"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7マイル: 方位を保って上昇"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "すでに録音が進行中です。"
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "滑走路番号アビーム、600': バンク27-30°、200-300 FPMで降下開始"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "戻る"
 msgid "Back to home"
 msgstr "ホームに戻る"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "ボールコール: レンズを見ながら応答; 接地までボールを飛ばす"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "敵機"
@@ -523,6 +543,18 @@ msgstr "バナーを更新しました"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250以下 — ギアとフラップ"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "250ノット以下: ギア、フルフラップ、フック; 600'へ降下、オンスピードまで減速"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "250ノット以下: ギア、フルフラップ; 600'へ降下、オンスピードまで減速"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "5000'以下: FPMを高度より小さく保つ"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "ボード"
 msgid "BOLTER"
 msgstr "ボルター"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "ボルター: フルパワー、スピードブレーキ収納、フック下げ; 600'へ上昇、ダウンウインドへ旋回、{heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "右ブレイク"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "準備でき次第ブレーク"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "ブレイク: 水平旋回、スロットルアイドル、スピードブレーキ展開、100ノットにつき1 g引く"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "ケース I (昼)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: 航跡に沿って飛ぶ、{heading}、800'、350ノット"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "ケース II (気象)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: ファイナルで水平、{heading}、1200'、ギアとフラップ下げ; オンスピード8.1° AOA、約140ノット"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "ケース III (夜)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: マーシャル6000'、250ノット、最終方位 {heading}; HUDクロックがゼロになったら進入開始"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "すべてクリア"
 msgid "Clear search"
 msgstr "検索をクリア"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "クリアリングターン{side}、その後500'で{heading}に平行、300ノットで7マイルまで"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "上昇: 滑走路方位 {heading}、350ノット"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "コマンドパレット"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "進入開始"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "進入開始: {heading}へ、250ノット; 4000 FPMで5000'プラットフォームまで降下"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "ダウンロードに失敗しました"
 msgid "DOWNWIND 600 FEET"
 msgstr "ダウンウインド 600フィート"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "ダウンウインド: 600'で水平; 艦は翼から0.9-1.1 NM"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "ドローン"
@@ -1674,6 +1742,10 @@ msgstr "戦闘開始"
 msgid "Files"
 msgstr "ファイル"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "ファイナル: 滑走路方位 {heading}、PAPIが赤二つ、白二つになるパワー"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "アカウントの移行を完了する"
@@ -1756,6 +1828,10 @@ msgstr "飛行"
 msgid "Fly again"
 msgstr "もう一度飛ぶ"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "ニードルに従って降下: 3 NM 1200'、2 NM 800'、1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "フレームレートカウンター"
@@ -1817,6 +1893,10 @@ msgstr "給油プローブ"
 msgid "Fuel tank"
 msgstr "燃料タンク"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "フルアフターバーナー"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "乱戦"
@@ -1841,6 +1921,14 @@ msgstr "脚"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "一般"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "グライドスロープ作動: 降下開始; 2 NM 800'、1 NM 400'、0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "ゴーアラウンド: フルパワー、スピードブレーキ収納、翼を水平に、滑走路方位 {heading}で600'まで上昇"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "機関砲のみ"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "機関砲のみ"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "スティックから手を離す; エンターを押して敬礼し発艦"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "フック"
 msgid "HOOK"
 msgstr "フック"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "フックアップ: {power}まで出力を上げ、操縦装置をフルストローク"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "人気"
@@ -1941,6 +2037,10 @@ msgstr "HUD高度ソース"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUDデクラッター"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUDニードル: グライドスロープとセンターライン; 交点に速度ベクトルを保つ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "空中"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "匿名ユーザーを含む"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "イニシャル: 滑走路上空、{heading}、800'、350ノット"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "サーバーから退出"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "左"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "空中衝突"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ミッドウェー環礁の地図 — 画像には改変された<0>Copernicus Sentinel-2</0>データ（2026年）が含まれます。飛行場の形状（滑走路、誘導路、エプロン）© <1>OpenStreetMap</1> コントリビューター、<2>ODbL</2>に基づいてライセンス供与。海岸線とサンゴ礁のデータは<3>NOAA NCCOS</3>より（パブリックドメイン）。"
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "ミリタリーパワー"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "数値"
 msgid "Ocean detail"
 msgstr "海洋ディテール"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "カタパルト離脱: スティックから手を離し、機首を12°上げさせる"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "オフライン"
@@ -2697,6 +2813,10 @@ msgstr "空母上"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "滑走路上"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "滑走路上: フラップハーフ、ミリタリーパワーまで出力を上げ、ブレーキ解除"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "ピッチアップ"
 msgid "PLATFORM"
 msgstr "プラットフォーム"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "プラットフォーム: 2000 FPM; 1200'で水平"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "プレイヤー数"
@@ -2884,6 +3008,14 @@ msgstr "もう一度お試しください。"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "しばらくしてからもう一度お試しください。"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "正の上昇率: ギアアップ; 250ノット通過でフラップAUTO"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "正の上昇率: スティックを握る、ギアアップ、フラップAUTO"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "アクセスを取り消す"
 msgid "Revoke RSS access?"
 msgstr "RSS アクセスを取り消しますか？"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "右"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "ロール"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "左ロール"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "ダウンウインドで水平: {heading}、艦から0.9-1.1 NMアビーム"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "ダウンウインドで水平: {heading}、800'、滑走路から1 NMアビーム"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "設定"
 msgid "Shadows"
 msgstr "影"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "艦アビーム: バンク27-30°、200-300 FPMで降下開始"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "クラスを表示"
@@ -3580,6 +3728,10 @@ msgstr "失速、クリーン (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "失速、着陸形態 (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "右舷: 800'を維持; 艦首を過ぎたらブレイク"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "送信できませんでした。ファイルが大きすぎるか、接
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "サイズが大きすぎてアップロードできませんでした。ファイルを削除するか縮小して、もう一度お試しください。"
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45: 325-375'、グルーブへ旋回、{heading}; ボールを見つけ、パワーでボールを飛ばす"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90: 450'、500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "カメラは既に使用中です"
@@ -3829,6 +3989,10 @@ msgstr "リクエストが多すぎます"
 msgid "Top"
 msgstr "トップ"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "接地: スロットルアイドル; 機首10°上げでエアロブレーキ、100ノットで機首下げ、ブレーキ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "曳光弾"
@@ -3844,6 +4008,10 @@ msgstr "トリム"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "トリム"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "HUD横のアンバーライトにトリム (8.1° AOA)、高度はパワーで"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "ウォッチ中のみ"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "ウェーブオフ"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "ウェーブオフ: フルパワー、スピードブレーキ収納、翼を水平に、姿勢維持; アングルドデッキに沿って上昇、{heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

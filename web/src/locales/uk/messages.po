@@ -186,9 +186,17 @@ msgstr "<0>Перетягніть</0> або <1>←→</1> для обльоту
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: шасі, закрилки повністю, гак; on-speed 8.1° AOA до 6 NM; фінальний пеленг {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 годин"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 вузлів: підніми ніс на 8°"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "ТРОС 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 миль: набирай висоту за курсом"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Запис уже триває."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "На траверзі цифр смуги, 600': крен 27-30°, починай зниження 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Назад"
 msgid "Back to home"
 msgstr "На головну"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Виклик ball: відповідай, дивлячись на лінзу; веди ball до торкання"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Бандит"
@@ -523,6 +543,18 @@ msgstr "Банер оновлено"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "НИЖЧЕ 250 — ШАСІ ТА ЗАКРИЛКИ"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "Нижче 250 вузлів: шасі, закрилки повністю, гак; знижуйся до 600', сповільнюйся до on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "Нижче 250 вузлів: шасі, закрилки повністю; знижуйся до 600', сповільнюйся до on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "Нижче 5000': тримай FPM меншим за висоту"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Дошка"
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: повна тяга, щитки прибрати, гак випустити; набирай до 600', розворот на зворотний курс, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "РІЗКО ПРАВОРУЧ"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "РОЗВОРОТ ЗА ГОТОВНІСТЮ"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: розворот без зміни висоти, РУД на малий газ, щитки випустити, 1 g на кожні 100 вузлів"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Випадок I (день)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: йди вздовж кільватера, {heading}, 800', 350 вузлів"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Випадок II (погода)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: горизонт на фіналі, {heading}, 1200', шасі й закрилки випущені; on-speed 8.1° AOA, близько 140 вузлів"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Випадок III (ніч)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: marshal 6000', 250 вузлів, фінальний пеленг {heading}; починай, коли годинник HUD дійде до нуля"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Очистити все"
 msgid "Clear search"
 msgstr "Очистити пошук"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Розворот для звільнення {side}, потім паралельно {heading} на 500', 300 вузлів до 7 миль"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Набір: курс смуги {heading}, 350 вузлів"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Палітра команд"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "ПОЧИНАЮ ЗАХІД"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Починаємо: курсом {heading}, 250 вузлів; 4000 FPM до платформи 5000'"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Не вдалося завантажити"
 msgid "DOWNWIND 600 FEET"
 msgstr "ЗА ВІТРОМ 600 ФУТІВ"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Зворотний курс: горизонт на 600'; корабель за 0.9-1.1 NM від крила"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Дрон"
@@ -1674,6 +1742,10 @@ msgstr "БІЙ ПОЧАВСЯ"
 msgid "Files"
 msgstr "Файли"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Фінал: курс смуги {heading}, тяга на два червоні, два білі на PAPI"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Завершіть переміщення облікового запису"
@@ -1756,6 +1828,10 @@ msgstr "Політ"
 msgid "Fly again"
 msgstr "Летіти знову"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Знижуйся за стрілками: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Лічильник частоти кадрів"
@@ -1817,6 +1893,10 @@ msgstr "Паливна штанга"
 msgid "Fuel tank"
 msgstr "Паливний бак"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "повний форсаж"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "ШАСІ"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Загальні"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Глісада ожила: починай зниження; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "На друге коло: повна тяга, щитки прибрати, крила горизонтально, набирай курсом смуги {heading} до 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Лише гармати"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Лише гармати"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Прибери руку з ручки; натисни enter, щоб віддати честь і злетіти"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "Гак"
 msgid "HOOK"
 msgstr "ГАК"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Зчеплено з катапультою: виведи на {power}, прожени органи керування по всьому ходу"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Популярне"
@@ -1941,6 +2037,10 @@ msgstr "Джерело висоти HUD"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "Спрощення HUD"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "Стрілки HUD: глісада й осьова; тримай вектор швидкості на їх перетині"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "У повітрі"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Включно з анонімними користувачами"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Вхідна пряма: над смугою, {heading}, 800', 350 вузлів"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Покинути сервер"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "ліворуч"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Зіткнення в повітрі"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта атола Мідвей — знімки містять змінені дані <0>Copernicus Sentinel-2</0> (2026); геометрія аеродрому (злітно-посадкова смуга, руліжні доріжки, перони) © учасники <1>OpenStreetMap</1>, ліцензовано за <2>ODbL</2>; дані про берегову лінію та рифи від <3>NOAA NCCOS</3> (суспільне надбання)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "максимал"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Число"
 msgid "Ocean detail"
 msgstr "Деталізація океану"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Після катапульти: прибери руку з ручки, дай літаку підняти ніс на 12°"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "не в мережі"
@@ -2697,6 +2813,10 @@ msgstr "На авіаносці"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "На злітній смузі"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "На смузі: закрилки наполовину, виведи на максимал, гальма відпусти"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Тангаж вгору"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Платформа: 2000 FPM; горизонт на 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Гравці"
@@ -2884,6 +3008,14 @@ msgstr "Спробуйте ще раз."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Зачекайте трохи та повторіть спробу."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Набір висоти є: шасі прибрати; закрилки авто після 250 вузлів"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Набір висоти є: візьми ручку, шасі прибрати, закрилки авто"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Відкликати доступ"
 msgid "Revoke RSS access?"
 msgstr "Відкликати доступ RSS?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "праворуч"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Крен"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Крен ліворуч"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Вирівняйся на зворотному курсі: {heading}, 0.9-1.1 NM на траверзі корабля"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Вирівняйся на зворотному курсі: {heading}, 800', 1 NM на траверзі смуги"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Налаштування"
 msgid "Shadows"
 msgstr "Тіні"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Корабель на траверзі: крен 27-30°, починай зниження 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Показати класи"
@@ -3580,6 +3728,10 @@ msgstr "Звалювання, чиста конфігурація (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Звалювання, посадкова конфігурація (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Правий борт: тримай 800'; break після носа корабля"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Не вдалося надіслати. Можливо, файли за�
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Завеликий розмір для завантаження. Видаліть або зменшіть файли й повторіть спробу."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45: 325-375', вихід на посадкову пряму, {heading}; знайди ball, веди ball тягою"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Камера вже використовується"
@@ -3829,6 +3989,10 @@ msgstr "Забагато запитів"
 msgid "Top"
 msgstr "Верх"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Торкання: малий газ; аеродинамічне гальмування з носом 10° вгору, опусти ніс на 100 вузлах, гальмуй"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Трасери"
@@ -3844,6 +4008,10 @@ msgstr "тример"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Тример"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Відтримеруй на бурштиновий вогник біля HUD (8.1° AOA), висоту тримай тягою"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Лише відстежувані"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "ЙДИ НА ДРУГЕ КОЛО"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: повна тяга, щитки прибрати, крила горизонтально, тримай кут тангажу; набирай уздовж кутової палуби, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

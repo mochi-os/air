@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { setupI18n } from '@lingui/core'
 import { describe, expect, it } from 'vitest'
 
 // GameCanvas.tsx cannot be imported here — it pulls in Lingui macros, which the
@@ -17,7 +18,7 @@ const catalogue = () => {
   const block = source.slice(source.indexOf('const HUD_MESSAGES'))
   const keys = new Set<string>()
   const entry =
-    /^\s+(?:([A-Za-z_][A-Za-z0-9_]*)|'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*msg`/gm
+    /^\s+(?:([A-Za-z_][A-Za-z0-9_]*)|'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*msg(?:`|\(\{)/gm
   for (const found of block.slice(0, block.indexOf('\n}\n')).matchAll(entry)) {
     keys.add((found[1] ?? found[2] ?? found[3]).replace(/\\(.)/g, '$1'))
   }
@@ -37,7 +38,17 @@ const translated = () => {
   )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
+  // The coaching lines: hint() translates the HINT constant whole, so each is a
+  // catalogue key too. JSON.parse reads the JS escapes (\u00b0) as the engine does.
+  for (const found of hints(source)) keys.add(found[1])
   return keys
+}
+
+// The HINT table as (key, line) pairs.
+const hints = (source: string) => {
+  const block = source.slice(source.indexOf('const HINT={'))
+  return [...block.slice(0, block.indexOf('\n};')).matchAll(/^\s+(\w+):"((?:[^"\\]|\\.)*)"/gm)]
+    .map((found) => [found[1], JSON.parse('"' + found[2] + '"')] as const)
 }
 
 // The deck code words, kept English on purpose and documented as such beside
@@ -67,5 +78,19 @@ describe('HUD_MESSAGES', () => {
     expect(VERBATIM.filter((key) => have.has(key))).toEqual([])
     const asked = translated()
     expect(VERBATIM.filter((key) => !asked.has(key))).toEqual([])
+  })
+
+  it('renders every coaching line through Lingui with its figures filled', () => {
+    // The lines carry apostrophes (800') beside ICU placeholders ({heading}),
+    // and ICU treats an apostrophe as a quote in some positions; every line is
+    // rendered the way the game renders it, and must come back with the figure
+    // in and nothing else changed.
+    const i18n = setupI18n({ locale: 'en', messages: { en: {} } })
+    const values = { heading: '069°', power: 'military power', side: 'right' }
+    for (const [key, line] of hints(read('./engine.ts'))) {
+      const shown = i18n._({ id: line, message: line, values })
+      const wanted = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
+      expect(shown, key).toBe(wanted)
+    }
   })
 })

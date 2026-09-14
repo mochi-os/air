@@ -186,9 +186,17 @@ msgstr "<0>드래그</0> 또는 <1>←→</1> 로 선회"
 msgid "1 WIRE"
 msgstr "1번 와이어"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: 기어, 플랩 최대, 후크; 6 NM 이전 온스피드 8.1° AOA; 최종 방위 {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12시간"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140노트: 기수 8° 올림"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "3번 와이어"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7마일: 방위 유지하며 상승"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "이미 녹음이 진행 중입니다."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "활주로 번호 정횡, 600': 뱅크 27-30°, 200-300 FPM으로 강하 시작"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "뒤로"
 msgid "Back to home"
 msgstr "홈으로 돌아가기"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "볼 콜: 렌즈를 보며 응답; 접지까지 볼을 따라 비행"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "적기"
@@ -523,6 +543,18 @@ msgstr "배너 업데이트됨"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 이하 — 기어와 플랩"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "250노트 이하: 기어, 플랩 최대, 후크; 600'로 강하, 온스피드까지 감속"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "250노트 이하: 기어, 플랩 최대; 600'로 강하, 온스피드까지 감속"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "5000' 이하: FPM을 고도보다 작게 유지"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "보드"
 msgid "BOLTER"
 msgstr "볼터"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "볼터: 최대 출력, 스피드브레이크 넣고, 후크 내림; 600'로 상승, 다운윈드로 선회, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "우측 급선회"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "준비되면 브레이크"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "브레이크: 수평 선회, 스로틀 아이들, 스피드브레이크 전개, 100노트당 1 g 당김"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "케이스 I (주간)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: 항적을 따라 비행, {heading}, 800', 350노트"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "케이스 II (기상)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: 파이널에서 수평, {heading}, 1200', 기어와 플랩 내림; 온스피드 8.1° AOA, 약 140노트"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "케이스 III (야간)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: 마셜 6000', 250노트, 최종 방위 {heading}; HUD 시계가 영이 되면 진입 개시"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "모두 지우기"
 msgid "Clear search"
 msgstr "검색 지우기"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "클리어링 턴 {side}, 이후 500'에서 {heading}에 평행, 300노트로 7마일까지"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "상승: 활주로 방위 {heading}, 350노트"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "명령 팔레트"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "접근 개시"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "진입 개시: {heading}로 인바운드, 250노트; 4000 FPM으로 5000' 플랫폼까지 강하"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "다운로드 실패"
 msgid "DOWNWIND 600 FEET"
 msgstr "다운윈드 600피트"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "다운윈드: 600'에서 수평; 함은 날개에서 0.9-1.1 NM"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "드론"
@@ -1674,6 +1742,10 @@ msgstr "전투 개시"
 msgid "Files"
 msgstr "파일"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "파이널: 활주로 방위 {heading}, PAPI가 적색 두 개, 백색 두 개가 되도록 출력"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "계정 이전 완료"
@@ -1756,6 +1828,10 @@ msgstr "비행"
 msgid "Fly again"
 msgstr "다시 비행하기"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "지시침을 따라 강하: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "프레임 카운터"
@@ -1817,6 +1893,10 @@ msgstr "급유 프로브"
 msgid "Fuel tank"
 msgstr "연료 탱크"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "최대 애프터버너"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "난투"
@@ -1841,6 +1921,14 @@ msgstr "기어"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "일반"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "활공각 활성: 강하 시작; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "복행: 최대 출력, 스피드브레이크 넣고, 날개 수평, 활주로 방위 {heading}로 600'까지 상승"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "기관포만"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "기관포만"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "조종간에서 손 떼기; enter를 눌러 경례 후 발진"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "후크"
 msgid "HOOK"
 msgstr "훅"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "후크 연결: 출력 {power}까지 상승, 조종간 전 범위 작동"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "인기"
@@ -1941,6 +2037,10 @@ msgstr "HUD 고도 소스"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUD 간소화"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUD 지시침: 활공각과 중심선; 교차점에 속도 벡터 유지"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "공중"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "익명 사용자 포함"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "이니셜: 활주로 상공, {heading}, 800', 350노트"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "서버 나가기"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "좌"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "공중 충돌"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "미드웨이 환초 지도 — 위성 영상에는 수정된 <0>Copernicus Sentinel-2</0> 데이터가 포함되어 있습니다(2026); 비행장 형상(활주로, 유도로, 계류장)은 © <1>OpenStreetMap</1> 기여자, <2>ODbL</2> 라이선스에 따라 제공됩니다; 해안선 및 산호초 데이터는 <3>NOAA NCCOS</3> 제공(퍼블릭 도메인)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "밀리터리 파워"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "숫자"
 msgid "Ocean detail"
 msgstr "바다 디테일"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "캐터펄트 이탈: 조종간에서 손 떼고, 기수가 12° 올라가게 둠"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "오프라인"
@@ -2697,6 +2813,10 @@ msgstr "항공모함"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "활주로"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "활주로: 플랩 절반, 밀리터리 파워까지 출력, 브레이크 해제"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "기수 올리기"
 msgid "PLATFORM"
 msgstr "플랫폼"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "플랫폼: 2000 FPM; 1200'에서 수평"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "플레이어 수"
@@ -2884,6 +3008,14 @@ msgstr "다시 시도해 주세요."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "잠시 후 다시 시도해 주세요."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "양의 상승률: 기어 올림; 250노트 통과 시 플랩 오토"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "양의 상승률: 조종간 잡고, 기어 올림, 플랩 오토"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "액세스 취소"
 msgid "Revoke RSS access?"
 msgstr "RSS 액세스를 해지할까요?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "우"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "롤"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "왼쪽 롤"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "다운윈드 수평: {heading}, 함 정횡 0.9-1.1 NM"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "다운윈드 수평: {heading}, 800', 활주로 정횡 1 NM"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "설정"
 msgid "Shadows"
 msgstr "그림자"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "함 정횡: 뱅크 27-30°, 200-300 FPM으로 강하 시작"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "클래스 표시"
@@ -3580,6 +3728,10 @@ msgstr "실속, 클린 형상 (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "실속, 착륙 형상 (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "우현: 800' 유지; 함수 지나면 브레이크"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "보낼 수 없습니다. 파일이 너무 크거나 연결이 실패했�
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "업로드하기에 너무 컸습니다. 파일을 제거하거나 줄인 후 다시 시도하세요."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45: 325-375', 그루브로 선회, {heading}; 볼을 찾아 출력으로 볼 유지"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "카메라가 이미 사용 중입니다"
@@ -3829,6 +3989,10 @@ msgstr "요청이 너무 많음"
 msgid "Top"
 msgstr "위"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "접지: 스로틀 아이들; 기수 10° 올려 에어로브레이킹, 100노트에서 기수 내림, 제동"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "예광탄"
@@ -3844,6 +4008,10 @@ msgstr "트림"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "트림"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "HUD 옆 황색등에 맞춰 트림 (8.1° AOA), 고도는 출력으로"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "관찰 중만"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "복행"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "웨이브오프: 최대 출력, 스피드브레이크 넣고, 날개 수평, 자세 유지; 앵글드 데크를 따라 상승, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
