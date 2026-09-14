@@ -186,9 +186,17 @@ msgstr "<0>Vilkite</0> arba <1>←→</1> apskriejimui"
 msgid "1 WIRE"
 msgstr "TROSAS 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: važiuoklė, pilni užsparniai, kablys; on-speed 8.1° AOA iki 6 NM; galutinis kursas {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 valandų"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 mazgų: kelk nosį iki 8°"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "TROSAS 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 mylios: kilk kursu"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Įrašymas jau vyksta."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Tako numerių traverse, 600': posvyris 27-30°, pradėk leidimąsi 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Atgal"
 msgid "Back to home"
 msgstr "Atgal į pradžią"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Ball call: atsakyk žiūrėdamas į lęšį; vesk ball iki prisilietimo"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Banditas"
@@ -523,6 +543,18 @@ msgstr "Reklamjuostė atnaujinta"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ŽEMIAU 250 — VAŽIUOKLĖ IR UŽSPARNIAI"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "Žemiau 250 mazgų: važiuoklė, pilni užsparniai, kablys; leiskis iki 600', sulėtėk iki on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "Žemiau 250 mazgų: važiuoklė, pilni užsparniai; leiskis iki 600', sulėtėk iki on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "Žemiau 5000': laikyk FPM mažesnį už aukštį"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Lenta"
 msgid "BOLTER"
 msgstr "BOLTER"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: pilna galia, stabdžiai vidun, kablys žemyn; kilk iki 600', suk į pavėjinį, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "STAIGIAI DEŠINĖN"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "POSŪKIS KAI PASIRUOŠĘS"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: horizontalus posūkis, variklis tuščiąja eiga, oro stabdžiai lauk, trauk 1 g kas 100 mazgų"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Atvejis I (diena)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: skrisk laivo vaga, {heading}, 800', 350 mazgų"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Atvejis II (oras)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: horizontaliai finale, {heading}, 1200', važiuoklė ir užsparniai žemyn; on-speed 8.1° AOA, apie 140 mazgų"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Atvejis III (naktis)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: marshal 6000', 250 mazgų, galutinis kursas {heading}; pradėk, kai HUD laikrodis pasieks nulį"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Išvalyti viską"
 msgid "Clear search"
 msgstr "Išvalyti paiešką"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Atitraukimo posūkis {side}, paskui lygiagrečiai {heading} 500' aukštyje, 300 mazgų iki 7 mylių"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Kilimas: tako kursas {heading}, 350 mazgų"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Komandų paletė"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "PRADEDU"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Pradžia: į {heading}, 250 mazgų; 4000 FPM žemyn iki 5000' platform"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Atsisiųsti nepavyko"
 msgid "DOWNWIND 600 FEET"
 msgstr "PAVĖJUI 600 PĖDŲ"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Pavėjinis: horizontaliai 600'; laivas 0.9-1.1 NM nuo sparno"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Dronas"
@@ -1674,6 +1742,10 @@ msgstr "KOVA PRASIDEDA"
 msgid "Files"
 msgstr "Failai"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Finalas: tako kursas {heading}, galia dviem raudonoms, dviem baltoms PAPI"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Užbaikite paskyros perkėlimą"
@@ -1756,6 +1828,10 @@ msgstr "Skristi"
 msgid "Fly again"
 msgstr "Skristi dar kartą"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Sek rodykles žemyn: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Kadrų dažnio skaitiklis"
@@ -1817,6 +1893,10 @@ msgstr "Degalų zondas"
 msgid "Fuel tank"
 msgstr "Degalų bakas"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "pilnas forsažas"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "VAŽIUOKLĖ"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Bendra"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Glisada suaktyvėjo: pradėk leidimąsi; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Antras ratas: pilna galia, stabdžiai vidun, sparnai horizontaliai, kilk tako kursu {heading} iki 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Tik pabūklai"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Tik pabūklai"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Nuimk ranką nuo vairalazdės; spausk enter, kad atiduotum pagarbą ir pakiltum"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "Kablys"
 msgid "HOOK"
 msgstr "KABLYS"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Prikabintas: galia {power}, perrink valdymo eigą"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Karšta"
@@ -1941,6 +2037,10 @@ msgstr "HUD aukščio šaltinis"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUD supaprastinimas"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUD rodyklės: glisada ir ašinė linija; laikyk greičio vektorių jų sankirtoje"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Ore"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Įskaitant anoniminius naudotojus"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Initial: virš tako, {heading}, 800', 350 mazgų"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Palikti serverį"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "kairėn"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Susidūrimas ore"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midvėjaus atolo žemėlapis — vaizduose yra modifikuotų <0>Copernicus Sentinel-2</0> duomenų (2026); aerodromo geometrija (kilimo ir tūpimo takas, riedėjimo takai, peronai) © <1>OpenStreetMap</1> talkininkai, licencijuota pagal <2>ODbL</2>; pakrantės ir rifų duomenys iš <3>NOAA NCCOS</3> (viešoji sritis)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "karinė galia"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Skaičius"
 msgid "Ocean detail"
 msgstr "Vandenyno detalumas"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Nuo katapultos: nuimk ranką nuo vairalazdės, leisk lėktuvui pakelti nosį 12°"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "neprisijungęs"
@@ -2697,6 +2813,10 @@ msgstr "Lėktuvnešyje"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Ant kilimo tako"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "Take: pusiniai užsparniai, didink iki karinės galios, stabdžiai atleisti"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Tangažas aukštyn"
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Platform: 2000 FPM; horizontaliai 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Žaidėjai"
@@ -2884,6 +3008,14 @@ msgstr "Bandykite dar kartą."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Palaukite šiek tiek ir bandykite dar kartą."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Teigiamas kilimas: važiuoklė aukštyn; užsparniai auto praeinant 250 mazgų"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Teigiamas kilimas: imk vairalazdę, važiuoklė aukštyn, užsparniai auto"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Atšaukti prieigą"
 msgid "Revoke RSS access?"
 msgstr "Atšaukti RSS prieigą?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "dešinėn"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Posvyris"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Posvyris kairėn"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Išlygink pavėjiniame: {heading}, 0.9-1.1 NM laivo traverse"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Išlygink pavėjiniame: {heading}, 800', 1 NM tako traverse"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Nustatymai"
 msgid "Shadows"
 msgstr "Šešėliai"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Laivas traverse: posvyris 27-30°, pradėk leidimąsi 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Rodyti klases"
@@ -3580,6 +3728,10 @@ msgstr "Kritinis greitis, švari konfigūracija (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Kritinis greitis, tūpimo konfigūracija (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Dešinysis bortas: laikyk 800'; break praėjus laivo priekį"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Nepavyko išsiųsti. Failai gali būti per dideli arba nutrūko ryšys. 
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Per didelis įkelti. Pašalinkite arba sumažinkite failus ir bandykite dar kartą."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45-as: 325-375', suk į groove, {heading}; rask ball, vesk ball galia"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90-as: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Kamera jau naudojama"
@@ -3829,6 +3989,10 @@ msgstr "Per daug užklausų"
 msgid "Top"
 msgstr "Viršus"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Prisilietimas: variklis tuščiąja eiga; aerodinaminis stabdymas 10° nosimi aukštyn, nuleisk nosį prie 100 mazgų, stabdyk"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Trasuojantys šoviniai"
@@ -3844,6 +4008,10 @@ msgstr "trimeris"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Trimeris"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Trimuok iki geltonos lemputės šalia HUD (8.1° AOA), aukštį valdyk galia"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Tik stebima"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "NUTRAUK TŪPIMĄ"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: pilna galia, stabdžiai vidun, sparnai horizontaliai, laikyk padėtį; kilk palei įstrižą denį, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

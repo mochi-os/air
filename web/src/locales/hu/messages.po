@@ -186,9 +186,17 @@ msgstr "<0>Húzza</0> vagy <1>←→</1> a keringéshez"
 msgid "1 WIRE"
 msgstr "KÖTÉL 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: futómű, teljes fékszárny, horog; on-speed 8.1° AOA 6 NM-ig; végső irányszög {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 óra"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 csomó: emelés 8° orrmagasságra"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "KÖTÉL 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 mérföld: emelkedés irányban"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Már folyamatban van egy felvétel."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Küszöbszámok mellett, 600': bedöntés 27-30°, süllyedés indul 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Vissza"
 msgid "Back to home"
 msgstr "Vissza a kezdőlapra"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Ball call: válaszolj a lencsére nézve; vezesd a ballt a földetérésig"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Bandita"
@@ -523,6 +543,18 @@ msgstr "Banner frissítve"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 ALATT — FUTÓMŰ ÉS FÉKSZÁRNY"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "250 csomó alatt: futómű, teljes fékszárny, horog; süllyedj 600'-ra, lassíts on-speedre"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "250 csomó alatt: futómű, teljes fékszárny; süllyedj 600'-ra, lassíts on-speedre"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "5000' alatt: az FPM legyen kisebb a magasságnál"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Tábla"
 msgid "BOLTER"
 msgstr "BOLTER"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: teljes gáz, féklapok be, horog le; emelkedj 600'-ra, fordulj ellenirányba, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "BREAK JOBBRA"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "FORDULÓ HA KÉSZ"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: vízszintes forduló, gáz alapjáratba, féklapok ki, 1 g minden 100 csomóra"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Eset I (nappal)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: repülj fel a hajónyomon, {heading}, 800', 350 csomó"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Eset II (időjárás)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: vízszintesen a célegyenesen, {heading}, 1200', futómű és fékszárny ki; on-speed 8.1° AOA, kb. 140 csomó"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Eset III (éjszaka)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: marshal 6000', 250 csomó, végső irányszög {heading}; indíts, ha a HUD óra nullára ér"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Összes törlése"
 msgid "Clear search"
 msgstr "Keresés törlése"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Biztonsági forduló {side}, majd párhuzamosan {heading} 500'-on, 300 csomó 7 mérföldig"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Emelkedés: futópálya iránya {heading}, 350 csomó"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Parancspaletta"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "MEGKEZDEM"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Megközelítés indul: befelé {heading}, 250 csomó; 4000 FPM süllyedés az 5000' platformig"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "A letöltés sikertelen"
 msgid "DOWNWIND 600 FEET"
 msgstr "SZÉLIRÁNYBAN 600 LÁB"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Ellenirány: vízszintesen 600'-on; hajó 0.9-1.1 NM-re a szárny mellett"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Drón"
@@ -1674,6 +1742,10 @@ msgstr "KEZDŐDIK A HARC"
 msgid "Files"
 msgstr "Fájlok"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Célegyenes: futópálya iránya {heading}, gázzal két piros, két fehér a PAPI-n"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Fejezze be a fiók áthelyezését"
@@ -1756,6 +1828,10 @@ msgstr "Repülés"
 msgid "Fly again"
 msgstr "Repülj újra"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Kövesd a tűket lefelé: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Képkockasebesség-számláló"
@@ -1817,6 +1893,10 @@ msgstr "Üzemanyag-szonda"
 msgid "Fuel tank"
 msgstr "Üzemanyagtartály"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "teljes utánégető"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "FUTÓMŰ"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Általános"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Siklópálya él: süllyedés indul; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Átstartolás: teljes gáz, féklapok be, szárnyak vízszintbe, emelkedj futópálya irányban {heading} 600'-ra"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Csak gépágyú"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Csak gépágyú"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Kezet le a botkormányról; nyomj entert a tiszteléshez és az indításhoz"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "Horog"
 msgid "HOOK"
 msgstr "HOROG"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Beakasztva: gáz fel {power}, kormányok végigjáratása"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Forró"
@@ -1941,6 +2037,10 @@ msgstr "HUD-magasságforrás"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "HUD-egyszerűsítés"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "HUD tűk: siklópálya és középvonal; tartsd a sebességvektort a metszéspontjukban"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Levegőben"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Beleértve a névtelen felhasználókat"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Initial: futópálya felett, {heading}, 800', 350 csomó"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Kiszolgáló elhagyása"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "balra"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Ütközés a levegőben"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway-atoll térkép — a felvételek módosított <0>Copernicus Sentinel-2</0> adatokat tartalmaznak (2026); a repülőtér geometriája (kifutópálya, gurulóutak, előterek) © <1>OpenStreetMap</1> közreműködők, <2>ODbL</2> licenc alatt; a partvonal- és zátonyadatok forrása a <3>NOAA NCCOS</3> (közkincs)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "katonai tolóerő"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Szám"
 msgid "Ocean detail"
 msgstr "Óceán részletessége"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Katapultról le: kezet le a botkormányról, hagyd a gépet 12° orrmagasságra emelkedni"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "offline"
@@ -2697,6 +2813,10 @@ msgstr "Hordozón"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Kifutópályán"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "Futópályán: fél fékszárny, gáz katonai tolóerőre, fékek ki"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Bólintás fel"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Platform: 2000 FPM; vízszintesen 1200'-on"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Játékosok"
@@ -2884,6 +3008,14 @@ msgstr "Próbálja újra."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Kérjük, várjon egy kicsit, majd próbálja újra."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Pozitív emelkedés: futómű be; fékszárny AUTO 250 csomónál"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Pozitív emelkedés: fogd a botkormányt, futómű be, fékszárny AUTO"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Hozzáférés visszavonása"
 msgid "Revoke RSS access?"
 msgstr "Visszavonja az RSS-hozzáférést?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "jobbra"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Orsózás"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Orsózás balra"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Ellenirányon kiegyenlítve: {heading}, 0.9-1.1 NM-re a hajó mellett"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Ellenirányon kiegyenlítve: {heading}, 800', 1 NM-re a futópálya mellett"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Beállítások"
 msgid "Shadows"
 msgstr "Árnyékok"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Hajó traverzben: bedöntés 27-30°, süllyedés indul 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Osztályok megjelenítése"
@@ -3580,6 +3728,10 @@ msgstr "Átesés, tiszta (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Átesés, leszálló konfiguráció (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Jobb oldal: tartsd a 800'-at; break a hajóorr után"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Nem sikerült elküldeni. A fájlok túl nagyok lehetnek, vagy a kapcsol
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Túl nagy volt a feltöltéshez. Távolítson el vagy kicsinyítsen fájlokat, és próbálja újra."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "A 45: 325-375', fordulj a groove-ba, {heading}; keresd a ballt, vezesd a ballt gázzal"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "A 90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "A kamera már használatban van"
@@ -3829,6 +3989,10 @@ msgstr "Túl sok kérés"
 msgid "Top"
 msgstr "Eleje"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Földetérés: gáz alapjáratba; aerodinamikai fékezés 10° orrmagasságon, orr le 100 csomónál, fékezz"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Nyomjelzők"
@@ -3844,6 +4008,10 @@ msgstr "trimm"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Trimm"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Trimmelj a HUD melletti sárga fényre (8.1° AOA), gázzal tartsd a magasságot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Csak figyelt"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "ÁTSTARTOLÁS"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: teljes gáz, féklapok be, szárnyak vízszintbe, tartsd a helyzetet; emelkedj a ferde fedélzet mentén, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

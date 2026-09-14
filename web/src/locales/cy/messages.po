@@ -186,9 +186,17 @@ msgstr "<0>Llusgwch</0> neu <1>←→</1> i gylchdroi"
 msgid "1 WIRE"
 msgstr "CEBL 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: offer glanio, fflapiau llawn, bachyn; cyflymder glanio 8.1° AOA erbyn 6 NM; cyfeiriad terfynol {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 awr"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 not: coda'r trwyn i 8°"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "CEBL 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 milltir: dringa ar y cwrs"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Mae recordiad eisoes ar y gweill."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Wrth ymyl rhifau'r rhedfa, 600': gogwydd 27-30°, dechrau disgyn ar 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Yn ôl"
 msgid "Back to home"
 msgstr "Yn ôl i’r cartref"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Galwad pêl: ateb wrth edrych ar y lens; hedfan y bêl hyd at y glaniad"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Gelyn"
@@ -523,6 +543,18 @@ msgstr "Baner wedi'i diweddaru"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "O DAN 250 — OLWYNION A FFLAPIAU"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "O dan 250 not: offer glanio, fflapiau llawn, bachyn; disgyn i 600', arafa at gyflymder glanio"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "O dan 250 not: offer glanio, fflapiau llawn; disgyn i 600', arafa at gyflymder glanio"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "O dan 5000': cadwa'r FPM yn llai na'r uchder"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Bwrdd"
 msgid "BOLTER"
 msgstr "BOLTER"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: pŵer llawn, brêcs awyr i mewn, bachyn i lawr; dringa i 600', tro gyda'r gwynt, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "TRO I'R DDE"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "TROI PAN YN BAROD"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: tro gwastad, sbardun yn segur, brêcs awyr allan, tynna 1 g am bob 100 not"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Achos I (dydd)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: hedfan dros ôl y llong, {heading}, 800', 350 not"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Achos II (tywydd)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: gwastad ar y goes derfynol, {heading}, 1200', offer glanio a fflapiau i lawr; cyflymder glanio 8.1° AOA, tua 140 not"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Achos III (nos)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: aros ar 6000', 250 not, cyfeiriad terfynol {heading}; cychwyn pan fydd cloc yr HUD yn cyrraedd sero"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Clirio popeth"
 msgid "Clear search"
 msgstr "Clirio chwiliad"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Tro clirio {side}, yna'n gyfochrog â {heading} ar 500', 300 not hyd at 7 milltir"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Esgyn: cyfeiriad y rhedfa {heading}, 350 not"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Palet gorchmynion"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "YN CYCHWYN"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Cychwyn: i mewn ar {heading}, 250 not; 4000 FPM i lawr at lwyfan 5000'"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Methwyd â lawrlwytho"
 msgid "DOWNWIND 600 FEET"
 msgstr "GYDA'R GWYNT 600 TROEDFEDD"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Gyda'r gwynt: gwastad ar 600'; y llong 0.9-1.1 NM oddi wrth yr adain"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Drôn"
@@ -1674,6 +1742,10 @@ msgstr "I'R GAD"
 msgid "Files"
 msgstr "Ffeiliau"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Terfynol: cyfeiriad y rhedfa {heading}, pŵer am ddwy goch, dwy wen ar PAPI"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Gorffennwch symud eich cyfrif"
@@ -1756,6 +1828,10 @@ msgstr "Hedfan"
 msgid "Fly again"
 msgstr "Hedfan eto"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Dilyn y nodwyddau i lawr: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Rhifydd cyfradd fframiau"
@@ -1817,6 +1893,10 @@ msgstr "Chwiliedydd tanwydd"
 msgid "Fuel tank"
 msgstr "Tanc tanwydd"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "ôl-losgydd llawn"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "GÊR"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Cyffredinol"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Llethr disgyn yn fyw: dechrau disgyn; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Ail-gylchu: pŵer llawn, brêcs awyr i mewn, adenydd yn wastad, dringa ar gyfeiriad y rhedfa {heading} i 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Gynnau'n unig"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Gynnau'n unig"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Tynna dy law oddi ar y ffon; gwasga enter i saliwtio a lansio"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "bachyn"
 msgid "HOOK"
 msgstr "BACHYN"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Ynghlwm: coda'r pŵer i {power}, symuda'r rheolyddion drwy'r cyfan"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Poeth"
@@ -1941,6 +2037,10 @@ msgstr "Ffynhonnell uchder HUD"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "Symleiddio'r HUD"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "Nodwyddau'r HUD: llethr disgyn a llinell ganol; cadwa'r fector cyflymder lle maen nhw'n croesi"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Yn yr awyr"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Gan gynnwys defnyddwyr dienw"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Cychwynnol: dros y rhedfa, {heading}, 800', 350 not"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Gadael y gweinydd"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "i'r chwith"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Gwrthdrawiad yn yr awyr"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Map Atol Midway — mae'r delweddau'n cynnwys data <0>Copernicus Sentinel-2</0> wedi'i addasu (2026); geometreg y maes awyr (rhedfa, tacsiffyrdd, apronau) © cyfranwyr <1>OpenStreetMap</1>, wedi'i drwyddedu o dan <2>ODbL</2>; data'r arfordir a'r riffiau gan <3>NOAA NCCOS</3> (parth cyhoeddus)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "pŵer milwrol"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Rhif"
 msgid "Ocean detail"
 msgstr "Manylion y cefnfor"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Oddi ar y catapwlt: tynna dy law oddi ar y ffon, gad i'r jet godi'r trwyn 12°"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "all-lein"
@@ -2697,6 +2813,10 @@ msgstr "Ar y cludwr"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Ar y rhedfa"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "Ar y rhedfa: hanner fflapiau, coda i bŵer milwrol, rhyddha'r brêcs"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Trwyn i fyny"
 msgid "PLATFORM"
 msgstr "PLATFFORM"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Llwyfan: 2000 FPM; gwastad ar 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Chwaraewyr"
@@ -2884,6 +3008,14 @@ msgstr "Rhowch gynnig arall arni."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Arhoswch funud a rhowch gynnig arall arni."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Esgyniad positif: offer glanio i fyny; fflapiau'n awtomatig wrth basio 250 not"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Esgyniad positif: cymera'r ffon, offer glanio i fyny, fflapiau'n awtomatig"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Dirymu mynediad"
 msgid "Revoke RSS access?"
 msgstr "Dirymu mynediad RSS?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "i'r dde"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Rholio"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Rholio i'r chwith"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Unioni gyda'r gwynt: {heading}, 0.9-1.1 NM wrth ochr y llong"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Unioni gyda'r gwynt: {heading}, 800', 1 NM wrth ochr y rhedfa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Gosodiadau"
 msgid "Shadows"
 msgstr "Cysgodion"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Y llong wrth yr ochr: gogwydd 27-30°, dechrau disgyn ar 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Dangos dosbarthiadau"
@@ -3580,6 +3728,10 @@ msgstr "Stôl, glân (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Stôl, cyfluniad glanio (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Ochr y starbord: cadwa 800'; break ar ôl pen blaen y llong"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Nid oedd modd ei anfon. Efallai fod y ffeiliau'n rhy fawr, neu fe fethod
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Roedd yn rhy fawr i'w lwytho i fyny. Tynnwch neu lleihewch ffeiliau a cheisiwch eto."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "Y 45: 325-375', tro i mewn i'r rhigol, {heading}; chwilia am y bêl, hedfan y bêl gyda'r pŵer"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "Y 90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Mae'r camera eisoes yn cael ei ddefnyddio"
@@ -3829,6 +3989,10 @@ msgstr "Gormod o geisiadau"
 msgid "Top"
 msgstr "Brig"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Glaniad: sbardun yn segur; brêcio aerodynamig gyda'r trwyn 10° i fyny, gostwng y trwyn ar 100 not, brêcia"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Bwledi olrhain"
@@ -3844,6 +4008,10 @@ msgstr "trim"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Trim"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Trimia am y golau ambr wrth ymyl yr HUD (8.1° AOA), pŵer am uchder"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Wedi'i wylio yn unig"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "ATAL Y GLANIO"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Atal glanio: pŵer llawn, brêcs awyr i mewn, adenydd yn wastad, dal yr osgo; dringa ar hyd y dec onglog, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

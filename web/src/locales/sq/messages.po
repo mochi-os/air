@@ -186,9 +186,17 @@ msgstr "<0>Tërhiqni</0> ose <1>←→</1> për të orbituar"
 msgid "1 WIRE"
 msgstr "KABLLO 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: trenat, flapsat plotësisht, grepi; shpejtësia e afrimit 8.1° AOA deri në 6 NM; drejtimi final {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 orë"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 nyje: rrotullo në 8° hundë lart"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "KABLLO 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 milje: ngjitu në drejtim"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Një regjistrim është tashmë në proces."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Përballë numrave të pistës, 600': pjerrësi 27-30°, fillo zbritjen me 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Mbrapa"
 msgid "Back to home"
 msgstr "Kthehu në fillim"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Thirrja e ball: përgjigju duke parë lentën; ndiq ball deri në prekje"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Bandit"
@@ -523,6 +543,18 @@ msgstr "Banner-i u përditësua"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "NËN 250 — TRENI DHE FLAPSAT"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "Nën 250 nyje: trenat, flapsat plotësisht, grepi; zbrit në 600', ngadalëso në shpejtësinë e afrimit"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "Nën 250 nyje: trenat, flapsat plotësisht; zbrit në 600', ngadalëso në shpejtësinë e afrimit"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "Nën 5000': mbaj FPM më të vogël se lartësia"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Tabela"
 msgid "BOLTER"
 msgstr "BOLTER"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: fuqi e plotë, frenat ajrore brenda, grepi poshtë; ngjitu në 600', kthehu në segmentin me erë pas, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "KTHEHU DJATHTAS"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "KTHESË KUR TË JESH GATI"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: kthesë në nivel, manetë në minimum, frenat ajrore jashtë, tërhiq 1 g për çdo 100 nyje"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Rast I (ditë)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: fluturo mbi gjurmën e anijes, {heading}, 800', 350 nyje"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Rast II (mot)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: në nivel në final, {heading}, 1200', trenat dhe flapsat poshtë; shpejtësia e afrimit 8.1° AOA, rreth 140 nyje"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Rast III (natë)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: pritje 6000', 250 nyje, drejtimi final {heading}; fillo kur ora e HUD arrin zeron"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Pastro të gjitha"
 msgid "Clear search"
 msgstr "Pastro kërkimin"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Kthesë lirimi {side}, pastaj paralel me {heading} në 500', 300 nyje deri në 7 milje"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Ngjitje: drejtimi i pistës {heading}, 350 nyje"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Paleta e komandave"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "PO FILLOJ"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Fillimi: në hyrje {heading}, 250 nyje; 4000 FPM poshtë deri te platforma 5000'"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Shkarkimi dështoi"
 msgid "DOWNWIND 600 FEET"
 msgstr "ME ERËN 600 KËMBË"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Segmenti me erë pas: në nivel në 600'; anija 0.9-1.1 NM nga krahu"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Dron"
@@ -1674,6 +1742,10 @@ msgstr "LUFTA FILLOI"
 msgid "Files"
 msgstr "Skedarët"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Final: drejtimi i pistës {heading}, fuqi për dy të kuqe, dy të bardha në PAPI"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Përfundoni lëvizjen e llogarisë suaj"
@@ -1756,6 +1828,10 @@ msgstr "Fluturo"
 msgid "Fly again"
 msgstr "Fluturo sërish"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Zbrit sipas gjilpërave: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Numëruesi i kuadrove"
@@ -1817,6 +1893,10 @@ msgstr "Sonda e karburantit"
 msgid "Fuel tank"
 msgstr "Serbator karburanti"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "pasdjegës i plotë"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "TREN"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Të përgjithshme"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Pjerrësia e uljes u gjallërua: fillo zbritjen; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Rikthim: fuqi e plotë, frenat ajrore brenda, krahët në nivel, ngjitu në drejtimin e pistës {heading} deri në 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Vetëm topa"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Vetëm topa"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Hiq dorën nga leva; shtyp enter për nderim dhe nisje"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "Grep"
 msgid "HOOK"
 msgstr "GREP"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "I lidhur: rrit deri në {power}, kalo komandat në tërë gamën"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Të nxehta"
@@ -1941,6 +2037,10 @@ msgstr "Burimi i lartësisë së HUD-it"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "Thjeshtimi i HUD-it"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "Gjilpërat e HUD: pjerrësia e uljes dhe boshti i pistës; mbaj vektorin e shpejtësisë ku ato kryqëzohen"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Në ajër"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Përfshirë përdoruesit anonimë"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Fillestar: mbi pistë, {heading}, 800', 350 nyje"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Lër serverin"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "majtas"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Përplasje në ajër"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Harta e Atolit Midway — imazhet përmbajnë të dhëna të modifikuara <0>Copernicus Sentinel-2</0> (2026); gjeometria e aerodromit (pista, rrugët e taksimit, platformat) © kontribuesit e <1>OpenStreetMap</1>, licencuar sipas <2>ODbL</2>; të dhënat e vijës bregdetare dhe shkëmbinjve koralorë nga <3>NOAA NCCOS</3> (domen publik)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "fuqi ushtarake"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Numri"
 msgid "Ocean detail"
 msgstr "Detaje të oqeanit"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Nga katapulta: hiq dorën nga leva, lëre avionin të rrotullohet 12° hundë lart"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "jashtë linje"
@@ -2697,6 +2813,10 @@ msgstr "Në portaavionë"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Në pistë"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "Në pistë: flapsat në gjysmë, rrit deri në fuqinë ushtarake, frenat lirohen"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Pjerrësi lart"
 msgid "PLATFORM"
 msgstr "PLATFORMË"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Platforma: 2000 FPM; në nivel në 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Lojtarët"
@@ -2884,6 +3008,14 @@ msgstr "Provoni përsëri."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Ju lutemi prisni një moment dhe provoni sërish."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Ngjitje pozitive: trenat lart; flapsat auto duke kaluar 250 nyje"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Ngjitje pozitive: merr levën, trenat lart, flapsat auto"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Anulo aksesin"
 msgid "Revoke RSS access?"
 msgstr "Të revokohet qasja RSS?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "djathtas"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Rrotullim"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Rrotullim majtas"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Drejto në segmentin me erë pas: {heading}, 0.9-1.1 NM përballë anijes"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Drejto në segmentin me erë pas: {heading}, 800', 1 NM përballë pistës"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Cilësimet"
 msgid "Shadows"
 msgstr "Hije"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Anija përballë: pjerrësi 27-30°, fillo zbritjen me 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Shfaq klasat"
@@ -3580,6 +3728,10 @@ msgstr "Ndalje, konfigurim i pastër (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Ndalje, konfigurim uljeje (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Ana e djathtë e anijes: mbaj 800'; break pasi kalon bashin"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Nuk mund të dërgohej. Skedarët mund të jenë tepër të mëdhenj, os
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Ishte tepër i madh për t'u ngarkuar. Hiq ose zvogëlo skedarë dhe provo përsëri."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "Pika 45: 325-375', hyr në groove, {heading}; gjej ball, ndiq ball me fuqi"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "Pika 90: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Kamera është tashmë në përdorim"
@@ -3829,6 +3989,10 @@ msgstr "Shumë kërkesa"
 msgid "Top"
 msgstr "Lart"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Prekja: manetë në minimum; frenim aerodinamik me 10° hundë lart, ul hundën në 100 nyje, frena"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Gjurmuese"
@@ -3844,6 +4008,10 @@ msgstr "trim"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Trim"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Trimo për dritën qelibar pranë HUD (8.1° AOA), fuqi për lartësinë"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Vetëm të shikuarit"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "NDËRPRIT ULJEN"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: fuqi e plotë, frenat ajrore brenda, krahët në nivel, mbaj qëndrimin; ngjitu mbi kuvertën e pjerrët, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

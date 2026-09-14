@@ -186,9 +186,17 @@ msgstr "<0>Влечете</0> или <1>←→</1> за орбитирање"
 msgid "1 WIRE"
 msgstr "САЈЛА 1"
 
+#: src/components/GameCanvas.tsx
+msgid "10 NM: gear, full flaps, hook; on-speed 8.1° AOA by 6 NM; final bearing {heading}"
+msgstr "10 NM: стаен трап, полни закрилца, кука; on-speed 8.1° AOA до 6 NM; финален правец {heading}"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "12 hours"
 msgstr "12 часа"
+
+#: src/components/GameCanvas.tsx
+msgid "140 knots: rotate to 8° nose up"
+msgstr "140 јазли: подигни го носот на 8°"
 
 #: src/components/MissionSetup.tsx
 msgid "15,000 AMSL"
@@ -210,9 +218,17 @@ msgstr "САЈЛА 3"
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
+#: src/components/GameCanvas.tsx
+msgid "7 miles: climb on course"
+msgstr "7 милји: качувај се по курсот"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "A recording is already in progress."
 msgstr "Веќе е во тек снимање."
+
+#: src/components/GameCanvas.tsx
+msgid "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM"
+msgstr "Странично од бројките, 600': наклон 27-30°, почни спуштање со 200-300 FPM"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Absolute (date and time)"
@@ -503,6 +519,10 @@ msgstr "Назад"
 msgid "Back to home"
 msgstr "Назад на почетна"
 
+#: src/components/GameCanvas.tsx
+msgid "Ball call: answer looking at lens; fly ball to touchdown"
+msgstr "Повик за ball: одговори гледајќи во леќата; лета по ball до допирот"
+
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
 msgstr "Бандит"
@@ -523,6 +543,18 @@ msgstr "Банерот е ажуриран"
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ПОД 250 — СТАП И ЗАКРИЛЦА"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps, hook; descend to 600', slow to on-speed"
+msgstr "Под 250 јазли: стаен трап, полни закрилца, кука; спушти се на 600', намали до on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed"
+msgstr "Под 250 јазли: стаен трап, полни закрилца; спушти се на 600', намали до on-speed"
+
+#: src/components/GameCanvas.tsx
+msgid "Below 5000': keep FPM less than altitude"
+msgstr "Под 5000': држи FPM помалку од висината"
 
 #: src/components/MissionSetup.tsx
 msgid "Best climb (Vy, 100% thrust)"
@@ -574,6 +606,10 @@ msgstr "Табла"
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
+#: src/components/GameCanvas.tsx
+msgid "Bolter: full power, boards in, hook down; climb to 600', turn downwind, {heading}"
+msgstr "Bolter: полн гас, сопирачки внатре, кука долу; качи се на 600', сврти низветер, {heading}"
+
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Boost interest"
@@ -602,6 +638,10 @@ msgstr "ОСТРО ДЕСНО"
 #: src/components/GameCanvas.tsx
 msgid "BREAK WHEN READY"
 msgstr "СВРТИ КОГА СИ ПОДГОТВЕН"
+
+#: src/components/GameCanvas.tsx
+msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
+msgstr "Break: рамен свртеж, гас на минимум, сопирачки надвор, повлечи 1 g на секои 100 јазли"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -711,6 +751,10 @@ msgstr "Case I"
 msgid "Case I (day)"
 msgstr "Случај I (ден)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case I: fly up wake, {heading}, 800', 350 knots"
+msgstr "Case I: лета по браздата, {heading}, 800', 350 јазли"
+
 #: src/components/MissionSetup.tsx
 msgid "Case II"
 msgstr "Case II"
@@ -719,6 +763,10 @@ msgstr "Case II"
 msgid "Case II (weather)"
 msgstr "Случај II (време)"
 
+#: src/components/GameCanvas.tsx
+msgid "Case II: level on final, {heading}, 1200', gear and flaps down; on-speed 8.1° AOA, about 140 knots"
+msgstr "Case II: рамно на финале, {heading}, 1200', трап и закрилца долу; on-speed 8.1° AOA, околу 140 јазли"
+
 #: src/components/MissionSetup.tsx
 msgid "Case III"
 msgstr "Case III"
@@ -726,6 +774,10 @@ msgstr "Case III"
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
 msgstr "Случај III (ноќ)"
+
+#: src/components/GameCanvas.tsx
+msgid "Case III: marshal 6000', 250 knots, final bearing {heading}; commence when HUD clock reaches zero"
+msgstr "Case III: чекање 6000', 250 јазли, финален правец {heading}; започни кога часовникот на HUD ќе стигне нула"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -818,6 +870,14 @@ msgstr "Исчисти сè"
 msgid "Clear search"
 msgstr "Исчисти пребарување"
 
+#: src/components/GameCanvas.tsx
+msgid "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles"
+msgstr "Свртеж за расчистување {side}, потоа паралелно {heading} на 500', 300 јазли до 7 милји"
+
+#: src/components/GameCanvas.tsx
+msgid "Climb out: runway heading {heading}, 350 knots"
+msgstr "Качување: правец на пистата {heading}, 350 јазли"
+
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
@@ -899,6 +959,10 @@ msgstr "Палета со команди"
 #: src/components/GameCanvas.tsx
 msgid "COMMENCING"
 msgstr "ЗАПОЧНУВАМ"
+
+#: src/components/GameCanvas.tsx
+msgid "Commencing: inbound {heading}, 250 knots; 4000 FPM down to 5000' platform"
+msgstr "Започнување: приод {heading}, 250 јазли; 4000 FPM надолу до платформата на 5000'"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1364,6 +1428,10 @@ msgstr "Преземањето не успеа"
 msgid "DOWNWIND 600 FEET"
 msgstr "НИЗ ВЕТЕР 600 СТАПКИ"
 
+#: src/components/GameCanvas.tsx
+msgid "Downwind: level at 600'; ship 0.9-1.1 NM off wing"
+msgstr "Низветер: рамно на 600'; бродот 0.9-1.1 NM од крилото"
+
 #: src/components/Multiplayer.tsx
 msgid "Drone"
 msgstr "Дрон"
@@ -1674,6 +1742,10 @@ msgstr "БОРБАТА ПОЧНУВА"
 msgid "Files"
 msgstr "Датотеки"
 
+#: src/components/GameCanvas.tsx
+msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
+msgstr "Финале: правец на пистата {heading}, гас за две црвени, две бели на PAPI"
+
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Finish moving your account"
 msgstr "Завршете го преместувањето на профилот"
@@ -1756,6 +1828,10 @@ msgstr "Лет"
 msgid "Fly again"
 msgstr "Летај повторно"
 
+#: src/components/GameCanvas.tsx
+msgid "Fly needles down: 3 NM 1200', 2 NM 800', 1 NM 400'"
+msgstr "Следи ги стрелките надолу: 3 NM 1200', 2 NM 800', 1 NM 400'"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Бројач на слики во секунда"
@@ -1817,6 +1893,10 @@ msgstr "Сонда за гориво"
 msgid "Fuel tank"
 msgstr "Резервоар за гориво"
 
+#: src/components/GameCanvas.tsx
+msgid "full afterburner"
+msgstr "полн форсаж"
+
 #: src/components/MatchLog.tsx
 msgid "Furball"
 msgstr "Furball"
@@ -1841,6 +1921,14 @@ msgstr "ТРАП"
 #: src/components/SettingsDialog.tsx
 msgid "General"
 msgstr "Општо"
+
+#: src/components/GameCanvas.tsx
+msgid "Glideslope alive: start down; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+msgstr "Глисадата е активна: почни спуштање; 2 NM 800', 1 NM 400', 0.5 NM 200'"
+
+#: src/components/GameCanvas.tsx
+msgid "Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'"
+msgstr "Повторен круг: полн гас, сопирачки внатре, крилја рамно, качи се по правецот на пистата {heading} до 600'"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -1884,6 +1972,10 @@ msgstr "Само топови"
 #: src/components/Multiplayer.tsx
 msgid "Guns only"
 msgstr "Само топови"
+
+#: src/components/GameCanvas.tsx
+msgid "Hand off stick; press enter to salute and launch"
+msgstr "Тргни ја раката од палката; притисни enter за поздрав и лансирање"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -1930,6 +2022,10 @@ msgstr "Кука"
 msgid "HOOK"
 msgstr "КУКА"
 
+#: src/components/GameCanvas.tsx
+msgid "Hooked up: run up to {power}, wipe out controls"
+msgstr "Закачен: гас до {power}, помести ги командите по целиот од"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Hot"
 msgstr "Жешко"
@@ -1941,6 +2037,10 @@ msgstr "Извор на висина за HUD"
 #: src/components/SettingsDialog.tsx
 msgid "HUD declutter"
 msgstr "Поедноставување на HUD"
+
+#: src/components/GameCanvas.tsx
+msgid "HUD needles: glideslope and centreline; hold velocity vector where they cross"
+msgstr "Стрелки на HUD: глисада и оска на пистата; држи го векторот на брзината таму каде што се вкрстуваат"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -1967,6 +2067,10 @@ msgstr "Во воздух"
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Including anonymous users"
 msgstr "Вклучувајќи анонимни корисници"
+
+#: src/components/GameCanvas.tsx
+msgid "Initial: over runway, {heading}, 800', 350 knots"
+msgstr "Почетна делница: над пистата, {heading}, 800', 350 јазли"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2142,6 +2246,10 @@ msgstr "lb"
 #: src/components/Multiplayer.tsx
 msgid "Leave server"
 msgstr "Напушти сервер"
+
+#: src/components/GameCanvas.tsx
+msgid "left"
+msgstr "лево"
 
 #: src/components/MatchLog.tsx
 msgid "Left"
@@ -2388,6 +2496,10 @@ msgstr "Судир во воздухот"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта на атолот Мидвеј — сликите содржат изменети податоци од <0>Copernicus Sentinel-2</0> (2026); геометријата на аеродромот (писта, ролни патеки, платформи) © соработници на <1>OpenStreetMap</1>, лиценцирано под <2>ODbL</2>; податоците за крајбрежјето и гребените се од <3>NOAA NCCOS</3> (јавен домен)."
+
+#: src/components/GameCanvas.tsx
+msgid "military power"
+msgstr "воен режим"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
@@ -2676,6 +2788,10 @@ msgstr "Број"
 msgid "Ocean detail"
 msgstr "Детали на океанот"
 
+#: src/components/GameCanvas.tsx
+msgid "Off the cat: hand off stick, let jet rotate 12° nose up"
+msgstr "Од катапултот: тргни ја раката од палката, остави го авионот да ротира 12° нос нагоре"
+
 #: src/components/ServerList.tsx
 msgid "offline"
 msgstr "офлајн"
@@ -2697,6 +2813,10 @@ msgstr "На носач"
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "На писта"
+
+#: src/components/GameCanvas.tsx
+msgid "On runway: half flaps, run up to military power, brakes off"
+msgstr "На пистата: закрилца на половина, гас до воен режим, сопирачки отпуштени"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Oops! Page Not Found!"
@@ -2867,6 +2987,10 @@ msgstr "Пропињање нагоре"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
+#: src/components/GameCanvas.tsx
+msgid "Platform: 2000 FPM; level at 1200'"
+msgstr "Платформа: 2000 FPM; рамно на 1200'"
+
 #: src/components/MatchLog.tsx
 msgid "Players"
 msgstr "Играчи"
@@ -2884,6 +3008,14 @@ msgstr "Обидете се повторно."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Почекајте момент и обидете се повторно."
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: gear up; flaps auto passing 250 knots"
+msgstr "Позитивно качување: трап горе; закрилца на auto при 250 јазли"
+
+#: src/components/GameCanvas.tsx
+msgid "Positive rate: take stick, gear up, flaps auto"
+msgstr "Позитивно качување: земи ја палката, трап горе, закрилца на auto"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3221,6 +3353,10 @@ msgstr "Отповикај пристап"
 msgid "Revoke RSS access?"
 msgstr "Да се отповика пристапот до RSS?"
 
+#: src/components/GameCanvas.tsx
+msgid "right"
+msgstr "десно"
+
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Right wing"
@@ -3241,6 +3377,14 @@ msgstr "Ваљање"
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
 msgstr "Ваљање налево"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 0.9-1.1 NM abeam ship"
+msgstr "Израмни низветер: {heading}, 0.9-1.1 NM странично од бродот"
+
+#: src/components/GameCanvas.tsx
+msgid "Roll out downwind: {heading}, 800', 1 NM abeam runway"
+msgstr "Израмни низветер: {heading}, 800', 1 NM странично од пистата"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll right"
@@ -3488,6 +3632,10 @@ msgstr "Поставки"
 msgid "Shadows"
 msgstr "Сенки"
 
+#: src/components/GameCanvas.tsx
+msgid "Ship abeam: bank 27-30°, start down at 200-300 FPM"
+msgstr "Бродот странично: наклон 27-30°, почни спуштање со 200-300 FPM"
+
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
 msgstr "Прикажи класи"
@@ -3580,6 +3728,10 @@ msgstr "Превлекување, чиста конфигурација (Vs1)"
 #: src/components/MissionSetup.tsx
 msgid "Stall, landing config (Vs0)"
 msgstr "Превлекување, конфигурација за слетување (Vs0)"
+
+#: src/components/GameCanvas.tsx
+msgid "Starboard side: hold 800'; break past bow"
+msgstr "Десен бок: држи 800'; break по прамецот"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3708,6 +3860,14 @@ msgstr "Не можеше да се испрати. Датотеките мож�
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Премногу големо за прикачување. Отстранете или намалете датотеки и обидете се повторно."
 
+#: src/components/GameCanvas.tsx
+msgid "The 45: 325-375', roll into groove, {heading}; find ball, fly ball with power"
+msgstr "45-ката: 325-375', влези во groove, {heading}; најди ball, лета по ball со гас"
+
+#: src/components/GameCanvas.tsx
+msgid "The 90: 450', 500 FPM"
+msgstr "90-ката: 450', 500 FPM"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The camera is already in use"
 msgstr "Камерата веќе се користи"
@@ -3829,6 +3989,10 @@ msgstr "Премногу барања"
 msgid "Top"
 msgstr "Врв"
 
+#: src/components/GameCanvas.tsx
+msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
+msgstr "Допир: гас на минимум; аеродинамично сопирање со 10° нос нагоре, спушти го носот на 100 јазли, сопри"
+
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
 msgstr "Трасери"
@@ -3844,6 +4008,10 @@ msgstr "тример"
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
 msgstr "Тример"
+
+#: src/components/GameCanvas.tsx
+msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
+msgstr "Трим за жолтото светло до HUD (8.1° AOA), гас за висина"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
@@ -4093,6 +4261,10 @@ msgstr "Само следено"
 #: src/components/GameCanvas.tsx
 msgid "WAVE OFF"
 msgstr "ОТКАЖИ СЛЕТУВАЊЕ"
+
+#: src/components/GameCanvas.tsx
+msgid "Wave-off: full power, boards in, wings level, hold attitude; climb up angled deck, {heading}"
+msgstr "Wave-off: полн гас, сопирачки внатре, крилја рамно, држи го ставот; качи се над косата палуба, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
