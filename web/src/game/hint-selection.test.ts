@@ -176,6 +176,24 @@ describe('the Case III letdown is coached where the marshal procedure flies it',
   it('still holds the visual pattern inside 6 NM', () => {
     expect(carrier).toMatch(/kase==="case1"&&range<=6\*1852/)
   })
+
+  it('lets the commence line be read before the floor line takes the slot', () => {
+    // At 4000 FPM the 5,800 ft floor is 3 s below the fix, and a jet already
+    // under it at the fix raised both lines in one frame: Commencing was never
+    // seen. The floor waits while Commencing is what the slot shows.
+    expect(carrier).toMatch(/if\(marshal\.commenced&&feet<5800&&hint_key!==HINT\.push\)\s*hint\(HINT\.floor\)/)
+  })
+
+  it('coaches the bolter and wave-off pattern of the case that was briefed', () => {
+    // P-816's Case III bolter/wave-off pattern climbs to 1,200 ft; the visual
+    // pattern's is 600 ft. Both sites choose by the mission start, and both
+    // Case III lines re-arm with the circuit for the next pass.
+    expect(source).toMatch(/if\(mission_start\(\)==="case3"\) hint\(HINT\.abort,\{heading:ship_groove\(\)\}\); else hint\(HINT\.wave,\{heading:ship_groove\(\)\}\)/)
+    expect(source).toMatch(/if\(mission_start\(\)==="case3"\) hint\(HINT\.miss,\{heading:ship_downwind\(\)\}\); else hint\(HINT\.bolt,\{heading:ship_downwind\(\)\}\)/)
+    expect(source).toMatch(/const CIRCUIT=\[[^\]]*HINT\.abort[^\]]*HINT\.miss[^\]]*\]/)
+    expect(source).toMatch(/abort:"Wave-off: [^"]*1200'/)
+    expect(source).toMatch(/miss:"Bolter: [^"]*1200'[^"]*downwind/)
+  })
 })
 
 describe('the catapult launch is coached, and owns the centre banner it replaced', () => {

@@ -29,6 +29,8 @@ const HEADED: Record<string, string> = {
   gate: 'ship_groove',          // 10 NM: final bearing
   wave: 'ship_groove',          // wave-off: up the angled deck
   bolt: 'ship_downwind',        // bolter: climb, then turn downwind
+  abort: 'ship_groove',         // the Case III wave-off, up the angled deck
+  miss: 'ship_downwind',        // the Case III bolter: climb to 1,200', then turn downwind
   depart: 'runway_heading',     // climb out on the runway heading
   initial: 'runway_heading',    // initial, over the runway
   downwind: 'runway_reciprocal',// the field break's roll-out

@@ -3929,6 +3929,10 @@ const HINT={
 	ball:"Ball call: answer, fly ball to touchdown",
 	wave:"Wave-off: full power, boards in, wings level, climb, {heading}",
 	bolt:"Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}",
+	// The Case III bolter/wave-off pattern (P-816 section 204): climb to 1,200'
+	// and turn downwind there, where the visual pattern's is flown at 600'.
+	abort:"Wave-off: full power, boards in, wings level, climb to 1200', {heading}",
+	miss:"Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}",
 	// The runway set (#91): field pattern coaching in the same voice. Numbers
 	// from the same doctrine family — HALF flap takeoff and FULL flap landing
 	// per NATOPS, the 600' field pattern, on-speed 8.1 alpha ashore as afloat.
@@ -3965,7 +3969,7 @@ const HINT={
 	clearing:"Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles",
 	climb:"7 miles: climb on course",
 };
-const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
+const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt,HINT.abort,HINT.miss];   // the per-circuit set: re-armed by a bolter or wave-off
 const LAUNCH=[HINT.tension,HINT.salute,HINT.flyaway,HINT.positive];   // the deck set up to the clean-up, retired on leaving the ship (#189); the departure's own lines end by the departure's rules, which run to 7 NM
 const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.ninety,HINT.papi,HINT.rollout,HINT.around];   // the field circuit (#91): re-armed by a go-around, so a touch-and-go session is coached every pattern
 // A line is read in HINT_DWELL seconds and then leaves the glass, unless it is
@@ -4244,7 +4248,7 @@ function hints_carrier(st){ hinting="carrier";
 	if(kase==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
 	if(kase==="case3"&&marshal){
 		if(marshal.commenced) hint(HINT.push,{heading:ship_groove()});
-		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
+		if(marshal.commenced&&feet<5800&&hint_key!==HINT.push) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor - once the commence line has been read: at 4000 FPM the floor is 3 s below the fix, and a jet already under it at the fix would have lost the commence line in the same frame
 		if(marshal.platform) hint(HINT.level);
 		if(marshal.dirty) hint(HINT.gate,{heading:ship_groove()});
 		if(range<3.2*1852) hint(HINT.check);
@@ -5678,7 +5682,7 @@ function fly_player(dt){
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
-	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt,{heading:ship_downwind()}); }
+	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); if(mission_start()==="case3") hint(HINT.miss,{heading:ship_downwind()}); else hint(HINT.bolt,{heading:ship_downwind()}); }   // the bolter pattern is the recovery case's: 1,200' for Case III, the 600' visual pattern otherwise
 	prev_wow=ownship.grounded;
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
@@ -5953,7 +5957,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
