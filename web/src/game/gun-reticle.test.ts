@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest'
 // runs the status stack.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const block = /\n\t\t\tif\(pip\)\{ hctx\.strokeStyle=GR;[\s\S]*?hctx\.fillText\("SHOOT",pip\[0\],[^\n]*\); \} \}/.exec(source)?.[0] ?? ''
+const data = /\n\t\/\/ ---- gun ranging data[\s\S]*?,top\+3\.3\*ppdv\); \}/.exec(source)?.[0] ?? ''
 
 interface Arc { x: number; y: number; r: number; start: number; end: number; fill: boolean }
 interface Line { from: [number, number]; to: [number, number] }
@@ -80,5 +81,49 @@ describe('the gun director reticle', () => {
     expect(text[0][0]).toBe('SHOOT')
     expect(400 - text[0][2]).toBeGreaterThan(R)
     expect(director(20, 500, false).text).toHaveLength(0)
+  })
+})
+
+
+// The ranging data under the altitude box, as text with its right edge and
+// baseline: [text, x, y].
+function readouts(world: { master?: string; boxed?: boolean; declutter?: number; rng: number; vc: number }): [string, number, number][] {
+  if (!data) throw new Error('gun ranging data block not found in engine.ts')
+  const run = new Function('w', `const text=[]; const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y]); } };
+    const master=w.master??'gun', boxed=w.boxed===false?null:{}, declutter=w.declutter||0, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
+    ${data}
+    return text;`) as (w: object) => [string, number, number][]
+  return run(world)
+}
+const KNOT = 0.514444, FOOT = 0.3048
+
+describe('the gun ranging data under the altitude box', () => {
+  it('names the radar as the source, the closure in knots and the range in feet inside a mile', () => {
+    const shown = readouts({ rng: 1600 * FOOT, vc: -10 * KNOT }).map(([t]) => t)
+    expect(shown).toEqual(['RDR', '-10V', 'c', '1600 FT'])
+    expect(readouts({ rng: 1600 * FOOT, vc: 250 * KNOT }).map(([t]) => t)[1]).toBe('250V') // closing reads without a sign
+    expect(readouts({ rng: 1600 * FOOT, vc: -14 * KNOT }).map(([t]) => t)[1]).toBe('-10V') // to the nearest 10 knots
+  })
+
+  it('reads the range in miles beyond one', () => {
+    expect(readouts({ rng: 2500, vc: 0 }).map(([t]) => t)[3]).toBe('1.3 NM')
+    expect(readouts({ rng: 6000 * FOOT, vc: 0 }).map(([t]) => t)[3]).toBe('6000 FT')
+  })
+
+  it('stacks under the box, the source at its right edge and the numbers inside it', () => {
+    const [rdr, vc, , ft] = readouts({ rng: 500, vc: 0 })
+    const right = 584 + 96, bottom = 140 + 30
+    expect(rdr[2]).toBeGreaterThan(bottom)
+    expect(vc[2]).toBeGreaterThan(rdr[2])
+    expect(ft[2]).toBeGreaterThan(vc[2])
+    expect(rdr[1]).toBeLessThan(right)
+    expect(rdr[1]).toBeGreaterThan(ft[1])
+    expect(ft[1]).toBeGreaterThan(584)
+  })
+
+  it('shows only in the gun master with a boxed target, and never under REJ', () => {
+    expect(readouts({ rng: 500, vc: 0, boxed: false })).toEqual([])
+    expect(readouts({ rng: 500, vc: 0, master: '9m' })).toEqual([])
+    expect(readouts({ rng: 500, vc: 0, declutter: 1 })).toEqual([])
   })
 })

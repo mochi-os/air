@@ -4729,6 +4729,11 @@ let mission_done=false;   // SP: the crash ended the mission — the world holds
 let mission_zero=0;       // sim_time at mission start, for the outcome line's clock
 let on_over=null;         // app callback: the mission ended with a result
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
+// The wheels warning (NATOPS 2.10.1.4): the gear handle up below 175 knots and
+// 7,500 ft with a rate of descent past 250 ft/min. The descent is the term that
+// keeps a climb-out quiet: off the catapult the jet is slow, low and cleaning up,
+// and none of that is a wheels-up landing.
+function wheels_warning(){ return (ownship.gearTarget??0)>0.5&&(ownship.cas??ownship.speed)<90&&ownship.pos.y<2286&&(ownship.vely??0)<-1.27&&!ownship.grounded&&!ownship.launching; }
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:undefined as number|undefined};   // one-shot edge detection (#73)
 // Master caution/warning (#47): the caution set is built in the sim step, keyed
 // and view-independent; the tone, the glareshield lamp and the HUD stack all
@@ -5538,7 +5543,7 @@ function fly_player(dt){
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
-		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
+		audio_horn(wheels_warning());
 		{ const gear=ownship.gear??1;   // retraction fraction: 1 stowed, 0 down and locked
 			if(audio_prev.gear!==undefined&&!ownship.grounded){
 				audio_gear(gear>0.03&&gear<0.97);   // the pump cycles for the whole transit, not the keypress (#88)
@@ -6733,6 +6738,19 @@ function draw_hud(){
 		else { hctx.font="600 21px monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
 		if(radar){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
 		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
+	// ---- gun ranging data (boxed target): the ranging source, the closure and the
+	// range, stacked under the altitude box where the jet puts them - RDR (the
+	// radar is the only ranging the game has), Vc in knots with a minus for an
+	// opening target, the range in feet inside a mile and in miles beyond ----
+	if(master==="gun"&&boxed&&!declutter){ const right=lx+96, top=wly+30;
+		hctx.fillStyle=GR; hctx.font="13px monospace"; hctx.textAlign="right";
+		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
+		const knots=Math.round(vc*1.94384/10)*10;
+		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		hctx.font="10px monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
+		hctx.font="13px monospace"; hctx.textAlign="right";
+		const feet=rng*3.28084;
+		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 
 	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
