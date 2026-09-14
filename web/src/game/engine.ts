@@ -6621,21 +6621,25 @@ function draw_hud(){
 				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 					pullY:Math.round(-bvy*t),gravY:-Math.round(0.5*9.8*t*t),ownY:Math.round(ownship.vel_dir.y*ownship.speed*t)}; }   // decomposition of the vertical impact terms — which one lifts the pipper
 			if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]);
-				hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();
-				hctx.beginPath(); hctx.arc(pip[0],pip[1],11,0,Math.PI*2); hctx.stroke();
-				// Range analog, the real director's convention: the arc is proportional to
-				// range - full ring at 3,000 ft (~914 m, the dial's full scale), unwinding
+				// The director reticle, sized in degrees so the zoom scales it with the
+				// ladder: the real 50 mil (2.9 deg) circle, whose own rim is the range
+				// analog - full ring at 3,000 ft (~914 m, the dial's full scale), unwinding
 				// clockwise to nothing as the target closes, with the 1,000 ft
-				// minimum-range tick. A high-closure face shot pegs the ring, as on the
-				// jet; the SHOOT cue owns that case.
+				// minimum-range tick - and a centre pipper flanked by short dashes at 3 and
+				// 9 o'clock. A high-closure face shot pegs the ring, as on the jet; the
+				// SHOOT cue owns that case.
+				const R=1.43*ppd, dash=0.15*ppd;
+				hctx.beginPath(); hctx.arc(pip[0],pip[1],Math.max(2,0.1*ppd),0,Math.PI*2); hctx.fill();
+				hctx.beginPath(); hctx.moveTo(pip[0]-R*0.5,pip[1]); hctx.lineTo(pip[0]-R*0.5+dash,pip[1]); hctx.moveTo(pip[0]+R*0.5-dash,pip[1]); hctx.lineTo(pip[0]+R*0.5,pip[1]); hctx.stroke();
+				hctx.beginPath(); hctx.arc(pip[0],pip[1],R,0,Math.PI*2); hctx.stroke();
 				const fraction=THREE.MathUtils.clamp(rng/914,0,1);
-				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],15,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke();
+				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],R,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke();
 				const tick=-Math.PI/2+(305/914)*Math.PI*2;   // 1,000 ft of 3,000: the no-closer cue on the same dial
-				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*12,pip[1]+Math.sin(tick)*12); hctx.lineTo(pip[0]+Math.cos(tick)*18,pip[1]+Math.sin(tick)*18); hctx.stroke(); hctx.lineWidth=1.5;
+				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*(R-dash),pip[1]+Math.sin(tick)*(R-dash)); hctx.lineTo(pip[0]+Math.cos(tick)*(R+dash),pip[1]+Math.sin(tick)*(R+dash)); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0) hud_cue="gun";
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
-					hctx.fillText("SHOOT",pip[0],pip[1]-28); } } }
+					hctx.fillText("SHOOT",pip[0],pip[1]-R-12); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 			const rails=[[],[]];
