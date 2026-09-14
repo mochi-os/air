@@ -3917,10 +3917,10 @@ const HINT={
 	abeam:"Ship abeam: bank 27-30\u00b0, start down at 200-300 FPM",
 	ninety:"The 90: 450', 500 FPM",
 	forty:"The 45: 325-375', roll into groove, {heading}, fly ball with power",
-	final:"Case II: level on final, {heading}, 1200', gear and flaps down, on-speed 8.1° AOA, 140 knots",
+	final:"Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots",
 	needle:"HUD needles: hold glideslope and centreline",
 	slope:"Glideslope alive: start down, 800' at 2NM, 400' at 1NM, 200' at ½NM",
-	stack:"Case III: marshal 6000', 250 knots, final bearing {heading}, commence when HUD clock reaches zero",
+	stack:"Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero",
 	push:"Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000' platform",
 	floor:"Below 5000': keep FPM less than altitude",
 	level:"Platform: 2000 FPM, level at 1200'",
@@ -3949,7 +3949,7 @@ const HINT={
 	numbers:"Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM",
 	papi:"Final: runway heading {heading}, power for two red, two white on PAPI",
 	rollout:"Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake",
-	around:"Go around: full power, boards in, wings level, climb on runway heading {heading} to 600'",
+	around:"Go around: full power, boards in, wings level, climb on {heading} to 600'",
 	// The catapult launch. The deck half of a carrier sortie had two centre
 	// banner prompts and no coaching at all, so the one thing about it a pilot
 	// cannot guess — that the jet flies ITSELF off the cat, and pulling makes

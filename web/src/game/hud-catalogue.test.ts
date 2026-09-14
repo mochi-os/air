@@ -93,4 +93,16 @@ describe('HUD_MESSAGES', () => {
       expect(shown, key).toBe(wanted)
     }
   })
+
+  it('fits every coaching line in the slot without breaking at its label', () => {
+    // hint() packs the "; " parts of a line into 78-character rows, and a part
+    // that is longer than a row is cut at the last ": " - the label colon, which
+    // leaves "Case III:" alone on a row with the line under it. The English is
+    // written to fit, with the widest live figures in.
+    const values = { heading: '069°', power: 'full afterburner', side: 'right' }
+    for (const [key, line] of hints(read('./engine.ts'))) {
+      const filled = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
+      for (const part of filled.split('; ')) expect(part.length, `${key}: ${part}`).toBeLessThanOrEqual(78)
+    }
+  })
 })
