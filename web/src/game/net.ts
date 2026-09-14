@@ -339,6 +339,7 @@ export interface Welcome {
     mode?: string
     team?: string
     score?: Record<string, number>
+    map?: { name: string; hash: string } // the match's map, served at <lobby>/maps/<name> (#28)
   }
   players: { slot: number; name: string; identity: string }[]
 }
@@ -363,6 +364,7 @@ export class Net {
   slot = -1
   wrap = 250000
   welcome: Welcome | null = null
+  geometry: Record<string, unknown> | null = null // the map's collision geometry as the server serves it, the prediction core's world; sea-only when the server names no map or the fetch fails
   private transport: WebTransport
   private handlers: Handlers
   private writer: WritableStreamDefaultWriter<Uint8Array> | null = null
@@ -995,6 +997,25 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
       net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
     if (spawn?.team) net.teams.set(slot, String(spawn.team))
     if (spawn?.score) net.score = finiteScore(spawn.score)
+    // The map the match flies against (#28): the server names it and serves
+    // its geometry on the lobby, and the prediction core must fly the same
+    // scenery the server collides us with. An older server names none, and a
+    // failed fetch leaves the sea with a warning - prediction then differs
+    // only at the scenery, where the server's verdict corrects it.
+    net.geometry = { sea: 3 }
+    const chart = (first.spawn as { map?: { name?: unknown } } | undefined)?.map
+    if (chart && typeof chart.name === 'string') {
+      try {
+        const response = await fetch(join.server + '/maps/' + encodeURIComponent(chart.name), {
+          mode: 'cors',
+          signal: withTimeout(),
+        })
+        if (!response.ok) throw new Error('map ' + response.status)
+        net.geometry = (await response.json()) as Record<string, unknown>
+      } catch (error) {
+        console.warn('map geometry:', error)
+      }
+    }
     net.start(writer, messages)
     return net
   } catch (error) {

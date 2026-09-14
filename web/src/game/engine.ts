@@ -47,6 +47,7 @@ import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { demise, opponent, report } from './fate'
+import { geometry_canonical, geometry_hash } from './geometry'
 import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
@@ -2475,6 +2476,7 @@ function build_deck_grid(grp,deckY){
 	const W=Math.ceil((maxFa-minFa)/cell), H=Math.ceil((maxLat-minLat)/cell);
 	const data=new Float32Array(W*H).fill(NaN);
 	const a=new THREE.Vector3(), b=new THREE.Vector3(), c=new THREE.Vector3();
+	const island={ minFa:Infinity, maxFa:-Infinity, minLat:Infinity, maxLat:-Infinity, top:-Infinity };   // the island superstructure's box in the ship's frame, its body up to the bridge levels: the crash probes' prism (the mast is its own post)
 	const mast={x:0,y:-1e9,z:0};   // the island mast top — found here because the deck grid EXCLUDES island geometry by design, so the old deck_y_at height scan can never see it (the masthead/floods silently vanished when the grid replaced raycasts)
 	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
 		const p=o.geometry.attributes.position, idx=o.geometry.index;
@@ -2483,8 +2485,9 @@ function build_deck_grid(grp,deckY){
 			a.fromBufferAttribute(p, idx?idx.getX(i):i).applyMatrix4(o.matrixWorld);
 			b.fromBufferAttribute(p, idx?idx.getX(i+1):i+1).applyMatrix4(o.matrixWorld);
 			c.fromBufferAttribute(p, idx?idx.getX(i+2):i+2).applyMatrix4(o.matrixWorld);
-			for(const v2 of [a,b,c]){ if(v2.y>mast.y){ const lf=carrier_fore_aft(v2.x,v2.z), ll=carrier_lateral(v2.x,v2.z);
-				if(lf>-105&&lf<65&&ll>8&&ll<46){ mast.x=v2.x; mast.y=v2.y; mast.z=v2.z; } } }
+			for(const v2 of [a,b,c]){ const lf=carrier_fore_aft(v2.x,v2.z), ll=carrier_lateral(v2.x,v2.z), aboard=lf>-105&&lf<65&&ll>8&&ll<46;
+				if(v2.y>mast.y&&aboard){ mast.x=v2.x; mast.y=v2.y; mast.z=v2.z; }
+				if(aboard&&v2.y>deckY+4&&v2.y<=deckY+24){ island.minFa=Math.min(island.minFa,lf); island.maxFa=Math.max(island.maxFa,lf); island.minLat=Math.min(island.minLat,ll); island.maxLat=Math.max(island.maxLat,ll); island.top=Math.max(island.top,v2.y); } }
 			if(Math.abs(a.y-deckY)>3.5||Math.abs(b.y-deckY)>3.5||Math.abs(c.y-deckY)>3.5) continue;   // deck band only: the island must NOT write cells, or cats near it would read roof heights
 			const fa=[carrier_fore_aft(a.x,a.z),carrier_fore_aft(b.x,b.z),carrier_fore_aft(c.x,c.z)];
 			const la=[carrier_lateral(a.x,a.z),carrier_lateral(b.x,b.z),carrier_lateral(c.x,c.z)];
@@ -2500,7 +2503,7 @@ function build_deck_grid(grp,deckY){
 				if(!(data[k]>=y)) data[k]=y;   // top surface wins (NaN-safe)
 			}
 		} });
-	deck_grid={ data, W, H, cell, minFa, minLat, mast };
+	deck_grid={ data, W, H, cell, minFa, minLat, mast, island };
 }
 function deck_y_at(grp,x,z,fallback){
 	if(deck_grid){ const g=deck_grid, gi=Math.floor((carrier_fore_aft(x,z)-g.minFa)/g.cell), gj=Math.floor((carrier_lateral(x,z)-g.minLat)/g.cell);
@@ -5127,17 +5130,9 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 	} }
 	return -1e9;
 }
-function check_collisions(){   // ownship vs sea / buildings / structures / carrier / other aircraft (land landings handled by the ground floor in fly_player)
+function check_collisions(){   // ownship vs the sea and the single-player bandit; buildings, masts and the carrier's island are the flight core's crash probes (scenery(), read in fly_player), so a match is judged by the server on the same geometry
 	if(crash_t>0) return; const p=ownship.pos;
 	if(p.y<3.4 && ground_height(p.x,p.z)<-1e8) return crash_ownship("sea");   // the sea — but not the beach skirt, which slopes below this line down to the waterline
-	if(p.y<45){
-		for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return crash_ownship("building"); }
-		for(const s of obstacles.posts){ if(p.y<s.y1 && Math.hypot(p.x-s.x,p.z-s.z)<s.r+4) return crash_ownship("post"); }
-	}
-	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
-		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (ground floor); only the taller island superstructure is an obstacle here
-		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship("island");   // flew into the island superstructure
-	}
 	// A midair kills both: bandit_destroy ends the duel, and no kill is credited.
 	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair",BANDIT); }
 }
@@ -5329,17 +5324,40 @@ let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1
 let fuel_read=false;   // the core has reported a real tank this mission: joining a match it runs on zero until the welcome's state lands, and zero there is unread, not empty
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
 const render_offset=new THREE.Vector3();  // reconciliation discontinuity, decayed on ownship.group only (~150 ms)
-function flight_world(){
-	// Multiplayer must mirror the SERVER's world exactly (sea-only, the match
-	// seed and wrap) — a client-side carrier the server doesn't simulate would
-	// poison prediction; deck operations stay single-player for now.
-	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP, cheat:{ fuel:cheat("fuel") } }, world:{ sea:3 } };   // the prediction core must freeze the tank exactly as the server does, or fuel drift feeds the corrections forever
+// The carrier's island superstructure for the crash probes: its body as a
+// prism from the deck to the bridge levels, its mast as a post to the
+// masthead, both from the model's own vertices as recorded while the deck
+// grid was built - the grid itself holds the deck band only, so a height scan
+// of it never saw the island.
+let island_prism=null;
+function carrier_island(){
+	if(island_prism||!carrier_model||!deck_grid||!(deck_grid.island.top>-1e8)) return island_prism;
+	const isl=deck_grid.island, corner=(fa,lat)=>({ x:CARRIER.x+fa*CARRIER_C+lat*CARRIER_S, z:CARRIER.z-fa*CARRIER_S+lat*CARRIER_C });   // the ship's frame back to the world: the inverse of carrier_fore_aft/carrier_lateral
+	island_prism={ prism:{ outline:[corner(isl.minFa,isl.minLat),corner(isl.maxFa,isl.minLat),corner(isl.maxFa,isl.maxLat),corner(isl.minFa,isl.maxLat)], top:isl.top },
+		post:{ position:{x:deck_grid.mast.x, z:deck_grid.mast.z}, radius:1.5, top:deck_grid.mast.y } };
+	return island_prism;
+}
+// The world the flight core collides against, from this client's map build:
+// the sea, the islands and their paved strips, the buildings as prisms, the
+// masts and lights as posts, the carrier with its island. Single player flies
+// it directly; a match flies the copy the world server serves (net.geometry),
+// which claude/scripts/air/geometry.py exports from this very function, so
+// the two hosts hold one geometry and the server's verdict on scenery is
+// the one the prediction already reached.
+function scenery(){
 	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.shuttles.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.h*D2R, stroke:SHIP.stroke, speed:SHIP.speed })),   // shuttles ARE the nose-gear points — the core's native convention
 		wires:SHIP.wires.map(fa=>({ a:{x:fa+SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.halfspan*STRIP_UFA}, b:{x:fa-SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.halfspan*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
+	const prisms=obstacles.buildings.map(b=>({ outline:b.pts.map(q=>({x:q[0], z:q[1]})), top:b.topY }));
+	const posts=obstacles.posts.map(p=>({ position:{x:p.x, z:p.z}, radius:p.r, top:p.y1 }));
+	const island=carrier_island(); if(island){ prisms.push(island.prism); posts.push(island.post); }
+	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
+}
+// The single-player environment: the map's own seed and wrap, the mission's weather.
+function weather(){
 	const cl=CLOUDS[cfg.clouds];
 	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
 	// Wind (#44): ~25 kt (12.9 m/s) from 070°, the trades the deck already faces.
@@ -5348,7 +5366,16 @@ function flight_world(){
 	// HUD wind arrow on the 070° bow must read a headwind.
 	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250 in the world frame (x east, z south)
 	if(DEV_MODE){ const w=new URLSearchParams(location.search).get("wind"); if(w!==null){ const knots=parseFloat(w)||0; const scale=knots*0.5144/12.9; wind={ x:wind.x*scale, z:wind.z*scale }; } }   // &wind=<knots> (0 = calm) — headless A/B isolation of wind effects (#44)
-	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud, wind, cheat:{ fuel:cheat("fuel") } }, world:{ sea:0, fields, carrier } };
+	return { seed:1, wrap:WORLD_WRAP, cloud, wind, cheat:{ fuel:cheat("fuel") } };
+}
+if(DEV_MODE) (globalThis as any).dev_geometry=()=>(airports.length&&carrier_model)?geometry_canonical(scenery()):null;   // the map's collision geometry as the world server's file: claude/scripts/air/geometry.py writes it
+function flight_world(){
+	// A match flies the geometry the server served for its map (sea-only from
+	// an older server), with the match seed and wrap — the prediction core must
+	// mirror the server's world exactly, and freeze the tank exactly as it does,
+	// or every difference feeds the corrections forever.
+	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP, cheat:{ fuel:cheat("fuel") } }, world:(net&&net.geometry)||{ sea:3 } };
+	return { aircraft:cfg.aircraft||"fa18c", environment:weather(), world:scenery() };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
@@ -5477,10 +5504,12 @@ function fly_player(dt){
 	read_input(dt);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	if(!flight_active){   // bind the core to this mission's world on the first live frame past the loading gate
-		if(MULTIPLAYER && !(net&&net.welcome)) return;   // the world payload needs the match seed/wrap from the welcome
+		if(MULTIPLAYER && !(net&&net.welcome&&net.geometry)) return;   // the world payload needs the match seed/wrap from the welcome and the map the server serves
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
 		if(!flight_init(flight_world())){ notice(translate("FLIGHT CORE FAILED")); return; }
 		flight_active=true; flight_push();
+		if(MULTIPLAYER&&net&&net.welcome.spawn&&net.welcome.spawn.map&&airports.length&&carrier_model){ const chart=net.welcome.spawn.map;   // the served geometry is what the core flies; this build's own is what the scene draws — say so when they differ
+			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
