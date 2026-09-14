@@ -6799,6 +6799,11 @@ function draw_hud(){
 		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
 		else hctx.fillText("NAV",cx,ly);
 		hctx.textAlign="left"; }
+	// ---- Zulu time of day, lower-left corner (NATOPS 2.13.4 item 17): the one timer
+	// the C/D shows without entry. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
+	if(declutter<2){ const now=new Date(), two=(v)=>String(v).padStart(2,"0");
+		hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+		hctx.fillText(two(now.getUTCHours())+":"+two(now.getUTCMinutes())+":"+two(now.getUTCSeconds())+"Z",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
