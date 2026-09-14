@@ -6474,11 +6474,13 @@ function draw_hud(){
 	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(ownship.fwd,Math.max(0,2-ownship.speed));
 	if(path.lengthSq()>1e-9) path.normalize(); else path.copy(ownship.fwd);
 	// NATOPS I-2-102 item 10: at its limit the marker flashes, and that is all
-	// - the ghost belongs to the NAV cage. Caged, the marker sits on the HUD's
+	// - the ghost belongs to the cage. Caged, the marker sits on the HUD's
 	// vertical centreline and a ghost marks the true flight path whenever it is
-	// more than 2° away, limited and flashing like the marker.
+	// more than 2° away, limited and flashing like the marker. NAV cages on the
+	// key; the A/A masters are always caged (ED manual: "In A/A it is always
+	// caged"); the landing symbology never is.
 	const limit=p=>{ const dx=p[0]-bore[0], dy=p[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd; return r>rmax?[[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax],true]:[p,false]; };
-	const cage=caged&&master==="nav";
+	const cage=master==="nav"?caged:!pa;
 	fpm=proj_dir(path);
 	let fpm_limited=false, ghost=null, ghost_limited=false;
 	if(fpm){ const truth=fpm;
@@ -6696,10 +6698,10 @@ function draw_hud(){
 		hctx.translate(glass.rcx,glass.rcy); hctx.scale(glass.scale,glass.scale); hctx.translate(-cx,-cy); }
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
-	const aa=master!=="nav"&&!pa;                       // A/A master modes relocate the heading scale to the bottom
+	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
 	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
 	if(declutter<2){
-	const hty=glass?(aa?cy+170:cy-150):(aa?HH-64:46);
+	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px monospace";
 	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
 	hctx.beginPath(); hctx.moveTo(cx-halfd*hppx,hty); hctx.lineTo(cx+halfd*hppx,hty); hctx.stroke();
@@ -6767,7 +6769,7 @@ function draw_hud(){
 			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
 
-	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); dropped in the A/A masters, whose relocated heading scale owns the bottom of the display ----
+	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
 	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
 		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
@@ -6799,11 +6801,12 @@ function draw_hud(){
 		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
 		else hctx.fillText("NAV",cx,ly);
 		hctx.textAlign="left"; }
-	// ---- Zulu time of day, lower-left corner (NATOPS 2.13.4 item 17): the one timer
-	// the C/D shows without entry. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
-	if(declutter<2){ const now=new Date(), two=(v)=>String(v).padStart(2,"0");
+	// ---- elapsed time, lower-left corner (NATOPS 2.13.4 item 17): the ET stopwatch
+	// from mission start on the sim clock, as the DCS references show it ("10:02ET"),
+	// the hour prefixed once there is one. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
+	if(declutter<2){ const elapsed=Math.max(0,Math.floor(sim_time-mission_zero)), two=(v)=>String(v).padStart(2,"0");
 		hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-		hctx.fillText(two(now.getUTCHours())+":"+two(now.getUTCMinutes())+":"+two(now.getUTCSeconds())+"Z",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		hctx.fillText((elapsed>=3600?Math.floor(elapsed/3600)+":":"")+two(Math.floor(elapsed/60)%60)+":"+two(elapsed%60)+"ET",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
