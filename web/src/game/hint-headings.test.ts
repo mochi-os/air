@@ -23,7 +23,7 @@ const HEADED: Record<string, string> = {
   roll: 'ship_downwind',        // the break's roll-out
   forty: 'ship_groove',         // the 45, straightening into the groove
   clearing: 'ship_course',     // the Case I departure parallels the ship's course
-  final: 'ship_groove',         // Case II: level on final
+  final: 'ship_groove',         // Case II: on final
   stack: 'ship_groove',         // Case III: the marshal's final bearing
   push: 'ship_groove',          // commencing: the letdown turns inbound
   gate: 'ship_groove',          // 10 NM: final bearing
