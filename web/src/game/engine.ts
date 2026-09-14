@@ -5314,6 +5314,7 @@ const physics_strips=[];   // paved capsules, collected as the airfields build
 const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
 const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
+let fuel_read=false;   // the core has reported a real tank this mission: joining a match it runs on zero until the welcome's state lands, and zero there is unread, not empty
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
 const render_offset=new THREE.Vector3();  // reconciliation discontinuity, decayed on ownship.group only (~150 ms)
 function flight_world(){
@@ -5345,10 +5346,11 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz]; if(ownship.gload>peak_g) peak_g=ownship.gload;   // sticky peak g for the NATOPS readout (#133)
-	{ const beforeInternal=ownship.fuel??1e9, beforeTotal=beforeInternal+(ownship.external??0);   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
+	{ const read=fuel_read, beforeInternal=ownship.fuel??0, beforeTotal=beforeInternal+(ownship.external??0);   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
 		ownship.fuel=out[STATE.fuel]; ownship.external=out[STATE.external]||0;
 		const total=ownship.fuel+ownship.external;
-		if(!cheat("fuel")){   // a frozen tank makes the fuel calls meaningless — a light spawn load would otherwise call BINGO at mission start
+		fuel_read=true;
+		if(read&&!cheat("fuel")){   // the calls are crossings, so they need a real reading behind them: the first reading of a mission is a state the legend shows, not a crossing; a frozen tank makes them meaningless
 			if(beforeTotal>=BINGO&&total<BINGO) notice(translate("BINGO FUEL"));   // BINGO is a total-fuel caret (#17: externals count — they burn first, so total is what endurance means)
 			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
@@ -7505,7 +7507,7 @@ function start_mission(){
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
-	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
+	mission_done=false; mission_zero=sim_time; fuel_read=false;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	recorder.clear(); record_started=new Date(); publish_recording(recording_file);   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
