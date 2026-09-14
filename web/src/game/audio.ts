@@ -1107,11 +1107,14 @@ export function audio_geardoor(): void {
 export function audio_eject(): void {
   play('eject', 1.0)
 }
+// The alert tones sit 8 to 12 dB over the engine at full afterburner, A-weighted
+// at the output, where the voice alerts sit (voicecheck.py measures both); the
+// 250 Hz gear horn needs the most gain, since that is where the engine is.
 export function audio_caution(): void {
-  play('caution', 0.8)
+  play('caution', 3.4)
 }
 export function audio_warning(): void {
-  play('warning', 0.95)
+  play('warning', 3.4)
 }
 
 // audio_voiced reports whether a voice alert's recording is ready to play.
@@ -1252,7 +1255,7 @@ export function audio_law(): void {
   if (!context || context.state !== 'running') return
   if (now() - lawAt > 1.6) {
     lawAt = now()
-    play('law', 0.9)
+    play('law', 2.2)
   }
 }
 
@@ -1262,7 +1265,7 @@ export function audio_horn(active: boolean): void {
   if (!active || !context || context.state !== 'running') return
   if (now() - hornAt > 1.1) {
     hornAt = now()
-    play('horn', 0.6)
+    play('horn', 5.0)
   }
 }
 
