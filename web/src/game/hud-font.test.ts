@@ -71,3 +71,73 @@ describe('the HUD face', () => {
     expect(notice).toContain('github.com/0x408/hornet-display')
   })
 })
+
+// lift cuts one top-level function out of the source: from its head to the
+// next line that starts at column 0 (the bodies are tab-indented).
+function lift(name: string): string {
+  const start = source.indexOf(`function ${name}(`)
+  expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+  const rest = source.slice(start)
+  const end = /\n(?=\S)/.exec(rest.slice(1))
+  return end ? rest.slice(0, end.index + 1) : rest
+}
+
+// A stand-in 2D context that records its text calls with the pen state they
+// were made under.
+function context(font: string) {
+  const calls: string[] = []
+  const c = {
+    font,
+    fillStyle: '#0f0',
+    strokeStyle: '#f00',
+    lineWidth: 1.5,
+    lineJoin: 'miter',
+    dash: [4, 2] as number[],
+    getLineDash() { return this.dash },
+    setLineDash(d: number[]) { this.dash = d },
+    strokeText(t: string, x: number, y: number, w?: number) { calls.push(`stroke ${t} ${x} ${y} ${w} ${this.strokeStyle} ${this.lineWidth} ${this.lineJoin} [${this.dash.join(',')}]`) },
+    fillText(t: string, x: number, y: number, w?: number) { calls.push(`fill ${t} ${x} ${y} ${w} ${this.fillStyle} [${this.dash.join(',')}]`) },
+  }
+  return { c, calls }
+}
+const PEN = Number(/const HUD_PEN=([\d.]+);/.exec(source)?.[1])
+const pen = new Function('HUD_PEN', `${lift('hud_pen')}\nreturn hud_pen;`)(PEN) as (c: object) => void
+
+describe('the HUD pen', () => {
+  it('strokes each glyph in its fill colour at the pen width, round-joined and undashed, under the fill', () => {
+    const { c, calls } = context(`13px ${FACE}`)
+    pen(c)
+    c.fillText('445', 10, 20)
+    expect(calls).toEqual([`stroke 445 10 20 undefined #0f0 ${PEN} round []`, 'fill 445 10 20 undefined #0f0 [4,2]'])
+  })
+
+  it("hands the caller's pen back afterwards", () => {
+    const { c } = context(`13px ${FACE}`)
+    pen(c)
+    c.fillText('445', 10, 20)
+    expect(c.strokeStyle).toBe('#f00')
+    expect(c.lineWidth).toBe(1.5)
+    expect(c.lineJoin).toBe('miter')
+    expect(c.dash).toEqual([4, 2])
+  })
+
+  it('passes a maximum width through to both passes', () => {
+    const { c, calls } = context(`13px ${FACE}`)
+    pen(c)
+    c.fillText('RDR', 1, 2, 30)
+    expect(calls).toEqual([`stroke RDR 1 2 30 #0f0 ${PEN} round []`, 'fill RDR 1 2 30 #0f0 [4,2]'])
+  })
+
+  it('leaves text in any other face alone', () => {
+    const { c, calls } = context('12px ui-monospace')
+    pen(c)
+    c.fillText('54 fps', 5, 6)
+    expect(calls).toEqual(['fill 54 fps 5 6 undefined #0f0 [4,2]'])
+  })
+
+  it('is a little under the symbology line width, and installed on the HUD context as it is made', () => {
+    expect(PEN).toBeGreaterThanOrEqual(1)
+    expect(PEN).toBeLessThan(1.5)
+    expect(source).toMatch(/\nhud_pen\(hctx\);\nlet HW=innerWidth, HH=innerHeight;/)
+  })
+})
