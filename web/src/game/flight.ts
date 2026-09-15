@@ -92,6 +92,7 @@ export interface Controls {
   dump: boolean // fuel dump switch: the core drains toward the bingo floor while on
   port: boolean // port engine fuel OFF (the fire drill / runaway shutdown)
   starboard: boolean // starboard engine fuel OFF
+  fire: boolean // the trigger while rounds leave: the core kicks back with the gun's recoil
   sequence: number
 }
 
@@ -139,7 +140,7 @@ interface Core {
   bandit_place?(spawn: string): string
   bandit_mirror?(state: Uint8Array): string
   bandit_menace?(shots: Uint8Array, count: number): string
-  bandit_step?(state: Uint8Array): number
+  bandit_step?(state: Uint8Array, rounds: number): number
   bandit_coast?(lean: number, state: Uint8Array): number
   racks?(index: number, mask: number): boolean
   bandit_mode?(): string
@@ -273,7 +274,8 @@ function fill(controls: Controls, count: number): void {
     (controls.reset ? 128 : 0) |
     (controls.dump ? 1 : 0) |
     (controls.port ? 256 : 0) |
-    (controls.starboard ? 512 : 0)
+    (controls.starboard ? 512 : 0) |
+    (controls.fire ? 1024 : 0)
   input[6] = controls.sequence
   input[7] = count
   input[8] = controls.reheat // analog reheat (flag bit 1 retired)
@@ -438,7 +440,7 @@ export function bandit_menace(shots: number[]): void {
 // bandit_step advances one 60 Hz frame and returns the bandit's encoded state
 // plus its decisions for that frame. The client owns any launched round from
 // the launch frame on.
-export function bandit_step(): {
+export function bandit_step(rounds: number): {
   state: Float64Array
   fire: boolean
   flare: boolean
@@ -449,7 +451,7 @@ export function bandit_step(): {
   chaff: boolean
 } | null {
   if (!core?.bandit_step) return null
-  const flags = core.bandit_step(bandit_bytes)
+  const flags = core.bandit_step(bandit_bytes, rounds)
   if (typeof flags !== 'number' || flags < 0) return null
   return {
     state: bandit_out,
