@@ -30,11 +30,9 @@ export interface StickProfile {
   match: (id: string, mapping: string) => boolean
   // Indices are raw HID, as the kernel enumerates them. A browser that remaps
   // the pad to the standard layout reports FEWER of both - 4 axes, 17 buttons
-  // - so every raw index past those is unreachable and the binding is skipped
-  // at the read (engine.ts). Which profile should win then is UNRESOLVED: this
-  // flag records which profiles are exposed to it. keys.test.ts pins the
-  // current answer (the named model wins) and config.test.ts pins what that
-  // costs.
+  // - so every raw index past those is unreachable and skipped at the read
+  // (engine.ts). Such a profile therefore stands aside for the mapping-matched
+  // one; see profileFor.
   raw?: boolean
   axes: Record<string, string>
   buttons: Record<string, string>
@@ -161,9 +159,18 @@ export const PROFILES: StickProfile[] = [
 
 // profileFor names the built-in profile a pad resolves to (for the Joystick tab).
 export function profileFor(id: string, mapping = ''): StickProfile {
-  return (
-    PROFILES.find((p) => p.match(id, mapping)) ?? PROFILES[PROFILES.length - 1]
-  )
+  // A named model beats the generic standard layout - but that rule assumes
+  // the device is reporting its OWN raw layout, and mapping === 'standard' is
+  // precisely the signal that it is not. Remapped, the pad reports 4 axes and
+  // 17 buttons, and the VelocityOne map's throttle (-5), speedbrake (-6),
+  // castle pair (8/9), look pair (3/4) and TRIGGER (button 17 of 0..16) all
+  // point past the end: three working axes and no way to shoot. The standard
+  // map, written against that very layout, flies and fires. So a raw profile
+  // stands aside for a standard-mapped pad - which scopes the rule to the
+  // premise it was written for rather than overturning it.
+  const fits = (p: StickProfile) =>
+    p.match(id, mapping) && !(p.raw && mapping === 'standard')
+  return PROFILES.find(fits) ?? PROFILES[PROFILES.length - 1]
 }
 
 // reaches reports whether a bound index is one the device actually offers.

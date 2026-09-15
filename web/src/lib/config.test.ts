@@ -177,22 +177,27 @@ describe('profileFor and the standard remap', () => {
     )
   })
 
-  // UNRESOLVED, and this test PINS THE COST rather than asserting a fix.
-  // keys.test.ts requires the named model to win even on a standard-mapped
-  // pad, so that a known stick does not silently take the gamepad map. But a
-  // standard remap reports 4 axes / 17 buttons, and the VelocityOne map is
-  // written in raw HID - so on such a pad several of its indices point past
-  // the end and are dropped in silence at the read (engine.ts). Including the
-  // TRIGGER. Whichever way this is settled, the badge and the row marks added
-  // for #152 make the state visible instead of silent.
-  it('leaves a raw map unreachable on a standard-remapped pad, trigger included', () => {
-    const map = deviceDefaults(stick, 'standard')
-    expect(profileFor(stick, 'standard').name).toContain('VelocityOne')
-    expect(reaches(map.buttons.fire, 17)).toBe(false) // fire = 17, indices 0..16
-    expect(reaches(map.axes.throttle, 4)).toBe(false) // throttle = -5
-    expect(reaches(map.axes.weapon, 4, true)).toBe(false) // castle pair = 8/9
-    expect(reaches(map.axes.pitch, 4)).toBe(true) // ...while the basics do land
-    expect(reaches(map.axes.roll, 4)).toBe(true)
+  // RESOLVED 2026-09-15: the raw map stands aside once the browser has
+  // remapped the pad. Remapped it reports 4 axes / 17 buttons, and the
+  // VelocityOne map's throttle (-5), speedbrake (-6), castle pair (8/9), look
+  // pair (3/4) and TRIGGER (17 of 0..16) all point past the end - three
+  // working axes and no way to shoot. The standard map is written against
+  // that layout and flies and fires.
+  it('stands the raw map aside once the browser reports the standard layout', () => {
+    expect(profileFor(stick, 'standard').name).toBe('Standard gamepad')
+  })
+
+  it('hands out only indices a standard pad reports', () => {
+    expect(unreachable(deviceDefaults(stick, 'standard'), 4, 17)).toBe('')
+  })
+
+  // What the raw map WOULD have cost on such a pad - the reason for the above.
+  it('would have left the raw map unable to shoot', () => {
+    const raw = deviceDefaults(stick, '') // the profile an unmapped pad gets
+    expect(reaches(raw.buttons.fire, 17)).toBe(false) // fire = 17, indices 0..16
+    expect(reaches(raw.axes.throttle, 4)).toBe(false) // throttle = -5
+    expect(reaches(raw.axes.weapon, 4, true)).toBe(false) // castle pair = 8/9
+    expect(reaches(raw.axes.pitch, 4)).toBe(true) // ...while the basics land
   })
 
   it('still names the generic profile for an unknown stick', () => {
