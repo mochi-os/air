@@ -30,9 +30,14 @@ interface Post {
   radius: number
   top: number
 }
+interface Field {
+  height: number
+  strips?: unknown[]
+  coast?: unknown[]
+}
 interface Scenery {
   sea: number
-  fields: unknown[]
+  fields: Field[]
   carrier: unknown
   prisms: Prism[]
   posts: Post[]
@@ -42,9 +47,10 @@ interface Scenery {
 function scenery(): Scenery {
   const block = /function scenery\(\)\{[\s\S]*?return \{ sea:3, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('scenery not found in engine.ts')
-  const run = new Function(`const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
+  const run = new Function(`const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
     const CARRIER={x:0,z:0,deckY:20}, SHIP={outline:[[0,0],[1,0],[1,1]], shuttles:[], wires:[], halfspan:1, stroke:1, speed:1};
     const physics_strips=[{a:[0,0],b:[100,0],w:46}];
+    const runway_strips=[{a:[-1500,0],b:[1500,0],w:60}];
     const obstacles={ islands:[{pts:[[0,0],[10,0],[10,10]]}], buildings:[{pts:[[0,0],[10,0],[10,10],[0,10]],topY:12},{pts:[[20,0],[30,0],[30,10]],topY:8}], posts:[{x:5,z:5,r:2,y1:9}] };
     const carrier_island=()=>({ prism:{ outline:[{x:-10,z:-10},{x:10,z:-10},{x:10,z:10},{x:-10,z:10}], top:44 }, post:{ position:{x:0,z:0}, radius:1.5, top:60 } });
     ${block}
@@ -56,11 +62,26 @@ describe('the scenery', () => {
   it('carries the buildings as prisms, the posts as posts, and the carrier island as a prism with its mast as a post', () => {
     const world = scenery()
     expect(world.sea).toBe(3)
-    expect(world.fields).toHaveLength(2)
+    expect(world.fields).toHaveLength(3)
     expect(world.prisms).toHaveLength(3)
     expect(world.prisms[0]).toEqual({ outline: [{ x: 0, z: 0 }, { x: 10, z: 0 }, { x: 10, z: 10 }, { x: 0, z: 10 }], top: 12 })
     expect(world.prisms[2].top).toBe(44)
     expect(world.posts).toEqual([{ position: { x: 5, z: 5 }, radius: 2, top: 9 }, { position: { x: 0, z: 0 }, radius: 1.5, top: 60 }])
+  })
+
+  // The runway sits PROUD of the taxiways and aprons, so it needs its own field
+  // at its own height. World.surface returns the FIRST strip it hits, so the
+  // runway field must lead: where the two overlap, the runway is the real
+  // surface. It was collided at AIRFIELD_FLOAT while being drawn at
+  // RUNWAY_FLOAT, which rested the jet 4 cm below its own runway (#220).
+  it('collides the runway at the height it is drawn, and ahead of the aprons', () => {
+    const world = scenery()
+    expect(world.fields[0].height).toBeCloseTo(3.5 + 1.5, 6)
+    expect(world.fields[0].strips).toHaveLength(1)
+    expect(world.fields[1].height).toBeCloseTo(3.5 + 1.46, 6)
+    expect(world.fields[0].height).toBeGreaterThan(world.fields[1].height)
+    // and the drawn surface reads the same constant, not a repeated literal
+    expect(source).toMatch(/_ground_kind="runway"; return ISLAND_H\+RUNWAY_FLOAT;/)
   })
 
   it('is what single player flies, and what the developer export writes', () => {
