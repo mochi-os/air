@@ -34,7 +34,7 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { diagnose } from '../lib/graphics'
@@ -176,7 +176,7 @@ cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HU
 
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
-let missiles_rule=!MULTIPLAYER;      // the match's missiles-allowed rule (#17): single-player has no rule (the loadout decides); multiplayer starts forbidden until the welcome's parameters arrive. The rule clamps the FLOWN loadout via loadout() — cfg.stores is never written back, so one guns-only match cannot disarm the persisted choice
+let weapons_rule=MULTIPLAYER?"guns":"open";      // the match's weapons CLASS (#32): single-player has no rule (the loadout decides); multiplayer starts at the strictest until the welcome's parameters arrive. The rule clamps the FLOWN loadout via loadout() — cfg.stores is never written back, so one guns-only match cannot disarm the persisted choice. The class, not the old missiles boolean, because that boolean is true for BOTH fox2 and open and so left a Fox 2 match flying AMRAAMs the server had stripped (#221)
 if(MULTIPLAYER){ cfg.task="joust"; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome set the missiles rule and the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").replace(/"/g,"")==="1";   // tolerant of BOTH ?developer=1 and the ?developer="1" the router writes when it round-trips the flag through a navigation (search values are JSON-encoded)   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
@@ -2144,8 +2144,8 @@ const BOT_CLEAN=stores_normalize({});
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
 function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircraft()); if(raw) stores_book=stores_resolve(raw); } return stores_book; }
-function loadout(){ return missiles_rule?cfg.stores:stores_strip(cfg.stores); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice
-function missiles_on(){ return missiles_rule&&missiles_loaded(cfg.stores); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe
+function loadout(){ return stores_granted(cfg.stores, weapons_rule); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice — the same clamp the server applies at Join (stores_grant)
+function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
 function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
@@ -7810,7 +7810,7 @@ function net_connect(){
 		if(typeof rules.tod==="string"&&TOD[rules.tod]){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
 		if(typeof rules.clouds==="string"&&(rules.clouds==="none"||CLOUDS[rules.clouds])){
 			cfg.clouds=rules.clouds; apply_clouds(); if(cloud_active()) size_rt(); }   // apply_clouds runs even for "none": it zeroes the overcast/shadow uniforms on the ocean and sky. Validated against the TABLES, not a hand-copied list: the second list had drifted and silently refused mid_stratus, a preset the match-creation form offers
-		missiles_rule=rules.missiles===true;   // the creator's rule clamps the FLOWN loadout (#17): strip(cfg.stores) when forbidden, the persisted choice untouched
+		weapons_rule=(rules.weapons==="guns"||rules.weapons==="fox2"||rules.weapons==="open")?rules.weapons:(rules.missiles===true?"open":"guns");   // the creator's rule clamps the FLOWN loadout (#17/#32), the persisted choice untouched. Old servers and old rows send only the boolean: derive the class it always meant, exactly as the server's Create does
 		assign_loadout(ownship, loadout()); ownship.msl=magazine(); update_rails(ownship, ownship.msl); master=default_master(); default_radar();   // the rule decides the flown loadout, and the loadout decides the weapon that is up when the fight starts, and the radar mode with it
 		cfg.cheats=(rules.cheats&&typeof rules.cheats==="object")?rules.cheats:{};   // the creator's match cheats: the server enforces them; the client mirrors the ammo gates so the HUD counters and the launch gate agree
 		})

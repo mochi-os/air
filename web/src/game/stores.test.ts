@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   LIMITS,
@@ -11,6 +13,8 @@ import {
   asymmetry,
   eject,
   entries,
+  granted,
+  heaters,
   jettison,
   mask,
   matches,
@@ -561,5 +565,96 @@ describe('amraam (#27)', () => {
     })
     expect(rounds(lo).map((r) => r.name)).toEqual(['tip1'])
     expect(entries(4, lo['4'])).toContain('120c4')
+  })
+})
+
+// The match's weapons class is the ONLY thing multiplayer narrows: the station
+// options a player may choose from are the same ones single player offers
+// (verified 2026-09-15 against the server's stores_fixtures/stores_option —
+// the client never offers a combination the server rejects). What a guns-only
+// or Fox 2 match then takes away has to be the same subtraction the server
+// makes at Join, or the editor promises rounds the spawn will not carry.
+describe('the match weapons class', () => {
+  it('leaves an open match untouched', () => {
+    expect(granted(PRESETS.fox3, 'open')).toEqual(PRESETS.fox3)
+  })
+
+  it('takes every missile in a guns match, and no more', () => {
+    const lo = granted(PRESETS.fox3, 'guns')
+    expect(missiles_loaded(lo)).toBe(false)
+    expect(amraams(lo)).toEqual([])
+    expect(lo['5']).toEqual({ fixture: 'pylon', stores: ['tank'] }) // the tank is not a weapon
+    expect(lo['2'].fixture).toBe(PRESETS.fox3['2'].fixture) // the fixture survives: an empty rail still weighs and drags
+  })
+
+  it('takes the radar missiles in a Fox 2 match and leaves the heaters', () => {
+    const lo = granted(PRESETS.fox3, 'fox2')
+    expect(amraams(lo)).toEqual([])
+    expect(missiles_loaded(lo)).toBe(true) // a Fox 2 match is still a missile fight
+    expect(rounds(lo).length).toBe(rounds(PRESETS.fox3).length) // every AIM-9 kept
+  })
+
+  // The defect this replaced: the client clamped on the `missiles` boolean,
+  // which is true for BOTH fox2 and open, so a Fox 2 match flew AMRAAMs the
+  // server had already stripped at Join.
+  it('distinguishes Fox 2 from open, which one boolean cannot', () => {
+    const armed = normalize({ 4: { fixture: 'rail', stores: ['120c'] } })
+    expect(amraams(granted(armed, 'open')).length).toBe(1)
+    expect(amraams(granted(armed, 'fox2')).length).toBe(0)
+  })
+
+  it('keeps an unknown class permissive rather than disarming the jet', () => {
+    expect(granted(PRESETS.fox3, '')).toEqual(PRESETS.fox3)
+  })
+
+  it('never writes back the persisted choice', () => {
+    const before = structuredClone(PRESETS.fox3)
+    granted(PRESETS.fox3, 'guns')
+    expect(PRESETS.fox3).toEqual(before)
+  })
+})
+
+describe('heaters', () => {
+  it('leaves fixtures, tanks and AIM-9s and removes only the AIM-120', () => {
+    const lo = heaters(
+      normalize({
+        1: { fixture: 'rail', stores: ['9m'] },
+        4: { fixture: 'rail', stores: ['120c'] },
+        5: { fixture: 'pylon', stores: ['tank'] },
+        8: { fixture: 'twin', stores: ['9m', '120c'] },
+      })
+    )
+    expect(lo['1'].stores).toEqual(['9m'])
+    expect(lo['4']).toEqual({ fixture: 'rail', stores: [''] })
+    expect(lo['5'].stores).toEqual(['tank'])
+    expect(lo['8'].stores).toEqual(['9m', ''])
+  })
+})
+
+// The clamp only matters if the engine and the join actually route through it.
+// These read the source because neither the engine module nor a WebTransport
+// dial can be instantiated here, and a clamp nothing calls is worse than none.
+describe('the flown loadout is wired to the class', () => {
+  const engine = readFileSync(
+    fileURLToPath(new URL('./engine.ts', import.meta.url)),
+    'utf8'
+  )
+  const net = readFileSync(
+    fileURLToPath(new URL('./net.ts', import.meta.url)),
+    'utf8'
+  )
+
+  it('clamps the flown loadout through granted(), not a local rule', () => {
+    expect(engine).toContain('stores_granted(cfg.stores, weapons_rule)')
+    expect(engine).not.toContain('missiles_rule')
+  })
+
+  it('reads the class from the welcome, with the old boolean as a fallback', () => {
+    expect(engine).toMatch(/weapons_rule=\(rules\.weapons==="guns"/)
+    expect(engine).toMatch(/rules\.missiles===true\?"open":"guns"/)
+  })
+
+  it('sends the fuel request inside the stores map', () => {
+    expect(net).toContain('fuel: join.fuel')
   })
 })
