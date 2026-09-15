@@ -6248,6 +6248,24 @@ function update_flypast(_dt){   // fixed-ground flyby: the jet flies past a stat
 
 // ============================================================================ HUD (2D canvas overlay)
 const hctx=hud.getContext("2d");
+// HUD text is written with the symbology's own stroke. The Hornet Display
+// face is a thin single-weight design whose stems come out a third the weight
+// of the boxes and ladder around them, where the real HUD writes digits and
+// lines with one stroke. hud_pen makes every fillText in the face stroke the
+// glyph first, in its fill colour at the pen width with round joins and no
+// dash, then fill it, so text and lines carry one weight at every size and
+// window; a bold request would be the browser's own synthesis, with no say in
+// the weight. Text in any other face (developer overlays, the comms log) is
+// left alone, and the pen state borrowed is put back for the caller's lines.
+const HUD_PEN=1.2;   // glass units; the symbology's lines are 1.5, and the stroke lands on both sides of a stem
+function hud_pen(context){ const fill=context.fillText.bind(context);
+	context.fillText=function(text,x,y,width){ if(!String(this.font).includes("Hornet Display")) return width===undefined?fill(text,x,y):fill(text,x,y,width);
+		const stroke=this.strokeStyle, line=this.lineWidth, join=this.lineJoin, dash=this.getLineDash();
+		this.strokeStyle=this.fillStyle; this.lineWidth=HUD_PEN; this.lineJoin="round"; if(dash.length) this.setLineDash([]);
+		if(width===undefined) this.strokeText(text,x,y); else this.strokeText(text,x,y,width);
+		this.strokeStyle=stroke; this.lineWidth=line; this.lineJoin=join; if(dash.length) this.setLineDash(dash);
+		return width===undefined?fill(text,x,y):fill(text,x,y,width); }; }
+hud_pen(hctx);
 let HW=innerWidth, HH=innerHeight;
 function hud_resize(){ HW=innerWidth; HH=innerHeight; const dpr=Math.min(devicePixelRatio||1,2);
 	hud.width=HW*dpr; hud.height=HH*dpr; hud.style.width=HW+"px"; hud.style.height=HH+"px"; hctx.setTransform(dpr,0,0,dpr,0,0); }
@@ -6868,8 +6886,8 @@ function draw_hud(){
 
 	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left";   // NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
-		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+2,wly-12); }
+	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
+		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
 	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
