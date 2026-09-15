@@ -185,11 +185,18 @@ describe('key bindings', () => {
       profileFor('Xbox Wireless Controller (STANDARD GAMEPAD)', 'standard').name
     ).toBe('Standard gamepad')
     expect(profileFor('Some Unknown Stick', '').name).toBe('Generic joystick')
-    // Order matters: a MEASURED model must beat the generic standard layout even
-    // when the browser also reports the pad as standard, or a known stick would
-    // silently take the gamepad map.
-    expect(profileFor('VelocityOne Flightstick', 'standard').name).toContain(
+    // Order matters: a MEASURED model beats the generic standard layout, so a
+    // known stick does not silently take the gamepad map. That rule assumes
+    // the device reports its OWN raw layout - and mapping === 'standard' says
+    // it does not. Remapped, the pad reports 4 axes / 17 buttons and the
+    // VelocityOne map's trigger (button 17 of 0..16) points past the end: the
+    // named map cannot shoot, the standard one can (#152). So the rule is
+    // SCOPED to the raw case rather than overturned.
+    expect(profileFor('VelocityOne Flightstick', '').name).toContain(
       'VelocityOne'
+    )
+    expect(profileFor('VelocityOne Flightstick', 'standard').name).toBe(
+      'Standard gamepad'
     )
     // The last profile is the catch-all, so resolution can never return nothing.
     expect(PROFILES[PROFILES.length - 1].match('anything at all', '')).toBe(
