@@ -288,7 +288,8 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
-		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio; }   // foam is a white surface, lit like the land's white paint; encoded because the sea writes display-referred
+		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio;
+		contrail_mat.color.setHex(p.sunCol).lerp(new THREE.Color(0xffffff),0.5).multiplyScalar(Math.pow(ratio,1/2.2)); }   // ice lit by the sun: white at noon, warmed by a low sun, dim at night   // foam is a white surface, lit like the land's white paint; encoded because the sea writes display-referred
 }
 // Beam-versus-ambient balance under a cloud layer, applied PER FRAGMENT by the
 // receivers (cloud_shadow_receive) and never to the global lights: a jet marshalling
@@ -1091,8 +1092,9 @@ function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g
 // while make_jet still used both, so every mission start threw ab_geo-not-defined.)
 const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
 const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
+const nozzle={ x:-9.3, y:-0.37, z:0.48 };   // the Hornet's twin nozzles in the drawn frame, z each side of the centreline: the burner cones and the contrails start here
 function make_jet(){ const g=new THREE.Group();   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback). NO team colour: every jet wears the F/A-18C's own livery, and identification is the HUD's and the map's job (#210)
-	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
+	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(nozzle.x,nozzle.y,side*nozzle.z); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
 // ============================================================================
 // aircraft GLB models (cosmetic only) Per-aircraft models and animation rigs.
@@ -2729,6 +2731,88 @@ function gun_trail(st,port,fired,dt){
 		smoke.ttl[k]=1.2+Math.random()*0.8; smoke.life[k]=smoke.ttl[k]-0.12;   // born past the pool's fade-in: at 270 m/s a puff that fades in over 0.12 s is 30 m behind before it shows
 		smoke.sz[k]=0.5+Math.random()*0.3; smoke.gr[k]=2.2;
 		smoke.r[k]=0.55; smoke.g[k]=0.53; smoke.b[k]=0.5; } }
+// ============================================================================
+// Contrails: exhaust water condensing on soot and freezing where the air is
+// cold enough, one trail per engine that the wake rolls into one. Formation is
+// the air temperature against a threshold (Schmidt-Appleman), so the band
+// follows the core's ISA atmosphere: from ~28,000 ft at military power, a few
+// degrees colder in burner. Above the tropopause the air is dry and the trail
+// sublimates in seconds. Each jet lays a ring of segments; two camera-facing
+// ribbons are rebuilt from it each frame and dissolve oldest-first from a
+// ragged end. A trail outlives the jet that laid it.
+const CN_MAX=640;   // segments per jet: one every 0.15 s covers the 90 s life
+const contrail_mat=new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, vertexColors:true, depthWrite:false, side:THREE.DoubleSide });   // lit through its colour by the time of day (apply_time_of_day)
+const contrails=new Set();   // every laid trail: a jet's own, or left behind by one that is gone
+function contrail_air(y){ return 288.15-0.0065*Math.min(Math.max(y,0),11000)-273.15; }   // ISA air temperature, °C: the core flies the standard atmosphere with no offset (own_environment sets none)
+function contrail_band(y,spool,reheat,time,seed){   // how much trail one running engine leaves at this height, and how long it lasts
+	const air=contrail_air(y)+1.5*Math.sin(time*0.5+seed);   // the air along a track is not uniform: ±1.5 °C pockets make a marginal trail come and go
+	const threshold=-40-4*reheat;   // a low-bypass turbofan's threshold; burner exhaust is hotter per unit of water, so it needs colder air still
+	const cold=Math.min(1,Math.max(0,(threshold-air)/4));   // full 4 °C below the threshold, nothing above it: the marginal band is thin and fickle
+	const running=Math.min(1,Math.max(0,(spool-0.1)/0.5));   // a dead engine leaves nothing, idle a thin trail
+	const life=90-80*Math.min(1,Math.max(0,(y-10700)/600));   // above the tropopause the air is too dry to hold it: a dash that sublimates in seconds
+	return { strength:cold*running, life }; }
+function contrail_shape(age,life,rag,arc,phase){   // one segment's look at this age
+	const gap=Math.min(1,Math.max(0,(age-0.15)/0.2));   // the mixing gap: 30-70 m of clear air behind the nozzle before the vapour condenses
+	const spread=1.2+8*(1-Math.exp(-age/3))+0.4*age;   // a metre at the nozzle, 5-10 m within seconds, tens of metres old
+	const end=life*(0.55+0.3*rag);   // where this segment starts to dissolve: ragged, not a line
+	const fade=Math.min(1,Math.max(0,1-(age-end)/Math.max(life-end,0.01)));
+	const bead=1+0.35*Math.min(1,Math.max(0,(age-8)/12))*Math.sin(arc*0.0628+phase);   // the wake breaks up after 10-20 s and rolls the line into beads ~100 m apart
+	const width=spread*bead, alpha=0.85*Math.min(1,6/spread)*gap*fade*fade*(0.7+0.3*bead);   // thins as it spreads, and sublimates to nothing by its life
+	const sink=37*(1-Math.exp(-age/15));   // the wake carries it down a few metres a second until the vortices decay
+	const apart=Math.exp(-age/0.5);   // the two engines' lines roll into one within a couple of spans
+	return { width, alpha, sink, apart }; }
+function contrail_rig(st){   // the ring of laid segments and the mesh drawn from it, one per jet
+	const n=CN_MAX, geo=new THREE.BufferGeometry(), index=new Uint16Array((n-1)*24);
+	for(let i=0;i<n-1;i++){ const b=i*6, o=i*24;   // two strips of three-vertex rows (soft edges by vertex alpha), four triangles per strip per pair
+		for(const s of [0,3]){ const a=b+s, c=a+6; index.set([a,a+1,c, a+1,c+1,c, a+1,a+2,c+1, a+2,c+2,c+1],o+s*4); } }
+	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(n*6*3),3)); geo.setAttribute("color",new THREE.BufferAttribute(new Float32Array(n*6*4),4)); geo.setIndex(new THREE.BufferAttribute(index,1)); geo.setDrawRange(0,0);
+	const mesh=new THREE.Mesh(geo,contrail_mat); mesh.frustumCulled=false; scene.add(mesh);
+	const field=()=>new Float32Array(n);
+	const rig={ owner:st, n, head:0, count:0, laid:-1, trailing:false, phase:Math.random()*6.283, mesh, geo,
+		cx:field(),cy:field(),cz:field(), ox:field(),oy:field(),oz:field(), fx:field(),fy:field(),fz:field(), born:field(), life:field(), rag:field(), arc:field(), sa:field(), sb:field() };
+	st.contrail=rig; contrails.add(rig); return rig; }
+function contrail_lay(rig,st,time,a,b,life){   // record a segment at the jet's nozzles: the centre between them, the half-offset to each, the flight direction, and each engine's strength
+	const k=rig.head; rig.head=(rig.head+1)%rig.n; if(rig.count<rig.n) rig.count++;
+	const left=body_offset(st,nozzle.x,nozzle.y,-nozzle.z), right=body_offset(st,nozzle.x,nozzle.y,nozzle.z);
+	rig.cx[k]=(left.x+right.x)/2; rig.cy[k]=(left.y+right.y)/2; rig.cz[k]=(left.z+right.z)/2;
+	rig.ox[k]=(right.x-left.x)/2; rig.oy[k]=(right.y-left.y)/2; rig.oz[k]=(right.z-left.z)/2;
+	let fx=st.velx||0, fy=st.vely||0, fz=st.velz||0; const speed=Math.hypot(fx,fy,fz);
+	if(speed<1){ fx=st.fwd.x; fy=st.fwd.y; fz=st.fwd.z; } else { fx/=speed; fy/=speed; fz/=speed; }   // the trail runs along the flight path; a jet not moving lays it along its nose
+	rig.fx[k]=fx; rig.fy[k]=fy; rig.fz[k]=fz;
+	const p=(k-1+rig.n)%rig.n; rig.arc[k]=rig.count>1?rig.arc[p]+Math.hypot(rig.cx[k]-rig.cx[p],rig.cy[k]-rig.cy[p],rig.cz[k]-rig.cz[p]):0;
+	rig.born[k]=time; rig.life[k]=life; rig.rag[k]=Math.random(); rig.sa[k]=a; rig.sb[k]=b; rig.laid=time; }
+function contrail_vertices(rig,time,cam){   // rebuild the two ribbons from the ring: camera-facing rows of three, oldest first, each segment at its minimum image about the camera
+	const pos=rig.geo.attributes.position.array, col=rig.geo.attributes.color.array, n=rig.n; let v=0, px=0, py=0, pz=0;
+	for(let j=0;j<rig.count;j++){ const k=(rig.head-rig.count+j+n)%n, age=time-rig.born[k], shape=contrail_shape(age,rig.life[k],rig.rag[k],rig.arc[k],rig.phase);
+		const cx=cam.x+wrap_axis(rig.cx[k]-cam.x), cy=rig.cy[k]-shape.sink, cz=cam.z+wrap_axis(rig.cz[k]-cam.z);
+		const seam=j>0&&Math.hypot(cx-px,cy-py,cz-pz)>400; px=cx; py=cy; pz=cz;   // a jump - the world wrapped, or the jet was placed - draws nothing across it
+		if(seam) for(let i=1;i<=6;i++) col[(v-i)*4+3]=0;
+		const vx=cam.x-cx, vy=cam.y-cy, vz=cam.z-cz; let sx=rig.fy[k]*vz-rig.fz[k]*vy, sy=rig.fz[k]*vx-rig.fx[k]*vz, sz=rig.fx[k]*vy-rig.fy[k]*vx, sl=Math.hypot(sx,sy,sz);   // across the trail and across the view: the ribbon faces the camera
+		if(sl<1e-6){ sx=-rig.fz[k]; sy=0; sz=rig.fx[k]; sl=Math.hypot(sx,sy,sz)||1; }   // looking straight along it: any across will do
+		sx/=sl; sy/=sl; sz/=sl; const h=shape.width/2;
+		for(const side of [-1,1]){ const a=seam?0:shape.alpha*(side<0?rig.sa[k]:rig.sb[k]), ox=rig.ox[k]*shape.apart*side, oy=rig.oy[k]*shape.apart*side, oz=rig.oz[k]*shape.apart*side;
+			for(const t of [-1,0,1]){ pos[v*3]=cx+ox+sx*h*t; pos[v*3+1]=cy+oy+sy*h*t; pos[v*3+2]=cz+oz+sz*h*t; col[v*4]=1; col[v*4+1]=1; col[v*4+2]=1; col[v*4+3]=t===0?a:0; v++; } } }
+	rig.geo.attributes.position.needsUpdate=true; rig.geo.attributes.color.needsUpdate=true; rig.geo.setDrawRange(0,Math.max(0,rig.count-1)*24); return rig.count; }
+function contrail_engines(st){   // each engine's power and achieved reheat: the ownship and the bandit carry both from their cores, a remote one pair from its pose
+	if(st.spools&&st.reheats) return [{ spool:st.spools[0]||0, reheat:st.reheats[0]||0 },{ spool:st.spools[1]||0, reheat:st.reheats[1]||0 }];
+	const spool=st.thrust??0, reheat=st.reheat??0; return [{ spool, reheat },{ spool, reheat }]; }
+function contrail_effects(dt){   // lay each flying jet's segment when due, then age and redraw every trail, the abandoned ones included
+	const jets=new Set([ownship,bandit,...remotes.values()]);
+	for(const st of jets){ if(!st) continue;
+		const flying=st===ownship?!(crash_t>0):!!(st.group&&st.group.visible);   // the ownship's group is hidden in the first-person views, so its life is the crash state
+		if(!flying) continue;
+		const pockets=st.pockets||(st.pockets=[Math.random()*6.283,Math.random()*6.283]), y=presented(st).y, engines=contrail_engines(st);
+		const a=contrail_band(y,engines[0].spool,engines[0].reheat,sim_time,pockets[0]), b=contrail_band(y,engines[1].spool,engines[1].reheat,sim_time,pockets[1]);
+		const forming=a.strength>0||b.strength>0; let rig=st.contrail;
+		if(!forming&&!(rig&&rig.trailing)) continue;   // nothing to lay, and no open trail to close
+		if(!rig) rig=contrail_rig(st);
+		if(sim_time-rig.laid>=0.15){ contrail_lay(rig,st,sim_time,a.strength,b.strength,Math.max(a.life,b.life)); rig.trailing=forming; } }   // a last zero-strength segment closes a trail that stops
+	const gone=[];
+	for(const rig of contrails){ const n=rig.n;
+		while(rig.count>0){ const k=(rig.head-rig.count+n)%n; if(sim_time-rig.born[k]<rig.life[k]) break; rig.count--; }   // expired oldest-first
+		if(rig.count===0){ rig.mesh.visible=false; if(!jets.has(rig.owner)||rig.owner.contrail!==rig){ scene.remove(rig.mesh); rig.geo.dispose(); gone.push(rig); } continue; }
+		rig.mesh.visible=true; contrail_vertices(rig,sim_time,camera.position); }
+	for(const rig of gone) contrails.delete(rig); }
 function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
@@ -4769,7 +4853,8 @@ function recording_sample(){
 		// acmi.channels so the mapping is testable without the engine.
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange",undefined,
 			channels({ spent:st.spent, struck:st.struck, speed:st.speed, burning:st.burning, burn:st.burn,
-				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, missiles:st.msl },
+				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, missiles:st.msl,
+				aoa:st.aoa, g:st.gload },
 				net.emitters.get(slot), net.slot)); } }
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
@@ -5305,7 +5390,7 @@ if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN ty
 		origin:+ownship.pos.y.toFixed(3), ground:+gnd.toFixed(3), stand:+(ownship.pos.y-gnd).toFixed(3),   // #220: the origin's height above the surface — 2.63 minus the strut compression, so it pins the load directly   // i18n-format-ok: dev probe payload, never rendered to a user
 		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
 };
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel, bingo:bingo_low(), banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel, bingo:bingo_low(), banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1, contrail:(ownship.contrail&&ownship.contrail.count)||0,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
@@ -5522,6 +5607,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+3]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved reheat, health-weighted (#41): a dead engine's flame disc stops and its nozzle glow dies with it
+	ownship.spools=[out[STATE.engine]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+2]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved power, health-weighted: a contrail follows a running engine
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
@@ -5838,7 +5924,7 @@ function fly_bandit(dt){
 				bandit.pos.set(w[0],w[1],w[2]);
 				bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 				bandit.speed=Math.hypot(w[3],w[4],w[5]);
-				bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
+				bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
 				_q.set(w[7],w[8],w[9],w[6]);
 				bandit.fwd.set(1,0,0).applyQuaternion(_q);
 				(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
@@ -5878,7 +5964,7 @@ function fly_bandit(dt){
 			bandit.pos.set(w[0],w[1],w[2]);
 			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 			bandit.speed=Math.hypot(w[3],w[4],w[5]);
-			bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
+			bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
 			_q.set(w[7],w[8],w[9],w[6]);   // words are W,X,Y,Z; three.js wants x,y,z,w
 			bandit.fwd.set(1,0,0).applyQuaternion(_q);
 			// Read back the full basis, same convention as the ownship: with only fwd,
@@ -6095,6 +6181,7 @@ function step_world(dt){ sim_time+=dt;
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,trigger_own());   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
+	contrail_effects(dt);   // every jet's contrail, where the air is cold enough
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
@@ -7656,6 +7743,7 @@ function net_frame(dt){
 		// MP debrief reads his damage and his expenditure as ground truth
 		// rather than inferring them from his flight path.
 		st.spent=pose.spent||0; st.leak=pose.leak||0; st.thrust=pose.thrust||0;
+		st.aoa=pose.aoa||0; st.gload=pose.g||0;   // #164: his alpha and g off the wire — the two a recording cannot derive (#44)
 		st.burn=pose.burn; st.burning=!!pose.burning; st.reheat=pose.reheat||0;
 		st.name=pose.name; st.group.visible=pose.alive;
 		{ const team=net.teams.get(slot)||"";

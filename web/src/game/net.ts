@@ -16,8 +16,8 @@ import { sanitizeWrap, minimumImage, fold } from './wrap'
 
 export { crossHost } from './host'
 
-const POSE_RECORD = 37 // the server's fixed pose stride (world/games/air/air.go, pose_record)
-const PROTOCOL = 1 // 1: the 37-byte pose record — byte 34 the emitter state (#30), the uint16 tail the gun expenditure (#163). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184).
+const POSE_RECORD = 39 // the server's fixed pose stride (world/games/air/air.go, pose_record) — MUST equal it exactly; the protocol byte below does not distinguish strides, so a build that disagrees here misparses every pose instead of being refused at the door
+const PROTOCOL = 1 // 1: the 39-byte pose record — byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening (held at 1 on instruction), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose.
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -277,6 +277,8 @@ export interface RemotePose {
   reheat: number
   fire: boolean
   burning: boolean
+  aoa: number // degrees, whole (#164) — wire-quantised, the ownship's own channel is exact
+  g: number // load factor, tenths (#164)
 }
 
 interface Snapshot {
@@ -649,9 +651,10 @@ export class Net {
       case 'poses': {
         // The interest-managed pose datagram (#81): fixed POSE_RECORD-byte
         // records — self first, then the nearest remotes, then the rotating
-        // far tail. Byte 34 is the emitter state (#30) and bytes 35-36 the
-        // gun expenditure (#163); the stride is version-locked by the join's
-        // protocol check, so a mismatched build never parses here.
+        // far tail. Byte 34 is the emitter state (#30), bytes 35-36 the gun
+        // expenditure (#163), and 37-38 his alpha and g (#164). The protocol
+        // check at the join gates the WIRE VERSION, not the stride, so this
+        // parse trusts POSE_RECORD to match the server's own constant.
         const blob = message.blob as Uint8Array | undefined
         if (!(blob instanceof Uint8Array)) break
         const at = performance.now()
@@ -710,6 +713,8 @@ export class Net {
             leak: view.getUint8(base + 31) / 10,
             loss: view.getUint16(base + 32, true),
             spent: view.getUint16(base + 35, true), // cumulative rounds fired this life (#163): the steps are the bursts
+            aoa: view.getInt8(base + 37), // #164: alpha in whole degrees, saturating
+            g: view.getInt8(base + 38) / 10, // #164: the g meter at a tenth
             kills: tally?.kills ?? 0,
             deaths: tally?.deaths ?? 0,
           }

@@ -11,12 +11,12 @@ vi.mock('@mochi/web', () => ({ createAppClient: () => ({}) }))
 const { Net } = await import('./net')
 type Net = InstanceType<typeof Net>
 
-// The server's 37-byte pose record (world/games/air/air.go, func pose): slot,
+// The server's 39-byte pose record (world/games/air/air.go, func pose): slot,
 // position f32x3, ..., flags at 26, fire bytes at 29/30, leak at 31, the
-// radar emitter at 34 (#30) and the gun expenditure at 35 (#163). Only the
-// fields this test asserts on are filled; the rest stay zero — except the
-// emitter byte, whose "nothing" is 63.
-const RECORD = 37
+// radar emitter at 34 (#30), the gun expenditure at 35 (#163) and his alpha
+// and g at 37/38 (#164). Only the fields this test asserts on are filled; the
+// rest stay zero — except the emitter byte, whose "nothing" is 63.
+const RECORD = 39
 function pose(options: {
   slot: number
   alive?: boolean
@@ -27,6 +27,8 @@ function pose(options: {
   emitter?: number
   target?: number
   spent?: number
+  aoa?: number
+  load?: number
 }): Uint8Array {
   const b = new Uint8Array(RECORD)
   const v = new DataView(b.buffer)
@@ -42,6 +44,8 @@ function pose(options: {
   v.setUint8(31, Math.round((options.leak ?? 0) * 10))
   v.setUint8(34, ((options.emitter ?? 0) << 6) | (options.target ?? 63))
   v.setUint16(35, options.spent ?? 0, true)
+  v.setInt8(37, options.aoa ?? 0) // #164: alpha, whole degrees
+  v.setInt8(38, Math.round((options.load ?? 0) * 10)) // #164: g at a tenth
   return b
 }
 
@@ -116,7 +120,7 @@ describe('self pose', () => {
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e450000000000009503f27f0000810000980831000099000f00003ff000'
+      '0000a02d4500e08e45000000000a7f00000000990f7f0000d00731000099000f00003ff0000e40'
         .match(/../g)!
         .map((h) => parseInt(h, 16))
     )
@@ -129,7 +133,9 @@ describe('self pose', () => {
     expect(mine.burning).toBe(true)
     expect(mine.leak).toBeCloseTo(1.5, 2)
     expect(mine.alive).toBe(true)
-    expect(mine.spent).toBe(240) // the uint16 tail, from the same encoder run
+    expect(mine.spent).toBe(240) // the uint16 at 35, from the same encoder run
+    expect(mine.aoa).toBe(14) // byte 37 (#164)
+    expect(mine.g).toBeCloseTo(6.4, 3) // byte 38 (#164)
   })
 
   it('leaves remote decoding alone', () => {
@@ -143,6 +149,31 @@ describe('self pose', () => {
     )
     expect(s.slots()).toContain(5)
     expect(s.slots()).not.toContain(0) // your own jet is never drawn from the wire
+  })
+})
+
+// #164: the two channels a debrief cannot reconstruct from the pose stream.
+// They are the reason the record grew from 37 to 39 bytes; the stride is NOT
+// guarded by the protocol byte, so a server that disagrees misparses silently.
+describe('alpha and load (#164)', () => {
+  it('reads his alpha and g off bytes 37 and 38', () => {
+    const s = session(0)
+    feed(
+      s,
+      concat([pose({ slot: 0 }), pose({ slot: 3, aoa: 14, load: 6.4 })])
+    )
+    expect(s.remote(3)!.aoa).toBe(14)
+    expect(s.remote(3)!.g).toBeCloseTo(6.4, 3)
+  })
+
+  it('keeps a pushover negative rather than reading it as a hard pull', () => {
+    const s = session(0)
+    feed(
+      s,
+      concat([pose({ slot: 0 }), pose({ slot: 3, aoa: -5, load: -1.3 })])
+    )
+    expect(s.remote(3)!.aoa).toBe(-5)
+    expect(s.remote(3)!.g).toBeCloseTo(-1.3, 3)
   })
 })
 

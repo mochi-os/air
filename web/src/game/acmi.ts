@@ -173,6 +173,8 @@ export function channels(
     reheat?: number
     gear?: number
     missiles?: number
+    aoa?: number // degrees, off the pose wire (#164)
+    g?: number // load factor (#164)
   },
   emitter?: { mode: number; target: number },
   mine?: number
@@ -188,6 +190,11 @@ export function channels(
     burner: remote.reheat ?? 0,
     gear: remote.gear ?? 1,
     missiles: Math.max(0, Math.trunc(remote.missiles ?? 0)),
+    // The two a debrief cannot reconstruct from the pose stream: #44 measured a
+    // derived nose disagreeing with recorded AOA by up to 80 degrees, so these
+    // are recorded or they are guessed.
+    aoa: remote.aoa ?? 0,
+    g: remote.g ?? 0,
     radar: emitter
       ? emitter.mode >= 2
         ? 'stt'
