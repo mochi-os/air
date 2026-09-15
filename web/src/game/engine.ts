@@ -5896,7 +5896,7 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 	const settled=(st===ownship)?(ownship.grounded?1:0):0;   // weight on wheels: the drawn oleo compresses (squat scrub); remotes stay unloaded for now
 	st.squish=(st.squish??0)+THREE.MathUtils.clamp(settled-(st.squish??0),-3*dt,3*dt);
 	if(!owned){ if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
-		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt); }   // air-brake ease for the aircraft the core doesn't fly
+		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-0.4*dt,0.4*dt); }   // air-brake ease at the actuator's 2.5 s travel for the aircraft the core doesn't fly
 	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
 	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
 	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13) st.canopyTarget=0;   // the takeoff roll closes an open canopy before the airflow does it destructively
