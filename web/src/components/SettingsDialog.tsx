@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 import { type MessageDescriptor } from '@lingui/core'
-import { msg } from '@lingui/core/macro'
+import { msg, plural } from '@lingui/core/macro'
 import { useLingui as useI18n } from '@lingui/react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { IconButton, shellSaveBlob, toast } from '@mochi/web'
@@ -58,6 +58,7 @@ import {
   deviceDefaults,
   profileBindings,
   profileFor,
+  reaches,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
@@ -455,6 +456,21 @@ function JoystickPanel({
               {profileFor(active, pad?.mapping ?? '').name}
             </Badge>
           )}
+          {/* What the DEVICE reports, beside what the app guessed it is. A
+              binding the pad cannot reach is dropped in silence at the read,
+              and without this line the two states that produce it - the pad is
+              not sending it, or the app is not reading it - look identical. */}
+          {pad && (
+            <Badge
+              variant='outline'
+              className='text-muted-foreground font-mono text-[10px]'
+            >
+              {plural(axisCount, { one: '# axis', other: '# axes' })}
+              {' · '}
+              {plural(buttonCount, { one: '# button', other: '# buttons' })}
+              {pad.mapping ? ` · ${pad.mapping}` : ''}
+            </Badge>
+          )}
         </div>
 
         <div className='space-y-3'>
@@ -598,6 +614,19 @@ function JoystickPanel({
                       })}
                     </SelectContent>
                   </Select>
+                  {/* Bound, and past the end of what the pad reports: the read
+                      drops it without a word (engine.ts), and an empty picker
+                      reads as UNBOUND, which is the wrong repair. Only with a
+                      pad ATTACHED - the counts fall back to 10/24 without one,
+                      which is a guess, not a report, and must not accuse. */}
+                  {pad && !reaches(index, axisCount, PAIRS.has(id)) && (
+                    <Badge
+                      variant='outline'
+                      className='border-destructive/50 text-destructive shrink-0 text-[10px]'
+                    >
+                      <Trans>Not on this device</Trans>
+                    </Badge>
+                  )}
                   {!PAIRS.has(id) && index !== '' && (
                     <Button
                       type='button'
@@ -700,6 +729,14 @@ function JoystickPanel({
                               })}
                             </SelectContent>
                           </Select>
+                          {pad && !reaches(value, buttonCount) && (
+                            <Badge
+                              variant='outline'
+                              className='border-destructive/50 text-destructive shrink-0 text-[10px]'
+                            >
+                              <Trans>Not on this device</Trans>
+                            </Badge>
+                          )}
                           <Button
                             type='button'
                             size='sm'

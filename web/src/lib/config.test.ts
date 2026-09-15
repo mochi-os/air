@@ -8,6 +8,8 @@ import {
   TAB_FIELDS,
   deviceDefaults,
   profileBindings,
+  profileFor,
+  reaches,
   seedStart,
 } from './config'
 
@@ -160,5 +162,58 @@ describe('profileBindings', () => {
     )
     bindings!.buttons.fire = 'edited'
     expect(deviceDefaults('generic').buttons.fire).not.toBe('edited')
+  })
+})
+
+// #152: a binding the device cannot reach is dropped in silence at the read,
+// so nothing downstream may hand one out or fail to flag one.
+describe('profileFor and the standard remap', () => {
+  const stick = 'Turtle Beach VelocityOne Flightstick (10f5:7013)'
+
+  it('gives a raw-HID stick its own profile when the browser has not remapped it', () => {
+    expect(profileFor(stick, '').name).toBe(
+      'Turtle Beach VelocityOne Flightstick',
+    )
+  })
+
+  // UNRESOLVED, and this test PINS THE COST rather than asserting a fix.
+  // keys.test.ts requires the named model to win even on a standard-mapped
+  // pad, so that a known stick does not silently take the gamepad map. But a
+  // standard remap reports 4 axes / 17 buttons, and the VelocityOne map is
+  // written in raw HID - so on such a pad several of its indices point past
+  // the end and are dropped in silence at the read (engine.ts). Including the
+  // TRIGGER. Whichever way this is settled, the badge and the row marks added
+  // for #152 make the state visible instead of silent.
+  it('leaves a raw map unreachable on a standard-remapped pad, trigger included', () => {
+    const map = deviceDefaults(stick, 'standard')
+    expect(profileFor(stick, 'standard').name).toContain('VelocityOne')
+    expect(reaches(map.buttons.fire, 17)).toBe(false) // fire = 17, indices 0..16
+    expect(reaches(map.axes.throttle, 4)).toBe(false) // throttle = -5
+    expect(reaches(map.axes.weapon, 4, true)).toBe(false) // castle pair = 8/9
+    expect(reaches(map.axes.pitch, 4)).toBe(true) // ...while the basics do land
+    expect(reaches(map.axes.roll, 4)).toBe(true)
+  })
+
+  it('still names the generic profile for an unknown stick', () => {
+    expect(profileFor('No Name Stick', '').name).toBe('Generic joystick')
+  })
+})
+
+describe('reaches', () => {
+  it('passes an unbound action', () => {
+    expect(reaches('', 0)).toBe(true)
+  })
+  it('counts the index, not the sense prefix', () => {
+    expect(reaches('-5', 6)).toBe(true)
+    expect(reaches('-5', 5)).toBe(false)
+  })
+  it('needs both halves of a pair', () => {
+    expect(reaches('8', 10, true)).toBe(true)
+    expect(reaches('8', 9, true)).toBe(false) // 9 has axis 8 but not 9
+    expect(reaches('8', 9)).toBe(true) // ...which a single axis does not need
+  })
+  it('needs every index a multi-button binding lists', () => {
+    expect(reaches('2,3', 4)).toBe(true)
+    expect(reaches('2,17', 4)).toBe(false)
   })
 })

@@ -28,6 +28,14 @@ export interface StationSlot {
 export interface StickProfile {
   name: string // shown in the Joystick tab; a product name, not translated
   match: (id: string, mapping: string) => boolean
+  // Indices are raw HID, as the kernel enumerates them. A browser that remaps
+  // the pad to the standard layout reports FEWER of both - 4 axes, 17 buttons
+  // - so every raw index past those is unreachable and the binding is skipped
+  // at the read (engine.ts). Which profile should win then is UNRESOLVED: this
+  // flag records which profiles are exposed to it. keys.test.ts pins the
+  // current answer (the named model wins) and config.test.ts pins what that
+  // costs.
+  raw?: boolean
   axes: Record<string, string>
   buttons: Record<string, string>
 }
@@ -48,6 +56,7 @@ export const PROFILES: StickProfile[] = [
     // as DOM wheel events and pitch trim is unavailable on the stick.
     name: 'Turtle Beach VelocityOne Flightstick',
     match: (id) => /velocityone|10f5/i.test(id),
+    raw: true,
     // The castle POV pair at 8/9 is POSITIONAL weapon select - forward 120C,
     // aft 9M, left GUN, right NAV - so trim lives on the thumbwheel (12/13,
     // forward = nose down) and zoom keeps no stick binding.
@@ -155,6 +164,20 @@ export function profileFor(id: string, mapping = ''): StickProfile {
   return (
     PROFILES.find((p) => p.match(id, mapping)) ?? PROFILES[PROFILES.length - 1]
   )
+}
+
+// reaches reports whether a bound index is one the device actually offers.
+// Unbound reaches trivially; a pair reads index and index+1, so it needs both.
+// The sense prefix ("-5") is not part of the index, and a binding may list
+// several indices comma-separated - every one of them has to land.
+export function reaches(value: string, count: number, pair = false): boolean {
+  const text = String(value ?? '').trim()
+  if (text === '') return true
+  return text.split(',').every((part) => {
+    const index = Math.abs(Number(part.trim()))
+    if (!Number.isFinite(index)) return true
+    return count > (pair ? index + 1 : index)
+  })
 }
 
 export function deviceDefaults(id: string, mapping = ''): StickBindings {
