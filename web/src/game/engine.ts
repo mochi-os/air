@@ -2736,12 +2736,13 @@ function gun_trail(st,port,fired,dt){
 // cold enough, one trail per engine that the wake rolls into one. Formation is
 // the air temperature against a threshold (Schmidt-Appleman), so the band
 // follows the core's ISA atmosphere: from ~28,000 ft at military power, a few
-// degrees colder in burner. Above the tropopause the air is dry and the trail
-// sublimates in seconds. Each jet lays a ring of segments; two camera-facing
+// degrees colder in burner. Above the subtropical tropopause, near 16 km over
+// Midway, the air is dry and the trail sublimates in seconds - out of the jet's
+// reach, so in practice every trail persists. Each jet lays a ring of segments; two camera-facing
 // ribbons are rebuilt from it each frame and dissolve oldest-first from a
 // ragged end. A trail outlives the jet that laid it.
 const CN_MAX=640;   // segments per jet: one every 0.15 s covers the 90 s life
-const contrail_mat=new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, vertexColors:true, depthWrite:false, side:THREE.DoubleSide });   // lit through its colour by the time of day (apply_time_of_day)
+const contrail_mat=new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, vertexColors:true, depthWrite:false, side:THREE.DoubleSide });   // lit through its colour by the time of day (apply_time_of_day). No texture along the trail: the wake's puffs were tried, on the rows and then in an alpha map, and any regular pattern along a ribbon a few pixels wide reads as a string of pearls wherever a leg is foreshortened
 const contrails=new Set();   // every laid trail: a jet's own, or left behind by one that is gone
 function contrail_air(y){ return 288.15-0.0065*Math.min(Math.max(y,0),11000)-273.15; }   // ISA air temperature, °C: the core flies the standard atmosphere with no offset (own_environment sets none)
 function contrail_band(y,spool,reheat,time,seed){   // how much trail one running engine leaves at this height, and how long it lasts
@@ -2749,15 +2750,14 @@ function contrail_band(y,spool,reheat,time,seed){   // how much trail one runnin
 	const threshold=-40-4*reheat;   // a low-bypass turbofan's threshold; burner exhaust is hotter per unit of water, so it needs colder air still
 	const cold=Math.min(1,Math.max(0,(threshold-air)/4));   // full 4 °C below the threshold, nothing above it: the marginal band is thin and fickle
 	const running=Math.min(1,Math.max(0,(spool-0.1)/0.5));   // a dead engine leaves nothing, idle a thin trail
-	const life=90-80*Math.min(1,Math.max(0,(y-10700)/600));   // above the tropopause the air is too dry to hold it: a dash that sublimates in seconds
+	const life=90-80*Math.min(1,Math.max(0,(y-15700)/600));   // above the tropopause the air is too dry to hold it: a dash that sublimates in seconds. Midway's subtropical tropopause sits near 16 km, above the jet's ceiling - the core's 11 km is ISA's temperature convention, not this sky's humidity
 	return { strength:cold*running, life }; }
-function contrail_shape(age,life,rag,arc,phase){   // one segment's look at this age
+function contrail_shape(age,life,rag){   // one segment's look at this age
 	const gap=Math.min(1,Math.max(0,(age-0.15)/0.2));   // the mixing gap: 30-70 m of clear air behind the nozzle before the vapour condenses
-	const spread=1.2+8*(1-Math.exp(-age/3))+0.4*age;   // a metre at the nozzle, 5-10 m within seconds, tens of metres old
+	const width=1.2+8*(1-Math.exp(-age/3))+0.4*age;   // a metre at the nozzle, 5-10 m within seconds, tens of metres old
 	const end=life*(0.55+0.3*rag);   // where this segment starts to dissolve: ragged, not a line
 	const fade=Math.min(1,Math.max(0,1-(age-end)/Math.max(life-end,0.01)));
-	const bead=1+0.35*Math.min(1,Math.max(0,(age-8)/12))*Math.sin(arc*0.0628+phase);   // the wake breaks up after 10-20 s and rolls the line into beads ~100 m apart
-	const width=spread*bead, alpha=0.85*Math.min(1,6/spread)*gap*fade*fade*(0.7+0.3*bead);   // thins as it spreads, and sublimates to nothing by its life
+	const alpha=0.85*Math.min(1,6/width)*gap*fade*fade;   // thins as it spreads, and sublimates to nothing by its life
 	const sink=37*(1-Math.exp(-age/15));   // the wake carries it down a few metres a second until the vortices decay
 	const apart=Math.exp(-age/0.5);   // the two engines' lines roll into one within a couple of spans
 	return { width, alpha, sink, apart }; }
@@ -2780,17 +2780,20 @@ function contrail_lay(rig,st,time,a,b,life){   // record a segment at the jet's 
 	if(speed<1){ fx=st.fwd.x; fy=st.fwd.y; fz=st.fwd.z; } else { fx/=speed; fy/=speed; fz/=speed; }   // the trail runs along the flight path; a jet not moving lays it along its nose
 	rig.fx[k]=fx; rig.fy[k]=fy; rig.fz[k]=fz;
 	const p=(k-1+rig.n)%rig.n; rig.arc[k]=rig.count>1?rig.arc[p]+Math.hypot(rig.cx[k]-rig.cx[p],rig.cy[k]-rig.cy[p],rig.cz[k]-rig.cz[p]):0;
-	rig.born[k]=time; rig.life[k]=life; rig.rag[k]=Math.random(); rig.sa[k]=a; rig.sb[k]=b; rig.laid=time; }
-function contrail_vertices(rig,time,cam){   // rebuild the two ribbons from the ring: camera-facing rows of three, oldest first, each segment at its minimum image about the camera
+	rig.rag[k]=0.5+0.25*Math.sin(rig.arc[k]/150+rig.phase)+0.25*Math.sin(rig.arc[k]/330+rig.phase*2.7);   // where along its life this segment starts to dissolve, drifting along the trail over a kilometre or two: the far end goes in patches, as moist and dry air lie in patches. Drawn per row it must vary slowly row to row, or the fade rasterises as dots
+	rig.born[k]=time; rig.life[k]=life; rig.sa[k]=a; rig.sb[k]=b; rig.laid=time; }
+function contrail_vertices(rig,time,cam,pixel){   // rebuild the two ribbons from the ring: camera-facing rows of three, oldest first, each segment at its minimum image about the camera; pixel is a pixel's width at unit distance
 	const pos=rig.geo.attributes.position.array, col=rig.geo.attributes.color.array, n=rig.n; let v=0, px=0, py=0, pz=0;
-	for(let j=0;j<rig.count;j++){ const k=(rig.head-rig.count+j+n)%n, age=time-rig.born[k], shape=contrail_shape(age,rig.life[k],rig.rag[k],rig.arc[k],rig.phase);
+	for(let j=0;j<rig.count;j++){ const k=(rig.head-rig.count+j+n)%n, age=time-rig.born[k], shape=contrail_shape(age,rig.life[k],rig.rag[k]);
 		const cx=cam.x+wrap_axis(rig.cx[k]-cam.x), cy=rig.cy[k]-shape.sink, cz=cam.z+wrap_axis(rig.cz[k]-cam.z);
 		const seam=j>0&&Math.hypot(cx-px,cy-py,cz-pz)>400; px=cx; py=cy; pz=cz;   // a jump - the world wrapped, or the jet was placed - draws nothing across it
 		if(seam) for(let i=1;i<=6;i++) col[(v-i)*4+3]=0;
 		const vx=cam.x-cx, vy=cam.y-cy, vz=cam.z-cz; let sx=rig.fy[k]*vz-rig.fz[k]*vy, sy=rig.fz[k]*vx-rig.fx[k]*vz, sz=rig.fx[k]*vy-rig.fy[k]*vx, sl=Math.hypot(sx,sy,sz);   // across the trail and across the view: the ribbon faces the camera
 		if(sl<1e-6){ sx=-rig.fz[k]; sy=0; sz=rig.fx[k]; sl=Math.hypot(sx,sy,sz)||1; }   // looking straight along it: any across will do
-		sx/=sl; sy/=sl; sz/=sl; const h=shape.width/2;
-		for(const side of [-1,1]){ const a=seam?0:shape.alpha*(side<0?rig.sa[k]:rig.sb[k]), ox=rig.ox[k]*shape.apart*side, oy=rig.oy[k]*shape.apart*side, oz=rig.oz[k]*shape.apart*side;
+		const least=Math.hypot(vx,vy,vz)*pixel*1.5; let width=shape.width, alpha=shape.alpha;   // a ribbon under a pixel and a half rasterises as dots: hold it there and dim it by the same ratio
+		if(width<least){ alpha*=width/least; width=least; }
+		sx/=sl; sy/=sl; sz/=sl; const h=width/2;
+		for(const side of [-1,1]){ const a=seam?0:alpha*(side<0?rig.sa[k]:rig.sb[k]), ox=rig.ox[k]*shape.apart*side, oy=rig.oy[k]*shape.apart*side, oz=rig.oz[k]*shape.apart*side;
 			for(const t of [-1,0,1]){ pos[v*3]=cx+ox+sx*h*t; pos[v*3+1]=cy+oy+sy*h*t; pos[v*3+2]=cz+oz+sz*h*t; col[v*4]=1; col[v*4+1]=1; col[v*4+2]=1; col[v*4+3]=t===0?a:0; v++; } } }
 	rig.geo.attributes.position.needsUpdate=true; rig.geo.attributes.color.needsUpdate=true; rig.geo.setDrawRange(0,Math.max(0,rig.count-1)*24); return rig.count; }
 function contrail_engines(st){   // each engine's power and achieved reheat: the ownship and the bandit carry both from their cores, a remote one pair from its pose
@@ -2807,11 +2810,11 @@ function contrail_effects(dt){   // lay each flying jet's segment when due, then
 		if(!forming&&!(rig&&rig.trailing)) continue;   // nothing to lay, and no open trail to close
 		if(!rig) rig=contrail_rig(st);
 		if(sim_time-rig.laid>=0.15){ contrail_lay(rig,st,sim_time,a.strength,b.strength,Math.max(a.life,b.life)); rig.trailing=forming; } }   // a last zero-strength segment closes a trail that stops
-	const gone=[];
+	const gone=[], pixel=2*Math.tan(camera.fov*Math.PI/360)/renderer.domElement.height;   // one pixel's width at unit distance
 	for(const rig of contrails){ const n=rig.n;
 		while(rig.count>0){ const k=(rig.head-rig.count+n)%n; if(sim_time-rig.born[k]<rig.life[k]) break; rig.count--; }   // expired oldest-first
 		if(rig.count===0){ rig.mesh.visible=false; if(!jets.has(rig.owner)||rig.owner.contrail!==rig){ scene.remove(rig.mesh); rig.geo.dispose(); gone.push(rig); } continue; }
-		rig.mesh.visible=true; contrail_vertices(rig,sim_time,camera.position); }
+		rig.mesh.visible=true; contrail_vertices(rig,sim_time,camera.position,pixel); }
 	for(const rig of gone) contrails.delete(rig); }
 function fire_gun(st,target,key,dt,force){
 	let active;
