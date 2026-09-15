@@ -185,6 +185,32 @@ export function strip(loadout: Loadout): Loadout {
   return out
 }
 
+// heaters removes the radar missiles and keeps everything else - the Fox 2
+// class clamp. Its pair is strip() above (guns only); both leave fixtures and
+// tanks alone, because an empty rail still weighs and drags.
+export function heaters(loadout: Loadout): Loadout {
+  const out = normalize(loadout)
+  for (let station = 1; station <= 9; station++) {
+    const slot = out[String(station)]
+    slot.stores = slot.stores.map((id) => (id === '120c' ? '' : id))
+  }
+  return out
+}
+
+// granted is what the match actually lets this loadout fly, and it MIRRORS the
+// server's stores_grant (world/games/air/stores.go): guns -> strip,
+// fox2 -> heaters, open -> untouched. The persisted choice is never written
+// back; the clamp is spawn-level, so one guns-only match cannot disarm it.
+//
+// Reading the weapons CLASS rather than the missiles boolean is what makes a
+// Fox 2 match honest here: `missiles` is true for both fox2 and open, so the
+// boolean left the client flying AMRAAMs the server had already stripped.
+export function granted(loadout: Loadout, weapons: string): Loadout {
+  if (weapons === 'guns') return strip(loadout)
+  if (weapons === 'fox2') return heaters(loadout)
+  return loadout
+}
+
 // amraams lists the loadout's AIM-120 entries in firing order - cheeks, then
 // outboard rails, then inboard pylons, alternating port-first within each ring
 // so a full expenditure stays balanced. The k-th launch takes amraams[k].

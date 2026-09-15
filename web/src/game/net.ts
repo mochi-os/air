@@ -252,6 +252,7 @@ export interface Join {
   name: string
   team?: string // teams mode side choice ('red'/'blue'); absent = the server assigns the smaller side
   stores?: Record<string, { fixture: string; stores: string[] }> // the requested loadout (#17); the server validates against the catalog and the match rules and spawns the granted result
+  fuel?: number // the requested spawn fuel in POUNDS (#221), like the IFEI; the server bounds it by the airframe's tank. Absent takes the match's own default
 }
 
 // ---------------------------------------------------------------- connection
@@ -965,7 +966,13 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
           session: join.session,
           name: join.name,
           team: join.team ?? '',
-          stores: join.stores ?? {},
+          // Fuel rides in the stores map rather than a field of its own (#221):
+          // the world server passes Stores through verbatim to the game, and
+          // air's normalizer walks stations 1..9 and ignores every other key —
+          // so the request reached the game with no protocol change at all.
+          stores: join.fuel
+            ? { ...(join.stores ?? {}), fuel: join.fuel }
+            : (join.stores ?? {}),
           protocol: PROTOCOL,
         })
       )

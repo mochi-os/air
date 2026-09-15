@@ -135,6 +135,8 @@ export function Multiplayer({
   rules,
   onRules,
   stores,
+  fuel,
+  loadout,
 }: {
   server: string
   callsign: string
@@ -147,6 +149,8 @@ export function Multiplayer({
   rules?: Record<string, unknown> // the creator's persisted match rules (#17/#32): the weapons class (missiles derived for old servers), spacing
   onRules?: (rules: Record<string, unknown>) => void
   stores?: Record<string, { fixture: string; stores: string[] }> // the player's persisted loadout, sent as the join request (#17)
+  fuel?: number // the player's own spawn fuel in pounds (#221), sent with the loadout; the server bounds it by the tank and nothing else
+  loadout?: React.ReactNode // the loadout editor, rendered in this panel's own dialog — the page below owns it, and passing the node avoids importing the mission setup back into here
 }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -163,6 +167,14 @@ export function Multiplayer({
   // Refresh's own pending flag, not the poll's: the 5 s tick must never spin
   // the button under a reader who did not press it.
   const [refreshing, setRefreshing] = useState(false)
+  // The join waiting on a loadout choice (#221). Every way into a match goes
+  // through the editor, because a loadout is a decision about THIS fight and a
+  // button you have to remember to press beforehand is one nobody presses.
+  const [pending, setPending] = useState<
+    | { kind: 'join'; params: Join; withdraw: string | null }
+    | { kind: 'create' }
+    | null
+  >(null)
   const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
@@ -198,7 +210,6 @@ export function Multiplayer({
     ace: 0,
     superhuman: 0,
   }) // teams mode: the blue side's bots (the row above places red's)
-  const [fuel, setFuel] = useState(10800) // spawn load in POUNDS, like the IFEI: full internal, the same default the single-player presets seed (2026-08-18)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
@@ -249,14 +260,19 @@ export function Multiplayer({
   // the game connection to a different host, confirm before dialling it.
   // Every join carries the persisted loadout as the request (#17); the server
   // clamps it against the match rules and spawns the granted result.
-  const enter = useCallback(
+  const dispatch = useCallback(
     (params: Join) => {
-      const request = { ...params, stores }
+      // Fuel rides in the SAME map as the loadout (#221): the world server
+      // passes Stores through verbatim and its normalizer walks stations 1..9
+      // only, so the extra key needs no protocol change to carry. Both are read
+      // HERE rather than captured when the dialog opened, so the jet that flies
+      // is the one the pilot just finished arming.
+      const request = { ...params, stores, fuel }
       const other = crossHost(params.address, address)
       if (other) setRedirect({ host: other, proceed: () => onJoin(request) })
       else onJoin(request)
     },
-    [address, onJoin, stores]
+    [address, onJoin, stores, fuel]
   )
 
   const join = useCallback(
@@ -264,10 +280,11 @@ export function Multiplayer({
       if (!status) return
       // Flying somebody else's match retires your own offer. Joining your OWN
       // offer must not withdraw it: the withdraw wins the race against the game
-      // dial and kills a just-made match before its creator arrives.
+      // dial and kills a just-made match before its creator arrives. It is
+      // decided here and SPENT on confirm - withdrawing when the dialog merely
+      // opens would retire the offer of someone who then cancels.
       const target = sessions.find((s) => s.session === session)
-      if (pilot && !target?.mine) void world_withdraw(address, pilot)
-      enter({
+      const params: Join = {
         server: address,
         title: status.name,
         address: status.address,
@@ -275,9 +292,18 @@ export function Multiplayer({
         session,
         name,
         team,
-      })
+      }
+      // The offer to retire on confirm, or null: carrying the token itself
+      // rather than a flag keeps "whose offer" and "whether" one decision.
+      const withdraw = pilot && !target?.mine ? pilot : null
+      if (loadout) {
+        setPending({ kind: 'join', params, withdraw })
+        return
+      }
+      if (withdraw) void world_withdraw(address, withdraw)
+      dispatch(params)
     },
-    [address, name, status, enter, sessions, pilot]
+    [address, name, status, dispatch, sessions, pilot, loadout]
   )
 
   const create = async () => {
@@ -300,11 +326,13 @@ export function Multiplayer({
           ...(mode === 'joust' ? { start } : {}),
           ...(mode === 'teams' ? { spaced } : {}), // anchored sides: the teams start rule (an open match places arrivals clear of the fight, always)
           bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots,
-          fuel,
+          // No fuel here (#221): every player, the creator included, brings
+          // their own load in the join request. The parameter survives on the
+          // server as the default for bots and for clients that send none.
           cheats,
         },
       })
-      enter({
+      dispatch({
         server: address,
         title: status?.name ?? '',
         address: made.address,
@@ -317,6 +345,21 @@ export function Multiplayer({
     } finally {
       setBusy(false)
     }
+  }
+
+  // The editor's two ways out. Confirming spends the withdraw decision taken
+  // when the tile was clicked, then joins; a creator's match is made only now,
+  // so cancelling leaves no empty match behind on the server.
+  const fly = () => {
+    const now = pending
+    setPending(null)
+    if (!now) return
+    if (now.kind === 'create') {
+      void create()
+      return
+    }
+    if (now.withdraw) void world_withdraw(address, now.withdraw)
+    dispatch(now.params)
   }
 
   if (!supported()) {
@@ -377,6 +420,39 @@ export function Multiplayer({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {loadout && (
+        <Dialog
+          open={!!pending}
+          onOpenChange={(open) => !open && setPending(null)}
+        >
+          <DialogContent className='max-h-[85vh] overflow-y-auto sm:max-w-md'>
+            <DialogHeader>
+              <DialogTitle>
+                <Trans>Loadout</Trans>
+              </DialogTitle>
+            </DialogHeader>
+            {loadout}
+            <DialogFooter>
+              <Button variant='outline' onClick={() => setPending(null)}>
+                <Trans>Cancel</Trans>
+              </Button>
+              <Button onClick={fly} disabled={busy}>
+                {pending?.kind === 'create' ? (
+                  <>
+                    <Plus className='size-4' />
+                    <Trans>Create and fly</Trans>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className='size-4' />
+                    <Trans>Join</Trans>
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
       {!hideServer && (
         <div className='grid gap-4 sm:grid-cols-2'>
           <div className='space-y-2'>
@@ -432,116 +508,151 @@ export function Multiplayer({
         )}
         {[...sessions]
           .sort((a, b) => Number(!!b.mine) - Number(!!a.mine)) // your own offer pins to the top
-          .map((s) => (
-            <div
-              key={s.session}
-              className={
-                'flex items-center justify-between gap-3 p-3' +
-                (s.mine ? ' bg-muted/40' : '')
-              }
-            >
-              <div className='min-w-0'>
-                <div className='truncate text-sm font-medium'>
-                  {s.label || s.mode}
-                  {s.mine && (
-                    <span className='text-muted-foreground ml-2 text-xs font-normal'>
-                      · <Trans>your offer</Trans>
-                    </span>
-                  )}
-                </div>
-                <div className='text-muted-foreground truncate text-xs'>
-                  {s.mode === 'joust' ? (
-                    <Trans>Joust</Trans>
-                  ) : s.mode === 'teams' ? (
-                    <Trans>Teams</Trans>
-                  ) : (
-                    <Trans>Open</Trans>
-                  )}{' '}
-                  ·{' '}
-                  {(s.players ?? []).map((p) => p.name).join(', ') || (
-                    <Trans>empty</Trans>
-                  )}{' '}
-                  ·{' '}
-                  <Plural
-                    value={(s.players ?? []).length}
-                    one={`#/${s.capacity} player`}
-                    other={`#/${s.capacity} players`}
-                  />
-                </div>
-                {/* Non-standard settings only (#19), canonical order — weapons,
+          .map((s) => {
+            // The one gate, shared by the row and every button in it: a full or
+            // finished match must not be joinable by any of them.
+            const closed =
+              (s.players ?? []).length >= s.capacity || s.state === 'finished'
+            // The whole row joins, not just the button on the end - a match is
+            // the thing being picked, and the button is a small target for it.
+            // A click that landed on one of the row's own controls (withdraw,
+            // a team side) belongs to that control: closest() catches them all,
+            // including any added later, without threading stopPropagation
+            // through each one.
+            const pick = (event: { target: EventTarget | null }) => {
+              if (closed) return
+              if ((event.target as HTMLElement | null)?.closest('button'))
+                return
+              join(s.session)
+            }
+            return (
+              <div
+                key={s.session}
+                role='button'
+                tabIndex={closed ? -1 : 0}
+                aria-disabled={closed || undefined}
+                onClick={pick}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return
+                  event.preventDefault() // Space scrolls the list otherwise
+                  pick(event)
+                }}
+                className={
+                  'group flex items-center justify-between gap-3 p-3' +
+                  (s.mine ? ' bg-muted/40' : '') +
+                  (closed
+                    ? ''
+                    : ' hover:bg-muted/60 focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none')
+                }
+              >
+                <div className='min-w-0'>
+                  <div className='truncate text-sm font-medium'>
+                    {s.label || s.mode}
+                    {s.mine && (
+                      <span className='text-muted-foreground ml-2 text-xs font-normal'>
+                        · <Trans>your offer</Trans>
+                      </span>
+                    )}
+                  </div>
+                  <div className='text-muted-foreground truncate text-xs'>
+                    {s.mode === 'joust' ? (
+                      <Trans>Joust</Trans>
+                    ) : s.mode === 'teams' ? (
+                      <Trans>Teams</Trans>
+                    ) : (
+                      <Trans>Open</Trans>
+                    )}{' '}
+                    ·{' '}
+                    {(s.players ?? []).map((p) => p.name).join(', ') || (
+                      <Trans>empty</Trans>
+                    )}{' '}
+                    ·{' '}
+                    <Plural
+                      value={(s.players ?? []).length}
+                      one={`#/${s.capacity} player`}
+                      other={`#/${s.capacity} players`}
+                    />
+                  </div>
+                  {/* Non-standard settings only (#19), canonical order — weapons,
                   time, weather, cheats. A fully standard match shows nothing:
                   the absence IS the signal. */}
-                {deviations(s.parameters).length > 0 && (
-                  <div className='text-muted-foreground truncate text-xs'>
-                    {deviations(s.parameters).map((key, i) => (
-                      <span key={key}>
-                        {i > 0 && ', '}
-                        {DEVIATIONS[key]}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className='flex shrink-0 gap-2'>
-                {pilot && s.mine && s.offer && (
+                  {deviations(s.parameters).length > 0 && (
+                    <div className='text-muted-foreground truncate text-xs'>
+                      {deviations(s.parameters).map((key, i) => (
+                        <span key={key}>
+                          {i > 0 && ', '}
+                          {DEVIATIONS[key]}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className='flex shrink-0 gap-2'>
+                  {pilot && s.mine && s.offer && (
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='sm'
+                      onClick={async () => {
+                        await world_withdraw(address, pilot)
+                        void refresh()
+                      }}
+                    >
+                      <Trans>Cancel</Trans>
+                    </Button>
+                  )}
+                  {s.mode === 'teams' && (
+                    <>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        className='text-red-600'
+                        disabled={closed}
+                        onClick={() => join(s.session, 'red')}
+                      >
+                        <Trans>Red</Trans>
+                      </Button>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        className='text-blue-600'
+                        disabled={closed}
+                        onClick={() => join(s.session, 'blue')}
+                      >
+                        <Trans>Blue</Trans>
+                      </Button>
+                    </>
+                  )}
+                  {/* The row is the affordance and this is its label, so
+                      the button stays quiet until the row is hovered or
+                      focused, then reads as the call to action - two controls
+                      competing for one action is what looked redundant. The
+                      transparent border is always there, so nothing shifts
+                      when it colours in. A CLOSED row keeps the plain outline:
+                      there the button is not a duplicate at all, it is the
+                      only thing on the row saying the match cannot be joined,
+                      and it must stay as legible as it ever was. */}
                   <Button
                     type='button'
-                    variant='outline'
+                    variant={closed ? 'outline' : 'ghost'}
                     size='sm'
-                    onClick={async () => {
-                      await world_withdraw(address, pilot)
-                      void refresh()
-                    }}
+                    disabled={closed}
+                    className={
+                      closed
+                        ? ''
+                        : 'group-hover:border-border group-focus-visible:border-border group-hover:bg-background group-focus-visible:bg-background dark:group-hover:bg-surface-1 border-[length:var(--border-width)] border-transparent'
+                    }
+                    onClick={() => join(s.session)}
                   >
-                    <Trans>Cancel</Trans>
+                    <LogIn className='size-4' />
+                    <Trans>Join</Trans>
                   </Button>
-                )}
-                {s.mode === 'teams' && (
-                  <>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      className='text-red-600'
-                      disabled={
-                        (s.players ?? []).length >= s.capacity ||
-                        s.state === 'finished'
-                      }
-                      onClick={() => join(s.session, 'red')}
-                    >
-                      <Trans>Red</Trans>
-                    </Button>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      className='text-blue-600'
-                      disabled={
-                        (s.players ?? []).length >= s.capacity ||
-                        s.state === 'finished'
-                      }
-                      onClick={() => join(s.session, 'blue')}
-                    >
-                      <Trans>Blue</Trans>
-                    </Button>
-                  </>
-                )}
-                <Button
-                  type='button'
-                  variant='outline'
-                  size='sm'
-                  disabled={
-                    (s.players ?? []).length >= s.capacity ||
-                    s.state === 'finished'
-                  }
-                  onClick={() => join(s.session)}
-                >
-                  <LogIn className='size-4' />
-                  <Trans>Join</Trans>
-                </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
       </div>
 
       {making && (
@@ -664,23 +775,6 @@ export function Multiplayer({
                   label={<Trans>Unlimited</Trans>}
                 />
               </RadioGroup>
-              <div className='flex items-center gap-2 pt-1'>
-                <Label htmlFor='rule-fuel' className='font-normal'>
-                  <Trans>Fuel</Trans>
-                </Label>
-                <NumberField
-                  id='rule-fuel'
-                  min={1500}
-                  max={10800}
-                  step={100}
-                  value={fuel}
-                  onChange={setFuel}
-                  className='h-8 w-24'
-                />
-                <span className='text-muted-foreground text-xs'>
-                  <Trans>lb</Trans>
-                </span>
-              </div>
             </div>
 
             {/* An open match has no start rule to choose: arrivals are placed
@@ -848,7 +942,12 @@ export function Multiplayer({
               type='button'
               size='sm'
               disabled={!status || busy}
-              onClick={() => void create()}
+              /* The creator arms the same way everyone else does (#221), and
+                 asking BEFORE the match is made means a cancel leaves no empty
+                 match standing on the server. */
+              onClick={() =>
+                loadout ? setPending({ kind: 'create' }) : void create()
+              }
             >
               <Plus className='size-4' />
               <Trans>Create and fly</Trans>

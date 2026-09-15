@@ -1247,6 +1247,25 @@ function ServerFlow({
             rules={config.rules}
             onRules={(rules) => set('rules', rules)}
             stores={config.stores}
+            fuel={Number(config.fuel) || FULL_FUEL}
+            /* The same editor the mission panel uses, so a match is armed and
+               fuelled exactly as single player is (2026-09-15). Every join
+               carries it — the creator's as much as anyone else's — and the
+               match's weapons class clamps the result at the server. There is
+               no catapult in multiplayer (every spawn is airborne on the merge
+               ring), so that warning is not passed. */
+            loadout={
+              <Armament
+                stores={config.stores}
+                fuel={Number(config.fuel) || FULL_FUEL}
+                catapult={false}
+                onChange={(v) => set('stores', v)}
+                onFuel={(v) => set('fuel', v)}
+                onPreset={(stores, fuel) =>
+                  onChange({ ...config, stores, fuel })
+                }
+              />
+            }
             hideServer
             pilot={pilot}
             server={config.world}
