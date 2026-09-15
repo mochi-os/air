@@ -229,6 +229,17 @@ export function stamp(fight: {
   cheats: Record<string, boolean> | undefined
   effects: number | undefined
   version: number
+  // What the INPUT DEVICE was, as the browser reported it (#152). A stick in
+  // a degraded state flies the jet on its good axes while its hat and trigger
+  // send nothing, and the 2026-09-09 sortie was spent before anyone could
+  // tell: establishing "was the stick healthy?" afterwards cost a debrief and
+  // a code audit, and replugging the stick erased the evidence. Recorded here
+  // it survives the replug and the question is a grep.
+  stick: string // the pad's id as the Gamepad API gave it, '' for keyboard
+  mapping: string // 'standard' when the browser remapped it, else ''
+  axes: number
+  buttons: number
+  unreachable: string // bound actions the device does not report, comma-separated
 }): { kind: string; match: Match } {
   const joust = !fight.multiplayer && fight.mode === 'joust'
   // The kind names the fight for the title, the history row and the file: a
@@ -260,6 +271,14 @@ export function stamp(fight: {
         .join('+'),
       effects: String(fight.effects ?? 2),
       version: String(fight.version),
+      // Omitted entirely when no pad is attached: acmi() drops empty values,
+      // so a keyboard flight carries none of these rather than a row of
+      // zeroes that would read as a device reporting nothing.
+      stick: fight.stick,
+      mapping: fight.stick ? fight.mapping || 'direct' : '',
+      axes: fight.stick ? String(fight.axes) : '',
+      buttons: fight.stick ? String(fight.buttons) : '',
+      unreachable: fight.unreachable,
     },
   }
 }

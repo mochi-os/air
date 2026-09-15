@@ -58,6 +58,7 @@ import {
   deviceDefaults,
   profileBindings,
   profileFor,
+  PAIRS,
   reaches,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
@@ -139,7 +140,6 @@ const AXIS_ROWS: { id: string; label: MessageDescriptor }[] = [
   { id: 'zoom', label: msg`Zoom` },
 ]
 const LEVERS = new Set(['throttle', 'speedbrake'])
-const PAIRS = new Set(['look', 'trim', 'weapon'])
 
 function AxisMeter({ live }: { live: number }) {
   const percent = Math.round(live * 100)

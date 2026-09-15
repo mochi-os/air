@@ -45,7 +45,7 @@ import { words as menace_words } from './menace'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
-import { deviceDefaults } from '../lib/config'
+import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
 import { geometry_canonical, geometry_hash } from './geometry'
 import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
@@ -4009,6 +4009,14 @@ const HINT={
 	// and turn downwind there, where the visual pattern's is flown at 600'.
 	abort:"Wave-off: full power, boards in, wings level, climb to 1200', {heading}",
 	miss:"Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}",
+	// #152: a bound control the device does not report is dropped in silence at
+	// the read, so a degraded stick flies the jet on its good axes while its
+	// hat and trigger send nothing. The Joystick tab marks WHICH rows, and it
+	// says so only to a pilot who already suspects the hardware and goes
+	// looking - the 2026-09-09 sortie was spent before anyone did. This is the
+	// moment that saves the recording: said once, at the start, pointing at
+	// the tab that names them rather than listing raw action keys here.
+	stick:"Some bound controls are not on this stick: check Settings, Joystick",
 	// The runway set (#91): field pattern coaching in the same voice. Numbers
 	// from the same doctrine family — HALF flap takeoff and FULL flap landing
 	// per NATOPS, the 600' field pattern, on-speed 8.1 alpha ashore as afloat.
@@ -4220,6 +4228,12 @@ function hints_runway(st){ hinting="runway";
 // bolter holding a line nothing could retire (#190): the case split asked how
 // the sortie began when the only question that matters is what lies ahead.
 function hints_watch(){ if(cfg.hints===false||!running) return;
+	// Not on the first frame: browsers expose a pad only after a button press
+	// (read_gamepad), so a one-shot check at mission start would find nothing
+	// on the very hardware it exists to catch. Keyed on the dedup flag, this
+	// keeps looking until a pad appears and then says it once.
+	if(!hinted[HINT.stick]){ const stick=read_gamepad();
+		if(stick&&unreachable(pad_bindings(stick),stick.axes.length,stick.buttons.length)) hint(HINT.stick); }
 	if(hint_key!=null&&!WAITING.has(hint_key)&&sim_time-hint_since>=HINT_DWELL) hint_rows=hint_key=null;
 	const st=mission_start(), ap=airports[0];
 	const ship=Math.hypot(wrap_axis(ownship.pos.x-CARRIER.x),wrap_axis(ownship.pos.z-CARRIER.z));
@@ -4789,7 +4803,11 @@ function recording_file(){
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
 		duel:cfg.duel||"", bandit:cfg.bandit||"", weapons:armed,
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
-		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version() });
+		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(),
+		...(()=>{ const pad=read_gamepad();   // the device as the browser reports it NOW, at the moment the recording is rendered
+			if(!pad) return { stick:"", mapping:"", axes:0, buttons:0, unreachable:"" };
+			return { stick:pad.id||"", mapping:pad.mapping||"", axes:pad.axes.length, buttons:pad.buttons.length,
+				unreachable:unreachable(pad_bindings(pad),pad.axes.length,pad.buttons.length) }; })() });
 	const row=recording_identity();
 	return { text:recorder.render(record_started,"Mochi Air: "+kind,match), session:row?row.session:"", started:row?row.started:0, kind }; }
 // Which history row this recording belongs to (#118). The recorder ran all

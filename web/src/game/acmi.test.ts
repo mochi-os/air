@@ -651,7 +651,47 @@ describe('stamp', () => {
     cheats: { invulnerable: false, fuel: true },
     effects: 2,
     version: 41,
+    stick: 'Turtle Beach VelocityOne Flightstick (10f5:7013)',
+    mapping: '',
+    axes: 10,
+    buttons: 24,
+    unreachable: '',
   }
+
+  // #152: a degraded stick flies on its good axes while its hat and trigger
+  // send nothing. Recorded, "was the stick healthy?" is a grep rather than a
+  // debrief and a code audit - and it survives the replug that fixes the
+  // stick and erases the evidence.
+  it('records the device the sortie was flown on', () => {
+    const { match } = stamp(fight)
+    expect(match.stick).toContain('VelocityOne')
+    expect(match.axes).toBe('10')
+    expect(match.buttons).toBe('24')
+    expect(match.mapping).toBe('direct') // no browser remap
+    expect(match.unreachable).toBe('')
+  })
+
+  it('names the browser remap when there is one', () => {
+    expect(stamp({ ...fight, mapping: 'standard' }).match.mapping).toBe(
+      'standard',
+    )
+  })
+
+  it('carries the bindings the device cannot reach', () => {
+    const { match } = stamp({ ...fight, axes: 4, buttons: 17, unreachable: 'fire,weapon' })
+    expect(match.unreachable).toBe('fire,weapon')
+    expect(match.axes).toBe('4')
+  })
+
+  // A keyboard flight has no device, and a row of zeroes would read as a pad
+  // reporting nothing at all. acmi() drops empty values, so these vanish.
+  it('writes nothing about a device when there is none', () => {
+    const { match } = stamp({ ...fight, stick: '', axes: 0, buttons: 0 })
+    expect(match.stick).toBe('')
+    expect(match.mapping).toBe('')
+    expect(match.axes).toBe('')
+    expect(match.buttons).toBe('')
+  })
 
   it('names a single-player joust by the bandit it was flown against', () => {
     const { kind, match } = stamp(fight)

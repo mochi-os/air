@@ -124,9 +124,12 @@ describe('key bindings', () => {
       )
     )
     expect(paired.size).toBeGreaterThan(0) // the scan found the pair reads at all
-    const settings = read('../components/SettingsDialog.tsx')
+    // PAIRS lives in lib/config.ts, not the settings tab: the engine's read,
+    // the tab's row marks and unreachable() all need the same answer, and a
+    // second copy is how they drift (#152).
+    const shared = read('../lib/config.ts')
     const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(
-      settings
+      shared
     )
     expect(declared, 'PAIRS not found').toBeTruthy()
     const shown = new Set(

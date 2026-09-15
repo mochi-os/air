@@ -10,6 +10,7 @@ import {
   profileBindings,
   profileFor,
   reaches,
+  unreachable,
   seedStart,
 } from './config'
 
@@ -199,6 +200,34 @@ describe('profileFor and the standard remap', () => {
   })
 })
 
+// #152: what the recording carries, so "was the stick healthy?" is a grep.
+describe('unreachable', () => {
+  const healthy = { axes: { pitch: '1', roll: '0', look: '3', weapon: '8' },
+                    buttons: { fire: '17', gear: '0' } }
+
+  it('says nothing when the device reports everything bound', () => {
+    expect(unreachable(healthy, 10, 24)).toBe('')
+  })
+
+  it('names what a standard remap cannot reach, sorted', () => {
+    // 4 axes / 17 buttons: fire is index 17 of 0..16; weapon is the castle
+    // pair at 8/9; and look is a pair too, at 3/4 - axis 4 does not exist on a
+    // 4-axis pad, so the ministick's vertical half is gone. pitch and roll,
+    // both single and low, still land.
+    expect(unreachable(healthy, 4, 17)).toBe('fire,look,weapon')
+  })
+
+  it('counts a pair as needing both halves', () => {
+    // 9 axes has index 8 but not 9, so the castle pair is short by one.
+    expect(unreachable({ axes: { weapon: '8' }, buttons: {} }, 9, 24)).toBe('weapon')
+    expect(unreachable({ axes: { weapon: '8' }, buttons: {} }, 10, 24)).toBe('')
+  })
+
+  it('ignores unbound actions', () => {
+    expect(unreachable({ axes: { zoom: '', trim: '' }, buttons: { hook: '' } }, 0, 0)).toBe('')
+  })
+})
+
 describe('reaches', () => {
   it('passes an unbound action', () => {
     expect(reaches('', 0)).toBe(true)
@@ -215,5 +244,22 @@ describe('reaches', () => {
   it('needs every index a multi-button binding lists', () => {
     expect(reaches('2,3', 4)).toBe(true)
     expect(reaches('2,17', 4)).toBe(false)
+  })
+
+  // The zoom thumbwheel's half-axis form (engine.ts): "N+" reads N AND N+1,
+  // and the engine parses it with parseInt. Judging it with Number gives NaN,
+  // which fell through the non-finite guard and called an unreachable binding
+  // fine - silent in exactly the direction #152 exists to end.
+  it('reads the half-axis wheel form as the engine does', () => {
+    expect(reaches('5+', 7)).toBe(true) // 7 axes: 5 and 6 both present
+    expect(reaches('5+', 6)).toBe(false) // 6 axes: 5 present, 6 is not
+    expect(reaches('5+', 4)).toBe(false) // neither
+  })
+  it('keeps the sense prefix off the wheel index too', () => {
+    expect(reaches('-5+', 7)).toBe(true)
+    expect(reaches('-5+', 6)).toBe(false)
+  })
+  it('still treats a plain index as a single axis', () => {
+    expect(reaches('5', 6)).toBe(true) // ...which "5+" would refuse
   })
 })

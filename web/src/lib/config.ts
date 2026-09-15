@@ -170,13 +170,50 @@ export function profileFor(id: string, mapping = ''): StickProfile {
 // Unbound reaches trivially; a pair reads index and index+1, so it needs both.
 // The sense prefix ("-5") is not part of the index, and a binding may list
 // several indices comma-separated - every one of them has to land.
+//
+// The parse MIRRORS the engine's, because a mismatch here is silent in the
+// direction that matters. A zoom binding may carry a trailing "+" - the
+// half-axis pair wheel, where each roll direction sweeps its own axis - and
+// the engine reads that form with parseInt, which takes the leading integer.
+// Number("5+") is NaN, so judging it that way fell through the non-finite
+// guard below and reported UNREACHABLE bindings as fine: the one silence this
+// whole check exists to end, in the one form it did not cover. The "+" also
+// makes the binding a PAIR whatever the row itself is, since zoom is not in
+// the caller's PAIRS set.
+// The axis bindings the engine reads as a PAIR - index and index+1. Canonical
+// here because three places need the same answer and a fourth copy is how they
+// drift: the engine's read, the Joystick tab's row marks, and unreachable()
+// below. (A zoom value ending "+" is also a pair, but that is a property of
+// the VALUE, so reaches() decides it rather than this set.)
+export const PAIRS = new Set(['look', 'trim', 'weapon'])
+
+// unreachable names the bound actions this device does not report, sorted and
+// comma-separated, or '' when everything bound is reachable. Recorded into the
+// ACMI header (#152) so "was the stick healthy?" is answerable afterwards -
+// the 2026-09-09 sortie could not be, and replugging the stick to fix it
+// erased the evidence.
+export function unreachable(
+  bindings: StickBindings,
+  axes: number,
+  buttons: number,
+): string {
+  const missed: string[] = []
+  for (const [action, value] of Object.entries(bindings.axes ?? {}))
+    if (!reaches(String(value ?? ''), axes, PAIRS.has(action))) missed.push(action)
+  for (const [action, value] of Object.entries(bindings.buttons ?? {}))
+    if (!reaches(String(value ?? ''), buttons)) missed.push(action)
+  return missed.sort().join(',')
+}
+
 export function reaches(value: string, count: number, pair = false): boolean {
   const text = String(value ?? '').trim()
   if (text === '') return true
   return text.split(',').every((part) => {
-    const index = Math.abs(Number(part.trim()))
+    const one = part.trim()
+    const wheel = one.endsWith('+')
+    const index = Math.abs(wheel ? parseInt(one, 10) : Number(one))
     if (!Number.isFinite(index)) return true
-    return count > (pair ? index + 1 : index)
+    return count > (pair || wheel ? index + 1 : index)
   })
 }
 
