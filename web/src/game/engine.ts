@@ -1109,9 +1109,9 @@ const AIRCRAFT_MODELS={
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		swivel:{ node:"c_gear_AN_lower_134", axis:[0.0012,0.0934,0.9956] },
-		spin:[ { node:"l_tire_anim_AN_Tire_35",     axis:[-0.043,-0.991,-0.130], radius:0.375, attach:[-0.5,-2.63,-1.55], travel:0.5,  strut:9e5,   tyre:1.17e6, limit:0.053 },   // wheel spin: node-local axles measured in the DEPLOYED gear pose (the static pose stows the mains FLAT — never measure there); +rotation about each axis rolls forward. Radii match the real 30x11.5 mains / 22x6.6 nose tires
-		       { node:"r_tire_anim_AN__287",        axis:[-0.124,0.992,0.029],   radius:0.377, attach:[-0.5,-2.63,1.55],  travel:0.5,  strut:9e5,   tyre:1.17e6, limit:0.053 },
-		       { node:"c_tire_anim_AN_Wheels_132",  axis:[1,0,0],                radius:0.296, attach:[4.9,-2.63,0],      travel:0.45, strut:4.5e5, tyre:9.0e5, limit:0.023 } ],   // attach/travel/strut MIRROR flight/fa18c.go Gear.{Left,Right,Nose} — the contact point the physics presses below the surface, and the spring that carries the jet there (same duplication as `nose` above, which copies Gear.Nose.Attach.X). tyre = the TYRE's own stiffness, N/m: the mains anchored so the published 30x11.5-14.5 deflection (~6 cm, 32% of section height) falls out at their measured 70.2 kN static load, the nose so it uses about a third of its 22x6.6 rated 4.9 cm at the 14.3 kN it actually carries   // the nose PAIR's axle is exactly local +x (0.63 m across the pair, circular 0.59 m discs about it) — the deployed-pose world-x read was 13.7° off and made the wheels wobble ("ploughed field"). (Fan-face rotation was implemented and REMOVED: the S-ducts hide the fans from every outside sightline — verified by render — so it was invisible machinery)
+		spin:[ { node:"l_tire_anim_AN_Tire_35",     axis:[-0.043,-0.991,-0.130], radius:0.375, attach:[-0.5,-2.63,-1.55], travel:0.5,  strut:9e5,   tyre:1.17e6, limit:0.048 },   // wheel spin: node-local axles measured in the DEPLOYED gear pose (the static pose stows the mains FLAT — never measure there); +rotation about each axis rolls forward. Radii match the real 30x11.5 mains / 22x6.6 nose tires
+		       { node:"r_tire_anim_AN__287",        axis:[-0.124,0.992,0.029],   radius:0.377, attach:[-0.5,-2.63,1.55],  travel:0.5,  strut:9e5,   tyre:1.17e6, limit:0.048 },
+		       { node:"c_tire_anim_AN_Wheels_132",  axis:[1,0,0],                radius:0.296, attach:[4.9,-2.63,0],      travel:0.45, strut:4.5e5, tyre:9.0e5, limit:0.008 } ],   // attach/travel/strut MIRROR flight/fa18c.go Gear.{Left,Right,Nose} — the contact point the physics presses below the surface, and the spring that carries the jet there (same duplication as `nose` above, which copies Gear.Nose.Attach.X). tyre = the TYRE's own stiffness, N/m: the mains anchored so the published 30x11.5-14.5 deflection (~6 cm, 32% of section height) falls out at their measured 70.2 kN static load, the nose so it uses about a third of its 22x6.6 rated 4.9 cm at the 14.3 kN it actually carries   // the nose PAIR's axle is exactly local +x (0.63 m across the pair, circular 0.59 m discs about it) — the deployed-pose world-x read was 13.7° off and made the wheels wobble ("ploughed field"). (Fan-face rotation was implemented and REMOVED: the S-ducts hide the fans from every outside sightline — verified by render — so it was invisible machinery)
 		flame:[ "Afterburner_can_flamesAction_AN_flames_1", "Afterburner_can_flames_rightAction_AN_right_4" ],   // the can-interior flame discs: the modeller's authored effect is a spin about the engine axis (local z) — a radial flame texture churning inside the can. Hidden dry, spinning with each engine's reheat   // nosewheel steering: the lower strut + scissor + wheels swivel about this node-local axis (the strut line in the DEPLOYED gear pose — measured; the gear clip re-poses the node every frame so the steering twist is post-multiplied after the mixer). Axis SIGN set empirically: the offline tire-PCA direction read was ambiguous and picked the wrong sense — the user saw the wheel steer opposite the turn
 		rig:[ { name:"gear",     track:model_gear, drive:"gear" },   // track family shared with the preview (model.ts GEAR)
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
@@ -3206,6 +3206,7 @@ async function generate_world(){
 }
 const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
 const AIRFIELD_FLOAT=1.46;   // how far the airfield ground floats above the island top
+const RUNWAY_FLOAT=1.5;   // the runway floats slightly PROUD of the taxiways/aprons (they z-fought when coplanar). Both the drawn surface and the capsule the flight core collides with must use this one figure: they were 1.5 drawn against 1.46 collided, so the jet rested 4 cm below the runway it is drawn on and every wheel began 4 cm buried (#220)
 function pip(px,pz,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ const xi=poly[i][0],zi=poly[i][1],xj=poly[j][0],zj=poly[j][1]; if(((zi>pz)!==(zj>pz)) && px<(xj-xi)*(pz-zi)/(zj-zi)+xi) inside=!inside; } return inside; }
 // Crash-collision registry, populated as the world builds: island terrain, buildings, small structures
 // (PAPI/windsock), and the runway rectangle (the one place the arcade landing floor still applies).
@@ -3313,7 +3314,7 @@ function build_airfield(af){
 	const L=Math.hypot(dx,dz), H=Math.atan2(dx,-dz);   // runway centre, true length, heading a→b (fwd=(sinH,0,-cosH))
 	const parts=rw.ref.split("/").map(s=>parseInt(s,10));   // painted magnetic numbers (06/24) from the OSM ref
 	obstacles.runway={x:cx,z:cz,fx:Math.sin(H),fz:-Math.cos(H),hl:L/2+45,hw:rw.width/2+12};   // landing floor applies only inside this rectangle
-	{ const r=obstacles.runway; physics_strips.push({a:[r.x-r.fx*r.hl,r.z-r.fz*r.hl],b:[r.x+r.fx*r.hl,r.z+r.fz*r.hl],w:r.hw*2}); }
+	{ const r=obstacles.runway; runway_strips.push({a:[r.x-r.fx*r.hl,r.z-r.fz*r.hl],b:[r.x+r.fx*r.hl,r.z+r.fz*r.hl],w:r.hw*2}); }   // the runway is PROUD of the aprons, so it needs its own field at its own height (#220)
 	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width);
 }
 const WALL_TILE=3.6, ROOF_TILE=2.2;
@@ -5222,7 +5223,7 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 		const h=deck_y_at(carrier_model,x,z,-1e9);
 		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
-	if(obstacles.runway && over_runway({x,z})){ _ground_kind="runway"; return ISLAND_H+1.5; }
+	if(obstacles.runway && over_runway({x,z})){ _ground_kind="runway"; return ISLAND_H+RUNWAY_FLOAT; }
 	for(const a of obstacles.aprons){ if(pip(x,z,a)){ _ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
 	for(const is of obstacles.islands){ if(x>is.minx-SKIRT&&x<is.maxx+SKIRT&&z>is.minz-SKIRT&&z<is.maxz+SKIRT){
 		if(pip(x,z,is.pts)){ _ground_kind="ground"; return ISLAND_H; }
@@ -5284,6 +5285,14 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
 	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_mass=()=>{   // #220: the gross weight the CORE is actually carrying — the mask the engine sends, and every store that mask attaches, against the catalog's own masses. weigh() is empty+fuel+SUM(store.Mass + its share of External)
+	const book=stores_catalog(); if(!book) return JSON.stringify({error:"no catalog"});
+	const bits=own_mask(), attached=[]; let hardware=0, tanks=0;
+	book.stores.forEach((entry:any,i:number)=>{ if(!(Math.floor(bits/(2**i))%2)) return;
+		attached.push({ n:entry.name, kg:entry.mass, fuel:entry.fuel||0 }); hardware+=entry.mass||0; if(entry.fuel>0) tanks+=entry.fuel; });   // i18n-format-ok: dev probe payload, never rendered to a user
+	return JSON.stringify({ bits:String(bits), catalog:book.stores.length, loadout:ownship.loadout?Object.keys(ownship.loadout).length:-1, empty:book.empty, internal:ownship.fuel, external:+(ownship.external??0).toFixed(0), tanks,   // i18n-format-ok: dev probe payload, never rendered to a user
+		hardware, stores:attached.length, gross:+(book.empty+(ownship.fuel||0)+(ownship.external??0)+hardware).toFixed(0), attached });   // i18n-format-ok: dev probe payload, never rendered to a user
+};
 if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN tyre sits against the surface beneath IT, and the oleo travel applied to put it there. `clear` is the whole answer — 0 is seated, positive floats, negative is buried in the runway (the reported defect)
 	const rows=(ownship.group.userData.spin||[]).map((s:any)=>{ const w=s.object.getWorldPosition(new THREE.Vector3()), g=ground_height(w.x,w.z);
 		let real=1e9; const rv=new THREE.Vector3();   // the tyre mesh's TRUE lowest drawn vertex — what the eye judges, and what `clear` must be measured on
@@ -5291,7 +5300,10 @@ if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN ty
 			for(let i=0;i<pa.count;i++){ rv.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld); if(rv.y<real) real=rv.y; } });
 		const bottom=real<1e8?real:w.y-(s.outer??s.radius);
 		return { n:(s.object.name||"?").slice(0,24), bottom:+bottom.toFixed(3), ground:g>-1e8?+g.toFixed(3):null, lift:+(s.lift||0).toFixed(3), sink:+(s.sink||0).toFixed(3), depth:+(s.depth||0).toFixed(3), radius:s.radius, outer:+(s.outer??s.radius).toFixed(3), clear:g>-1e8?+(bottom-g).toFixed(3):null }; });   // i18n-format-ok: dev probe payload, never rendered to a user
-	return JSON.stringify({ gear:+(ownship.gear??1).toFixed(2), grounded:!!ownship.grounded, squish:+(ownship.squish??0).toFixed(2), speed:+(ownship.speed||0).toFixed(1), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
+	const gnd=ground_height(ownship.pos.x,ownship.pos.z);
+	return JSON.stringify({ gear:+(ownship.gear??1).toFixed(2), grounded:!!ownship.grounded, squish:+(ownship.squish??0).toFixed(2), speed:+(ownship.speed||0).toFixed(1),   // i18n-format-ok: dev probe payload, never rendered to a user
+		origin:+ownship.pos.y.toFixed(3), ground:+gnd.toFixed(3), stand:+(ownship.pos.y-gnd).toFixed(3),   // #220: the origin's height above the surface — 2.63 minus the strut compression, so it pins the load directly   // i18n-format-ok: dev probe payload, never rendered to a user
+		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
 };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel, bingo:bingo_low(), banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -5427,7 +5439,8 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // The wasm blade-element core owns the ownship physics; this section feeds it
 // the world, delivers state on spawns/resets, and syncs its output back onto
 // the ownship object every rendered frame.
-const physics_strips=[];   // paved capsules, collected as the airfields build
+const physics_strips=[];   // paved capsules (taxiways, stopways, aprons), collected as the airfields build
+const runway_strips=[];   // the runway's own capsules — a separate field because it sits RUNWAY_FLOAT up, not AIRFIELD_FLOAT (#220)
 const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
 const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
@@ -5455,7 +5468,11 @@ function carrier_island(){
 // the two hosts hold one geometry and the server's verdict on scenery is
 // the one the prediction already reached.
 function scenery(){
-	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
+	const capsules=c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w });
+	// The runway field comes FIRST: World.surface returns the first strip it hits, and
+	// where the runway overlaps a taxiway the runway is the higher, real surface.
+	const fields=[{ height:ISLAND_H+RUNWAY_FLOAT, strips:runway_strips.map(capsules) },
+		{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(capsules) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
@@ -6002,7 +6019,13 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 				s.object.updateWorldMatrix(false,true);   // getWorldPosition refreshes ANCESTORS only; without this the tyre's own mesh matrices are stale and the measured radius is nonsense
 				s.object.traverse((o:any)=>{ if(!o.isMesh||!o.geometry?.attributes?.position) return; const pa=o.geometry.attributes.position;
 					for(let i=0;i<pa.count;i++){ rv.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld); if(rv.y<low) low=rv.y; } });
-				if(low<1e8) s.outer=w.y-low; }
+				// Accept only a plausible radius: the one-shot can land on a frame where
+				// this leg's clip has not posed yet, and a wrong value is permanent —
+				// it stranded one main 17 cm off its tyre while the other seated. The
+				// real tyre is within a few percent of the catalogued size, so anything
+				// outside a wide band around it is a bad frame; leave it and retry.
+				const measured=w.y-low;
+				if(low<1e8 && measured>s.radius*0.8 && measured<s.radius*1.3) s.outer=measured; }
 			const outer=s.outer??s.radius;
 			let plane=-1e9; s.sink=0; s.depth=0;
 			if(down){ const surface=ground_height(w.x,w.z);

@@ -65,7 +65,7 @@ describe('oleo', () => {
   it('cannot displace a wheel further than its reach', () => {
     let lift = 0
     for (let i = 0; i < 500; i++) lift = oleo(-50, 0, lift, 1 / 60)
-    expect(lift).toBeLessThanOrEqual(0.15)
+    expect(lift).toBeLessThanOrEqual(0.25)
   })
 
   // Rotation: the wheel climbs away from the runway. The caller stops seating
@@ -95,8 +95,8 @@ describe('oleo', () => {
 })
 
 // The constants live on the wheel spec in engine.ts and mirror fa18c.go.
-const NOSE = { strut: 4.5e5, tyre: 9.0e5, travel: 0.45, limit: 0.023 }
-const MAIN = { strut: 9e5, tyre: 1.17e6, travel: 0.5, limit: 0.053 }
+const NOSE = { strut: 4.5e5, tyre: 9.0e5, travel: 0.45, limit: 0.008 }
+const MAIN = { strut: 9e5, tyre: 1.17e6, travel: 0.5, limit: 0.048 }
 
 describe('flatten', () => {
   // The anchors the tyre stiffnesses were derived from. Static depths are the
@@ -136,26 +136,24 @@ describe('flatten', () => {
     expect(flatten(50, MAIN.strut, MAIN.tyre, MAIN.travel)).toBe(bottomed)
   })
 
-  // A tyre is linear only over its working range, and the cap is its PUBLISHED
-  // RATED deflection. This airframe loads each main to 0.119 m of strut
-  // compression - ~107 kN against a rated load nearer 47 kN - so the mains sit
-  // ON the cap, and without it the model would keep flattening them into a
-  // contact patch no real tyre makes.
+  // A tyre is linear only over its working range, and past the cap it cannot
+  // flatten further however hard the strut presses. Both wheels sit ON their cap
+  // at rest, so without it they would draw their full physical deflection.
   it('stops at the wheel cap however hard the strut presses', () => {
     expect(flatten(0.119, MAIN.strut, MAIN.tyre, MAIN.travel, MAIN.limit)).toBe(MAIN.limit)
     expect(flatten(5, MAIN.strut, MAIN.tyre, MAIN.travel, MAIN.limit)).toBe(MAIN.limit)
     expect(flatten(5, NOSE.strut, NOSE.tyre, NOSE.travel, NOSE.limit)).toBe(NOSE.limit)
   })
 
-  // The caps are a VISUAL calibration set below the physical figures, so at
-  // this airframe's measured loads (main depth 0.119, nose 0.067) they are what
-  // governs: uncapped the mains would draw 9.2 cm and the nose 3.3 cm. If the
-  // mass is ever corrected these should go back to the rated deflections.
-  it('governs at this airframe loads, sitting below the physical deflection', () => {
-    expect(flatten(0.119, MAIN.strut, MAIN.tyre, MAIN.travel)).toBeGreaterThan(MAIN.limit)
-    expect(flatten(0.119, MAIN.strut, MAIN.tyre, MAIN.travel, MAIN.limit)).toBe(MAIN.limit)
-    expect(flatten(0.067, NOSE.strut, NOSE.tyre, NOSE.travel)).toBeGreaterThan(NOSE.limit)
-    expect(flatten(0.067, NOSE.strut, NOSE.tyre, NOSE.travel, NOSE.limit)).toBe(NOSE.limit)
+  // The caps are a VISUAL calibration set below the physical deflection, so at
+  // the jet's real resting loads they are what governs. The depths are the
+  // measured equilibrium (main 0.079, nose 0.027) and match the flight model's
+  // own Go figures; uncapped they would draw 6.1 cm and 1.3 cm.
+  it('governs at the resting loads, sitting below the physical deflection', () => {
+    expect(flatten(0.079, MAIN.strut, MAIN.tyre, MAIN.travel)).toBeCloseTo(0.061, 3)
+    expect(flatten(0.079, MAIN.strut, MAIN.tyre, MAIN.travel, MAIN.limit)).toBe(MAIN.limit)
+    expect(flatten(0.027, NOSE.strut, NOSE.tyre, NOSE.travel)).toBeCloseTo(0.0135, 4)
+    expect(flatten(0.027, NOSE.strut, NOSE.tyre, NOSE.travel, NOSE.limit)).toBe(NOSE.limit)
   })
 
   it('yields nothing without usable constants', () => {
@@ -183,8 +181,8 @@ describe('oleo wiring', () => {
     expect(source).toMatch(/attach:\[-0\.5,-2\.63,-1\.55\]/)
     expect(source).toMatch(/attach:\[-0\.5,-2\.63,1\.55\]/)
     // Both mains, not just whichever the edit anchor happened to match.
-    expect(source.match(/limit:0\.053/g)?.length).toBe(2)
-    expect(source).toMatch(/limit:0\.023/)
+    expect(source.match(/limit:0\.048/g)?.length).toBe(2)
+    expect(source).toMatch(/limit:0\.008/)
   })
 
   // `radius` on the wheel spec is the REAL tyre's size (30x11.5 mains, 22x6.6
@@ -193,7 +191,11 @@ describe('oleo wiring', () => {
   // runway where the model believed 4.937. The drawn radius must be measured
   // off the mesh.
   it('seats on the measured drawn radius, not the real-world tyre size', () => {
-    expect(source).toMatch(/s\.outer\s*=\s*w\.y\s*-\s*low/)
+    expect(source).toMatch(/const measured=w\.y-low/)
+    // and the measurement is only accepted when it is plausible: the one-shot can
+    // land on a frame where a leg has not posed, and a wrong radius is permanent -
+    // it stranded one main 17 cm off its tyre while the other seated correctly.
+    expect(source).toMatch(/measured>s\.radius\*0\.8\s*&&\s*measured<s\.radius\*1\.3/)
     expect(source).toMatch(/oleo\(w\.y-outer,/)
     expect(source).not.toMatch(/oleo\(w\.y-s\.radius,/)
   })

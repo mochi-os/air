@@ -47,16 +47,16 @@ export function flatten(
   const carried = travel > 0 ? Math.min(depth, travel * 3) : depth
   const sink = (carried * strut) / tyre
   // A tyre is linear only over its working range, and `limit` is the largest
-  // contact patch this wheel may draw. It is a VISUAL calibration, set against
-  // the runway screenshots rather than derived: 5.3 cm mains, 2.3 cm nose.
+  // contact patch this wheel may draw: 4.8 cm mains, 0.8 cm nose.
   //
-  // The physical figures are larger — the published rated deflection is 6.3 cm
-  // for the 30x11.5-14.5 mains (32% of their 7.75 in section height) and 4.9 cm
-  // for the 22x6.6 nose — and uncapped this airframe would ask for more still,
-  // because it puts ~107 kN on each main against a rated load nearer 47 kN. The
-  // cap is doing that overweight jet's work; fix the mass (see #203) and the
-  // deflection would land inside it on its own, at which point these numbers
-  // should go back to the rated ones.
+  // These are a VISUAL calibration, chosen against the runway screenshots, and
+  // they sit BELOW the physical deflection this airframe produces — 6.1 cm at
+  // the mains' measured 0.079 m of strut compression, 1.3 cm at the nose's
+  // 0.027. (The mains' physical figure is essentially the published rated 6.3 cm
+  // for a 30x11.5-14.5, so the model is honest; the cap is a deliberate choice
+  // to draw less of it.) The jet's weight is NOT the reason — the flight model
+  // rests at exactly its own equilibrium, ratio 1.000, once the runway is
+  // collided at the height it is drawn (#220).
   return limit > 0 ? Math.min(sink, limit) : sink
 }
 
@@ -76,15 +76,17 @@ function ease(current: number, target: number, dt: number, rate: number): number
 // current - (bottom - ground). Beyond `reach` above the surface the wheel is
 // flying and the correction retires, which also keeps a bad terrain sample
 // from stretching the gear: nothing can displace a wheel further than `reach`.
-// `reach` is deliberately small — the caller only seats a LOADED strut, so a
-// legitimate correction is centimetres, and a wheel visibly off its oleo is a
-// worse artefact than one a centimetre out of place.
+// `reach` bounds a bad terrain sample, not the rotation artefact — the caller
+// seats only a LOADED strut, and that is what keeps a flying wheel attached.
+// It must still clear the real geometric shortfall: the drawn gear is shorter
+// than the physics strut, and asymmetrically so (the left main needs 17 cm, the
+// right 13), which is why this is not a couple of centimetres.
 export function oleo(
   bottom: number,
   ground: number,
   current: number,
   dt: number,
-  reach = 0.15,
+  reach = 0.25,
   rate = 3,
 ): number {
   if (!Number.isFinite(bottom) || !Number.isFinite(ground) || ground < -1e7)
