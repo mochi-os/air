@@ -1102,6 +1102,7 @@ function make_jet(){ const g=new THREE.Group();   // afterburner cones only — 
 // span, flip reverses it.
 const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
+		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
@@ -1214,6 +1215,19 @@ function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	proto.rotation.set(spec.pitch*D2R, spec.yaw*D2R, spec.roll*D2R);
 	proto.position.x=(spec.nose||0)-(spec.wheel||spec.nose||0);   // align the drawn nose wheel onto the physics nose gear: wheels, physics, and the shuttle coincide
 	const outer=new THREE.Group(); outer.add(proto); outer.updateMatrixWorld(true); return outer; }
+
+// gun_profile measures the drawn jet for the gun's signature: the port on the
+// nose skin (spec.muzzle aft of the radome tip, centreline, a whisker above
+// the surface), and the skin's top line from there back over the windscreen
+// and canopy for the gas streak to ride. Rays down through the model in its
+// own frame, which is the jet's body frame once placed.
+function gun_profile(outer, spec){ outer.updateMatrixWorld(true);
+	const box=new THREE.Box3().setFromObject(outer); if(box.isEmpty()) return null;
+	const ray=new THREE.Raycaster(); ray.layers.enableAll();
+	const skin=(x)=>{ ray.set(new THREE.Vector3(x,box.max.y+1,0),new THREE.Vector3(0,-1,0)); const hits=ray.intersectObject(outer,true); return hits.length?hits[0].point.y:null; };
+	const station=box.max.x-(spec.muzzle||2.4), height=skin(station); if(height===null) return null;
+	const top=[]; for(let x=station;x>=station-7;x-=0.5){ const h=skin(x); if(h!==null) top.push([x,h]); }
+	return { port:{ x:station, y:height+0.04, z:0 }, top, tip:box.max.x }; }
 
 // rig_build partitions a model's animations into per-subsystem clips by clip
 // name or by track name. moving_span finds where a track's values actually
@@ -2374,7 +2388,7 @@ async function init_external_model(kind){
 						mm.needsUpdate=true;
 					}); } });
 				}
-				fleet[kind]={ proto, rig };
+				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
 				apply_model_all(); finish();
 			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } },
@@ -2653,6 +2667,67 @@ const ROUND_LENGTH=2600;
 function round_length(alt){ return ROUND_LENGTH*Math.exp(Math.max(alt,0)/8500); }
 const MAGAZINE=578;   // the M61's load: the ownship's magazine, and the nominal the bandit's expenditure is reported against
 const FLARE_LOAD=40, CHAFF_LOAD=20;   // the legacy Hornet's two ALE-47 buckets: 60 cartridges between them, loaded for the air-to-air fight (#43) — the same figures the server arms every jet with
+// The ownship's trigger as the gun sees it: safe with the weapons held, on
+// the catapult, or with the gear anything but fully up, and silent on an
+// empty drum. fire_gun and the flight core's recoil read the same answer.
+function trigger_own(){ return !!(input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98&&(ownship.rounds??0)>0); }
+// The gun's signature while rounds leave. On the airframe, at the port: a
+// tongue of flame under a metre long, drawn only on frames a round leaves and
+// resized every frame so it strobes the way a 100-round-a-second gun reads on
+// film, with a hot core; a warm light on the nose the cockpit sees flicker;
+// and the gas - a translucent grey streak riding the skin from the port back
+// over the windscreen and canopy, its streaks scrolling aft, filling within a
+// tenth of a second of the first round and thinning for a third after the
+// last. In the air behind, one grey puff a round, left almost where it burnt,
+// so the jet trails its gas. Only the ownship carries the light: a light per
+// jet would recompile every material as jets came and went.
+const flash_geo=new THREE.ConeGeometry(0.22,0.9,10,1,true); flash_geo.rotateZ(-Math.PI/2); flash_geo.translate(0.45,0,0);   // base at the port, apex 0.9 m ahead
+const flash_core_geo=new THREE.ConeGeometry(0.1,0.5,8,1,true); flash_core_geo.rotateZ(-Math.PI/2); flash_core_geo.translate(0.25,0,0);
+const flash_mat=new THREE.MeshBasicMaterial({ color:0xff8c2a, transparent:true, opacity:0.8, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, side:THREE.DoubleSide });
+const flash_core_mat=new THREE.MeshBasicMaterial({ color:0xfff2c8, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, side:THREE.DoubleSide });
+const flash_glow=new THREE.SpriteMaterial({ map:glow, color:0xffb040, transparent:true, opacity:0.85, blending:THREE.AdditiveBlending, depthWrite:false, fog:false });   // the bloom around the muzzle, facing every camera: from astern the cone is end-on and reads as nothing
+const gas_streaks=(()=>{ const c=document.createElement("canvas"); c.width=256; c.height=64; const x=c.getContext("2d"); x.fillStyle="#000"; x.fillRect(0,0,256,64);
+	let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };   // fixed streaks: captures stay stable
+	for(let i=0;i<26;i++){ const y=rnd()*64, w=1.5+rnd()*5, a=0.35+rnd()*0.65; x.strokeStyle="rgba(255,255,255,"+a+")"; x.lineWidth=w; x.beginPath(); x.moveTo(-10,y); x.lineTo(270,y+(rnd()-0.5)*6); x.stroke(); }
+	const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2,1); return t; })();
+// plume_path: the streak's spine from the measured skin line - lifting clear
+// of the skin and swelling as it runs aft, fading toward its tail.
+function plume_path(profile){ const top=profile.top; return top.map(([x,y],i)=>{ const t=i/Math.max(1,top.length-1); return { x, y:y+0.12+0.5*t, z:0, radius:0.14+0.55*t, alpha:1-0.8*t }; }); }
+function plume_geometry(profile){ const path=plume_path(profile); const curve=new THREE.CatmullRomCurve3(path.map(p=>new THREE.Vector3(p.x,p.y,p.z)));
+	const segments=path.length*2, around=10, geo=new THREE.TubeGeometry(curve,segments,1,around,false);   // unit tube, then each ring scaled to its station's radius
+	const pos=geo.attributes.position, colour=new Float32Array(pos.count*4);
+	for(let i=0;i<=segments;i++){ const t=i/segments, k=t*(path.length-1), a=Math.floor(k), f=k-a, p=path[a], q=path[Math.min(path.length-1,a+1)];
+		const radius=p.radius+(q.radius-p.radius)*f, alpha=p.alpha+(q.alpha-p.alpha)*f, centre=curve.getPointAt(t);
+		for(let j=0;j<=around;j++){ const n=i*(around+1)+j; pos.setXYZ(n, centre.x+(pos.getX(n)-centre.x)*radius, centre.y+(pos.getY(n)-centre.y)*radius, centre.z+(pos.getZ(n)-centre.z)*radius);
+			colour[n*4]=1; colour[n*4+1]=1; colour[n*4+2]=1; colour[n*4+3]=alpha; } }
+	geo.setAttribute("color",new THREE.BufferAttribute(colour,4)); pos.needsUpdate=true; geo.computeVertexNormals(); return geo; }
+function gun_station(st){ const g=st.group, loaded=g&&fleet[g.userData.hasModel]; return (loaded&&loaded.profile&&loaded.profile.port)||{ x:6.53, y:0.43, z:0 }; }   // before the model is measured: the old hand-placed port
+function gun_port(st){ const p=gun_station(st); return body_offset(st,p.x,p.y,p.z); }
+function gun_rig(st){ const g=st.group; if(!g||!g.userData.hasModel) return null; if(st.gun&&st.gun.model===g.userData.hasModel) return st.gun;
+	const loaded=fleet[g.userData.hasModel]; if(!loaded||!loaded.profile) return null;
+	if(st.gun){ g.remove(st.gun.flash,st.gun.plume); if(st.gun.light) g.remove(st.gun.light); }   // aircraft swap: the old jet's rig goes with it
+	const port=loaded.profile.port, flash=new THREE.Group(), bloom=new THREE.Sprite(flash_glow); bloom.position.x=0.2; bloom.scale.set(1.1,1.1,1);
+	flash.add(new THREE.Mesh(flash_geo,flash_mat),new THREE.Mesh(flash_core_geo,flash_core_mat),bloom); flash.position.set(port.x,port.y,port.z); flash.visible=false;
+	const plume=new THREE.Mesh(plume_geometry(loaded.profile),new THREE.MeshBasicMaterial({ color:0x9a9ca0, transparent:true, opacity:0, alphaMap:gas_streaks, vertexColors:true, depthWrite:false, side:THREE.DoubleSide })); plume.visible=false;
+	g.add(flash,plume); let light=null;
+	if(st===ownship){ light=new THREE.PointLight(0xffb060,0,5,2); light.position.copy(flash.position); light.position.y+=0.35; g.add(light); }   // a little above the skin, so the nose top around the port catches it rather than grazing it
+	if(g.userData.player) layer_own_group(g);   // the cockpit pass renders the ownship's rig too
+	st.gun={ model:g.userData.hasModel, flash, plume, light, gas:0 }; return st.gun; }
+function gun_effects(dt){ gas_streaks.offset.x-=dt*5;   // the streaks run aft
+	for(const st of new Set([ownship,bandit,...remotes.values()])){ if(!st) continue; const fired=st.burst||0; st.burst=0;
+		const rig=gun_rig(st); if(!rig) continue;
+		rig.gas=Math.min(1,Math.max(0,rig.gas+(fired>0?dt/0.1:-dt/0.3)));
+		const lit=fired>0&&Math.random()<0.85; rig.flash.visible=lit;
+		if(lit){ const s=0.7+Math.random()*0.6; rig.flash.scale.set(0.8+Math.random()*0.5,s,s); rig.flash.rotation.x=Math.random()*Math.PI*2; }
+		if(rig.light) rig.light.intensity=lit?18+Math.random()*12:0;
+		rig.plume.visible=rig.gas>0.02; rig.plume.material.opacity=0.55*rig.gas; } }
+function gun_trail(st,port,fired,dt){
+	for(let i=0;i<fired;i++){ const k=pool_spawn(smoke); if(k<0) break; const back=dt*(i+Math.random())/fired;   // spread along the frame's path: continuous at any frame rate
+		smoke.px[k]=port.x-st.velx*back+(Math.random()-0.5)*0.3; smoke.py[k]=port.y-st.vely*back+(Math.random()-0.5)*0.3; smoke.pz[k]=port.z-st.velz*back+(Math.random()-0.5)*0.3;
+		smoke.vx[k]=st.velx*0.1+(Math.random()-0.5)*2; smoke.vy[k]=st.vely*0.1+(Math.random()-0.5)*2+0.3; smoke.vz[k]=st.velz*0.1+(Math.random()-0.5)*2;
+		smoke.ttl[k]=1.2+Math.random()*0.8; smoke.life[k]=smoke.ttl[k]-0.12;   // born past the pool's fade-in: at 270 m/s a puff that fades in over 0.12 s is 30 m behind before it shows
+		smoke.sz[k]=0.5+Math.random()*0.3; smoke.gr[k]=2.2;
+		smoke.r[k]=0.55; smoke.g[k]=0.53; smoke.b[k]=0.5; } }
 function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
@@ -2664,7 +2739,7 @@ function fire_gun(st,target,key,dt,force){
 	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; if(cheat("ammunition")) st.rounds=MAGAZINE; }   // infinite AMMUNITION, not a gun that stops counting (#258): the round is spent and the magazine refills, mirroring the server, so expenditure stays observable and the two counters cannot drift
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
-		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.53,0.43,0.0);   // the M61 port: nose-top centreline, ~0.9 m ahead of and ~0.12 m below the pilot's eye (runtime-calibrated at 5.61/0.55 from Pilot_Head_769) — matches the server's hitscan muzzle
+		const k=pool_spawn(tracers); if(k<0) break; const sp=gun_port(st);   // the M61 port on the measured nose skin (gun_profile)
 		tracers.px[k]=sp.x;tracers.py[k]=sp.y;tracers.pz[k]=sp.z; const spread=0.004;
 		tracers.vx[k]=st.fwd.x*muzzle+(Math.random()-0.5)*spread*muzzle+st.velx;
 		tracers.vy[k]=st.fwd.y*muzzle+(Math.random()-0.5)*spread*muzzle+st.vely;
@@ -2672,6 +2747,7 @@ function fire_gun(st,target,key,dt,force){
 		tracers.ttl[k]=tracers.life[k]=1.8;   // ~1.8s @1050m/s -> ~1900m burnout (real 20mm tracer range; no drag in this sim)
 		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
 	spend(fired);
+	st.burst=fired; if(fired>0) gun_trail(st,gun_port(st),fired,dt);   // gun_effects reads the burst this frame
 	return fired; }
 const _flare_timer={bandit:4.5};
 function dispense_flare(st){ st.flared_at=sim_time;   // stamped HERE, for every dispenser: the seduction window is the target's own, and the player's flares had never marked one because nothing of the bandit's could be seduced until it could fire heaters (2026-08-15)
@@ -4902,6 +4978,7 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 	const p=CLOUDS[cfg.clouds];
 	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
+if(DEV_MODE) (globalThis as any).dev_gun=()=>{ const loaded=fleet[own_aircraft()], rig=ownship.gun; return { profile:loaded?loaded.profile:null, gas:rig?rig.gas:null, flash:rig?rig.flash.visible:null, light:rig&&rig.light?rig.light.intensity:null }; };   // dev: the measured port and skin line, and the ownship rig's state
 if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
 	const report={};
 	for(const [name,p] of [["smoke",smoke],["strikes",strikes],["debris",debris],["flares",flares],["tracers",tracers]]){
@@ -5522,7 +5599,7 @@ function fly_player(dt){
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
-		dump:fuel_dump, port:secured[0], starboard:secured[1], sequence:++control_sequence };
+		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), sequence:++control_sequence };   // the core kicks back while rounds leave
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
@@ -5744,7 +5821,7 @@ function fly_bandit(dt){
 		if(count>8){ count=8; bandit_acc=0; }   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 		else bandit_acc-=count/60;
 		let step=null, pulled=false, popped=false, loosed=false, heated=false, bloomed=false;
-		for(let s=0;s<count;s++){ const one=bandit_step(); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; heated=heated||one.heater; bloomed=bloomed||one.chaff; }
+		for(let s=0;s<count;s++){ const one=bandit_step(bandit.rounds|0); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; heated=heated||one.heater; bloomed=bloomed||one.chaff; }
 		if(step){
 			const w=step.state; step.fire=pulled; step.flare=popped; step.chaff=bloomed;
 			bandit_radar=step.emitter; bandit_locked=step.locked;   // the brain's real radar state (#33): the RWR and the round's datalink read truth
@@ -5924,8 +6001,9 @@ function step_world(dt){ sim_time+=dt;
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
-	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
+	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,trigger_own());   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
+	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
