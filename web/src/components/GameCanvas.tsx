@@ -176,6 +176,8 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'Bolter: full power, boards in, hook down, climb to 600\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}" }),
   'Wave-off: full power, boards in, wings level, climb to 1200\', {heading}': msg({ message: "Wave-off: full power, boards in, wings level, climb to 1200', {heading}" }),
   'Bolter: full power, boards in, hook down, climb to 1200\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}" }),
+  // #152: said once when the device does not report something it is bound to.
+  'Some bound controls are not on this stick: check Settings, Joystick': msg`Some bound controls are not on this stick: check Settings, Joystick`,
   'On runway: half flaps, run up to military power, brakes off': msg`On runway: half flaps, run up to military power, brakes off`,
   '140 knots: rotate to 8° nose up': msg`140 knots: rotate to 8° nose up`,
   'Positive rate: gear up; flaps auto passing 250 knots': msg`Positive rate: gear up; flaps auto passing 250 knots`,
