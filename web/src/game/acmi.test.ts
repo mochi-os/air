@@ -796,6 +796,29 @@ describe('a multiplayer remote is recorded, not just tracked (#163/#164)', () =>
     expect(out.leak).toBe(0)
   })
 
+  // #164: the two channels a debrief CANNOT reconstruct from the pose stream.
+  // #44 measured debrief.py's derived nose disagreeing with the recorded AOA by
+  // up to 80 degrees, which is why these are sent rather than inferred.
+  it('carries his alpha and his g, which cannot be derived', () => {
+    const out = channels({ aoa: 14, g: 6.4 })
+    expect(out.aoa).toBe(14)
+    expect(out.g).toBeCloseTo(6.4, 3)
+  })
+
+  it('reports a wings-level jet as zero alpha and one g rather than omitting them', () => {
+    // Same rule as rounds/struck above: an absent channel and a zero are
+    // different claims. A remote whose pose predates the widening reads 0.
+    const out = channels({})
+    expect(out.aoa).toBe(0)
+    expect(out.g).toBe(0)
+  })
+
+  it('keeps a negative g and a negative alpha, which a pushover produces', () => {
+    const out = channels({ aoa: -4, g: -1.2 })
+    expect(out.aoa).toBe(-4)
+    expect(out.g).toBeCloseTo(-1.2, 3)
+  })
+
   it('reads burning off either engine fire, as the ownship does', () => {
     expect(channels({ burn: [0, 0.4] }).burning).toBe(true)
     expect(channels({ burning: true }).burning).toBe(true)
