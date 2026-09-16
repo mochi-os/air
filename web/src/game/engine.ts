@@ -1519,7 +1519,7 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index); } }
+		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index, RADAR.sil); } }
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
 	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } } }
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
@@ -1585,8 +1585,8 @@ function build_radalt(g){
 	surface_pose(mesh,fit?fit.x:box.lo.x,fit?fit.tilt:0,(box.lo.y+box.hi.y)/2,(box.lo.z+box.hi.z)/2);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
-	radalt_draw(g.userData.radalt, 1e9, law_index); }
-function radalt_draw(r, agl, index){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree
+	radalt_draw(g.userData.radalt, 1e9, law_index, RADAR.sil); }
+function radalt_draw(r, agl, index, silent){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: radar silence, the EMCON inhibit (2.12.5, #29)
 	const x=r.canvas.getContext("2d"), W=160, C=80;
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
@@ -1600,7 +1600,7 @@ function radalt_draw(r, agl, index){   // index: the low-altitude setting the au
 		x.fillStyle="#e8c832"; x.beginPath();
 		x.moveTo(C+Math.cos(a)*70,C+Math.sin(a)*70); x.lineTo(C+Math.cos(a-0.08)*58,C+Math.sin(a-0.08)*58); x.lineTo(C+Math.cos(a+0.08)*58,C+Math.sin(a+0.08)*58); x.closePath(); x.fill();
 		x.fillStyle="#d8d8d0"; }
-	const off=agl>5000, lamp=!off&&agl<index;   // OFF above 5,000 ft AGL (2.12.5.4.6); the red light whenever the pointer is below the index (2.12.5.4.3) - the aural's gear gate is the aural's, not the lamp's
+	const off=silent||agl>5000, lamp=!off&&agl<index;   // OFF with the set inhibited or above 5,000 ft AGL (2.12.5.4.6); the red light whenever the pointer is below the index (2.12.5.4.3) - the aural's gear gate is the aural's, not the lamp's
 	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill();   // the red low-altitude warning light, upper right
 	x.fillStyle="#173a17"; x.beginPath(); x.arc(C-30,C-30,7,0,7); x.fill();   // the green BIT light (2.12.5.4.5): dark - the game runs no initiated BIT
 	x.fillStyle="#d8d8d0";
@@ -6055,7 +6055,7 @@ function fly_player(dt){
 			// is — a warning light on the altimeter face, not a symbol across
 			// the HUD (#187).
 			law_active=closure&&flying;
-			const declared=dirty&&flying;
+			const declared=dirty&&flying&&!RADAR.sil;   // the primary low-altitude warning is the set's (2.12.5.1): radar silence inhibits the set and the call with it (#29)
 			if(law_active){ audio_law(); law_calls++; } // repeats while below: the escape margin is gone and stays gone until the pilot fixes it
 			else if(declared&&law_armed){ audio_law(); law_calls++; law_armed=false; }   // one call per descent through the index, then quiet: the approach is the pilot's
 			// Armed only from ABOVE the index, since the call is a descent through
@@ -7223,7 +7223,7 @@ function draw_hud(){
 	let alt=baro, radar=false, flashB=false;
 	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
 		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
-		if(agl<=5000){ alt=Math.max(agl,0); radar=true; } else flashB=true; }
+		if(agl<=5000&&!RADAR.sil){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
 	if(!declutter){ hctx.strokeRect(lx,wly,96,30);
 		const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
