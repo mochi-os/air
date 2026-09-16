@@ -1292,60 +1292,47 @@ function GeneralPanel({
 
   return (
     <div className='space-y-4'>
-      <section>
-        <SectionLabel>
-          <Trans>Pilot identity</Trans>
-        </SectionLabel>
+      <div className='flex items-center justify-between gap-4 px-3 py-1'>
+        <Label
+          htmlFor='callsign'
+          className='text-card-foreground text-sm font-medium'
+        >
+          <Trans>Callsign</Trans>
+        </Label>
+        <Input
+          id='callsign'
+          value={text}
+          maxLength={32}
+          className='max-w-sm font-mono'
+          onChange={(e) => {
+            setText(e.target.value)
+            set('callsign', e.target.value)
+          }}
+        />
+      </div>
 
-        <div className='space-y-2'>
-          <Label className='text-muted-foreground text-xs font-medium uppercase'>
-            <Trans>Callsign</Trans>
-          </Label>
-          <Input
-            value={text}
-            maxLength={32}
-            className='max-w-sm font-mono'
-            onChange={(e) => {
-              setText(e.target.value)
-              set('callsign', e.target.value)
-            }}
-          />
-        </div>
-      </section>
+      <div>
+        <SwitchRow
+          id='record'
+          tight
+          label={<Trans>Record flights</Trans>}
+          checked={config.record !== false}
+          onChange={(v) => set('record', v)}
+        />
+      </div>
 
-      <section>
-        <SectionLabel>
-          <Trans>Recording</Trans>
-        </SectionLabel>
-
-        <div>
-          <SwitchRow
-            id='record'
-            tight
-            label={<Trans>Record flights</Trans>}
-            checked={config.record !== false}
-            onChange={(v) => set('record', v)}
-          />
-        </div>
-      </section>
-
-      <section>
-        <SectionLabel>
-          <Trans>Hints</Trans>
-        </SectionLabel>
-        {/* Coaching through the comms area as you fly — the carrier recovery
-            procedures first (#70). On by default: the players who need it most
-            never find a buried toggle, and it only speaks on approach. */}
-        <div>
-          <SwitchRow
-            id='hints'
-            tight
-            label={<Trans>Flight hints</Trans>}
-            checked={config.hints !== false}
-            onChange={(v) => set('hints', v)}
-          />
-        </div>
-      </section>
+      {/* Coaching through the comms area as you fly — the carrier recovery
+          procedures first (#70). On by default: the players who need it most
+          never find a buried toggle, and it only speaks on approach. */}
+      <div>
+        <SwitchRow
+          id='hints'
+          tight
+          label={<Trans>Flight hints</Trans>}
+          checked={config.hints !== false}
+          onChange={(v) => set('hints', v)}
+        />
+      </div>
     </div>
   )
 }
