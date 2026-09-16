@@ -40,6 +40,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, granted as st
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
+import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, BUTTONS as ifei_buttons } from './ifei'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
@@ -1112,6 +1113,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
+		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR])/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
@@ -1170,30 +1172,8 @@ const AIRCRAFT_MODELS={
 	      { name:"altT",      node:"digits_altitude_thousand_AN_thousand_394",       axis:"x", sign:-1, gain:6.2832/10000,  gauge:"altitude" },
 	      { name:"altTT",     node:"digits_altitude_tenthousand_AN_tenthousand_391", axis:"x", sign:-1, gain:6.2832/100000, gauge:"altitude" },
 	      { name:"vsi",       node:"VSINeedleAction_AN__736",                        axis:"z", gauge:"vsi" },
-	      { name:"fuelNeedle",node:"FuelNeedleAction_AN_Needle_466",                 axis:"z", gain:6.2832/22000,  gauge:"fuelLbs" },
-	      { name:"fuel10",    node:"Fuel_Drum_10_AN_10_442",                         axis:"x", sign:-1, gain:6.2832/100,    gauge:"fuelLbs" },
-	      { name:"fuel100",   node:"Fuel_Drum_100_AN_100_445",                       axis:"x", sign:-1, gain:6.2832/1000,   gauge:"fuelLbs" },
-	      { name:"fuel1000",  node:"Fuel_Drum_1000_AN_1000_448",                     axis:"x", sign:-1, gain:6.2832/10000,  gauge:"fuelLbs" },
-	      { name:"fuel10000", node:"Fuel_Drum_10000_AN_10000_451",                   axis:"x", sign:-1, gain:6.2832/100000, gauge:"fuelLbs" },
-	      // engine column pairs: higher x = higher digit place AND the left-engine column (both
-	      // verified from node positions: EGT_10/100/1000 ascend with x; L-pair sits at higher x)
-	      { name:"rpmL10",    node:"RPMNeedleLAction_AN__646",  axis:"x", sign:-1, gain:6.2832/100,   gauge:"rpmL" },
-	      { name:"rpmL1",     node:"RPMNeedleL2Action_AN__649", axis:"x", sign:-1, gain:6.2832/10,    gauge:"rpmL" },
-	      { name:"rpmR10",    node:"RPMNeedleRAction_AN__652",  axis:"x", sign:-1, gain:6.2832/100,   gauge:"rpmR" },
-	      { name:"rpmR1",     node:"RPMNeedleR2Action_AN__655", axis:"x", sign:-1, gain:6.2832/10,    gauge:"rpmR" },
-	      { name:"egtL10",    node:"EGT_10_AN_10_424",       axis:"x", sign:-1, gain:6.2832/100,   gauge:"egtL" },
-	      { name:"egtL100",   node:"EGT_100_AN_100_427",     axis:"x", sign:-1, gain:6.2832/1000,  gauge:"egtL" },
-	      { name:"egtL1000",  node:"EGT_1000_AN_1000_430",   axis:"x", sign:-1, gain:6.2832/10000, gauge:"egtL" },
-	      { name:"egtR10",    node:"EGT2_10_AN_10_415",      axis:"x", sign:-1, gain:6.2832/100,   gauge:"egtR" },
-	      { name:"egtR100",   node:"EGT2_100_AN_100_418",    axis:"x", sign:-1, gain:6.2832/1000,  gauge:"egtR" },
-	      { name:"egtR1000",  node:"EGT2_1000_AN_1000_421",  axis:"x", sign:-1, gain:6.2832/10000, gauge:"egtR" },
-	      // fuel flow displays pph/10 on three drums (place order by x, same rule)
-	      { name:"flowL1",    node:"FuelFlowAction3_AN__472",   axis:"x", sign:-1, gain:6.2832/10,   gauge:"flowL" },
-	      { name:"flowL10",   node:"FuelFlowAction4_AN__475",   axis:"x", sign:-1, gain:6.2832/100,  gauge:"flowL" },
-	      { name:"flowL100",  node:"FuelFlowAction5_AN__478",   axis:"x", sign:-1, gain:6.2832/1000, gauge:"flowL" },
-	      { name:"flowR1",    node:"Fuel_Flow1d_AN_Flow1d_463", axis:"x", sign:-1, gain:6.2832/10,   gauge:"flowR" },
-	      { name:"flowR10",   node:"Fuel_Flow1c_AN_Flow1c_460", axis:"x", sign:-1, gain:6.2832/100,  gauge:"flowR" },
-	      { name:"flowR100",  node:"Fuel_Flow1b_AN_Flow1b_457", axis:"x", sign:-1, gain:6.2832/1000, gauge:"flowR" },
+	      // engine and fuel readouts are the IFEI quad (build_ifei), not this rig: the GLB's
+	      // drum counters and pointer fuel gauge are the A/B fit and stay hidden (spec.hide)
 	      { name:"clockH",    node:"Clock_hourAction_AN_Hour_364", axis:"z", gain:6.2832/12, gauge:"clockH" },
 	      { name:"clockM",    node:"ClockMinutesAction_AN__367",   axis:"z", gain:6.2832/60, gauge:"clockM" },
 	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" },
@@ -1370,7 +1350,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_screens(g); }
+	build_radalt(g); build_screens(g); build_ifei(g); }
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
@@ -1632,7 +1612,8 @@ function screens_update(){
 		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
 			if(want!==cur){ sc.canvas.width=sc.canvas.height=want;
 				sc.tex.dispose(); } }   // WebGL2 canvas textures get immutable texStorage2D storage at first upload; without a dispose a resized canvas texSubImage2Ds into one corner of the old allocation and the rest of the face keeps stale texels
-		ddi_blit(sc); } }
+		ddi_blit(sc); }
+	if(pit) ifei_update(stale); }   // the IFEI shares the 120 ms economy; a button press redraws at once through ifei_dirty
 // Pages may declare optional handlers beyond draw: press(pb,display) for
 // page-owned bezel buttons, and range(direction)/reset() which the DDI view
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
@@ -1780,9 +1761,9 @@ function ddi_rdr(x){
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
 	x.fillText("ENG",256,36);
 	x.font="22px monospace";
-	const rows=[["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,10],
-		["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),1],
-		["OIL PSI",55+45*(gz.spoolL||0),55+45*(gz.spoolR||0),1]];   // 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4). It swept 55-65, below the MIL minimum at every power setting (#49)
+	const rows=[["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],["FF PPH",gz.flowL||0,gz.flowR||0,10],
+		["NOZ %",gz.nozL||0,gz.nozR||0,1],
+		["OIL PSI",gz.oilL||0,gz.oilR||0,1]];   // the same channels the IFEI reads (update_gauges): one law for both faces. The oil law once swept 55-65, below the MIL minimum at every power setting (#49)
 	x.textAlign="center"; x.fillText("L",150,84); x.fillText("R",362,84);
 	let y=140;
 	for(const [label,L,R,q] of rows){
@@ -1980,11 +1961,81 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu pr
 		x.fillStyle="#39e07a";
 	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("---",256,360); }
 }
-const fuel_state={ bingo:2000 };
+const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
 function fuel_press(pb){
-	if(pb===4){ fuel_state.bingo=Math.min(10000,fuel_state.bingo+500); return true; }
-	if(pb===3){ fuel_state.bingo=Math.max(0,fuel_state.bingo-500); return true; }
+	if(pb===4){ bingo_set(fuel_state.bingo+100); return true; }
+	if(pb===3){ bingo_set(fuel_state.bingo-100); return true; }
 	return false; }
+// The IFEI (NATOPS 2.1.1.7.5, 2.2.10.1, 2.12.8): the C's LCD block under the
+// left DDI, a canvas quad over the face of the model's A/B drum unit (hidden by
+// spec.hide), drawn from the face ifei.ts computes. fuel_state owns BINGO; the
+// rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives here.
+let ifei_state=ifei_fresh(fuel_state.bingo), ifei_dirty=true;
+const IFEI_W=512, IFEI_H=224, IFEI_BUTTON_X=[300,372], IFEI_BUTTON_Y=6, IFEI_BUTTON_PITCH=36;   // canvas layout: engine block left, the six buttons down the middle, fuel and time right
+function ifei_view(){ return { ...ifei_state, bingo:fuel_state.bingo }; }
+function tanks_fitted(){ const lo=ownship.loadout||{};   // which external stations carry a tank: 3 and 7 the wings, 5 the centreline
+	const has=(station)=>{ const slot=lo[String(station)]; return !!slot&&stores_entries(station,slot).some(n=>n.startsWith("tank")); };
+	return { left:has(3), right:has(7), centre:has(5) }; }
+function ifei_reading(){ const gz=ownship.gauges||{};
+	return { rpm:[gz.rpmL??NaN,gz.rpmR??NaN], egt:[gz.egtL??NaN,gz.egtR??NaN], flow:[gz.flowL??NaN,gz.flowR??NaN], noz:[gz.nozL??NaN,gz.nozR??NaN], oil:[gz.oilL??NaN,gz.oilR??NaN],
+		internal:gz.fuelRaw??NaN, external:gz.externalRaw??0, tanks:tanks_fitted() }; }
+function ifei_current(){ return ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }
+const IFEI_FACE={ y:0.208, z:-0.189, w:0.122 };   // the modeled unit's face, group frame, measured by panel click (&panelpoint=1) on its legend row and window edges: the drum nodes behind it sit 8 cm deep and off their windows, so their boxes mislocate the face. &ifei=y,z,w (dev) overrides for recalibration
+function build_ifei(g){
+	if(g.userData.ifei&&g.userData.ifei.mesh.parent===g) return;
+	const at=DEV_MODE&&new URLSearchParams(location.search).get("ifei");
+	const [y,z,w]=at?at.split(",").map(Number):[IFEI_FACE.y,IFEI_FACE.z,IFEI_FACE.w];
+	if(!isFinite(y)||!isFinite(z)||!isFinite(w)) return;
+	const h=w*IFEI_H/IFEI_W;   // the LCD's own aspect
+	const box={ lo:new THREE.Vector3(6.20,y-h/2,z-w/2), hi:new THREE.Vector3(6.25,y+h/2,z+w/2) };   // the face reads at x≈6.21; the fit finds its exact depth and lean through the cover, as the radalt's does
+	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
+	const canvas=document.createElement("canvas"); canvas.width=IFEI_W; canvas.height=IFEI_H;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+	surface_pose(mesh,fit?fit.x:6.211,tilt,y,z);
+	g.add(mesh);
+	g.userData.ifei={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
+	ifei_dirty=true; ifei_update(true); }
+function ifei_button_at(uv){ const px=uv.x*IFEI_W, py=(1-uv.y)*IFEI_H;   // canvas pixel under a click -> the pushbutton, or null
+	if(px<IFEI_BUTTON_X[0]||px>IFEI_BUTTON_X[1]) return null;
+	const i=Math.floor((py-IFEI_BUTTON_Y)/IFEI_BUTTON_PITCH); return ifei_buttons[i]||null; }
+function ifei_click(button,hold){
+	const next=ifei_press(ifei_view(),button,performance.now()/1000,hold||0);
+	if(next.bingo!==fuel_state.bingo) bingo_set(next.bingo);
+	ifei_state={ ...next, bingo:fuel_state.bingo }; ifei_dirty=true; ifei_update(true); }
+function ifei_update(stale){ const u=ownship.group.userData.ifei; if(!u||!(ifei_dirty||stale)) return; ifei_dirty=false;
+	const x=u.canvas.getContext("2d"), f=ifei_current();
+	x.fillStyle="#b9c2b0"; x.fillRect(0,0,IFEI_W,IFEI_H);   // the LCD's pale face; legends and digits are the dark segments
+	x.fillStyle="#0e120e"; x.textBaseline="middle";
+	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("L",70,16); x.fillText("ENGINE",150,16); x.fillText("R",230,16);
+	f.engine.forEach((row,i)=>{ const y=48+i*36;
+		x.font="bold 14px monospace"; x.textAlign="center"; x.fillText(row.label,150,y);
+		x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(row.left,118,y); x.textAlign="left"; x.fillText(row.right,182,y); });
+	ifei_buttons.forEach((b,i)=>{ const y=IFEI_BUTTON_Y+i*IFEI_BUTTON_PITCH;
+		x.fillStyle="#2a2d2a"; x.fillRect(IFEI_BUTTON_X[0]+2,y,IFEI_BUTTON_X[1]-IFEI_BUTTON_X[0]-4,30);
+		x.fillStyle="#e8e8e0"; x.font="bold 13px monospace"; x.textAlign="center"; x.fillText(b==="up"?"▲":b==="down"?"▼":b.toUpperCase(),(IFEI_BUTTON_X[0]+IFEI_BUTTON_X[1])/2,y+15); });
+	x.fillStyle="#0e120e"; x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("FUEL",446,16);
+	const counter=(c,y)=>{ x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(c.value,470,y);
+		x.font="bold 13px monospace"; if(c.legend.length>2){ x.textAlign="left"; x.fillText(c.legend,384,y+17); } else { x.textAlign="left"; x.fillText(c.legend,476,y); } };   // T / I / FL... ride beside the counter; BINGO reads beneath its value, as the real window labels it
+	counter(f.fuel.upper,44); counter(f.fuel.middle,76); counter(f.fuel.lower,108);
+	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("TIME",446,150);
+	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.clock,470,176); if(f.zulu){ x.font="bold 13px monospace"; x.textAlign="left"; x.fillText("Z",476,176); }
+	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.elapsed,470,206);
+	u.tex.needsUpdate=true; }
+// The arrows scroll while held (a second's hold, then 100 lb every 150 ms,
+// NATOPS 2.2.10.1); ET needs the hold length to tell a reset from a press.
+let ifei_hold=null;
+function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
+	const u=ownship.group.userData.ifei; if(!u) return;
+	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	const hit=_click_ray.intersectObject(u.mesh,false)[0]; if(!hit||!hit.uv) return;
+	const button=ifei_button_at(hit.uv); if(button!=="up"&&button!=="down") return;
+	const hold={ button, fired:false, interval:null, timeout:null };
+	hold.timeout=setTimeout(()=>{ hold.interval=setInterval(()=>{ hold.fired=true; ifei_click(button,0); },150); },1000);
+	ifei_hold=hold; }
+function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return false;
+	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
+if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
 // bingo_low: the tank is under the settable bingo bug. FALSE until the jet is
 // flying, because an unread tank is not an empty one: joining a match, the
 // client holds zero fuel until the first server state arrives, and the HUD's
@@ -1993,7 +2044,7 @@ function fuel_press(pb){
 function bingo_low(){ if(cheat("fuel")||!flight_active) return false;
 	return ((ownship.fuel??0)+(ownship.external??0))*2.20462<fuel_state.bingo; }
 function ddi_fuel(x,display){ const gz=ownship.gauges||{};
-	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=((gz.flowL||0)+(gz.flowR||0))*10;
+	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=(gz.flowL||0)+(gz.flowR||0);
 	const low=bingo_low(), colour=display==="center";   // the BINGO caret watches TOTAL fuel — externals burn first, so they count (#17)
 	x.fillText("FUEL",256,36);
 	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest INTERNAL total inside — one external figure below it (concurrent transfer drains the tanks in step, so per-tank rows would all read the same)
@@ -2004,8 +2055,8 @@ function ddi_fuel(x,display){ const gz=ownship.gauges||{};
 	if(low){ x.font="22px monospace"; x.fillText("BINGO",256,304); }   // annunciated under the total while beneath the caret
 	if(fuel_dump){ if(colour) x.fillStyle="#ffb04a"; x.font="22px monospace"; x.fillText("DUMP",256,336); x.fillStyle="#39e07a"; }   // #54: the switch is ON — fuel is going overboard
 	x.fillStyle="#39e07a"; x.font="20px monospace";
-	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)*10),190,206);   // per-engine burn either side of the tank
-	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)*10),322,206);
+	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)/10)*10,190,206);   // per-engine burn either side of the tank
+	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)/10)*10,322,206);
 	if(ext>0||external_capacity()>0){ x.textAlign="center"; x.fillText("EXT "+ext,256,396); }   // external tanks aboard: their remaining fuel (burns before internal)
 	if(flow>300){ const m=Math.round((total+ext)/flow*60);   // endurance at the present burn, externals included
 		x.textAlign="left"; x.fillText("TIME "+Math.floor(m/60)+"+"+String(m%60).padStart(2,"0"),24,458); }
@@ -3887,8 +3938,10 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		fuelLbs:Math.min(lbs,21000),
 		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
 		egtL:300+(150+360*gL)*hL+90*bL, egtR:300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
-		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),   // the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
-		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),
+		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
+		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
+		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
+		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
 		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
 		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
@@ -4472,17 +4525,17 @@ addEventListener("pagehide",()=>{ exit_match(); },{ signal });   // closing/navi
 // cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
 // button only (fire stays Space); never in HUD. Pointer capture — not pointer lock, which
 // the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
-let dragging=false, drag_x=0, drag_y=0, press_moved=0;
+let dragging=false, drag_x=0, drag_y=0, press_moved=0, press_at=0;
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
-	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
+	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; press_at=performance.now(); ifei_hold_begin(e); try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
-stage.addEventListener("pointerup",e=>{ const pressed=dragging&&head_drag&&press_moved<6; end_drag(e); if(pressed) pit_click(e); },{ signal });
+stage.addEventListener("pointerup",e=>{ const pressed=dragging&&head_drag&&press_moved<6, scrolled=ifei_hold_end(); end_drag(e); if(pressed&&!scrolled) pit_click(e); },{ signal });   // an arrow that scrolled while held has already stepped: no extra step on release
 stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on||!ddi_view_rect) return;   // the TDC follows the mouse over the full-screen attack format (#30) — position only; the click designates
 	const st=ddi_state[ddi_focus()]; if(!st||st.menu||st.page!=="rdr") return;
 	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
@@ -4500,6 +4553,8 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
+		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay);   // measuring click: report where on the panel the pilot pointed
@@ -5406,7 +5461,10 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error,
+	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, ifei:u.ifei?{ calibration:u.ifei.at, at:u.ifei.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ifei.mesh.layers.mask, face:ifei_current(),   // i18n-format-ok: dev probe readout, never shown to a user
+			rect:(()=>{ const m=u.ifei.mesh, v=new THREE.Vector3(), w=u.ifei.width/2, h=u.ifei.height/2;   // projected quad corners (css px, pilot's view) — placement checks and headless button clicks
+				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
+				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
@@ -5488,7 +5546,8 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 const physics_strips=[];   // paved capsules (taxiways, stopways, aprons), collected as the airfields build
 const runway_strips=[];   // the runway's own capsules — a separate field because it sits RUNWAY_FLOAT up, not AIRFIELD_FLOAT (#220)
 const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
-const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
+let BINGO=1361; const FUELLO=726;   // kg: the bingo call (the IFEI setting, 3,000 lb until the pilot moves it — bingo_set) and the ~1,600 lb hardware FUEL LO caution
+function bingo_set(lb){ fuel_state.bingo=THREE.MathUtils.clamp(Math.round(lb/100)*100,0,20000); BINGO=fuel_state.bingo/2.2046; ifei_dirty=true; }   // one BINGO: the IFEI counter, the FUEL page caret, the HUD legend and the caution all read the same setting (NATOPS 2.2.10.4)
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let fuel_read=false;   // the core has reported a real tank this mission: joining a match it runs on zero until the welcome's state lands, and zero there is unread, not empty
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
