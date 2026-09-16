@@ -1446,6 +1446,20 @@ function build_lamps(g){
 		if(b){ lamps.hook=legend("HOOK","#ffc23a",0.020,0.012); lamps.hook.name="hooklamp";
 			lamps.hook.position.set(b.lo.x-0.003,(b.lo.y+b.hi.y)/2,(b.lo.z+b.hi.z)/2); lamps.hook.rotateY(-Math.PI/2); lamps.hook.layers.set(LAYER_OWN);
 			g.add(lamps.hook); g.updateMatrixWorld(true); hook.attach(lamps.hook); } }
+	// The caution lights panel (FO-5 item 46, NATOPS 2.17.2, #13): nine yellow lights three by three at
+	// the lower right of the main panel. A grid of panel clicks (&panelpoint=1) fits the face there as a
+	// plane through x 6.167 at the painted APU ACC legend, y -0.003, z 0.354, leaning aft going down
+	// (dx/dy 0.6) and going outboard (dx/dz -0.51). The lenses lie on that plane 7 mm proud, facing
+	// along its normal, raised and moved outboard a few millimetres for the design eye's parallax, at the painted lights' full size so the texture's lit APU ACC stays covered as
+	// the head moves. The rows read as the foldout lists them.
+	const CAUTIONS={ x:6.160, y:0.001, z:0.357, pitch:0.016, span:0.034, lean:0.6, wrap:-0.51 };
+	const cautions=new THREE.Group(), aft=new THREE.Vector3(-1,CAUTIONS.lean,CAUTIONS.wrap).normalize();   // the face's normal toward the pilot
+	const face=new THREE.Matrix4().lookAt(aft,new THREE.Vector3(),new THREE.Vector3(0,1,0));   // a quad's front along that normal, legend upright
+	[[["ckseat","CK SEAT"],["apuacc","APU ACC"],["battsw","BATT SW"]],[["fcshot","FCS HOT"],["gentie","GEN TIE"],["fuello","FUEL LO"]],[["fces","FCES"],["genL","L GEN"],["genR","R GEN"]]]
+		.forEach((row,r)=>row.forEach(([name,text],c)=>{ const m=lamps[name]=legend(text,"#ffc23a",0.035,0.015); m.name=name+"lamp";   // a millimetre over the pitch so the seams close
+			const dy=-r*CAUTIONS.pitch, dz=(c-1)*CAUTIONS.span; m.position.set(CAUTIONS.lean*dy+CAUTIONS.wrap*dz,dy,dz); m.setRotationFromMatrix(face); cautions.add(m); }));
+	cautions.position.set(CAUTIONS.x,CAUTIONS.y,CAUTIONS.z);
+	cautions.children.forEach(m=>{ m.layers.set(LAYER_OWN); }); g.add(cautions);
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
@@ -1461,6 +1475,12 @@ function lamps_update(out){
 	lamp_set(l.aspj,jammer_armed); lamp_set(l.xmit,jammer_loud()); lamp_set(l.rec,jammer_armed&&!jammer_loud());   // the ASPJ: power on, radiating, armed and listening
 	lamp_set(l.ai,RWR.contacts.length>0);   // every emitter the RWR hears is an aircraft radar; SAM, AAA and CW have no emitter class to fire on
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
+	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
+	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
+	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO);
+	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
+		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL); }
+	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }

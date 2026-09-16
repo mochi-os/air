@@ -146,3 +146,47 @@ describe('the HOOK light', () => {
     expect(source).toMatch(/case "hooklever": f=\(st\.hookTarget\?\?0\)>0\.5\?1:0; break;/)
   })
 })
+
+// The caution lights panel (FO-5 item 46): FUEL LO on the feed-tank hardware
+// caution, L GEN and R GEN when their generator drops off the line but neither
+// in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
+interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number }
+function cautionlit(c: Cautions): string[] {
+  const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,jammed\); \}\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('caution panel block not found in engine.ts')
+  const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
+    const ownship={fuel:c.fuel??3000};
+    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+    return Object.keys(l).filter((k)=>l[k].on);`)
+  return run(c) as string[]
+}
+
+describe('the caution lights panel', () => {
+  it('is dark with fuel above the hardware caution, both engines turning and no jam', () => {
+    expect(cautionlit({})).toEqual([])
+  })
+
+  it('lights FUEL LO below the feed-tank caution', () => {
+    expect(cautionlit({ fuel: 700 })).toEqual(['fuello'])
+  })
+
+  it('lights the generator whose engine has stopped or died, and neither when both have', () => {
+    expect(cautionlit({ spoolL: 0 })).toEqual(['genL'])
+    expect(cautionlit({ harmR: 1 })).toEqual(['genR'])
+    expect(cautionlit({ spoolL: 0, spoolR: 0 })).toEqual([])
+  })
+
+  it('lights FCES with any jam word', () => {
+    expect(cautionlit({ jam: 1 })).toEqual(['fces'])
+  })
+
+  it('lays the nine lights three by three on the lower right panel', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/const CAUTIONS=\{ x:6\.160, y:0\.001, z:0\.357, pitch:0\.016, span:0\.034, lean:0\.6, wrap:-0\.51 \};/) // the face fitted by panel clicks
+    expect(build).toMatch(/m\.position\.set\(CAUTIONS\.lean\*dy\+CAUTIONS\.wrap\*dz,dy,dz\); m\.setRotationFromMatrix\(face\);/) // each lens on the leaning plane, facing its normal
+    for (const [name, text] of [['ckseat', 'CK SEAT'], ['apuacc', 'APU ACC'], ['battsw', 'BATT SW'], ['fcshot', 'FCS HOT'], ['gentie', 'GEN TIE'], ['fuello', 'FUEL LO'], ['fces', 'FCES'], ['genL', 'L GEN'], ['genR', 'R GEN']])
+      expect(build, name).toContain(`["${name}","${text}"]`)
+    expect(build).toMatch(/const face=new THREE\.Matrix4\(\)\.lookAt\(aft,new THREE\.Vector3\(\),new THREE\.Vector3\(0,1,0\)\);/)
+  })
+})
