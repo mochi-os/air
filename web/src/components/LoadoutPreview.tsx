@@ -3,16 +3,19 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 // The setup dialog's live jet: a head-on render of the airframe wearing the
-// edited loadout. Parsed prototypes are cached at module scope so reopening the
-// dialog costs one scene assembly; rendering is on demand, one frame per
-// loadout change.
-import { useEffect, useRef } from 'react'
+// edited loadout. The models come parsed from the library, shared with the
+// flight and warmed by the menu; the posed clones are kept at module scope so
+// reopening the dialog costs one scene assembly; rendering is on demand, one
+// frame per loadout change. Until the first render the box says it is loading.
+import { useEffect, useRef, useState } from 'react'
+import { Trans } from '@lingui/react/macro'
+import { flushSync } from 'react-dom'
 import * as THREE from 'three'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
-import { load, NEUTRAL, POSE, SCRUBS } from '../game/model'
-import { asset } from '../game/preload'
+import { model } from '../game/library'
+import { NEUTRAL, POSE, SCRUBS } from '../game/model'
 import { ANCHORS, TIPS, entries, normalize } from '../game/stores'
 import { normalize_round, amraam_anchor, amraam_aim } from '../game/weapons'
 import type { StationSlot } from '../lib/config'
@@ -25,12 +28,11 @@ let loading: Promise<void> | null = null
 function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
   loading ??= (async () => {
     const [jet, stores, round] = await Promise.all([
-      asset(fa18c_model_url),
-      asset(stores_model_url),
-      asset(amraam_model_url),
+      model(fa18c_model_url, renderer),
+      model(stores_model_url, renderer),
+      model(amraam_model_url, renderer),
     ])
-    const parsed = await load(jet, renderer)
-    airframe = parsed.scene
+    airframe = jet.scene.clone(true) // the library's stock is shared with the flight: pose a clone
     for (const fix of POSE) {
       // The same static pose corrections the engine applies before anything
       // else — without them the stabs render planform-reversed.
@@ -42,7 +44,7 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
     // these per-frame, the preview poses them once.
     const mixer = new THREE.AnimationMixer(airframe)
     for (const family of SCRUBS) {
-      const tracks = parsed.animations.flatMap((clip) =>
+      const tracks = jet.animations.flatMap((clip) =>
         clip.tracks.filter((track) =>
           family.test(track.name.slice(0, track.name.lastIndexOf('.')))
         )
@@ -62,8 +64,8 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
       const node = airframe.getObjectByName(rest.node)
       if (node) node.quaternion.set(...rest.quaternion)
     }
-    racks = (await load(stores, renderer)).scene
-    amraam = normalize_round((await load(round, renderer)).scene)
+    racks = stores.scene.clone(true)
+    amraam = normalize_round(round.scene.clone(true))
   })().catch((error) => {
     // A failed download must not be kept. preload.ts already drops its own
     // entry so the next open refetches; holding the rejected promise here
@@ -247,6 +249,7 @@ export function LoadoutPreview({
   const wanted = useRef(stores)
   wanted.current = stores
   const shape = JSON.stringify(normalize(stores))
+  const [ready, setReady] = useState(false) // the first render is in, or the models failed and the box stays blank as before
 
   useEffect(() => {
     const host = mount.current
@@ -281,6 +284,7 @@ export function LoadoutPreview({
       .catch(() => {})
       .then(() => {
         settled = true
+        flushSync(() => setReady(true)) // committed now, not a frame later: the line must not sit over the jet drawn below
         // Closed before the models arrived: the cleanup below already ran and had
         // to leave the context alone, so release it here instead. dispose() does
         // not touch the extension registry, so this still reaches it.
@@ -334,5 +338,14 @@ export function LoadoutPreview({
     s.renderer.render(s.scene, s.camera) // the camera stays where FULLEST framed it — the jet never moves
   }, [shape])
 
-  return <div ref={mount} className='aspect-[29/10] w-full overflow-hidden' />
+  return (
+    <div className='relative w-full'>
+      <div ref={mount} className='aspect-[29/10] w-full overflow-hidden' />
+      {!ready && (
+        <div className='pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-xs text-white/60'>
+          <Trans>Loading aircraft</Trans>
+        </div>
+      )}
+    </div>
+  )
 }
