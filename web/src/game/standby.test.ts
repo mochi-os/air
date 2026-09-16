@@ -53,14 +53,14 @@ describe('the standby attitude indicator', () => {
     // voice come on at. The face once painted the bug and lit the lamp at a
     // fixed 250 ft while the aural fired at law_index (200 in the pattern, 40
     // for a cat shot).
-    const draw = /\nfunction radalt_draw\(r, agl, index\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+    const draw = /\nfunction radalt_draw\(r, agl, index, silent\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
     expect(draw).not.toBe('')
     expect(draw).toMatch(/dial\(RADALT_DIAL,index\)/)
     expect(draw).toMatch(/lamp=!off&&agl<index/)
     expect(draw).not.toMatch(/250/)
     expect(draw).toMatch(/the green BIT light/)
-    expect(source).toMatch(/radalt_draw\(r, ownship\.pos\.y-\(surface>-1e8\?surface:0\), law_index\);/)
-    expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index\);/)
+    expect(source).toMatch(/radalt_draw\(r, ownship\.pos\.y-\(surface>-1e8\?surface:0\), law_index, RADAR\.sil\);/)
+    expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index, RADAR\.sil\);/)
   })
 
   it('keeps the approach deviation for the HUD and the ADI page only', () => {
@@ -119,5 +119,52 @@ describe('the ALR-67 azimuth indicator', () => {
     expect(source).toMatch(/new THREE\.CircleGeometry\(RWR_FACE\.r,36\)/)
     expect(source).toMatch(/surface_pose\(mesh,RWR_FACE\.x,0,RWR_FACE\.y,RWR_FACE\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
     expect(source).toMatch(/if\(w\)\{ const now=performance\.now\(\); if\(now-w\.last>250\)\{ w\.last=now; rwr_draw\(w\); \} \} \}/)
+  })
+})
+
+// Radar silence inhibits the radar altimeter (NATOPS 2.12.5, the EMCON
+// inhibit; #29): the face shows OFF with the light out, the HUD falls from
+// radar altitude to baro with the flashing B (2.12.5.4.7), and the primary
+// low-altitude warning, the set's own (2.12.5.1), stays quiet.
+function radalt_face(agl: number, index: number, silent: boolean): { off: boolean; lamp: boolean } {
+  const draw = /\nfunction radalt_draw\(r, agl, index, silent\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+  if (!draw) throw new Error('radalt_draw not found in engine.ts')
+  const run = new Function('agl', 'index', 'silent', `const D2R=Math.PI/180, RADALT_DIAL=[], dial=()=>0;
+    const x=new Proxy({}, { get:()=>()=>{}, set:()=>true }); const r={ canvas:{ getContext:()=>x }, tex:{} };
+    ${draw} radalt_draw(r,agl,index,silent); return { off:!!r.off, lamp:!!r.lamp };`)
+  return run(agl, index, silent) as { off: boolean; lamp: boolean }
+}
+function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: number; radar: boolean; flashB: boolean } {
+  const block = /\n\tlet alt=baro, radar=false, flashB=false;[\s\S]*?else flashB=true; \}[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('HUD altitude source block not found in engine.ts')
+  const run = new Function('feet', 'rdr', 'silent', `const ownship={pos:{x:0,y:feet/3.28084,z:0}}, baro=feet, ground_height=()=>0, alt_radar=rdr, RADAR={sil:silent};
+    ${block} return { alt:Math.round(alt), radar, flashB };`)
+  return run(feet, rdr, silent) as { alt: number; radar: boolean; flashB: boolean }
+}
+function law_call(silent: boolean): { calls: number; armed: boolean } {
+  const block = (/\n\t\t\tlaw_active=closure&&flying;[\s\S]*?else if\(law_index<200&&agl>law_index\) law_armed=true; \} \}\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
+  if (!block) throw new Error('low-altitude warning block not found in engine.ts')
+  const run = new Function('silent', `const closure=false, flying=true, dirty=true, agl=100, RADAR={sil:silent};
+    let law_active=false, law_armed=true, law_index=200, law_calls=0, calls=0; const audio_law=()=>{ calls++; };
+    ${block} return { calls, armed:law_armed };`)
+  return run(silent) as { calls: number; armed: boolean }
+}
+
+describe('the radar altimeter under radar silence', () => {
+  it('shows OFF with the red light out while silent, and reads again once the set is back', () => {
+    expect(radalt_face(100, 200, false)).toEqual({ off: false, lamp: true })
+    expect(radalt_face(100, 200, true)).toEqual({ off: true, lamp: false })
+    expect(radalt_face(6000, 200, false)).toEqual({ off: true, lamp: false })
+  })
+
+  it('drops the HUD from radar altitude to baro with the flashing B while silent', () => {
+    expect(hud_altitude(1000, true, false)).toEqual({ alt: 1000, radar: true, flashB: false })
+    expect(hud_altitude(1000, true, true)).toEqual({ alt: 1000, radar: false, flashB: true })
+    expect(hud_altitude(1000, false, true)).toEqual({ alt: 1000, radar: false, flashB: false })
+  })
+
+  it('withholds the primary low-altitude call while silent and keeps the set armed', () => {
+    expect(law_call(false)).toEqual({ calls: 1, armed: false })
+    expect(law_call(true)).toEqual({ calls: 0, armed: true })
   })
 })
