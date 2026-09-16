@@ -72,3 +72,52 @@ describe('the standby attitude indicator', () => {
     expect(source).toMatch(/if\(fpm\)\{ const dev=approach_deviation\(\);/)
   })
 })
+
+// The ALR-67 azimuth indicator (#28): the EW page's picture, drawn by one
+// function at the DDI's geometry and at the disc's in the right vertical
+// panel's housing, so the two cannot drift. The function runs against a
+// recording context.
+interface Emitter { bearing: number; at?: number; locked?: boolean; missile?: boolean }
+function ew_calls(cx: number, cy: number, R: number, contacts: Emitter[]): { text: [string, number, number][]; arcs: [number, number, number][] } {
+  const fn = /\nfunction ew_draw\(x,cx,cy,R,size\)\{[\s\S]*?\n\tx\.globalAlpha=1; \}\n/.exec(source)?.[0] ?? ''
+  if (!fn) throw new Error('ew_draw not found in engine.ts')
+  const run = new Function('cx', 'cy', 'R', 'contacts', `const D2R=Math.PI/180, RWR={contacts, time:10}, ownship={gauges:{heading:0}};
+    const text=[], arcs=[];
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([s,px,py]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); return ()=>{}; }, set:()=>true });
+    ${fn} ew_draw(x,cx,cy,R,18); return { text, arcs };`)
+  return run(cx, cy, R, contacts) as { text: [string, number, number][]; arcs: [number, number, number][] }
+}
+const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+
+describe('the ALR-67 azimuth indicator', () => {
+  it('puts a search emitter on the right beam right of centre at the outer band, at both geometries', () => {
+    for (const [cx, cy, R] of [[256, 266, 190], [80, 80, 68]]) {
+      const { text } = ew_calls(cx, cy, R, [{ bearing: Math.PI / 2, at: 10 }])
+      expect(text.length).toBe(1)
+      expect(text[0][0]).toBe('18')
+      expect(near(text[0][1], cx + 0.74 * R) && near(text[0][2], cy), `${cx},${cy},${R}`).toBe(true)
+    }
+  })
+
+  it('draws a lock on the inner band with one ring and a missile innermost with two, scaled to the ring', () => {
+    const lock = ew_calls(80, 80, 68, [{ bearing: 0, locked: true }])
+    expect(near(lock.text[0][1], 80) && near(lock.text[0][2], 80 - 0.34 * 68)).toBe(true)
+    expect(lock.arcs.slice(2)).toEqual([[80, 80 - 0.34 * 68, 13 * 68 / 190]]) // after the two band rings
+    const missile = ew_calls(80, 80, 68, [{ bearing: 0, missile: true }])
+    expect(missile.text[0][0]).toBe('M')
+    expect(missile.arcs.slice(2).map((a) => a[2])).toEqual([13 * 68 / 190, 17 * 68 / 190])
+  })
+
+  it('is drawn through the shared function by the EW page and by the disc', () => {
+    expect(source).toMatch(/function ddi_ew\(x\)\{ x\.fillText\("EW",256,36\); ew_draw\(x,256,266,190,18\); \}/)
+    expect(source).toMatch(/ew_draw\(x,80,80,68,11\); w\.count=RWR\.contacts\.length; w\.tex\.needsUpdate=true;/)
+  })
+
+  it('seats the disc in the right vertical panel housing on the ownship layer, refreshed with the radar altimeter', () => {
+    expect(source).toMatch(/const RWR_FACE=\{ x:6\.020, y:0\.353, z:0\.305, r:0\.024 \};/) // the housing bezel, measured by panel click
+    expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\);/)
+    expect(source).toMatch(/new THREE\.CircleGeometry\(RWR_FACE\.r,36\)/)
+    expect(source).toMatch(/surface_pose\(mesh,RWR_FACE\.x,0,RWR_FACE\.y,RWR_FACE\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
+    expect(source).toMatch(/if\(w\)\{ const now=performance\.now\(\); if\(now-w\.last>250\)\{ w\.last=now; rwr_draw\(w\); \} \} \}/)
+  })
+})

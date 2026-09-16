@@ -1354,7 +1354,23 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_screens(g); build_ifei(g); mount_compass(g); }
+	build_radalt(g); build_rwr(g); build_screens(g); build_ifei(g); mount_compass(g); }
+// The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26 puts it in the
+// round housing on the right vertical panel where the model seated its standby
+// compass, which mount_compass hangs on the arch. The housing's bezel, measured
+// by panel click (&panelpoint=1), is about 5 cm across on a face at x 6.023.
+const RWR_FACE={ x:6.020, y:0.353, z:0.305, r:0.024 };
+function build_rwr(g){
+	if(g.userData.rwr&&g.userData.rwr.mesh.parent) return;
+	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RWR_FACE.r,36), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+	surface_pose(mesh,RWR_FACE.x,0,RWR_FACE.y,RWR_FACE.z); mesh.layers.set(LAYER_OWN); g.add(mesh);
+	g.userData.rwr={ mesh, canvas, tex, last:0, count:0 };
+	rwr_draw(g.userData.rwr); }
+function rwr_draw(w){ const x=w.canvas.getContext("2d");
+	x.fillStyle="#0b120d"; x.fillRect(0,0,160,160); x.globalAlpha=1; x.textBaseline="middle";
+	ew_draw(x,80,80,68,11); w.count=RWR.contacts.length; w.tex.needsUpdate=true; }
 // Standby magnetic compass (#2): the model spins its card in a bezel at the top of
 // the right vertical panel, where foldout FO-5 item 26 puts the RWR azimuth
 // indicator; NATOPS 2.12.9 hangs the compass from the right windshield arch, and
@@ -1503,7 +1519,9 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index); } } }
+		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index); } }
+	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
+	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } } }
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
@@ -2236,26 +2254,27 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.fillText("120C "+Math.max(0,ownship.amraam|0),120,430);
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
 	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458); }
-function ddi_ew(x){   // EW (#11, symbols #28): the ALR-67 format. Bearing-only symbols on the nose-up ring — the radial position is the LETHALITY band, not range: an STT holding us sits on the inner ring, circled; search paints sit outer and fade between his sweep crossings. The one airframe means one symbol, "18". (An MWS-style inbound-dart cue was built and removed here — the C carries no missile warner; launch warnings arrive with the radar missiles, #27.)
-	x.fillText("EW",256,36);
-	const cx=256, cy=266, R=190;
-	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
+function ddi_ew(x){ x.fillText("EW",256,36); ew_draw(x,256,266,190,18); }
+// ew_draw: the ALR-67 picture the EW page and the azimuth indicator share, at a
+// centre, a ring radius and a symbol size. EW (#11, symbols #28): the ALR-67 format. Bearing-only symbols on the nose-up ring — the radial position is the LETHALITY band, not range: an STT holding us sits on the inner ring, circled; search paints sit outer and fade between his sweep crossings. The one airframe means one symbol, "18". (An MWS-style inbound-dart cue was built and removed here — the C carries no missile warner; launch warnings arrive with the radar missiles, #27.)
+function ew_draw(x,cx,cy,R,size){ const s=R/190;   // line weights and symbol rings scale with the ring
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5*s;   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
 	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
 	x.strokeStyle="rgba(57,224,122,0.22)";
 	x.beginPath(); x.arc(cx,cy,R*0.5,0,Math.PI*2); x.stroke();
-	x.strokeStyle="#39e07a"; x.lineWidth=2;
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2*s;
 	for(let d=0;d<360;d+=30){ const a=d*D2R-Math.PI/2;
-		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10),cy+Math.sin(a)*(R-10)); x.stroke(); }
-	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke();   // ownship
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10*s),cy+Math.sin(a)*(R-10*s)); x.stroke(); }
+	x.beginPath(); x.moveTo(cx,cy-14*s); x.lineTo(cx-8*s,cy+12*s); x.lineTo(cx+8*s,cy+12*s); x.closePath(); x.stroke();   // ownship
 	const hdg=(ownship.gauges||{}).heading||0;
-	x.font="18px monospace"; x.textAlign="center";   // real-format proportion: small alphanumerics, the ring hugging the character — the tube holds MANY of these
+	x.font=size+"px monospace"; x.textAlign="center";   // real-format proportion: small alphanumerics, the ring hugging the character — the tube holds MANY of these
 	for(const c of RWR.contacts){ const rel=c.bearing-hdg;   // heading-up: nose at the top
 		const r=c.missile?R*0.18:c.locked?R*0.34:R*0.74;   // an active seeker sits innermost: nothing is more lethal than a round already looking at you
 		const px=cx+Math.sin(rel)*r, py=cy-Math.cos(rel)*r;
 		x.globalAlpha=c.locked?1:Math.max(0.25,1-(RWR.time-c.at)/8);   // search symbols live between his sweep crossings and fade toward the next
 		x.fillText(c.missile?"M":"18",px,py);   // baseline is middle and alignment centre: text and ring share ONE centre
-		if(c.missile){ x.lineWidth=2.5; x.beginPath(); x.arc(px,py,13,0,Math.PI*2); x.stroke(); x.beginPath(); x.arc(px,py,17,0,Math.PI*2); x.stroke(); }   // the doubled ring: the MISSILE symbol the pilot reacts to without reading it
-		else if(c.locked){ x.lineWidth=2; x.beginPath(); x.arc(px,py,13,0,Math.PI*2); x.stroke(); } }
+		if(c.missile){ x.lineWidth=2.5*s; x.beginPath(); x.arc(px,py,13*s,0,Math.PI*2); x.stroke(); x.beginPath(); x.arc(px,py,17*s,0,Math.PI*2); x.stroke(); }   // the doubled ring: the MISSILE symbol the pilot reacts to without reading it
+		else if(c.locked){ x.lineWidth=2*s; x.beginPath(); x.arc(px,py,13*s,0,Math.PI*2); x.stroke(); } }
 	x.globalAlpha=1; }
 function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
@@ -5594,6 +5613,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
+		const w=ownship.group.userData.rwr; if(w){ w.mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out.rwr=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }   // the azimuth indicator disc (#28), the one canvas face the rig does not drive
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -5603,6 +5623,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
+		rwr:u.rwr?{ at:u.rwr.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.rwr.mesh.layers.mask, count:u.rwr.count }:null,   // i18n-format-ok: dev readout — the azimuth indicator's seat (#28), its layer and the contacts it last drew
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
@@ -5623,7 +5644,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
 			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		return { radalt:probe(u.radalt&&u.radalt.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		return { radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
