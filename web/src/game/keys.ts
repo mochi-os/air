@@ -36,6 +36,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'brake.speed': 'Slash',
   gear: 'KeyG',
   hook: 'KeyH',
+  'hook.bypass': 'Shift+KeyH', // the hook bypass switch, CARRIER <-> FIELD: FIELD stops the AOA indexer flashing with the hook up (NATOPS 2.12.10) and drops back to CARRIER when the hook comes down
   atc: 'KeyP',
   lights: 'KeyL',
   flares: 'KeyC',
