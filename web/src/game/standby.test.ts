@@ -33,6 +33,21 @@ describe('the standby attitude indicator', () => {
     expect(rig).not.toMatch(/AttitudeIndicator_(Glide|Localizer)/)
   })
 
+  it('seats the magnetic compass card in the arch housing and keeps its heading drive', () => {
+    // NATOPS 2.12.9: the standby magnetic compass is on the right windshield
+    // arch. The model spins its card in the right vertical panel's bezel and
+    // carries the arch housing (Object_622) empty; mount_compass re-seats the
+    // card there from build_indexer, reparented so it rides the housing's frame.
+    const mount = /\nfunction mount_compass\(g\)\{[\s\S]*?card\.userData\.mounted=true;[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(mount).not.toBe('')
+    expect(mount).toMatch(/getObjectByName\("INSTRUMENT_MagneticCompass_518"\)/)
+    expect(mount).toMatch(/getObjectByName\("Object_622"\)/)
+    expect(mount).toMatch(/housing\.parent\.attach\(card\)/)
+    expect(source).toMatch(/build_ifei\(g\); mount_compass\(g\); \}/)
+    const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
+  })
+
   it('keeps the approach deviation for the HUD and the ADI page only', () => {
     const gauges = /function update_gauges\(out\)\{[\s\S]*?\n\township\.gauges=\{[\s\S]*?\n\t\t[^\n]*ground:[^\n]*\};/.exec(source)?.[0] ?? ''
     expect(gauges).not.toBe('')
