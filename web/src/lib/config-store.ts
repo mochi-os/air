@@ -4,9 +4,8 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
-import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import { loadOutcome, PendingConfig, stripRetired } from './config-persist'
+import { absorb, loadOutcome, merged, PendingConfig } from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -165,29 +164,22 @@ export function useMissionConfig(): [
     loadConfig().then((saved) => {
       const outcome = loadOutcome(pending.dirty, saved)
       if (outcome === 'flush') {
-        // The player edited while loading: keep their change and persist it now
-        // the identity is known. pending.current() is the latest edit even if
-        // React has not committed the render; cancel any pending timer so this
-        // is not a duplicate.
+        // The player edited while loading: lay the keys they touched onto the
+        // SAVED config and persist that, now the identity is known. Not
+        // pending.current(): an edit made on a fresh page was made on the
+        // defaults, and saving those wholesale clobbered every saved setting
+        // (#41). pending.partial() is the latest edit even if React has not
+        // committed the render; cancel any pending timer so this is not a
+        // duplicate, and settle the merge as the base for edits from here on.
         if (saveTimer.current) clearTimeout(saveTimer.current)
-        void saveConfig(pending.current())
+        const whole = merged(saved, pending.partial())
+        pending.settle(whole)
+        setStored(whole)
+        void saveConfig(whole)
       } else if (outcome === 'apply' && saved) {
-        // Legacy saves carry the retired missiles boolean and no stores map:
-        // migrate to the matching preset (#17). Any saved stores map is
-        // normalized so a stale or hand-edited shape cannot reach the engine.
-        const legacy = saved as MissionConfig & { missiles?: boolean }
-        // Read `missiles` BEFORE stripping — it still decides which preset a
-        // pre-#17 save migrates to; stripRetired copies, so it survives here.
-        const stores = normalize(
-          legacy.stores ?? migrate(legacy.missiles !== false)
-        )
-        // Every retired key goes, not just this one. A setting deleted from the
-        // menu leaves its saved VALUE behind, and `sens` proved what that costs.
-        setStored({
-          ...DEFAULT_CONFIG,
-          ...stripRetired(legacy),
-          stores,
-        } as MissionConfig)
+        // Every retired key goes, the stores map is normalized, a legacy save
+        // migrates its preset: absorb is the one reading of a saved config.
+        setStored(absorb(saved))
       } else {
         void saveConfig(pending.current()) // first run on this account — seed the server
       }
