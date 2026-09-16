@@ -52,3 +52,57 @@ describe('the flap position lights', () => {
     expect(build).toMatch(/gear\.add\(lamps\.transit,lamps\.nose,lamps\.left,lamps\.right,lamps\.half,lamps\.full,lamps\.flaps\)/)
   })
 })
+
+// The glareshield panels (NATOPS 2.14.1, 2.17.2, foldout FO-5 items 4-10):
+// FIRE, MASTER CAUTION and the left panel port of the HUD, the right panel,
+// APU FIRE and FIRE starboard. The drivable lamps are stepped from the
+// updater's own lines; the layout is pinned from the builder's source.
+interface Panel { speedbrake?: number; bar?: number; armed?: boolean; loud?: boolean; contacts?: number }
+function panel(p: Panel): string[] {
+  const block = /\n\t\/\/ glareshield panels \(#12\)[\s\S]*?lamp_set\(l\.ai,[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('glareshield panel block not found in engine.ts')
+  const run = new Function('p', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0};
+    const jammer_armed=!!p.armed, jammer_loud=()=>!!p.loud, RWR={contacts:new Array(p.contacts||0).fill(0)};
+    const l={spdbrk:{},lbar:{},aspj:{},xmit:{},rec:{},ai:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+    return Object.keys(l).filter((k)=>l[k].on);`)
+  return run(p) as string[]
+}
+
+describe('the glareshield panels', () => {
+  it('lay FIRE, MASTER CAUTION and the grids outboard of the HUD glass, and APU FIRE and FIRE on the right', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/const BROW=\{ x:6\.160, y:0\.495 \};/) // the measured aft face of the glareshield, just below its chamfer
+    expect(build).toMatch(/brow\.position\.set\(BROW\.x, BROW\.y, 0\);/)
+    expect(build).toMatch(/brow\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\);/) // painted face aft: the back of a lens reads mirrored
+    expect(build).toMatch(/const P=0\.012, col=\(k\)=>0\.125\+k\*0\.032;/) // the grids start 12.5 cm out, past the 9 cm glass half-width
+    expect(build).toMatch(/lamps\.caution=legend\("MASTER\\nCAUTION","#ffc23a",0\.028,0\.016\); lamps\.caution\.position\.set\(0,-0\.012,-0\.205\);/)
+    expect(build).toMatch(/lamps\.fireL=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireL\.position\.set\(0,-0\.012,-0\.245\);/)
+    expect(build).toMatch(/lamps\.apufire=legend\("APU\\nFIRE","#e23b2e",0\.024,0\.016\); lamps\.apufire\.position\.set\(0,-0\.012,0\.205\);/)
+    expect(build).toMatch(/lamps\.fireR=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireR\.position\.set\(0,-0\.012,0\.245\);/)
+    for (const [name, text] of [['go', 'GO'], ['nogo', 'NO GO'], ['bleedL', 'L BLEED'], ['bleedR', 'R BLEED'], ['spdbrk', 'SPD BRK'], ['stby', 'STBY'], ['lbar', 'L BAR'], ['rec', 'REC'], ['lbarfault', 'L BAR'], ['xmit', 'XMIT'], ['aspj', 'ASPJ ON'], ['rcdr', 'RCDR ON'], ['disp', 'DISP'], ['sam', 'SAM'], ['ai', 'AI'], ['aaa', 'AAA'], ['cw', 'CW']])
+      expect(build, name).toContain(`["${name}","${text}"`)
+  })
+
+  it('light SPD BRK off the stop and L BAR extended', () => {
+    expect(panel({})).toEqual([])
+    expect(panel({ speedbrake: 0.5 })).toEqual(['spdbrk'])
+    expect(panel({ bar: 1 })).toEqual(['lbar'])
+  })
+
+  it('show the ASPJ armed as ASPJ ON with REC, radiating as ASPJ ON with XMIT', () => {
+    expect(panel({ armed: true })).toEqual(['aspj', 'rec'])
+    expect(panel({ armed: true, loud: true })).toEqual(['aspj', 'xmit'])
+  })
+
+  it('light AI for any radar the RWR hears', () => {
+    expect(panel({ contacts: 2 })).toEqual(['ai'])
+  })
+
+  it('kept the gear unit as it was', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/lamps\.half=lamp\(0x2fd24a/)
+    expect(build).toMatch(/lamps\.full=lamp\(0x2fd24a/)
+    expect(build).toMatch(/lamps\.flaps=lamp\(0xffc23a/)
+    expect(build).toMatch(/gear\.add\(lamps\.transit,lamps\.nose,lamps\.left,lamps\.right,lamps\.half,lamps\.full,lamps\.flaps\)/)
+  })
+})

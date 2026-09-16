@@ -1374,6 +1374,22 @@ function mount_compass(g){
 	card.scale.multiplyScalar(scale);
 	card.rotateOnWorldAxis(new THREE.Vector3(0,0,1).transformDirection(g.matrixWorld).normalize(),tilt*D2R);
 	card.userData.mounted=true; g.userData.compass={ at:[x,y,z], scale, tilt }; }
+// legend makes an annunciator lens: the legend painted dark on the face until
+// lit, then in its colour, as the real backlit lenses read. Annunciator text
+// is English by policy. lamp_set drives either kind of lamp - a lens by its
+// painted state, a plain quad by its opacity.
+function legend(text,colour,w=0.026,h=0.010){
+	const make=(on)=>{ const c=document.createElement("canvas"); c.width=160; c.height=64; const x=c.getContext("2d");
+		x.fillStyle=on?"#262826":"#141614"; x.fillRect(0,0,160,64);
+		x.fillStyle=on?colour:"#3a3c38"; x.font="bold 24px monospace"; x.textAlign="center"; x.textBaseline="middle";
+		const lines=text.split("\n"); lines.forEach((t,i)=>x.fillText(t,80,32+(i-(lines.length-1)/2)*26));
+		const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; return tex; };
+	const off=make(false), on=make(true);
+	const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:off, side:THREE.DoubleSide, toneMapped:false, depthWrite:false }));
+	m.userData.lens={ off, on }; m.userData.on=false; return m; }
+function lamp_set(m,on){ if(!m) return; on=!!on;
+	if(m.userData.lens){ if(m.userData.on!==on){ m.userData.on=on; m.material.map=on?m.userData.lens.on:m.userData.lens.off; m.material.needsUpdate=true; } }
+	else m.material.opacity=on?1:0; }
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
@@ -1384,12 +1400,28 @@ function build_lamps(g){
 		new THREE.MeshBasicMaterial({ color:c, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false }));
 	const lamps={};
 	const brow=new THREE.Group();
-	lamps.fireL=lamp(0xe23b2e); lamps.fireL.position.set(0,0,-0.075);
-	lamps.caution=lamp(0xffc23a); lamps.caution.position.set(0,-0.004,0);
-	lamps.fireR=lamp(0xe23b2e); lamps.fireR.position.set(0,0,0.075);
-	brow.add(lamps.fireL,lamps.caution,lamps.fireR);
-	brow.position.set(glass.x-0.03, glass.y-glass.hh-0.035, 0);
-	brow.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); });
+	// The glareshield (FO-5 items 4-10, NATOPS 2.14.1, 2.17.2, #12): outboard to
+	// inboard on the left, the guarded FIRE light, MASTER CAUTION and the left
+	// warning/caution/advisory panel, two columns by six rows; on the right the
+	// right panel, APU FIRE and FIRE. The HUD glass spans ±glass.hw (9 cm), so the
+	// grids start just outboard of it. Rows are listed outboard column first, as
+	// the foldout draws them. The lenses sit on the glareshield's aft face, which
+	// the panel-point measurer (&panelpoint=1) puts vertical at x 6.163 below
+	// y 0.50, under a chamfer up to the top edge at x 6.10, y 0.54.
+	const BROW={ x:6.160, y:0.495 };
+	const P=0.012, col=(k)=>0.125+k*0.032;   // row pitch and the grid columns, metres from the centreline
+	const grid=(side,rows)=>rows.forEach((row,r)=>row.forEach((entry,c)=>{ if(!entry) return; const [name,text,colour]=entry;
+		lamps[name]=legend(text,colour); lamps[name].position.set(0,-0.006-r*P,side<0?-col(1-c):col(c)); brow.add(lamps[name]); }));
+	grid(-1,[[["go","GO","#2fd24a"],["nogo","NO GO","#ffc23a"]],[["bleedL","L BLEED","#e23b2e"],["bleedR","R BLEED","#e23b2e"]],[["spdbrk","SPD BRK","#2fd24a"],["stby","STBY","#ffc23a"]],
+		[["lbar","L BAR","#2fd24a"],["rec","REC","#2fd24a"]],[["lbarfault","L BAR","#e23b2e"],["xmit","XMIT","#2fd24a"]],[["aspj","ASPJ ON","#2fd24a"],null]]);
+	grid(1,[[["rcdr","RCDR ON","#2fd24a"],["disp","DISP","#2fd24a"]],[null,["sam","SAM","#ffc23a"]],[["ai","AI","#ffc23a"],["aaa","AAA","#ffc23a"]],[["cw","CW","#ffc23a"],null]]);
+	lamps.caution=legend("MASTER\nCAUTION","#ffc23a",0.028,0.016); lamps.caution.position.set(0,-0.012,-0.205);
+	lamps.fireL=legend("FIRE","#e23b2e",0.024,0.016); lamps.fireL.position.set(0,-0.012,-0.245);
+	lamps.apufire=legend("APU\nFIRE","#e23b2e",0.024,0.016); lamps.apufire.position.set(0,-0.012,0.205);
+	lamps.fireR=legend("FIRE","#e23b2e",0.024,0.016); lamps.fireR.position.set(0,-0.012,0.245);
+	brow.add(lamps.caution,lamps.fireL,lamps.apufire,lamps.fireR);
+	brow.position.set(BROW.x, BROW.y, 0);
+	brow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); });   // the painted face aft, toward the eye: the back of a lens reads mirrored
 	g.add(brow);
 	const handle=g.getObjectByName("Gear_handle_483"); const gear=new THREE.Group();
 	if(handle){ const p=new THREE.Vector3(); handle.getWorldPosition(p); g.worldToLocal(p);
@@ -1412,8 +1444,13 @@ function lamps_update(out){
 	// The FIRE warnings read FIRE, not thrust loss (#40): three cannon hits on a
 	// turbine reach full harm with nothing alight, and the red light is the most
 	// action-forcing cue in the cockpit — it must not cry wolf.
-	l.fireL.material.opacity=(own_burn[0]>0||own_burning)?1:0; l.fireR.material.opacity=(own_burn[1]>0||own_burning)?1:0;
-	l.caution.material.opacity=caution_lamp?1:0;   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
+	lamp_set(l.fireL,own_burn[0]>0||own_burning); lamp_set(l.fireR,own_burn[1]>0||own_burning);
+	lamp_set(l.caution,caution_lamp);   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
+	// glareshield panels (#12): the lamps the game can drive; GO, NO GO, the BLEEDs, STBY, RCDR ON, DISP, SAM, AAA, CW and APU FIRE have no state and stay dark
+	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
+	lamp_set(l.lbar,(ownship.bar??0)>0.05);   // green while the launch bar is extended (2.10.4, #11); the red L BAR needs a retraction fault the game has none of
+	lamp_set(l.aspj,jammer_armed); lamp_set(l.xmit,jammer_loud()); lamp_set(l.rec,jammer_armed&&!jammer_loud());   // the ASPJ: power on, radiating, armed and listening
+	lamp_set(l.ai,RWR.contacts.length>0);   // every emitter the RWR hears is an aircraft radar; SAM, AAA and CW have no emitter class to fire on
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
@@ -5527,7 +5564,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
-		lit:Object.entries(u.lamps||{}).filter(([,m])=>(m as THREE.Mesh&{material:THREE.MeshBasicMaterial}).material.opacity>0.5).map(([k])=>k),   // the pit lamps on right now, by name   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
