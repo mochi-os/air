@@ -31,6 +31,8 @@ import {
   connect as net_dial,
   record as net_record,
   recording_store,
+  world_chat,
+  world_say,
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder } from './flight'
@@ -74,8 +76,10 @@ export interface GameHandle {
   exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
   recording: () => { text: string; session: string; kind: string } | null   // the buffered flight recording, rendered as ACMI (#212)
   pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
-  chat: (text: string, scope: string) => void   // send one match-chat line (#84)
-  scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
+  chat: (text: string, scope: string) => void   // send one match-chat line (#84): "team" or "all", the match wire's scopes
+  say: (text: string) => void                   // send one line to everyone on the server: the lobby ring beside the match list
+  scope: () => string                           // what the chat key opens: "team" in a teams match, else "match"
+  key: (action: string) => string               // an action's key chord as configured, so the open prompt can tell the chat keys apart
 }
 
 // The recording accessor lives in replay.ts, not here, so the log route can
@@ -4484,7 +4488,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // `: the fast path to match chat (#84); MP only — bots do not read
-		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("all"); }   // Shift+`: everyone, when team chat is the default
+		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("server"); }   // Shift+`: everyone on the server, through the lobby ring
 		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
@@ -5393,7 +5397,7 @@ if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN ty
 		origin:+ownship.pos.y.toFixed(3), ground:+gnd.toFixed(3), stand:+(ownship.pos.y-gnd).toFixed(3),   // #220: the origin's height above the surface — 2.63 minus the strut compression, so it pins the load directly   // i18n-format-ok: dev probe payload, never rendered to a user
 		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
 };
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel, bingo:bingo_low(), banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1, contrail:(ownship.contrail&&ownship.contrail.count)||0,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel, bingo:bingo_low(), banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1, contrail:(ownship.contrail&&ownship.contrail.count)||0, comms:comms.map(c=>c.text),   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
@@ -7356,7 +7360,7 @@ let net_notice="", net_notice_t=0;
 function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
-function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
+function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"match"; }
 function exit_match(){ if(!running) return; running=false; /* #57 parked: head_close(); */
 	// A flight under five seconds is an aborted start, not a sortie (#51 ruling 2026-08-21): it leaves NOTHING —
 	// no history row, no recording. The sub-5s carve-out is the one exception to #212's every-flight-is-history.
@@ -7663,7 +7667,7 @@ function net_event(e){ const slot=Number(e.slot);
 		comm((team?"["+translate("TEAM")+"] ":"")+name+": "+(e.text||""),tint);
 		break; }
 	} }
-function net_finish(reason){ if(session_over) return; session_over=true;
+function net_finish(reason){ if(session_over) return; session_over=true; lounge_stop();
 	if(net&&match_started){ net_record({ world:join.server, title:join.title||"", session:join.session,
 		mode:String(net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode||"furball"),   // the session's real mode (this recorded every match as a joust before)
 		team:net.teams.get(net.slot)||"",
@@ -7800,9 +7804,22 @@ function update_darts(dt){
 	for(let i=fox3;i<fox3_pool.length;i++) fox3_pool[i].mesh.visible=false;
 	if(fox3&&!amraam_proto) void init_amraam_model();   // a remote AIM-120 is inbound and the model is not loaded yet: fetch it
 }
+// The server-wide lobby chat in flight: the ring beside the match list,
+// polled as the server page polls it, so a Shift+` line and its replies reach
+// every pilot on the server and not only the ones sitting on the page. Starts
+// at the ring's head - the backlog belongs to the server page - and prints
+// player lines only, not the ring's system events.
+let lounge=null, lounge_cursor=-1;
+function lounge_start(){ lounge_stop(); lounge_cursor=-1;
+	const pull=()=>{ if(!net||session_over) return;
+		world_chat(join.server,Math.max(lounge_cursor,0)).then(r=>{ if(lounge_cursor<0){ lounge_cursor=r.sequence; return; }
+			for(const l of r.lines){ if(l.name&&l.text&&!l.event) comm("["+translate("EVERYONE")+"] "+l.name+": "+l.text,"#ffe08f"); }
+			lounge_cursor=r.sequence; }).catch(()=>{}); };   // best effort: a failed poll tries again in three seconds
+	pull(); lounge=setInterval(pull,3000); }
+function lounge_stop(){ if(lounge){ clearInterval(lounge); lounge=null; } }
 function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
-	.then((n)=>{ net=n; match_started=Date.now();
+	.then((n)=>{ net=n; match_started=Date.now(); lounge_start();
 		if(n.welcome&&n.welcome.spawn){ apply_own_state(n.welcome.spawn.state); net_waiting=!!n.welcome.spawn.waiting; weapons_hold=n.welcome.spawn.mode==="joust";
 			}
 		apply_model_all();   // the welcome names the server-assigned aircraft; re-apply in case the picker had another type
@@ -7938,7 +7955,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	// resized buffer is repainted below before the compositor ever sees it.
 	refresh_perf(dt); dynamic_res(dt);
 	render_frame();
-	stage.style.cursor=(running && !game_paused && cfg.view!=="ddi" && !PANEL_POINT)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel
+	stage.style.cursor=(running && !game_paused && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
 	if(running){ draw_hud();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
@@ -7990,6 +8007,8 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     exit: exit_match,
     pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
+    say: (words) => { if (MULTIPLAYER && join) world_say(join.server, join.name, String(words).slice(0, 200)).catch(() => {}) },   // the lobby echoes it back through the poll below, like the match wire echoes a match line
     scope: chat_scope,
+    key: key_of,
   }
 }

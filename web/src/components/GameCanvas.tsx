@@ -16,6 +16,7 @@ import {
   Settings as SettingsIcon,
   X,
 } from 'lucide-react'
+import { advance, wire, type Scope } from '../game/chat'
 import { startGame, type GameHandle } from '../game/engine'
 import '../game/game.css'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
@@ -129,8 +130,9 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'BREAK RIGHT': msg`BREAK RIGHT`,
   'BREAK LEFT': msg`BREAK LEFT`,
   MISSILE: msg`MISSILE`,
-  // The comms log's team-chat prefix (#84).
+  // The comms log's team-chat prefix (#84) and its server-wide chat prefix.
   TEAM: msg`TEAM`,
+  EVERYONE: msg`EVERYONE`,
   // The flavour radio tier (#146) — log-only calls.
   TALLY: msg`TALLY`,
   REJOINING: msg`REJOINING`,
@@ -152,53 +154,109 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   // "; " row break afterwards, so a translation keeps that break as "; ". A
   // line with a live figure names it as a placeholder; the values that fill
   // {power} and {side} are the four words after the lines.
-  'Case I: fly up wake, {heading}, 800\', 350 knots': msg({ message: "Case I: fly up wake, {heading}, 800', 350 knots" }),
-  'Starboard side: hold 800\'; break past bow': msg`Starboard side: hold 800'; break past bow`,
+  "Case I: fly up wake, {heading}, 800', 350 knots": msg({
+    message: "Case I: fly up wake, {heading}, 800', 350 knots",
+  }),
+  "Starboard side: hold 800'; break past bow": msg`Starboard side: hold 800'; break past bow`,
   'Break: level turn, throttle idle, boards out, pull 1 g per 100 knots': msg`Break: level turn, throttle idle, boards out, pull 1 g per 100 knots`,
-  'Roll out downwind: {heading}, 1NM abeam ship': msg({ message: "Roll out downwind: {heading}, 1NM abeam ship" }),
-  'Below 250 knots: gear, full flaps, hook, descend to 600\', slow to on-speed': msg`Below 250 knots: gear, full flaps, hook, descend to 600', slow to on-speed`,
+  'Roll out downwind: {heading}, 1NM abeam ship': msg({
+    message: 'Roll out downwind: {heading}, 1NM abeam ship',
+  }),
+  "Below 250 knots: gear, full flaps, hook, descend to 600', slow to on-speed": msg`Below 250 knots: gear, full flaps, hook, descend to 600', slow to on-speed`,
   'Trim for amber light beside HUD (8.1° AOA), power for height': msg`Trim for amber light beside HUD (8.1° AOA), power for height`,
-  'Downwind: level at 600\', ship 1NM off wing': msg`Downwind: level at 600', ship 1NM off wing`,
+  "Downwind: level at 600', ship 1NM off wing": msg`Downwind: level at 600', ship 1NM off wing`,
   'Ship abeam: bank 27-30°, start down at 200-300 FPM': msg`Ship abeam: bank 27-30°, start down at 200-300 FPM`,
-  'The 90: 450\', 500 FPM': msg`The 90: 450', 500 FPM`,
-  'The 45: 325-375\', roll into groove, {heading}, fly ball with power': msg({ message: "The 45: 325-375', roll into groove, {heading}, fly ball with power" }),
-  'Case II: on final, {heading}, 1200\', gear, flaps down, on-speed 8.1° AOA, 140 knots': msg({ message: "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1\u00b0 AOA, 140 knots" }),
+  "The 90: 450', 500 FPM": msg`The 90: 450', 500 FPM`,
+  "The 45: 325-375', roll into groove, {heading}, fly ball with power": msg({
+    message:
+      "The 45: 325-375', roll into groove, {heading}, fly ball with power",
+  }),
+  "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots":
+    msg({
+      message:
+        "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1\u00b0 AOA, 140 knots",
+    }),
   'HUD needles: hold glideslope and centreline': msg`HUD needles: hold glideslope and centreline`,
-  'Glideslope alive: start down, 800\' at 2NM, 400\' at 1NM, 200\' at ½NM': msg`Glideslope alive: start down, 800' at 2NM, 400' at 1NM, 200' at ½NM`,
-  'Case III: marshal 6000\', 250 knots, final bearing {heading}, commence at zero': msg({ message: "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero" }),
-  'Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000\' platform': msg({ message: "Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000' platform" }),
-  'Below 5000\': keep FPM less than altitude': msg`Below 5000': keep FPM less than altitude`,
-  'Platform: 2000 FPM, level at 1200\'': msg`Platform: 2000 FPM, level at 1200'`,
-  '10NM: gear, full flaps, hook, on-speed 8.1° AOA by 6 NM, final bearing {heading}': msg({ message: "10NM: gear, full flaps, hook, on-speed 8.1\u00b0 AOA by 6 NM, final bearing {heading}" }),
-  'Fly needles down: 1200\' at 3NM, 800\' at 2NM, 400\' at 1NM': msg`Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM`,
+  "Glideslope alive: start down, 800' at 2NM, 400' at 1NM, 200' at ½NM": msg`Glideslope alive: start down, 800' at 2NM, 400' at 1NM, 200' at ½NM`,
+  "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero":
+    msg({
+      message:
+        "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero",
+    }),
+  "Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000' platform":
+    msg({
+      message:
+        "Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000' platform",
+    }),
+  "Below 5000': keep FPM less than altitude": msg`Below 5000': keep FPM less than altitude`,
+  "Platform: 2000 FPM, level at 1200'": msg`Platform: 2000 FPM, level at 1200'`,
+  '10NM: gear, full flaps, hook, on-speed 8.1° AOA by 6 NM, final bearing {heading}':
+    msg({
+      message:
+        '10NM: gear, full flaps, hook, on-speed 8.1\u00b0 AOA by 6 NM, final bearing {heading}',
+    }),
+  "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM": msg`Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM`,
   'Ball call: answer, fly ball to touchdown': msg`Ball call: answer, fly ball to touchdown`,
-  'Wave-off: full power, boards in, wings level, climb, {heading}': msg({ message: "Wave-off: full power, boards in, wings level, climb, {heading}" }),
-  'Bolter: full power, boards in, hook down, climb to 600\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}" }),
-  'Wave-off: full power, boards in, wings level, climb to 1200\', {heading}': msg({ message: "Wave-off: full power, boards in, wings level, climb to 1200', {heading}" }),
-  'Bolter: full power, boards in, hook down, climb to 1200\', turn downwind, {heading}': msg({ message: "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}" }),
+  'Wave-off: full power, boards in, wings level, climb, {heading}': msg({
+    message: 'Wave-off: full power, boards in, wings level, climb, {heading}',
+  }),
+  "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}":
+    msg({
+      message:
+        "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}",
+    }),
+  "Wave-off: full power, boards in, wings level, climb to 1200', {heading}":
+    msg({
+      message:
+        "Wave-off: full power, boards in, wings level, climb to 1200', {heading}",
+    }),
+  "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}":
+    msg({
+      message:
+        "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}",
+    }),
   // #152: said once when the device does not report something it is bound to.
   'Some bound controls are not on this stick: check Settings, Joystick': msg`Some bound controls are not on this stick: check Settings, Joystick`,
   'On runway: half flaps, run up to military power, brakes off': msg`On runway: half flaps, run up to military power, brakes off`,
   '140 knots: rotate to 8° nose up': msg`140 knots: rotate to 8° nose up`,
   'Positive rate: gear up; flaps auto passing 250 knots': msg`Positive rate: gear up; flaps auto passing 250 knots`,
-  'Climb out: runway heading {heading}, 350 knots': msg({ message: "Climb out: runway heading {heading}, 350 knots" }),
-  'Initial: over runway, {heading}, 800\', 350 knots': msg({ message: "Initial: over runway, {heading}, 800', 350 knots" }),
-  'Roll out downwind: {heading}, 800\', 1 NM abeam runway': msg({ message: "Roll out downwind: {heading}, 800', 1 NM abeam runway" }),
-  'Below 250 knots: gear, full flaps; descend to 600\', slow to on-speed': msg`Below 250 knots: gear, full flaps; descend to 600', slow to on-speed`,
-  'Abeam numbers, 600\': bank 27-30°, start down at 200-300 FPM': msg`Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM`,
-  'Final: runway heading {heading}, power for two red, two white on PAPI': msg({ message: "Final: runway heading {heading}, power for two red, two white on PAPI" }),
+  'Climb out: runway heading {heading}, 350 knots': msg({
+    message: 'Climb out: runway heading {heading}, 350 knots',
+  }),
+  "Initial: over runway, {heading}, 800', 350 knots": msg({
+    message: "Initial: over runway, {heading}, 800', 350 knots",
+  }),
+  "Roll out downwind: {heading}, 800', 1 NM abeam runway": msg({
+    message: "Roll out downwind: {heading}, 800', 1 NM abeam runway",
+  }),
+  "Below 250 knots: gear, full flaps; descend to 600', slow to on-speed": msg`Below 250 knots: gear, full flaps; descend to 600', slow to on-speed`,
+  "Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM": msg`Abeam numbers, 600': bank 27-30°, start down at 200-300 FPM`,
+  'Final: runway heading {heading}, power for two red, two white on PAPI': msg({
+    message:
+      'Final: runway heading {heading}, power for two red, two white on PAPI',
+  }),
   'Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake': msg`Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake`,
-  'Go around: full power, boards in, wings level, climb on {heading} to 600\'': msg({ message: "Go around: full power, boards in, wings level, climb on {heading} to 600'" }),
-  'Hooked up: run up to {power}, wipe out controls': msg({ message: "Hooked up: run up to {power}, wipe out controls" }),
+  "Go around: full power, boards in, wings level, climb on {heading} to 600'":
+    msg({
+      message:
+        "Go around: full power, boards in, wings level, climb on {heading} to 600'",
+    }),
+  'Hooked up: run up to {power}, wipe out controls': msg({
+    message: 'Hooked up: run up to {power}, wipe out controls',
+  }),
   'Hand off stick; press enter to salute and launch': msg`Hand off stick; press enter to salute and launch`,
   'Off the cat: hand off stick, let jet rotate 12° nose up': msg`Off the cat: hand off stick, let jet rotate 12° nose up`,
   'Positive rate: take stick, gear up, flaps auto': msg`Positive rate: take stick, gear up, flaps auto`,
-  'Clearing turn {side}, then parallel {heading} at 500\', 300 knots to 7 miles': msg({ message: "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles" }),
+  "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles":
+    msg({
+      message:
+        "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles",
+    }),
   '7 miles: climb on course': msg`7 miles: climb on course`,
   'military power': msg`military power`,
   'full afterburner': msg`full afterburner`,
-  'right': msg`right`,
-  'left': msg`left`,
+  right: msg`right`,
+  left: msg`left`,
   // HORNET / BALL / CLARA / AUTO are deliberately absent, and are the ONLY
   // deliberate absences: the type name and the ball-call code words are spoken
   // verbatim on every deck, and it is the surrounding call that localises.
@@ -282,7 +340,7 @@ export function GameCanvas({
     struck: number
     seconds: number
   } | null>(null)
-  const [chat, setChat] = useState<string | null>(null) // the open chat prompt's scope, null when closed
+  const [chat, setChat] = useState<Scope | null>(null) // the open chat prompt's scope, null when closed
   const { t } = useLinguiMacro()
   const hudRef = useRef<HTMLCanvasElement>(null)
   const mapRef = useRef<HTMLCanvasElement>(null)
@@ -325,7 +383,7 @@ export function GameCanvas({
           setOver(result)
           setMenu(true)
         },
-        onChat: (scope) => setChat(scope),
+        onChat: (scope) => setChat(scope as Scope),
         translate,
       })
     } catch (error) {
@@ -358,35 +416,32 @@ export function GameCanvas({
     if (!join) handleRef.current?.pause(menu)
   }, [menu, join])
 
-  // Close the chat prompt, dropping any unsent words: Escape, the X, and the
-  // Escape the browser takes in fullscreen all end here.
+  // Close the chat prompt, dropping any unsent words: the X and Send end here.
+  // Escape is not the prompt's: it means the menu, here as everywhere, so the
+  // browser's own use of it in fullscreen has nothing to collide with.
   const dismiss = () => {
     if (chatRef.current) chatRef.current.value = ''
     setChat(null)
   }
 
-  // Escape in browser fullscreen belongs to the browser: it exits fullscreen
-  // before (or instead of) reaching the page. Losing fullscreen therefore
-  // OPENS the menu popup — set, not toggled, so it converges with the
-  // engine's own Esc handling whichever of the two fires. With the chat
-  // prompt open that Escape was meant for the prompt, whose own Escape
-  // handler never sees the key in fullscreen: close the prompt instead.
+  // Escape in browser fullscreen is the browser's as well as the page's: it
+  // leaves fullscreen AND delivers the key. Losing fullscreen therefore OPENS
+  // the menu popup — set, not toggled, so it converges with the key's own
+  // arrival whichever of the two fires first. An open chat prompt is left as
+  // it is under the menu and gets the keyboard back on Resume.
   useEffect(() => {
     const fell = () => {
-      if (document.fullscreenElement) return
-      if (chatRef.current) {
-        dismiss()
-        return
-      }
-      setMenu(true)
+      if (!document.fullscreenElement) setMenu(true)
     }
     document.addEventListener('fullscreenchange', fell)
     return () => document.removeEventListener('fullscreenchange', fell)
   }, [])
 
+  // The prompt takes the keyboard when it opens, and again when a menu that
+  // covered it closes.
   useEffect(() => {
-    if (chat != null) chatRef.current?.focus()
-  }, [chat])
+    if (chat != null && !menu) chatRef.current?.focus()
+  }, [chat, menu])
 
   // The pause menu is a modal surface, so it takes focus when it opens: without
   // this the keyboard stayed on the canvas and the menu could only be worked
@@ -425,7 +480,11 @@ export function GameCanvas({
 
   const send = () => {
     const words = chatRef.current?.value.trim()
-    if (words && chat != null) handleRef.current?.chat(words, chat)
+    if (words && chat != null) {
+      const carried = wire(chat)
+      if (carried) handleRef.current?.chat(words, carried)
+      else handleRef.current?.say(words)
+    }
     dismiss()
   }
 
@@ -436,27 +495,53 @@ export function GameCanvas({
       <canvas id='map' ref={mapRef} />
       <div className='panel' id='framerate' ref={framerateRef} />
       {chat != null && (
-        <div className='fixed top-56 left-10 z-30 flex items-center gap-2'>
-          <span className='rounded bg-black/70 px-2 py-1 font-mono text-xs text-amber-200'>
-            {chat === 'team' ? <Trans>Team</Trans> : <Trans>Everyone</Trans>}
+        <div className='fixed top-56 left-10 z-30 flex items-center rounded border border-white/30 bg-black/70 font-mono'>
+          <span className='border-r border-white/20 px-2 py-1 text-xs text-amber-200'>
+            {chat === 'team' ? (
+              <Trans>Team</Trans>
+            ) : chat === 'match' ? (
+              <Trans>Match</Trans>
+            ) : (
+              <Trans>Everyone</Trans>
+            )}
           </span>
           <input
             ref={chatRef}
             maxLength={200}
             placeholder={
-              chat === 'team' ? t`Message your team` : t`Message everyone`
+              chat === 'team'
+                ? t`Message your team`
+                : chat === 'match'
+                  ? t`Message the match`
+                  : t`Message everyone on the server`
             }
-            className='w-96 rounded border border-white/30 bg-black/70 px-2 py-1 font-mono text-sm text-white outline-none placeholder:text-white/40'
+            className='w-96 bg-transparent px-2 py-1 text-sm text-white outline-none placeholder:text-white/40'
             onKeyDown={(e) => {
               e.stopPropagation()
-              if (e.key === 'Enter') send()
-              if (e.key === 'Escape') dismiss()
+              const chord = (e.shiftKey ? 'Shift+' : '') + e.code // the engine's own chord, so a remapped chat key still steers the prompt
+              if (
+                handleRef.current &&
+                (chord === handleRef.current.key('chat') ||
+                  chord === handleRef.current.key('shout'))
+              ) {
+                e.preventDefault() // the key steers the scope, it types nothing
+                setChat(
+                  advance(
+                    chat,
+                    handleRef.current.scope() === 'team',
+                    chord === handleRef.current.key('shout')
+                  )
+                )
+                return
+              }
+              if (e.key === 'Enter') send() // words or none, the prompt closes
+              if (e.key === 'Escape') setMenu(true) // the menu over the prompt, set not toggled, as losing fullscreen opens it
             }}
           />
           <button
             type='button'
             aria-label={t`Close`}
-            className='rounded border border-white/30 bg-black/70 p-1 text-white/70 hover:text-white'
+            className='px-2 py-1 text-white/70 hover:text-white'
             onClick={dismiss}
           >
             <X className='size-4' />
@@ -577,7 +662,7 @@ export function GameCanvas({
                 className='h-12 justify-start text-base'
                 onClick={() => {
                   setMenu(false)
-                  setChat(handleRef.current?.scope() ?? 'all')
+                  setChat((handleRef.current?.scope() ?? 'match') as Scope)
                 }}
               >
                 <Send className='size-4' />
