@@ -41,6 +41,7 @@ import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
 import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, BUTTONS as ifei_buttons } from './ifei'
+import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines } from './cautions'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
@@ -1603,7 +1604,21 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 	if(st.menu){ x.fillText(st.menu==="tac"?"TAC":"SUPT",256,256);
 		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
+	if(display==="left") cautions_draw(x);
 	ddi_legend(x,18,"MENU",true,!!st.menu); }
+// The left DDI's caution area (#5, NATOPS 2.20.3.2.1): the slots cautions.ts
+// keeps, drawn over whatever the display shows, from the lower left, three
+// across, a line up per three, above the bottom pushbutton legends, at 150 %
+// of the page text. Red-tier rows keep their red; the rest are the display's
+// green. No ADV line: the game raises no advisories, and an empty one would be
+// invention. Cautions and advisories are English by the annunciator policy.
+function cautions_draw(x){
+	x.save(); x.font="22px monospace"; x.textAlign="left"; x.textBaseline="middle";
+	cautions_lines(caution_slots).forEach((line,li)=>{ const y=452-li*26;
+		line.forEach((slot,ci)=>{ if(!slot) return; const tx=40+ci*150, w=x.measureText(slot.label).width;
+			x.fillStyle="#050b06"; x.fillRect(tx-4,y-13,w+8,26);   // a backing so the caution reads over the page beneath, as the real overprint does
+			x.fillStyle=slot.red?"#ff5050":"#39e07a"; x.fillText(slot.label,tx,y); }); });
+	x.restore(); }
 function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canvas.width,sc.display); sc.tex.needsUpdate=true; }
 const DDI_STEPS=[256,512,1024];
 const _sv1=new THREE.Vector3(), _sv2=new THREE.Vector3();
@@ -4529,7 +4544,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("brake.parking")) parking=!parking;   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
-		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
+		if(ch===key_of("caution.reset")){ if(caution_lamp) caution_lamp=false; else { caution_slots=cautions_restack(caution_slots); ddi_dirty=true; } }   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
 		if(ch===key_of("dump")) fuel_dump=!fuel_dump;   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
 		if(ch===key_of("secure.starboard")) secured[1]=!secured[1];
@@ -4972,6 +4987,7 @@ const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:u
 // warning has only its voice (2.17.3); the tone backs the voice up, so a key
 // whose recording is not ready still gets it.
 let caution_list=[];        // [key, label, red] rows, sim-step fresh — the renderers' source
+let caution_slots=[];       // the left DDI's caution area (#5, cautions.ts): slots taken in order of occurrence, blank when cleared, packed by a MASTER CAUTION press with the light out
 let caution_keys=new Set(); // keys present last step (the new-key edge)
 let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
 let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on), as a tone while the voice cannot say it
@@ -5002,6 +5018,7 @@ function cautions_update(){
 	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
 		if(torn||core[STATE.stress]>2) push("STRUCTURE"); }
+	{ const next=cautions_reconcile(caution_slots,rows); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots (NATOPS 2.20.3.2.1) follow the rows; a change redraws the display now
 	caution_list=rows;
 	let fresh=false, freshCaution=false, freshWarning=false;
 	for(const [key,,red] of rows) if(!caution_keys.has(key)){ fresh=true;
@@ -5492,7 +5509,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
-		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
+		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
@@ -7252,7 +7270,8 @@ function draw_hud(){
 		if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): the running totals above the stores legend
 			rows.push(["#5a86ff","BLUE "+(net.score.blue||0)]);
 			rows.push(["#ff5a48","RED "+(net.score.red||0)]); }
-		hud_stack.left=stack_draw(rows,40,HH-106-STACK_PITCH);   // one pitch above GUN, the top of the counters
+		if(authentic) hud_stack.left=[];   // the pit shows its cautions on the left DDI (#5), not as screen text
+		else hud_stack.left=stack_draw(rows,40,HH-106-STACK_PITCH);   // one pitch above GUN, the top of the counters
 		hctx.fillStyle=GR;
 	}
 	// The low-altitude break-X and its ALTITUDE banner are GONE (#187, ruled
