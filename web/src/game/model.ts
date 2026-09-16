@@ -203,7 +203,8 @@ export const NEUTRAL: {
 async function decode(
   ktx2: KTX2Loader,
   src: Source,
-  srgb: boolean
+  srgb: boolean,
+  anisotropy: number
 ): Promise<THREE.Texture> {
   if (src.mime === 'image/ktx2') {
     const loaderInternal = ktx2 as unknown as {
@@ -219,6 +220,7 @@ async function decode(
       ? THREE.SRGBColorSpace
       : THREE.LinearSRGBColorSpace
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+    texture.anisotropy = anisotropy
     texture.needsUpdate = true
     return texture
   }
@@ -232,13 +234,14 @@ async function decode(
   texture.magFilter = THREE.LinearFilter
   texture.minFilter = THREE.LinearMipmapLinearFilter
   texture.generateMipmaps = true
+  texture.anisotropy = anisotropy // the flight's own helper always gave textures the GPU's maximum: thin livery lines at grazing angles alias without it
   texture.needsUpdate = true
   return texture
 }
 
-// load runs the whole pipeline for a standalone consumer (the setup preview):
-// bytes to a textured scene. The engine keeps its own pipeline with per-jet
-// extras and shares only split/repack/textures.
+// load runs the whole pipeline: bytes to a textured scene. The model library
+// (library.ts) runs it once per model for the loadout preview and the flight
+// alike; the flight adds its per-jet extras on a clone.
 export async function load(
   ab: ArrayBuffer,
   renderer: THREE.WebGLRenderer
@@ -250,6 +253,7 @@ export async function load(
   const ktx2 = new KTX2Loader()
     .setTranscoderPath('basis/')
     .detectSupport(renderer)
+  const anisotropy = renderer.capabilities.getMaxAnisotropy()
   const decoded: Record<
     string,
     {
@@ -263,10 +267,10 @@ export async function load(
       try {
         decoded[name] = {
           base: captured[name].base
-            ? await decode(ktx2, captured[name].base!, true)
+            ? await decode(ktx2, captured[name].base!, true, anisotropy)
             : null,
           emissive: captured[name].emissive
-            ? await decode(ktx2, captured[name].emissive!, true)
+            ? await decode(ktx2, captured[name].emissive!, true, anisotropy)
             : null,
           hadEmissive: captured[name].hadEmissive,
         }

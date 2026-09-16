@@ -6,9 +6,11 @@
 // menu calls preload() on open and the engine consumes the SAME in-flight
 // fetches through asset(), so nothing downloads twice. Bytes are counted to
 // drive the loading screen and stall signal.
+import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
 import nimitz_model_url from '../assets/nimitz.glb?url'
+import stores_model_url from '../assets/stores.glb?url'
 
 interface Load {
   promise: Promise<ArrayBuffer>
@@ -78,6 +80,8 @@ export function preload(): void {
   moved = performance.now()
   begin(nimitz_model_url)
   begin(fa18c_model_url)
+  begin(stores_model_url)
+  begin(amraam_model_url)
   begin(flight_wasm_url)
 }
 

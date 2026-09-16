@@ -16,6 +16,7 @@ import { audio_gesture } from '../game/audio'
 // Type-only, so the statement is erased at build. Keep it that way: a VALUE
 // import from the engine here would undo the lazy split below.
 import { type GameHandle } from '../game/engine'
+import { warm } from '../game/library'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
 import { useMissionConfig } from '../lib/config-store'
@@ -61,6 +62,7 @@ function useTabTitle() {
     // still in the menu: by the time they start a mission the loading screen
     // usually costs nothing, and the engine joins these same in-flight fetches.
     preload()
+    void warm() // and parse them in the background as they land: the loadout dialog and the flight take their models from the library instead of parsing on open
     // The same idea for the engine's own chunk, now that it is lazy: fetched
     // AFTER the menu has painted rather than before, so it costs the first
     // render nothing and is warm by the time Fly is pressed.

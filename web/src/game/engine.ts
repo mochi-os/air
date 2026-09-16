@@ -38,7 +38,8 @@ import {
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
-import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
+import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
+import { model as model_stock } from './library'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
@@ -2336,25 +2337,16 @@ function carriage_update(dt){
 // GLB container surgery (game/model.ts, shared with the setup preview): strip
 // texture refs so the loader never takes its blob-URL texture path;
 // solid-colour materials keep their baseColorFactor.
-const glb_split=model_split, glb_repack=model_repack, model_textures=model_captures;
+const glb_split=model_split, glb_repack=model_repack;
 async function init_external_model(kind){
 	kind=kind||"fa18c"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18c;
 	if(fleet[kind]||fleet_loading[kind]) return fleet_loading[kind]; // one load per aircraft
 	let finish; fleet_loading[kind]=new Promise(r=>{ finish=r; });
 	const tag=spec.url;
 	try{
-		// Fetch/decode the GLB bytes ourselves (the loader's .load() builds a Request that sandboxed iframes can't clone).
-		// The preload module owns the download: single-flight with the menu's early start, byte-counted for the loading screen.
-		const abuf=await asset_bytes(spec.url);
-		// Capture per-material baseColor images, then strip texture refs so parse() never makes a blob: URL (which the sandbox rejects).
-		const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
-		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
-			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
-		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
-		const clean=glb_repack(parts.json, parts.bin);
-		const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);   // models ship meshopt-compressed (EXT_meshopt_compression); the decoder is bundled, no CDN
-		loader.parse(clean, "",
-			async gltf=>{ try{
+		const stocked=await model_stock(spec.url, renderer);   // the library's parse, shared with the loadout preview and warmed by the menu; what follows works on a clone, the stock is never posed in place
+		const gltf={ scene:stocked.scene.clone(true), animations:stocked.animations };
+		{ try{
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
@@ -2379,27 +2371,12 @@ async function init_external_model(kind){
 							const nosewb=wb.filter(q=>q[0]>mx-1.2), nx=nosewb.reduce((a,q)=>a+q[0],0)/nosewb.length;
 							if(spec.nose&&Math.abs(spec.nose-nx)<1.5) proto.children[0].position.x+=(spec.nose-nx); } }
 				}
-				if(typeof createImageBitmap==="function"){
-					const decoded={};
-					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-						const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
-						decoded[name]={ base:await make(src.base,true), emissive:await make(src.emissive,true), hadEmissive:src.hadEmissive };
-					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
-					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
-						const d=decoded[mm.name];
-						if(d&&d.base) mm.map=d.base;
-						if(d&&d.base&&/^Material_1[24]$/.test(mm.name||"")){ mm.emissiveMap=d.base; mm.emissive=new THREE.Color(0xffffff); mm.emissiveIntensity=0.32; instrument_mats.push(mm); }   // instrument backlighting (#99): the two cockpit gauge atlases are near-black faces that vanish in the glareshield's shadow — self-illuminate them from their own baseColor, like the real backlit panels, so dials read day and night; intensity follows tod/lights (instrument_backlight)
-						if(d&&d.emissive){ mm.emissiveMap=d.emissive; mm.emissiveIntensity=Math.min(mm.emissiveIntensity||1, 1.1); }   // cap KHR emissive strength: under the scene's ACES tone mapping a hot emissive blows to white-pink
-						else if(d&&d.hadEmissive&&mm.emissive){ mm.emissive.setRGB(0,0,0); }   // emissive texture stripped and unrestorable: black it out rather than glow flat white
-						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
-						mm.needsUpdate=true;
-					}); } });
-				}
+				proto.traverse(o=>{ if(o.isMesh&&o.material){ const list=Array.isArray(o.material)?o.material:[o.material]; list.forEach((mm,ix)=>{
+					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
 				apply_model_all(); finish();
-			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } },
-			err=>{ finish(); throw new Error("aircraft model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+") — ensure uncompressed glTF/GLB (no Draco)"); });
+			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } }
 	}catch(e){ finish(); throw new Error("aircraft model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
 }
 
@@ -2408,36 +2385,13 @@ async function init_external_model(kind){
 // nodes in the airframe's model space, fetched lazily the first time a loadout
 // carries anything beyond the wingtips.
 let stores_proto=null, stores_pending=null;
-// load_split: the sandbox-safe GLB pipeline shared by the split stores model
-// and the ordnance model (#27) — strip texture refs, parse with meshopt, then
-// decode and re-apply the textures in-process.
-async function load_split(url, tag){
-	const abuf=await asset_bytes(url);
-	const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
-	(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
-		for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });
-	delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
-	const clean=glb_repack(parts.json, parts.bin);
-	const gltf=await new Promise((res,rej)=>{ const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.parse(clean,"",res,rej); });
-	if(typeof createImageBitmap==="function"){
-		const decoded={};
-		await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-			const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
-			decoded[name]={ base:await make(src.base,true) };
-		}catch(te){ console.warn("["+tag+"] texture decode failed for "+name,te&&te.message||te); } }));
-		gltf.scene.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
-			const d=decoded[mm.name];
-			if(d&&d.base) mm.map=d.base;
-			if(mm.metalness!==undefined){ mm.metalness=0.0; mm.roughness=0.88; }   // the same matte tactical finish as the airframe
-			mm.needsUpdate=true;
-		}); } });
-	}
-	return gltf.scene;
-}
+// load_split: a split model (the stores, the AIM-120C) from the library, cloned:
+// the stock is shared with the loadout preview and never dressed in place.
+async function load_split(url){ return (await model_stock(url, renderer)).scene.clone(true); }
 async function init_stores_model(){
 	if(stores_proto) return; if(stores_pending) return stores_pending;
 	stores_pending=(async()=>{ try{
-		stores_proto=await load_split(stores_model_url,"stores");
+		stores_proto=await load_split(stores_model_url);
 		apply_stores(ownship); apply_stores(bandit);   // jets that spawned before the fetch finished get their racks now
 		for(const st of remotes.values()) apply_stores(st);
 	}catch(e){ console.warn("[stores] model failed",e&&e.message||e); stores_pending=null; } })();
@@ -2450,7 +2404,7 @@ let amraam_proto=null, amraam_pending=null;
 async function init_amraam_model(){
 	if(amraam_proto) return; if(amraam_pending) return amraam_pending;
 	amraam_pending=(async()=>{ try{
-		amraam_proto=normalize_round(await load_split(amraam_model_url,"aim120c"));
+		amraam_proto=normalize_round(await load_split(amraam_model_url));
 		apply_stores(ownship); apply_stores(bandit);
 		for(const st of remotes.values()) apply_stores(st);
 	}catch(e){ console.warn("[aim120c] model failed",e&&e.message||e); amraam_pending=null; } })();
