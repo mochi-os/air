@@ -21,12 +21,7 @@
 		"upgrade": {"function": "database_upgrade"},
 	},
 
-	// Deliberately NOT "icons", which is the key core reads: Air stays off the
-	// home grid and is reachable only by URL until it is ready for people who
-	// did not come looking for it. Renaming this key is the whole release
-	// gesture, so leave it until that decision is made rather than reading it
-	// as a typo.
-	"icons_disabled": [
+	"icons": [
 		{"action": "", "label": "app.name", "file": "images/icon.svg"}
 	],
 
