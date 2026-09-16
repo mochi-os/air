@@ -1437,6 +1437,15 @@ function build_lamps(g){
 		gear.add(lamps.transit,lamps.nose,lamps.left,lamps.right,lamps.half,lamps.full,lamps.flaps);
 		gear.position.copy(p); gear.position.x-=0.02; gear.position.z+=0.02;   // just inboard of the handle, proud of its panel
 		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear); }
+	// The HOOK light (NATOPS 2.10.5.1, #10) is the lighted knob of the arresting hook handle on the
+	// lower right panel. The lens is seated on the knob's aft face (Object_986, the handle's second
+	// mesh; the first is the lever) in the group frame, then handed to the animated handle node (the
+	// clip moves the _AN_ child, not its parent) so it drops with the lever.
+	const hook=g.getObjectByName("LANDING_Gear_Lever_Hook_AN_Hook_569"), knob=hook&&hook.getObjectByName("Object_986");
+	if(knob){ g.updateMatrixWorld(true); const b=node_box(g,knob);
+		if(b){ lamps.hook=legend("HOOK","#ffc23a",0.020,0.012); lamps.hook.name="hooklamp";
+			lamps.hook.position.set(b.lo.x-0.003,(b.lo.y+b.hi.y)/2,(b.lo.z+b.hi.z)/2); lamps.hook.rotateY(-Math.PI/2); lamps.hook.layers.set(LAYER_OWN);
+			g.add(lamps.hook); g.updateMatrixWorld(true); hook.attach(lamps.hook); } }
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
@@ -1451,6 +1460,7 @@ function lamps_update(out){
 	lamp_set(l.lbar,(ownship.bar??0)>0.05);   // green while the launch bar is extended (2.10.4, #11); the red L BAR needs a retraction fault the game has none of
 	lamp_set(l.aspj,jammer_armed); lamp_set(l.xmit,jammer_loud()); lamp_set(l.rec,jammer_armed&&!jammer_loud());   // the ASPJ: power on, radiating, armed and listening
 	lamp_set(l.ai,RWR.contacts.length>0);   // every emitter the RWR hears is an aircraft radar; SAM, AAA and CW have no emitter class to fire on
+	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
@@ -6188,7 +6198,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
-		case "hooklever": f=(st.hook??0)>0.05?1:0; break;
+		case "hooklever": f=(st.hookTarget??0)>0.5?1:0; break;   // the handle is the selection; the HOOK light shows the hook disagreeing with it (#10)
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;   // only the ownship has a pilot to select FIELD
 		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;

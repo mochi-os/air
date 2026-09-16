@@ -106,3 +106,43 @@ describe('the glareshield panels', () => {
     expect(build).toMatch(/gear\.add\(lamps\.transit,lamps\.nose,lamps\.left,lamps\.right,lamps\.half,lamps\.full,lamps\.flaps\)/)
   })
 })
+
+// The HOOK light (NATOPS 2.10.5.1): on while the hook is in transit, out at the
+// selected position, on while the hook rests on the deck short of the down
+// proximity switch, and any time the hook disagrees with the handle.
+interface Hook { hook: number; target: number; grounded?: boolean }
+function hooklit(h: Hook): boolean {
+  const line = /\n\tlamp_set\(l\.hook,[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!line) throw new Error('HOOK lamp line not found in engine.ts')
+  const run = new Function('h', `const ownship={hook:h.hook, hookTarget:h.target, grounded:!!h.grounded};
+    const l={hook:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${line}
+    return l.hook.on;`)
+  return run(h) as boolean
+}
+
+describe('the HOOK light', () => {
+  it('is out with the hook up and latched, or fully down in the air', () => {
+    expect(hooklit({ hook: 0, target: 0 })).toBe(false)
+    expect(hooklit({ hook: 1, target: 1 })).toBe(false)
+    expect(hooklit({ hook: 0, target: 0, grounded: true })).toBe(false)
+  })
+
+  it('is on while the hook travels either way', () => {
+    expect(hooklit({ hook: 0.5, target: 1 })).toBe(true)
+    expect(hooklit({ hook: 0.5, target: 0 })).toBe(true)
+    expect(hooklit({ hook: 0.5, target: 0, grounded: true })).toBe(true)
+  })
+
+  it('stays on with the hook down on deck, resting short of the down switch', () => {
+    expect(hooklit({ hook: 1, target: 1, grounded: true })).toBe(true)
+  })
+
+  it('rides the handle node, and the handle reads the selection so the light means disagreement', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/const hook=g\.getObjectByName\("LANDING_Gear_Lever_Hook_AN_Hook_569"\), knob=hook&&hook\.getObjectByName\("Object_986"\);/) // the clip moves this node, not its parent; the knob is its second mesh
+    expect(build).toMatch(/const b=node_box\(g,knob\);/)
+    expect(build).toMatch(/lamps\.hook=legend\("HOOK","#ffc23a",0\.020,0\.012\);/)
+    expect(build).toMatch(/hook\.attach\(lamps\.hook\);/)
+    expect(source).toMatch(/case "hooklever": f=\(st\.hookTarget\?\?0\)>0\.5\?1:0; break;/)
+  })
+})
