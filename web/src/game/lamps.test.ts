@@ -190,3 +190,39 @@ describe('the caution lights panel', () => {
     expect(build).toMatch(/const face=new THREE\.Matrix4\(\)\.lookAt\(aft,new THREE\.Vector3\(\),new THREE\.Vector3\(0,1,0\)\);/)
   })
 })
+
+// The canopy bow lights (FO-5 item 1): LOCK while the radar holds a single
+// target track, SHOOT whenever the HUD draws its SHOOT cue, so the bow light
+// flashes exactly as the cue does.
+function bowlit(stt: number | null, shoot: boolean): string[] {
+  const line = /\n\tlamp_set\(l\.lock,[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!line) throw new Error('bow light line not found in engine.ts')
+  const run = new Function('stt', 'shoot', `const RADAR={stt}, hud_shoot=shoot;
+    const l={lock:{},shoot:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${line}
+    return Object.keys(l).filter((k)=>l[k].on);`)
+  return run(stt, shoot) as string[]
+}
+
+describe('the LOCK and SHOOT lights', () => {
+  it('follow the single target track and the drawn SHOOT cue', () => {
+    expect(bowlit(null, false)).toEqual([])
+    expect(bowlit(7, false)).toEqual(['lock'])
+    expect(bowlit(7, true)).toEqual(['lock', 'shoot'])
+    expect(bowlit(null, true)).toEqual(['shoot'])
+  })
+
+  it('take the SHOOT word from every HUD site that draws it, reset each frame', () => {
+    expect(source).toMatch(/hud_cue=""; hud_shoot=false;/)
+    expect(source.match(/hud_shoot=true/g)?.length).toBe(3) // the AMRAAM cue, the gun director and the Sidewinder cue
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",cx,cy-2\.2\*ppdv\); hud_shoot=true; \}/)
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-seeker-16\); hud_shoot=true; \}/)
+  })
+
+  it('sit on the arch pendant, LOCK over SHOOT', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/const PENDANT=\{ x:6\.033, y:0\.740, z:0\.160, pitch:0\.011 \};/) // the pendant face, measured by panel click
+    expect(build).toMatch(/lamps\.lock=legend\("LOCK","#2fd24a",0\.026,0\.010\); lamps\.lock\.position\.set\(0,0,0\);/)
+    expect(build).toMatch(/lamps\.shoot=legend\("SHOOT","#2fd24a",0\.026,0\.010\); lamps\.shoot\.position\.set\(0,-PENDANT\.pitch,0\);/)
+    expect(build).toMatch(/bow\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\);/)
+  })
+})

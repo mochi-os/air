@@ -1460,6 +1460,16 @@ function build_lamps(g){
 			const dy=-r*CAUTIONS.pitch, dz=(c-1)*CAUTIONS.span; m.position.set(CAUTIONS.lean*dy+CAUTIONS.wrap*dz,dy,dz); m.setRotationFromMatrix(face); cautions.add(m); }));
 	cautions.position.set(CAUTIONS.x,CAUTIONS.y,CAUTIONS.z);
 	cautions.children.forEach(m=>{ m.layers.set(LAYER_OWN); }); g.add(cautions);
+	// The LOCK and SHOOT lights (FO-5 item 1, NATOPS 2.6.2.2, #14) are the pendant under the right
+	// windshield arch, LOCK over SHOOT painted on its aft face, which panel clicks put at x 6.04,
+	// y 0.715 to 0.726, z 0.143 to 0.170, just outboard of the standby compass (COMPASS_SEAT); the painted
+	// window reads a centimetre above those hits, so the lenses sit at 0.740 and 0.729.
+	const PENDANT={ x:6.033, y:0.740, z:0.160, pitch:0.011 };
+	const bow=new THREE.Group();
+	lamps.lock=legend("LOCK","#2fd24a",0.026,0.010); lamps.lock.position.set(0,0,0);
+	lamps.shoot=legend("SHOOT","#2fd24a",0.026,0.010); lamps.shoot.position.set(0,-PENDANT.pitch,0);
+	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
+	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
@@ -1481,6 +1491,8 @@ function lamps_update(out){
 	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL); }
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
+	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
+	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot);
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
@@ -6686,6 +6698,7 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
+let hud_shoot=false;   // whether the HUD is drawing SHOOT this frame, flash phase included: the canopy bow SHOOT light (#14) mirrors it
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
@@ -6786,7 +6799,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	if(cue==="break"){ hctx.strokeStyle=AM; hctx.lineWidth=3; const r=28;   // breakaway X: too close to shoot
 		hctx.beginPath(); hctx.moveTo(cx-r,cy-r); hctx.lineTo(cx+r,cy+r); hctx.moveTo(cx+r,cy-r); hctx.lineTo(cx-r,cy+r); hctx.stroke(); }
 	else if(cue&&(cue==="steady"||(sim_time*4)%2<1)){ hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
-		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); }
+		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); hud_shoot=true; }
 	if(flying.length){   // one line per supported round: A-time to the seeker's wake, then T-time
 		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 		let y=cy+3.6*ppdv;
@@ -6844,7 +6857,7 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 function draw_hud(){
-	hud_cue="";   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
+	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
 	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
@@ -7104,7 +7117,7 @@ function draw_hud(){
 				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*(R-dash),pip[1]+Math.sin(tick)*(R-dash)); hctx.lineTo(pip[0]+Math.cos(tick)*(R+dash),pip[1]+Math.sin(tick)*(R+dash)); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0) hud_cue="gun";
-				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
+				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hud_shoot=true; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
 					hctx.fillText("SHOOT",pip[0],pip[1]-R-12); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
@@ -7127,7 +7140,7 @@ function draw_hud(){
 		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
-			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); }
+			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); hud_shoot=true; }
 		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
 			hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
 			const top=bore[1]-3.0*ppd, bottom=bore[1]+3.0*ppd, sx=bore[0]+9*ppd;   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
