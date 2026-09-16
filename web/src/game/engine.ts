@@ -1318,6 +1318,11 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 // shapes beside the combining glass stand in (green chevron slow, amber donut
 // on-speed, red chevron fast). Driven from alpha in update_gauges; LAYER_OWN so
 // only the cockpit pass pays for it.
+// shown: visible up the whole parent chain. three.js raycasts hidden meshes
+// (visible=false cascades for rendering only), so every cockpit ray that picks
+// a surface must skip them - the hidden pilot head's oxygen hose sits a
+// centimetre from the eye and otherwise wins every click aimed up or right.
+function shown(o){ let n=o; while(n){ if(n.visible===false) return false; n=n.parent; } return true; }
 function build_indexer(g){
 	if(g.userData.indexer&&g.userData.indexerGroup&&g.userData.indexerGroup.parent===g) return;
 	const glass=g.userData.glass, eye=g.userData.eye;
@@ -1335,7 +1340,6 @@ function build_indexer(g){
 		m.position.set(0,0.012-0.012*i,0); m.layers.set(LAYER_OWN); box.add(m); });   // 12 mm rows, the unit's own lamp pitch
 	let iy=glass.y-glass.hh*0.35, edge=-(glass.hw-0.008), depth=glass.x-0.055;   // pane box conventions — pre-outline fallback
 	if(g.userData.outline){   // calibrated model: mount ON the modeled indexer unit (#16), whose position the pilot measured by panel click — tucked at the glass's lower-left against the frame, almost masked from boresight like the real unit, which is exactly why it is a bright-lamp instrument. A straight-aft ray finds the unit's face depth regardless of what the boresight eye sees.
-		const shown=(o)=>{ let n=o; while(n){ if(n.visible===false) return false; n=n.parent; } return true; };   // the hidden pilot head raycasts like anything else
 		const eye=g.userData.eye, rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
 		const IY=0.586, IZ=-0.105;   // raised off the pilot's clicked point: the shelf under the unit cut the stack at ~0.566, half-sinking the donut and hiding the fast chevron entirely
 		const origin=g.localToWorld(new THREE.Vector3(eye.x,IY,IZ));
@@ -1348,7 +1352,26 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_screens(g); build_ifei(g); }
+	build_radalt(g); build_screens(g); build_ifei(g); mount_compass(g); }
+// Standby magnetic compass (#2): the model spins its card in a bezel at the top of
+// the right vertical panel, where foldout FO-5 item 26 puts the RWR azimuth
+// indicator; NATOPS 2.12.9 hangs the compass from the right windshield arch, and
+// the model has the housing there - a pendant under the arch box on the canopy
+// frame. Re-seat the card in that housing, reparented so it rides the frame the
+// housing rides, and tilt it to read from below rather than above.
+const COMPASS_SEAT={ x:6.01, y:0.70, z:0.10, scale:0.6, tilt:-20 };   // group frame: hung under the right windshield arch just inboard of the LOCK/SHOOT pendant, placed by panel click (&panelpoint=1) and framed by capture - the arch mesh (Object_622) is the whole frame, both sides, so its bounds cannot place it, and the model has no compass housing to seat into. scale takes the panel-sized card drum down to a hanging compass; tilt (degrees about the lateral axis) turns the authored lean, made for a pilot looking DOWN at the card, toward one looking up. &compass=x,y,z,scale,tilt (dev) overrides for recalibration
+function mount_compass(g){
+	const card=g.getObjectByName("INSTRUMENT_MagneticCompass_518"), housing=g.getObjectByName("Object_622");
+	if(!card||!housing||card.userData.mounted) return;
+	g.updateMatrixWorld(true);
+	const at=DEV_MODE&&new URLSearchParams(location.search).get("compass");
+	const [x,y,z,scale,tilt]=at?at.split(",").map(Number):[COMPASS_SEAT.x,COMPASS_SEAT.y,COMPASS_SEAT.z,COMPASS_SEAT.scale,COMPASS_SEAT.tilt];
+	if(![x,y,z,scale,tilt].every(isFinite)) return;
+	housing.parent.attach(card);   // keeps the world pose across the reparent; the seat, the size and the tilt follow
+	card.position.copy(housing.parent.worldToLocal(g.localToWorld(new THREE.Vector3(x,y,z))));
+	card.scale.multiplyScalar(scale);
+	card.rotateOnWorldAxis(new THREE.Vector3(0,0,1).transformDirection(g.matrixWorld).normalize(),tilt*D2R);
+	card.userData.mounted=true; g.userData.compass={ at:[x,y,z], scale, tilt }; }
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
@@ -1418,7 +1441,7 @@ function surface_fit(g,box){
 	let cover=null;
 	const probe=(y)=>{ const pW=g.localToWorld(new THREE.Vector3(box.lo.x,y,cz));
 		rc.set(eyeW,pW.sub(eyeW).normalize());
-		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay) continue;
+		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay||!shown(h.object)) continue;
 			const p=g.worldToLocal(h.point.clone());
 			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02){ cover=cover||h.object; return p.x; } }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
 		return null; };
@@ -2033,6 +2056,8 @@ function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 	ifei_hold=hold; }
 function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return false;
 	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
+if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
+	const b=node_box(ownship.group,o); return b?{ lo:b.lo.toArray().map(n=>+n.toFixed(3)), hi:b.hi.toArray().map(n=>+n.toFixed(3)), parent:o.parent&&o.parent.name, visible:shown(o) }:null; };   // i18n-format-ok: dev readout
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
 // bingo_low: the tank is under the settable bingo bug. FALSE until the jet is
 // flying, because an unread tank is not an empty one: joining a match, the
@@ -4553,7 +4578,7 @@ function pit_click(e){
 		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
-		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay);   // measuring click: report where on the panel the pilot pointed
+		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // measuring click: report where on the panel the pilot pointed
 			if(h){ const p=ownship.group.worldToLocal(h.point.clone());
 				dev_probe_text="panel y="+p.y.toFixed(3)+" z="+p.z.toFixed(3)+" x="+p.x.toFixed(3)+" ("+(h.object.name||"?")+")";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 				try{ navigator.clipboard.writeText(dev_probe_text); }catch(_){ /* clipboard optional */ } } }   // the WHOLE line — the node name and depth matter as much as y,z
@@ -5461,7 +5486,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			rect:(()=>{ const m=u.ifei.mesh, v=new THREE.Vector3(), w=u.ifei.width/2, h=u.ifei.height/2;   // projected quad corners (css px, pilot's view) — placement checks and headless button clicks
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
-		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
+		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
