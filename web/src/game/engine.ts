@@ -1397,7 +1397,12 @@ function build_lamps(g){
 		lamps.nose=lamp(0x2fd24a,0.010,0.008); lamps.nose.position.set(0,0.022,0);
 		lamps.left=lamp(0x2fd24a,0.010,0.008); lamps.left.position.set(0,0.008,-0.009);
 		lamps.right=lamp(0x2fd24a,0.010,0.008); lamps.right.position.set(0,0.008,0.009);
-		gear.add(lamps.transit,lamps.nose,lamps.left,lamps.right);
+		// The flap lights complete the unit (FO-5 item 21: NOSE, LEFT RIGHT, HALF FULL, FLAPS): green HALF and FULL
+		// read the switch below 250 kt, amber FLAPS the switch above it or a flap off (NATOPS 2.8.4.3, #8)
+		lamps.half=lamp(0x2fd24a,0.010,0.008); lamps.half.position.set(0,-0.006,-0.009);
+		lamps.full=lamp(0x2fd24a,0.010,0.008); lamps.full.position.set(0,-0.006,0.009);
+		lamps.flaps=lamp(0xffc23a,0.010,0.008); lamps.flaps.position.set(0,-0.020,0);
+		gear.add(lamps.transit,lamps.nose,lamps.left,lamps.right,lamps.half,lamps.full,lamps.flaps);
 		gear.position.copy(p); gear.position.x-=0.02; gear.position.z+=0.02;   // just inboard of the handle, proud of its panel
 		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear); }
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
@@ -1412,6 +1417,10 @@ function lamps_update(out){
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
+	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5;   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs)
+		l.half.material.opacity=(flap_select===1&&slow)?1:0;
+		l.full.material.opacity=(flap_select===2&&slow)?1:0;
+		l.flaps.material.opacity=((flap_select>0&&!slow)||off)?1:0; }
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
@@ -5517,7 +5526,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
-		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
+		lit:Object.entries(u.lamps||{}).filter(([,m])=>(m as THREE.Mesh&{material:THREE.MeshBasicMaterial}).material.opacity>0.5).map(([k])=>k),   // the pit lamps on right now, by name   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
