@@ -48,6 +48,21 @@ describe('the standby attitude indicator', () => {
     expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
   })
 
+  it('draws the radar altimeter bug and red light at the index the aural fires on, with a BIT light', () => {
+    // NATOPS 2.12.5.4: the index pointer sets the altitude the red light and the
+    // voice come on at. The face once painted the bug and lit the lamp at a
+    // fixed 250 ft while the aural fired at law_index (200 in the pattern, 40
+    // for a cat shot).
+    const draw = /\nfunction radalt_draw\(r, agl, index\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+    expect(draw).not.toBe('')
+    expect(draw).toMatch(/dial\(RADALT_DIAL,index\)/)
+    expect(draw).toMatch(/lamp=!off&&agl<index/)
+    expect(draw).not.toMatch(/250/)
+    expect(draw).toMatch(/the green BIT light/)
+    expect(source).toMatch(/radalt_draw\(r, ownship\.pos\.y-\(surface>-1e8\?surface:0\), law_index\);/)
+    expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index\);/)
+  })
+
   it('keeps the approach deviation for the HUD and the ADI page only', () => {
     const gauges = /function update_gauges\(out\)\{[\s\S]*?\n\township\.gauges=\{[\s\S]*?\n\t\t[^\n]*ground:[^\n]*\};/.exec(source)?.[0] ?? ''
     expect(gauges).not.toBe('')
