@@ -1113,7 +1113,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
-		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR])/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei
+		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer))/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
@@ -1159,9 +1159,7 @@ const AIRCRAFT_MODELS={
 	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttle" },
 	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.35, gauge:"stickPitch" },
 	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
-	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },
-	      { name:"adiGlide",  node:"INSTRUMENT_AttitudeIndicator_Glide_AN_Glide_508",        trans:[0,0.99,0.14], gain:0.0468, min:-1, max:1, gauge:"glide" },
-	      { name:"adiLoc",    node:"INSTRUMENT_AttitudeIndicator_Localizer_AN_Localizer_511",trans:[-1,0,0],      gain:0.0554, min:-1, max:1, gauge:"loc" },
+	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the modeled glideslope and localizer carriages beside it stay hidden (spec.hide): the C's standby indicator has no ILS bars
 	      // ---- #99 batch 2: needles are shaped in update_gauges (nonlinear dials measured off the
 	      // face textures — the GLB's needle tracks are uncalibrated double-spins, useless beyond
 	      // axis+sign); drums are plain place-value gains (full turn per 10 units of their place).
@@ -3887,7 +3885,7 @@ function update_aircraft_lights(){
 	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
-function approach_deviation(){   // shared by the HUD ICLS needles and the cockpit ADI bars: one computation, one truth
+function approach_deviation(){   // shared by the HUD ICLS needles and the ADI page's bars: one computation, one truth
 	if(!carrier_ols) return null; const o=carrier_ols, p=ownship.pos, s=ols_dev(p,o);
 	if((ownship.gearTarget??0)>0.5) return null;   // the ICLS boxes with the landing checklist (gear down) — the auto-display stands in for the pilot selecting ILS, and a clean pass up the wake is not an approach
 	const toward=(o.tdx-p.x)*ownship.fwd.x+(o.tdz-p.z)*ownship.fwd.z;   // >0 = nose pointing at the touchdown
@@ -3907,7 +3905,6 @@ function dial(table,v){ const a=Math.abs(v);
 	return Math.sign(v)*table[table.length-1][1]*D2R; }
 let flow_state={t:0,fuel:0,pph:0};   // smoothed total burn from the fuel word itself — honest, includes AB and leaks
 function update_gauges(out){   // instrument channels for the cockpit rig (#99)
-	const dev=approach_deviation();
 	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281);
 	const fpm=THREE.MathUtils.clamp((out[STATE.velocity+1]||0)*196.85,-6000,6000);
 	const lbs=Math.max(0,(out[STATE.fuel]||0)*2.2046);
@@ -3930,7 +3927,6 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		bank:Math.atan2(ownship.right.y,ownship.up.y),
 		heading:Math.atan2(ownship.fwd.x,-ownship.fwd.z),
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
-		glide:dev?dev.gs:0, loc:dev?dev.az:0,                    // park centred off-approach
 		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
 		asi:dial(ASI_DIAL,cas), altitude,
@@ -5465,6 +5461,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			rect:(()=>{ const m=u.ifei.mesh, v=new THREE.Vector3(), w=u.ifei.width/2, h=u.ifei.height/2;   // projected quad corners (css px, pilot's view) — placement checks and headless button clicks
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
+		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
