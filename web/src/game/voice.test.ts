@@ -95,7 +95,7 @@ interface Result { tones: string[]; lamp: boolean; active: string[] }
 // the MASTER CAUTION lamp and the messages handed to the queue.
 function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
-  const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[];
+  const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[];
     const voice={}, gpws={gear:false};
     const audio_caution=()=>tones.push("caution"), audio_warning=()=>tones.push("warning"), audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
@@ -123,6 +123,29 @@ describe('the voice takes over from the caution tone', () => {
     const [both] = cautions([{ rows: [row('R ENG'), row('FUEL LEAK')], ready: true }])
     expect(both.tones).toEqual(['caution'])
     expect(both.active).toEqual(['ENGINE RIGHT'])
+  })
+
+  // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have
+  // passed since the previous one, reset or not; and a caution that clears and
+  // recurs inside 5 s of the first tone stays quiet. The harness steps 1/60 s
+  // per moment, so 306 moments are 5.1 s, clear of the boundary. The keys are cautions with no voice
+  // (FCS and the engine ones would be spoken, and the voice replaces the tone).
+  const hold = (rows: Row[], n: number): Moment[] => Array.from({ length: n }, () => ({ rows, ready: true }))
+  const toned = (results: Result[]) => results.map((r, i) => (r.tones.includes('caution') ? i : -1)).filter((i) => i >= 0)
+
+  it('lets a second caution inside 5 s ride the first tone, and sounds again for one 5 s on', () => {
+    const results = cautions([
+      ...hold([row('FUEL LEAK')], 60),
+      ...hold([row('FUEL LEAK'), row('CANOPY')], 246),
+      ...hold([row('FUEL LEAK'), row('CANOPY'), row('STRUCTURE')], 60),
+    ])
+    expect(toned(results)).toEqual([0, 306]) // the third caution lands 5.1 s after the first tone
+    expect(results[60].lamp).toBe(true) // the quiet second caution still lights MASTER CAUTION
+  })
+
+  it('does not re-tone a caution that clears and recurs inside 5 s, and does after', () => {
+    const results = cautions([...hold([row('STRUCTURE')], 60), ...hold([], 60), ...hold([row('STRUCTURE')], 60), ...hold([], 126), ...hold([row('STRUCTURE')], 60)])
+    expect(toned(results)).toEqual([0, 306]) // recurs at 2 s: quiet; recurs at 5.1 s: tones
   })
 
   it('falls back to the tone while the recording is not ready', () => {

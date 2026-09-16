@@ -569,6 +569,32 @@ async function listen(): Promise<void> {
   )
 }
 
+// The MASTER CAUTION tone, NATOPS 2.17.2.1: 0.8 s in all - a 0.25 s sound, a
+// 0.15 s sound of higher pitch, then one repetition of the pair. The manual
+// gives no frequencies, so the lower note keeps the 1 kHz the beep had and the
+// higher sits a fifth above it. Steady notes with 8 ms edges against clicks;
+// the amplitude holds the beep's measured loudness (mixcheck's frozen RMS) so
+// the alert family keeps its ordering under the law and warning tones. Pure,
+// so the shape is tested where no AudioContext exists.
+export const CAUTION_LENGTH = 0.8
+export const CAUTION_NOTES: readonly (readonly [number, number, number])[] = [
+  [0, 0.25, 1000],
+  [0.25, 0.15, 1500],
+  [0.4, 0.25, 1000],
+  [0.65, 0.15, 1500],
+] // [start s, length s, Hz]
+export function caution_shape(d: Float32Array, r: number): void {
+  const edge = 0.008 * r
+  for (const [at, length, hz] of CAUTION_NOTES) {
+    const start = Math.floor(at * r)
+    const n = Math.floor(length * r)
+    for (let i = 0; i < n && start + i < d.length; i++) {
+      const env = Math.min(1, i / edge, (n - i) / edge)
+      d[start + i] += Math.sin((i / r) * 2 * Math.PI * hz) * env * 0.19
+    }
+  }
+}
+
 // bake pre-renders every one-shot into a named buffer.
 async function bake(): Promise<void> {
   const c = context as AudioContext
@@ -773,20 +799,8 @@ async function bake(): Promise<void> {
       if (i >= r * 0.6) d[i] += last * 2.5 * decay(i - r * 0.6, r, 0.5)
     }
   })
-  // Master caution: the double beep.
-  shots.caution = await render(0.55, (d, r) => {
-    const beep = (at: number) => {
-      const base = Math.floor(at * r)
-      for (let i = 0; i < r * 0.18 && base + i < d.length; i++)
-        d[base + i] +=
-          Math.sin((i / r) * 2 * Math.PI * 1000) *
-          Math.min(1, i / (r * 0.01)) *
-          decay(i, r, 0.12) *
-          0.35
-    }
-    beep(0)
-    beep(0.28)
-  })
+  // Master caution: the NATOPS tone (caution_shape).
+  shots.caution = await render(CAUTION_LENGTH, caution_shape)
   // Master WARNING: three fast high beeps — the red tier (FIRE and kin) is
   // explicitly not backed by the caution tone (NATOPS 2.17.3), so it gets
   // its own urgent voice. Synthesized like everything else — no recordings.
