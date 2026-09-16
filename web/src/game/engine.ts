@@ -1413,7 +1413,7 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0)); } } }
+		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index); } } }
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
@@ -1477,8 +1477,8 @@ function build_radalt(g){
 	surface_pose(mesh,fit?fit.x:box.lo.x,fit?fit.tilt:0,(box.lo.y+box.hi.y)/2,(box.lo.z+box.hi.z)/2);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
-	radalt_draw(g.userData.radalt, 1e9); }
-function radalt_draw(r, agl){
+	radalt_draw(g.userData.radalt, 1e9, law_index); }
+function radalt_draw(r, agl, index){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree
 	const x=r.canvas.getContext("2d"), W=160, C=80;
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
@@ -1488,16 +1488,19 @@ function radalt_draw(r, agl){
 		x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*58,C+Math.sin(a)*58); x.stroke();
 		if(inner) x.fillText(String(ft/100),C+Math.cos(a)*46,C+Math.sin(a)*46); }
 	x.font="9px monospace"; x.fillText("RADAR ALT",C,C-22); x.fillText("X100 FT",C,C+24);
-	{ const a=(dial(RADALT_DIAL,250)/D2R-90)*D2R;   // the low-altitude index bug at 250 ft (#47, NATOPS 2.12.5.4.4)
+	{ const a=(dial(RADALT_DIAL,index)/D2R-90)*D2R;   // the low-altitude index pointer at the set index (NATOPS 2.12.5.4.4): 200 ft in the pattern, 40 for a cat shot, never a fixed figure the aural disagrees with
 		x.fillStyle="#e8c832"; x.beginPath();
 		x.moveTo(C+Math.cos(a)*70,C+Math.sin(a)*70); x.lineTo(C+Math.cos(a-0.08)*58,C+Math.sin(a-0.08)*58); x.lineTo(C+Math.cos(a+0.08)*58,C+Math.sin(a+0.08)*58); x.closePath(); x.fill();
 		x.fillStyle="#d8d8d0"; }
-	const off=agl>5000;
+	const off=agl>5000, lamp=!off&&agl<index;   // OFF above 5,000 ft AGL (2.12.5.4.6); the red light whenever the pointer is below the index (2.12.5.4.3) - the aural's gear gate is the aural's, not the lamp's
+	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill();   // the red low-altitude warning light, upper right
+	x.fillStyle="#173a17"; x.beginPath(); x.arc(C-30,C-30,7,0,7); x.fill();   // the green BIT light (2.12.5.4.5): dark - the game runs no initiated BIT
+	x.fillStyle="#d8d8d0";
 	if(off){ x.fillStyle="#a02020"; x.fillRect(C-18,C+34,36,14); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+41); }
 	else{ const ang=(dial(RADALT_DIAL,Math.max(0,agl))/D2R-90)*D2R;
-		if(agl<250){ x.fillStyle="#c02020"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill(); x.fillStyle="#d8d8d0"; }   // the red LOW warning lamp on the gauge (#47, NATOPS 2.12.5.4.3)
 		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
+	r.index=index; r.lamp=lamp; r.off=off;   // what the face shows, for dev_probe
 	r.tex.needsUpdate=true; }
 // DDI/AMPCD screens (#99): the three screen meshes exist in the GLB but are
 // bare dark glass; each gets a canvas quad proud of its pane, drawn by the
@@ -5487,7 +5490,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
-		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
+		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
