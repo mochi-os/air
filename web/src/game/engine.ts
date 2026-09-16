@@ -4975,6 +4975,7 @@ let caution_list=[];        // [key, label, red] rows, sim-step fresh — the re
 let caution_keys=new Set(); // keys present last step (the new-key edge)
 let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
 let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on), as a tone while the voice cannot say it
+let caution_toned=-1e9;     // sim time the MASTER CAUTION tone last sounded: the 5 s spacing of NATOPS 2.17.2.1
 const voice=voice_queue();  // the voice alerts (voice.ts)
 function cautions_update(){
 	const rows=[]; const core=last_out;
@@ -5009,10 +5010,10 @@ function cautions_update(){
 	caution_keys=new Set(rows.map(r=>r[0]));
 	if(fresh) caution_lamp=true;
 	if(freshWarning) audio_warning();
-	else if(freshCaution) audio_caution();
+	else if(freshCaution&&sim_time-caution_toned>=5){ audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
 	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
-	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0;
+	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
 	const active=new Set();
 	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
 	if(gpws.gear) active.add("CHECK GEAR");
