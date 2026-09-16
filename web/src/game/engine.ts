@@ -1185,6 +1185,7 @@ const AIRCRAFT_MODELS={
 	      // cockpit levers ride their authored clips (single calibrated sweeps), scrubbed from state
 	      { name:"gearlever", track:/^Gear_handle_AN/i, drive:"gearlever" },
 	      { name:"hooklever", track:/^LANDING_Gear_Lever_Hook_AN/i, drive:"hooklever" },
+	      { name:"hookbypass", track:/^SWITCH_HOOKBYPASS_LEFTPANEL_AN/i, drive:"hookbypass" },   // the hook bypass switch: authored = CARRIER, track end = FIELD (#7)
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -3992,8 +3993,11 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
 	else if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
 		// The indexer lights with the gear down and weight off wheels, and flashes
-		// when the hook is up (NATOPS 2.12.10).
-		const blink=((ownship.hook??0)<0.5)?(Math.floor(sim_time*3)%2):1;
+		// when the hook is up with the hook bypass switch in CARRIER (NATOPS
+		// 2.12.10); FIELD holds it steady, and the solenoid lets FIELD go the
+		// moment the hook is lowered.
+		if((ownship.hook??0)>=0.5) hook_bypass="carrier";
+		const blink=((ownship.hook??0)<0.5&&hook_bypass==="carrier")?(Math.floor(sim_time*3)%2):1;
 		const lit=(out[STATE.extension]||0)>0.9 && !ownship.grounded && blink>0;
 		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
 		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
@@ -4545,6 +4549,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")){ if(caution_lamp) caution_lamp=false; else { caution_slots=cautions_restack(caution_slots); ddi_dirty=true; } }   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
+		if(ch===key_of("hook.bypass")) hook_bypass=hook_bypass==="field"?"carrier":"field";   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) fuel_dump=!fuel_dump;   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
 		if(ch===key_of("secure.starboard")) secured[1]=!secured[1];
@@ -5039,6 +5044,7 @@ function cautions_update(){
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
+let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
 let gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
@@ -5495,7 +5501,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			// through at runtime, which a unit test on the renderer cannot.
 			sample:(()=>{const d=lines.filter(l=>l.indexOf("1,T=")===0);return d[d.length-1]||"";})()};
 	})(),
-	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
+	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name), clips:(ownship.group.userData.rig||[]).filter(e=>e.clip).map(e=>e.name) }; })(),   // clips: the clip-scrubbed entries whose track regex found tracks in the model (rig_build drops the rest silently)
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
@@ -5510,7 +5516,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
-		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
+		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
+		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field   // the model nodes spec.hide switched off (the A/B drums, the standby ADI's ILS carriages) — proves the hide landed on the live clone
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
@@ -6135,6 +6142,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
 		case "hooklever": f=(st.hook??0)>0.05?1:0; break;
+		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;   // only the ownship has a pilot to select FIELD
 		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
