@@ -1191,6 +1191,13 @@ const AIRCRAFT_MODELS={
 	      { name:"gearlever", track:/^Gear_handle_AN/i, drive:"gearlever" },
 	      { name:"hooklever", track:/^LANDING_Gear_Lever_Hook_AN/i, drive:"hooklever" },
 	      { name:"hookbypass", track:/^SWITCH_HOOKBYPASS_LEFTPANEL_AN/i, drive:"hookbypass" },   // the hook bypass switch: authored = CARRIER, track end = FIELD (#7)
+	      // the interior lights panel (2.6.2, #21): the knobs and the MODE switch scrub their clips from the lighting levels
+	      { name:"instpnl",   track:/^Knob_INSTPNL_RightPanel_AN/i,     drive:"instpnl" },
+	      { name:"consoles",  track:/^Knob_CONSOLES_RIGHTPANEL_AN/i,    drive:"consoles" },
+	      { name:"flood",     track:/^Knob_FLOOD_RightPanel_AN/i,       drive:"flood" },
+	      { name:"chart",     track:/^Knob_CHART_RightPanel_AN/i,       drive:"chart" },
+	      { name:"warncaut",  track:/^Knob_WARN_CAUT_RightPanel_AN/i,   drive:"warncaut" },
+	      { name:"mode",      track:/^MODE_C_AN/i,                      drive:"mode" },
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -2698,6 +2705,7 @@ async function init_external_model(kind){
 							if(spec.nose&&Math.abs(spec.nose-nx)<1.5) proto.children[0].position.x+=(spec.nose-nx); } }
 				}
 				proto.traverse(o=>{ if(o.isMesh&&o.material){ const list=Array.isArray(o.material)?o.material:[o.material]; list.forEach((mm,ix)=>{
+					if(/^EMISSIVE_LIGHTS$/.test(mm.name||"")) instrument_mats.push(mm);   // the main panel's own emissive placards follow the INST PNL knob too (#21)
 					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
@@ -4106,11 +4114,27 @@ const instrument_mats=[];   // the two gauge-atlas materials, per loaded model â
 let backlight_state="";
 let unpowered=false;   // both generators off the line: the emergency instrument light's only trigger (NATOPS 2.6.2.8, #17), and the integral lighting's loss
 const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity, a spot 40 cm off the standby cluster
+// The interior lights panel (NATOPS 2.6.2, #21) as the game sets it: the MODE switch DAY by day and NITE
+// at night, when it dims the warning, caution and advisory lights (2.6.2.1); INST PNL the integral
+// instrument lighting (2.6.2.4), a dim wash by day, up at night with the lights key; CONSOLES the console
+// lighting (2.6.2.3); FLOOD the white floods (2.6.2.5), on at night with the lights key; CHART off; and
+// WARN/CAUT the lens brightness, held in the low range under NITE. Both generators gone (2.6.2.8)
+// takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles.
+const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, chart:0, warn:1 };
+function lighting_set(){ const night=cfg.tod==="night", on=!!ownship.lights;
+	lighting.mode=night?"nite":"day";
+	lighting.instrument=unpowered?0:night?(on?0.62:0.30):0.22;
+	lighting.consoles=unpowered?0:night?(on?1:0.5):0;
+	lighting.flood=unpowered?0:night&&on?1:0;
+	lighting.chart=0;
+	lighting.warn=night?0.55:1; }
 function instrument_backlight(){
-	const level=unpowered?0:cfg.tod==="night"?(ownship.lights?0.62:0.30):0.22;   // dim wash by day; night panel follows the lights switch (L); dark with both generators gone (2.6.2.8, #17): the standbys are then the emergency light's
-	const key=level.toFixed(2); if(key===backlight_state) return; backlight_state=key;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	for(const mm of instrument_mats) mm.emissiveIntensity=level; }
-let cockpit_flood=null;
+	lighting_set(); const level=lighting.instrument;
+	const key=level.toFixed(2)+lighting.warn.toFixed(2); if(key===backlight_state) return; backlight_state=key;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	for(const mm of instrument_mats) mm.emissiveIntensity=level;
+	const lamps=ownship.group&&ownship.group.userData.lamps;   // WARN/CAUT and the NITE mode dim the lenses: the painted legends multiply by the material colour
+	if(lamps) for(const m of Object.values(lamps)) if(m.userData.lens) m.material.color.setScalar(lighting.warn); }
+let cockpit_flood=null, console_lights=null;
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
 	// The shuttle follows the launch bar tip whenever the jet is hooked - parked
@@ -4157,7 +4181,10 @@ function update_aircraft_lights(){
 	if(!cockpit_flood){ cockpit_flood=new THREE.PointLight(0xffd9a8,0,2.2,2); cockpit_flood.layers.set(LAYER_OWN);   // panel flood (#99): the night pit is otherwise unlit; layer-own so the world pass never pays for it
 		ownship.group.add(cockpit_flood); }
 	const at=ownship.group.userData.eye||{x:3.0,y:0.6}; cockpit_flood.position.set(at.x+0.45,at.y-0.15,0);
-	cockpit_flood.intensity=(on&&cfg.view==="cockpit")?0.12:0;   // follows the L lights toggle, only spends when the pit is on screen
+	if(!console_lights){ console_lights=[-0.45,0.45].map(z=>{ const l=new THREE.PointLight(0xffd9a8,0,1.2,2); l.layers.set(LAYER_OWN); l.position.set(at.x+0.15,at.y-0.25,z); ownship.group.add(l); return l; }); }   // the console lighting (2.6.2.3): the tub's texture has no emissive layer, so a low light over each console stands in for the integral panels; two, not the jet's six floods
+	const pit=cfg.view==="cockpit";   // only spends when the pit is on screen
+	cockpit_flood.intensity=pit?0.12*lighting.flood:0;   // the instrument panel floods (2.6.2.5) on the FLOOD level
+	for(const l of console_lights) l.intensity=pit?0.06*Math.max(lighting.consoles,lighting.flood):0;
 	const geardown=(ownship.gear??0)<0.02, land=on && geardown && !recovery_start();   // the landing light rides the nose gear strut: on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
 	for(const p of aircraft_lights.pos) p.visible=on; for(const p of aircraft_lights.landing) p.visible=land; for(const p of aircraft_lights.strobe) p.visible=strobe;
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
@@ -5777,7 +5804,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
-		emergency:u.emergency?u.emergency.intensity:null, backlight:+backlight_state||0,   // the emergency instrument light's intensity and the integral backlight level (#17)
+		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
 		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
 		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout â€” the gear handle light's time on, whether the aural is due and the silence latch (#22)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
@@ -6407,7 +6434,9 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
 		case "hooklever": f=(st.hookTarget??0)>0.5?1:0; break;   // the handle is the selection; the HOOK light shows the hook disagreeing with it (#10)
-		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;   // only the ownship has a pilot to select FIELD
+		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
+		case "instpnl": f=lighting.instrument; break; case "consoles": f=lighting.consoles; break; case "flood": f=lighting.flood; break;   // the interior lights panel (#21)
+		case "chart": f=lighting.chart; break; case "warncaut": f=lighting.warn; break; case "mode": f=lighting.mode==="nite"?0.5:1; break;   // only the ownship has a pilot to select FIELD
 		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead

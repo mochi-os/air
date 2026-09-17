@@ -241,12 +241,16 @@ function emergency(p: Power): { unpowered: boolean; intensity: number } {
     return { unpowered, intensity:ownship.group.userData.emergency.intensity };`)
   return run(p) as { unpowered: boolean; intensity: number }
 }
-function backlight(tod: string, lights: boolean, unpowered: boolean): number {
-  const fn = /\nfunction instrument_backlight\(\)\{[\s\S]*?emissiveIntensity=level; \}\n/.exec(source)?.[0] ?? ''
-  if (!fn) throw new Error('instrument_backlight not found in engine.ts')
-  const run = new Function('tod', 'lights', 'unpowered', `const cfg={tod}, ownship={lights}, instrument_mats=[{emissiveIntensity:9}]; let backlight_state="";
-    ${fn} instrument_backlight(); return instrument_mats[0].emissiveIntensity;`)
-  return run(tod, lights, unpowered) as number
+interface Lights { mode: string; instrument: number; consoles: number; flood: number; chart: number; warn: number }
+function lights(tod: string, lights: boolean, unpowered: boolean): Lights {
+  const state = /\nconst lighting=\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const fn = /\nfunction lighting_set\(\)\{[\s\S]*?lighting\.warn=[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!state || !fn) throw new Error('lighting_set not found in engine.ts')
+  const run = new Function('tod', 'lights', 'unpowered', `const cfg={tod}, ownship={lights}; ${state} ${fn} lighting_set(); return { ...lighting };`)
+  return run(tod, lights, unpowered) as Lights
+}
+function backlight(tod: string, on: boolean, unpowered: boolean): number {
+  return lights(tod, on, unpowered).instrument
 }
 
 describe('the emergency instrument light', () => {
@@ -270,7 +274,7 @@ describe('the emergency instrument light', () => {
     const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
     expect(build).toMatch(/const emergency=new THREE\.SpotLight\(0xffffff,0,0\.9,0\.55,0\.6,2\); emergency\.position\.set\(6\.10,0\.34,0\.42\);/)
     expect(build).toMatch(/emergency\.target\.position\.set\(6\.30,0\.13,0\.19\); emergency\.layers\.set\(LAYER_OWN\); g\.add\(emergency\); g\.add\(emergency\.target\);/)
-    expect(source).toMatch(/emergency:u\.emergency\?u\.emergency\.intensity:null, backlight:\+backlight_state\|\|0,/)
+    expect(source).toMatch(/emergency:u\.emergency\?u\.emergency\.intensity:null, backlight:lighting\.instrument, lighting:\{ \.\.\.lighting \},/)
   })
 })
 
@@ -359,5 +363,37 @@ describe('the MASTER CAUTION and silence button clicks', () => {
     expect(keys).toMatch(/'tone\.silence': 'Shift\+KeyG'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
     expect(settings.match(/id: 'tone\.silence', label: msg`Silence gear tone`, group: 'aircraft'/g)?.length).toBe(2)
+  })
+})
+
+// The interior lights panel (NATOPS 2.6.2): MODE, INST PNL, CONSOLES, FLOOD,
+// CHART and WARN/CAUT as the game sets them from the time of day, the lights
+// key and the generators, driving the model's knobs and dimming the lenses.
+describe('the interior lights panel', () => {
+  it('sets DAY with a dim instrument wash and everything else off by day', () => {
+    expect(lights('day', false, false)).toEqual({ mode: 'day', instrument: 0.22, consoles: 0, flood: 0, chart: 0, warn: 1 })
+    expect(lights('day', true, false).flood).toBe(0)
+  })
+
+  it('sets NITE at night, dims the lenses, and brings the panel, consoles and floods up with the lights key', () => {
+    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.3, consoles: 0.5, flood: 0, chart: 0, warn: 0.55 })
+    expect(lights('night', true, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, chart: 0, warn: 0.55 })
+  })
+
+  it('loses the integral lighting, the consoles and the floods with both generators', () => {
+    const dark = lights('night', true, true)
+    expect([dark.instrument, dark.consoles, dark.flood]).toEqual([0, 0, 0])
+  })
+
+  it('drives the six panel controls from the levels and dims the lenses by their material colour', () => {
+    const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
+    for (const [name, node] of [['instpnl', 'Knob_INSTPNL_RightPanel_AN'], ['consoles', 'Knob_CONSOLES_RIGHTPANEL_AN'], ['flood', 'Knob_FLOOD_RightPanel_AN'], ['chart', 'Knob_CHART_RightPanel_AN'], ['warncaut', 'Knob_WARN_CAUT_RightPanel_AN'], ['mode', 'MODE_C_AN']])
+      expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+track:/\\^' + node + '/i,\\s+drive:"' + name + '"'))
+    expect(source).toMatch(/case "instpnl": f=lighting\.instrument; break; case "consoles": f=lighting\.consoles; break; case "flood": f=lighting\.flood; break;/)
+    expect(source).toMatch(/case "chart": f=lighting\.chart; break; case "warncaut": f=lighting\.warn; break; case "mode": f=lighting\.mode==="nite"\?0\.5:1; break;/)
+    expect(source).toMatch(/if\(lamps\) for\(const m of Object\.values\(lamps\)\) if\(m\.userData\.lens\) m\.material\.color\.setScalar\(lighting\.warn\);/)
+    expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
+    expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
+    expect(source).toMatch(/cockpit_flood\.intensity=pit\?0\.12\*lighting\.flood:0;/)
   })
 })
