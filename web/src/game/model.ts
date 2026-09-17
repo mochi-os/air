@@ -16,7 +16,7 @@ export interface Parts {
   bin: Uint8Array | null
 }
 
-export interface Source {
+interface Source {
   bytes: Uint8Array
   mime: string
 }
@@ -68,7 +68,7 @@ export function repack(json: any, bin: Uint8Array | null): ArrayBuffer {
 
 // textures maps each material's baseColor/emissive image bytes by material
 // name, following KTX2 sources into the basisu extension.
-export function textures(
+function textures(
   parts: Parts
 ): Record<
   string,
