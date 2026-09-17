@@ -1867,7 +1867,9 @@ function screens_update(){
 // page-owned bezel buttons, and range(direction)/reset() which the DDI view
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
 // semantics; 0 puts the page's transient state back to defaults).
-const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
+let adi_source="ins";   // the EADI's attitude source option (2.13.4.3): STBY boxed on a weight-on-wheels power-up, INS otherwise; a press switches
+function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===19) adi_source="stby"; else return false; return true; }
+const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
 	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
@@ -2009,17 +2011,24 @@ function ddi_rdr(x){
 		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); } }
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
 	x.fillText("ENG",256,36);
-	x.font="22px monospace";
-	const rows=[["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],["FF PPH",gz.flowL||0,gz.flowR||0,10],
-		["NOZ %",gz.nozL||0,gz.nozR||0,1],
-		["OIL PSI",gz.oilL||0,gz.oilR||0,1]];   // the same channels the IFEI reads (update_gauges): one law for both faces. The oil law once swept 55-65, below the MIL minimum at every power setting (#49)
-	x.textAlign="center"; x.fillText("L",150,84); x.fillText("R",362,84);
-	let y=140;
+	// The EMD's thirteen rows (2.1.1.7.6), parameter names down the centre with the engine values either
+	// side. N2, EGT, fuel flow, nozzle and oil pressure are the IFEI's channels (update_gauges); the rest
+	// follow the same health-weighted spool through F404-shaped schedules, N2 65 % idle to 99 MIL: N1 from
+	// 30 to 100 %, thrust the spool itself, vibration a nominal 1, EPR 1.0 to 1.7, CDP 60 to 300 psi and TDP
+	// 15 to 45 psi, and the inlet and fuel temperatures ISA air at altitude, the fuel a little warmer.
+	const spool=(n2)=>THREE.MathUtils.clamp(((n2||35)-65)/34,0,1), oat=gz.oat||15;
+	const rows=[["INLET °C",oat,oat,1],["N1 %",30+70*spool(gz.rpmL),30+70*spool(gz.rpmR),1],["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],
+		["FF PPH",gz.flowL||0,gz.flowR||0,10],["NOZ %",gz.nozL||0,gz.nozR||0,1],["OIL PSI",gz.oilL||0,gz.oilR||0,1],
+		["THRUST %",100*spool(gz.rpmL),100*spool(gz.rpmR),1],["VIB",1,1,1],["FUEL °C",oat+10,oat+10,1],
+		["EPR",10+7*spool(gz.rpmL),10+7*spool(gz.rpmR),0.1],["CDP PSI",60+240*spool(gz.rpmL),60+240*spool(gz.rpmR),1],["TDP PSI",15+30*spool(gz.rpmL),15+30*spool(gz.rpmR),1]];
+	x.textAlign="center"; x.font="17px monospace"; x.fillText("LEFT EPE",150,72); x.fillText("RIGHT EPE",362,72);   // the -402's top line
+	let y=100;
 	for(const [label,L,R,q] of rows){
-		x.textAlign="center"; x.font="19px monospace"; x.fillText(label,256,y);
-		x.font="22px monospace"; x.textAlign="right";
-		x.fillText(String(Math.round((L||0)/q)*q),192,y); x.fillText(String(Math.round((R||0)/q)*q),404,y);
-		y+=62; } }   // the fuel total lives on the FUEL page now
+		x.textAlign="center"; x.font="16px monospace"; x.fillText(label,256,y);
+		x.font="19px monospace"; x.textAlign="right";
+		const show=(v)=>q===0.1?(Math.round(v||0)/10).toFixed(1):String(Math.round((v||0)/q)*q);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		x.fillText(show(L),192,y); x.fillText(show(R),404,y);
+		y+=29; } }   // the fuel total lives on the FUEL page now
 function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=5.2;
 	const colour=display==="center";   // the AMPCD's colour licence; the DDIs shade the ball in green
 	const cx=256, cy=246, R=186;
@@ -2034,6 +2043,8 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 	for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
 		x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
 		x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
+	x.beginPath(); x.arc(0,off-90*ppd,10,0,Math.PI*2); x.stroke();   // the zenith, a small circle (2.13.4.3)
+	x.beginPath(); x.arc(0,off+90*ppd,10,0,Math.PI*2); x.moveTo(-10,off+90*ppd); x.lineTo(10,off+90*ppd); x.moveTo(0,off+90*ppd-10); x.lineTo(0,off+90*ppd+10); x.stroke();   // the nadir, a circle with a cross
 	x.restore();
 	x.strokeStyle="#39e07a"; x.lineWidth=2;   // ball rim, bank scale outside the top arc, pointer at the bank angle
 	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
@@ -2049,11 +2060,17 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 		const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
 		x.beginPath(); x.moveTo(cx-176,cy+gs*120); x.lineTo(cx-116,cy+gs*120); x.stroke();
 		x.beginPath(); x.moveTo(cx+az*120,cy+94); x.lineTo(cx+az*120,cy+154); x.stroke(); }
-	{ const sy=cy+R-24, s=THREE.MathUtils.clamp(gz.slip||0,-1,1)*26;   // slip ball in the lower ball area
+	{ const sy=cy+R+12, span=60, rate=THREE.MathUtils.clamp((gz.yaw||0)/(3*D2R),-1,1)*span;   // the turn indicator below the ball (2.13.4.3): FCS yaw rate, the lower box under an end box at a standard rate turn of 3°/s
 		x.strokeStyle="#39e07a"; x.lineWidth=2;
-		x.beginPath(); x.moveTo(cx-44,sy); x.lineTo(cx+44,sy); x.stroke();
-		x.beginPath(); x.moveTo(cx-12,sy-10); x.lineTo(cx-12,sy+10); x.moveTo(cx+12,sy-10); x.lineTo(cx+12,sy+10); x.stroke();
-		x.beginPath(); x.arc(cx+s,sy,7,0,Math.PI*2); x.stroke(); } }
+		for(const bx of [-span,0,span]) x.strokeRect(cx+bx-12,sy-8,24,16);
+		x.strokeRect(cx+rate-12,sy+12,24,16); }
+	{ const kcas=Math.round((ownship.cas??ownship.speed)*1.94384), alt=Math.round(gz.altitude||0), vv=Math.round((gz.vspeed||0)/10)*10;   // the top-left block (2.13.4.3, MC OFP 13C): vertical velocity over the airspeed and altitude boxes, the altitude source beside
+		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="left";
+		x.fillText(String(vv),22,60);
+		x.strokeRect(16,74,88,30); x.fillText(String(kcas),22,89);
+		x.strokeRect(16,110,104,30); x.fillText(String(alt),22,125);
+		x.fillText(alt_radar?"RDR":"BARO",130,125); }
+	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,19,"STBY",true,adi_source==="stby"); }
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
 	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
@@ -2075,6 +2092,7 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 			x.fillStyle="#ffd27a"; x.fillRect(kx-6,kz-6,12,12); }   // the boat, in the AMPCD's colour licence
 		x.restore(); }
 	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
+	x.font="16px monospace"; x.fillText("T",256,52); x.font="26px monospace";   // true heading under the lubber line (2.13.4.7)
 	x.save(); x.translate(256,cy);
 	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // rose ring (half scale) and the quarter-scale ring inside it
 	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
@@ -2102,12 +2120,15 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
 	ddi_legend(x,9,"DCTR",true,hsi_state.dctr);
 	if(gz.ground>50) x.fillText("GS "+Math.round(gz.ground),24,64);
-	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN block: bearing / range / minutes to the boat at present groundspeed — two short lines in the corner, clear of the MENU legend
+	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN data at the upper left (2.13.4.7 item 2): bearing / range / minutes to the boat at present groundspeed
 	x.font="20px monospace";
-	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,458);
+	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,92);
 	let tline=rngnm.toFixed(1)+" NM";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
-	x.fillText(tline,24,486); }
+	x.fillText(tline,24,118);
+	const z=gz.zulu||0, two=(v)=>String(v).padStart(2,"0");   // ZTOD lower left and the IFEI's elapsed time lower right (2.13.4.7)
+	x.fillText("ZTOD "+two(Math.floor(z/3600))+":"+two(Math.floor(z/60)%60)+":"+two(z%60),24,458);
+	x.textAlign="right"; x.fillText("ET "+ifei_current().elapsed,488,458); }
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
 	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
@@ -4161,6 +4182,7 @@ function dial(table,v){ const a=Math.abs(v);
 	for(let i=1;i<table.length;i++){ if(a<=table[i][0]){ const [v0,d0]=table[i-1], [v1,d1]=table[i];
 		return Math.sign(v)*(d0+(d1-d0)*(a-v0)/(v1-v0))*D2R; } }
 	return Math.sign(v)*table[table.length-1][1]*D2R; }
+const yaw_state={t:0,heading:0,rate:0};   // heading rate, rad/s, smoothed over half a second: the EADI's turn indicator (2.13.4.3, #24)
 let flow_state={t:0,fuel:0,pph:0};   // smoothed total burn from the fuel word itself — honest, includes AB and leaks
 function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281);
@@ -4180,10 +4202,13 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	const gL=sL*hL, gR=sR*hR, bL=rL*hL, bR=rR*hR;   // health-weighted spool/reheat: the gauges' and the effects' drive
 	const vx=out[STATE.velocity]||0, vz=out[STATE.velocity+2]||0, vh=Math.hypot(vx,vz);   // horizontal velocity: HSI ground track and groundspeed
 	const now=new Date();
+	const heading=Math.atan2(ownship.fwd.x,-ownship.fwd.z);
+	if(t>yaw_state.t){ const d=Math.atan2(Math.sin(heading-yaw_state.heading),Math.cos(heading-yaw_state.heading));
+		yaw_state.rate+=(d/(t-yaw_state.t)-yaw_state.rate)*Math.min(1,(t-yaw_state.t)/0.5); yaw_state.t=t; yaw_state.heading=heading; }
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
 		bank:Math.atan2(ownship.right.y,ownship.up.y),
-		heading:Math.atan2(ownship.fwd.x,-ownship.fwd.z),
+		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds(),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
 		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
@@ -5753,6 +5778,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		emergency:u.emergency?u.emergency.intensity:null, backlight:+backlight_state||0,   // the emergency instrument light's intensity and the integral backlight level (#17)
+		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
 		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
@@ -6554,6 +6580,7 @@ function reset_ownship(){
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	baro_armed=false; baro_shown=-1e9; baro_flash=false;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
+	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
