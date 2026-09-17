@@ -12,10 +12,10 @@
 // engine feeds it rows and draws what comes back.
 
 export const ACROSS = 3
-export const LINES = 7
+const LINES = 7
 export const SLOTS = ACROSS * LINES
 
-export interface Slot {
+interface Slot {
   key: string
   label: string
   red: boolean

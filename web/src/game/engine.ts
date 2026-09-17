@@ -2973,7 +2973,7 @@ function contrail_vertices(rig,time,cam,pixel){   // rebuild the two ribbons fro
 function contrail_engines(st){   // each engine's power and achieved reheat: the ownship and the bandit carry both from their cores, a remote one pair from its pose
 	if(st.spools&&st.reheats) return [{ spool:st.spools[0]||0, reheat:st.reheats[0]||0 },{ spool:st.spools[1]||0, reheat:st.reheats[1]||0 }];
 	const spool=st.thrust??0, reheat=st.reheat??0; return [{ spool, reheat },{ spool, reheat }]; }
-function contrail_effects(dt){   // lay each flying jet's segment when due, then age and redraw every trail, the abandoned ones included
+function contrail_effects(){   // lay each flying jet's segment when due, then age and redraw every trail, the abandoned ones included
 	const jets=new Set([ownship,bandit,...remotes.values()]);
 	for(const st of jets){ if(!st) continue;
 		const flying=st===ownship?!(crash_t>0):!!(st.group&&st.group.visible);   // the ownship's group is hidden in the first-person views, so its life is the crash state
@@ -4343,8 +4343,8 @@ function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=c
 // configuration column and the odd 12 px step between the cautions and the
 // stores counters (#186): the pitch has to be stated once.
 const STACK_PITCH=18;
-let hud_ladder={horizon:null,marker:null,limited:false,bore:null,axis:[],caged:false,ghost:null};   // dev: where the horizon bar, the ladder's centre line and the velocity vector were drawn this frame, so a probe can see the ladder leave its marker
-let hud_stack={pitch:STACK_PITCH,left:[],right:[]};   // dev (#186): what each stack laid out this frame, and the step it should be using, so a probe can measure the spacing a canvas will not report
+const hud_ladder={horizon:null,marker:null,limited:false,bore:null,axis:[],caged:false,ghost:null};   // dev: where the horizon bar, the ladder's centre line and the velocity vector were drawn this frame, so a probe can see the ladder leave its marker
+const hud_stack={pitch:STACK_PITCH,left:[],right:[]};   // dev (#186): what each stack laid out this frame, and the step it should be using, so a probe can measure the spacing a canvas will not report
 function stack_draw(rows,x,base){ const laid=[]; let cy=base;
 	for(const [colour,text] of rows){ hctx.fillStyle=colour; hctx.fillText(text,x,cy); laid.push({text:String(text),y:cy,colour:String(colour)}); cy-=STACK_PITCH; }
 	return laid; }
@@ -5184,7 +5184,7 @@ let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to
 let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
 let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
-let gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
+const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
 let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
@@ -6401,7 +6401,7 @@ function step_world(dt){ sim_time+=dt;
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,trigger_own());   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
-	contrail_effects(dt);   // every jet's contrail, where the air is cold enough
+	contrail_effects();   // every jet's contrail, where the air is cold enough
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)

@@ -4,8 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, it, expect } from 'vitest'
 import { migrate, normalize } from '../game/stores'
-import type { MissionConfig } from './config'
-import { DEFAULT_CONFIG } from './config'
+import { DEFAULT_CONFIG, type MissionConfig } from './config'
 import {
   absorb,
   loadOutcome,
