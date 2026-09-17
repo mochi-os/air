@@ -1366,13 +1366,13 @@ function build_indexer(g){
 // face proud of its disc, drawn from the gauges. The centres are the hidden
 // needles' pivots and the ball's centre (dev_origin on the rig nodes), the radii
 // the apertures they turn in; the tub's discs sit at x 6.211.
-const STANDBY={ x:6.207, asi:{ y:0.097, z:0.125, r:0.026 }, alt:{ y:0.097, z:0.192, r:0.026 }, vsi:{ y:0.096, z:0.258, r:0.026 }, adi:{ y:0.163, z:0.154, r:0.045 } };
+const STANDBY={ x:6.207, asi:{ y:0.097, z:0.125, r:0.026 }, alt:{ y:0.097, z:0.192, r:0.026 }, vsi:{ y:0.096, z:0.258, r:0.026 }, adi:{ y:0.163, z:0.154, r:0.045 }, clock:{ y:0.150, z:0.279, r:0.045 } };   // the clock's bezel (2.12.7, #33) has nothing behind it: its centre is the tub's disc, measured by click
 const STANDBY_C=128, STANDBY_R=118;   // the faces' canvas centre and dial radius
 const ADI_PIXELS=STANDBY_R*0.22/10;   // pixels per degree of pitch on the standby ball: 10° is 0.22 of the radius
 function build_standby(g){
 	if(g.userData.standby&&g.userData.standby.asi.mesh.parent) return;
 	const faces={};
-	for(const name of ["asi","alt","vsi","adi"]){ const seat=STANDBY[name];
+	for(const name of ["asi","alt","vsi","adi","clock"]){ const seat=STANDBY[name];
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=256;
 		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
 		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
@@ -1381,7 +1381,8 @@ function build_standby(g){
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
 	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0);
-	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
+	clock_face(faces.clock,gz.clockH||0,gz.clockM||0,gz.clockS||0);
+	for(const k of ["asi","alt","vsi","adi","clock"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
 	x.strokeStyle="#e8e8e0"; x.fillStyle="#e8e8e0"; x.lineWidth=2; x.textAlign="center"; x.textBaseline="middle"; return x; }
@@ -1433,6 +1434,12 @@ function adi_face(f,pitch,bank){ const x=face_start(f,"#3a6ea8"), C=STANDBY_C, R
 	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#f0f0e8"; x.beginPath(); x.moveTo(0,-R+18); x.lineTo(-7,-R+32); x.lineTo(7,-R+32); x.closePath(); x.fill();
 	x.restore();
 	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
+// The clock (2.12.7): a twelve-hour dial with hour, minute and sweep second hands from the game clock the rig's pedestal clock also reads
+function clock_face(f,hours,minutes,seconds){ const x=face_start(f), R=STANDBY_R;
+	for(let i=0;i<60;i++){ const a=i/60*Math.PI*2-Math.PI/2, major=i%5===0; face_tick(x,a,R,major?R-14:R-7,major?3:1.5);
+		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-30,String(i/5||12)); } }
+	face_needle(x,hours/12*Math.PI*2,R-56,6); face_needle(x,minutes/60*Math.PI*2,R-26,5);
+	x.save(); x.translate(STANDBY_C,STANDBY_C); x.rotate(seconds/60*Math.PI*2); x.strokeStyle="#e0a020"; x.lineWidth=2; x.beginPath(); x.moveTo(0,16); x.lineTo(0,-(R-14)); x.stroke(); x.restore(); }
 // The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26 puts it in the
 // round housing on the right vertical panel where the model seated its standby
 // compass, which mount_compass hangs on the arch. The housing's bezel, measured
@@ -5740,7 +5747,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
-		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
+		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi","clock"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
 		rwr:u.rwr?{ at:u.rwr.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.rwr.mesh.layers.mask, count:u.rwr.count }:null,   // i18n-format-ok: dev readout — the azimuth indicator's seat (#28), its layer and the contacts it last drew
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
@@ -5764,7 +5771,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
 			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
+		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi","clock"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
 			.filter(([,o])=>o).map(([name,o])=>({ name, ...probe(o) }));   // every face and lamp the pit builds (#25): the probe wants each on the ownship layer, visible and in the scene
 		return { sweep, radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop

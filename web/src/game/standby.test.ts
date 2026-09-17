@@ -265,8 +265,18 @@ describe('the standby instrument faces', () => {
     expect(d.translate.some(([dx, dy]) => dx === 0 && Math.abs(dy - px) < 1e-6)).toBe(true)
   })
 
+  it('turn the clock hands from the game clock over a twelve-hour dial', () => {
+    const d = face('clock_face', 4, 15, 50) // four fifteen and fifty seconds: three distinct angles
+    expect(has(d.rotate, 4 / 12 * Math.PI * 2)).toBe(true)
+    expect(has(d.rotate, 15 / 60 * Math.PI * 2)).toBe(true)
+    expect(has(d.rotate, 50 / 60 * Math.PI * 2)).toBe(true)
+    for (const label of ['12', '3', '6', '9']) expect(d.text).toContain(label)
+  })
+
   it('are seated proud of the tub\'s discs at the measured bezels and refreshed from the gauges', () => {
-    expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.097, z:0\.125, r:0\.026 \}, alt:\{ y:0\.097, z:0\.192, r:0\.026 \}, vsi:\{ y:0\.096, z:0\.258, r:0\.026 \}, adi:\{ y:0\.163, z:0\.154, r:0\.045 \} \};/) // the hidden needles' pivots and the ball's centre
+    expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.097, z:0\.125, r:0\.026 \}, alt:\{ y:0\.097, z:0\.192, r:0\.026 \}, vsi:\{ y:0\.096, z:0\.258, r:0\.026 \}, adi:\{ y:0\.163, z:0\.154, r:0\.045 \}, clock:\{ y:0\.150, z:0\.279, r:0\.045 \} \};/) // the hidden needles' pivots, the ball's centre and the clock's empty bezel
+    expect(source).toMatch(/clock_face\(faces\.clock,gz\.clockH\|\|0,gz\.clockM\|\|0,gz\.clockS\|\|0\);/)
+    expect(source).toMatch(/for\(const name of \["asi","alt","vsi","adi","clock"\]\)\{ const seat=STANDBY\[name\];/)
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
     expect(source).toMatch(/surface_pose\(mesh,STANDBY\.x,0,seat\.y,seat\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
     expect(source).toMatch(/if\(now-\(sb\.last\|\|0\)>100\)\{ sb\.last=now; standby_draw\(sb,ownship\.gauges\|\|\{\}\); \}/)
