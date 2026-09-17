@@ -1170,6 +1170,11 @@ const AIRCRAFT_MODELS={
 	      { name:"altH",      node:"digits_altitude_hundred_AN_hundred_388",         axis:"x", sign:-1, gain:6.2832/1000,   gauge:"altitude" },
 	      { name:"altT",      node:"digits_altitude_thousand_AN_thousand_394",       axis:"x", sign:-1, gain:6.2832/10000,  gauge:"altitude" },
 	      { name:"altTT",     node:"digits_altitude_tenthousand_AN_tenthousand_391", axis:"x", sign:-1, gain:6.2832/100000, gauge:"altitude" },
+	      // the barometric setting window (NATOPS 2.12.4, #16): four continuous drums reading the setting in hundredths of inHg, tens first
+	      { name:"baro1",     node:"Drum_Baro_1_AN_1_397",                           axis:"x", sign:-1, gain:6.2832/10000,  gauge:"baro" },
+	      { name:"baro2",     node:"Drum_Baro_2_AN_2_400",                           axis:"x", sign:-1, gain:6.2832/1000,   gauge:"baro" },
+	      { name:"baro3",     node:"Drum_Baro_3_AN_3_403",                           axis:"x", sign:-1, gain:6.2832/100,    gauge:"baro" },
+	      { name:"baro4",     node:"Drum_Baro_4_AN_4_406",                           axis:"x", sign:-1, gain:6.2832/10,     gauge:"baro" },
 	      { name:"vsi",       node:"VSINeedleAction_AN__736",                        axis:"z", gauge:"vsi" },
 	      // engine and fuel readouts are the IFEI quad (build_ifei), not this rig: the GLB's
 	      // drum counters and pointer fuel gauge are the A/B fit and stay hidden (spec.hide)
@@ -4109,6 +4114,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
 		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
+		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
 		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
 		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, mach:out[STATE.mach]||0,
@@ -5649,7 +5655,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
 		for(const [name,mesh] of Object.entries(extra)){ if(!mesh) continue; mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out[name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
-	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH), baro:f(g.baro) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, ifei:u.ifei?{ calibration:u.ifei.at, at:u.ifei.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ifei.mesh.layers.mask, face:ifei_current(),   // i18n-format-ok: dev probe readout, never shown to a user
 			rect:(()=>{ const m=u.ifei.mesh, v=new THREE.Vector3(), w=u.ifei.width/2, h=u.ifei.height/2;   // projected quad corners (css px, pilot's view) — placement checks and headless button clicks
@@ -6462,6 +6468,7 @@ function reset_ownship(){
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
+	baro_armed=false; baro_shown=-1e9; baro_flash=false;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
@@ -6757,6 +6764,8 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
+const baro_set=2992;   // the standby altimeter's barometric setting, hundredths of inHg: 29.92 on the game's standard day, since no sea-level pressure reaches the core and the pit has no knob (#16)
+let baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;   // the HUD baro-set readout (2.13.4.8.11 item 4): when it last appeared, whether it flashes, and whether a descent through 10,000 ft is armed
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_shoot=false;   // whether the HUD is drawing SHOOT this frame, flash phase included: the canopy bow SHOOT light (#14) mirrors it
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
@@ -7272,6 +7281,14 @@ function draw_hud(){
 		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
 		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
 		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
+	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
+	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
+	{ const knots=(ownship.cas??ownship.speed)*1.944;
+		if(baro>=10000) baro_armed=true;
+		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
+		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
+		if(!declutter&&sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
+			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
 	// and the range, stacked under the altitude box where the jet puts them - RDR
 	// (the radar is the only ranging the game has), Vc in knots with a minus for an
