@@ -30,11 +30,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableSortHeader,
 } from '@mochi/web/components/ui/table'
 import {
-  ArrowDown,
-  ArrowUp,
-  ChevronsUpDown,
   CircleAlert,
   Download,
   History,
@@ -85,10 +83,11 @@ async function save(
 type SortKey = 'started' | 'duration' | 'kills' | 'deaths'
 type Sort = { key: SortKey; direction: 'asc' | 'desc' }
 
-// A header that sorts. The whole cell is the button so the hit target matches
-// what the eye reads as the column title, and the arrow only appears on the
-// column actually in force - an arrow on every header says nothing about which
-// one the table is ordered by.
+// The sorting headers of this table. Shape and aria live in the shared
+// TableSortHeader; what stays here is the flight log's own rule for where a
+// column starts: a new column opens on the order that reads as "most
+// interesting first" - newest flight, longest flight, most kills. Clicking the
+// column already in force is what flips it.
 function SortHead({
   column,
   sort,
@@ -103,53 +102,24 @@ function SortHead({
   children: ReactNode
 }) {
   const active = sort.key === column
-  const Arrow = !active
-    ? ChevronsUpDown
-    : sort.direction === 'asc'
-      ? ArrowUp
-      : ArrowDown
   return (
-    <TableHead
-      aria-sort={
-        active
-          ? sort.direction === 'asc'
-            ? 'ascending'
-            : 'descending'
-          : 'none'
+    <TableSortHeader
+      active={active}
+      direction={sort.direction}
+      align={right ? 'end' : 'start'}
+      onToggle={() =>
+        onSort(
+          active
+            ? {
+                key: column,
+                direction: sort.direction === 'asc' ? 'desc' : 'asc',
+              }
+            : { key: column, direction: 'desc' }
+        )
       }
-      className={right ? 'text-right' : undefined}
     >
-      <button
-        type='button'
-        // A new column starts on the order that reads as "most interesting
-        // first": newest flight, longest flight, most kills. Clicking the
-        // column already in force is what flips it.
-        onClick={() =>
-          onSort(
-            active
-              ? {
-                  key: column,
-                  direction: sort.direction === 'asc' ? 'desc' : 'asc',
-                }
-              : { key: column, direction: 'desc' }
-          )
-        }
-        className={`hover:text-foreground focus-visible:ring-ring/50 -mx-1 flex w-full items-center gap-1 rounded px-1 outline-none focus-visible:ring-[3px] ${
-          right ? 'justify-end' : ''
-        } ${active ? 'text-foreground font-semibold' : ''}`}
-      >
-        {/* On a right-aligned column the arrow goes BEFORE the label, so the
-            label itself ends flush with the numbers below it. Trailing it there
-            pushed every heading an arrow's width off its own column. */}
-        {right && (
-          <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />
-        )}
-        {children}
-        {!right && (
-          <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />
-        )}
-      </button>
-    </TableHead>
+      {children}
+    </TableSortHeader>
   )
 }
 
