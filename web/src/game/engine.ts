@@ -7320,7 +7320,7 @@ function draw_hud(){
 	trim_manual=trim_law();
 	const pa=hud_pa;                              // landing symbology gate (flaps HALF/FULL)
 	let fpm=null;
-	const bore=glass?(proj_dir(ownship.fwd)||[cx,cy]):[cx,cy];   // boresight on screen — shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
+	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
 	if(flight_symbols){
 	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
