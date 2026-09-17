@@ -44,7 +44,7 @@ export interface Reading {
   tanks: { left: boolean; right: boolean; centre: boolean } // which external stations carry a tank
 }
 
-export interface Counter {
+interface Counter {
   legend: string
   value: string // '' when the jet has no reading to show
 }
@@ -74,7 +74,7 @@ function step(v: number, unit: number, hi: number): string {
 export function rpm(v: number): string {
   return step(v, 1, 199)
 }
-export function egt(v: number): string {
+function egt(v: number): string {
   return step(v, 1, 1999)
 }
 export function flow(v: number): string {
@@ -87,7 +87,7 @@ export function noz(v: number): string {
 export function oil(v: number): string {
   return step(v, 5, 195)
 }
-export function pounds(v: number): string {
+function pounds(v: number): string {
   return step(v, 10, 99990)
 }
 
@@ -96,7 +96,7 @@ function two(v: number): string {
 }
 
 // The clock line, 24-hour, local or zulu.
-export function clock(now: Date, zulu: boolean): string {
+function clock(now: Date, zulu: boolean): string {
   return zulu
     ? two(now.getUTCHours()) + ':' + two(now.getUTCMinutes()) + ':' + two(now.getUTCSeconds())
     : two(now.getHours()) + ':' + two(now.getMinutes()) + ':' + two(now.getSeconds())
@@ -109,7 +109,7 @@ export function elapsed(seconds: number): string {
 }
 
 // The elapsed seconds the display shows at time `at`.
-export function running(state: State, at: number): number {
+function running(state: State, at: number): number {
   if (state.started === null) return 0
   if (state.frozen !== null) return state.frozen
   return at - state.started

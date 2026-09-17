@@ -425,7 +425,7 @@ describe('every jet, every frame', () => {
 
 describe('the wiring', () => {
   it('runs the contrails after the gun effects each world step', () => {
-    expect(source).toMatch(/\n\tgun_effects\(dt\);[^\n]*\n\tcontrail_effects\(dt\);/)
+    expect(source).toMatch(/\n\tgun_effects\(dt\);[^\n]*\n\tcontrail_effects\(\);/)
   })
 
   it('reads each engine\'s achieved power beside its reheat for the ownship and the bandit', () => {
