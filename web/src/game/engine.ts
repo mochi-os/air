@@ -1390,7 +1390,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); mount_compass(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); mount_compass(g); }
 // The standby flight instruments (#32): the model hides its mechanical airspeed,
 // altimeter, vertical speed and attitude parts 8 cm behind opaque black discs
 // painted on the cockpit tub, so, like the radar altimeter, each gets a canvas
@@ -1893,7 +1893,7 @@ function screens_update(){
 			if(want!==cur){ sc.canvas.width=sc.canvas.height=want;
 				sc.tex.dispose(); } }   // WebGL2 canvas textures get immutable texStorage2D storage at first upload; without a dispose a resized canvas texSubImage2Ds into one corner of the old allocation and the rest of the face keeps stale texels
 		ddi_blit(sc); }
-	if(pit) ifei_update(stale); }   // the IFEI shares the 120 ms economy; a button press redraws at once through ifei_dirty
+	if(pit){ ifei_update(stale); ufc_update(stale); } }   // the IFEI and the UFC share the 120 ms economy; a button press redraws at once through their dirty flags
 // Pages may declare optional handlers beyond draw: press(pb,display) for
 // page-owned bezel buttons, and range(direction)/reset() which the DDI view
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
@@ -2336,6 +2336,97 @@ function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 	ifei_hold=hold; }
 function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return false;
 	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
+// ---- The UFC (NATOPS 2.13.5, #15) ----
+// The upfront control is painted into the main panel below the HUD: no nodes, no
+// windows. A transparent canvas quad over the measured face draws its displays and
+// leaves the painted keypad and legends showing through; the pushbuttons are panel
+// points matched to the nearest button under a click. What it works is what the
+// game has: EMCON is the one radar silence, ILS reads ON while the ICLS needles are
+// live, TCN is the carrier, A/P engages the approach power compensator, and the
+// RALT option takes the radar altimeter's low-altitude index from the keypad.
+const UFC_FACE={ y:[0.370,0.497], z:[-0.094,0.089] };   // the upper face, group frame, measured by panel click (&panelpoint=1); the function row steps 1.4 cm proud below it
+const UFC_W=512, UFC_H=356;   // the face's own aspect
+const UFC_SCRATCH={ y:[0.475,0.486], z:[-0.076,-0.001] };   // the nine-character scratchpad window
+const UFC_OPTIONS={ z:[0.018,0.071], rows:[0.477,0.456,0.434,0.412,0.389], h:0.012 };   // the five option display windows
+const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the option selects, EMCON, I/P and the function selectors
+	{ name:"1", y:0.453, z:-0.061 }, { name:"2", y:0.453, z:-0.039 }, { name:"3", y:0.453, z:-0.018 },
+	{ name:"4", y:0.432, z:-0.062 }, { name:"5", y:0.432, z:-0.039 }, { name:"6", y:0.432, z:-0.018 },
+	{ name:"7", y:0.409, z:-0.063 }, { name:"8", y:0.409, z:-0.040 }, { name:"9", y:0.409, z:-0.018 },
+	{ name:"clr", y:0.386, z:-0.063 }, { name:"0", y:0.386, z:-0.041 }, { name:"ent", y:0.386, z:-0.018 },
+	{ name:"opt0", y:0.477, z:0.006 }, { name:"opt1", y:0.456, z:0.006 }, { name:"opt2", y:0.434, z:0.006 }, { name:"opt3", y:0.412, z:0.006 }, { name:"opt4", y:0.389, z:0.006 },
+	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.450, z:-0.085 },
+	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 } ];
+const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
+const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows
+const UFC_CUES={ tcn:[0,3], ils:[0] };   // the colons the game's fixed equipment states show: TACAN in T/R on the X band, ILS on its channel
+const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 };   // the selected function, the :RALT cue, the keypad entry, the ERROR flash, the blink-once deadline
+let ufc_dirty=true, ufc_last="";
+let law_set=false;   // the low-altitude index was keyed on the UFC: the climb-out no longer restores the pattern's 200
+// ufc_face: what the windows show, from the panel's state and the equipment it
+// reads (silent: EMCON/radar silence; atc; ils: the ICLS needles live; index: the
+// low-altitude index). The scratchpad is nine characters: two alphanumeric (ON for
+// equipment that is on) and seven numeric, right-aligned. ERROR flashes at 2 Hz
+// until cleared (2.13.5.9); a valid entry blanks the window once.
+function ufc_face(state,live,now){
+	const options=live.silent?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>{ if(!o) return "";
+		const cue=state.func==="ap"?(i===3&&state.ralt):(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
+	let scratch;
+	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
+	else if(now<state.blink) scratch="         ";
+	else { const on=state.func==="ap"?live.atc:state.func==="tcn"?true:state.func==="ils"?live.ils:false;
+		const seven=state.entry!==""?state.entry:(state.func==="ap"&&state.ralt)?String(live.index):"";
+		scratch=(on?"ON":"  ")+seven.padStart(7); }
+	return { scratch, options }; }
+function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), index:law_index }; }
+function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
+	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
+	return best; }
+// ufc_press works one pushbutton. Digits fill the entry; CLR clears the entry or
+// the ERROR first and the option windows second (2.13.5.9); ENT keys the entry to
+// the selected option, which is only :RALT: the low-altitude index, 0 to 5,000 ft.
+// A function selector shows its page, or clears the display when pressed again;
+// A/P engages the approach power compensator as the autopilot switch engages the
+// autopilot (2.13.5.10). :RALT pressed again disables the warning until it re-arms
+// from above the index (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2).
+function ufc_press(name){ const now=performance.now()/1000;
+	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
+	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else { ufc.func=""; ufc.ralt=false; } }
+	else if(name==="ent"){ const v=ufc.entry===""?NaN:+ufc.entry;
+		if(ufc.func==="ap"&&ufc.ralt&&v>=0&&v<=5000){ law_index=v; law_set=true; ufc.entry=""; ufc.blink=now+0.3; }
+		else ufc.error=true; }
+	else if(name==="emcon") pit_press("radar",0);   // one silence: the radar, and the radar altimeter with it (#29)
+	else if(name.startsWith("opt")){ const i=+name.slice(3);
+		if(ufc.func==="ap"&&i===3){ if(ufc.ralt){ ufc.ralt=false; law_armed=false; } else ufc.ralt=true; ufc.entry=""; ufc.error=false; } }
+	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; }
+	ufc_dirty=true; ufc_update(true); }
+function build_ufc(g){
+	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
+	const y=(UFC_FACE.y[0]+UFC_FACE.y[1])/2, z=(UFC_FACE.z[0]+UFC_FACE.z[1])/2, w=UFC_FACE.z[1]-UFC_FACE.z[0], h=UFC_FACE.y[1]-UFC_FACE.y[0];
+	const box={ lo:new THREE.Vector3(6.12,y-h/2,z-w/2), hi:new THREE.Vector3(6.16,y+h/2,z+w/2) };   // the face reads at x≈6.13-6.14 with a lean of a few degrees; the fit finds both
+	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
+	const canvas=document.createElement("canvas"); canvas.width=UFC_W; canvas.height=UFC_H;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
+	surface_pose(mesh,fit?fit.x:6.138,tilt,y,z);
+	g.add(mesh);
+	g.userData.ufc={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
+	ufc_dirty=true; ufc_update(true); }
+// ufc_update redraws when the face changes: a press marks it dirty, and the flash,
+// the blink and the equipment states are caught by comparing the face each tick.
+function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
+	const now=performance.now()/1000, face=ufc_face(ufc,ufc_live(),now), key=JSON.stringify(face);
+	if(!(ufc_dirty||stale)&&key===ufc_last) return; ufc_dirty=false; ufc_last=key;
+	const x=u.canvas.getContext("2d"); x.clearRect(0,0,UFC_W,UFC_H);
+	const px=(z)=>(z-UFC_FACE.z[0])/u.width*UFC_W, py=(y)=>(UFC_FACE.y[1]-y)/u.height*UFC_H;   // panel point -> canvas pixel
+	const window_=(y0,y1,z0,z1,text,align)=>{ const l=px(z0), t=py(y1), w=px(z1)-l, h=py(y0)-t;
+		x.fillStyle="#0a140a"; x.fillRect(l,t,w,h);
+		x.fillStyle="#5cf08a"; x.font="bold "+Math.round(h*0.72)+"px monospace"; x.textBaseline="middle"; x.textAlign=align;   // i18n-format-ok: canvas-drawn segment readout
+		x.fillText(text,align==="left"?l+6:l+w-6,t+h/2); };
+	window_(UFC_SCRATCH.y[0],UFC_SCRATCH.y[1],UFC_SCRATCH.z[0],UFC_SCRATCH.z[1],face.scratch,"right");
+	UFC_OPTIONS.rows.forEach((r,i)=>window_(r-UFC_OPTIONS.h/2,r+UFC_OPTIONS.h/2,UFC_OPTIONS.z[0],UFC_OPTIONS.z[1],face.options[i],"left"));
+	u.tex.needsUpdate=true; }
+if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, armed:law_armed }; };   // dev: press a UFC pushbutton headless and read the windows
+if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
 	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
 if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
@@ -4848,8 +4939,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
-		if(ch===key_of("atc")){ if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here, so ATC only ever engaged CLEAN and refused on every real approach
-			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } }   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
+		if(ch===key_of("atc")) pit_press("atc",0);   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
@@ -4895,6 +4985,9 @@ function pit_click(e){
 	if(e.button===2){ pit_switch(e); return; }   // the right button only works the switches (#19): the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
+	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
+		const p=h&&ownship.group.worldToLocal(h.point.clone()), button=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null;
+		if(button){ ufc_press(button); return; } }
 	{ const u=ownship.group.userData, targets=[u.lamps&&u.lamps.caution,u.silence].filter(Boolean);   // the MASTER CAUTION light and the silence button (#20): the press the key makes
 		const on=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
 		if(on){ if(on.object===u.silence) tone_silence(); else caution_press(); return; } }
@@ -4948,6 +5041,8 @@ function pit_press(action,direction){ const d=direction||0;
 	case "gear": if(!on_ground()) ownship.gearTarget=d>0?1:d<0?0:(ownship.gearTarget??0)>0.5?0:1; break;   // never on deck or runway; the SOUND follows the real transit in the audio block
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
 	case "flaps": if(d<0&&flap_select<2){ flap_select++; flap_armed=sim_time+4; } else if(d>0&&flap_select>0){ flap_select--; flap_armed=sim_time+4; } break;   // AUTO at the top, FULL at the bottom; no notice: the legend shows the selection and its travel
+	case "atc": if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here once, so ATC only ever engaged CLEAN and refused on every real approach
+			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } break;   // the key and the UFC's A/P selector: engages only in the landing configuration (gear down, airborne); toggling off is always allowed
 	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
@@ -5855,12 +5950,12 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
-		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence, adiface:u.standby&&u.standby.adi.mesh };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
+		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, ufc:u.ufc&&u.ufc.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence, adiface:u.standby&&u.standby.adi.mesh };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
 		for(const [name,mesh] of Object.entries(extra)){ if(!mesh) continue; mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out[name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH), baro:f(g.baro) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, ifei:u.ifei?{ calibration:u.ifei.at, at:u.ifei.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ifei.mesh.layers.mask, face:ifei_current(),   // i18n-format-ok: dev probe readout, never shown to a user
+	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, ufc:u.ufc?{ at:u.ufc.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ufc.mesh.layers.mask, ...ufc_face(ufc,ufc_live(),performance.now()/1000) }:null, ifei:u.ifei?{ calibration:u.ifei.at, at:u.ifei.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ifei.mesh.layers.mask, face:ifei_current(),   // i18n-format-ok: dev probe readout, never shown to a user
 			rect:(()=>{ const m=u.ifei.mesh, v=new THREE.Vector3(), w=u.ifei.width/2, h=u.ifei.height/2;   // projected quad corners (css px, pilot's view) — placement checks and headless button clicks
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
@@ -6315,7 +6410,7 @@ function fly_player(dt){
 			// leaves the deck, so the settle off the bow is quiet and a settle
 			// toward the water is not; climbing away restores the pattern's 200.
 			if(!law_active&&!declared){
-				if(agl>400){ law_armed=true; law_index=200; }
+				if(agl>400){ law_armed=true; if(!law_set) law_index=200; }   // a keyed index (UFC :RALT, #15) is the pilot's and stays
 				else if(law_index<200&&agl>law_index) law_armed=true; } }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
@@ -6693,6 +6788,7 @@ function reset_ownship(){
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
+	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; law_set=false; ufc_dirty=true;   // the UFC powers up clear (#15)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway

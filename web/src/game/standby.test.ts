@@ -43,7 +43,7 @@ describe('the standby attitude indicator', () => {
     expect(mount).toMatch(/getObjectByName\("INSTRUMENT_MagneticCompass_518"\)/)
     expect(mount).toMatch(/getObjectByName\("Object_622"\)/)
     expect(mount).toMatch(/housing\.parent\.attach\(card\)/)
-    expect(source).toMatch(/build_ifei\(g\); mount_compass\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); mount_compass\(g\); \}/)
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
   })
