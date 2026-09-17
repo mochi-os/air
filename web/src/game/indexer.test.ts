@@ -60,7 +60,8 @@ describe('the hook bypass wiring', () => {
     expect(keys).toMatch(/'hook\.bypass': 'Shift\+KeyH'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
     expect(settings.match(/id: 'hook\.bypass', label: msg`Hook bypass`, group: 'aircraft'/g)?.length).toBe(2)
-    expect(source).toMatch(/if\(ch===key_of\("hook\.bypass"\)\) hook_bypass=hook_bypass==="field"\?"carrier":"field";/)
+    expect(source).toMatch(/if\(ch===key_of\("hook\.bypass"\)\) pit_press\("hook\.bypass",0\);/)
+    expect(source).toMatch(/case "hook\.bypass": hook_bypass=hook_bypass==="field"\?"carrier":"field"; break;/)
     expect(source).toMatch(/\{ name:"hookbypass", track:\/\^SWITCH_HOOKBYPASS_LEFTPANEL_AN\/i, drive:"hookbypass" \}/)
     expect(source).toMatch(/case "hookbypass": f=\(st===ownship&&hook_bypass==="field"\)\?1:0; break;/)
   })
@@ -151,5 +152,122 @@ describe('the state-driven switches', () => {
   it('store the scrubbed fraction on the entry and report it from the probe', () => {
     expect(source).toMatch(/if\(r\.flip\) f=1-f;\n\t\tr\.scrub=f;/)
     expect(source).toMatch(/scrub:Object\.fromEntries\(\(ownship\.group\.userData\.rig\|\|\[\]\)\.filter\(e=>e\.clip&&e\.scrub!==undefined\)\.map\(e=>\[e\.name,\+e\.scrub\.toFixed\(3\)\]\)\)/)
+  })
+})
+
+// The switches are click targets (#19): a stationary press on a switch's mesh, or
+// within a few pixels of its origin, fires the same action as its key through
+// pit_press, the right button up, forward or clockwise and the left the other way.
+// pit_press is lifted from engine.ts and run against stand-ins for the state it works.
+const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
+interface Pit {
+  squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
+  probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
+  hook_bypass?: string; flap_select?: number
+}
+interface Pressed {
+  ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]
+}
+function press(action: string, direction: number, state: Pit = {}): Pressed {
+  if (!pressfn) throw new Error('pit_press not found in engine.ts')
+  const run = new Function('action', 'direction', 'state', `
+    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0;
+    const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true;
+    ${pressfn}
+    pit_press(action, direction);
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices };`)
+  return run(action, direction, state) as Pressed
+}
+
+describe('the clickable switches', () => {
+  it('list every driven switch and handle with the action a click fires, the launch bar with none', () => {
+    const table = /const PIT_SWITCHES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? ''
+    const expected: [string, string | null][] = [
+      ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', null],
+      ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'lights'], ['strobe', 'lights'], ['formation', 'lights'],
+      ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'],
+    ]
+    for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
+    expect(table.match(/\w+:/g)?.length).toBe(expected.length)
+    // the targets are built from the rig: the clip's nodes and every mesh under them
+    expect(source).toMatch(/g\.userData\.switches=g\.userData\.rig\.filter\(r=>r\.clip&&r\.name in PIT_SWITCHES\)/)
+  })
+
+  it('route the right button to the switches and keep the context menu closed', () => {
+    expect(source).toMatch(/stage\.addEventListener\("contextmenu",e=>e\.preventDefault\(\)/)
+    expect(source).toMatch(/if\(e\.button===2\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
+    expect(source).toMatch(/if\(e\.button===2\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
+    expect(source).toMatch(/if\(e\.button===2\)\{ pit_switch\(e\); return; \}/)
+    // a left click reaches the switches only after the screens miss, ahead of the panel-point measurement
+    expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
+    expect(source).toMatch(/if\(hit\.action\) pit_press\(hit\.action,e\.button===2\?1:-1\);/)
+  })
+
+  it('send every clickable key through pit_press so a click and its key share one gate', () => {
+    for (const [action, direction] of [['canopy', 0], ['fold', 0], ['probe', 0], ['altitude', 0], ['reject', 0], ['hook', 0], ['brake.parking', 0], ['gear', 0], ['hook.bypass', 0], ['dump', 0]] as [string, number][])
+      expect(source, action).toMatch(new RegExp(`if\\(ch===key_of\\("${action.replace('.', '\\.')}"\\)\\) pit_press\\("${action.replace('.', '\\.')}",${direction}\\);`))
+    expect(source).toMatch(/if\(ch===key_of\("lights"\) && !dev_parked\) pit_press\("lights",0\);/)
+    expect(source).toMatch(/if\(ch===key_of\("radar\.silent"\)\) pit_press\("radar",0\);/)
+    expect(source).toMatch(/if\(ch===key_of\("flaps\.extend"\)\) pit_press\("flaps",-1\);/)
+    expect(source).toMatch(/if\(ch===key_of\("flaps\.retract"\)\) pit_press\("flaps",1\);/)
+    expect(source).toMatch(/if\(k==="Digit2"\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud"\); \}/)
+  })
+
+  it('open the canopy on a right click and close it on a left, on the ground only', () => {
+    expect(press('canopy', 1).ownship.canopyTarget).toBe(1)
+    expect(press('canopy', -1, { canopyTarget: 1 }).ownship.canopyTarget).toBe(0)
+    expect(press('canopy', 0, { canopyTarget: 1 }).ownship.canopyTarget).toBe(0)
+    const airborne = press('canopy', 1, { squish: 0, speed: 200 })
+    expect(airborne.ownship.canopyTarget).toBe(0)
+    expect(airborne.notices).toEqual(['CANOPY LOCKED'])
+  })
+
+  it('fold the wings on a left click, counterclockwise, and spread them on a right', () => {
+    expect(press('fold', -1).ownship.foldTarget).toBe(1)
+    expect(press('fold', 1, { foldTarget: 1 }).ownship.foldTarget).toBe(0)
+    expect(press('fold', -1, { speed: 20 }).notices).toEqual(['WINGS LOCKED'])
+  })
+
+  it('step the reject switch down to REJ 2 and up to NORM without wrapping, and cycle it from the key', () => {
+    expect(press('reject', -1, { declutter: 0 }).declutter).toBe(1)
+    expect(press('reject', -1, { declutter: 2 }).declutter).toBe(2)
+    expect(press('reject', 1, { declutter: 1 }).declutter).toBe(0)
+    expect(press('reject', 1, { declutter: 0 }).declutter).toBe(0)
+    expect(press('reject', 0, { declutter: 2 }).declutter).toBe(0)
+  })
+
+  it('turn the RADAR knob clockwise to OPR and back to STBY', () => {
+    expect(press('radar', 1, { sil: true }).sil).toBe(false)
+    expect(press('radar', -1, { sil: false }).sil).toBe(true)
+    expect(press('radar', 0, { sil: false }).sil).toBe(true)
+  })
+
+  it('raise and lower the gear handle only once airborne', () => {
+    expect(press('gear', 1, { ground: false }).ownship.gearTarget).toBe(1)
+    expect(press('gear', -1, { ground: false, gearTarget: 1 }).ownship.gearTarget).toBe(0)
+    expect(press('gear', 1, { ground: true }).ownship.gearTarget).toBe(0)
+  })
+
+  it('move the flap lever one notch, FULL at the bottom, and arm the selection', () => {
+    const down = press('flaps', -1, { flap_select: 0 })
+    expect(down.flap_select).toBe(1)
+    expect(down.flap_armed).toBe(14)
+    expect(press('flaps', -1, { flap_select: 2 }).flap_select).toBe(2)
+    expect(press('flaps', 1, { flap_select: 1 }).flap_select).toBe(0)
+    expect(press('flaps', 1, { flap_select: 0 }).flap_select).toBe(0)
+  })
+
+  it('toggle the two-position controls on either button', () => {
+    for (const d of [1, -1]) {
+      expect(press('brake.parking', d).parking).toBe(true)
+      expect(press('probe', d).ownship.probeTarget).toBe(1)
+      expect(press('altitude', d).alt_radar).toBe(true)
+      expect(press('lights', d).ownship.lights).toBe(true)
+      expect(press('dump', d).fuel_dump).toBe(true)
+      expect(press('hook.bypass', d).hook_bypass).toBe('field')
+      expect(press('hook', d).ownship.hookTarget).toBe(1)
+    }
   })
 })
