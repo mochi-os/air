@@ -1213,6 +1213,12 @@ const AIRCRAFT_MODELS={
 	      { name:"dumpswitch",   track:/^Fuel_Dump_AN/i,                                drive:"dumpswitch" },
 	      { name:"radaropr",     track:/^RADAR_OPR_AN/i,                                drive:"radaropr" },       // OFF / STBY / OPR / EMERG: radar silence is STBY
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
+// The clickable rig entries (#19): each names the action a click on its node fires
+// through pit_press. The launch bar switch is listed with no action - its state is
+// derived from the catapult spot every frame, so a click there changes nothing.
+const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:null, probeswitch:"probe",
+	altswitch:"altitude", rejswitch:"reject", ldglight:"lights", strobe:"lights", formation:"lights", dumpswitch:"dump", radaropr:"radar",
+	hookbypass:"hook.bypass", gearlever:"gear", hooklever:"hook", flaplever:"flaps" };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -1304,7 +1310,11 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
 				return { ...r, object:o, quaternion:r.base?new THREE.Quaternion(...r.base):o.quaternion.clone(),
 					position:o.position.clone(), transDir:r.trans?new THREE.Vector3(...r.trans).normalize():null }; }   // direct hinge drive from the authored pose (or an explicit clean base); trans entries slide from the rest position
-			const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }).filter(Boolean); } }
+			const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }).filter(Boolean);
+		g.userData.switches=g.userData.rig.filter(r=>r.clip&&r.name in PIT_SWITCHES).map(r=>{   // the click targets (#19): the clip's nodes and every mesh under them
+			const objects=[...new Set(r.clip.tracks.map(t=>m.getObjectByName(t.name.split(".")[0])))].filter(Boolean), meshes=[];
+			for(const o of objects) o.traverse(c=>{ if(c.isMesh) meshes.push(c); });
+			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; }); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
 	ownship.group.updateMatrixWorld(true);
@@ -4781,16 +4791,16 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
 		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
 		if(ch===key_of("jammer")) jammer_armed=!jammer_armed;   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
-		if(ch===key_of("radar.silent")) RADAR.sil=!RADAR.sil;   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
+		if(ch===key_of("radar.silent")) pit_press("radar",0);   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")) acm_press();   // #30: the castle-switch stand-in
 		if(ch===key_of("select")) set_master(next_master());   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN, skipping any weapon with nothing left to fire. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
-		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
-		if(ch===key_of("reject")) declutter=(declutter+1)%3;     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
+		if(ch===key_of("altitude")) pit_press("altitude",0);   // HUD altitude switch: BARO <-> RDR
+		if(ch===key_of("reject")) pit_press("reject",0);     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
 		if(ch===key_of("fire")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
-		if(ch===key_of("probe")) ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1;   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
-		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
-		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
+		if(ch===key_of("probe")) pit_press("probe",0);   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
+		if(ch===key_of("fold")) pit_press("fold",0);   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
+		if(ch===key_of("canopy")) pit_press("canopy",0);   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && (ownship.flares>0||ownship.chaff>0||cheat("ammunition")) && (ownship.squish??0)<0.1){   // the mixed programme (#29): one key, a flare AND a bloom, each from its own magazine while it lasts (#43)
 			if(ownship.flares>0||cheat("ammunition")){ dispense_flare(ownship); if(!cheat("ammunition")) ownship.flares--; }
 			if(ownship.chaff>0||cheat("ammunition")){ dispense_chaff(ownship); if(!cheat("ammunition")) ownship.chaff--; }
@@ -4807,7 +4817,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
-			if(k==="Digit2"){ if(cfg.view==="hud") declutter=(declutter+1)%3; else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
+			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
 			if(k==="Digit3") set_view("ddi");        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
 			if(k==="Digit4") set_view("chase");      // 4 Chase
 			if(k==="Digit5") set_view("flypast");    // 5 Flypast
@@ -4820,19 +4830,19 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // `: the fast path to match chat (#84); MP only — bots do not read
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("server"); }   // Shift+`: everyone on the server, through the lobby ring
-		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
-		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
+		if(ch===key_of("hook")) pit_press("hook",0);   // arrestor hook deploy/stow
+		if(ch===key_of("lights") && !dev_parked) pit_press("lights",0);   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; flap_armed=sim_time+4; }   // no notice: the legend shows the selection AND its travel now (#199), and the centre banner is for what the glass cannot say   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
-		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; flap_armed=sim_time+4; }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
-		if(ch===key_of("brake.parking")) parking=!parking;   // Shift+B: strictly manual, like the real handle
+		if(ch===key_of("flaps.extend")) pit_press("flaps",-1);   // no notice: the legend shows the selection AND its travel now (#199), and the centre banner is for what the glass cannot say   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
+		if(ch===key_of("flaps.retract")) pit_press("flaps",1);   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
+		if(ch===key_of("brake.parking")) pit_press("brake.parking",0);   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
-		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
+		if(ch===key_of("gear")) pit_press("gear",0);   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_press();
 		if(ch===key_of("tone.silence")) tone_silence();   // the warning tone silence button next to the gear handle (#20)   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
-		if(ch===key_of("hook.bypass")) hook_bypass=hook_bypass==="field"?"carrier":"field";   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
-		if(ch===key_of("dump")) fuel_dump=!fuel_dump;   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
+		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
+		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
 		if(ch===key_of("secure.starboard")) secured[1]=!secured[1];
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
@@ -4851,8 +4861,10 @@ addEventListener("pagehide",()=>{ exit_match(); },{ signal });   // closing/navi
 // cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
 // button only (fire stays Space); never in HUD. Pointer capture — not pointer lock, which
 // the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
-let dragging=false, drag_x=0, drag_y=0, press_moved=0, press_at=0;
+let dragging=false, drag_x=0, drag_y=0, press_moved=0, press_at=0, right_press=null;
+stage.addEventListener("contextmenu",e=>e.preventDefault(),{ signal });   // the right button works the pit's switches the other way (#19)
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
+	if(e.button===2){ right_press=(cfg.view==="cockpit"&&running&&!map_on)?{ x:e.clientX, y:e.clientY }:null; e.preventDefault(); return; }   // a right press is a switch press only: no head drag, no DDI bezel
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
 	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; press_at=performance.now(); ifei_hold_begin(e); try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
@@ -4861,7 +4873,8 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
-stage.addEventListener("pointerup",e=>{ const pressed=dragging&&head_drag&&press_moved<6, scrolled=ifei_hold_end(); end_drag(e); if(pressed&&!scrolled) pit_click(e); },{ signal });   // an arrow that scrolled while held has already stepped: no extra step on release
+stage.addEventListener("pointerup",e=>{ if(e.button===2){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
+	const pressed=dragging&&head_drag&&press_moved<6, scrolled=ifei_hold_end(); end_drag(e); if(pressed&&!scrolled) pit_click(e); },{ signal });   // an arrow that scrolled while held has already stepped: no extra step on release
 stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on||!ddi_view_rect) return;   // the TDC follows the mouse over the full-screen attack format (#30) — position only; the click designates
 	const st=ddi_state[ddi_focus()]; if(!st||st.menu||st.page!=="rdr") return;
 	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
@@ -4879,6 +4892,7 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	if(e.button===2){ pit_switch(e); return; }   // the right button only works the switches (#19): the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
 	{ const u=ownship.group.userData, targets=[u.lamps&&u.lamps.caution,u.silence].filter(Boolean);   // the MASTER CAUTION light and the silence button (#20): the press the key makes
@@ -4886,6 +4900,7 @@ function pit_click(e){
 		if(on){ if(on.object===u.silence) tone_silence(); else caution_press(); return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
+		if(pit_switch(e)) return;   // a switch or handle under the pointer (#19), tested after the screens so the bezel and TDC paths are unchanged
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // measuring click: report where on the panel the pilot pointed
 			if(h){ const p=ownship.group.worldToLocal(h.point.clone());
 				dev_probe_text="panel y="+p.y.toFixed(3)+" z="+p.z.toFixed(3)+" x="+p.x.toFixed(3)+" ("+(h.object.name||"?")+")";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -4896,6 +4911,44 @@ function pit_click(e){
 	const st=ddi_state[sc.display];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(px,py)){ ddi_dirty=true; screens_update(); } return; }   // a face click on the attack format is the TDC (#30)
 	if(ddi_press(sc.display,pb)) screens_update(); }   // dirty redraw NOW — a press must answer this frame
+// pit_switch finds the switch or handle under the pointer and presses it (#19): a
+// raycast at the switch meshes first, then the nearest switch origin within a few
+// pixels, because a 16 mm lever is a handful of pixels at 1x. The right button
+// (up, forward, clockwise) is +1, the left -1; two-position controls toggle on either.
+const _click_p=new THREE.Vector3();
+function pit_switch(e){ const list=ownship.group.userData.switches||[]; if(!list.length) return false;
+	const meshes=[]; for(const s of list) for(const m of s.meshes) if(shown(m)) meshes.push(m);
+	const h=_click_ray.intersectObjects(meshes,false)[0];
+	let hit=h?list.find(s=>s.meshes.includes(h.object)):null;
+	if(!hit){ let best=PIT_CLICK_RADIUS*PIT_CLICK_RADIUS;
+		for(const s of list){ const o=s.objects[0]; if(!o||!shown(o)) continue;
+			o.getWorldPosition(_click_p); _click_p.project(cockpit_cam); if(_click_p.z>1) continue;
+			const dx=(_click_p.x*0.5+0.5)*HW-e.clientX, dy=(-_click_p.y*0.5+0.5)*HH-e.clientY, dd=dx*dx+dy*dy;
+			if(dd<best){ best=dd; hit=s; } } }
+	if(!hit) return false;
+	if(hit.action) pit_press(hit.action,e.button===2?1:-1);
+	return true; }
+const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
+// pit_press works one cockpit control, from its key (direction 0: toggle, or cycle
+// for the reject switch) or from a click (+1 up/forward/clockwise, -1 the other way).
+// Every gate lives here so a click and its key can never disagree. A two-position
+// control ignores the direction; the three-position ones step without wrapping.
+function pit_press(action,direction){ const d=direction||0;
+	switch(action){
+	case "canopy": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.canopyTarget=d>0?1:d<0?0:(ownship.canopyTarget??0)>0.5?0:1; else notice(translate("CANOPY LOCKED")); break;   // ground only, taxi speeds (NATOPS 2.15.1.1.1); up is OPEN, down is CLOSE
+	case "fold": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.foldTarget=d<0?1:d>0?0:(ownship.foldTarget??0)>0.5?0:1; else notice(translate("WINGS LOCKED")); break;   // counterclockwise to FOLD, clockwise to SPREAD (NATOPS 2.11.1)
+	case "brake.parking": parking=!parking; break;
+	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
+	case "altitude": alt_radar=!alt_radar; break;
+	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; break;   // NORM at the top, REJ 2 at the bottom
+	case "lights": ownship.lights=!ownship.lights; break;
+	case "dump": fuel_dump=!fuel_dump; break;
+	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
+	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
+	case "gear": if(!on_ground()) ownship.gearTarget=d>0?1:d<0?0:(ownship.gearTarget??0)>0.5?0:1; break;   // never on deck or runway; the SOUND follows the real transit in the audio block
+	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
+	case "flaps": if(d<0&&flap_select<2){ flap_select++; flap_armed=sim_time+4; } else if(d>0&&flap_select>0){ flap_select--; flap_armed=sim_time+4; } break;   // AUTO at the top, FULL at the bottom; no notice: the legend shows the selection and its travel
+	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
