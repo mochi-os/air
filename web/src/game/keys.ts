@@ -59,6 +59,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'jettison.tanks': 'KeyJ',
   'jettison.emergency': 'Shift+KeyJ',
   'caution.reset': 'Shift+KeyM',
+  'tone.silence': 'Shift+KeyG', // the warning tone silence button next to the gear handle
   dump: 'Shift+KeyD',
   'secure.port': 'Shift+KeyZ',
   'secure.starboard': 'Shift+KeyX',

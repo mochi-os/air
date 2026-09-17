@@ -325,3 +325,39 @@ describe('the gear handle light and tone', () => {
     expect(source).toMatch(/dev_silence=function\(\)\{ tone_silence\(\); return tone_silenced; \};/)
   })
 })
+
+// The MASTER CAUTION light and the warning tone silence button as click
+// targets (#20): the light's press is one function the key and the click
+// share (NATOPS 2.17.2.1), and the button next to the gear handle has a key
+// and a quad in the gear unit.
+function caution_press(lit: boolean): { lamp: boolean; restacked: boolean; dirty: boolean } {
+  const fn = /\nfunction caution_press\(\)\{[^\n]*\}\n/.exec(source)?.[0] ?? ''
+  if (!fn) throw new Error('caution_press not found in engine.ts')
+  const run = new Function('lit', `let caution_lamp=lit, caution_slots=['a'], ddi_dirty=false, restacked=false; const cautions_restack=(s)=>{ restacked=true; return s; };
+    ${fn} caution_press(); return { lamp:caution_lamp, restacked, dirty:ddi_dirty };`)
+  return run(lit) as { lamp: boolean; restacked: boolean; dirty: boolean }
+}
+
+describe('the MASTER CAUTION and silence button clicks', () => {
+  it('clear the lit light, and pack the slots when it is out', () => {
+    expect(caution_press(true)).toEqual({ lamp: false, restacked: false, dirty: false })
+    expect(caution_press(false)).toEqual({ lamp: false, restacked: true, dirty: true })
+  })
+
+  it('share the press between the key and the click, and count silence presses', () => {
+    expect(source).toMatch(/if\(ch===key_of\("caution\.reset"\)\) caution_press\(\);/)
+    expect(source).toMatch(/if\(ch===key_of\("tone\.silence"\)\) tone_silence\(\);/)
+    expect(source).toMatch(/function tone_silence\(\)\{ tone_silenced=true; tone_presses\+\+; \}/)
+    expect(source).toMatch(/targets=\[u\.lamps&&u\.lamps\.caution,u\.silence\]\.filter\(Boolean\);/)
+    expect(source).toMatch(/if\(on\)\{ if\(on\.object===u\.silence\) tone_silence\(\); else caution_press\(\); return; \}/)
+  })
+
+  it('seat the button below the gear unit and bind Shift+G with a settings label', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/silence\.position\.set\(0,-0\.036,0\); silence\.name="silencebutton"; gear\.add\(silence\); g\.userData\.silence=silence;/)
+    const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
+    expect(keys).toMatch(/'tone\.silence': 'Shift\+KeyG'/)
+    const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
+    expect(settings.match(/id: 'tone\.silence', label: msg`Silence gear tone`, group: 'aircraft'/g)?.length).toBe(2)
+  })
+})
