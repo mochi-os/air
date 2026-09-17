@@ -1198,6 +1198,20 @@ const AIRCRAFT_MODELS={
 	      { name:"chart",     track:/^Knob_CHART_RightPanel_AN/i,       drive:"chart" },
 	      { name:"warncaut",  track:/^Knob_WARN_CAUT_RightPanel_AN/i,   drive:"warncaut" },
 	      { name:"mode",      track:/^MODE_C_AN/i,                      drive:"mode" },
+	      // the switches the game has state for (#18), each scrubbing its clip from that state so it reads back its setting as the levers do
+	      { name:"canopyswitch", track:/^Canopy_Switch_AN/i,                            drive:"canopyswitch" },   // 2.15.1.1.1: the clip runs HOLD (its rest) to OPEN; there is no CLOSE pose
+	      { name:"foldswitch",   track:/^Wing_Fold_Switch_AN/i,                         drive:"foldswitch" },     // 2.11.1: FOLD / SPREAD
+	      { name:"parkbrake",    track:/^LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake/i, drive:"parkbrake" },   // 2.10.3.4: the handle rotated and pulled...
+	      { name:"parkpull",     track:/^LANDING_GEAR_Switch_ParkingBrake_AN_287/i,     drive:"parkbrake" },      // ...on both of its animated nodes
+	      { name:"barswitch",    track:/^Switch_LAUNCHBAR_LeftPanel_AN/i,               drive:"barswitch", flip:true },   // 2.10.4: the clip runs EXTEND (its rest, lever down) to RETRACT
+	      { name:"probeswitch",  track:/^Refuel_Switch_Action_AN/i,                     drive:"probeswitch" },
+	      { name:"altswitch",    track:/^Switch_ALT_HudPanel_AN/i,                      drive:"altswitch" },      // BARO / RDR
+	      { name:"rejswitch",    track:/^Switch_REJ2_HudPanel_AN/i,                     drive:"rejswitch" },      // 2.13.4.8.1: NORM / REJ 1 / REJ 2
+	      { name:"ldglight",     track:/^Switch_LDG_Light_LeftPanel_AN/i,               drive:"lightswitch" },
+	      { name:"strobe",       track:/^Switch_Strobe_LeftPanel_AN/i,                  drive:"lightswitch" },
+	      { name:"formation",    track:/^FormationLightsAction_AN/i,                    drive:"lightswitch" },
+	      { name:"dumpswitch",   track:/^Fuel_Dump_AN/i,                                drive:"dumpswitch" },
+	      { name:"radaropr",     track:/^RADAR_OPR_AN/i,                                drive:"radaropr" },       // OFF / STBY / OPR / EMERG: radar silence is STBY
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -2313,7 +2327,7 @@ function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return false;
 	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
-	const p=new THREE.Vector3(); o.getWorldPosition(p); ownship.group.worldToLocal(p); return p.toArray().map(n=>+n.toFixed(3)); };   // i18n-format-ok: dev readout
+	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
 if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
 	const b=node_box(ownship.group,o); return b?{ lo:b.lo.toArray().map(n=>+n.toFixed(3)), hi:b.hi.toArray().map(n=>+n.toFixed(3)), parent:o.parent&&o.parent.name, visible:shown(o) }:null; };   // i18n-format-ok: dev readout
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
@@ -5783,7 +5797,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			// through at runtime, which a unit test on the renderer cannot.
 			sample:(()=>{const d=lines.filter(l=>l.indexOf("1,T=")===0);return d[d.length-1]||"";})()};
 	})(),
-	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name), clips:(ownship.group.userData.rig||[]).filter(e=>e.clip).map(e=>e.name) }; })(),   // clips: the clip-scrubbed entries whose track regex found tracks in the model (rig_build drops the rest silently)
+	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name), clips:(ownship.group.userData.rig||[]).filter(e=>e.clip).map(e=>e.name), nodes:Object.fromEntries((ownship.group.userData.rig||[]).filter(e=>e.clip).map(e=>[e.name,[...new Set(e.clip.tracks.map(t=>t.name.split(".")[0]))]])), scrub:Object.fromEntries((ownship.group.userData.rig||[]).filter(e=>e.clip&&e.scrub!==undefined).map(e=>[e.name,+e.scrub.toFixed(3)])) }; })(),   // i18n-format-ok: dev readout — scrub: where each clip-driven switch sits (#18)   // clips: the clip-scrubbed entries whose track regex found tracks in the model (rig_build drops the rest silently)
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
@@ -6090,6 +6104,7 @@ function fly_player(dt){
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
+	if(fuel_dump&&bingo_low()) fuel_dump=false;   // NATOPS 2.2.7: the DUMP switch returns to OFF when the BINGO caution comes on
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
@@ -6435,6 +6450,18 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
 		case "hooklever": f=(st.hookTarget??0)>0.5?1:0; break;   // the handle is the selection; the HOOK light shows the hook disagreeing with it (#10)
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
+		// switches from state (#18) ---
+		case "canopyswitch": f=((st.canopyTarget??0)>0.5&&(st.canopy??0)<0.98)?1:0; break;   // OPEN while the canopy rises, then spring-loaded back to HOLD
+		case "foldswitch": f=(st.foldTarget??0)>0.5?1:0; break;
+		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
+		case "barswitch": f=(st.barTarget??0)>0.5?1:0; break;
+		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0; break;
+		case "altswitch": f=(st===ownship&&alt_radar)?1:0; break;
+		case "rejswitch": f=st===ownship?declutter/2:0; break;
+		case "lightswitch": f=st.lights?1:0; break;
+		case "dumpswitch": f=(st===ownship&&fuel_dump)?1:0; break;
+		case "radaropr": f=(st===ownship&&RADAR.sil)?1/3:2/3; break;
+		// --- end switches
 		case "instpnl": f=lighting.instrument; break; case "consoles": f=lighting.consoles; break; case "flood": f=lighting.flood; break;   // the interior lights panel (#21)
 		case "chart": f=lighting.chart; break; case "warncaut": f=lighting.warn; break; case "mode": f=lighting.mode==="nite"?0.5:1; break;   // only the ownship has a pilot to select FIELD
 		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
@@ -6444,6 +6471,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
 		if(f===undefined) continue;
 		if(r.flip) f=1-f;
+		r.scrub=f;   // the fraction last scrubbed, for the dev probe
 		r.action.time=r.t0+f*(r.t1-r.t0);
 	}
 	g.userData.gearMixer.update(0);
