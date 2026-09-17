@@ -80,6 +80,7 @@ describe('the caution wiring', () => {
 
   it('keeps the screen stack to the HUD view and restacks on a reset with the light out', () => {
     expect(source).toMatch(/if\(authentic\) hud_stack\.left=\[\];[^\n]*\n\t\telse hud_stack\.left=stack_draw\(rows,40,HH-106-STACK_PITCH\);/)
-    expect(source).toMatch(/if\(ch===key_of\("caution\.reset"\)\)\{ if\(caution_lamp\) caution_lamp=false; else \{ caution_slots=cautions_restack\(caution_slots\); ddi_dirty=true; \} \}/)
+    expect(source).toMatch(/if\(ch===key_of\("caution\.reset"\)\) caution_press\(\);/) // the press is one function since the light became a click target (#20)
+    expect(source).toMatch(/function caution_press\(\)\{ if\(caution_lamp\) caution_lamp=false; else \{ caution_slots=cautions_restack\(caution_slots\); ddi_dirty=true; \} \}/)
   })
 })

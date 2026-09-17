@@ -1451,6 +1451,9 @@ function build_lamps(g){
 		lamps.full=lamp(0x2fd24a,0.010,0.008); lamps.full.position.set(0,-0.006,0.009);
 		lamps.flaps=lamp(0xffc23a,0.010,0.008); lamps.flaps.position.set(0,-0.020,0);
 		gear.add(lamps.transit,lamps.nose,lamps.left,lamps.right,lamps.half,lamps.full,lamps.flaps);
+		// the warning tone silence button (FO-5 item 31, #20): a small black button below the unit, a click target rather than a lamp
+		const silence=new THREE.Mesh(new THREE.PlaneGeometry(0.012,0.012), new THREE.MeshBasicMaterial({ color:0x1a1a1a, side:THREE.DoubleSide }));
+		silence.position.set(0,-0.036,0); silence.name="silencebutton"; gear.add(silence); g.userData.silence=silence;
 		gear.position.copy(p); gear.position.x-=0.02; gear.position.z+=0.02;   // just inboard of the handle, proud of its panel
 		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear); }
 	// The HOOK light (NATOPS 2.10.5.1, #10) is the lighted knob of the arresting hook handle on the
@@ -4670,7 +4673,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("brake.parking")) parking=!parking;   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
-		if(ch===key_of("caution.reset")){ if(caution_lamp) caution_lamp=false; else { caution_slots=cautions_restack(caution_slots); ddi_dirty=true; } }   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
+		if(ch===key_of("caution.reset")) caution_press();
+		if(ch===key_of("tone.silence")) tone_silence();   // the warning tone silence button next to the gear handle (#20)   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
 		if(ch===key_of("hook.bypass")) hook_bypass=hook_bypass==="field"?"carrier":"field";   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) fuel_dump=!fuel_dump;   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -4721,6 +4725,9 @@ function pit_click(e){
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
+	{ const u=ownship.group.userData, targets=[u.lamps&&u.lamps.caution,u.silence].filter(Boolean);   // the MASTER CAUTION light and the silence button (#20): the press the key makes
+		const on=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
+		if(on){ if(on.object===u.silence) tone_silence(); else caution_press(); return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // measuring click: report where on the panel the pilot pointed
@@ -5110,7 +5117,10 @@ function gear_tone(){   // the landing gear aural (2.10.1.4, #22): the wheels wa
 	const due=wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15);
 	if(!due) tone_silenced=false;   // the latch clears with the condition, so the next event sounds again
 	return due&&!tone_silenced; }
-function tone_silence(){ tone_silenced=true; }   // the warning tone silence button next to the gear handle (FO-5 item 31); its key and click target are #20's
+let tone_presses=0;   // presses of the silence button, for the dev probe
+function tone_silence(){ tone_silenced=true; tone_presses++; }   // the warning tone silence button next to the gear handle (FO-5 item 31): Shift+G or a click on the button (#20)
+// caution_press: the MASTER CAUTION light pressed (NATOPS 2.17.2.1, #20): lit, it goes out; unlit, the remaining cautions pack left and down
+function caution_press(){ if(caution_lamp) caution_lamp=false; else { caution_slots=cautions_restack(caution_slots); ddi_dirty=true; } }
 function wheels_warning(){ return (ownship.gearTarget??0)>0.5&&(ownship.cas??ownship.speed)<90&&ownship.pos.y<2286&&(ownship.vely??0)<-1.27&&!ownship.grounded&&!ownship.launching; }
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:undefined as number|undefined};   // one-shot edge detection (#73)
 // Master caution/warning (#47): the caution set is built in the sim step, keyed
@@ -5636,7 +5646,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
-		const w=ownship.group.userData.rwr; if(w){ w.mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out.rwr=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }   // the azimuth indicator disc (#28), the one canvas face the rig does not drive
+		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence };   // the azimuth indicator disc (#28) and the two click targets (#20), which the rig does not drive
+		for(const [name,mesh] of Object.entries(extra)){ if(!mesh) continue; mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out[name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -5651,7 +5662,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		emergency:u.emergency?u.emergency.intensity:null, backlight:+backlight_state||0,   // the emergency instrument light's intensity and the integral backlight level (#17)
-		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
+		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
