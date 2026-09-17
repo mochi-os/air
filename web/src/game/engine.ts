@@ -8295,6 +8295,14 @@ function net_frame(dt){
 		st.group.quaternion.set(pose.attitude[1],pose.attitude[2],pose.attitude[3],pose.attitude[0]);
 		st.group.position.copy(st.pos);
 		st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
+		// The full basis, read back exactly as the bandit reads it (fly_bandit):
+		// with only fwd, body_offset falls back to a world-up basis so hit
+		// flashes land on the wrong part of a rolled airframe, and the recorder
+		// falls back to the scalar bank — which steer() maintains for a scripted
+		// jet and NOTHING maintains for a remote, whose pose arrives from the
+		// wire. It wrote roll 0 for entire matches (#227).
+		(st.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(st.group.quaternion);
+		(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.jamming=!!pose.jamming;   // #31: the flag the RDR page strobes and the STT MEM logic feed on
