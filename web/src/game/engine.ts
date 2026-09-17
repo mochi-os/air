@@ -1520,7 +1520,10 @@ function lamps_update(out){
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
 	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot);
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
-		l.transit.material.opacity=moving?1:0;
+		// NATOPS 2.10.1.4 (#22): the handle light is on in transit, and once on for 15 s it brings the aural tone (gear_tone);
+		// under the wheels warning it flashes with the beep, at the horn's 1.1 s repeat
+		handle_lit=moving?(handle_lit<0?sim_time:handle_lit):-1;
+		l.transit.material.opacity=wheels_warning()?((sim_time%1.1)<0.55?1:0):(moving?1:0);
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
 	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5;   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs)
 		l.half.material.opacity=(flap_select===1&&slow)?1:0;
@@ -5101,6 +5104,13 @@ let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 // 7,500 ft with a rate of descent past 250 ft/min. The descent is the term that
 // keeps a climb-out quiet: off the catapult the jet is slow, low and cleaning up,
 // and none of that is a wheels-up landing.
+let handle_lit=-1;   // when the gear handle light came on this cycle (sim_time), -1 while it is out (#22)
+let tone_silenced=false;   // the warning tone silence button's latch: holds the gear tone off until its condition clears (NATOPS 2.10.1.4)
+function gear_tone(){   // the landing gear aural (2.10.1.4, #22): the wheels warning, or the handle light on for 15 s, unless silenced
+	const due=wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15);
+	if(!due) tone_silenced=false;   // the latch clears with the condition, so the next event sounds again
+	return due&&!tone_silenced; }
+function tone_silence(){ tone_silenced=true; }   // the warning tone silence button next to the gear handle (FO-5 item 31); its key and click target are #20's
 function wheels_warning(){ return (ownship.gearTarget??0)>0.5&&(ownship.cas??ownship.speed)<90&&ownship.pos.y<2286&&(ownship.vely??0)<-1.27&&!ownship.grounded&&!ownship.launching; }
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:undefined as number|undefined};   // one-shot edge detection (#73)
 // Master caution/warning (#47): the caution set is built in the sim step, keyed
@@ -5227,6 +5237,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
 if(DEV_MODE) (globalThis as any).dev_recorder=()=>({ samples:recorder.length, started:!!record_started, record:!!cfg.record, running, paused:game_paused, multiplayer:MULTIPLAYER, clock:sim_time });   // dev: is the recorder sampling, and if not, which gate holds it
+if(DEV_MODE) (globalThis as any).dev_silence=function(){ tone_silence(); return tone_silenced; };   // dev: press the warning tone silence button (#22) until #20 gives it a key and a click target
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
 	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;
@@ -5640,6 +5651,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		emergency:u.emergency?u.emergency.intensity:null, backlight:+backlight_state||0,   // the emergency instrument light's intensity and the integral backlight level (#17)
+		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
@@ -5982,7 +5994,7 @@ function fly_player(dt){
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
-		audio_horn(wheels_warning());
+		audio_horn(gear_tone());
 		{ const gear=ownship.gear??1;   // retraction fraction: 1 stowed, 0 down and locked
 			if(audio_prev.gear!==undefined&&!ownship.grounded){
 				audio_gear(gear>0.03&&gear<0.97);   // the pump cycles for the whole transit, not the keypress (#88)
@@ -6436,6 +6448,7 @@ function reset_ownship(){
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
+	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)

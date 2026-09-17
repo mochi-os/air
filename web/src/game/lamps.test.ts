@@ -273,3 +273,55 @@ describe('the emergency instrument light', () => {
     expect(source).toMatch(/emergency:u\.emergency\?u\.emergency\.intensity:null, backlight:\+backlight_state\|\|0,/)
   })
 })
+
+// The gear handle light and the landing gear aural (NATOPS 2.10.1.4): the red
+// light in the handle is on in transit; on for 15 s it brings the tone; under
+// the wheels warning it flashes with the beep; and the warning tone silence
+// button latches the tone off until its condition clears.
+interface Handle { ext: number; t: number; lit?: number; wheels?: boolean }
+function handle(c: Handle): { opacity: number; lit: number } {
+  const block = /\n\tif\(l\.transit\)\{ const moving=[\s\S]*?l\.right\.material\.opacity=green; \}\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('gear handle light block not found in engine.ts')
+  const run = new Function('c', `const ext=c.ext, sim_time=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1;
+    const l={transit:{material:{opacity:0}},nose:{material:{}},left:{material:{}},right:{material:{}}}; ${block}
+    return { opacity:l.transit.material.opacity, lit:handle_lit };`)
+  return run(c) as { opacity: number; lit: number }
+}
+function tone(lit: number, t: number, wheels: boolean, silenced: boolean): { tone: boolean; silenced: boolean } {
+  const fn = /\nfunction gear_tone\(\)\{[\s\S]*?return due&&!tone_silenced; \}\n/.exec(source)?.[0] ?? ''
+  if (!fn) throw new Error('gear_tone not found in engine.ts')
+  const run = new Function('lit', 't', 'wheels', 'silenced', `const handle_lit=lit, sim_time=t, wheels_warning=()=>wheels; let tone_silenced=silenced;
+    ${fn} const tone=gear_tone(); return { tone, silenced:tone_silenced };`)
+  return run(lit, t, wheels, silenced) as { tone: boolean; silenced: boolean }
+}
+
+describe('the gear handle light and tone', () => {
+  it('lights the handle in transit and remembers when it came on', () => {
+    expect(handle({ ext: 0.5, t: 10 })).toEqual({ opacity: 1, lit: 10 })
+    expect(handle({ ext: 0.5, t: 12, lit: 10 })).toEqual({ opacity: 1, lit: 10 })
+    expect(handle({ ext: 1, t: 15, lit: 10 })).toEqual({ opacity: 0, lit: -1 })
+  })
+
+  it('flashes the handle with the beep under the wheels warning', () => {
+    expect(handle({ ext: 0, t: 0.2, wheels: true }).opacity).toBe(1)
+    expect(handle({ ext: 0, t: 0.8, wheels: true }).opacity).toBe(0)
+    expect(handle({ ext: 0, t: 0.2 }).opacity).toBe(0)
+  })
+
+  it('sounds the tone once the light has been on 15 s, or under the wheels warning', () => {
+    expect(tone(10, 24.9, false, false).tone).toBe(false)
+    expect(tone(10, 25, false, false).tone).toBe(true)
+    expect(tone(-1, 25, true, false).tone).toBe(true)
+  })
+
+  it('holds the tone off once silenced, and lets the latch go when the condition clears', () => {
+    expect(tone(10, 25, false, true)).toEqual({ tone: false, silenced: true })
+    expect(tone(-1, 25, false, true)).toEqual({ tone: false, silenced: false })
+  })
+
+  it('drives the horn from the tone, resets on a spawn and offers the button to the dev hook', () => {
+    expect(source).toMatch(/\n\t\taudio_horn\(gear_tone\(\)\);\n/)
+    expect(source).toMatch(/\n\thandle_lit=-1; tone_silenced=false;/)
+    expect(source).toMatch(/dev_silence=function\(\)\{ tone_silence\(\); return tone_silenced; \};/)
+  })
+})
