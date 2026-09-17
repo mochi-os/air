@@ -588,7 +588,12 @@ export function Multiplayer({
                   )}
                 </div>
                 <div className='flex shrink-0 gap-2'>
-                  {pilot && s.mine && s.offer && (
+                  {/* Your own match is cancellable while it is an offer or
+                      stands empty: flying it yourself ends its life as an
+                      offer, and without this the match you then left would
+                      sit in every list until the idle sweep. One somebody is
+                      flying is theirs now. */}
+                  {pilot && s.mine && (s.offer || (s.players ?? []).length === 0) && (
                     <Button
                       type='button'
                       variant='outline'
