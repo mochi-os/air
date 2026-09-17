@@ -108,3 +108,157 @@ describe('the gauges the pages read', () => {
     expect(source).toMatch(/yaw_state\.rate\+=\(d\/\(t-yaw_state\.t\)-yaw_state\.rate\)\*Math\.min\(1,\(t-yaw_state\.t\)\/0\.5\);/)
   })
 })
+
+// The UFC (#15, NATOPS 2.13.5): ufc_face is what the windows show for a state and
+// the equipment it reads; ufc_press is one pushbutton against stand-ins for the
+// index, the warning latch and the actions it fires; ufc_button_at maps a panel
+// point to the painted button under it.
+const ufcdefs = ['UFC_PAGES', 'UFC_CUES', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
+  const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;`).exec(source)?.[0]
+  if (!m) throw new Error(`${n} not found in engine.ts`)
+  return m
+}).join('\n')
+interface Face { scratch: string; options: string[] }
+interface Ufc { func: string; ralt: boolean; entry: string; error: boolean; blink: number }
+interface Live { silent?: boolean; atc?: boolean; ils?: boolean; index?: number }
+interface Pressed { ufc: Ufc; index: number; armed: boolean; set: boolean; pressed: string[]; silent: boolean; atc: boolean }
+const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', ralt: false, entry: '', error: false, blink: 0, ...over })
+function ufcface(state: Ufc, live: Live, now = 0): Face {
+  const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')} return ufc_face(state, { silent:false, atc:false, ils:false, index:200, ...live }, now);`)
+  return run(state, live, now) as Face
+}
+function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200): Pressed {
+  const run = new Function('buttons', 'start', 'index', `${ufcdefs}
+    let law_index=index, law_armed=true, law_set=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pressed=[];
+    const pit_press=(a)=>{ pressed.push(a); if(a==="radar") RADAR.sil=!RADAR.sil; if(a==="atc") atc_on=!atc_on; };
+    const ufc_update=()=>{}; const performance={ now:()=>1000 };
+    const ufc={ func:"", ralt:false, entry:"", error:false, blink:0, ...start };
+    ${lift('ufc_press')}
+    for(const b of buttons) ufc_press(b);
+    return { ufc, index:law_index, armed:law_armed, set:law_set, pressed, silent:RADAR.sil, atc:atc_on };`)
+  return run(buttons, start, index) as Pressed
+}
+function ufcbutton(y: number, z: number): string | null {
+  const run = new Function('y', 'z', `${ufcdefs} ${lift('ufc_button_at')} return ufc_button_at(y, z);`)
+  return run(y, z) as string | null
+}
+const blank = ' '.repeat(9)
+
+describe('the UFC windows', () => {
+  it('power up clear', () => {
+    expect(ufcface(fresh(), {})).toEqual({ scratch: blank, options: ['', '', '', '', ''] })
+  })
+
+  it('show the autopilot page with ON while the approach power compensator is engaged', () => {
+    expect(ufcface(fresh({ func: 'ap' }), {}).options).toEqual([' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'])
+    expect(ufcface(fresh({ func: 'ap' }), {}).scratch).toBe(blank)
+    expect(ufcface(fresh({ func: 'ap' }), { atc: true }).scratch).toBe('ON       ')
+  })
+
+  it('cue :RALT and put the index, then the keyed entry, in the scratchpad', () => {
+    const f = ufcface(fresh({ func: 'ap', ralt: true }), { index: 200 })
+    expect(f.options[3]).toBe(':RALT')
+    expect(f.scratch).toBe('      200')
+    expect(ufcface(fresh({ func: 'ap', ralt: true, entry: '500' }), { index: 200 }).scratch).toBe('      500')
+  })
+
+  it('show TACAN on in T/R on the X band, and ILS on only while the needles are live', () => {
+    const t = ufcface(fresh({ func: 'tcn' }), {})
+    expect(t.options).toEqual([':T/R', ' RCV', ' A/A', ':X', ' Y'])
+    expect(t.scratch.slice(0, 2)).toBe('ON')
+    expect(ufcface(fresh({ func: 'ils' }), { ils: true }).scratch.slice(0, 2)).toBe('ON')
+    expect(ufcface(fresh({ func: 'ils' }), { ils: false }).scratch.slice(0, 2)).toBe('  ')
+    expect(ufcface(fresh({ func: 'ils' }), {}).options[0]).toBe(':CHNL')
+  })
+
+  it('run E M C O N down the option windows under radar silence, whatever the page', () => {
+    expect(ufcface(fresh({ func: 'tcn' }), { silent: true }).options).toEqual(['E', 'M', 'C', 'O', 'N'])
+    expect(ufcface(fresh(), { silent: true }).options).toEqual(['E', 'M', 'C', 'O', 'N'])
+  })
+
+  it('flash ERROR at 2 Hz and blank the scratchpad once after a valid entry', () => {
+    expect(ufcface(fresh({ error: true }), {}, 0).scratch).toBe('ERROR    ')
+    expect(ufcface(fresh({ error: true }), {}, 0.5).scratch).toBe(blank)
+    expect(ufcface(fresh({ error: true }), {}, 1.0).scratch).toBe('ERROR    ')
+    expect(ufcface(fresh({ func: 'tcn', blink: 2 }), {}, 1.9).scratch).toBe(blank)
+    expect(ufcface(fresh({ func: 'tcn', blink: 2 }), {}, 2.1).scratch.slice(0, 2)).toBe('ON')
+  })
+})
+
+describe('the UFC pushbuttons', () => {
+  it('fill the entry from the keypad to seven digits, and CLR clears it first and the windows second', () => {
+    expect(ufcpress(['1', '2', '3', '4', '5', '6', '7', '8'], { func: 'ap' }).ufc.entry).toBe('1234567')
+    const once = ufcpress(['1', '2', 'clr'], { func: 'ap' })
+    expect(once.ufc.entry).toBe('')
+    expect(once.ufc.func).toBe('ap')
+    expect(ufcpress(['1', '2', 'clr', 'clr'], { func: 'ap' }).ufc.func).toBe('')
+  })
+
+  it('key the low-altitude index through :RALT and ENT, up to 5,000 ft, and flag the rest ERROR', () => {
+    const ok = ufcpress(['ap', 'opt3', '5', '0', '0', 'ent'])
+    expect(ok.index).toBe(500)
+    expect(ok.set).toBe(true)
+    expect(ok.ufc.entry).toBe('')
+    expect(ok.ufc.blink).toBeCloseTo(1.3)
+    expect(ok.ufc.error).toBe(false)
+    const high = ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent'])
+    expect(high.index).toBe(200)
+    expect(high.ufc.error).toBe(true)
+    expect(ufcpress(['ap', 'opt3', 'ent']).ufc.error).toBe(true)
+    expect(ufcpress(['ap', '5', 'ent']).ufc.error).toBe(true)
+    expect(ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent', '7']).ufc.entry).toBe('5001')
+    expect(ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent', 'clr']).ufc.error).toBe(false)
+  })
+
+  it('select :RALT on the autopilot page only, and disable the warning when it is pressed again', () => {
+    expect(ufcpress(['ap', 'opt3']).ufc.ralt).toBe(true)
+    const off = ufcpress(['ap', 'opt3', 'opt3'])
+    expect(off.ufc.ralt).toBe(false)
+    expect(off.armed).toBe(false)
+    expect(ufcpress(['ap', 'opt3']).armed).toBe(true)
+    expect(ufcpress(['tcn', 'opt3']).ufc.ralt).toBe(false)
+    expect(ufcpress(['ap', 'opt2']).ufc.ralt).toBe(false)
+  })
+
+  it('engage the approach power compensator from the A/P selector once, and clear the display on the second press', () => {
+    const on = ufcpress(['ap'])
+    expect(on.ufc.func).toBe('ap')
+    expect(on.pressed).toEqual(['atc'])
+    const twice = ufcpress(['ap', 'ap'])
+    expect(twice.ufc.func).toBe('')
+    expect(twice.pressed).toEqual(['atc'])
+    expect(ufcpress(['tcn']).pressed).toEqual([])
+  })
+
+  it('toggle the radar silence from EMCON and drop the entry on a page change', () => {
+    const e = ufcpress(['emcon'])
+    expect(e.pressed).toEqual(['radar'])
+    expect(e.silent).toBe(true)
+    expect(ufcpress(['emcon', 'emcon']).silent).toBe(false)
+    const moved = ufcpress(['ap', 'opt3', '5', 'tcn'])
+    expect(moved.ufc).toMatchObject({ func: 'tcn', ralt: false, entry: '' })
+  })
+
+  it('map a panel point to the painted button under it, within the key pitch', () => {
+    expect(ufcbutton(0.453, -0.061)).toBe('1')
+    expect(ufcbutton(0.386, -0.018)).toBe('ent')
+    expect(ufcbutton(0.351, -0.065)).toBe('ap')
+    expect(ufcbutton(0.412, 0.006)).toBe('opt3')
+    expect(ufcbutton(0.450, -0.085)).toBe('emcon')
+    expect(ufcbutton(0.453 + 0.008, -0.061)).toBe('1')
+    expect(ufcbutton(0.470, -0.050)).toBe(null)
+    expect(ufcbutton(0.300, 0)).toBe(null)
+  })
+
+  it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC and the index shared', () => {
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); mount_compass\(g\);/)
+    expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
+    expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
+    expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
+    expect(source).toMatch(/if\(ch===key_of\("atc"\)\) pit_press\("atc",0\);/)
+    expect(source).toMatch(/case "atc": if\(atc_on\) atc_on=false; else if\(ownship\.gearTarget<0\.5 && !on_ground\(\)\)\{ atc_on=true;/)
+    expect(source).toMatch(/if\(agl>400\)\{ law_armed=true; if\(!law_set\) law_index=200; \}/)
+    expect(source).toMatch(/ufc\.func=""; ufc\.ralt=false; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; law_set=false; ufc_dirty=true;/)
+    expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\);   \/\/ transparent: the painted keypad/)
+  })
+})
