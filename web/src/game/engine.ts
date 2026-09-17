@@ -1476,6 +1476,14 @@ function build_lamps(g){
 			const dy=-r*CAUTIONS.pitch, dz=(c-1)*CAUTIONS.span; m.position.set(CAUTIONS.lean*dy+CAUTIONS.wrap*dz,dy,dz); m.setRotationFromMatrix(face); cautions.add(m); }));
 	cautions.position.set(CAUTIONS.x,CAUTIONS.y,CAUTIONS.z);
 	cautions.children.forEach(m=>{ m.layers.set(LAYER_OWN); }); g.add(cautions);
+	// The emergency instrument light (NATOPS 2.6.2.8, #17): a white light on the right side of the
+	// instrument panel that lights the standby flight instruments on a double generator failure, with
+	// no cockpit control. The standby cluster sits on the panel face at x 6.29, y 0.09 to 0.21,
+	// z 0.12 to 0.28 (measured by dev_box on its needles), so the lamp is seated above and outboard
+	// of it and aimed at its centre. Off until the generators are, driven by lamps_update.
+	const emergency=new THREE.SpotLight(0xffffff,0,0.9,0.55,0.6,2); emergency.position.set(6.10,0.34,0.42);
+	emergency.target.position.set(6.30,0.13,0.19); emergency.layers.set(LAYER_OWN); g.add(emergency); g.add(emergency.target);
+	g.userData.emergency=emergency;
 	// The LOCK and SHOOT lights (FO-5 item 1, NATOPS 2.6.2.2, #14) are the pendant under the right
 	// windshield arch, LOCK over SHOOT painted on its aft face, which panel clicks put at x 6.04,
 	// y 0.715 to 0.726, z 0.143 to 0.170, just outboard of the standby compass (COMPASS_SEAT); the painted
@@ -1505,7 +1513,9 @@ function lamps_update(out){
 	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
 	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO);
 	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
-		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL); }
+		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
+		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
+		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // only spends when the pit is on screen, like the flood
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
 	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot);
@@ -3978,8 +3988,10 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 let build_error="";   // first cockpit-builder failure, surfaced via dev_probe
 const instrument_mats=[];   // the two gauge-atlas materials, per loaded model — backlight follows night + the lights switch
 let backlight_state="";
+let unpowered=false;   // both generators off the line: the emergency instrument light's only trigger (NATOPS 2.6.2.8, #17), and the integral lighting's loss
+const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity, a spot 40 cm off the standby cluster
 function instrument_backlight(){
-	const level=cfg.tod==="night"?(ownship.lights?0.62:0.30):0.22;   // dim wash by day; night panel follows the lights switch (L)
+	const level=unpowered?0:cfg.tod==="night"?(ownship.lights?0.62:0.30):0.22;   // dim wash by day; night panel follows the lights switch (L); dark with both generators gone (2.6.2.8, #17): the standbys are then the emergency light's
 	const key=level.toFixed(2); if(key===backlight_state) return; backlight_state=key;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	for(const mm of instrument_mats) mm.emissiveIntensity=level; }
 let cockpit_flood=null;
@@ -5627,6 +5639,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
+		emergency:u.emergency?u.emergency.intensity:null, backlight:+backlight_state||0,   // the emergency instrument light's intensity and the integral backlight level (#17)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops

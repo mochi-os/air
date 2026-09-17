@@ -156,7 +156,7 @@ function cautionlit(c: Cautions): string[] {
   if (!block) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
-    const ownship={fuel:c.fuel??3000};
+    const ownship={fuel:c.fuel??3000, group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
     const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
@@ -224,5 +224,52 @@ describe('the LOCK and SHOOT lights', () => {
     expect(build).toMatch(/lamps\.lock=legend\("LOCK","#2fd24a",0\.026,0\.010\); lamps\.lock\.position\.set\(0,0,0\);/)
     expect(build).toMatch(/lamps\.shoot=legend\("SHOOT","#2fd24a",0\.026,0\.010\); lamps\.shoot\.position\.set\(0,-PENDANT\.pitch,0\);/)
     expect(build).toMatch(/bow\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\);/)
+  })
+})
+
+// The emergency instrument light (NATOPS 2.6.2.8): on with both generators off
+// the line, when the integral lighting goes dark, so the standby instruments
+// stay readable at night. No cockpit control.
+interface Power { spoolL?: number; spoolR?: number; view?: string }
+function emergency(p: Power): { unpowered: boolean; intensity: number } {
+  const block = /\n\t\{ const turning=[\s\S]*?EMERGENCY_LIGHT:0; \}[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('generator block not found in engine.ts')
+  const run = new Function('p', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const out=[p.spoolL??0.7, 0, p.spoolR??0.7, 0, 0, 0];
+    const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
+    const l={genL:{},genR:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+    return { unpowered, intensity:ownship.group.userData.emergency.intensity };`)
+  return run(p) as { unpowered: boolean; intensity: number }
+}
+function backlight(tod: string, lights: boolean, unpowered: boolean): number {
+  const fn = /\nfunction instrument_backlight\(\)\{[\s\S]*?emissiveIntensity=level; \}\n/.exec(source)?.[0] ?? ''
+  if (!fn) throw new Error('instrument_backlight not found in engine.ts')
+  const run = new Function('tod', 'lights', 'unpowered', `const cfg={tod}, ownship={lights}, instrument_mats=[{emissiveIntensity:9}]; let backlight_state="";
+    ${fn} instrument_backlight(); return instrument_mats[0].emissiveIntensity;`)
+  return run(tod, lights, unpowered) as number
+}
+
+describe('the emergency instrument light', () => {
+  it('stays off with either generator on the line', () => {
+    expect(emergency({})).toEqual({ unpowered: false, intensity: 0 })
+    expect(emergency({ spoolL: 0 })).toEqual({ unpowered: false, intensity: 0 })
+  })
+
+  it('comes on with both off, in the cockpit view only', () => {
+    expect(emergency({ spoolL: 0, spoolR: 0 })).toEqual({ unpowered: true, intensity: 0.5 })
+    expect(emergency({ spoolL: 0, spoolR: 0, view: 'hud' })).toEqual({ unpowered: true, intensity: 0 })
+  })
+
+  it('takes the integral backlight down with the generators', () => {
+    expect(backlight('day', false, false)).toBe(0.22)
+    expect(backlight('night', true, false)).toBe(0.62)
+    expect(backlight('night', true, true)).toBe(0)
+  })
+
+  it('is a white spot on the ownship layer aimed at the standby cluster, reported by the probe', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
+    expect(build).toMatch(/const emergency=new THREE\.SpotLight\(0xffffff,0,0\.9,0\.55,0\.6,2\); emergency\.position\.set\(6\.10,0\.34,0\.42\);/)
+    expect(build).toMatch(/emergency\.target\.position\.set\(6\.30,0\.13,0\.19\); emergency\.layers\.set\(LAYER_OWN\); g\.add\(emergency\); g\.add\(emergency\.target\);/)
+    expect(source).toMatch(/emergency:u\.emergency\?u\.emergency\.intensity:null, backlight:\+backlight_state\|\|0,/)
   })
 })
