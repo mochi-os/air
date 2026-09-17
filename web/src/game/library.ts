@@ -46,7 +46,7 @@ function later(work: () => void): void {
   else setTimeout(work, 200)
 }
 
-export const TOOLS: Tools = {
+const TOOLS: Tools = {
   fetch: asset,
   parse: load,
   hidden: offscreen,
