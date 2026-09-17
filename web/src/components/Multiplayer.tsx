@@ -941,7 +941,9 @@ export function Multiplayer({
             <Button
               type='button'
               size='sm'
-              disabled={!status || busy}
+              disabled={!status}
+              loading={busy}
+              icon={<Plus className='size-4' />}
               /* The creator arms the same way everyone else does (#221), and
                  asking BEFORE the match is made means a cancel leaves no empty
                  match standing on the server. */
@@ -949,7 +951,6 @@ export function Multiplayer({
                 loadout ? setPending({ kind: 'create' }) : void create()
               }
             >
-              <Plus className='size-4' />
               <Trans>Create and fly</Trans>
             </Button>
           </div>
@@ -970,13 +971,13 @@ export function Multiplayer({
         <Button
           type='button'
           variant='outline'
-          disabled={refreshing}
+          loading={refreshing}
+          icon={<RefreshCw className='size-4' />}
           onClick={() => {
             setRefreshing(true)
             void refresh().finally(() => setRefreshing(false))
           }}
         >
-          <RefreshCw className={`size-4${refreshing ? 'animate-spin' : ''}`} />
           <Trans>Refresh</Trans>
         </Button>
         <Button
