@@ -168,3 +168,44 @@ describe('the radar altimeter under radar silence', () => {
     expect(law_call(true)).toEqual({ calls: 0, armed: true })
   })
 })
+
+// The standby altimeter's barometric setting (NATOPS 2.12.4) and the HUD
+// baro-set readout (2.13.4.8.11 item 4): the four window drums read the
+// setting, and the HUD shows it below the altitude for 5 s after a change
+// and flashing for 5 s on a descent through 10,000 ft below 300 knots.
+interface Moment { feet: number; knots: number; t: number; set?: number }
+function baroset(moments: Moment[]): (string | null)[] {
+  const block = /\n\t\{ const knots=\(ownship\.cas\?\?ownship\.speed\)\*1\.944;[\s\S]*?fixed-format like the real instrument\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('baro-set block not found in engine.ts')
+  const run = new Function('moments', `let baro_set=2992, baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;
+    const GR='#0f0', lx=0, wly=0, declutter=0, ownship={cas:0, speed:0};
+    return moments.map((m)=>{ let drawn=null; const hctx={ fillText:(s)=>{ drawn=s; }, font:'', textAlign:'', fillStyle:'' };
+      const baro=m.feet, sim_time=m.t; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
+      ${block} return drawn; });`)
+  return run(moments) as (string | null)[]
+}
+
+describe('the standby altimeter baro setting', () => {
+  it('drives the four window drums from the setting, tens first, and publishes it as a gauge', () => {
+    const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
+    for (const [name, node, gain] of [['baro1', 'Drum_Baro_1_AN_1_397', '10000'], ['baro2', 'Drum_Baro_2_AN_2_400', '1000'], ['baro3', 'Drum_Baro_3_AN_3_403', '100'], ['baro4', 'Drum_Baro_4_AN_4_406', '10']])
+      expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+node:"' + node + '",\\s+axis:"x", sign:-1, gain:6\\.2832/' + gain + ',\\s+gauge:"baro"'))
+    expect(source).toMatch(/\n\t\tbaro:baro_set,/)
+    expect(source).toMatch(/\nconst baro_set=2992;/) // no knob and no sea-level pressure reach it yet; the change display waits for one
+  })
+
+  it('flashes the setting for 5 s on a descent through 10,000 ft below 300 knots, armed from above', () => {
+    const on = 100.1, off = 100.6 // (t*3)%2: 0.3 lit, 1.8 dark
+    expect(baroset([{ feet: 5000, knots: 250, t: 0.1 }])).toEqual([null]) // a spawn below the level never arms
+    expect(baroset([{ feet: 12000, knots: 250, t: 50 }, { feet: 9900, knots: 250, t: on }, { feet: 9800, knots: 250, t: off }, { feet: 9700, knots: 250, t: 104.9 }, { feet: 9600, knots: 250, t: 105.5 }]))
+      .toEqual([null, '29.92', null, '29.92', null])
+    expect(baroset([{ feet: 12000, knots: 320, t: 50 }, { feet: 9900, knots: 320, t: on }])).toEqual([null, null]) // fast through the level: no reminder
+    expect(baroset([{ feet: 12000, knots: 250, t: 50 }, { feet: 9900, knots: 250, t: on }, { feet: 12000, knots: 250, t: 120 }, { feet: 9900, knots: 250, t: 200.1 }]))
+      .toEqual([null, '29.92', null, '29.92']) // re-armed by the climb back above
+  })
+
+  it('shows a changed setting steadily for 5 s', () => {
+    expect(baroset([{ feet: 5000, knots: 250, t: 0.1 }, { feet: 5000, knots: 250, t: 200, set: 3010 }, { feet: 5000, knots: 250, t: 200.6 }, { feet: 5000, knots: 250, t: 205.1 }]))
+      .toEqual([null, '30.10', '30.10', null])
+  })
+})
