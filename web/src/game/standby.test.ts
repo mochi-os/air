@@ -118,7 +118,7 @@ describe('the ALR-67 azimuth indicator', () => {
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\);/)
     expect(source).toMatch(/new THREE\.CircleGeometry\(RWR_FACE\.r,36\)/)
     expect(source).toMatch(/surface_pose\(mesh,RWR_FACE\.x,0,RWR_FACE\.y,RWR_FACE\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
-    expect(source).toMatch(/if\(w\)\{ const now=performance\.now\(\); if\(now-w\.last>250\)\{ w\.last=now; rwr_draw\(w\); \} \} \}/)
+    expect(source).toMatch(/if\(w\)\{ const now=performance\.now\(\); if\(now-w\.last>250\)\{ w\.last=now; rwr_draw\(w\); \} \}\n/)
   })
 })
 
@@ -207,5 +207,68 @@ describe('the standby altimeter baro setting', () => {
   it('shows a changed setting steadily for 5 s', () => {
     expect(baroset([{ feet: 5000, knots: 250, t: 0.1 }, { feet: 5000, knots: 250, t: 200, set: 3010 }, { feet: 5000, knots: 250, t: 200.6 }, { feet: 5000, knots: 250, t: 205.1 }]))
       .toEqual([null, '30.10', '30.10', null])
+  })
+})
+
+// The standby flight instrument faces (#32): the model hides its mechanical
+// airspeed, altimeter, VSI and attitude parts behind opaque discs on the
+// cockpit tub, so canvas faces drawn from the gauges sit proud of the discs.
+// Each draw runs against a recording context.
+function lift(name: string): string {
+  const start = source.indexOf(`function ${name}(`)
+  if (start < 0) throw new Error(`${name} not found in engine.ts`)
+  const rest = source.slice(start)
+  const end = /\n(?=\S)/.exec(rest.slice(1))
+  return end ? rest.slice(0, end.index + 1) : rest
+}
+interface Drawn { text: string[]; rotate: number[]; translate: [number, number][] }
+function face(name: string, ...args: number[]): Drawn {
+  const consts = /\nconst ASI_DIAL=[^\n]*\nconst VSI_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
+  const sizes = /\nconst STANDBY_C=[^\n]*\nconst ADI_PIXELS=[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!consts || !sizes) throw new Error('standby constants not found in engine.ts')
+  const run = new Function('args', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${consts} ${sizes}
+    ${lift('dial')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
+    const text=[], rotate=[], translate=[];
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); return ()=>{}; }, set:()=>true });
+    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate };`)
+  return run(args) as Drawn
+}
+const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
+
+describe('the standby instrument faces', () => {
+  it('turn the airspeed needle to the dial angle the rig uses, over that dial\'s labels', () => {
+    const angle = 242 * Math.PI / 180 // ASI_DIAL: 300 knots
+    const d = face('asi_face', angle)
+    expect(has(d.rotate, angle)).toBe(true)
+    for (const label of ['100', '300', '800']) expect(d.text).toContain(label)
+  })
+
+  it('turn the altimeter pointer once per 1,000 ft and show the thousands and the baro setting', () => {
+    const d = face('alt_face', 1500, 2992)
+    expect(has(d.rotate, Math.PI)).toBe(true)
+    expect(d.text).toContain('01')
+    expect(d.text).toContain('29.92')
+  })
+
+  it('put the rate of climb needle at nine o\'clock plus the dial angle', () => {
+    const angle = 44 * Math.PI / 180 // VSI_DIAL: 1,000 ft/min
+    const d = face('vsi_face', angle)
+    expect(has(d.rotate, -Math.PI / 2 + angle)).toBe(true)
+    for (const label of ['0', '1', '6']) expect(d.text).toContain(label)
+  })
+
+  it('roll the ball against the bank and slide it with the pitch, as the ADI page does', () => {
+    const bank = 30 * Math.PI / 180, pitch = 10 * Math.PI / 180
+    const d = face('adi_face', pitch, bank)
+    expect(d.rotate[0]).toBeCloseTo(-bank, 9) // the ball's roll comes first; the bank pointer's rotate follows
+    const px = 118 * 0.22 // 10° of pitch
+    expect(d.translate.some(([dx, dy]) => dx === 0 && Math.abs(dy - px) < 1e-6)).toBe(true)
+  })
+
+  it('are seated proud of the tub\'s discs at the measured bezels and refreshed from the gauges', () => {
+    expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.097, z:0\.125, r:0\.026 \}, alt:\{ y:0\.097, z:0\.192, r:0\.026 \}, vsi:\{ y:0\.096, z:0\.258, r:0\.026 \}, adi:\{ y:0\.163, z:0\.154, r:0\.045 \} \};/) // the hidden needles' pivots and the ball's centre
+    expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
+    expect(source).toMatch(/surface_pose\(mesh,STANDBY\.x,0,seat\.y,seat\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
+    expect(source).toMatch(/if\(now-\(sb\.last\|\|0\)>100\)\{ sb\.last=now; standby_draw\(sb,ownship\.gauges\|\|\{\}\); \}/)
   })
 })

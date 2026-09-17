@@ -1359,7 +1359,80 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_screens(g); build_ifei(g); mount_compass(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); mount_compass(g); }
+// The standby flight instruments (#32): the model hides its mechanical airspeed,
+// altimeter, vertical speed and attitude parts 8 cm behind opaque black discs
+// painted on the cockpit tub, so, like the radar altimeter, each gets a canvas
+// face proud of its disc, drawn from the gauges. The centres are the hidden
+// needles' pivots and the ball's centre (dev_origin on the rig nodes), the radii
+// the apertures they turn in; the tub's discs sit at x 6.211.
+const STANDBY={ x:6.207, asi:{ y:0.097, z:0.125, r:0.026 }, alt:{ y:0.097, z:0.192, r:0.026 }, vsi:{ y:0.096, z:0.258, r:0.026 }, adi:{ y:0.163, z:0.154, r:0.045 } };
+const STANDBY_C=128, STANDBY_R=118;   // the faces' canvas centre and dial radius
+const ADI_PIXELS=STANDBY_R*0.22/10;   // pixels per degree of pitch on the standby ball: 10° is 0.22 of the radius
+function build_standby(g){
+	if(g.userData.standby&&g.userData.standby.asi.mesh.parent) return;
+	const faces={};
+	for(const name of ["asi","alt","vsi","adi"]){ const seat=STANDBY[name];
+		const canvas=document.createElement("canvas"); canvas.width=canvas.height=256;
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+		surface_pose(mesh,STANDBY.x,0,seat.y,seat.z); mesh.layers.set(LAYER_OWN); mesh.name=name+"face"; g.add(mesh);
+		faces[name]={ mesh, canvas, tex }; }
+	g.userData.standby=faces; standby_draw(faces,{}); }
+function standby_draw(faces,gz){
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0);
+	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
+function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
+	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
+	x.strokeStyle="#e8e8e0"; x.fillStyle="#e8e8e0"; x.lineWidth=2; x.textAlign="center"; x.textBaseline="middle"; return x; }
+function face_needle(x,angle,length,width){ x.save(); x.translate(STANDBY_C,STANDBY_C); x.rotate(angle);   // angle clockwise from twelve o'clock
+	x.fillStyle="#f0f0e8"; x.beginPath(); x.moveTo(-width,10); x.lineTo(0,-length); x.lineTo(width,10); x.closePath(); x.fill(); x.restore(); }
+function face_tick(x,a,outer,inner,width){ x.lineWidth=width; x.beginPath(); x.moveTo(STANDBY_C+Math.cos(a)*outer,STANDBY_C+Math.sin(a)*outer); x.lineTo(STANDBY_C+Math.cos(a)*inner,STANDBY_C+Math.sin(a)*inner); x.stroke(); }
+function face_label(x,a,radius,text){ x.fillText(text,STANDBY_C+Math.cos(a)*radius,STANDBY_C+Math.sin(a)*radius); }
+// The standby airspeed indicator (NATOPS 2.12.3): the needle at the ASI_DIAL angle the rig uses, over that dial's marks
+function asi_face(f,angle){ const x=face_start(f), R=STANDBY_R;
+	for(let kt=60;kt<=850;kt+=10){ if(kt<=200?kt%20:kt%50) continue; const a=dial(ASI_DIAL,kt)-Math.PI/2, major=kt%100===0||kt===60||kt===850;
+		face_tick(x,a,R,major?R-16:R-9,major?3:1.5);
+		if(kt%100===0){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(kt)); } }
+	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+40);
+	face_needle(x,angle,R-14,5); }
+// The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial, the thousands
+// counter left of centre, the barometric setting window lower right
+function alt_face(f,feet,baro){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
+	for(let i=0;i<50;i++){ const a=i/50*Math.PI*2-Math.PI/2, major=i%5===0;
+		face_tick(x,a,R,major?R-16:R-8,major?3:1.5);
+		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(i/5)); } }
+	const shown=Math.max(0,Math.min(99999,Math.round(feet)));
+	x.fillStyle="#202220"; x.fillRect(C-58,C-14,52,28); x.strokeStyle="#606460"; x.strokeRect(C-58,C-14,52,28);
+	x.fillStyle="#f0f0e8"; x.font="bold 22px monospace"; x.fillText(String(Math.floor(shown/1000)).padStart(2,"0"),C-32,C+1);
+	x.fillStyle="#202220"; x.fillRect(C+10,C+22,64,22); x.strokeStyle="#606460"; x.strokeRect(C+10,C+22,64,22);
+	x.fillStyle="#f0f0e8"; x.font="bold 16px monospace"; x.fillText((baro/100).toFixed(2),C+42,C+33);   // i18n-format-ok: canvas-drawn instrument window, fixed-format like the real drum
+	x.strokeStyle="#e8e8e0";
+	face_needle(x,(shown%1000)/1000*Math.PI*2,R-14,5); }
+// The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses
+function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
+	for(const [fpm,label] of [[0,"0"],[500,".5"],[1000,"1"],[2000,"2"],[4000,"4"],[6000,"6"]]) for(const s of (fpm?[1,-1]:[1])){
+		const a=s*dial(VSI_DIAL,fpm)-Math.PI; face_tick(x,a,R,R-16,3);
+		x.font="bold 20px monospace"; face_label(x,a,R-34,label); }
+	x.font="11px monospace"; x.fillText("UP",C-36,C-52); x.fillText("DOWN",C-36,C+52); x.fillText("X1000",C+30,C-8); x.fillText("FT/MIN",C+30,C+8);
+	face_needle(x,-Math.PI/2+angle,R-14,5); }
+// The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder and the fixed
+// bank scale, the ADI page's sign conventions, no ILS carriages
+function adi_face(f,pitch,bank){ const x=face_start(f,"#3a6ea8"), C=STANDBY_C, R=STANDBY_R;
+	x.save(); x.beginPath(); x.arc(C,C,R,0,Math.PI*2); x.clip();
+	x.translate(C,C); x.rotate(-bank); x.translate(0,pitch/D2R*ADI_PIXELS);
+	x.fillStyle="#7a5230"; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle="#3a6ea8"; x.fillRect(-3*R,-3*R,6*R,3*R);
+	x.strokeStyle="#f0f0e8"; x.lineWidth=3; x.beginPath(); x.moveTo(-3*R,0); x.lineTo(3*R,0); x.stroke();
+	x.lineWidth=2; x.font="bold 14px monospace"; x.fillStyle="#f0f0e8";
+	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?22:38;
+		x.beginPath(); x.moveTo(-w,y); x.lineTo(w,y); x.stroke(); x.fillText(String(Math.abs(d)),w+16,y); x.fillText(String(Math.abs(d)),-w-16,y); }
+	x.restore();
+	x.save(); x.translate(C,C); x.strokeStyle="#f0f0e8"; x.lineWidth=3;
+	for(const d of [-60,-30,-20,-10,0,10,20,30,60]){ const a=d*D2R-Math.PI/2, len=d===0?14:(d%30?8:12);
+		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len)); x.stroke(); }
+	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#f0f0e8"; x.beginPath(); x.moveTo(0,-R+18); x.lineTo(-7,-R+32); x.lineTo(7,-R+32); x.closePath(); x.fill();
+	x.restore();
+	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
 // The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26 puts it in the
 // round housing on the right vertical panel where the model seated its standby
 // compass, which mount_compass hangs on the arch. The housing's bezel, measured
@@ -1542,7 +1615,9 @@ function lamps_update(out){
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
 		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index, RADAR.sil); } }
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
-	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } } }
+	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } }
+	const sb=ownship.group.userData.standby;   // the standby flight instruments (#32): needles want ten frames a second
+	if(sb){ const now=performance.now(); if(now-(sb.last||0)>100){ sb.last=now; standby_draw(sb,ownship.gauges||{}); } } }
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
@@ -2202,6 +2277,8 @@ function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 	ifei_hold=hold; }
 function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return false;
 	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
+if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
+	const p=new THREE.Vector3(); o.getWorldPosition(p); ownship.group.worldToLocal(p); return p.toArray().map(n=>+n.toFixed(3)); };   // i18n-format-ok: dev readout
 if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
 	const b=node_box(ownship.group,o); return b?{ lo:b.lo.toArray().map(n=>+n.toFixed(3)), hi:b.hi.toArray().map(n=>+n.toFixed(3)), parent:o.parent&&o.parent.name, visible:shown(o) }:null; };   // i18n-format-ok: dev readout
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
@@ -5652,7 +5729,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
-		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
+		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence, adiface:u.standby&&u.standby.adi.mesh };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
 		for(const [name,mesh] of Object.entries(extra)){ if(!mesh) continue; mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out[name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH), baro:f(g.baro) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -5663,6 +5740,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
 		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
+		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
 		rwr:u.rwr?{ at:u.rwr.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.rwr.mesh.layers.mask, count:u.rwr.count }:null,   // i18n-format-ok: dev readout — the azimuth indicator's seat (#28), its layer and the contacts it last drew
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
@@ -5686,7 +5764,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
 			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
+		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
 			.filter(([,o])=>o).map(([name,o])=>({ name, ...probe(o) }));   // every face and lamp the pit builds (#25): the probe wants each on the ownship layer, visible and in the scene
 		return { sweep, radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
