@@ -681,18 +681,10 @@ async function bake(): Promise<void> {
     for (let i = 0; i < d.length; i++)
       d[i] = (Math.random() * 2 - 1) * decay(i, r, 0.05) * 0.5
   })
-  // Missile flyby (#80): the bow-shock crack of a supersonic round passing
-  // close, into a fast roar that sweeps down as it recedes — faster and
-  // rougher than the launch whoosh, gone in under a second.
-  shots.flyby = await render(0.9, (d, r) => {
-    let last = 0
-    for (let i = 0; i < d.length; i++) {
-      const white = Math.random() * 2 - 1
-      if (i < r * 0.012) d[i] += white * decay(i, r, 0.005) * 1.4
-      last = last + (white - last) * (0.55 - 0.45 * (i / d.length))
-      d[i] += last * decay(i, r, 0.22) * 1.1
-    }
-  })
+  // Missile flyby (#80): a round passing close without fusing — a rush that
+  // swells, sweeps down through the closest approach and recedes. Shaped in
+  // flyby_shape, beside the cue that plays it.
+  shots.flyby = await render(1.1, flyby_shape)
   // Catapult: holdback clunk, building rumble, end clunk.
   shots.catapult = await render(2.6, (d, r) => {
     const clunk = (at: number, f: number, a: number) => {
@@ -1170,12 +1162,65 @@ export function audio_departure(yawing: number, steady: boolean): void {
   departure.gain.gain.setTargetAtTime(active ? 0.07 : 0, t, 0.05)
 }
 
-// audio_seeker drives the 9M tone each frame: 0 silent, 1 search growl,
-// 2 lock. strength (0..1) is how much heat the seeker is drinking — how deep
-// inside its brightness-conditioned reach the target sits — and it makes the
-// growl louder, higher and angrier as the shot improves, in both states.
+// The near pass, the shot itself: a round that MISSES must not sound like one
+// that fused. This opened on a 12 ms white transient at 1.4, which is an
+// impulsive crack, which is what a warhead sounds like — and a pilot duly
+// reported hearing a missile "detonate not far from me" about a pair that
+// passed at 43 and 48 m and never armed (recording 01a0b090, 2026-09-17).
+// Nothing in that fight fused at all. What a pass actually gives the ear is
+// doppler: a rush that swells, sweeps DOWN through the moment of closest
+// approach, and recedes. So there is no transient, and the sweep is baked into
+// the buffer, because play() can only hang a STATIC filter on a shot.
+export function flyby_shape(d: Float32Array, rate: number): void {
+  void rate // the shape is a function of position through the buffer, not of the sample rate
+  let last = 0
+  let slow = 0
+  for (let i = 0; i < d.length; i++) {
+    const position = i / d.length
+    // The pass sits at 30% of the buffer: everything before it is approach.
+    const swell =
+      position < 0.3
+        ? Math.sin((position / 0.3) * Math.PI * 0.5)
+        : Math.exp(-(position - 0.3) * 4.2)
+    // Doppler on a noise band: a one-pole's coefficient IS its brightness, so
+    // sweeping the coefficient through the pass is the pitch falling. Swept,
+    // rather than decayed away from an attack, which is what reads as a crack.
+    const bright = 0.06 + 0.69 / (1 + Math.exp((position - 0.32) * 14))
+    const white = Math.random() * 2 - 1
+    last = last + (white - last) * bright
+    slow = slow + (last - slow) * 0.01 // shed the rumble: this should read as air, not thunder
+    // 0.95 keeps the worst peak near 0.88 and the mean near 0.82 over repeated
+    // renders. The old shot peaked at 2.16 and clipped hard, and that clipping
+    // was itself part of the crack; the level it lost here is given back in
+    // flyby_voice, where it can be set against range rather than by accident.
+    d[i] = (last - slow) * swell * 0.95
+  }
+}
+
 // audio_flyby (#80): an enemy round passing close without fusing. distance is
 // the closest approach in metres; a burning motor arrives louder and brighter.
+// flyby_voice is the decision on its own, so the character can be asserted
+// without a browser (audio.ts logs only the NAME to dev_sounds, which cannot
+// tell a pass from a detonation — the very confusion this cue caused).
+export function flyby_voice(
+  distance: number,
+  burning: boolean
+): { volume: number; cutoff: number } | null {
+  const range = Math.max(0, Math.min(1, 1 - distance / 200))
+  if (range <= 0) return null
+  const near = Math.max(0, Math.min(1, 1 - distance / 60))
+  return {
+    // A round crossing inside 60 m should be startling: this reached 0.89 at
+    // the 43 m pass the pilot reported as "not very loud", and now reaches
+    // about 1.21 there with no transient carrying it.
+    volume: (0.32 + 1.05 * range * range) * (burning ? 1.25 : 1),
+    // Air absorption over the last stretch only. The old cue drove this to
+    // 9.9 kHz close in, which sharpened the attack into the crack above; the
+    // sweep in the buffer now carries the character, so this stays gentle.
+    cutoff: 1200 + 3600 * near + 2400 * range,
+  }
+}
+
 export function audio_flyby(
   distance: number,
   burning: boolean,
@@ -1183,23 +1228,25 @@ export function audio_flyby(
   y?: number,
   z?: number
 ): void {
-  const range = Math.max(0, Math.min(1, 1 - distance / 200))
-  if (range <= 0) return
-  const crack = Math.max(0, Math.min(1, 1 - distance / 60))
-  const volume = (0.25 + 0.75 * range * range) * (burning ? 1.25 : 1)
+  const voice = flyby_voice(distance, burning)
+  if (!voice) return
   if (x !== undefined)
     playAt(
       'flyby',
-      volume,
+      voice.volume,
       x,
       y as number,
       z as number,
-      900 + 9000 * crack + 2000 * range,
+      voice.cutoff,
       distance / 343
     )
-  else play('flyby', volume, 900 + 9000 * crack + 2000 * range, distance / 343)
+  else play('flyby', voice.volume, voice.cutoff, distance / 343)
 }
 
+// audio_seeker drives the 9M tone each frame: 0 silent, 1 search growl,
+// 2 lock. strength (0..1) is how much heat the seeker is drinking — how deep
+// inside its brightness-conditioned reach the target sits — and it makes the
+// growl louder, higher and angrier as the shot improves, in both states.
 export function audio_seeker(state: number, strength = 0): void {
   if (!seeker || !context || context.state !== 'running') return
   const t = now()
