@@ -24,6 +24,8 @@ KEEP_WORDS = {
     "oidc", "paypal", "pgn", "pkce", "pushbullet", "qr", "replica",
     "rose", "rss", "saml", "server", "sgf", "sha", "steel", "stripe",
     "teal", "terracotta", "url", "version", "violet", "wiki", "wikis",
+    "caldav", "carddav", "webdav", "vcard", "icalendar", "ics", "thunderbird",
+    "contacts",
 }
 
 # Exact-string allowlist, checked before word matching. A digit-bearing
@@ -40,6 +42,8 @@ KEEP_ENGLISH = frozenset({
     "SAML", "SGF", "SHA", "Server", "Steel", "Stripe", "Teal",
     "Terracotta", "URL", "Version", "Violet", "Wiki", "Wikis", "libp2p",
     "ntfy",
+    "CalDAV", "CardDAV", "WebDAV", "vCard", "iCalendar", "ICS", "DAVx5", "Thunderbird",
+    "Contacts",
 })
 
 def _strip_placeholders(value):
