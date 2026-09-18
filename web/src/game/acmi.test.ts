@@ -875,3 +875,79 @@ describe('a multiplayer remote is recorded, not just tracked (#163/#164)', () =>
     expect(text).toMatch(/TAS=25[01]/)
   })
 })
+
+// The gun's near miss (#33 debrief). Struck counts what connected, so a burst
+// that hits is fully described and a burst that misses said nothing at all —
+// which is backwards, because the miss is the one a pilot learns from.
+describe('a burst that misses is recorded, not just one that hits', () => {
+  const jet = (
+    graze?: number,
+    miss?: { ahead: number; above: number; right: number }
+  ): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { rounds: 500, ...(graze !== undefined ? { graze, miss } : {}) },
+  })
+  const flown = (samples: (Sample['objects'][number] | undefined)[]) =>
+    acmi(
+      samples.map((o, n) => ({ time: n * 0.1, objects: o ? [o] : [] })),
+      new Date(0),
+      't'
+    )
+      .split('\n')
+      .filter((l) => l.startsWith('1,T='))
+
+  it('writes the gap and the direction it went past', () => {
+    const mine = flown([jet(4.2, { ahead: 1.5, above: -4, right: 0.6 })])
+    expect(mine[0]).toContain('Graze=4.2')
+    expect(mine[0]).toContain('Miss=1.5|-4|0.6')
+  })
+
+  it('writes it again only when the burst gets closer', () => {
+    const mine = flown([
+      jet(9, { ahead: 0, above: -9, right: 0 }),
+      jet(9, { ahead: 0, above: -9, right: 0 }),
+      jet(3, { ahead: 0, above: -3, right: 0 }),
+    ])
+    expect(mine[0]).toContain('Graze=9')
+    expect(mine[1]).not.toContain('Graze=') // unchanged: suppressed, like every other channel
+    expect(mine[2]).toContain('Graze=3')
+    expect(mine[2]).toContain('Miss=0|-3|0')
+  })
+
+  it('clears when the burst ends, so the next one starts clean', () => {
+    // Without this a reader takes the last burst's miss as the current one,
+    // which is worse than no channel: it is a wrong answer with no warning.
+    const mine = flown([jet(4, { ahead: 0, above: -4, right: 0 }), jet()])
+    expect(mine[0]).toContain('Graze=4')
+    expect(mine[1]).toContain('Graze=')
+    expect(mine[1]).not.toContain('Graze=4')
+  })
+
+  it('records a graze as zero rather than dropping the channel', () => {
+    // Zero is a real reading: the round touched the skin. It must not be
+    // confused with "no burst", which is why the two are written differently.
+    const mine = flown([jet(0, { ahead: 0.2, above: 0, right: 1.1 })])
+    expect(mine[0]).toContain('Graze=0')
+    expect(mine[0]).toContain('Miss=0.2|0|1.1')
+  })
+
+  it('ships outside developer builds', () => {
+    // The line the recorder already draws: fuel and rounds ship because "what
+    // did that fight cost me" is a debrief question every pilot asks, while
+    // the control-law channels and the bot's doctrine stay behind DEV_MODE.
+    // "Why did I miss" belongs with the former, and nothing here exposes an
+    // internal. Nothing in acmi.ts gates it, and this says so out loud.
+    const mine = flown([jet(4, { ahead: 0, above: -4, right: 0 })])
+    expect(mine[0]).toContain('Graze=4')
+  })
+})

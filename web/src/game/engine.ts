@@ -3610,6 +3610,14 @@ const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.
 // hulk (a model-less hit body); the ownship's wounds land in the flight core's
 // damage state.
 let battle_tick=0, battle_reset=true, battle_rigged=false;
+// The current burst's closest MISS (#33 debrief): the gap from the bandit's
+// skin in metres and where the round passed, in the bandit's body frame. Held
+// as a running minimum from the trigger opening until it opens again, so it
+// keeps improving while the rounds are still in the air after the trigger is
+// released — a 20 mm round flies for four seconds and the burst is not over
+// when the firing stops. Reset on the trigger's rising edge, so the recording
+// carries one figure per burst rather than a fight-long best.
+let graze=null, firing=false, burst_tick=-1;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
 const turn_probe={x:1,y:0,z:0,rate:0};   // developer readout: instantaneous turn rate — the angular rate of the VELOCITY vector (the BFM number), EMA-smoothed
@@ -5312,6 +5320,7 @@ function recording_sample(){
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		missiles:(ownship.msl|0)+Math.max(0,ownship.amraam|0), cue:hud_cue,   // stores and the HUD's advice (#33 debrief)
+		...(graze?{graze:graze.gap, miss:{ahead:graze.ahead, above:graze.above, right:graze.right}}:{}),   // this burst's closest MISS and which way it went past, in the bandit's body frame: the gun's Least and Off, and the only channel that says why a burst that landed nothing landed nothing
 		flares:ownship.flares|0, chaff:ownship.chaff|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
 		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0,   // configuration (#86): which pitch law the FCS was flying
 		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
@@ -6277,11 +6286,12 @@ function fly_player(dt){
 		// against where everyone IS this frame, so a break after the trigger is
 		// a real defence. Sparks land where ownship rounds strike the bandit;
 		// the flash and thud are the bandit's rounds arriving on us.
-		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null);
+		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null, burst_tick);
 			for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
 				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
 			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); }
-			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
+			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit;   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
+			if(flown.graze&&(!graze||flown.graze.gap<graze.gap)) graze={...flown.graze}; }   // the burst's closest MISS: kept as a running minimum, because a burst is many ticks and only its best moment says anything
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 		shed_panels(ownship,last_out);   // our own wing too: in any external view a lost panel is the loudest damage cue there is
@@ -6722,7 +6732,10 @@ function step_world(dt){ sim_time+=dt;
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
-	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,trigger_own());   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
+	{ const pull=trigger_own();
+		if(pull&&!firing){ graze=null; burst_tick=battle_tick; }   // the TRIGGER opening starts a new burst, and a new burst starts a new miss. Not `fired>0`: at 100 rounds/s a frame faster than 100 Hz often emits no whole round, and every such frame would read as a fresh burst
+		firing=pull;
+		const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,pull);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	contrail_effects();   // every jet's contrail, where the air is cold enough
