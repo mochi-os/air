@@ -87,6 +87,16 @@ interface Flight {
   // heater / radar SHOOT states, the breakaway X, or empty).
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
+  // This burst's closest MISS: how far the nearest round passed from the
+  // target's skin, and which way it went by, in the TARGET's body frame. The
+  // gun's answer to a missile's least and off. Struck counts what connected,
+  // so a burst that hits is fully described; without these a burst that misses
+  // says nothing at all, and a debrief can only reconstruct it from the tracks
+  // against the body ORIGIN, which on a 17 m airframe seen end-on is the wrong
+  // body. Shipped, not developer-only: "why did I miss" sits with fuel and
+  // rounds, not with the control-law channels.
+  graze?: number // metres from the skin, 0 for a graze
+  miss?: { ahead: number; above: number; right: number }
   // Countermeasures: the ownship's flare and chaff INVENTORIES (a dispense is
   // a step); the bandit records a cumulative flare dispense COUNT instead —
   // same shape, same information (its steps are the dispenses). Both carry a
@@ -320,6 +330,7 @@ export function acmi(
   const armed = new Map<number, number>() // last written missiles count, per object
   const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
   const cued = new Map<number, string>() // last written cue, per object
+  const grazed = new Map<number, number>() // last written burst miss, per object
   const countered = new Map<number, number>() // last written flares, per object
   const bloomed = new Map<number, number>() // last written chaff, per object
   const sensed_last = new Map<number, string>() // last written sensor group, per object
@@ -404,6 +415,18 @@ export function acmi(
         if (d.cue !== undefined && cued.get(o.id) !== d.cue) {
           cued.set(o.id, d.cue)
           line += `,Cue=${field(d.cue)}`
+        }
+        // The burst's miss. Written whenever it improves within a burst and
+        // once more when it clears, so the value standing at any sample is
+        // this burst's best and a reader is never handed the last burst's.
+        if (d.graze !== undefined && grazed.get(o.id) !== d.graze) {
+          grazed.set(o.id, d.graze)
+          line += `,Graze=${round(d.graze, 1)}`
+          if (d.miss)
+            line += `,Miss=${round(d.miss.ahead, 1)}|${round(d.miss.above, 1)}|${round(d.miss.right, 1)}`
+        } else if (d.graze === undefined && grazed.has(o.id)) {
+          grazed.delete(o.id)
+          line += `,Graze=` // the burst is over: an empty field, as the cue channel does it
         }
         if (d.flares !== undefined && countered.get(o.id) !== d.flares) {
           countered.set(o.id, d.flares)

@@ -543,19 +543,36 @@ export function battle_volley(
   core.volley(battle_input_bytes, battle_output_bytes)
 }
 
+// GRAZED is where the core puts the near-miss block: after the whole impact
+// table at a fixed offset, so it is found without counting impacts. Must match
+// `grazed` in world/wasm/battle.go.
+const GRAZED = 3 + 3 * 8
+
 // battle_fly advances every airborne round one step: rounds from the ownship
 // resolve against the bandit hulk (when aim is present), the bandit's against
 // the ownship model. Impacts are in the BANDIT's body frame.
+//
+// graze is the closest an ownship round came WITHOUT hitting, this tick: the
+// gap from the skin in metres and where it passed, in the bandit's body frame
+// (ahead along the nose, above, right along the starboard wing). null when no
+// round came near enough to measure. The gun's answer to the missiles' Least
+// and Off: a burst that connects is described by its hits, and until this a
+// burst that missed left nothing behind at all.
+// since is the tick the current burst opened on: only rounds born at or after
+// it count toward the miss, because a round flies for four seconds and bursts
+// come closer together than that. Negative measures nothing.
 export function battle_fly(
   dt: number,
   invulnerable: boolean,
-  aim: Aim | null
+  aim: Aim | null,
+  since = -1
 ): {
   bandit: number
   own: number
   impacts: { x: number; y: number; z: number }[]
+  graze: { gap: number; ahead: number; above: number; right: number } | null
 } {
-  if (!core) return { bandit: 0, own: 0, impacts: [] }
+  if (!core) return { bandit: 0, own: 0, impacts: [], graze: null }
   const b = battle_input
   b[0] = dt
   b[1] = invulnerable ? 1 : 0
@@ -572,6 +589,7 @@ export function battle_fly(
     b[11] = aim.velocity?.y ?? 0
     b[12] = aim.velocity?.z ?? 0
   }
+  b[13] = since
   core.fly(battle_input_bytes, battle_output_bytes)
   const count = Math.min(battle_output[2] || 0, 8)
   const impacts: { x: number; y: number; z: number }[] = []
@@ -582,7 +600,21 @@ export function battle_fly(
       z: battle_output[5 + 3 * n],
     })
   }
-  return { bandit: battle_output[0], own: battle_output[1], impacts }
+  const gap = battle_output[GRAZED]
+  return {
+    bandit: battle_output[0],
+    own: battle_output[1],
+    impacts,
+    graze:
+      gap >= 0
+        ? {
+            gap,
+            ahead: battle_output[GRAZED + 1],
+            above: battle_output[GRAZED + 2],
+            right: battle_output[GRAZED + 3],
+          }
+        : null,
+  }
 }
 
 // battle_blast detonates a missile warhead at a world point against a target.
