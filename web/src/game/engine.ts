@@ -35,7 +35,9 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
+import { journal_notes } from './journal'
+import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
@@ -187,6 +189,8 @@ let weapons_rule=MULTIPLAYER?"guns":"open";      // the match's weapons CLASS (#
 if(MULTIPLAYER){ cfg.task="joust"; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome set the missiles rule and the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").replace(/"/g,"")==="1";   // tolerant of BOTH ?developer=1 and the ?developer="1" the router writes when it round-trips the flag through a navigation (search values are JSON-encoded)   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
+const BANDIT_STAGE=DEV_MODE?(parseInt((new URLSearchParams(location.search).get("stage")||"").replace(/"/g,""),10)||0):0;   // &stage=N (developer only): fly against the bandit brain's structural stage N before it is accepted (world/games/air tactics.stage; claude/plans/air-bot-arbiter.md Part II). Absent, or outside developer mode, the bandit is the brain as it stands
+const BANDIT_OMIT=DEV_MODE?(parseInt((new URLSearchParams(location.search).get("omit")||"").replace(/"/g,""),10)||0):0;   // &omit=M (developer only): stages left out of the stack under &stage, one bit per stage number - &stage=8&omit=128 flies truth and ends without hypotheses (world/games/air tactics.omit)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 const PANEL_POINT=DEV_MODE&&new URLSearchParams(location.search).get("panelpoint")==="1";   // cockpit clicks that miss the DDIs report the panel point hit (group-frame y,z on the dev HUD + clipboard) — feeds &radalt=y,z calibration
 const INDEXER_TEST=DEV_MODE?(new URLSearchParams(location.search).get("indexertest")||""):"";   // "1": force all three AoA lamps lit; "2": also depth-free draw-on-top — the render-vs-depth bisect
@@ -3281,7 +3285,7 @@ function launch_puff(x,y,z){ for(let i=0;i<6;i++){ const k=pool_spawn(smoke); if
 	smoke.r[k]=0.84; smoke.g[k]=0.84; smoke.b[k]=0.85; } }
 const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
-		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
+		burn:0,flew:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, broken lock, and a swallowed flare's fall point (the sight line carries no memory: seeker.ts)
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
 	if(st.group&&st.msl>0){ let rail=null;
@@ -3294,13 +3298,11 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
+	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.rate=undefined; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??target.burner??0,0,1);   // the ownship's plume lives in `burner` (#67): reading only `reheat` left the bandit's seeker blind to the player's afterburner, and its first live pair left the rail cold at 996 m against a lit reach of 2,500
-		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; if(DEV_MODE) m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
-	if(target){ const d=Math.hypot(target.pos.x-m.px,target.pos.y-m.py,target.pos.z-m.pz)||1;
-		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
+		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
 	return true; }
 const _v=new THREE.Vector3();
 const _launch_box=new THREE.Box3();
@@ -3460,9 +3462,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			if((bandit.reheat??0)>0.05) decoy*=0.5;   // the burner is the brightest thing in view (mirrors the server — the client never had this factor)
 			decoy*=Math.pow(0.5,m.rejected||0);   // diminishing returns, not independent coin flips: a jet dispensing continuously used to stack ten full rolls in front of one round (measured 2026-08-17: twelve 9Ms, seven seduced, none arriving) — a seeker that has resolved this target through four flares has demonstrated the discrimination the M's counter-countermeasures exist for
 			if(Math.random()>=decoy){ m.rejected=(m.rejected||0)+1; }
-			else { m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
-				const sx=m.lx-m.px, sy=m.ly-m.py, sz=m.lz-m.pz, sd=Math.hypot(sx,sy,sz)||1;   // the seeker is ON the flare now: re-reference the track, or the aim-point swap reads as an LOS-rate spike and breaks the lock at the seduction instant (mirrors the server)
-				m.sx=sx/sd; m.sy=sy/sd; m.sz=sz/sd; } }
+			else { m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false; } }   // the seeker is ON the flare now. No re-reference is needed at the swap: the sight-line rate has no memory (seeker.ts), so an aim-point jump cannot read as rotation
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
 	// Proximity fuse: independent of the seeker (a broken lock leaves the warhead
 	// live), judged at the closest approach within the step rather than the first
@@ -3521,37 +3521,32 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			m.loose=true;
 			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
 				if((rx*m.vx+ry*m.vy+rz*m.vz)/(rd*spd)>0.766 && Math.random()<0.55){
-					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1;
-					m.sx=rx/rd; m.sy=ry/rd; m.sz=rz/rd; } }
-			if(DEV_MODE&&m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
+					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1; } }
+			if(m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
-		const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dist=Math.hypot(dx,dy,dz)||1e-6;
-		const ux=dx/dist, uy=dy/dist, uz=dz/dist;
-		const axl=m.vx/spd, ayl=m.vy/spd, azl=m.vz/spd;
-		if(ux*axl+uy*ayl+uz*azl<(fox3?0.5:0.766)){ if(DEV_MODE&&!m.loose){ m.why="gimbal"; m.at=+dist.toFixed(0); } m.loose=true; }   // ±40° gimbal (the 120's own seeker gimbals wider, ±60)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		let rx=(ux-m.sx)/Math.max(dt,1e-6), ry=(uy-m.sy)/Math.max(dt,1e-6), rz=(uz-m.sz)/Math.max(dt,1e-6);
-		const along=rx*ux+ry*uy+rz*uz; rx-=along*ux; ry-=along*uy; rz-=along*uz;   // the rotation component of the LOS motion
-		const rate=Math.hypot(rx,ry,rz);
-		const paced=rate;   // the round steps in the same 1/60 s quanta as its target now (update_missiles), so the rate is the rate: the two-frame average that used to paper over the aliasing is gone with it
-		if(paced>(fox3?0.7:0.35)){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it (the radar round tracks harder, phase 1)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		m.sx=ux; m.sy=uy; m.sz=uz;
+		// The sight line, from seeker.ts: its rate is taken ANALYTICALLY from the relative
+		// velocity. It used to be the finite difference of the sight line between two
+		// missile steps - but step_world moves the aircraft for the whole render frame and
+		// only then sub-steps the missiles, so the first step of a frame saw the target's
+		// entire frame of motion and the second saw none. At 30 fps that doubled the rate
+		// on every frame, halved the seeker's real ceiling, and dropped locks the geometry
+		// never broke (recording 01a0b090: five of five, at 0.16-0.24 rad/s against 0.35).
+		const drift=tracking?{x:t.velx??t.fwd.x*t.speed, y:t.vely??t.fwd.y*t.speed, z:t.velz??t.fwd.z*t.speed}:{x:0,y:-45,z:0};   // the aim point's own motion: the target's, or a swallowed flare's fall
+		const sight=seeker_sight({x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},{x:ax,y:ay,z:az},drift);
+		const broke=seeker_break(sight,fox3?SEEKERS.radar:SEEKERS.heater);   // ±40° gimbal and a 20°/s track ceiling for the heater — beaming saturates it; the radar round gimbals wider and tracks harder
+		if(broke){ if(!m.loose){ m.why=broke; m.at=Math.round(sight.distance); m.rate=sight.rate; } m.loose=true; }   // recorded, not just logged: a debrief must be able to say WHY a lock went
 		if(!m.loose){
 			// PROPORTIONAL NAVIGATION: a = N·Vc·λ̇ — fly the collision course.
-			const tvx=tracking?(t.velx??t.fwd.x*t.speed):0, tvy=tracking?(t.vely??t.fwd.y*t.speed):0, tvz=tracking?(t.velz??t.fwd.z*t.speed):0;
-			const closing=Math.abs((tvx-m.vx)*ux+(tvy-m.vy)*uy+(tvz-m.vz)*uz);
-			let gx=rx*3.5*closing, gy=ry*3.5*closing, gz=rz*3.5*closing;
-			const limit=35*9.81*THREE.MathUtils.clamp(spd/600,0.15,1);
-			const pull=Math.hypot(gx,gy,gz);
-			if(pull>limit){ gx*=limit/pull; gy*=limit/pull; gz*=limit/pull; }
-			m.vx+=gx*dt; m.vy+=gy*dt; m.vz+=gz*dt;
+			const pull=seeker_steer(sight,spd);
+			m.vx+=pull.x*dt; m.vy+=pull.y*dt; m.vz+=pull.z*dt;
 			spd=Math.hypot(m.vx,m.vy,m.vz)||1;
-			const frac=Math.min(1,Math.hypot(gx,gy,gz)/(35*9.81));
+			const frac=Math.min(1,Math.hypot(pull.x,pull.y,pull.z)/(35*9.81));
 			const bleed=5e-5*spd*spd*(1+3*frac*frac);
 			const next=Math.max(spd-bleed*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next;
-			if(m.burn<=0 && tracking){ const ts=Math.hypot(tvx,tvy,tvz);
-				if(spd<ts+60 && closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
+			if(m.burn<=0 && tracking){ const ts=Math.hypot(drift.x,drift.y,drift.z);
+				if(spd<ts+60 && sight.closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
 		}
-	} else if(guided){ const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dd=Math.hypot(dx,dy,dz)||1; m.sx=dx/dd; m.sy=dy/dd; m.sz=dz/dd; }
+	}
 	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; const thrust=fox3?150:260;   // the 120's motor burns longer and gentler: ~1,200 m/s over 8 s against the 9M's ~780 over 3
 		m.vx+=m.vx/spd*thrust*dt; m.vy+=m.vy/spd*thrust*dt; m.vz+=m.vz/spd*thrust*dt; }
 	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
@@ -5286,6 +5281,11 @@ let sim_time=0;
 // hand, so a shipped replay does not show it.
 const recorder=new Recorder();
 let record_started=null;
+// bandit_notes drains the brain's decision journal into the recorder's channels.
+// DEV_MODE only, and only while a brain flies: the drain EMPTIES the journal, so
+// calling it anywhere else would steal entries from the recording.
+function bandit_notes(){ if(!DEV_MODE||!bandit_brain) return {};
+	const drained=bandit_journal(); return drained?journal_notes(drained):{}; }
 function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
 	const list=[];
@@ -5347,7 +5347,8 @@ function recording_sample(){
 				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
 					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
-					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}) },
+					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}),
+				...bandit_notes() },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
@@ -5375,6 +5376,7 @@ function recording_sample(){
 			name:heater?"AIM-9M":"AIM-120C", label:heater?"9M":"120C", colour:shooter===2?"Red":"Blue", kind:"Weapon+Missile",
 			round:{ shooter, target:m.enemy?1:(m.target?recorded(m.target):undefined), seeker,
 				...((m.least??1e9)<1e8?{least:m.least}:{}),
+				...(m.why?{reason:m.why,...(m.rate!==undefined?{rate:m.rate}:{})}:{}),   // WHY the lock went (gimbal / rate / flare / cold) and the sight-line rate the seeker measured on the step that broke it: 'loose' alone could not tell a beaten seeker from a defeated one
 				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,judged:m.judged,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
@@ -6476,7 +6478,7 @@ function fly_bandit(dt){
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL() });   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), stage: BANDIT_STAGE, omit: BANDIT_OMIT });   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
