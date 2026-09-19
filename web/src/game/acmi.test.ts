@@ -951,3 +951,55 @@ describe('a burst that misses is recorded, not just one that hits', () => {
     expect(mine[0]).toContain('Graze=4')
   })
 })
+
+// Why a lock broke (task: the seeker's frame-rate artefact). Seeker=loose says
+// THAT it went ballistic; without Reason a debrief cannot tell a seeker the
+// target out-turned from one that lost its own picture, which is how five
+// locks broken at half the real ceiling read as five ordinary misses.
+describe('a missile records why its lock broke', () => {
+  const round = (
+    seeker: string,
+    reason?: string,
+    rate?: number
+  ): Sample['objects'][number] => ({
+    id: 164,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'AIM-9M',
+    label: '9M',
+    colour: 'Red',
+    kind: 'Weapon+Missile',
+    round: { shooter: 2, target: 1, seeker, reason, rate },
+  })
+  const flown = (samples: Sample['objects'][number][]) =>
+    acmi(
+      samples.map((o, n) => ({ time: n * 0.1, objects: [o] })),
+      new Date(0),
+      't'
+    )
+      .split('\n')
+      .filter((l) => l.startsWith('a4,T='))
+
+  it('writes the reason and the rate the seeker measured, once', () => {
+    const mine = flown([
+      round('track'),
+      round('loose', 'rate', 0.4127),
+      round('loose', 'rate', 0.4127),
+    ])
+    expect(mine[0]).not.toContain('Reason=')
+    expect(mine[1]).toContain('Seeker=loose')
+    expect(mine[1]).toContain('Reason=rate')
+    expect(mine[1]).toContain('Rate=0.413')
+    expect(mine[2]).not.toContain('Reason=') // unchanged: suppressed
+  })
+
+  it('writes a reason with no rate for a cold launch', () => {
+    const mine = flown([round('loose', 'cold')])
+    expect(mine[0]).toContain('Reason=cold')
+    expect(mine[0]).not.toContain('Rate=')
+  })
+})

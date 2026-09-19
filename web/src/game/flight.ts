@@ -14,6 +14,7 @@ import flight_wasm_url from '../assets/flight.wasm?url'
 // construction — no manual version bumps, no cache:'reload'.
 import wasm_exec_url from '../assets/wasm_exec.js?url'
 import { asset } from './preload'
+import { journal_parse, type Journal } from './journal'
 import type { Fitment } from './stores'
 
 // Encoded state layout (float64 words).
@@ -144,6 +145,7 @@ interface Core {
   bandit_coast?(lean: number, state: Uint8Array): number
   racks?(index: number, mask: number): boolean
   bandit_mode?(): string
+  bandit_journal?(): string
 }
 
 declare global {
@@ -395,6 +397,8 @@ export function bandit_init(config: {
   missiles: boolean
   weapons?: string
   fuel?: number
+  stage?: number // the brain's structural stage under evaluation (developer only); 0 or absent = as it stands
+  omit?: number // stages left out of the stack beneath it, one bit per stage number (developer only)
 }): boolean {
   if (!core?.bandit_init) return false
   const error = core.bandit_init(JSON.stringify(config))
@@ -478,6 +482,13 @@ export function bandit_coast(lean: number): Float64Array | null {
 // for the flight recorder's developer-only doctrine channel (#212/#206).
 export function bandit_mode(): string {
   return core?.bandit_mode ? core.bandit_mode() : ''
+}
+
+// bandit_journal drains the brain's decision journal: what the arbiter weighed
+// at each re-plan, the forecast errors come due, the bypasses, and the g demand
+// stack. Developer recordings only. Null on an older core or when nothing flies.
+export function bandit_journal(): Journal | null {
+  return core?.bandit_journal ? journal_parse(core.bandit_journal()) : null
 }
 
 export function battle_hulk(
