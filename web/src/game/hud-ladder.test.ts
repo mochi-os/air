@@ -51,6 +51,21 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     }
   })
 
+  it('centres the limit, the cage and the boresight symbols on the nose in both first-person views', () => {
+    // The HUD view took the screen centre for the boresight, which is where the
+    // head looks, and the head holds where it is left: a look 12° up clamped a
+    // level flight path to the 10° ring and flashed it (#35).
+    const line = /const bore=[^\n]*;/.exec(source)?.[0] ?? ''
+    expect(line).toMatch(/^const bore=proj_dir\(ownship\.fwd\)\|\|\[cx,cy\];/)
+    const bore = new Function('glass', 'proj_dir', 'ownship', 'cx', 'cy', `${line} return bore;`) as (
+      glass: object | null, proj_dir: (d: string) => number[] | null, ownship: { fwd: string }, cx: number, cy: number) => number[]
+    const nose = (d: string) => (d === 'nose' ? [300, 500] : null)
+    expect(bore(null, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
+    expect(bore({}, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
+    expect(bore(null, () => null, { fwd: 'nose' }, 640, 380)).toEqual([640, 380])
+    expect(conformal).toMatch(/const limit=p=>\{ const dx=p\[0\]-bore\[0\], dy=p\[1\]-bore\[1\]/)
+  })
+
   it('references the ladder to the marker as drawn, limit included', () => {
     // On the unlimited flight path the ladder sat a crab angle's width to the
     // side of a marker held at its limit.
