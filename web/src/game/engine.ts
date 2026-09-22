@@ -50,6 +50,7 @@ import { oleo, flatten } from './oleo'
 import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
+import { blast_plan, Blasts } from './blast'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
@@ -3623,6 +3624,16 @@ const turn_probe={x:1,y:0,z:0,rate:0};   // developer readout: instantaneous tur
 let bandit_brain=false;   // SP joust bandit runs on the wasm brain (#125 phase 2); false = the legacy kinematic AI
 let bandit_acc=0;   // fixed-step accumulator for the brain (1/60 s frames, display-rate independent)
 let harm_pending=null;   // ?harm dev hook (#105): pending injection kind
+let blast_list=null, blasts=null;   // the &blast explosion scenario (blast.ts): the plan from the URL, and its pacing on this mission's clock
+// blast_fire sets off one of the scenario's bursts for real, ahead of the nose
+// and thirty degrees to the right, so it is seen through the canopy as well as
+// heard. A `death` is a heater fusing that close with the jet's own muffled
+// fireball over it, the two sounds a missile kill makes, with the jet unharmed:
+// explosion_at draws and sounds a burst, and damage is the battle model's alone.
+function blast_fire(b){ const turn=Math.PI/6, c=Math.cos(turn), s=Math.sin(turn);
+	const dx=ownship.fwd.x*c+ownship.right.x*s, dy=ownship.fwd.y*c+ownship.right.y*s, dz=ownship.fwd.z*c+ownship.right.z*s;
+	explosion_at(ownship.pos.x+dx*b.distance,ownship.pos.y+dy*b.distance,ownship.pos.z+dz*b.distance);
+	if(b.death) explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); }
 let sweep_pending=null;   // ?sweep dev hook (#105): rig entry name to sweep once the model resolves
 function apply_harm(kind){ const words=flight_get(); if(!words) return;
 	if(kind==="wing"){ for(let i=4;i<8;i++) words[STATE.element+i]=1; }   // left wing outboard: the asymmetry rolls the jet
@@ -6296,6 +6307,7 @@ function fly_player(dt){
 	carriage_update(dt); falling_update(dt);
 	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
 		if(harm_pending&&battle_tick>2){ apply_harm(harm_pending); harm_pending=null; }   // frame-gated: headless captures render only a handful of frames
+		if(blast_list){ if(!blasts) blasts=new Blasts(blast_list,sim_time+3); const b=blasts.due(sim_time); if(b) blast_fire(b); }   // &blast: the first burst three seconds into the flight, then each after the last report has landed
 		if(livery_pending&&model_active){ apply_livery(ownship.group,livery_pending); apply_livery(bandit.group,livery_pending==="red"?"blue":"red"); livery_pending=null; }
 		if(sweep_pending&&ownship.group.userData.rig){ const i=ownship.group.userData.rig.findIndex(r=>r.name===sweep_pending);
 			if(i>=0){ rig_sweep=i+1; } sweep_pending=null; }
@@ -7303,7 +7315,8 @@ function draw_hud(){
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
 		const whole=Math.max(0,Math.floor(sim_time));
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
-		hctx.fillText(String(Math.floor(whole/60))+":"+String(whole%60).padStart(2,"0")+" · ω "+turn_probe.rate.toFixed(1)+"°/s", 14, 46); }   // mission clock · instantaneous turn rate (EM validation, #131) (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
+		hctx.fillText(String(Math.floor(whole/60))+":"+String(whole%60).padStart(2,"0")+" · ω "+turn_probe.rate.toFixed(1)+"°/s", 14, 46);   // mission clock · instantaneous turn rate (EM validation, #131) (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
+		if(blasts) hctx.fillText(blasts.label(sim_time), 14, 82); }   // the &blast scenario: which burst, and when its report lands
 	if(DEV_MODE && carrier_model){   // developer mode: the deck measuring cursor and the &probe raycast. The nose-wheel readout and the dashed view centreline were deck-alignment scaffolding and are gone — Ctrl+C still copies the position
 		if(dev_probe && performance.now()-dev_probe_t>1000){ dev_probe_t=performance.now();
 			const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(dev_probe.x*2-1, -(dev_probe.y*2-1)), camera);
@@ -8436,6 +8449,7 @@ function start_mission(){
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
+	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)

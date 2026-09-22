@@ -1032,19 +1032,42 @@ export const BLAST_REACH = 5000
 // and twenty times its length, so a heater fusing 9 m off the canopy arrived
 // as a rumble with a tick on the front, and the pilot it killed reported a
 // crash with no crack (recording 01a0c91b, 2026-09-22). Kilograms of high
-// explosive at nine metres is an impulse first: the crack now carries the
-// buffer's energy and its peak, a thump follows it through the structure, and
-// the rumble is the tail. A distant burst is untouched by this: the play-time
-// lowpass closes to 180 Hz past 150 m and leaves only the rumble either way.
-export function blast_shape(d: Float32Array, rate: number): void {
+// explosive at nine metres is an impulse first: the crack carries the
+// buffer's energy and its peak, and a thump follows it through the structure.
+// The rumble stays at 3.2 because it is all a distant burst is made of: the
+// play-time lowpass closes toward 180 Hz past 150 m and removes the crack, so
+// cutting the rumble to make room for the crack made every far burst about
+// 3 dB quieter on a small speaker. The crack and thump are sized to leave the
+// peak inside the headroom with the rumble at full strength. `random` is the
+// noise source, so a test can draw the same buffer twice.
+export function blast_shape(
+  d: Float32Array,
+  rate: number,
+  random: () => number = Math.random
+): void {
   let last = 0
   for (let i = 0; i < d.length; i++) {
-    const white = Math.random() * 2 - 1
-    if (i < rate * 0.08) d[i] += white * decay(i, rate, 0.03) * 1.6
-    d[i] += Math.sin((i / rate) * 2 * Math.PI * 60) * decay(i, rate, 0.12) * 0.7
+    const white = random() * 2 - 1
+    if (i < rate * 0.08) d[i] += white * decay(i, rate, 0.03) * 1.45
+    d[i] += Math.sin((i / rate) * 2 * Math.PI * 60) * decay(i, rate, 0.12) * 0.5
     last = (last + 0.03 * white) / 1.03
-    d[i] += last * 2.0 * decay(i, rate, 0.7)
+    d[i] += last * 3.2 * decay(i, rate, 0.7)
   }
+}
+
+// blast_level is the gain a burst at `distance` plays at. Pressure falls as
+// 1/r from the near field, over a floor that keeps a far burst audible, faded
+// to nothing at BLAST_REACH so the gate is a horizon rather than a wall. The
+// near field is held at NEAR: a close burst at that level already peaks at the
+// limiter (the buffer's 2.3 x 1.4 x the 0.33 headroom, panned), so a louder
+// close burst would only be squashed. The floor was 0.1, and a pilot listening
+// on headphones found the far bursts too quiet: 0.3 lifts a burst 600 m off by
+// 3.4 dB and one 3 km off by 6.9 dB, and leaves everything inside 150 m as it was.
+export const NEAR = 1.4
+export function blast_level(distance: number): number {
+  const near = 150 / Math.max(distance, 150)
+  const fade = Math.max(0, Math.min(1, 1 - distance / BLAST_REACH))
+  return Math.min(NEAR, (0.3 + 1.3 * near) * fade)
 }
 
 export function audio_explosion(
@@ -1060,16 +1083,12 @@ export function audio_explosion(
   // almost every burst is further out than that, so the cue effectively never
   // fired. It also fell off a cliff: 0.4 at 699 m, nothing at 701.
   if (distance > BLAST_REACH) return
-  // Pressure falls as 1/r, anchored at the near field so #66's close-in tuning
-  // is untouched, and faded to nothing at the edge so the gate is a horizon
-  // rather than a wall.
-  const near = 150 / Math.max(distance, 150)
   const fade = Math.max(0, Math.min(1, 1 - distance / BLAST_REACH))
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
   // toward the raw buffer inside 150 m. Beyond it the air itself eats the highs,
   // so a distant burst arrives as a rumble, not a quiet crack.
   const crack = muffled ? 0 : Math.max(0, Math.min(1, 1 - distance / 150))
-  const level = (0.1 + 1.3 * near) * fade
+  const level = blast_level(distance)
   const cutoff = 180 + 7800 * crack + 1200 * fade * fade
   if (x !== undefined)
     playAt('explosion', level, x, y as number, z as number, cutoff, distance / 343)
