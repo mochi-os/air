@@ -44,6 +44,13 @@ interface Round {
   target?: number // recorded id of the target it was fired at, if any
   seeker: string // guidance state: track / loose (lock broken, ballistic) / lure (seduced by a flare) / midcourse / active / pitbull
   least?: number // closest approach to the target so far, metres (per-frame sampled)
+  // Why the lock broke, once it has: 'gimbal' (past the seeker's cone), 'rate'
+  // (the sight line turned faster than it can track), 'flare' (seduced and not
+  // recovered) or 'cold' (launched without acquisition). Seeker says THAT it is
+  // loose; only this says whether the target beat it. With rate, the sight-line
+  // rate the seeker measured on the breaking step, rad/s.
+  reason?: string
+  rate?: number
   burst?: number // the fuse's CONTINUOUS closest approach, metres — written with the fate (#58)
   closure?: number // relative speed at detonation, m/s
   when?: number // exact sim time of the fuse, s (the frame grid is ~9 Hz)
@@ -87,6 +94,26 @@ interface Flight {
   // heater / radar SHOOT states, the breakaway X, or empty).
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
+  // This burst's closest MISS: how far the nearest round passed from the
+  // target's skin, and which way it went by, in the TARGET's body frame. The
+  // gun's answer to a missile's least and off. Struck counts what connected,
+  // so a burst that hits is fully described; without these a burst that misses
+  // says nothing at all, and a debrief can only reconstruct it from the tracks
+  // against the body ORIGIN, which on a 17 m airframe seen end-on is the wrong
+  // body. Shipped, not developer-only: "why did I miss" sits with fuel and
+  // rounds, not with the control-law channels.
+  graze?: number // metres from the skin, 0 for a graze
+  miss?: { ahead: number; above: number; right: number }
+  // The bandit's decision journal (journal.ts), developer recordings only:
+  // what the arbiter weighed at each re-plan, how far its forecasts landed from
+  // the truth, the reflexes that pre-empted it, and the g it asked for at each
+  // stage between the play and the stick. The first three are EVENTS - each
+  // value opens with the brain's tick, so no two are alike and the delta
+  // encoding below emits every one.
+  decision?: string
+  forecast?: string
+  bypass?: string
+  demand?: string
   // Countermeasures: the ownship's flare and chaff INVENTORIES (a dispense is
   // a step); the bandit records a cumulative flare dispense COUNT instead —
   // same shape, same information (its steps are the dispenses). Both carry a
@@ -320,6 +347,8 @@ export function acmi(
   const armed = new Map<number, number>() // last written missiles count, per object
   const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
   const cued = new Map<number, string>() // last written cue, per object
+  const grazed = new Map<number, number>() // last written burst miss, per object
+  const journalled = new Map<string, string>() // last written decision-journal value, per object and channel
   const countered = new Map<number, number>() // last written flares, per object
   const bloomed = new Map<number, number>() // last written chaff, per object
   const sensed_last = new Map<number, string>() // last written sensor group, per object
@@ -405,6 +434,30 @@ export function acmi(
           cued.set(o.id, d.cue)
           line += `,Cue=${field(d.cue)}`
         }
+        // The burst's miss. Written whenever it improves within a burst and
+        // once more when it clears, so the value standing at any sample is
+        // this burst's best and a reader is never handed the last burst's.
+        if (d.graze !== undefined && grazed.get(o.id) !== d.graze) {
+          grazed.set(o.id, d.graze)
+          line += `,Graze=${round(d.graze, 1)}`
+          if (d.miss)
+            line += `,Miss=${round(d.miss.ahead, 1)}|${round(d.miss.above, 1)}|${round(d.miss.right, 1)}`
+        } else if (d.graze === undefined && grazed.has(o.id)) {
+          grazed.delete(o.id)
+          line += `,Graze=` // the burst is over: an empty field, as the cue channel does it
+        }
+        for (const [channel, value] of [
+          ['Decision', d.decision],
+          ['Forecast', d.forecast],
+          ['Bypass', d.bypass],
+          ['Demand', d.demand],
+        ] as const) {
+          if (value === undefined) continue
+          const key = `${o.id}:${channel}`
+          if (journalled.get(key) === value) continue
+          journalled.set(key, value)
+          line += `,${channel}=${field(value)}`
+        }
         if (d.flares !== undefined && countered.get(o.id) !== d.flares) {
           countered.set(o.id, d.flares)
           line += `,Flares=${Math.round(d.flares)}`
@@ -445,6 +498,10 @@ export function acmi(
       if (r) {
         let guide = `,Seeker=${field(r.seeker)}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
+        if (r.reason) {
+          guide += `,Reason=${field(r.reason)}`
+          if (r.rate !== undefined) guide += `,Rate=${round(r.rate, 3)}`
+        }
         if (r.fate !== undefined)
           guide += `,Fate=${field(r.fate)},Killed=${r.killed ? 1 : 0}`
         if (r.burst !== undefined) {
