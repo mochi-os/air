@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { useFormat } from '@mochi/web'
 import {
   Dialog,
@@ -15,9 +15,18 @@ import { Label } from '@mochi/web/components/ui/label'
 import { Slider } from '@mochi/web/components/ui/slider'
 import { Switch } from '@mochi/web/components/ui/switch'
 
-export function SectionLabel({ children }: { children: ReactNode }) {
+export function SectionLabel({
+  id,
+  children,
+}: {
+  id?: string
+  children: ReactNode
+}) {
   return (
-    <div className='text-muted-foreground mt-4 mb-2 text-xs font-medium tracking-wide uppercase first:mt-0'>
+    <div
+      id={id}
+      className='text-muted-foreground mt-4 mb-2 text-xs font-medium tracking-wide uppercase first:mt-0'
+    >
       {children}
     </div>
   )
@@ -50,6 +59,7 @@ export function SliderRow({
   // "1,5x" for a French or German pilot like every other number in the menu.
   const { formatNumber } = useFormat()
   const display = formatNumber(value, decimals) + (suffix ?? '')
+  const labelId = useId()
   return (
     <div
       className={[
@@ -58,7 +68,9 @@ export function SliderRow({
       ].join(' ')}
     >
       <div className='flex items-center justify-between text-sm'>
-        <Label className='text-card-foreground font-medium'>{label}</Label>
+        <Label id={labelId} className='text-card-foreground font-medium'>
+          {label}
+        </Label>
         <span
           className='text-foreground bg-muted border-border rounded border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
           style={{ fontFamily: 'var(--air-mono)' }}
@@ -67,12 +79,13 @@ export function SliderRow({
         </span>
       </div>
       <Slider
-        value={value}
+        aria-labelledby={labelId}
+        value={[value]}
         min={min}
         max={max}
         step={step}
         disabled={disabled}
-        onChange={(e) => onChange(parseFloat(e.currentTarget.value))}
+        onValueChange={([v]) => onChange(v)}
       />
     </div>
   )
