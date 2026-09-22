@@ -596,6 +596,12 @@ export function caution_shape(d: Float32Array, r: number): void {
 }
 
 // bake pre-renders every one-shot into a named buffer.
+// decay is the exponential envelope every baked shot is shaped with: sample i
+// at `rate`, falling to 1/e after t seconds.
+function decay(i: number, rate: number, t: number): number {
+  return Math.exp(-i / (rate * t))
+}
+
 async function bake(): Promise<void> {
   const c = context as AudioContext
   const render = async (
@@ -611,9 +617,6 @@ async function bake(): Promise<void> {
     fill(buffer.getChannelData(0), offline.sampleRate)
     return buffer
   }
-  const decay = (i: number, rate: number, t: number) =>
-    Math.exp(-i / (rate * t))
-
   // M61 burr: 100 rounds/s — each round a 3 ms crack over a 140 Hz thump.
   // The M61 from inside: at 6,000 rpm the repetition fuses into one deep
   // tearing roar felt through the airframe — a 100 Hz pulse comb over heavy
@@ -657,16 +660,9 @@ async function bake(): Promise<void> {
     for (let i = 0; i < r * 0.01; i++)
       d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.004) * 0.8
   })
-  // Explosion: crack into a long low rumble (distance shaping at play time).
-  shots.explosion = await render(2.2, (d, r) => {
-    let last = 0
-    for (let i = 0; i < d.length; i++) {
-      const white = Math.random() * 2 - 1
-      if (i < r * 0.03) d[i] += white * decay(i, r, 0.012) * 1.2
-      last = (last + 0.03 * white) / 1.03
-      d[i] += last * 3.2 * decay(i, r, 0.7)
-    }
-  })
+  // Explosion: a crack and a thump into a long low rumble; shaped in
+  // blast_shape, beside the cue that plays it (distance shaping at play time).
+  shots.explosion = await render(2.2, blast_shape)
   // Missile away: a bandpass whoosh sweeping down with a rumble tail.
   shots.launch = await render(1.4, (d, r) => {
     let last = 0
@@ -1031,11 +1027,32 @@ export function audio_hit(count: number): void {
 // is the conservative end of honest for a missile warhead, and past it the
 // report is lost under the engine anyway.
 export const BLAST_REACH = 5000
+// The warhead itself. This opened on 30 ms of noise at 1.2 over a low rumble
+// at 3.2 decaying across 0.7 s: by energy the rumble was six times the crack
+// and twenty times its length, so a heater fusing 9 m off the canopy arrived
+// as a rumble with a tick on the front, and the pilot it killed reported a
+// crash with no crack (recording 01a0c91b, 2026-09-22). Kilograms of high
+// explosive at nine metres is an impulse first: the crack now carries the
+// buffer's energy and its peak, a thump follows it through the structure, and
+// the rumble is the tail. A distant burst is untouched by this: the play-time
+// lowpass closes to 180 Hz past 150 m and leaves only the rumble either way.
+export function blast_shape(d: Float32Array, rate: number): void {
+  let last = 0
+  for (let i = 0; i < d.length; i++) {
+    const white = Math.random() * 2 - 1
+    if (i < rate * 0.08) d[i] += white * decay(i, rate, 0.03) * 1.6
+    d[i] += Math.sin((i / rate) * 2 * Math.PI * 60) * decay(i, rate, 0.12) * 0.7
+    last = (last + 0.03 * white) / 1.03
+    d[i] += last * 2.0 * decay(i, rate, 0.7)
+  }
+}
+
 export function audio_explosion(
   distance: number,
   x?: number,
   y?: number,
-  z?: number
+  z?: number,
+  muffled = false // the jet's own fireball: the burst that killed it has already cracked, and a crash is felt, not heard sharp
 ): void {
   // #192: a pilot who had fought for weeks had never heard one. The chain was
   // intact; the reach was the defect. A warhead this size carries for miles in
@@ -1051,7 +1068,7 @@ export function audio_explosion(
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
   // toward the raw buffer inside 150 m. Beyond it the air itself eats the highs,
   // so a distant burst arrives as a rumble, not a quiet crack.
-  const crack = Math.max(0, Math.min(1, 1 - distance / 150))
+  const crack = muffled ? 0 : Math.max(0, Math.min(1, 1 - distance / 150))
   const level = (0.1 + 1.3 * near) * fade
   const cutoff = 180 + 7800 * crack + 1200 * fade * fade
   if (x !== undefined)

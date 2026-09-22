@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   acmi,
@@ -13,6 +15,17 @@ import {
   stamp,
   channels,
 } from './acmi'
+
+// engine.ts cannot be imported (WebGL at module scope): the recorder's engine
+// half is read from its source, and lift cuts one top-level function out of it.
+const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+function lift(name: string): string {
+  const start = source.indexOf(`function ${name}(`)
+  expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+  const rest = source.slice(start)
+  const end = /\n(?=\S)/.exec(rest.slice(1))
+  return end ? rest.slice(0, end.index + 1) : rest
+}
 
 const jet = (over: Partial<Recorded> = {}): Recorded => ({
   id: 1,
@@ -642,6 +655,8 @@ describe('stamp', () => {
     mode: 'joust',
     duel: 'bvr',
     bandit: 'superhuman',
+    stage: 6,
+    omit: 0,
     weapons: 'fox2',
     start: 'air',
     clouds: 'none',
@@ -701,6 +716,20 @@ describe('stamp', () => {
     expect(match.bandit).toBe('superhuman')
     expect(match.multiplayer).toBe(0)
     expect(match.world).toBe('') // a single-player flight has no server, whatever the menu last held
+  })
+
+  it('names the brain the bandit flew: its stage always, the omitted stages only when there are any', () => {
+    expect(stamp(fight).match.stage).toBe('6')
+    expect(stamp(fight).match.omit).toBe('') // acmi() drops an empty field
+    expect(stamp({ ...fight, stage: 0 }).match.stage).toBe('0') // the brain as it stands, said rather than left to be assumed
+    expect(stamp({ ...fight, stage: 8, omit: 128 }).match.omit).toBe('128')
+    const other = stamp({ ...fight, multiplayer: true, mode: 'furball', stage: 6, omit: 128 }).match
+    expect(other.stage).toBe('') // a multiplayer match has no bandit brain to name
+    expect(other.omit).toBe('')
+    expect(stamp({ ...fight, mode: 'free' }).match.stage).toBe('')
+    // and the engine hands the stamp the stage it armed the bandit with
+    expect(lift('recording_file')).toMatch(/bandit:cfg\.bandit\|\|"", stage:BANDIT_STAGE, omit:BANDIT_OMIT,/)
+    expect(source).toMatch(/stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
   })
 
   it('names a multiplayer match by the mode the SERVER says it is', () => {
@@ -1001,5 +1030,75 @@ describe('a missile records why its lock broke', () => {
     const mine = flown([round('loose', 'cold')])
     expect(mine[0]).toContain('Reason=cold')
     expect(mine[0]).not.toContain('Rate=')
+  })
+})
+
+// The recorder says in advance whether it will keep a sample, so a caller that
+// drains something to build one (the bandit's decision journal) drains only
+// on a frame that is kept. Before this, recording_sample() built every frame
+// and the recorder kept one in eight: the journal lost the other seven.
+it('a sample is due once per interval, and add keeps exactly the due ones', () => {
+  const recorder = new Recorder(0, 8)
+  expect(recorder.due(0)).toBe(true)
+  recorder.add(0, [])
+  expect(recorder.due(0.05)).toBe(false)
+  expect(recorder.due(0.1)).toBe(false)
+  expect(recorder.due(0.125)).toBe(true)
+  recorder.add(0.05, [])
+  recorder.add(0.1, [])
+  expect(recorder.length).toBe(1)
+  recorder.add(0.125, [])
+  expect(recorder.length).toBe(2)
+  expect(recorder.due(0.2)).toBe(false)
+  expect(recorder.due(0.25)).toBe(true)
+})
+
+// The ownship's death in the recording. The core is not stepped through the
+// crash and crash_ownship hides the jet and zeroes its speed, so a recorder
+// that kept sampling it wrote the same still airframe at 0 kt for three
+// seconds, which the debrief read as the pilot's slowest moment. It is written
+// once, on the first kept sample after the death, and not again that life.
+describe("the ownship's death in the recording", () => {
+  // A stand-in for the two globals own_record reads, driven as the engine
+  // drives them: crash_ownship starts a death, a respawn ends it.
+  const life = () =>
+    new Function(
+      `let crash_t=0, own_written=false;\n${lift('own_record')}\nreturn { record:own_record, crash:()=>{ crash_t=3; own_written=false }, respawn:()=>{ crash_t=0 } };`
+    )() as { record(due: boolean): string; crash(): void; respawn(): void }
+
+  it('writes a flying jet every sample, its death once, and nothing after', () => {
+    const own = life()
+    expect([own.record(true), own.record(false)]).toEqual(['alive', 'alive'])
+    own.crash()
+    // Samples the recorder will drop do not count: the death is written on the first KEPT one.
+    expect([own.record(false), own.record(false), own.record(true)]).toEqual(['death', 'death', 'death'])
+    expect([own.record(true), own.record(false), own.record(true)]).toEqual(['gone', 'gone', 'gone'])
+    own.respawn()
+    expect(own.record(true)).toBe('alive')
+    own.crash()
+    expect([own.record(true), own.record(true)]).toEqual(['death', 'gone']) // a second life's death is written too
+  })
+
+  it('is wired where the engine samples and where the jet dies', () => {
+    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
+    const sample = lift('recording_sample')
+    expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tconst own=own_record\(due\);/)
+    expect(sample).toMatch(/tas:own==="death"\?undefined:\(ownship\.speed\|\|0\)/)
+    expect(sample).toMatch(/\n\tif\(own!=="gone"\) add\(ownship,1,/)
+  })
+
+  it('leaves the zeroed speed out of the death sample, so the file keeps the last true reading', () => {
+    const text = acmi(
+      [
+        { time: 0, objects: [jet({ data: { tas: 120 } })] },
+        { time: 0.125, objects: [jet({ data: { fate: 'missile' } })] },
+      ],
+      new Date(0),
+      't'
+    )
+    const lines = text.split('\n').filter((l) => l.startsWith('1,'))
+    expect(lines[0]).toContain('TAS=120')
+    expect(lines[1]).toContain('Fate=missile')
+    expect(lines[1]).not.toContain('TAS=')
   })
 })

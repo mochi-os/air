@@ -3615,6 +3615,10 @@ let battle_tick=0, battle_reset=true, battle_rigged=false;
 let graze=null, firing=false, burst_tick=-1;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
+// merge (SP): the 3/9 crossing opens the hold, once. Two witnesses call it - the
+// client's own check and the wasm brain, whose arena holds its gun and missiles
+// by the same rule - so the player's trigger and the bandit's open together.
+function merge(){ if(!weapons_hold) return; weapons_hold=false; notice(translate("FIGHT'S ON")); }
 const turn_probe={x:1,y:0,z:0,rate:0};   // developer readout: instantaneous turn rate — the angular rate of the VELOCITY vector (the BFM number), EMA-smoothed
 let bandit_brain=false;   // SP joust bandit runs on the wasm brain (#125 phase 2); false = the legacy kinematic AI
 let bandit_acc=0;   // fixed-step accumulator for the brain (1/60 s frames, display-rate independent)
@@ -5288,6 +5292,8 @@ function bandit_notes(){ if(!DEV_MODE||!bandit_brain) return {};
 	const drained=bandit_journal(); return drained?journal_notes(drained):{}; }
 function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
+	const due=recorder.due(sim_time);   // the bandit's journal is DRAINED to build the sample: only on a frame the recorder will keep, or the entries go with the dropped frame (they did, seven in eight)
+	const own=own_record(due);
 	const list=[];
 	const degrees=(v)=>v*180/Math.PI;
 	// Only the OWNSHIP carries a full basis; make_state gives the legacy bandit
@@ -5316,7 +5322,7 @@ function recording_sample(){
 	// "what did that fight cost me" is a debrief question every pilot asks, and
 	// without them the answer was unrecoverable once the mission ended. Fuel is
 	// kg straight from the state (the gauge is what multiplies to pounds).
-	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:ownship.speed||0,
+	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:(ownship.speed||0),   // the death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		missiles:(ownship.msl|0)+Math.max(0,ownship.amraam|0), cue:hud_cue,   // stores and the HUD's advice (#33 debrief)
@@ -5332,7 +5338,7 @@ function recording_sample(){
 		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R, lateral:last_controls?last_controls.roll:0 }:{}) }:undefined;
-	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
+	if(own!=="gone") add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
@@ -5348,7 +5354,7 @@ function recording_sample(){
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
 					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}),
-				...bandit_notes() },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
+				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
@@ -5392,7 +5398,7 @@ function recording_file(){
 	const armed=missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns";
 	const {kind,match}=stamp({ multiplayer:MULTIPLAYER,
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
-		duel:cfg.duel||"", bandit:cfg.bandit||"", weapons:armed,
+		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
 		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(),
 		...(()=>{ const pad=read_gamepad();   // the device as the browser reports it NOW, at the moment the recording is rendered
@@ -5417,6 +5423,14 @@ function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.thrott
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
 const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
+let own_written=false;   // this death is in the recording: the ownship's last sample, carrying its Fate and killer, has been kept
+// own_record says how the ownship enters a recording sample the recorder will
+// keep when `due`: every sample while it flies; once after it dies, the first
+// kept sample, which carries the Fate and the killer; and never again that
+// life. The core is not stepped through the crash and crash_ownship hides the
+// jet and zeroes its speed, so every later sample was the same still airframe
+// at 0 kt, read back as the pilot's slowest moment and counted into every share.
+function own_record(due){ if(crash_t<=0) return "alive"; if(own_written) return "gone"; if(due) own_written=true; return "death"; }
 let own_killer="";   // who ended this life, for the banner: the bandit in single player, the crediting player's name in multiplayer, empty when nobody is credited
 let mission_done=false;   // SP: the crash ended the mission — the world holds and the menu owns what happens next (#240)
 let mission_zero=0;       // sim_time at mission start, for the outcome line's clock
@@ -5737,7 +5751,7 @@ function update_transient_fx(dt){
 	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
 	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
-	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z),x,y,z);   // the burst arrives from its direction (#88 audit)
+	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z),x,y,z,kind==="own");   // the burst arrives from its direction (#88 audit); the jet's own fireball is muffled - the burst that killed it has already cracked
 	const water=kind==="water"||(kind===undefined&&y<2); transient_blast(x,y,z,water);
 	// Two stages (#239): a fast-swelling fireball sooting into a slower dark
 	// cloud, plus shed wreckage on its own ballistic arcs. With the flipbook
@@ -5785,13 +5799,13 @@ function soot_burst(x,y,z){
 		smoke.sz[k]=0.3+Math.random()*0.4; smoke.gr[k]=0.45+Math.random()*0.35;   // a drifting smudge in mixed tones and sizes, not a synchronized cauliflower
 		const tone=0.10+Math.random()*0.12;
 		smoke.r[k]=tone*1.1; smoke.g[k]=tone; smoke.b[k]=tone*0.95; } }
-function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0;
+function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_written=false;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
-	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
+	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
 function stance_of(kind){ const spec=AIRCRAFT_MODELS[kind||own_aircraft()]; return (spec&&spec.stance)||GEAR; }   // #203: the resting height the DRAWN model of THIS aircraft needs. GEAR is a single global 11 cm shallower than the hornet's own stance, so wherever it governed a resting height it pulled the origin below what the model needs - four times the rest-pose margin. It survives only as the fallback for an aircraft that declares no stance
@@ -6245,7 +6259,9 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 }
 function fly_player(dt){
 	if(net_waiting){ hud_message(translate("WAITING FOR OPPONENT")); return; }   // joust waiting room: frozen at the ring, no sim, until the server's match-start respawn
-	if(crash_t>0||mission_done){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
+	if(crash_t>0||mission_done){
+		if(crash_t>0) recording_sample();   // the core is not stepped through the crash, so this is the only sampling left: without it the ownship's Fate, its killer and the fatal hits were never written - not one recording of the player's own death carried them
+		if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
 		// Single player: the crash ends the mission (#240), every task included; the
 		// menu owns what happens next.
 		if(!mission_done){ crash_t-=dt;
@@ -6315,7 +6331,7 @@ function fly_player(dt){
 		const rx=bandit.pos.x-ownship.pos.x, ry=bandit.pos.y-ownship.pos.y, rz=bandit.pos.z-ownship.pos.z;
 		const ownBehind=-(rx*bandit.fwd.x+ry*bandit.fwd.y+rz*bandit.fwd.z)< -5;   // own position in the bandit's frame: -rel·fwd
 		const banditBehind=(rx*ownship.fwd.x+ry*ownship.fwd.y+rz*ownship.fwd.z)< -5;
-		if(ownBehind||banditBehind){ weapons_hold=false; notice(translate("FIGHT'S ON")); } }
+		if(ownBehind||banditBehind) merge(); }
 	if(hit_flash>0) hit_flash=Math.max(0,hit_flash-dt*2.2);
 	{ // audio (#73): continuous voices track the core; edges fire one-shots
 		const harmL=last_out?last_out[STATE.engine_harm]:0, harmR=last_out?last_out[STATE.engine_harm+1]:0;
@@ -6478,7 +6494,7 @@ function fly_bandit(dt){
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), stage: BANDIT_STAGE, omit: BANDIT_OMIT });   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold });   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
@@ -6492,9 +6508,10 @@ function fly_bandit(dt){
 		bandit_acc+=Math.max(0,dt); let count=Math.floor(bandit_acc*60);
 		if(count>8){ count=8; bandit_acc=0; }   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 		else bandit_acc-=count/60;
-		let step=null, pulled=false, popped=false, loosed=false, heated=false, bloomed=false;
-		for(let s=0;s<count;s++){ const one=bandit_step(bandit.rounds|0); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; heated=heated||one.heater; bloomed=bloomed||one.chaff; }
+		let step=null, pulled=false, popped=false, loosed=false, heated=false, bloomed=false, freed=false;
+		for(let s=0;s<count;s++){ const one=bandit_step(bandit.rounds|0); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; heated=heated||one.heater; bloomed=bloomed||one.chaff; freed=freed||one.free; }
 		if(step){
+			if(freed) merge();   // the brain saw the crossing: open the client's hold BEFORE its rounds are flown, so none is ever refused
 			const w=step.state; step.fire=pulled; step.flare=popped; step.chaff=bloomed;
 			bandit_radar=step.emitter; bandit_locked=step.locked;   // the brain's real radar state (#33): the RWR and the round's datalink read truth
 			bandit_words=w;   // the brain bandit's full model tail, for the recorder's telemetry channels (#33 debrief)
