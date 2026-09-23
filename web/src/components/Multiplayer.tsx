@@ -10,20 +10,20 @@ import { useCallback, useEffect, useId, useState } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { getErrorMessage } from '@mochi/web'
 import { Button } from '@mochi/web/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@mochi/web/components/ui/dialog'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
 import {
   RadioGroup,
   RadioGroupItem,
 } from '@mochi/web/components/ui/radio-group'
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from '@mochi/web/components/ui/responsive-dialog'
 import { Switch } from '@mochi/web/components/ui/switch'
 import { LogIn, Plus, RefreshCw, type LucideIcon, X } from 'lucide-react'
 import {
@@ -388,23 +388,23 @@ export function Multiplayer({
     // their content, and the match list takes whatever is left and scrolls —
     // so the panel fills the server page instead of stacking at the top.
     <div className='flex h-full flex-col gap-4'>
-      <Dialog
+      <ResponsiveDialog
         open={!!redirect}
         onOpenChange={(open) => !open && setRedirect(null)}
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
+        <ResponsiveDialogContent>
+          <ResponsiveDialogHeader>
+            <ResponsiveDialogTitle>
               <Trans>Different game host</Trans>
-            </DialogTitle>
-            <DialogDescription>
+            </ResponsiveDialogTitle>
+            <ResponsiveDialogDescription>
               <Trans>
                 This lobby is sending your game connection to a different host (
                 {redirectHost}). Only continue if you trust this server.
               </Trans>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+            </ResponsiveDialogDescription>
+          </ResponsiveDialogHeader>
+          <ResponsiveDialogFooter>
             <Button variant='outline' onClick={() => setRedirect(null)}>
               <Trans>Cancel</Trans>
             </Button>
@@ -417,22 +417,22 @@ export function Multiplayer({
               <LogIn className='size-4' />
               <Trans>Continue</Trans>
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </ResponsiveDialogFooter>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
       {loadout && (
-        <Dialog
+        <ResponsiveDialog
           open={!!pending}
           onOpenChange={(open) => !open && setPending(null)}
         >
-          <DialogContent className='max-h-[85vh] overflow-y-auto sm:max-w-md'>
-            <DialogHeader>
-              <DialogTitle>
+          <ResponsiveDialogContent className='max-h-[85vh] overflow-y-auto sm:max-w-md'>
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>
                 <Trans>Loadout</Trans>
-              </DialogTitle>
-            </DialogHeader>
+              </ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
             {loadout}
-            <DialogFooter>
+            <ResponsiveDialogFooter>
               <Button variant='outline' onClick={() => setPending(null)}>
                 <Trans>Cancel</Trans>
               </Button>
@@ -449,9 +449,9 @@ export function Multiplayer({
                   </>
                 )}
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </ResponsiveDialogFooter>
+          </ResponsiveDialogContent>
+        </ResponsiveDialog>
       )}
       {!hideServer && (
         <div className='grid gap-4 sm:grid-cols-2'>
@@ -593,19 +593,21 @@ export function Multiplayer({
                       offer, and without this the match you then left would
                       sit in every list until the idle sweep. One somebody is
                       flying is theirs now. */}
-                  {pilot && s.mine && (s.offer || (s.players ?? []).length === 0) && (
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      onClick={async () => {
-                        await world_withdraw(address, pilot)
-                        void refresh()
-                      }}
-                    >
-                      <Trans>Cancel</Trans>
-                    </Button>
-                  )}
+                  {pilot &&
+                    s.mine &&
+                    (s.offer || (s.players ?? []).length === 0) && (
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        onClick={async () => {
+                          await world_withdraw(address, pilot)
+                          void refresh()
+                        }}
+                      >
+                        <Trans>Cancel</Trans>
+                      </Button>
+                    )}
                   {s.mode === 'teams' && (
                     <>
                       <Button
