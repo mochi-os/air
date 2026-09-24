@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#mzu} other {#mzu}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#vk} other {#vk}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, kusukela ku-{from} kuya ku-{to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Igama le-{entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "kusukela ku-{from} kuya ku-{to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# okunye} other {+# okunye}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Imodeli yendiza <0>“F/A-18C Hornet”</0> eyenziwe ngu-<1>CreadorDeMu<
 msgid "Alerts"
 msgstr "Izexwayiso"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Usuku lonke"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Zonke izimo"
@@ -478,6 +497,10 @@ msgstr "Ukukhuphuka"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "ukungalingani"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Olwandle"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Khulisa intshisekelo"
 msgid "Border colour"
 msgstr "Umbala womngcele"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ibot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Amabhothi"
@@ -685,6 +712,10 @@ msgstr "BVR, izikhali zikhululekile ukusuka ekuqaleni"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Khiya / khulula"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Iseva yekhalenda"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Kushintshiwe"
 msgid "Changed {field}"
 msgstr "Kushintshiwe {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Isenzeko esishintshiwe"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Umbono wokujaha:"
@@ -856,6 +892,10 @@ msgstr "Ibhokisi lokumaka"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Uhlu lokuhlola"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Khetha usuku"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "UKUSHAYISANA NO-{callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Umbala"
 
@@ -1062,6 +1103,10 @@ msgstr "Qhubeka"
 msgid "Continue with {label}"
 msgstr "Qhubeka nge-{label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Qhubeka nge-{providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Kukopishiwe"
@@ -1070,6 +1115,10 @@ msgstr "Kukopishiwe"
 msgid "Copied to clipboard"
 msgstr "Kukopishelwe kwi-clipboard"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopisha"
@@ -1550,6 +1599,10 @@ msgstr "Iphayiloni elingenalutho"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Vula umsindo"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Iphela ingakaqali"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Ukulawula"
 msgid "Monday"
 msgstr "UMsombuluko"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Inyanga"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Eziningi izinketho"
@@ -2572,6 +2629,13 @@ msgstr "Kuhanjiswe"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Kuhanjiswe {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Kuhanjiswa ku-{0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Umdlalo omusha"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Isithombe esilandelayo"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Inyanga ezayo"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Unyaka ozayo"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Cindezela…"
 msgid "Previous image"
 msgstr "Isithombe esedlule"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Inyanga edlule"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Unyaka odlule"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Qamba kabusha leli kholomu lebhodi"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ukurenda kwenziwa nge-<0>three.js</0> (ilayisensi ye-MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Iyaphindwa"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "KULINDELWE IMBANGI"
 msgid "Watch"
 msgstr "Buka"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Buka ibot iyindiza"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "I-yaw kwesokunxele"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "I-yaw kwesokudla"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Unyaka"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

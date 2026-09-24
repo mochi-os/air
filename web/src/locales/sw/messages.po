@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#dk} other {#dk}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#wk} other {#wk}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} hadi {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Jina la {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} hadi {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# zaidi} other {+# zaidi}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Modeli ya ndege <0>“F/A-18C Hornet”</0> na <1>CreadorDeMu</1> (Sketc
 msgid "Alerts"
 msgstr "Arifa"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Siku nzima"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Modi zote"
@@ -478,6 +497,10 @@ msgstr "Kupanda"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "kutolingana"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Baharini"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Ongeza mvuto"
 msgid "Border colour"
 msgstr "Rangi ya mpaka"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "boti"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boti"
@@ -685,6 +712,10 @@ msgstr "BVR, silaha huru tangu mwanzo"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Funga / achilia"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Seva ya kalenda"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Imebadilishwa"
 msgid "Changed {field}"
 msgstr "Imebadilisha {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Marudio yaliyobadilishwa"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Mwonekano wa kufuatilia:"
@@ -856,6 +892,10 @@ msgstr "Kisanduku cha kuteua"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Orodha ya ukaguzi"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Chagua tarehe"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "MGONGANO NA {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Rangi"
 
@@ -1062,6 +1103,10 @@ msgstr "Endelea"
 msgid "Continue with {label}"
 msgstr "Endelea na {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Endelea na {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Imenakiliwa"
@@ -1070,6 +1115,10 @@ msgstr "Imenakiliwa"
 msgid "Copied to clipboard"
 msgstr "Imenakiliwa kwenye ubao wa kunakili"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Nakili"
@@ -1550,6 +1599,10 @@ msgstr "Pailoni tupu"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Washa sauti"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Inaisha kabla ya kuanza"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Udhibiti"
 msgid "Monday"
 msgstr "Jumatatu"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Mwezi"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Chaguo zaidi"
@@ -2572,6 +2629,13 @@ msgstr "Imehamishwa"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Imehamisha {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Inahamishia {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Mchezo mpya"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Picha inayofuata"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Mwezi ujao"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Mwaka ujao"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Bonyeza…"
 msgid "Previous image"
 msgstr "Picha iliyotangulia"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Mwezi uliopita"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Mwaka uliopita"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Badilisha jina la safuwima hii ya bao"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Uchoraji unafanywa na <0>three.js</0> (leseni ya MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Hurudiwa"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "INASUBIRI MPINZANI"
 msgid "Watch"
 msgstr "Fuatilia"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Tazama boti ikiiruka"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Yaw kushoto"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw kulia"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Mwaka"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

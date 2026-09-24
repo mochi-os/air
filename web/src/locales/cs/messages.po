@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#týd} other {#týd}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} až {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Název {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} až {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# další} few {+# další} other {+# dalších}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Model letadla <0>“F/A-18C Hornet”</0> od <1>CreadorDeMu</1> (Sketchf
 msgid "Alerts"
 msgstr "Výstrahy"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Celý den"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Všechny režimy"
@@ -478,6 +497,10 @@ msgstr "Vzestupně"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asymetrie"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Na moři"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Zvýšit zájem"
 msgid "Border colour"
 msgstr "Barva okraje"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boti"
@@ -685,6 +712,10 @@ msgstr "BVR, palba volná od startu"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Zajistit / uvolnit"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Kalendářový server"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Změněno"
 msgid "Changed {field}"
 msgstr "Změněno {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Změněné opakování"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Pohled zezadu:"
@@ -856,6 +892,10 @@ msgstr "Zaškrtávací pole"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checklist"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Vyberte datum"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "SRÁŽKA S {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Barva"
 
@@ -1062,6 +1103,10 @@ msgstr "Pokračovat"
 msgid "Continue with {label}"
 msgstr "Pokračovat přes {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Pokračovat s {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Zkopírováno"
@@ -1070,6 +1115,10 @@ msgstr "Zkopírováno"
 msgid "Copied to clipboard"
 msgstr "Zkopírováno do schránky"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopírovat"
@@ -1550,6 +1599,10 @@ msgstr "Prázdný pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Zapnout zvuk"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Končí dříve, než začne"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Moderování"
 msgid "Monday"
 msgstr "Pondělí"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Měsíc"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Další možnosti"
@@ -2572,6 +2629,13 @@ msgstr "Přesunuto"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Přesunuto {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Přesun na {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Nová hra"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Další obrázek"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Další měsíc"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Další rok"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Stiskněte…"
 msgid "Previous image"
 msgstr "Předchozí obrázek"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Předchozí měsíc"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Předchozí rok"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Přejmenovat tento sloupec tabule"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Vykreslování zajišťuje <0>three.js</0> (licence MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Opakuje se"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ČEKÁNÍ NA SOUPEŘE"
 msgid "Watch"
 msgstr "Sledovat"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Sledovat, jak to letí bot"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Bočení doleva"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Bočení doprava"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Rok"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

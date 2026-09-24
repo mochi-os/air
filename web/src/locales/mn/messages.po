@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#мин} other {#мин}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#дол} other {#дол}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} - {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} нэр"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} - {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# илүү} other {+# илүү}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Онгоцны загвар <0>“F/A-18C Hornet”</0>, зохиогч 
 msgid "Alerts"
 msgstr "Сэрэмжлүүлэг"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Өдөржин"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Бүх горим"
@@ -478,6 +497,10 @@ msgstr "Өсөхөөр"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "тэнцвэргүй байдал"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Далайд"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Сонирхлыг идэвхжүүлэх"
 msgid "Border colour"
 msgstr "Хүрээний өнгө"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "бот"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Ботууд"
@@ -685,6 +712,10 @@ msgstr "BVR, эхнээсээ зэвсэг чөлөөтэй"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Түгжих / чөлөөлөх"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Хуанлийн сервер"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Өөрчилсөн"
 msgid "Changed {field}"
 msgstr "{field} өөрчилсөн"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Өөрчлөгдсөн давталт"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Хөөх харагдац:"
@@ -856,6 +892,10 @@ msgstr "Чекбокс"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Жагсаалт"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Огноо сонгох"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign}-ТАЙ МӨРГӨЛДӨВ"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Өнгө"
 
@@ -1062,6 +1103,10 @@ msgstr "Үргэлжлүүлэх"
 msgid "Continue with {label}"
 msgstr "{label}-р үргэлжлүүлэх"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel}-ээр үргэлжлүүлэх"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Хуулагдлаа"
@@ -1070,6 +1115,10 @@ msgstr "Хуулагдлаа"
 msgid "Copied to clipboard"
 msgstr "Хуулбарласан"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Хуулах"
@@ -1550,6 +1599,10 @@ msgstr "Хоосон пилон"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Дууг идэвхжүүлэх"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Эхлэхээс өмнө дуусна"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Зохицуулалт"
 msgid "Monday"
 msgstr "Даваа"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Сар"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Бусад сонголтууд"
@@ -2572,6 +2629,13 @@ msgstr "Зөөсөн"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} зөөсөн"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} руу зөөж байна"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Шинэ тоглоом"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Дараагийн зураг"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Дараа сар"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Дараа жил"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Дарна уу…"
 msgid "Previous image"
 msgstr "Өмнөх зураг"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Өмнөх сар"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Өмнөх жил"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Энэ board-ын баганын нэр өөрчлөх"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендэрийг <0>three.js</0> гүйцэтгэнэ (MIT лиценз)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Давтагдана"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ӨРСӨЛДӨГЧИЙГ ХҮЛЭЭЖ БАЙНА"
 msgid "Watch"
 msgstr "Үзэх"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Бот нисэхийг үзэх"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Эргэлт зүүн тийш"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Эргэлт баруун тийш"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Жил"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

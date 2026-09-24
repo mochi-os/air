@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#நி} other {#நி}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#வா} other {#வா}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} முதல் {to} வரை"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} பெயர்"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} முதல் {to} வரை"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# மேலும்} other {+# மேலும்}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "விமான மாதிரி <0>“F/A-18C Hornet”</0>, <1>Cread
 msgid "Alerts"
 msgstr "எச்சரிக்கைகள்"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "நாள் முழுவதும்"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "எல்லா முறைகளும்"
@@ -478,6 +497,10 @@ msgstr "ஏறுவரிசை"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "சமச்சீரின்மை"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "கடலில்"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "ஆர்வத்தை அதிகரி"
 msgid "Border colour"
 msgstr "எல்லை நிறம்"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "பாட்"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "போட்கள்"
@@ -685,6 +712,10 @@ msgstr "BVR, தொடக்கத்திலிருந்தே ஆயுத
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "பூட்டு / விடுவி"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "நாட்காட்டி சர்வர்"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "மாற்றப்பட்டது"
 msgid "Changed {field}"
 msgstr "{field} மாற்றப்பட்டது"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "மாற்றப்பட்ட நிகழ்வு"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "துரத்தல் காட்சி:"
@@ -856,6 +892,10 @@ msgstr "தேர்வுப் பெட்டி"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "சரிபார்ப்பு பட்டியல்"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "தேதியைத் தேர்ந்தெடுக்கவும்"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} உடன் மோதல்"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "நிறம்"
 
@@ -1062,6 +1103,10 @@ msgstr "தொடர்"
 msgid "Continue with {label}"
 msgstr "{label} மூலம் தொடரவும்"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} மூலம் தொடரவும்"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "நகலெடுக்கப்பட்டது"
@@ -1070,6 +1115,10 @@ msgstr "நகலெடுக்கப்பட்டது"
 msgid "Copied to clipboard"
 msgstr "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "நகலெடு"
@@ -1550,6 +1599,10 @@ msgstr "காலியான பைலான்"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ஒலியை இயக்கு"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "தொடங்குவதற்கு முன்பே முடிகிறது"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "மட்டுறுத்தல்"
 msgid "Monday"
 msgstr "திங்கட்கிழமை"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "மாதம்"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "மேலும் விருப்பங்கள்"
@@ -2572,6 +2629,13 @@ msgstr "நகர்த்தப்பட்டது"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} நகர்த்தப்பட்டது"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} க்கு நகர்த்தப்படுகிறது"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "புதிய விளையாட்டு"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "அடுத்த படம்"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "அடுத்த மாதம்"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "அடுத்த ஆண்டு"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "அழுத்தவும்…"
 msgid "Previous image"
 msgstr "முந்தைய படம்"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "முந்தைய மாதம்"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "முந்தைய ஆண்டு"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "இந்த போர்டு நெடுவரிசையின் 
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "காட்சியாக்கம் <0>three.js</0> மூலம் (MIT உரிமம்)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "மீண்டும் நிகழ்கிறது"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "எதிராளிக்காகக் காத்திருக�
 msgid "Watch"
 msgstr "பார்"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "பாட் பறப்பதைப் பாருங்கள்"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "யாவ் இடப்புறம்"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "யாவ் வலப்புறம்"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "ஆண்டு"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

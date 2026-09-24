@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#tyg} other {#tyg}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, od {from} do {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Nazwa {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "od {from} do {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# więcej} few {+# więcej} many {+# więcej} other {+# więcej}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Model samolotu <0>“F/A-18C Hornet”</0> autorstwa <1>CreadorDeMu</1> 
 msgid "Alerts"
 msgstr "Ostrzeżenia"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Cały dzień"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Wszystkie tryby"
@@ -478,6 +497,10 @@ msgstr "Rosnąco"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asymetria"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Na morzu"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Zwiększ zainteresowanie"
 msgid "Border colour"
 msgstr "Kolor obramowania"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boty"
@@ -685,6 +712,10 @@ msgstr "BVR, wolny ogień od startu"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Zablokuj / zwolnij"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Serwer kalendarza"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Zmieniono"
 msgid "Changed {field}"
 msgstr "Zmieniono {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Zmienione wystąpienie"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Widok pościgu:"
@@ -856,6 +892,10 @@ msgstr "Pole wyboru"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Lista kontrolna"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Wybierz datę"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ZDERZENIE Z {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Kolor"
 
@@ -1062,6 +1103,10 @@ msgstr "Kontynuuj"
 msgid "Continue with {label}"
 msgstr "Kontynuuj z {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Kontynuuj z {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Skopiowano"
@@ -1070,6 +1115,10 @@ msgstr "Skopiowano"
 msgid "Copied to clipboard"
 msgstr "Skopiowano do schowka"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopiuj"
@@ -1550,6 +1599,10 @@ msgstr "Pusty pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Włącz dźwięk"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Kończy się, zanim się zacznie"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Moderacja"
 msgid "Monday"
 msgstr "Poniedziałek"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Miesiąc"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Więcej opcji"
@@ -2572,6 +2629,13 @@ msgstr "Przeniesiono"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Przeniesiono {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Przenoszenie na {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Nowa gra"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Następny obraz"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Następny miesiąc"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Następny rok"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Naciśnij…"
 msgid "Previous image"
 msgstr "Poprzedni obraz"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Poprzedni miesiąc"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Poprzedni rok"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Zmień nazwę tej kolumny tablicy"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderowanie za pomocą <0>three.js</0> (licencja MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Powtarza się"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "OCZEKIWANIE NA PRZECIWNIKA"
 msgid "Watch"
 msgstr "Obserwuj"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Zobacz, jak leci bot"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Odchylenie w lewo"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Odchylenie w prawo"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Rok"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

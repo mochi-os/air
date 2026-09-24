@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#мин} other {#мин}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#нед} other {#нед}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, од {from} до {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Назив {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "од {from} до {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# више} few {+# више} other {+# више}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Модел авиона <0>“F/A-18C Hornet”</0> од <1>CreadorDeMu<
 msgid "Alerts"
 msgstr "Упозорења"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Цео дан"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Сви режими"
@@ -478,6 +497,10 @@ msgstr "Растуће"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "асиметрија"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "На мору"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Појачај интересовање"
 msgid "Border colour"
 msgstr "Боја ивице"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "бот"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Ботови"
@@ -685,6 +712,10 @@ msgstr "BVR, оружје слободно од почетка"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Закључај / ослободи"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Сервер календара"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Промењено"
 msgid "Changed {field}"
 msgstr "Промењено {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Измењено понављање"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Поглед праћења:"
@@ -856,6 +892,10 @@ msgstr "Поље за потврду"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Чек-листа"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Изаберите датум"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "СУДАР СА {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Боја"
 
@@ -1062,6 +1103,10 @@ msgstr "Настави"
 msgid "Continue with {label}"
 msgstr "Настави са {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Настави са {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Копирано"
@@ -1070,6 +1115,10 @@ msgstr "Копирано"
 msgid "Copied to clipboard"
 msgstr "Копирано у привремену меморију"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Копирај"
@@ -1550,6 +1599,10 @@ msgstr "Празан пилон"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Укључи звук"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Завршава се пре него што почне"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Модерација"
 msgid "Monday"
 msgstr "Понедељак"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Месец"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Још опција"
@@ -2572,6 +2629,13 @@ msgstr "Премештено"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Премештено {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Премештање на {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Нова игра"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Следећа слика"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Следећи месец"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Следећа година"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Притисните…"
 msgid "Previous image"
 msgstr "Претходна слика"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Претходни месец"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Претходна година"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Преименуј ову колону табле"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендеровање помоћу <0>three.js</0> (MIT лиценца)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Понавља се"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ЧЕКАЊЕ ПРОТИВНИКА"
 msgid "Watch"
 msgstr "Прати"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Гледај како бот лети"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Скретање улево"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Скретање удесно"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Година"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

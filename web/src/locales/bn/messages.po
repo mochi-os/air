@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#মি} other {#মি}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#সপ্তা} other {#সপ্তা}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} থেকে {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} নাম"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} থেকে {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# আরও} other {+# আরও}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "বিমানের মডেল <0>“F/A-18C Hornet”</0> <1>Creado
 msgid "Alerts"
 msgstr "সতর্কতা"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "সারাদিন"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "সব মোড"
@@ -478,6 +497,10 @@ msgstr "ঊর্ধ্বক্রম"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "অসামঞ্জস্য"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "সমুদ্রে"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "আগ্রহ বৃদ্ধি করুন"
 msgid "Border colour"
 msgstr "বর্ডারের রঙ"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "বট"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "বট"
@@ -685,6 +712,10 @@ msgstr "BVR, শুরু থেকেই অস্ত্র মুক্ত"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "লক করুন / মুক্ত করুন"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "ক্যালেন্ডার সার্ভার"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "পরিবর্তন করা হয়েছে"
 msgid "Changed {field}"
 msgstr "{field} পরিবর্তন করা হয়েছে"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "পরিবর্তিত পুনরাবৃত্তি"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "অনুসরণ দৃশ্য:"
@@ -856,6 +892,10 @@ msgstr "চেকবক্স"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "চেকলিস্ট"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "একটি তারিখ বেছে নিন"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign}-এর সাথে সংঘর্ষ"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "রঙ"
 
@@ -1062,6 +1103,10 @@ msgstr "চালিয়ে যান"
 msgid "Continue with {label}"
 msgstr "{label} দিয়ে চালিয়ে যান"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} দিয়ে চালিয়ে যান"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "কপি করা হয়েছে"
@@ -1070,6 +1115,10 @@ msgstr "কপি করা হয়েছে"
 msgid "Copied to clipboard"
 msgstr "ক্লিপবোর্ডে কপি করা হয়েছে"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "কপি করুন"
@@ -1550,6 +1599,10 @@ msgstr "খালি পাইলন"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "শব্দ চালু করুন"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "শুরুর আগেই শেষ হয়"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "মডারেশন"
 msgid "Monday"
 msgstr "সোমবার"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "মাস"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "আরও বিকল্প"
@@ -2572,6 +2629,13 @@ msgstr "সরানো হয়েছে"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} সরানো হয়েছে"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0}-এ সরানো হচ্ছে"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "নতুন গেম"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "পরবর্তী ছবি"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "পরবর্তী মাস"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "পরবর্তী বছর"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "চাপুন…"
 msgid "Previous image"
 msgstr "পূর্ববর্তী ছবি"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "পূর্ববর্তী মাস"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "পূর্ববর্তী বছর"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "এই বোর্ড কলাম পুনঃনামকরণ ক�
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "রেন্ডারিং <0>three.js</0> দ্বারা (MIT লাইসেন্স)।"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "পুনরাবৃত্ত হয়"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "প্রতিপক্ষের অপেক্ষায়"
 msgid "Watch"
 msgstr "দেখুন"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "বটকে উড়াতে দেখুন"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "ইয়াও বামে"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ইয়াও ডানে"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "বছর"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

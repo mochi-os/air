@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#මි} other {#මි}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#සති} other {#සති}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} සිට {to} දක්වා"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} නම"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} සිට {to} දක්වා"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {තවත් +#ක්} other {තවත් +#ක්}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "ගුවන් යානා ආකෘතිය <0>“F/A-18C Hornet”<
 msgid "Alerts"
 msgstr "අනතුරු ඇඟවීම්"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "මුළු දිනය"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "සියලු ආකාර"
@@ -478,6 +497,10 @@ msgstr "ආරෝහණ"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "අසමමිතිය"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "මුහුදේ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "කැමැත්ත වැඩි කරන්න"
 msgid "Border colour"
 msgstr "මායිම් වර්ණය"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "බොට්"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "බොට්ස්"
@@ -685,6 +712,10 @@ msgstr "BVR, ආරම්භයේ සිටම අවි නිදහස්"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "අගුළු දමන්න / නිදහස් කරන්න"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "දින දර්ශන සේවාදායකය"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "වෙනස් කරන ලදී"
 msgid "Changed {field}"
 msgstr "{field} වෙනස් කරන ලදී"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "වෙනස් කළ පුනරාවර්තනය"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "ලුහුබැඳීමේ දසුන:"
@@ -856,6 +892,10 @@ msgstr "පරීක්ෂා පෙට්ටිය"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "පරීක්ෂා ලැයිස්තුව"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "දිනයක් තෝරන්න"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} සමඟ ගැටීම"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "වර්ණය"
 
@@ -1062,6 +1103,10 @@ msgstr "ඉදිරියට"
 msgid "Continue with {label}"
 msgstr "{label} සමඟ ඉදිරියට යන්න"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} සමඟ ඉදිරියට"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "පිටපත් කළා"
@@ -1070,6 +1115,10 @@ msgstr "පිටපත් කළා"
 msgid "Copied to clipboard"
 msgstr "Clipboard එකට පිටපත් කරන ලදී"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "පිටපත් කරන්න"
@@ -1550,6 +1599,10 @@ msgstr "හිස් පයිලනය"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ශබ්දය සබල කරන්න"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "ආරම්භ වීමට පෙර අවසන් වේ"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "පාලනය"
 msgid "Monday"
 msgstr "සඳුදා"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "මාසය"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "තවත් විකල්ප"
@@ -2572,6 +2629,13 @@ msgstr "ගෙන යන ලදී"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} ගෙන යන ලදී"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} වෙත ගෙන යමින්"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "නව ක්‍රීඩාවක්"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "ඊළඟ පින්තූරය"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "ඊළඟ මාසය"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "ඊළඟ වර්ෂය"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "ඔබන්න…"
 msgid "Previous image"
 msgstr "පෙර පින්තූරය"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "පෙර මාසය"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "පෙර වර්ෂය"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "මෙම board තීරුව නැවත නම් කරන්න"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "රෙන්ඩර් කිරීම <0>three.js</0> මගින් (MIT බලපත්‍රය)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "පුනරාවර්තනය වේ"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ප්‍රතිවාදියා එනතුරු බලා සි
 msgid "Watch"
 msgstr "නරඹන්න"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "බොට් පියාසර කරන ආකාරය බලන්න"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "යෝ වමට"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "යෝ දකුණට"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "වර්ෂය"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

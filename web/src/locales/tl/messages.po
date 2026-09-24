@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#lin} other {#lin}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} hanggang {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Pangalan ng {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} hanggang {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# pa} other {+# pa}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Modelo ng eroplano <0>“F/A-18C Hornet”</0> ni <1>CreadorDeMu</1> (Sk
 msgid "Alerts"
 msgstr "Mga babala"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Buong araw"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Lahat ng mode"
@@ -478,6 +497,10 @@ msgstr "Pataas"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimetriya"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Sa dagat"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Palakasin ang interes"
 msgid "Border colour"
 msgstr "Kulay ng border"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Mga bot"
@@ -685,6 +712,10 @@ msgstr "BVR, malayang sandata mula umpisa"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "I-lock / palayain"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Server ng kalendaryo"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Binago"
 msgid "Changed {field}"
 msgstr "Binago ang {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Binagong pag-ulit"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Tanaw sa paghabol:"
@@ -856,6 +892,10 @@ msgstr "Checkbox"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checklist"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Pumili ng petsa"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "BUMANGGA KAY {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Kulay"
 
@@ -1062,6 +1103,10 @@ msgstr "Magpatuloy"
 msgid "Continue with {label}"
 msgstr "Magpatuloy gamit ang {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Magpatuloy gamit ang {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Nakopya"
@@ -1070,6 +1115,10 @@ msgstr "Nakopya"
 msgid "Copied to clipboard"
 msgstr "Nakopya sa clipboard"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopyahin"
@@ -1550,6 +1599,10 @@ msgstr "Walang lamang pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Paganahin ang tunog"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Nagtatapos bago magsimula"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Moderasyon"
 msgid "Monday"
 msgstr "Lunes"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Buwan"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Iba pang opsyon"
@@ -2572,6 +2629,13 @@ msgstr "Inilipat"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Inilipat ang {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Inililipat sa {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Bagong laro"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Susunod na imahe"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Susunod na buwan"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Susunod na taon"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Pindutin…"
 msgid "Previous image"
 msgstr "Nakaraang imahe"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Nakaraang buwan"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Nakaraang taon"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Palitan ang pangalan ng board column na ito"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ang pag-render ay sa pamamagitan ng <0>three.js</0> (lisensyang MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Paulit-ulit"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "NAGHIHINTAY NG KALABAN"
 msgid "Watch"
 msgstr "Manood"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Panoorin ang bot na lumipad"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Yaw sa kaliwa"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw sa kanan"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Taon"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

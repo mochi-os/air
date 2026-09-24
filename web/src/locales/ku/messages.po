@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#xul} other {#xul}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#hef} other {#hef}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, ji {from} heta {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Navê {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "ji {from} heta {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# din} other {+# din}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Modela balafirê <0>“F/A-18C Hornet”</0> ji aliyê <1>CreadorDeMu</1
 msgid "Alerts"
 msgstr "Hişyarî"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Tevahiya rojê"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Hemû mod"
@@ -478,6 +497,10 @@ msgstr "Hilkişandî"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asîmetrî"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Li deryayê"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Berjewendiyê zêde bike"
 msgid "Border colour"
 msgstr "Rengê sînor"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bot"
@@ -685,6 +712,10 @@ msgstr "BVR, çek ji destpêkê ve azad in"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Qefil bike / azad bike"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Servera salnameyê"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Hate guhertin"
 msgid "Changed {field}"
 msgstr "{field} hate guhertin"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Cara guhertî"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Dîmena şopandinê:"
@@ -856,6 +892,10 @@ msgstr "Qutiya kontrol"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Lîsteya kontrolê"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Dîrokekê hilbijêre"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "PÊKDAN BI {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Reng"
 
@@ -1062,6 +1103,10 @@ msgstr "Berdewam bike"
 msgid "Continue with {label}"
 msgstr "Bi {label} berdewam be"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Bi {providerLabel} bidomîne"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Hat kopîkirin"
@@ -1070,6 +1115,10 @@ msgstr "Hat kopîkirin"
 msgid "Copied to clipboard"
 msgstr "Hat kopîkirin li clipboard"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopî bike"
@@ -1550,6 +1599,10 @@ msgstr "Pîlona vala"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Deng çalak bike"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Berî ku dest pê bike diqede"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Moderasyon"
 msgid "Monday"
 msgstr "Duşem"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Meh"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Vebijarkên zêdetir"
@@ -2572,6 +2629,13 @@ msgstr "Hate guhastin"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} hate guhastin"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Tê veguhastin bo {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Lîstika nû"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Wêneya pêştir"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Meha bê"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Sala bê"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Pêl bike…"
 msgid "Previous image"
 msgstr "Wêneya pêştir"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Meha borî"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Sala borî"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Navê vê stûna paneyê biguhere"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderkirin bi <0>three.js</0> e (lîsansa MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Dubare dibe"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "LI BENDA HEVRIK"
 msgid "Watch"
 msgstr "Temaşe bike"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Temaşe bike ku bot difire"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Poz ber bi çepê"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Poz ber bi rastê"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Sal"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

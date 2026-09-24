@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#daq} other {#daq}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#hafta} other {#hafta}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} – {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} nomi"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} – {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ta} other {+# ta}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Samolyot modeli <0>“F/A-18C Hornet”</0>, muallif <1>CreadorDeMu</1> 
 msgid "Alerts"
 msgstr "Ogohlantirishlar"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Kun boʻyi"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Barcha rejimlar"
@@ -478,6 +497,10 @@ msgstr "Oʻsish boʻyicha"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimmetriya"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Dengizda"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Qiziqishni kuchaytirish"
 msgid "Border colour"
 msgstr "Hoshiya rangi"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botlar"
@@ -685,6 +712,10 @@ msgstr "BVR, boshidanoq qurollar erkin"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Qulflash / bo'shatish"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Kalendar serveri"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Oʻzgartirildi"
 msgid "Changed {field}"
 msgstr "{field} oʻzgartirildi"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Oʻzgartirilgan takror"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Ta'qib ko'rinishi:"
@@ -856,6 +892,10 @@ msgstr "Belgilash katakchasi"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Roʻyxat"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Sanani tanlang"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} BILAN TO'QNASHUV"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Rang"
 
@@ -1062,6 +1103,10 @@ msgstr "Davom etish"
 msgid "Continue with {label}"
 msgstr "{label} bilan davom etish"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} bilan davom etish"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Nusxalandi"
@@ -1070,6 +1115,10 @@ msgstr "Nusxalandi"
 msgid "Copied to clipboard"
 msgstr "Buferga nusxalandi"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Nusxalash"
@@ -1550,6 +1599,10 @@ msgstr "Bo'sh pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Ovozni yoqish"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Boshlanishidan oldin tugaydi"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Moderatsiya"
 msgid "Monday"
 msgstr "Dushanba"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Oy"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Boshqa variantlar"
@@ -2572,6 +2629,13 @@ msgstr "Koʻchirildi"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} koʻchirildi"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} sanasiga koʻchirilmoqda"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Yangi oʻyin"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Keyingi rasm"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Keyingi oy"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Keyingi yil"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Bosing…"
 msgid "Previous image"
 msgstr "Oldingi rasm"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Oldingi oy"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Oldingi yil"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Bu doska ustunining nomini oʻzgartirish"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering <0>three.js</0> orqali (MIT litsenziyasi)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Takrorlanadi"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "RAQIB KUTILMOQDA"
 msgid "Watch"
 msgstr "Kuzatish"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Bot uchishini tomosha qilish"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Burilish chapga"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Burilish oʻngga"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Yil"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

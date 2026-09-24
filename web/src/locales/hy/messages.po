@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#ր} other {#ր}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#շաբ} other {#շաբ}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from}-ից մինչև {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel}-ի անունը"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from}-ից մինչև {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ավելին} other {+# ավելին}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Օդանավի մոդել <0>“F/A-18C Hornet”</0>, հեղինակ՝ 
 msgid "Alerts"
 msgstr "Զգուշացումներ"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Ամբողջ օրը"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Բոլոր ռեժիմները"
@@ -478,6 +497,10 @@ msgstr "Աճման կարգով"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "անհամաչափություն"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Ծովում"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Բարձրացնել հետաքրքրությունը"
 msgid "Border colour"
 msgstr "Եզրագծի գույն"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "բոտ"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Բոտեր"
@@ -685,6 +712,10 @@ msgstr "BVR, կրակը ազատ է սկզբից"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Կողպել / ազատել"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Օրացույցի սերվեր"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Փոփոխվել է"
 msgid "Changed {field}"
 msgstr "Փոփոխվել է {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Փոփոխված կրկնություն"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Հետապնդման տեսք:"
@@ -856,6 +892,10 @@ msgstr "Նշավանդակ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Ստուգաթերթիկ"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Ընտրեք ամսաթիվ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ԲԱԽՈՒՄ {callsign}-Ի ՀԵՏ"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Գույն"
 
@@ -1062,6 +1103,10 @@ msgstr "Շարունակել"
 msgid "Continue with {label}"
 msgstr "Շարունակել {label}-ով"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Շարունակել {providerLabel}-ով"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Պատճենվեց"
@@ -1070,6 +1115,10 @@ msgstr "Պատճենվեց"
 msgid "Copied to clipboard"
 msgstr "Պատճենվեց սեղմատախտակին"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Պատճենել"
@@ -1550,6 +1599,10 @@ msgstr "Դատարկ պիլոն"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Միացնել ձայնը"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Ավարտվում է նախքան սկսվելը"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Մոդերացիա"
 msgid "Monday"
 msgstr "Երկուշաբթի"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Ամիս"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Լրացուցիչ ընտրանքներ"
@@ -2572,6 +2629,13 @@ msgstr "Տեղափոխվել է"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Տեղափոխվել է {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Տեղափոխվում է {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Նոր խաղ"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Հաջորդ նկարը"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Հաջորդ ամիս"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Հաջորդ տարի"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Սեղմեք…"
 msgid "Previous image"
 msgstr "Նախորդ նկարը"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Նախորդ ամիս"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Նախորդ տարի"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Վերանվանել այս տախտակի սյունակը"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ռենդերինգը՝ <0>three.js</0>-ի միջոցով (MIT լիցենզիա)։"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Կրկնվում է"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ՍՊԱՍՈՒՄ ԵՆՔ ՀԱԿԱՌԱԿՈՐԴԻՆ"
 msgid "Watch"
 msgstr "Հետևել"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Դիտել, թե ինչպես է բոտը թռչում"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Քիթը ձախ"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Քիթը աջ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Տարի"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#မိ} other {#မိ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ပတ်} other {#ပတ်}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day} {from} မှ {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} အမည်"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} မှ {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, other {+# ခု ထပ်မံ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "လေယာဉ်ပုံစံ <0>“F/A-18C Hornet”</0>၊ ဖန�
 msgid "Alerts"
 msgstr "သတိပေးချက်များ"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "တစ်နေကုန်"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "မုဒ်အားလုံး"
@@ -478,6 +497,10 @@ msgstr "ငယ်စဉ်ကြီးလိုက်"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "အချိုးမညီမှု"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "ပင်လယ်ပြင်တွင်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "စိတ်ဝင်စားမှု မြှင့်တင်မ�
 msgid "Border colour"
 msgstr "ဘောင်အရောင်"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ဘော့"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ဘော့တ်များ"
@@ -685,6 +712,10 @@ msgstr "BVR, အစမှစ၍ လက်နက်လွတ်လပ်"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "သော့ခတ်ရန် / လွှတ်ရန်"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "ပြက္ခဒိန် ဆာဗာ"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "ပြောင်းလဲခဲ့သည်"
 msgid "Changed {field}"
 msgstr "{field} ကို ပြောင်းလဲခဲ့သည်"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "ပြောင်းလဲထားသော အကြိမ်"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "လိုက်ကြည့်မြင်ကွင်း:"
@@ -856,6 +892,10 @@ msgstr "checkbox"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checklist"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "ရက်စွဲ ရွေးပါ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} နှင့် တိုက်မိ"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "အရောင်"
 
@@ -1062,6 +1103,10 @@ msgstr "ဆက်လက်လုပ်ဆောင်မည်"
 msgid "Continue with {label}"
 msgstr "{label} ဖြင့် ဆက်လက်လုပ်ဆောင်ပါ"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} ဖြင့် ဆက်လုပ်မည်"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "ကူးယူပြီးပါပြီ"
@@ -1070,6 +1115,10 @@ msgstr "ကူးယူပြီးပါပြီ"
 msgid "Copied to clipboard"
 msgstr "ကလစ်ဘုတ်သို့ ကူးပြီး"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "ကူးမည်"
@@ -1550,6 +1599,10 @@ msgstr "ပိုင်လွန်အလွတ်"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "အသံဖွင့်ရန်"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "မစတင်မီ ပြီးဆုံးသည်"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "စိစစ်မှု"
 msgid "Monday"
 msgstr "တနင်္လာ"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "လ"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "နောက်ထပ် ရွေးချယ်စရာများ"
@@ -2572,6 +2629,13 @@ msgstr "ရွှေ့ခဲ့သည်"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} ကို ရွှေ့ခဲ့သည်"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} သို့ ရွှေ့နေသည်"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "ဂိမ်းအသစ်"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "နောက်ပုံ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "နောက်လ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "နောက်နှစ်"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "နှိပ်ပါ…"
 msgid "Previous image"
 msgstr "ယခင်ပုံ"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "ယခင်လ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "ယခင်နှစ်"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "ဤ board column ကို အမည်ပြောင်း"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ပုံဖော်တင်ဆက်မှုကို <0>three.js</0> ဖြင့် ဆောင်ရွက်သည် (MIT လိုင်စင်)။"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "ထပ်ခါထပ်ခါ ဖြစ်သည်"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ပြိုင်ဘက်ကို စောင့်နေသည်"
 msgid "Watch"
 msgstr "ကြည့်ရှုမည်"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "ဘော့ ပျံသန်းသည်ကို ကြည့်ရန်"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "ဘယ်သို့လှည့်"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ညာသို့လှည့်"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "နှစ်"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

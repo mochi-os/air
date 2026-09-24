@@ -26,6 +26,8 @@ KEEP_WORDS = {
     "teal", "terracotta", "url", "version", "violet", "wiki", "wikis",
     "caldav", "carddav", "webdav", "vcard", "icalendar", "ics", "thunderbird",
     "contacts",
+    "apple", "microsoft", "facebook", "x",
+
 }
 
 # Exact-string allowlist, checked before word matching. A digit-bearing
@@ -44,6 +46,8 @@ KEEP_ENGLISH = frozenset({
     "ntfy",
     "CalDAV", "CardDAV", "WebDAV", "vCard", "iCalendar", "ICS", "DAVx5", "Thunderbird",
     "Contacts",
+    "Apple", "Microsoft", "Facebook", "X",
+
 })
 
 def _strip_placeholders(value):
@@ -134,6 +138,8 @@ KEEP_LOCALE = frozenset({
     # Yoruba keeps "feed" as a loanword throughout its catalogues, so the bare
     # label is the same word; "Ìjì" (storm) was the mistranslation it replaced.
     ('yo', 'Feed'),
+    ("it", "Password"), ("mt", "Password"), ("tl", "Password"), ("tl", "Username"),
+
 })
 
 

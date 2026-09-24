@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#mín} other {#mín}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#v} other {#v}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} til {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Nafn {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} til {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# til viðbótar} other {+# til viðbótar}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Flugvélalíkan <0>“F/A-18C Hornet”</0> eftir <1>CreadorDeMu</1> (Sk
 msgid "Alerts"
 msgstr "Viðvaranir"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Allan daginn"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Allar stillingar"
@@ -478,6 +497,10 @@ msgstr "Hækkandi"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "ósamhverfa"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Á sjó"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Auka áhuga"
 msgid "Border colour"
 msgstr "Litur ramma"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "vélmenni"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Vélmenni"
@@ -685,6 +712,10 @@ msgstr "BVR, vopn frjáls frá upphafi"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Læsa / losa"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Dagatalsþjónn"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Breytt"
 msgid "Changed {field}"
 msgstr "Breytti {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Breytt tilvik"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Eltingarsýn:"
@@ -856,6 +892,10 @@ msgstr "Gátreitur"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Gátlisti"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Veldu dagsetningu"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ÁREKSTUR VIÐ {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Litur"
 
@@ -1062,6 +1103,10 @@ msgstr "Halda áfram"
 msgid "Continue with {label}"
 msgstr "Halda áfram með {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Halda áfram með {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Afritað"
@@ -1070,6 +1115,10 @@ msgstr "Afritað"
 msgid "Copied to clipboard"
 msgstr "Afritað á klippiborðið"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Afrita"
@@ -1550,6 +1599,10 @@ msgstr "Tómur pýlon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Virkja hljóð"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Lýkur áður en hann hefst"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Umsjón"
 msgid "Monday"
 msgstr "Mánudagur"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Mánuður"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Fleiri valkostir"
@@ -2572,6 +2629,13 @@ msgstr "Fært"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Færði {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Færi á {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Nýr leikur"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Næsta mynd"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Næsti mánuður"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Næsta ár"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Ýttu…"
 msgid "Previous image"
 msgstr "Fyrri mynd"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Fyrri mánuður"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Fyrra ár"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Endurnefna þennan töfludálk"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Myndgerð með <0>three.js</0> (MIT-leyfi)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Endurtekur sig"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "BEÐIÐ EFTIR ANDSTÆÐINGI"
 msgid "Watch"
 msgstr "Fylgjast með"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Horfa á vélmenni fljúga því"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Nef til vinstri"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Nef til hægri"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Ár"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"
