@@ -430,6 +430,43 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   expect(lines.filter((l) => l.includes('Burst='))).toHaveLength(1)
 })
 
+// The pilot's own acquire/undesignate presses, when they actually land (#33
+// debrief): a debrief could tell a shot never got a real lock, but not why -
+// this is the same journalled-event encoding as the bandit's Decision channel,
+// so several landings between two kept samples join with ';' rather than
+// losing all but the last.
+it('records a landed acquire/undesignate press once, and several between samples joined', () => {
+  const jet = (input?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { input },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(undefined)] },
+      { time: 0.1, objects: [jet('160.8|acquire|ls')] },
+      { time: 0.2, objects: [jet(undefined)] }, // no press landed this sample: field absent, not repeated
+      { time: 0.3, objects: [jet('161.0|acquire|stt;161.4|undesignate|break')] }, // two landings between samples
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).not.toContain('Input=')
+  expect(mine[1]).toContain('Input=160.8|acquire|ls')
+  expect(mine[2]).not.toContain('Input=') // nothing landed: not repeated from the prior sample
+  expect(mine[3]).toContain('Input=161.0|acquire|stt;161.4|undesignate|break')
+})
+
 // The bot's tier rides on its own object, so a debrief judges its plays in
 // context without decoding the mission title (which named the tier only for
 // jousts). Declared once, like the other identity properties.
