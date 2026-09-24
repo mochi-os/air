@@ -23,6 +23,8 @@
 // mounted by the React <GameCanvas> via startGame().
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
+import { pass_grade, pass_sample, pass_start, pass_wire } from './lso'
+import { demonstration_start, demonstration_step } from './demonstration'
 import { KEY_DEFAULTS } from './keys'
 import { SPOKEN, voice_queue, voice_step } from './voice'
 import { identity as replay_identity, publish as publish_recording } from './replay'
@@ -5226,7 +5228,7 @@ function read_input(dt){
 		pp=ax("pitch");   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
-		{ const p=(test_active||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75));   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
+		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75));   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0);   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
@@ -5442,7 +5444,7 @@ function recording_file(){
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
 		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
-		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(),
+		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(), passes:passes_text(),
 		...(()=>{ const pad=read_gamepad();   // the device as the browser reports it NOW, at the moment the recording is rendered
 			if(!pad) return { stick:"", mapping:"", axes:0, buttons:0, unreachable:"" };
 			return { stick:pad.id||"", mapping:pad.mapping||"", axes:pad.axes.length, buttons:pad.buttons.length,
@@ -5626,9 +5628,13 @@ if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownsh
 	return { x:+ownship.pos.x.toFixed(1), z:+ownship.pos.z.toFixed(1), alt:+(ownship.pos.y*3.28084).toFixed(0), hdg:+hdg.toFixed(1), bank:+bank.toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		kcas:+((ownship.cas??ownship.speed)*1.94384).toFixed(0), vy:+(ownship.vely??0).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2), throttle:+(ownship.throttle??0).toFixed(2), burner:+(ownship.burner??0).toFixed(2), clock:sim_time,  // i18n-format-ok: dev probe payload, never rendered to a user
-		grounded:!!ownship.grounded, trapped:!!ownship.trapped, crash:crash_t>0,
+		grounded:!!ownship.grounded, trapped:!!ownship.trapped, crash:crash_t>0, grade:ownship.grade||"", remarks:ownship.remarks||"", wire:ownship.wire||0,
 		line:{ ax:+a.x.toFixed(1), az:+a.z.toFixed(1), bx:+b.x.toFixed(1), bz:+b.z.toFixed(1), deck:+(CARRIER.deckY||20).toFixed(1) } };  // i18n-format-ok: dev probe payload, never rendered to a user
 };   // dev (#89): the navigation picture the scripted circuit/approach probes fly against — position, heading, bank, configuration, and the landing line's world geometry (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
+if(DEV_MODE) (globalThis as any).dev_picture=function(){ return demonstration_picture(); };   // dev: the picture the scripted pilot is flying from this frame, so a probe can check the frame the engine hands it (the groove's along/right/slope, the hull frame) against its own geometry
+if(DEV_MODE) (globalThis as any).dev_demonstration=function(){ if(!demonstration) return null; const t=demonstration.targets;   // dev: the scripted pilot's mind — its phase, its seed, and what it is flying toward this frame, so a probe can judge the pattern against the hints' numbers
+	return { phase:demonstration.phase, seed:demonstration.seed, configured:demonstration.configured, habits:demonstration.habits,
+		altitude:+(t.altitude*3.28084).toFixed(0), vertical:+t.vertical.toFixed(2), kcas:+(t.cas*1.94384).toFixed(0), heading:+t.heading.toFixed(1), bank:+t.bank.toFixed(1), throttle:+demonstration.throttle.toFixed(3) }; };   // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
 	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
@@ -5898,14 +5904,21 @@ function check_collisions(){   // ownship vs the sea and the single-player bandi
 	// A midair kills both: bandit_destroy ends the duel, and no kill is credited.
 	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair",BANDIT); }
 }
-function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
-	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
-	const gs=p.n?p.gs/p.n:9, az=p.n?p.az/p.n:9;   // no in-close data (e.g. a taxi engagement) can't grade OK
-	if(t.sink>7 || t.fa<-120 || t.bank>0.14 || ownship.waved) return "CUT";   // dangerously hard, ramp-close, a wing down at the deck, or trapped through a waveoff
-	if((ownship.wire===2||ownship.wire===3) && gs<0.35 && az<0.9 && t.sink<6) return "OK";
-	if(gs<0.7 && az<1.8) return "FAIR";
-	return "NO-GRADE";
-}
+// pass_end closes a pass the way the LSO does (lso.ts): the grade and the
+// write-up from the segment book, the touchdown and the wire; the write-up
+// over the radio as paddles gives it, in the shorthand every language reads
+// the same; and the pass on the sortie's list for the log row and the
+// recording. A wave-off leaves the book open - the pass may still end in a
+// wire, and that is a CUT.
+let passes=[];   // this sortie's passes: {grade, remarks, wire}
+function pass_end(ending){ const p=ownship.pass||(ownship.pass=pass_start());
+	if(ending==="trap"&&carrier_ols) pass_wire(p, ols_dev(ownship.pos,carrier_ols).lat);
+	const g=pass_grade(p, ownship.touch||null, ending==="trap"?(ownship.wire||0):0, !!ownship.waved, ending);
+	ownship.grade=g.grade; ownship.remarks=g.remarks;
+	passes.push({ grade:g.grade, remarks:g.remarks, wire:ending==="trap"?(ownship.wire||0):0 });
+	if(g.remarks) comm("PADDLES: "+g.remarks, "#9fd0ff");   // the LSO's shorthand is phraseology: verbatim in every locale, like the ball call
+	return g.grade; }
+function passes_text(){ return passes.map(p=>p.grade+(p.remarks?" "+p.remarks:"")+(p.wire?" "+p.wire+" wire":"")).join(" | "); }   // the sortie's passes for the recording header
 // ---- landing test scenarios (dev-only, TEST_SCENARIOS + Shift+1..0): scripted hands-off approaches with exact
 // touchdown parameters, because a keyboard pilot can't reliably hit "sink 11 m/s, wings level" to test the gates.
 // The autopilot prescribes attitude + track to the touchdown; the outcome (land / bounce / crash / trap / bolter)
@@ -5922,6 +5935,7 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
+let demonstration=null, demonstration_seed=0;   // the Case I demonstration (demonstration.ts): the scripted pilot flying the visual pattern through the ordinary controls, or null while the player has the jet; the seed replays one pilot's habits (&seed=N in developer mode)
 let test_active=null, test_idle=0, _test_power=0, test_brake=false, dev_fps=0, dev_jitter=false, livery_pending=null;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (_test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
 	const inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
@@ -6058,7 +6072,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		return { sweep, radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), grade:ownship.grade||"", remarks:ownship.remarks||"", book:ownship.pass?ownship.pass.segments:null, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -6082,7 +6096,7 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	ownship.q.copy(q); ownship.vel_dir.copy(vd); ownship.speed=V; ownship.throttle=0;
 	ownship.gearTarget=sc.gearup?1:0; ownship.gear=ownship.gearTarget; ownship.hookTarget=sc.hook?1:0; ownship.hook=ownship.hookTarget;
 	ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
-	ownship.pass={gs:0,az:0,n:0}; ownship.waved=false;
+	ownship.pass=pass_start(); ownship.waved=false;
 	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter, touchY:T.y, carrier:!!sc.carrier }; dev_peakbank=0; dev_pitchhi=0; dev_pitchlo=0;
 	flight_push();
 }
@@ -6112,6 +6126,35 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 	b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
 	flight_set(b);
+}
+// ---- the Case I demonstration (demonstration.ts): the scripted pilot reads the
+// same picture a pilot has - where the jet is against the hull and the landing
+// line, the ball, the switches, the calls - and flies the same controls. What
+// it returns overwrites the frame's input sample AFTER read_input, so a key
+// or a stick moved while watching changes nothing; the view keys still work.
+function demonstration_picture(){
+	const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
+	const rx=wrap_axis(ownship.pos.x-O.x), rz=wrap_axis(ownship.pos.z-O.z);
+	const o=carrier_ols, s=o?ols_dev(ownship.pos,o):{ along:1e5, lat:0, dist:1e5, dev:0 };
+	const rates=last_out||[];
+	return {
+		time:sim_time, altitude:ownship.pos.y, vertical:ownship.vely??0, speed:ownship.speed??0, cas:ownship.cas??ownship.speed??0, alpha:ownship.aoa??0,
+		heading:(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360, track:(Math.atan2(ownship.velx||ownship.fwd.x,-(ownship.velz||ownship.fwd.z))*180/Math.PI+360)%360, bank:-Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI, pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*180/Math.PI,
+		roll:rates[STATE.omega]||0, rate:rates[STATE.omega+2]||0,   // body rates: roll about the nose (+ right), pitch about the right wing (+ nose up) - frames.go
+		throttle:ownship.throttle??0, gear:(ownship.gearTarget??0)<0.5, flap:flap_select, hook:(ownship.hookTarget??0)>0.5,
+		grounded:!!ownship.grounded, trapped:!!ownship.trapped, waving:!!ownship.waving, crashed:crash_t>0,   // no bolter flag: the grade is sticky until the next trap, and the pilot reads the touch itself
+		coached:!!hinted[HINT.form],
+		ship:{ along:rx*hx+rz*hz, starboard:-rx*hz+rz*hx, bow:SHIP.length/2, course:(Math.atan2(hx,-hz)*180/Math.PI+360)%360 },
+		groove:{ along:s.along, right:-s.lat, deviation:s.dev, slope:o?o.dy+HOOK_DROP+Math.tan(3.5*D2R)*Math.max(0,s.along+HOOK_AFT):ownship.pos.y, heading:o?(Math.atan2(-o.apx,o.apz)*180/Math.PI+360)%360:0 } };   // the approach axis (apx, apz) points aft from the touchdown; the jet flies its reverse
+}
+function demonstration_drive(dt){
+	const c=demonstration_step(demonstration,demonstration_picture(),dt);
+	input.pitch=c.pitch; input.roll=c.roll; input.yaw=c.yaw; input.trim=0; input.lean=0;
+	ownship.throttle=c.throttle; ownship.burner=0; ownship.speedbrakeTarget=c.speedbrake; atc_on=false;
+	pit_press("gear",c.gear?-1:1);   // never on deck: pit_press keeps that rule
+	if(((ownship.hookTarget??0)>0.5)!==c.hook) pit_press("hook",0);
+	if(flap_select!==c.flap) pit_press("flaps",c.flap>flap_select?-1:1);   // one notch a frame, through the switch the legend reads
+	if(c.released) demonstration=null;   // the pass is over: the player has the jet, wherever it is
 }
 // ============================================================ flight core host glue
 // The wasm blade-element core owns the ownship physics; this section feeds it
@@ -6212,7 +6255,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
 	const wire=out[STATE.wire];
-	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
+	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
 		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); b[STATE.external]=external_capacity(); flight_set(b); }   // the deck crew top the externals too — every spawn and service is a full-tank fill (#17)
@@ -6321,6 +6364,7 @@ function fly_player(dt){
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
+	if(demonstration) demonstration_drive(dt);   // the scripted pilot: flies the controls the player just released, through the same sample the core reads
 	if(fuel_dump&&bingo_low()) fuel_dump=false;   // NATOPS 2.2.7: the DUMP switch returns to OFF when the BINGO caution comes on
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
@@ -6490,7 +6534,7 @@ function fly_player(dt){
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
-	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); if(mission_start()==="case3") hint(HINT.miss,{heading:ship_downwind()}); else hint(HINT.bolt,{heading:ship_downwind()}); }   // the bolter pattern is the recovery case's: 1,200' for Case III, the 600' visual pattern otherwise
+	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ pass_end("bolter"); notice(translate("BOLTER"), 6); recoach(); if(mission_start()==="case3") hint(HINT.miss,{heading:ship_downwind()}); else hint(HINT.bolt,{heading:ship_downwind()}); }   // the bolter pattern is the recovery case's: 1,200' for Case III, the 600' visual pattern otherwise
 	prev_wow=ownship.grounded;
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
@@ -6818,7 +6862,7 @@ function step_world(dt){ sim_time+=dt;
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
 		const s=ols_dev(ownship.pos,carrier_ols);
 		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
-		if(s.along>2500 || s.along<-70){ ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; ownship.groove=false; }   // outside the pass → fresh slate. The forward bound is -70 m, NOT 0: touchdown and the wire catch happen 0..-30 m past the reference, so resetting at 0 wiped the in-close data the frame before lso_grade() read it — every trap scored NO-GRADE for want of data (#72). A bolter/go-around rolls or flies well past -70 and still resets for the next pass.
+		if(s.along>2500 || s.along<-70){ ownship.pass=pass_start(); ownship.waved=false; ownship.groove=false; }   // outside the pass → fresh slate. The forward bound is -70 m, NOT 0: touchdown and the wire catch happen 0..-30 m past the reference, so resetting at 0 wiped the in-close data the frame before lso_grade() read it — every trap scored NO-GRADE for want of data (#72). A bolter/go-around rolls or flies well past -70 and still resets for the next pass.
 		else if(!ownship.grounded && s.dist<1852 && s.along>40){
 			const lineup=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI;
 			// Established gate: the LSO grades a jet in the groove (aligned, at approach
@@ -6826,13 +6870,12 @@ function step_world(dt){ sim_time+=dt;
 			// once armed so a drift past 6° still waves.
 			if(!ownship.groove && lineup<5 && ownship.speed<105) ownship.groove=true;
 			if(ownship.groove){
-			if((ownship.hook??0)>0.5){ const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
-				p.gs+=Math.abs(s.dev); p.az+=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI; p.n++; }
+			if((ownship.hook??0)>0.5) pass_sample(ownship.pass||(ownship.pass=pass_start()), s.along, s.dev, s.lat, ownship.aoa??0);   // the LSO's book (lso.ts): the worst of each thing in each segment
 			const wave=(s.dev<-0.7 && s.dist>250)   // dangerously low in close (matches the OLS waveoff lights); inside ~250 m the call is over (hook geometry reads falsely low there)
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -6850,8 +6893,8 @@ function reset_ownship(){
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
-	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
-	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
+	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
+	test_active=null; demonstration=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever); the demonstration pilot is re-seated below by the Case I spawn alone
 	const st=mission_start();
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
@@ -6880,6 +6923,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false };
+		if(cfg.demonstration) demonstration=demonstration_start(demonstration_seed||Math.floor(Math.random()*4294967296));   // "Watch a bot fly it": the scripted pilot takes the controls from the spawn (demonstration.ts)
 		hint(HINT.wake,{heading:ship_course()}); }   // side follows at its position — one hint at a time in the slot
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
@@ -8000,7 +8044,8 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 		started:mission_began, ended:Date.now(),
 		reason:own_kills>0?"victory":(own_deaths>0?"killed":"flown"),
 		players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
-		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 });
+		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0,
+		...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() });   // the last pass is the landing the row shows
 	// Upload the recording against that row (#213), after net_record and
 	// unawaited: the row must exist for the save to bind to, and the menu never
 	// waits on an upload.
@@ -8322,7 +8367,7 @@ function net_finish(reason){ if(session_over) return; session_over=true; lounge_
 		team:net.teams.get(net.slot)||"",
 		started:match_started, ended:Date.now(), reason,
 		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
-		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 }); }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
+		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0, ...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }); }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
 	if(net){ net.leave(); net=null; } }
 function net_end(reason,results){ if(session_over) return;
 	net_finish(reason);
@@ -8517,6 +8562,8 @@ function start_mission(){
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
+	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
+	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits; 0 draws a fresh one per mission
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
@@ -8536,7 +8583,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
-	recorder.clear(); record_started=new Date(); publish_recording(recording_file);   // a fresh recording per mission (#212)
+	recorder.clear(); record_started=new Date(); publish_recording(recording_file); passes=[];   // a fresh recording per mission, and a fresh LSO book (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;

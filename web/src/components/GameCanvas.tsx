@@ -99,6 +99,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   '1 WIRE': msg`1 WIRE`,
   '2 WIRE': msg`2 WIRE`,
   '3 WIRE': msg`3 WIRE`,
+  '4 WIRE': msg`4 WIRE`,
   OK: msg`OK`,
   FAIR: msg`FAIR`,
   'NO-GRADE': msg`NO-GRADE`,
