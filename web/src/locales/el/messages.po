@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#λ} other {#λ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#εβδ} other {#εβδ}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} έως {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Όνομα {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} έως {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ακόμη} other {+# ακόμη}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -377,6 +391,11 @@ msgstr "Μοντέλο αεροσκάφους <0>“F/A-18C Hornet”</0> από
 msgid "Alerts"
 msgstr "Ειδοποιήσεις"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Ολοήμερο"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Όλες οι λειτουργίες"
@@ -478,6 +497,10 @@ msgstr "Αύξουσα"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "ασυμμετρία"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Στη θάλασσα"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -636,6 +659,10 @@ msgstr "Ενίσχυση ενδιαφέροντος"
 msgid "Border colour"
 msgstr "Χρώμα περιγράμματος"
 
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "μποτ"
+
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Μποτ"
@@ -685,6 +712,10 @@ msgstr "BVR, ελεύθερα πυρά από την αρχή"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Κλείδωμα / απελευθέρωση"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Διακομιστής ημερολογίου"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +857,11 @@ msgstr "Άλλαξε"
 msgid "Changed {field}"
 msgstr "Άλλαξε {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Τροποποιημένη επανάληψη"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Θέα καταδίωξης:"
@@ -856,6 +892,10 @@ msgstr "Πλαίσιο ελέγχου"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Λίστα ελέγχου"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Επιλέξτε ημερομηνία"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -955,6 +995,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ΣΥΓΚΡΟΥΣΗ ΜΕ {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Χρώμα"
 
@@ -1062,6 +1103,10 @@ msgstr "Συνέχεια"
 msgid "Continue with {label}"
 msgstr "Συνέχεια με {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Συνέχεια με {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Αντιγράφηκε"
@@ -1070,6 +1115,10 @@ msgstr "Αντιγράφηκε"
 msgid "Copied to clipboard"
 msgstr "Αντιγράφηκε στο πρόχειρο"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Αντιγραφή"
@@ -1550,6 +1599,10 @@ msgstr "Κενός πυλώνας"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Ενεργοποίηση ήχου"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Λήγει πριν αρχίσει"
 
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
@@ -2557,6 +2610,10 @@ msgstr "Συντονισμός"
 msgid "Monday"
 msgstr "Δευτέρα"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Μήνας"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Περισσότερες επιλογές"
@@ -2572,6 +2629,13 @@ msgstr "Μετακινήθηκε"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Μετακινήθηκε {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Μετακίνηση στις {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2616,6 +2680,14 @@ msgstr "Νέο παιχνίδι"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Επόμενη εικόνα"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Επόμενος μήνας"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Επόμενο έτος"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3067,6 +3139,14 @@ msgstr "Πατήστε…"
 msgid "Previous image"
 msgstr "Προηγούμενη εικόνα"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Προηγούμενος μήνας"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Προηγούμενο έτος"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3294,6 +3374,11 @@ msgstr "Μετονομασία αυτής της στήλης πίνακα"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Η απόδοση γίνεται με το <0>three.js</0> (άδεια MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Επαναλαμβάνεται"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4279,6 +4364,10 @@ msgstr "ΑΝΑΜΟΝΗ ΑΝΤΙΠΑΛΟΥ"
 msgid "Watch"
 msgstr "Παρακολούθηση"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Δείτε ένα μποτ να το πετά"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4387,6 +4476,10 @@ msgstr "Εκτροπή αριστερά"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Εκτροπή δεξιά"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Έτος"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"
