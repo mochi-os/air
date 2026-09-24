@@ -135,6 +135,16 @@ interface Flight {
   rwrmissile?: boolean
   jammer?: boolean
   target?: number // recorded id of the boxed target the HUD was flying against, if any
+  // Acquire/undesignate presses that actually changed the lock state (#33
+  // debrief): "sim time|acquire or undesignate|effect", effect one of ls / stt
+  // / cone / lost (acquire) or step / break / clear (undesignate). Several
+  // landing between two samples join with ';', like the bandit's own journal
+  // below - the timestamp is what keeps two landings from ever reading alike,
+  // so the delta encoding never mistakes a repeat for no change. A press with
+  // no effect writes nothing: the Radar channel not moving already says so,
+  // and this channel exists precisely to stop guessing whether a lock the
+  // pilot expected ever actually formed.
+  input?: string
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
@@ -457,6 +467,7 @@ export function acmi(
           ['Forecast', d.forecast],
           ['Bypass', d.bypass],
           ['Demand', d.demand],
+          ['Input', d.input],
         ] as const) {
           if (value === undefined) continue
           const key = `${o.id}:${channel}`

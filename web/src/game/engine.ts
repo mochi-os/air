@@ -1951,7 +1951,7 @@ function rdr_press(pb){
 	if(pb===7){ RADAR.width=(RADAR.width+1)%RADAR_WIDTHS.length; return true; }
 	if(pb===8){ RADAR.sil=!RADAR.sil; return true; }
 	if(pb===9){ acm_press(); return true; }
-	if(pb===10){ radar_undesignate(); return true; }
+	if(pb===10){ const held=RADAR.stt!=null; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); return true; }   // i18n-format-ok: ACMI event timestamp, not display text
 	if(pb===11){ RADAR.slew(1); return true; }   // EL↑/EL↓ (#30): sanitise high or low — the caret shows what the band covers at the cursor
 	if(pb===12){ RADAR.slew(-1); return true; }
 	return false; }
@@ -1965,15 +1965,22 @@ function rdr_face(lx,ly){ if(lx<60||lx>452||ly<54||ly>446) return false;
 	const range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM;
 	radar_cursor.azimuth=azimuth; radar_cursor.range=range;
 	const own=radar_own();
+	// A click on the scan face lands on the same ladder Enter climbs (#33
+	// debrief), through the same radar_designate(): a first click on a
+	// trackfile claims it, a second click on that SAME one hardens it to STT -
+	// designate()'s own rule (radar.ts). The state BEFORE the call is the only
+	// place that distinction still exists, so it is read here, not guessed
+	// from the result.
 	if(RADAR.mode==="tws"){
 		const candidates=RADAR.tracks.map(t=>{ const g=radar_geometry(own,t,wrap_axis); return { id:t.id, azimuth:g.azimuth, range:g.range }; });
 		const id=radar_pick(candidates,azimuth,range,half,scaleM);
-		if(id!=null) radar_designate(id);
+		if(id!=null){ const escalate=RADAR.stt!=null||RADAR.ls===id;
+			if(radar_designate(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|${escalate?"stt":"ls"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
 		return true; }
 	const id=radar_pick(RADAR.bricks.map(b=>({ id:b.id, azimuth:b.azimuth, range:b.range })),azimuth,range,half,scaleM);
 	if(id!=null){ const c=contacts().find(k=>k.id===id);
 		if(c){ const g=radar_geometry(own,c,wrap_axis);
-			if(Math.abs(g.azimuth-azimuth)<0.09&&Math.abs(g.range-range)<scaleM*0.12) radar_designate(id); } }
+			if(Math.abs(g.azimuth-azimuth)<0.09&&Math.abs(g.range-range)<scaleM*0.12){ if(radar_designate(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); } } }   // RWS: designate() goes straight to STT, no ladder to climb — i18n-format-ok: ACMI event timestamp, not display text
 	return true; }
 function rdr_stick(x,px,py,t,own){   // velocity stick: the track's direction relative to own heading, screen-up = same way we point
 	const angle=Math.atan2(t.vx,-t.vz)-own.heading;
@@ -5341,6 +5348,12 @@ function recording_sample(){
 		flares:ownship.flares|0, chaff:ownship.chaff|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
 		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0,   // configuration (#86): which pitch law the FCS was flying
 		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
+		// Acquire/undesignate presses that actually landed (#33 debrief): drained
+		// exactly where the bandit's own decision journal is, on a frame the
+		// recorder will keep, so a press between two samples is never lost with
+		// the dropped frame. A press with no effect writes nothing - the Radar
+		// channel not moving already says that.
+		...(due&&radar_events.length?{input:radar_events.splice(0).join(";")}:{}),
 		rwrlock:RWR.locked(), rwrmissile:RWR.warned(), jammer:jammer_armed,
 		...(hud_boxed?{target:recorded_state(hud_boxed)}:{}),
 		// battle channels (#238): what the fight did to ME, from the same
@@ -8007,12 +8020,20 @@ function contacts(){
 		fwd:bandit.fwd, name:"", team:"" });
 	return out; }
 function radar_own(){ const gz=ownship.gauges||{}; return { x:ownship.pos.x, y:ownship.pos.y, z:ownship.pos.z, heading:gz.heading||0 }; }
-function radar_designate(id){ if(!RADAR.designate(id)) return;   // a silent radar refuses; the visual designation stands
-	if(MULTIPLAYER&&typeof id==="number") designated=id; }
-function radar_lock(id){ if(!RADAR.lock(id)) return;   // the ACM acquisition: straight to STT
-	if(MULTIPLAYER&&typeof id==="number") designated=id; }
-function radar_undesignate(){ RADAR.undesignate();
-	if(RADAR.stt==null&&RADAR.ls==null&&MULTIPLAYER) designated=-1; }
+// radar_events (#33 debrief): every acquire/undesignate PRESS that actually
+// changed the lock state, timestamped, drained into the Input channel on the
+// next kept sample - the bandit's own journal drains the same way, for the
+// same reason (a press between two samples must not be lost with the frame).
+// A press that lands on an empty picture writes nothing: there is no state
+// change to report, and a debrief already reads that silence off the Radar
+// channel staying put.
+let radar_events=[];
+function radar_designate(id){ if(!RADAR.designate(id)) return false;   // a silent radar refuses; the visual designation stands
+	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+function radar_lock(id){ if(!RADAR.lock(id)) return false;   // the ACM acquisition: straight to STT
+	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+function radar_undesignate(){ const held=RADAR.stt!=null||RADAR.ls!=null; RADAR.undesignate();
+	if(RADAR.stt==null&&RADAR.ls==null&&MULTIPLAYER) designated=-1; return held; }
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
@@ -8073,10 +8094,10 @@ let rwr_called=-9;
 // never cost a supported round its datalink.
 function acquire_press(){
 	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.sil&&RADAR.tracks.length){
-		if(RADAR.ls!=null){ radar_designate(RADAR.ls); return; }   // the L&S hardens into the lock
+		if(RADAR.ls!=null){ if(radar_designate(RADAR.ls)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); return; }   // the L&S hardens into the lock — i18n-format-ok: ACMI event timestamp, not display text
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
-		RADAR.ls=order[0].id;
+		RADAR.ls=order[0].id; radar_events.push(`${sim_time.toFixed(1)}|acquire|ls`);   // i18n-format-ok: ACMI event timestamp, not display text
 		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
 		return; }
 	acquire_acm(); }
@@ -8089,10 +8110,11 @@ function undesignate_press(){
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		const at=order.findIndex(t=>t.id===RADAR.ls);
-		RADAR.ls=order[(at+1)%order.length].id;
+		RADAR.ls=order[(at+1)%order.length].id; radar_events.push(`${sim_time.toFixed(1)}|undesignate|step`);   // i18n-format-ok: ACMI event timestamp, not display text
 		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
 		return; }
-	radar_undesignate(); }
+	const held=RADAR.stt!=null;   // which rung this press dropped from, for the label - undesignate() itself has already let go by the time it returns
+	if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // acquire_acm: the armed ACM condition's cone (#133). BST: 20° off the nose to
 // 10 nm; VACQ: ±6° azimuth, -8°..+55° in the lift plane, 5 nm. Nearest the axis
 // first; repeat presses step the cone, an empty cone undesignates. Radar active
@@ -8110,12 +8132,16 @@ function acquire_acm(auto){
 			if(d>9260||Math.abs(side)>0.105||elevation<-0.14||elevation>0.96) continue; }
 		cone.push({ id:c.id, off:nose }); }
 	cone.sort((a,b)=>b.off-a.off);
-	if(!cone.length){ if(auto) return; radar_undesignate(); if(MULTIPLAYER&&RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }
+	// `auto` is radar_step's own periodic re-acquire (#133), not a key press: it
+	// never steps or undesignates, and it must never write to radar_events - a
+	// debrief reading Input as "presses that landed" would otherwise credit the
+	// radar's own polling as pilot input.
+	if(!cone.length){ if(auto) return; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|acquire|lost`); if(MULTIPLAYER&&RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }   // i18n-format-ok: ACMI event timestamp, not display text
 	const current=auto?null:(RADAR.stt??(MULTIPLAYER?designated:null));
 	const at=cone.findIndex(k=>k.id===current);
 	const id=cone[(at+1)%cone.length].id;
 	if(MULTIPLAYER&&typeof id==="number") designated=id;
-	radar_lock(id); }
+	if(radar_lock(id)&&!auto) radar_events.push(`${sim_time.toFixed(1)}|acquire|cone`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // acm_press: the castle switch — BST commanded, then VACQ, then back to the
 // search radar. The commanded condition acquires by itself (radar_step); Enter
 // still steps the cone and Backspace still undesignates while it holds.
