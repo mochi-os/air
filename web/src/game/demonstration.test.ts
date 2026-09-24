@@ -146,7 +146,7 @@ describe('the pattern', () => {
     expect(c.gear).toBe(true)
   })
 
-  it('holds 800 ft clean, 600 ft once dirty, and turns just astern of the ship', () => {
+  it('holds 800 ft clean, 600 ft once dirty, and turns a kilometre and a half astern of the touchdown', () => {
     const d = demonstration_start(3)
     d.phase = 'downwind'
     demonstration_step(d, picture({ heading: 250, track: 250, cas: 110, ship: { along: 500, starboard: -2000 }, groove: { along: -600 } }), 1 / 60)
@@ -155,16 +155,16 @@ describe('the pattern', () => {
     demonstration_step(d, picture({ heading: 250, track: 250, cas: 110, flap: 2, gear: true, hook: true, ship: { along: 500, starboard: -2000 }, groove: { along: -600 } }), 1 / 60)
     expect(d.targets.altitude).toBeCloseTo(600 * 0.3048, -1)
     expect(d.phase).toBe('downwind')
-    demonstration_step(d, picture({ heading: 250, track: 250, cas: 75, flap: 2, gear: true, hook: true, ship: { along: -50, starboard: -2000 }, groove: { along: 40 } }), 1 / 60)
-    expect(d.phase).toBe('downwind') // not yet astern of the ship
-    demonstration_step(d, picture({ heading: 250, track: 250, cas: 75, flap: 2, gear: true, hook: true, ship: { along: -850, starboard: -2000 }, groove: { along: 700 } }), 1 / 60)
-    expect(d.phase).toBe('downwind') // slow, but still at 800 ft: the turn waits for 600
     demonstration_step(d, picture({ heading: 250, track: 250, cas: 75, flap: 2, gear: true, hook: true, altitude: 190, ship: { along: -850, starboard: -2000 }, groove: { along: 700 } }), 1 / 60)
+    expect(d.phase).toBe('downwind') // slow and at 600 ft, but only 700 m astern: the groove would be that short
+    demonstration_step(d, picture({ heading: 250, track: 250, cas: 75, flap: 2, gear: true, hook: true, ship: { along: -1750, starboard: -2000 }, groove: { along: 1600 } }), 1 / 60)
+    expect(d.phase).toBe('downwind') // slow, but still at 800 ft: the turn waits for 600
+    demonstration_step(d, picture({ heading: 250, track: 250, cas: 75, flap: 2, gear: true, hook: true, altitude: 190, ship: { along: -1750, starboard: -2000 }, groove: { along: 1600 } }), 1 / 60)
     expect(d.phase).toBe('turn')
     // The turn, from the next frame: from a mile abeam at on-speed the arc
     // that ends on the landing line needs the hint's 27-30° of bank, and
     // the start-down abeam is 200-300 fpm.
-    demonstration_step(d, picture({ heading: 250, track: 250, cas: 72, speed: 72, flap: 2, gear: true, hook: true, altitude: 190, ship: { along: -852, starboard: -2000 }, groove: { along: 702, right: -2000 } }), 1 / 60)
+    demonstration_step(d, picture({ heading: 250, track: 250, cas: 72, speed: 72, flap: 2, gear: true, hook: true, altitude: 190, ship: { along: -1752, starboard: -2000 }, groove: { along: 1602, right: -2000 } }), 1 / 60)
     expect(d.targets.bank).toBeLessThan(-26)
     expect(d.targets.bank).toBeGreaterThan(-31)
     expect(d.targets.vertical).toBeLessThan(-0.8)
@@ -181,8 +181,8 @@ describe('the pattern', () => {
     demonstration_step(d, picture({ heading: 250, track: 250, cas: 72, speed: 72, flap: 2, gear: true, hook: true, ship: { along: -852, starboard: -3000 }, groove: { along: 702, right: -3000 } }), 1 / 60)
     expect(d.targets.bank).toBeGreaterThan(-22)
     demonstration_step(d, picture({ heading: 250, track: 250, cas: 72, speed: 72, flap: 2, gear: true, hook: true, ship: { along: -852, starboard: -1500 }, groove: { along: 702, right: -1500 } }), 1 / 60)
-    expect(d.targets.bank).toBeLessThan(-33)
-    expect(d.targets.bank).toBeGreaterThanOrEqual(-35)
+    expect(d.targets.bank).toBeLessThan(-29) // and no steeper than 30: the arc from a tight abeam is opened out on the intercept instead
+    expect(d.targets.bank).toBeGreaterThanOrEqual(-30)
   })
 
   it('hands the groove over only once the lineup is closed, then flies the ball with power', () => {
@@ -231,6 +231,117 @@ describe('the pattern', () => {
     expect(d.phase).toBe('groove') // low, but sinking shallower than the slope: coming back to it
     demonstration_step(d, picture({ heading: 61, track: 61, cas: 72, flap: 2, gear: true, hook: true, altitude: 25, vertical: -6, groove: { along: 110, right: 0, slope: 28.5, deviation: -0.9 } }), 1 / 60)
     expect(d.phase).toBe('around')
+  })
+
+  it('holds on-speed alpha with the stick once dirty and near on-speed, and flies the path with it while still fast', () => {
+    const d = demonstration_start(3)
+    d.phase = 'groove'
+    d.configured = true
+    // Alpha 7.4, half a degree fast of the doughnut: a pull, and over a few
+    // seconds a trim learned on top of it. Alpha 10: a push.
+    let c = demonstration_step(d, picture({ heading: 61, track: 61, cas: 72, speed: 72, alpha: 7.4, flap: 2, gear: true, hook: true, altitude: 100, groove: { along: 1200, slope: 100 } }), 1 / 60)
+    const first = c.pitch
+    expect(first).toBeGreaterThan(0.02)
+    for (let i = 0; i < 180; i++) c = demonstration_step(d, picture({ time: 10 + i / 60, heading: 61, track: 61, cas: 72, speed: 72, alpha: 7.4, flap: 2, gear: true, hook: true, altitude: 100, groove: { along: 1200, slope: 100 } }), 1 / 60)
+    expect(d.nose).toBeGreaterThan(0.03)
+    expect(c.pitch).toBeGreaterThan(first + 0.03)
+    c = demonstration_step(d, picture({ heading: 61, track: 61, cas: 72, speed: 72, alpha: 11, flap: 2, gear: true, hook: true, altitude: 100, groove: { along: 1200, slope: 100 } }), 1 / 60)
+    expect(c.pitch).toBeLessThan(-0.05)
+    // A nose already pitching up toward it is pulled less.
+    const still = demonstration_step(d, picture({ heading: 61, track: 61, cas: 72, speed: 72, alpha: 7.4, flap: 2, gear: true, hook: true, altitude: 100, groove: { along: 1200, slope: 100 } }), 1 / 60).pitch
+    c = demonstration_step(d, picture({ heading: 61, track: 61, cas: 72, speed: 72, alpha: 7.4, rate: 0.2, flap: 2, gear: true, hook: true, altitude: 100, groove: { along: 1200, slope: 100 } }), 1 / 60)
+    expect(c.pitch).toBeLessThan(still - 0.04)
+    // Fast - alpha 4, 165 knots dirty - alpha is not the point, the height is: level at the aim, the stick is nearly centred whatever alpha reads.
+    c = demonstration_step(d, picture({ heading: 61, track: 61, cas: 85, speed: 85, alpha: 4, flap: 2, gear: true, hook: true, altitude: 100, vertical: d.targets.vertical, groove: { along: 1200, slope: 100 } }), 1 / 60)
+    expect(Math.abs(c.pitch)).toBeLessThan(0.05)
+  })
+
+  it('flies the final turn on a steady hand: the stick for the path, the lever for the indexer, the power leading the roll-in', () => {
+    // The outbound half of the turn, 600 ft, on-speed, a mile and a quarter off the landing line.
+    const outbound = (over: Omit<Partial<Picture>, 'ship' | 'groove'> = {}) =>
+      picture({ heading: 250, track: 250, cas: 72, speed: 72, alpha: 8.1, flap: 2, gear: true, hook: true, altitude: 600 * 0.3048, ship: { along: -1800, starboard: -2000 }, groove: { along: 1650, right: -2000 }, ...over })
+    const turning = (over: Omit<Partial<Picture>, 'ship' | 'groove'> = {}) => {
+      const d = demonstration_start(3)
+      d.phase = 'turn'
+      d.configured = true
+      d.seated = true
+      d.lever = 0.3
+      d.vertical = over.vertical ?? 0 // no acceleration read on the first frame
+      d.cas = over.cas ?? 72
+      return d
+    }
+    // Wings still level, the roll-in just commanded, on-speed: the bank's power is already on.
+    let d = turning()
+    let c = demonstration_step(d, outbound(), 2) // 2 s: the hand is not what is measured here
+    const tilt = Math.pow(Math.cos((Math.abs(d.targets.bank) * Math.PI) / 180), -1.5)
+    expect(d.targets.bank).toBeLessThan(-20)
+    expect(d.targets.vertical).toBe(0)
+    expect(c.throttle).toBeCloseTo(0.34 * tilt, 2)
+    expect(c.throttle).toBeGreaterThan(0.38)
+    const level = c.throttle
+    // Reading slow, more power; the path is not the lever's here.
+    d = turning()
+    c = demonstration_step(d, outbound({ alpha: 10 }), 2)
+    expect(c.throttle - level).toBeCloseTo(1.9 * 0.06 + 1.9 * 0.01 * 2, 2) // the proportional share, and two seconds of the trim
+    d = turning({ vertical: -2 })
+    c = demonstration_step(d, outbound({ vertical: -2 }), 2)
+    expect(c.throttle).toBeCloseTo(level, 2)
+    // Reading a degree fast for five seconds, the trim learns less power.
+    d = turning()
+    for (let i = 0; i < 300; i++) c = demonstration_step(d, outbound({ time: 10 + i / 60, alpha: 7.1 }), 1 / 60)
+    expect(d.trim).toBeLessThan(-0.04)
+    expect(c.throttle).toBeLessThan(level - 0.06 - 0.04)
+    // On the doughnut but the speed still building a metre and a half a second a second: the handful comes off.
+    d = turning()
+    d.cas = 72 - 3 // read over the 2 s frame: 1.5 m/s²
+    c = demonstration_step(d, outbound(), 2)
+    expect(level - c.throttle).toBeCloseTo(1.5 * 0.06, 2)
+    // Fast - 175 knots, alpha 5 - less power, and never idle.
+    d = turning({ cas: 90 })
+    d.lever = 0.4
+    c = demonstration_step(d, outbound({ cas: 90, speed: 90, alpha: 5 }), 3)
+    expect(c.throttle).toBeGreaterThan(0.1) // three seconds of the trim on top of the proportional share, and still power on
+    expect(c.throttle).toBeLessThan(0.3)
+    // The stick holds the path: sinking two metres a second, a pull.
+    d = turning({ vertical: -2 })
+    c = demonstration_step(d, outbound({ vertical: -2 }), 1 / 60)
+    expect(c.pitch).toBeCloseTo(0.16, 2)
+    // And pulls the bank's share of lift with the wings at 30°, on the path.
+    d = turning()
+    c = demonstration_step(d, outbound({ bank: -30 }), 1 / 60)
+    expect(c.pitch).toBeCloseTo(1 / Math.cos(Math.PI / 6) - 1, 2)
+    // A path still sinking a metre a second past it after five seconds: the trim has learned more pull.
+    d = turning({ vertical: -1 })
+    for (let i = 0; i < 300; i++) c = demonstration_step(d, outbound({ time: 10 + i / 60, vertical: -1 }), 1 / 60)
+    expect(d.carry).toBeGreaterThan(0.05)
+    expect(c.pitch).toBeGreaterThan(0.08 + 0.05)
+    // At a hand's pace: however much power is asked for, one frame moves the lever by a sixtieth of HAND.
+    d = turning()
+    c = demonstration_step(d, outbound({ alpha: 12 }), 1 / 60)
+    expect(c.throttle).toBeGreaterThan(0.3)
+    expect(c.throttle).toBeLessThanOrEqual(0.3 + 0.15 / 60 + 1e-9)
+    // Thirty feet under 600 in the outbound half: level off, never climb back.
+    d = turning()
+    demonstration_step(d, outbound({ altitude: 570 * 0.3048 }), 1 / 60)
+    expect(d.targets.vertical).toBeLessThanOrEqual(0)
+    expect(d.targets.vertical).toBeGreaterThanOrEqual(-(250 / 60) * 0.3048 - 1e-9)
+    // Into the groove the stick changes hands over three seconds, not in a frame.
+    const entering = (since: number) => {
+      const e = demonstration_start(3)
+      e.phase = 'groove'
+      e.configured = true
+      e.seated = true
+      e.since = 10
+      e.vertical = -3
+      e.closing = 70
+      e.along = 2400 + 70 / 60
+      return demonstration_step(e, picture({ time: 10 + since, heading: 64, track: 64, bank: 20, cas: 72, speed: 72, alpha: 7, vertical: -3, flap: 2, gear: true, hook: true, altitude: 200, groove: { along: 2400, right: -50, slope: 190 } }), 1 / 60).pitch
+    }
+    const first = entering(0)
+    const middle = entering(1.5)
+    const settled = entering(3)
+    expect(Math.abs(first - settled)).toBeGreaterThan(0.05)
+    expect(middle).toBeCloseTo((first + settled) / 2, 2)
   })
 
   it('goes around on a wave-off with full power and the switches left down, then rejoins the downwind', () => {
