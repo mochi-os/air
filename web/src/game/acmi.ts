@@ -51,6 +51,14 @@ interface Round {
   // rate the seeker measured on the breaking step, rad/s.
   reason?: string
   rate?: number
+  // Whether the shooter's own radar still held this round's trackfile THIS
+  // step (#33 debrief) - AMRAAM only, a heater has no midcourse phase to lose.
+  // A shot that goes long with this false partway through lost its shooter's
+  // guidance before it ever reached the target; one that stays true the whole
+  // flight and still misses is a seeker/geometry failure instead - the same
+  // distinction Reason draws for a heater's broken lock, drawn here for the
+  // radar round's own midcourse support.
+  support?: boolean
   burst?: number // the fuse's CONTINUOUS closest approach, metres — written with the fate (#58)
   closure?: number // relative speed at detonation, m/s
   when?: number // exact sim time of the fuse, s (the frame grid is ~9 Hz)
@@ -70,6 +78,29 @@ interface Flight {
   flaps?: number // flap SELECT: 0 auto, 1 half, 2 full (#86) — the FCS configuration, not the surface
   trim?: number // pitch trim (#86)
   lateral?: number // roll stick input, dev builds (#86)
+  // The g-limit override paddle switch and its cost (#33 debrief): held, the
+  // FCS commands to 10 g instead of the airframe's own 7.5 g ceiling, and the
+  // exposure between those two - g·s beyond 7.5 g - accrues into `stress`
+  // whether or not the pull ever nears 10 g. Structural failure (a shed wing)
+  // is judged against 1.5x the UN-raised ceiling, weakened by accumulated
+  // stress, so a pilot can shed a wing under override alone with no enemy
+  // fire at all - the exact margin isn't recorded (it needs the battle
+  // package's own wing-health state, which never reaches the client), but
+  // override held plus a rising Stress trace is the same finding a real
+  // structural-limits overstress would leave.
+  override?: boolean
+  stress?: number // accumulated overstress exposure, g·s beyond the airframe's un-raised limit
+  // Yaw rate, degrees/second, real-world convention (positive = nose right)
+  // (#33 debrief). NOT a departure flag - it is the raw rate the cockpit's
+  // own departure/AoA tone is proxied from (engine.ts's departure_drive),
+  // and the flight model's actual departure signature is sideslip, which
+  // never reaches the client at all (investigated, not exposed by the wasm
+  // core). Elevated, sustained yaw rate not explained by a rudder/yaw input
+  // is the best signal available without a wire-format change; it will both
+  // miss genuine low-speed ballistic departures with a weaker yaw signature
+  // and fire on a deliberate hard yaw check that never departed anything.
+  // Written every sample like AOA/G - a debrief reads its trace.
+  yawrate?: number
   tas?: number // true airspeed, m/s
   ias?: number // indicated/calibrated airspeed, m/s
   mach?: number
@@ -145,6 +176,24 @@ interface Flight {
   // and this channel exists precisely to stop guessing whether a lock the
   // pilot expected ever actually formed.
   input?: string
+  // Why the ownship's own hard lock (STT) dropped, when it did (#33 debrief):
+  // "sim time|reason", reason one of lost (the target vanished from the
+  // truth feed), gimbal (past the ±70° antenna limit), range (past the
+  // tracker's hold multiple), jam (a jammer starved it past burn-through) or
+  // notch (near-zero closing speed starved it - a beaming defence). This is
+  // the automatic, physics-driven counterpart to Input above: a lock can
+  // break with no press at all, so it rides its own channel rather than
+  // borrowing that vocabulary. A SIL break writes nothing here - the Radar
+  // channel already shows that one directly. Event-encoded like Input;
+  // several breaks between two kept samples join with ';'.
+  break?: string
+  // When weapons went free, and why (#33 debrief): "sim time|reason", reason
+  // 'merge' (an actual 3/9-line crossing opened a hold, single- or
+  // multiplayer) or 'start' (a BVR joust that never held at all - weapons
+  // free from spawn). Without this, a debrief could only infer the merge
+  // from geometry against the first 3/9 crossing; this removes the need.
+  // Event-encoded like Input and Break.
+  merge?: string
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
@@ -363,6 +412,7 @@ export function acmi(
   const armed = new Map<number, number>() // last written missiles count, per object
   const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
   const cued = new Map<number, string>() // last written cue, per object
+  const overridden = new Map<number, boolean>() // last written g-limit override state, per object (#33)
   const grazed = new Map<number, number>() // last written burst miss, per object
   const journalled = new Map<string, string>() // last written decision-journal value, per object and channel
   const countered = new Map<number, number>() // last written flares, per object
@@ -392,6 +442,13 @@ export function acmi(
         if (d.ias !== undefined) line += `,IAS=${round(d.ias, 1)}`
         if (d.mach !== undefined) line += `,Mach=${round(d.mach, 3)}`
         if (d.fuel !== undefined) line += `,FuelWeight=${round(d.fuel, 1)}`
+        // Overstress exposure (#33 debrief): g·s beyond the airframe's OWN
+        // limit, whether or not the g-limit override raised the commanded
+        // ceiling - it accrues in that 7.5-10 g band precisely because the
+        // override let the pilot hold it. Written every sample like G/AOA,
+        // not delta-suppressed: a debrief reads its TRACE, not its steps.
+        if (d.stress !== undefined) line += `,Stress=${round(d.stress, 2)}`
+        if (d.yawrate !== undefined) line += `,YawRate=${round(d.yawrate, 1)}`
         // Rounds are delta-suppressed, unlike the rest: they hold still for
         // whole minutes and then step during a burst, so writing them every
         // sample would be pure padding. Written on change, which is also
@@ -440,6 +497,16 @@ export function acmi(
             line += `,Gear=${round(d.gear ?? 1, 2)},Flaps=${d.flaps ?? 0},Trim=${round(d.trim ?? 0, 3)}`
           }
         }
+        // The g-limit override switch (#33 debrief): held rarely and briefly,
+        // so delta-suppressed on its own rather than folded into Gear/Flaps/
+        // Trim, which read as a landing configuration, not a combat one.
+        if (
+          d.override !== undefined &&
+          overridden.get(o.id) !== d.override
+        ) {
+          overridden.set(o.id, d.override)
+          line += `,Override=${d.override ? 1 : 0}`
+        }
         // Missiles and the cue are delta-suppressed like the rounds: the count
         // steps at a launch, the cue at the moments the HUD's advice changed.
         if (d.missiles !== undefined && armed.get(o.id) !== d.missiles) {
@@ -468,6 +535,8 @@ export function acmi(
           ['Bypass', d.bypass],
           ['Demand', d.demand],
           ['Input', d.input],
+          ['Break', d.break],
+          ['Merge', d.merge],
         ] as const) {
           if (value === undefined) continue
           const key = `${o.id}:${channel}`
@@ -514,6 +583,7 @@ export function acmi(
       const r = o.round
       if (r) {
         let guide = `,Seeker=${field(r.seeker)}`
+        if (r.support !== undefined) guide += `,Support=${r.support ? 1 : 0}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
         if (r.reason) {
           guide += `,Reason=${field(r.reason)}`

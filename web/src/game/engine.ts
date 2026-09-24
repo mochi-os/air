@@ -3362,7 +3362,7 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	launch_puff(sp.x,sp.y,sp.z);
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
-	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
@@ -3387,7 +3387,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
-	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit;
+	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
@@ -3410,6 +3410,7 @@ function step_amraam(m,dt){
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
 	supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
 	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.bloom,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
+	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
 	const state=round_step(m.slot,dt,supported?truth:null,truth);
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
@@ -3623,10 +3624,16 @@ let battle_tick=0, battle_reset=true, battle_rigged=false;
 let graze=null, firing=false, burst_tick=-1;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
+// merge_events (#33 debrief): when weapons went free, and why - 'merge' (an
+// actual 3/9 crossing opened a hold, SP or MP) or 'start' (a BVR joust never
+// held at all). Before this, a debrief could only infer the merge from
+// geometry against the first 3/9 crossing; recorded directly, that inference
+// is no longer needed. Drained the same way as radar_events/radar_breaks.
+let merge_events=[];
 // merge (SP): the 3/9 crossing opens the hold, once. Two witnesses call it - the
 // client's own check and the wasm brain, whose arena holds its gun and missiles
 // by the same rule - so the player's trigger and the bandit's open together.
-function merge(){ if(!weapons_hold) return; weapons_hold=false; notice(translate("FIGHT'S ON")); }
+function merge(){ if(!weapons_hold) return; weapons_hold=false; notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|merge`); }   // i18n-format-ok: ACMI event timestamp, not display text
 const turn_probe={x:1,y:0,z:0,rate:0};   // developer readout: instantaneous turn rate — the angular rate of the VELOCITY vector (the BFM number), EMA-smoothed
 let bandit_brain=false;   // SP joust bandit runs on the wasm brain (#125 phase 2); false = the legacy kinematic AI
 let bandit_acc=0;   // fixed-step accumulator for the brain (1/60 s frames, display-rate independent)
@@ -5343,10 +5350,13 @@ function recording_sample(){
 	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:(ownship.speed||0),   // the death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
+		stress:out[STATE.stress]||0,   // (#33 debrief): overstress exposure, g·s beyond the airframe's own limit - already fed the STRUCTURE caution, now also recorded
+		yawrate:-(out[STATE.omega+1]||0)*57.29578,   // (#33 debrief): real-world sign (nose right positive) - the same raw rate departure_drive proxies its tone from; not a departure flag, see acmi.ts's own caveat on this field
 		missiles:(ownship.msl|0)+Math.max(0,ownship.amraam|0), cue:hud_cue,   // stores and the HUD's advice (#33 debrief)
 		...(graze?{graze:graze.gap, miss:{ahead:graze.ahead, above:graze.above, right:graze.right}}:{}),   // this burst's closest MISS and which way it went past, in the bandit's body frame: the gun's Least and Off, and the only channel that says why a burst that landed nothing landed nothing
 		flares:ownship.flares|0, chaff:ownship.chaff|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
 		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0,   // configuration (#86): which pitch law the FCS was flying
+		override:!!(last_controls&&last_controls.override),   // (#33 debrief): the g-limit paddle switch - raises the commanded ceiling from 7.5 to 10 g and is what lets Stress accrue in that band at all
 		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
 		// Acquire/undesignate presses that actually landed (#33 debrief): drained
 		// exactly where the bandit's own decision journal is, on a frame the
@@ -5354,6 +5364,13 @@ function recording_sample(){
 		// the dropped frame. A press with no effect writes nothing - the Radar
 		// channel not moving already says that.
 		...(due&&radar_events.length?{input:radar_events.splice(0).join(";")}:{}),
+		// Why the ownship's own hard lock broke, when it did (#33 debrief): the
+		// automatic, physics-driven counterpart to Input above - never a press,
+		// so kept on its own channel rather than folded into that vocabulary.
+		...(due&&radar_breaks.length?{break:radar_breaks.splice(0).join(";")}:{}),
+		// When weapons went free, and why (#33 debrief): removes the need to
+		// infer the merge from geometry against the first 3/9 crossing.
+		...(due&&merge_events.length?{merge:merge_events.splice(0).join(";")}:{}),
 		rwrlock:RWR.locked(), rwrmissile:RWR.warned(), jammer:jammer_armed,
 		...(hud_boxed?{target:recorded_state(hud_boxed)}:{}),
 		// battle channels (#238): what the fight did to ME, from the same
@@ -5407,6 +5424,7 @@ function recording_sample(){
 			round:{ shooter, target:m.enemy?1:(m.target?recorded(m.target):undefined), seeker,
 				...((m.least??1e9)<1e8?{least:m.least}:{}),
 				...(m.why?{reason:m.why,...(m.rate!==undefined?{rate:m.rate}:{})}:{}),   // WHY the lock went (gimbal / rate / flare / cold) and the sight-line rate the seeker measured on the step that broke it: 'loose' alone could not tell a beaten seeker from a defeated one
+				...(m.supported!==undefined?{support:m.supported}:{}),   // (#33 debrief): the shooter's radar still holding this round's trackfile THIS step - AMRAAM only, heaters have no midcourse phase to lose
 				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,judged:m.judged,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
@@ -6895,7 +6913,7 @@ function reset_ownship(){
 		ownship.pos.set(-joust_side*reach, block, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=pace; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
-		if(bvr) notice(translate("FIGHT'S ON")); }   // the rule difference announced at the calmest moment: this joust has no hold
+		if(bvr){ notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|start`); } }   // the rule difference announced at the calmest moment: this joust has no hold — i18n-format-ok: ACMI event timestamp, not display text
 	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
 		const b=68*D2R;   // ENE
@@ -8028,6 +8046,12 @@ function radar_own(){ const gz=ownship.gauges||{}; return { x:ownship.pos.x, y:o
 // change to report, and a debrief already reads that silence off the Radar
 // channel staying put.
 let radar_events=[];
+// radar_breaks: why the OWNSHIP's own hard lock dropped this step, from
+// RADAR.breakReason - lost/gimbal/range/jam/notch. An automatic radar-physics
+// event, never a press: kept separate from radar_events (which is scoped to
+// presses that landed) so the two vocabularies are never confused with each
+// other. Drained the same way, into the Break channel.
+let radar_breaks=[];
 function radar_designate(id){ if(!RADAR.designate(id)) return false;   // a silent radar refuses; the visual designation stands
 	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
 function radar_lock(id){ if(!RADAR.lock(id)) return false;   // the ACM acquisition: straight to STT
@@ -8037,6 +8061,7 @@ function radar_undesignate(){ const held=RADAR.stt!=null||RADAR.ls!=null; RADAR.
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
+	if(RADAR.breakReason) radar_breaks.push(`${sim_time.toFixed(1)}|${RADAR.breakReason}`);   // i18n-format-ok: ACMI event timestamp, not display text
 	// A commanded ACM condition runs its own cone: with no lock held the radar
 	// takes the first target in it, at the real set's acquisition cadence, and
 	// goes back to looking the moment a lock breaks. Nothing to press.
@@ -8251,7 +8276,7 @@ function net_event(e){ const slot=Number(e.slot);
 	case "missile":
 		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
 		break;
-	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); break;   // the server saw the merge (#87)
+	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|merge`); break;   // the server saw the merge (#87) — i18n-format-ok: ACMI event timestamp, not display text
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_flare(st); } break;
 	case "chaff": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_chaff(st); } break;   // separate events from separate magazines (#43): a human's key sends both while both last, a bot's programme sends the one it chose
 	case "hit": { const count=Number(e.count)||0; if(!count) break;   // the server says rounds are landing on someone, and says how many

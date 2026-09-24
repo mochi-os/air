@@ -430,6 +430,76 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   expect(lines.filter((l) => l.includes('Burst='))).toHaveLength(1)
 })
 
+// Whether the shooter's own radar still held an AMRAAM's trackfile THIS step
+// (#33 debrief): a shot that goes long could be an unsupported seeker giving
+// up, or the shooter losing the track first - those read identically without
+// this. Heaters never carry it (no midcourse phase to lose).
+it("records an AMRAAM's midcourse support, and its loss mid-flight", () => {
+  const round = (
+    seeker: string,
+    support?: boolean
+  ): Sample['objects'][number] => ({
+    id: 165,
+    x: 0,
+    y: 1000,
+    z: -300,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'AIM-120C',
+    label: '120C',
+    colour: 'Blue',
+    kind: 'Weapon+Missile',
+    round: { shooter: 1, target: 2, seeker, ...(support !== undefined ? { support } : {}) },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [round('midcourse', true)] },
+      { time: 0.1, objects: [round('midcourse', true)] }, // unchanged: suppressed
+      { time: 0.2, objects: [round('midcourse', false)] }, // the shooter lost the track
+      { time: 0.3, objects: [round('active', false)] }, // Seeker changed too, but Support stays written every step it is defined
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('a5,T='))
+  expect(mine[0]).toContain('Support=1')
+  expect(mine[1]).not.toContain('Support=') // unchanged: suppressed with the rest of the combined guide
+  expect(mine[2]).toContain('Support=0')
+  expect(mine[3]).toContain('Support=0')
+  expect(mine[3]).toContain('Seeker=active')
+})
+
+it('never writes Support for a heater, which has no midcourse phase to lose', () => {
+  const text = acmi(
+    [
+      {
+        time: 0,
+        objects: [
+          {
+            id: 166,
+            x: 0,
+            y: 1000,
+            z: -300,
+            roll: 0,
+            pitch: 0,
+            yaw: 0,
+            name: 'AIM-9M',
+            label: '9M',
+            colour: 'Blue',
+            kind: 'Weapon+Missile',
+            round: { shooter: 1, target: 2, seeker: 'track' },
+          },
+        ],
+      },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('a6,T='))
+  expect(mine[0]).not.toContain('Support=')
+})
+
 // The pilot's own acquire/undesignate presses, when they actually land (#33
 // debrief): a debrief could tell a shot never got a real lock, but not why -
 // this is the same journalled-event encoding as the bandit's Decision channel,
@@ -465,6 +535,162 @@ it('records a landed acquire/undesignate press once, and several between samples
   expect(mine[1]).toContain('Input=160.8|acquire|ls')
   expect(mine[2]).not.toContain('Input=') // nothing landed: not repeated from the prior sample
   expect(mine[3]).toContain('Input=161.0|acquire|stt;161.4|undesignate|break')
+})
+
+// Why the ownship's own hard lock broke, when it did (#33 debrief): the
+// automatic, physics-driven counterpart to Input - a lock can drop with no
+// press at all, so it rides its own channel. Same journalled-event encoding.
+it('records a hard-lock break once, and several between samples joined', () => {
+  const jet = (broke?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { break: broke },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(undefined)] },
+      { time: 0.1, objects: [jet('204.3|gimbal')] },
+      { time: 0.2, objects: [jet(undefined)] }, // no break this sample: field absent, not repeated
+      { time: 0.3, objects: [jet('210.1|notch;214.6|range')] }, // two breaks between samples
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).not.toContain('Break=')
+  expect(mine[1]).toContain('Break=204.3|gimbal')
+  expect(mine[2]).not.toContain('Break=') // nothing broke: not repeated from the prior sample
+  expect(mine[3]).toContain('Break=210.1|notch;214.6|range')
+})
+
+// When weapons went free, and why (#33 debrief): removes the need to infer
+// the merge from geometry against the first 3/9 crossing. Same encoding.
+it('records when weapons went free, merge or a BVR start with no hold', () => {
+  const jet = (merge?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { merge },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet('0.0|start')] },
+      { time: 0.1, objects: [jet(undefined)] }, // not repeated
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Merge=0.0|start')
+  expect(mine[1]).not.toContain('Merge=')
+})
+
+// The g-limit override switch and its cost (#33 debrief): the switch is
+// delta-suppressed (a cockpit position, held rarely), Stress is written every
+// sample like G/AOA (a debrief reads its trace, not its steps) - together
+// they answer "did the pilot override, and did g then accrue overstress" even
+// though the exact shed margin isn't recorded (it needs battle-package wing
+// health that never reaches the client).
+it("records the g-limit override switch on change, and Stress every sample", () => {
+  const jet = (override?: boolean, stress?: number): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { override, stress },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(false, 0)] },
+      { time: 0.1, objects: [jet(false, 0)] }, // Override unchanged: suppressed
+      { time: 0.2, objects: [jet(true, 0.4)] }, // override held: switch AND rising stress
+      { time: 0.3, objects: [jet(true, 1.1)] }, // switch unchanged, but Stress still written every sample
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Override=0')
+  expect(mine[0]).toContain('Stress=0')
+  expect(mine[1]).not.toContain('Override=') // unchanged: suppressed
+  expect(mine[1]).toContain('Stress=0') // still written: not delta-suppressed
+  expect(mine[2]).toContain('Override=1')
+  expect(mine[2]).toContain('Stress=0.4')
+  expect(mine[3]).not.toContain('Override=') // still held: suppressed
+  expect(mine[3]).toContain('Stress=1.1') // the trace keeps moving
+})
+
+it('wires the override switch and Stress from the flight core into the recorded sample', () => {
+  expect(source).toMatch(
+    /stress:out\[STATE\.stress\]\|\|0,\s*\/\/ \(#33 debrief\)/
+  )
+  expect(source).toMatch(
+    /override:!!\(last_controls&&last_controls\.override\),/
+  )
+})
+
+// YawRate (#33 debrief): the raw rate departure_drive proxies its tone from,
+// promoted to a real recorded channel - honestly documented as NOT a
+// departure flag (the flight model's real departure signature is sideslip,
+// which is never exposed to the client). Written every sample like AOA/G.
+it('records yaw rate every sample, real-world sign (nose right positive)', () => {
+  const jet = (yawrate?: number): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { yawrate },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(12.3)] },
+      { time: 0.1, objects: [jet(12.3)] }, // unchanged, but still written: not delta-suppressed
+      { time: 0.2, objects: [jet(-40.7)] },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('YawRate=12.3')
+  expect(mine[1]).toContain('YawRate=12.3')
+  expect(mine[2]).toContain('YawRate=-40.7')
+})
+
+it('wires yaw rate with the real-world sign, negated from the raw wasm state', () => {
+  expect(source).toMatch(
+    /yawrate:-\(out\[STATE\.omega\+1\]\|\|0\)\*57\.29578,/
+  )
 })
 
 // The bot's tier rides on its own object, so a debrief judges its plays in
