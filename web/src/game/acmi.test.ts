@@ -1057,6 +1057,15 @@ describe('stamp', () => {
     expect(match.duel).toBe('')
     expect(match.bandit).toBe('')
   })
+
+  it('carries the LSO\u2019s write-up of every pass, and nothing when none was flown', () => {
+    const passes = 'BOLTER LO IC | NO-GRADE (LUL) IC · (LO)(LUL) IW 1 wire'
+    expect(stamp({ ...fight, passes }).match.passes).toBe(passes)
+    expect(stamp(fight).match.passes).toBe('')
+    const lines = acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free', passes }).match).split('\n')
+    expect(lines).toContain('0,Match_passes=' + passes)
+    expect(acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free' }).match)).not.toContain('Match_passes')
+  })
 })
 
 describe('a multiplayer remote is recorded, not just tracked (#163/#164)', () => {

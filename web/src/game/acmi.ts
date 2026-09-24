@@ -335,6 +335,7 @@ export function stamp(fight: {
   axes: number
   buttons: number
   unreachable: string // bound actions the device does not report, comma-separated
+  passes?: string // the sortie's passes as the LSO wrote them up, '' or absent when none was flown
 }): { kind: string; match: Match } {
   const joust = !fight.multiplayer && fight.mode === 'joust'
   // The kind names the fight for the title, the history row and the file: a
@@ -378,6 +379,8 @@ export function stamp(fight: {
       axes: fight.stick ? String(fight.axes) : '',
       buttons: fight.stick ? String(fight.buttons) : '',
       unreachable: fight.unreachable,
+      // The landings, last of all: "OK (H) X 3 wire | BOLTER LO IC | ...".
+      passes: fight.passes ?? '',
     },
   }
 }

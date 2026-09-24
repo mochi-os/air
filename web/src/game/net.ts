@@ -1062,6 +1062,9 @@ export async function record(match: {
   kills: number
   deaths: number
   cheated: number
+  grade: string // the last pass's LSO grade, '' when none was flown
+  remarks: string // its write-up, in the LSO's shorthand
+  wire: number // 1-4, 0 when it did not end in a wire
 }): Promise<void> {
   try {
     // fetch keepalive, not the app client: this row is written as the pilot
@@ -1108,6 +1111,9 @@ export interface MatchRow {
   kills: number
   deaths: number
   cheated: number
+  grade: string // the last pass's LSO grade, '' when none was flown (rows before 2026-09-24 carry '')
+  remarks: string // its write-up, in the LSO's shorthand
+  wire: number // 1-4, 0 when it did not end in a wire
 }
 
 // log reads this player's recorded matches, most recent first. Its totals
