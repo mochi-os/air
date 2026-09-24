@@ -111,9 +111,12 @@ export interface Demonstration {
   cas: number // last frame's calibrated airspeed
   trend: number // filtered airspeed rate, m/s²
   throttle: number // the lever the pilot holds, 0..1
+  lever: number // the lever last commanded, which a hand moves from at its own pace
   trim: number // what the path has taught the pilot to add to the book's approach power, -0.25..0.25
   idling: boolean // the lever is at idle for the speed to come off, rather than flying the path
   pull: number // the up-and-away stick's slow trim: what the load loop has learned it takes to hold the path
+  nose: number // the approach stick's slow trim: what it takes to hold on-speed alpha against the law's own datum, -0.15..0.15
+  carry: number // the final turn's stick trim: what holding its path has taken beyond the bank's share, carried into the groove's handover, -0.12..0.12
   seated: boolean // the first airborne frame has been read: the lever starts where the spawn's trim left it
   targets: {
     altitude: number
@@ -136,11 +139,12 @@ const DIRTY_SPEED = 250 * KNOT
 const DOWNWIND_ALTITUDE = 600 * FEET
 const BREAK_SPEED = 215 * KNOT // held through the back half of the break: at idle with the boards out a 64° break is below 210 knots before the nose is round
 const SETTLED_SPEED = 150 * KNOT // the turn waits for this: above it the arc from a mile abeam needs more bank than the pattern allows, and the groove is entered fast
-const ONSPEED_CAS = 140 * KNOT // the lever's speed target while the jet is dirty and fast; on-speed itself is the alpha the law holds
+const ONSPEED_CAS = 140 * KNOT // the lever's speed target while the jet is dirty and fast; on-speed itself is the alpha the stick holds
+const ONSPEED_ALPHA = 8.1 // degrees: the indexer's doughnut, and the alpha the approach law's datum settles on
 const PATTERN_BANK = 27 // "bank 27-30°"
 const ABEAM_SINK = -(250 / 60) * FEET // "start down at 200-300 FPM"
 const NINETY_SINK = -(500 / 60) * FEET // "The 90: 450', 500 FPM"
-const TURN_START = 100 // m short of the touchdown where the final turn begins - abeam the ship's stern: the arc's first half carries the jet ~1.2 km further astern before the second brings it to the line, so the 90 falls about 1.3 NM out and the roll-out about a mile out on the slope; every 100 m the turn starts further astern is 100 m more groove
+const TURN_START = 1300 // m short of the touchdown where the final turn begins. The arc rolls out on the line at the along it started from - its first half carries the jet a radius further astern, the second brings it back - so where the turn starts is the length of the groove: 1.3 km is the three-quarter-mile groove the book flies, and the 90 falls about 1.3 NM out. Started abeam the stern, as a go-around's re-entry once did, the roll-out came a few hundred metres out and high
 const INTERCEPT = 0.035 // degrees of intercept angle per metre off the landing line, for the last of the turn: 45° a mile out, 10° at 300 m, so the line is joined tangentially rather than crossed
 const TURN_TOTAL = 189 // degrees from the downwind to the landing heading: the reciprocal plus the angled deck
 
@@ -150,6 +154,19 @@ const TURN_TOTAL = 189 // degrees from the downwind to the landing heading: the 
 // commands alpha about the trimmed alpha, and a centred stick is on-speed.
 const G_SPAN = 6.3
 const UA_SPEED = 124 // m/s: below this with HALF or FULL selected the powered-approach law flies
+
+// How fast a hand moves the lever on approach, in travel per second: the
+// path loop's corrections run well inside it, and what it stops is a lever
+// stepped across half its travel in one frame. A go-around's full power is
+// thrown, not moved, and is not held to it.
+const HAND = 0.15
+
+// The final turn's stick and lever (see the approach law below). TILT is the
+// stick for the bank's share of lift, per unit of 1/cos - 1: 0.15 at 30°,
+// about two degrees of alpha. INDEXER is the lever per degree of alpha off
+// on-speed.
+const TILT = 1
+const INDEXER = 0.06
 
 // mulberry32: a seeded pseudo-random stream, so a seed replays a pilot.
 function stream(seed: number): () => number {
@@ -206,9 +223,12 @@ export function demonstration_start(seed: number): Demonstration {
     cas: 0,
     trend: 0,
     throttle: 0.5,
+    lever: 0.5,
     trim: 0,
     idling: false,
     pull: 0,
+    nose: 0,
+    carry: 0,
     seated: false,
     targets: { altitude: WAKE_ALTITUDE, vertical: 0, cas: WAKE_SPEED, heading: 0, bank: 0 },
   }
@@ -251,6 +271,7 @@ export function demonstration_step(
   if (!d.seated && pic.speed > 50) {
     d.seated = true
     d.throttle = pic.throttle // the lever starts where the spawn's trim left it
+    d.lever = pic.throttle
   }
 
   const downwind = (pic.ship.course + 180) % 360
@@ -273,7 +294,8 @@ export function demonstration_step(
   let speedbrake = 0
   let power: number | null = null // a lever position instead of a loop
   let decelerating = false // dirty and slowing to on-speed: the lever idles while the jet is fast
-  let margin = 10 * KNOT // how far over on-speed counts as fast for that
+  const margin = 10 * KNOT // how far over on-speed counts as fast for that
+  let climb = 3 // m/s: the fastest climb the height loop may ask for
   let released = false
 
   // The pass is over: the sea, or a jet that has stopped rolling. Through
@@ -338,6 +360,8 @@ export function demonstration_step(
       const astern = pic.groove.along - TURN_START - (h.late / 500) * 300
       if (d.configured && astern > 0 && (settled || astern > 1852)) {
         enter(d, 'turn', time)
+        d.carry = 0
+        d.trim = 0 // the turn learns its own, on the indexer
       }
       break
     }
@@ -353,8 +377,12 @@ export function demonstration_step(
       const g = pic.groove
       cas = ONSPEED_CAS
       const remaining = Math.abs(wrap(pic.heading - g.heading))
-      limit = PATTERN_BANK + 8
+      limit = PATTERN_BANK + 3
       if (remaining > 60) {
+        // The bank the arc needs at the speed flown, to the pattern's limit:
+        // on-speed alpha in a bank is a faster jet, so the arc steepens a
+        // little, and a bank sized for on-speed instead let a jet ten knots
+        // over cross the line by 285 m. Past the limit the intercept absorbs it.
         const radius = clamp(Math.abs(g.right) / Math.max(1 - Math.cos(remaining * DEGREE), 0.02), 400, 6000)
         const needed = Math.atan((pic.speed * pic.speed) / (9.81 * radius)) / DEGREE
         bank = -clamp(needed, 10, limit)
@@ -372,12 +400,15 @@ export function demonstration_step(
       // at up to the 90's 500 fpm - on this geometry the 90 falls about
       // 1.3 NM out, so it is flown on the slope near 550 ft rather than at
       // the moving-ship pattern's 450.
+      // No idle through the turn: the jet began it slow, and a lever idled
+      // for the speed a dive had built sank the turn further, then came back
+      // to approach power in one step. Speed still over is the book power's
+      // to bleed, the path the stick's to hold meanwhile.
       const outbound = remaining > TURN_TOTAL / 2
-      decelerating = true // through the whole turn: a jet still fast keeps the lever at idle and trades the speed with the nose
-      if (!outbound) margin = 18 * KNOT // inbound the slope is the point: a few knots over are traded with the nose, and the lever stays with the path so a roll-out under the slope can climb to it
       if (outbound) {
         altitude = DOWNWIND_ALTITUDE
         vertical = ABEAM_SINK
+        climb = 0 // a turn a little under 600 ft levels off rather than climbing back to it: the climb asked on top of a roll-in's sink swung the lever idle to 0.8
       } else {
         // Inbound the slope is flown as the groove flies it (below), at the
         // slope's own rate about the aim: a height loop capped at 500 fpm
@@ -406,17 +437,20 @@ export function demonstration_step(
       // yawed the jet twenty degrees and rolled it onto its back on the
       // deck. So the drift habit is gone by 800 m, and the correction
       // tightens as the deck nears, under a bank that cannot strike a tip.
-      const right = lead + wander(time, h.drift, h.phase[2]) * clamp((g.along - 300) / 1200, 0, 1)
-      const correction = clamp(-(Math.atan2(right, Math.max(150, g.along + 150)) / DEGREE) * 1.8, -15, 15)
+      const right = lead + wander(time, h.drift, h.phase[2]) * clamp((g.along - 900) / 1000, 0, 1) // the drift is worked out by 900 m: the LSO writes up two metres from in close, five is gross
+      // Three and a half times the angle to the line: at 1.8 a roll-out ten
+      // metres right closed at half a metre a second and was still five
+      // metres right in close.
+      const correction = clamp(-(Math.atan2(right, Math.max(150, g.along + 150)) / DEGREE) * 3.5, -15, 15)
       heading = g.heading + correction - crab // the heading that puts the TRACK there
       const riding = -Math.max(0, Math.min(80, d.closing)) * SLOPE
-      // The aim: a little above the slope through the groove - the lens
-      // allows the hook 1.8° high but only 0.7° low, and the loop's own
-      // wander is a few metres either way - coming down onto it over the
-      // last 300 m. Never under it: a jet asked for extra sink over the
-      // round-down, with the lever's answer four seconds behind, struck the
-      // ramp; a float over the wires is only a bolter.
-      const above = 2.5 * clamp(g.along / 300, 0, 1)
+      // The aim: a metre and a half above the slope through the groove - the
+      // lens allows the hook 1.8° high but only 0.7° low, the LSO writes up
+      // 0.4° either way, and the loop's own wander is a metre or two - coming
+      // down onto it over the last 180 m. Never under it: a jet asked for
+      // extra sink over the round-down, with the lever's answer four seconds
+      // behind, struck the ramp; a float over the wires is only a bolter.
+      const above = Math.min(1.5, 2.5 * clamp(g.along / 300, 0, 1))
       const aim = Math.min(DOWNWIND_ALTITUDE, g.slope + above)
       const high = pic.altitude - aim
       // The lens is asymmetric - the hook may ride 1.8° high but only 0.7° low
@@ -424,7 +458,7 @@ export function demonstration_step(
       // gently, at no more than 1.2 m/s past the slope's own rate, and a low
       // one is climbed back to promptly. A correction that dived a 30 ft high
       // ball at a kilometre sailed through the slope to the low call.
-      const gain = (g.along > 1500 ? 0.04 : g.along > 900 ? 0.06 : g.along > 300 ? 0.08 : 0.12) * h.ball
+      const gain = (g.along > 1500 ? 0.04 : g.along > 900 ? 0.1 : 0.12) * h.ball
       // A high ball is worked off at no more than 1.5 m/s past the slope's
       // own rate through the middle of the groove: the lever's answer runs
       // four seconds behind, and a steeper catch-up carried the jet from 50
@@ -499,7 +533,7 @@ export function demonstration_step(
   // phase's own rate.
   let want = vertical ?? 0
   if (altitude !== null) {
-    want = clamp((altitude - pic.altitude) * 0.25, -4, 3)
+    want = clamp((altitude - pic.altitude) * 0.25, -4, climb)
     if (vertical !== null) want = Math.max(want, vertical) // the phase's rate is the fastest the height loop may descend
   }
 
@@ -531,14 +565,26 @@ export function demonstration_step(
   // times as firmly as riding above it, since the low call comes at 0.7°
   // and the high one at 1.8°.
   const error = want - pic.vertical
-  const banked = Math.pow(Math.cos(clamp(Math.abs(pic.bank), 0, 60) * DEGREE), -1.5)
+  // In the final turn the book is read off the bank the pilot is rolling
+  // to, not the bank the jet has yet: the power goes on with the roll-in and
+  // comes off with the roll-out, ahead of the sink or the float it would
+  // otherwise chase four seconds late.
+  const leading = d.phase === 'turn' ? bankWant : pic.bank
+  const banked = Math.pow(Math.cos(clamp(Math.abs(leading), 0, 60) * DEGREE), -1.5)
   const book = clamp((0.34 + 0.023 * want) * banked, 0.02, 0.6)
   // A sink still building past the wanted rate is met on the acceleration,
   // before the rate itself has run away: the lever's answer arrives four
   // seconds on, and waiting for the error alone put the jet 20 ft under the
   // slope at 600 m every time. A wanted sink beginning is left to build.
-  const arresting = d.acceleration < 0 && error > -0.5 ? 0.25 : 0.06
-  const correcting = clamp(error * (error > 0 ? 0.08 : 0.02) - d.acceleration * arresting, -0.25, 0.35)
+  // On the groove only: in the final turn the roll-in itself is a building
+  // sink, and met on the acceleration the lever went to 0.75 and the turn
+  // was flown at 165 knots.
+  const arresting = d.phase === 'groove' && d.acceleration < 0 && error > -0.5 ? 0.25 : 0.06
+  const correcting = clamp(error * 0.08 - d.acceleration * arresting, -0.25, 0.35) // a high ball met at 0.02 let the roll-out's excess speed ride the whole start of the groove as height, and at 0.05 a metre and a half above the aim was carried from the middle to the ramp
+  // The burble: astern of the island the air sinks, more the lower the jet,
+  // and the lever's answer to the sink it makes arrives too late for the
+  // ramp. A little power in close, before the sink shows, as the LSO teaches.
+  const burble = d.phase === 'groove' ? 0.035 * clamp((300 - pic.groove.along) / 150, 0, 1) : 0
   if (!pa) {
     // Up and away the stick is a load: the one that holds the path in this
     // bank, plus the vertical-speed error, less the acceleration already
@@ -555,46 +601,112 @@ export function demonstration_step(
     // The powered approach law commands alpha, and which control flies the
     // path depends on how fast the jet is. Dirty and fast the law's datum is
     // the level-flight alpha for the speed, so power only accelerates: the
-    // stick sets the path and the lever the speed. On speed the datum is
-    // fixed at 8.1° and a centred stick holds it, so the nose is left nearly
-    // alone and the height is flown with power - the lever the integrator,
-    // the sink error its rate, the vertical acceleration its damping. The
-    // blend between the two rides the alpha itself, which is where the law's
-    // own blend lives.
-    // Between 160 and 140 knots the law's own datum is already pulling the
-    // nose toward on-speed alpha, which at those speeds is a climb: the
-    // stick has to hold the path against it (a push) while the speed comes
-    // off, so the frontside share stays at full strength down to 150 knots.
-    const onspeed = clamp((150 * KNOT - pic.cas) / (10 * KNOT), 0, 1) // 0 at 150 knots and above, 1 at 140 and below
+    // stick sets the path and the lever the speed. From 155 knots down the
+    // stick holds on-speed alpha, as the pilot's does on the indexer, and
+    // the height is flown with power - the lever the integrator, the sink
+    // error its rate, the vertical acceleration its damping. Held at 8.1°
+    // while still a few knots fast, the nose trades the excess for height
+    // and the lever answers with less, so the speed settles on-speed by the
+    // 90 rather than riding into the groove ten knots over; a stick that
+    // flew the path here left the speed wherever the turn had it.
+    // The law gives about 14° of alpha to a full pull, so 0.06 of stick per
+    // degree of error asks for most of the error back, and the law's own
+    // integrator holds the rest; the pitch rate damps it.
+    // Which regime is read on the indexer, not the airspeed: banked, the jet
+    // is on-speed ten or fifteen knots faster than level, and a hold keyed
+    // to 150 knots switched itself off through the whole final turn.
+    const onspeed = clamp(pic.alpha - 6, 0, 1) // 0 at 6° and below, 1 from 7° up: blended wider, the two regimes fought through the final turn and the lever rang with them
     // Slowing dirty, the lever stays at idle and the speed comes off - low
     // as well as fast, it is the nose that trades the speed for height (the
     // stick's frontside share), never the lever: power on a fast dirty jet
     // only makes it faster. Everywhere else the path loop owns the lever,
     // taking it at the book's approach power when the idle regime hands
-    // over.
-    const idling = decelerating && pic.cas > (cas ?? ONSPEED_CAS) + margin
-    const slowing = idling ? 0 : clamp((pic.cas - ONSPEED_CAS) * 0.01, 0, 0.1) // a little nose for a little speed, once the lever is flying the path
-    pitch = clamp((want - pic.vertical) * (0.08 * (1 - onspeed) + 0.012 * onspeed) + slowing, -0.35, 0.35)
+    // over. Fast is read on the indexer, not the airspeed alone: banked, the
+    // jet is on-speed at 150 knots, and a lever idled for those ten knots
+    // sank the whole final turn at idle and rolled out 100 ft under the slope.
+    const idling = decelerating && pic.cas > (cas ?? ONSPEED_CAS) + margin && pic.alpha < ONSPEED_ALPHA - 1.5
+    const pathing = (want - pic.vertical) * 0.08
+    // The law's datum is the level-flight alpha until the jet is nearly
+    // on-speed, so a proportional pull alone leaves the nose a degree short
+    // of the doughnut while the speed is still coming off, as it is through
+    // the whole final turn; the pilot trims that out, and so does this: a
+    // slow stick offset learned from the alpha error, held while the hold
+    // is flying and let go as the jet speeds up again.
+    const turning = d.phase === 'turn'
+    if (turning) {
+      // held: the turn's stick is the path's, and what it trims is the groove's
+    } else if (onspeed > 0.5) d.nose = clamp(d.nose + (ONSPEED_ALPHA - pic.alpha) * 0.03 * dt, -0.15, 0.15)
+    else d.nose *= Math.max(0, 1 - dt / 2)
+    // On-speed the stick still lends the path a little: the lever alone
+    // works the path through the speed and swings the jet through the
+    // phugoid every ten seconds, and a touch of nose with the power - as
+    // the pilot gives it - damps that. A sink error of two metres a second
+    // costs half a degree of alpha, inside what the LSO writes up.
+    const holding = (ONSPEED_ALPHA - pic.alpha) * 0.06 - pic.rate * 0.3 + (want - pic.vertical) * 0.015 + d.nose
+    const approaching = clamp(pathing * (1 - onspeed) + holding * onspeed, -0.5, 0.5) // a push of 0.35 held a fast dirty jet level against the law's rising datum and never started it down
+    // The final turn is flown the other way round: the stick for the path,
+    // the lever for the indexer. Rolling in tilts a seventh of the lift away
+    // at once, and only the nose answers that in time - the lever, flying
+    // the path, chased the sink it could not stop to 0.8, bred a dive and a
+    // float, and swung idle to half and back through the whole turn. So the
+    // stick pulls the bank's share as the wings go down (the law's datum is
+    // the one-g alpha) and holds the path; the jet reads a little slow, and
+    // the lever adds power for it until the speed the bank wants has built
+    // and the indexer is back on the doughnut, and takes it off as the
+    // wings level. Past 9.8° the nose eases whatever the path asks, and the
+    // roll-in sinks a little rather than flying that slow: held to the path
+    // at 10.9° from a 133-knot start, the lever added 0.4 for it and the
+    // speed then overshot to 155.
+    // What the bank's share leaves over - less once the jet is fast, more
+    // while it is still slow - a slow trim learns, leaking over six seconds
+    // so it only ever holds what the path keeps asking for: on the share
+    // alone a turn 15 knots fast climbed 200 fpm against a wanted descent.
+    if (turning) d.carry = clamp(d.carry * (1 - dt / 6) + (want - pic.vertical) * 0.03 * dt, -0.12, 0.12)
+    const banking = (1 / Math.cos(clamp(Math.abs(pic.bank), 0, 60) * DEGREE) - 1) * TILT
+    const steering = clamp(pathing - d.acceleration * 0.03 + banking + d.carry - Math.max(0, pic.alpha - 9.8) * 0.12, -0.5, 0.5)
+    // Into the groove the ball is flown with power and the nose on the
+    // doughnut; the change of hands is made over three seconds, not in one
+    // frame, or the nose steps as the pass begins.
+    const handover = d.phase === 'groove' ? clamp((time - d.since) / 3, 0, 1) : 1
+    pitch = turning ? steering : steering * (1 - handover) + approaching * handover
     if (power !== null) throttle = power
     else if (idling) {
       d.idling = true
       d.throttle = clamp(d.throttle + speeding * dt, 0, 1)
       throttle = d.throttle
+    } else if (turning) {
+      // The lever for the indexer: the book's power for the bank being
+      // rolled to, and more while the jet reads slow, less while fast -
+      // one loop for both, so a jet still fast from the downwind is slowed
+      // without the lever ever going to idle, and the speed a dive would
+      // have built is never asked for.
+      // A slow trim learns what the book misses on this descent in this
+      // bank: on the proportional term alone the turn settled a degree fast
+      // and handed the groove 155 knots, which the lever then had to idle off.
+      // And the speed's own trend damps it: power still on while the speed is
+      // already building is what carries it past on-speed, so the handful
+      // comes off as the speed comes up, before the indexer reads fast.
+      d.idling = false
+      d.trim = clamp(d.trim + (pic.alpha - ONSPEED_ALPHA) * 0.01 * dt, -0.1, 0.1)
+      throttle = Math.max(0.05, book + d.trim + (pic.alpha - ONSPEED_ALPHA) * INDEXER - d.trend * 0.06)
+      d.throttle = clamp(book + d.trim, 0.05, 1)
     } else {
       if (d.idling) d.trim = 0 // the idle regime hands over: the book value alone, until the path says otherwise
       d.idling = false
-      if (d.phase === 'groove') d.trim = clamp(d.trim + error * 0.003 * dt, -0.1, 0.1) // learnt on the groove alone: the turn's errors are its bank's, and what it taught the trim flew the groove a quarter of a lever short
+      if (d.phase === 'groove' && pic.groove.along < 1500) d.trim = clamp(d.trim + error * 0.006 * dt, -0.08, 0.08) // learnt on the groove alone, and only once the entry has settled: the turn's errors are its bank's, and a trim that learned the entry's swing flew the rest of the groove a tenth of a lever short. Quick enough inside the mile to take out the book's own error, which at half this rate carried the jet four metres high from the middle to the wires and over them
       // Slow is the one thing a pass must not be: above 10° the lever comes
       // up whatever the height loop says.
       if (pic.alpha > 10) d.trim = Math.min(0.25, d.trim + 0.4 * dt)
       // Never quite idle on the path: idle sinks the jet at 8.5 m/s, twice
       // the slope's rate, and a few seconds of it is a hole the LSO's low
       // call finds before the lever can fill it.
-      throttle = Math.max(0.05, book + d.trim + correcting)
+      throttle = Math.max(0.05, book + d.trim + correcting + burble)
       d.throttle = clamp(book + d.trim, 0.05, 1) // the lever the idle regime resumes from
     }
   }
   throttle = clamp(throttle, 0, cas === BREAK_SPEED ? 0.8 : 1)
+  if (pa && power === null) throttle = d.lever + clamp(throttle - d.lever, -HAND * dt, HAND * dt) // the hand's pace: leaving the idle regime stepped the lever from 0 to 0.51 in one frame
+  d.lever = throttle
   if (!pa || power !== null) d.throttle = throttle
   d.targets = {
     altitude: altitude ?? pic.altitude,
