@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#م} other {#م}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ه} other {#ه}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}، {from} کان {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} جو نالو"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} کان {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# وڌيڪ} other {+# وڌيڪ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ڇڪيو</0> يا <1>←→</1> گھمڻ لاءِ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "تار 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "تار 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 ڪلاڪ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "تار 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "تار 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "جهاز جو ماڊل <0>“F/A-18C Hornet”</0> پاران <1>Creador
 msgid "Alerts"
 msgstr "ڊيڄاريون"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "سڄو ڏينهن"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "سڀ موڊ"
@@ -478,6 +505,10 @@ msgstr "گهٽ کان وڌيڪ"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "اڻ برابري"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "سمنڊ ۾"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "بورڊ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "بولٽر"
 
@@ -635,6 +667,10 @@ msgstr "دلچسپي وڌايو"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "ڪناري جو رنگ"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "بوٽ"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR، شروع کان ئي هٿيار آزاد"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "لاڪ ڪريو / آزاد ڪريو"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "ڪئلينڊر سرور"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "تبديل ٿيو"
 msgid "Changed {field}"
 msgstr "{field} تبديل ٿيو"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "تبديل ٿيل واقعو"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "تعاقب وارو منظر:"
@@ -856,6 +901,10 @@ msgstr "چيڪ بڪس"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "چيڪ لسٽ"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "تاريخ چونڊيو"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} سان ٽڪر"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "رنگ"
 
@@ -1055,6 +1105,10 @@ msgstr "جاري رکو"
 msgid "Continue with {label}"
 msgstr "{label} سان جاري رکو"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} سان جاري رکو"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "ڪاپي ٿيو"
@@ -1063,6 +1117,10 @@ msgstr "ڪاپي ٿيو"
 msgid "Copied to clipboard"
 msgstr "ڪلپ بورڊ تي ڪاپي ٿيو"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "ڪاپي ڪريو"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "ڪسٽم"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "خطرناڪ"
 
@@ -1543,6 +1602,10 @@ msgstr "خالي پائلون"
 msgid "Enable sound"
 msgstr "آواز فعال ڪريو"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "شروع ٿيڻ کان اڳ ختم ٿئي ٿو"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "حملو پيو ڪريان"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "ضميمو اپ لوڊ ڪرڻ ۾ ناڪام"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "وچولو"
 
@@ -2216,6 +2280,10 @@ msgstr "کاٻي انجڻ بند"
 msgid "L GEAR"
 msgstr "کاٻو گيئر"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "لينڊنگ"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "نگراني"
 msgid "Monday"
 msgstr "سومر"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "مهينو"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "وڌيڪ اختيار"
@@ -2564,6 +2636,13 @@ msgstr "منتقل ٿيو"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} منتقل ٿيو"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} ڏانهن منتقل ٿي رهيو آهي"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "نئين گيم"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "اڳيون تصوير"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "ايندڙ مهينو"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "ايندڙ سال"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "ڪو ورلڊ سرور ناهي."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "بنا درجي"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "آف لائين"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "ٺيڪ"
 
@@ -3059,6 +3148,14 @@ msgstr "دٻايو…"
 msgid "Previous image"
 msgstr "پوئيون تصوير"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "پوئيون مهينو"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "پوئيون سال"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "هن بورڊ ڪالم جو نالو تبديل ڪريو"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "رينڊرنگ <0>three.js</0> پاران (MIT لائسنس)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "ورجائي ٿو"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "مخالف جو انتظار"
 msgid "Watch"
 msgstr "ڏسو"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "بوٽ کي اڏائيندي ڏسو"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "صرف ڏٺو"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "لهڻ روڪيو"
 
@@ -4380,6 +4487,10 @@ msgstr "ياو کاٻي"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ياو ساڄي"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "سال"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

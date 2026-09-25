@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#דק} other {#דק}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#שב} other {#שב}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} עד {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "שם {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} עד {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# נוסף} two {+# נוספים} many {+# נוספים} other {+# נוספים}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>גרור</0> או <1>←→</1> להקפה"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "כבל 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "כבל 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 שעות"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "כבל 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "כבל 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "דגם מטוס <0>“F/A-18C Hornet”</0> מאת <1>CreadorDeMu</1> (S
 msgid "Alerts"
 msgstr "התראות"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "כל היום"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "כל המצבים"
@@ -478,6 +505,10 @@ msgstr "סדר עולה"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "אסימטריה"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "בים"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Board"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "בולטר"
 
@@ -635,6 +667,10 @@ msgstr "הגבר עניין"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "צבע מסגרת"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "בוט"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, אש חופשית מההתחלה"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "נעילה / שחרור"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "שרת יומנים"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "שונה"
 msgid "Changed {field}"
 msgstr "{field} שונה"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "מופע ששונה"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "תצוגת מרדף:"
@@ -856,6 +901,10 @@ msgstr "תיבת סימון"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "רשימת משימות"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "בחירת תאריך"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "התנגשות עם {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "צבע"
 
@@ -1055,6 +1105,10 @@ msgstr "המשך"
 msgid "Continue with {label}"
 msgstr "המשך עם {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "המשך עם {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "הועתק"
@@ -1063,6 +1117,10 @@ msgstr "הועתק"
 msgid "Copied to clipboard"
 msgstr "הועתק ללוח"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "העתק"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "מותאם אישית"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "מסוכן"
 
@@ -1543,6 +1602,10 @@ msgstr "פילון ריק"
 msgid "Enable sound"
 msgstr "הפעלת צליל"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "מסתיים לפני שהתחיל"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "אני עליו"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "העלאת הקובץ המצורף נכשלה"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "סביר"
 
@@ -2216,6 +2280,10 @@ msgstr "מנוע שמאל כבוי"
 msgid "L GEAR"
 msgstr "כן שמאלי"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "נחיתה"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "פיקוח"
 msgid "Monday"
 msgstr "יום שני"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "חודש"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "אפשרויות נוספות"
@@ -2564,6 +2636,13 @@ msgstr "הועבר"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} הועבר"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "מעביר אל {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "משחק חדש"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "התמונה הבאה"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "החודש הבא"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "השנה הבאה"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "אין שרת עולם."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "ללא ציון"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "לא מקוון"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "אישור"
 
@@ -3059,6 +3148,14 @@ msgstr "לחץ…"
 msgid "Previous image"
 msgstr "התמונה הקודמת"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "החודש הקודם"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "השנה הקודמת"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "שנה את שם עמודת הלוח הזו"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "רינדור באמצעות <0>three.js</0> (רישיון MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "חוזר"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "ממתין ליריב"
 msgid "Watch"
 msgstr "עקוב"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "צפייה בבוט מטיס אותו"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "במעקב בלבד"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "בטל נחיתה"
 
@@ -4380,6 +4487,10 @@ msgstr "סבסוב שמאלה"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "סבסוב ימינה"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "שנה"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

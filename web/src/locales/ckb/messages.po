@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#خ} other {#خ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ه} other {#ه}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}، لە {from} بۆ {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "ناوی {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "لە {from} بۆ {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# زیاتر} other {+# زیاتر}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ڕایبکێشە</0> یان <1>←→</1> بۆ سووڕانەوە"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "تێل 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "تێل 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "٢٤ کاتژمێر"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "تێل 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "تێل 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "مۆدێلی فڕۆکە <0>“F/A-18C Hornet”</0> لەلایەن <1>Cr
 msgid "Alerts"
 msgstr "ھۆشدارییەکان"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "هەموو ڕۆژ"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "هەموو دۆخەکان"
@@ -478,6 +505,10 @@ msgstr "سەرکەوتوو"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "ناهاوسەنگی"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "لە دەریادا"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "تەختە"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "بۆڵتەر"
 
@@ -635,6 +667,10 @@ msgstr "بەهێزکردنی بایەخ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "ڕەنگی سنوور"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "بۆت"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR، چەک ئازادە لە دەستپێکەوە"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "قفڵکردن / ئازادکردن"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "ڕاژەکاری ڕۆژژمێر"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "گۆڕدرا"
 msgid "Changed {field}"
 msgstr "{field} گۆڕدرا"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "ڕوودانی گۆڕاو"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "دیمەنی شوێنکەوتن:"
@@ -856,6 +901,10 @@ msgstr "بۆکسی پشکنین"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "لیستی پشکنین"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "بەروارێک هەڵبژێرە"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "پێکدادان لەگەڵ {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "ڕەنگ"
 
@@ -1055,6 +1105,10 @@ msgstr "بەردەوامبوون"
 msgid "Continue with {label}"
 msgstr "بەردەوامبە بە {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "بەردەوامبوون بە {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "کۆپی کرا"
@@ -1063,6 +1117,10 @@ msgstr "کۆپی کرا"
 msgid "Copied to clipboard"
 msgstr "کۆپی کرا بۆ کلیپبۆرد"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "کۆپیکردن"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "تایبەت"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "مەترسیدار"
 
@@ -1543,6 +1602,10 @@ msgstr "پایلۆنی بەتاڵ"
 msgid "Enable sound"
 msgstr "دەنگ چالاک بکە"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "پێش دەستپێکردن کۆتایی دێت"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "هێرش دەکەم"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "بارکردنی هاوپێچ سەرکەوتوو نەبوو"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "مامناوەند"
 
@@ -2216,6 +2280,10 @@ msgstr "بزوێنەری چەپ کوژاوەتەوە"
 msgid "L GEAR"
 msgstr "چەرخی چەپ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "نیشتنەوە"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "چاودێری"
 msgid "Monday"
 msgstr "دووشەممە"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "مانگ"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "هەڵبژاردنی زیاتر"
@@ -2564,6 +2636,13 @@ msgstr "گواسترایەوە"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} گواسترایەوە"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "گواستنەوە بۆ {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "یاری نوێ"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "وێنەی دواتر"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "مانگی داهاتوو"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "ساڵی داهاتوو"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "هیچ ڕاژەکارێکی جیهان نییە."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "بێ نمرە"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "دەرهێڵ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "باشە"
 
@@ -3059,6 +3148,14 @@ msgstr "دابگرە…"
 msgid "Previous image"
 msgstr "وێنەی پێشوو"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "مانگی پێشوو"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "ساڵی پێشوو"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "ناوگۆڕکردنی ئەم ستوونەی تەختە"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ڕێندەرکردن بە <0>three.js</0> ئەنجام دەدرێت (مۆڵەتی MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "دووبارە دەبێتەوە"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "چاوەڕوانی ڕکابەر"
 msgid "Watch"
 msgstr "چاودێری"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "سەیری بۆت بکە کە دەفڕێت"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "تەنها چاودێریکراو"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "نیشتنەوە ڕابگرە"
 
@@ -4380,6 +4487,10 @@ msgstr "سووڕان بۆ چەپ"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "سووڕان بۆ ڕاست"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "ساڵ"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

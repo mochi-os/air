@@ -399,6 +399,7 @@ export function bandit_init(config: {
   fuel?: number
   stage?: number // the brain's structural stage under evaluation (developer only); 0 or absent = as it stands
   omit?: number // stages left out of the stack beneath it, one bit per stage number (developer only)
+  hold?: boolean // the joust's weapons hold: the brain fires nothing until the 3/9 crossing
 }): boolean {
   if (!core?.bandit_init) return false
   const error = core.bandit_init(JSON.stringify(config))
@@ -453,6 +454,7 @@ export function bandit_step(rounds: number): {
   locked: boolean
   heater: boolean
   chaff: boolean
+  free: boolean
 } | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes, rounds)
@@ -466,6 +468,7 @@ export function bandit_step(rounds: number): {
     locked: (flags & 32) !== 0,
     heater: (flags & 64) !== 0,
     chaff: (flags & 128) !== 0,
+    free: (flags & 256) !== 0, // the brain's joust weapons are free: the merge is made, or there was no hold
   }
 }
 

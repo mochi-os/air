@@ -1434,6 +1434,16 @@ function MissionPanel({
                   />
                 </div>
 
+                {config.start === 'case1' && (
+                  <SwitchRow
+                    id='demonstration'
+                    tight
+                    label={<Trans>Watch a bot fly it</Trans>}
+                    checked={!!config.demonstration}
+                    onChange={(v) => set('demonstration', v)}
+                  />
+                )}
+
                 {config.start === 'carrier' && (
                   <div className='space-y-1'>
                     <Label className='text-muted-foreground text-xs font-medium uppercase'>
@@ -1641,6 +1651,10 @@ export function MissionSetup({
         <Trans>Joust</Trans> ·{' '}
         {BANDITS[String(config.bandit || 'pilot')] ?? BANDITS.pilot}
         {config.duel === 'bvr' ? ' · BVR' : ''}
+      </>
+    ) : config.start === 'case1' && config.demonstration ? (
+      <>
+        {STARTS.case1} · <Trans>bot</Trans>
       </>
     ) : (
       STARTS[config.start === 'landing' ? 'case2' : config.start]

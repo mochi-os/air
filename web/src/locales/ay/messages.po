@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#sem} other {#sem}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} {to} kama"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} suti"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} {to} kama"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# juk'ampi} other {+# juk'ampi}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Qatatiña</0> jan ukax <1>←→</1> muyuñataki"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "CABLE 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "CABLE 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 hora"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "CABLE 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "CABLE 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Avión modelo <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> lurata (Sk
 msgid "Alerts"
 msgstr "Yatiyawinaka"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Taqi uru"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Taqi lurañanaka"
@@ -478,6 +505,10 @@ msgstr "Wichhukama"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimetría"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Lamarana"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Tabla"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Munawi jiltayaña"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Borde colora"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, qalltatpacha nuwasiña qallti"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Llawintaña / antutaña"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Calendario servidor"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Mayjt'ayata"
 msgid "Changed {field}"
 msgstr "{field} mayjt'ayata"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Turkata lurawi"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Arkaña uñjawi:"
@@ -851,11 +896,15 @@ msgstr "Trampanaka"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checkbox"
-msgstr "Checkbox"
+msgstr "Casilla"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
-msgstr "Checklist"
+msgstr "Comprobación lista"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Mä uru ajlliña"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} UKAMPI NUWASIWI"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Colora"
 
@@ -1055,6 +1105,10 @@ msgstr "Sarantaña"
 msgid "Continue with {label}"
 msgstr "{label} ukampi sarantañani"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} ukamp sarantaña"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Copiatawa"
@@ -1063,6 +1117,10 @@ msgstr "Copiatawa"
 msgid "Copied to clipboard"
 msgstr "Clipboard-ru copiata"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Copiaña"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Sapa"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "PELIGROSO"
 
@@ -1543,6 +1602,10 @@ msgstr "Ch'usa pylon"
 msgid "Enable sound"
 msgstr "Sonido nakhtayaña"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Janïr qalltkipan tukusi"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "CH'AXWASKTWA"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Janiw archivo apxata apsuña atinkti"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "REGULAR"
 
@@ -2216,6 +2280,10 @@ msgstr "CH'IQA MOTOR JIWT'AYATA"
 msgid "L GEAR"
 msgstr "CH'IQA TREN"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Sarañaña"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderación"
 msgid "Monday"
 msgstr "Lunes"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Phaxsi"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Yaqha chimpunaka"
@@ -2564,6 +2636,13 @@ msgstr "Astata"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} astata"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} uksaru unuqtayaskiwa"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Machaqa anatawi"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Arkiri imagen"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Arkiri phaxsi"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Arkiri mara"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Janiw uraqpacha servidorax utjkiti."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "SIN NOTA"
 
@@ -2755,7 +2843,7 @@ msgstr "Janiwa"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Normal"
-msgstr "Walja"
+msgstr "Normal"
 
 #: src/components/GameCanvas.tsx
 msgid "NOSE GEAR"
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "jan mayachtʼata"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Walikiwa"
 
@@ -3059,6 +3148,14 @@ msgstr "Limt'am…"
 msgid "Previous image"
 msgstr "Nayrïri imagen"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Nayrïri phaxsi"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Nayrïri mara"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Aka board columna suti machaqachama"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderizado <0>three.js</0> ukampi lurata (MIT licencia)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Kutiptiwa"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4010,7 +4112,7 @@ msgstr "Walja mayiwinaka"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Patxa nivel"
+msgstr "Patxa"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4109,11 +4211,11 @@ msgstr "Feeds servicio ukamp sync lurañ janiw atkiti. Cacheata datos uñstayata
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Unassigned"
-msgstr "Janiw permitidakit"
+msgstr "Jan asignata"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 msgid "Unavailable"
-msgstr "Banx apaqaña"
+msgstr "Janiw utjkiti"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4127,7 +4229,7 @@ msgstr "Jan suyt'ata API pantjawi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
-msgstr "Unidades"
+msgstr "Estados Unidos"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
@@ -4140,7 +4242,7 @@ msgstr "Jan uñt'ata"
 
 #: src/components/Multiplayer.tsx
 msgid "Unlimited"
-msgstr "Juntayata jaytaña"
+msgstr "Jan límite"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -4164,12 +4266,12 @@ msgstr "Jan tukusiri combustible (taqpach anatirinaka)"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Unsubscribe"
-msgstr "CRM ukatpach suscripción jaytaña?"
+msgstr "Suscripción jaytaña"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/lib/entity-title.ts
 msgid "Untitled"
-msgstr "Jan sutini listing"
+msgstr "Jan sutini"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
@@ -4198,7 +4300,7 @@ msgstr "Passkey ukma apnaqama"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
-msgstr "Apnaqiri banata"
+msgstr "Apnaqiri"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"
@@ -4236,7 +4338,7 @@ msgstr "Video uñjaña: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Taqi uñjaña"
+msgstr "Uñjaña"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4249,11 +4351,11 @@ msgstr "Aka apnaqirin activa sesionanak uñjaña ukat jaytaña."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "View controls"
-msgstr "Uñjañaki"
+msgstr "Uñjañ controlanaka"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Nuwasiña"
+msgstr "Uñjatanaka"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4272,6 +4374,10 @@ msgstr "AWQARU SUYT'ASKI"
 msgid "Watch"
 msgstr "Uñch'ukita"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Uñjaña bot jalaskiri"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Uñjatakiw"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -4381,6 +4488,10 @@ msgstr "Guiñada ch'iqaru"
 msgid "Yaw right"
 msgstr "Guiñada kupiru"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Mara"
+
 #: src/components/GameCanvas.tsx
 msgid "YOU"
 msgstr "JUMA"
@@ -4403,7 +4514,7 @@ msgstr "Mä kuti jalatatxa, jaläwinakamax akan uñstani."
 
 #: src/components/Multiplayer.tsx
 msgid "your offer"
-msgstr "jumanki jaysawi"
+msgstr "ofertama"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Your text and attachments will be lost."

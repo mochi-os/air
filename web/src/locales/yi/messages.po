@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#מינ} other {#מינ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#וואָך} other {#וואָך}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} ביז {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} נאָמען"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} ביז {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# מער} other {+# מער}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>שלעפּ</0> אָדער <1>←→</1> צו קרייַזן"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "דראָט 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "דראָט 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 שעה"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "דראָט 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "דראָט 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "עראָפּלאַן מאָדעל <0>“F/A-18C Hornet”</0> פֿון <
 msgid "Alerts"
 msgstr "װאָרענונגען"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "אַ גאַנצן טאָג"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "אַלע מאָדנס"
@@ -478,6 +505,10 @@ msgstr "אַרויפֿגייענדיק"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "אַסימעטריע"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "אויפֿן ים"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "ברעט"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "באָלטער"
 
@@ -635,6 +667,10 @@ msgstr "פֿאַרשטאַרקן אינטערעס"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "ראַנד פֿאַרב"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "באָט"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, וואָפֿן פֿרײַ פֿון אָנהייב"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "פֿאַרשליסן / באַפֿרײַען"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "קאַלענדאַר־סערווער"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "געענדערט"
 msgid "Changed {field}"
 msgstr "געענדערט {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "געביטענע פֿאָרקומעניש"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "נאָכיאָג־בליק:"
@@ -856,6 +901,10 @@ msgstr "טשעקבאָקס"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "טשעקליסטע"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "קלײַבט אַ דאַטע"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "צונויפֿשטויס מיט {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "פֿאַרב"
 
@@ -1055,6 +1105,10 @@ msgstr "ממשיך"
 msgid "Continue with {label}"
 msgstr "המשך מיט {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "ווײַטער מיט {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "קאָפּירט"
@@ -1063,6 +1117,10 @@ msgstr "קאָפּירט"
 msgid "Copied to clipboard"
 msgstr "קאָפּירט צו קליפּברעט"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "קאָפּירן"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "מנהג"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "געפֿערלעך"
 
@@ -1543,6 +1602,10 @@ msgstr "ליידיקער פּילאָן"
 msgid "Enable sound"
 msgstr "אָנשטעלן קלאַנג"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "ענדיקט זיך איידער עס הייבט זיך אָן"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "איך אַטאַקיר"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "ניט געלונגען אַרויפֿצולאָדן בײַלאַגע"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "מיטלמעסיק"
 
@@ -2216,6 +2280,10 @@ msgstr "ל מאָטאָר אָפּגעשטעלט"
 msgid "L GEAR"
 msgstr "ל שאַסי"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "לאַנדונג"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "מאָדעראַציע"
 msgid "Monday"
 msgstr "מאָנטיק"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "חודש"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "מער אָפּציעס"
@@ -2564,6 +2636,13 @@ msgstr "אַריבערגעפֿירט"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "אַריבערגעפֿירט {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "פֿאַררוקן צו {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "נײַ שפּיל"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "ווײַטערדיק בילד"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "קומענדיקער חודש"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "קומענדיקער יאָר"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "נישטאָ קיין וועלט־סערווער."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "אָן צייכן"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ניט פֿאַרבונדן"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "גוט"
 
@@ -3059,6 +3148,14 @@ msgstr "דריק…"
 msgid "Previous image"
 msgstr "פֿריִערדיק בילד"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "פֿריִערדיקער חודש"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "פֿריִערדיקער יאָר"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "איבערטויפֿן די ברעט זײַל"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "רענדערינג דורך <0>three.js</0> (MIT ליצענץ)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "חזרט זיך"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "וואַרטן אויפֿן קעגנער"
 msgid "Watch"
 msgstr "נאָכקוק"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "זען ווי אַ באָט פֿליט"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "נאָר נאָכגעקוקט"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ברעך אָפּ די לאַנדונג"
 
@@ -4380,6 +4487,10 @@ msgstr "יאָ לינקס"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "יאָ רעכטס"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "יאָר"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

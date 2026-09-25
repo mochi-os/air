@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#hep} other {#hep}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} bilen {to} aralygy"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} ady"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} bilen {to} aralygy"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ýene} other {+# ýene}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Süýşüriň</0> ýa-da <1>←→</1> aýlanmak üçin"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "TROS 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "TROS 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 sagat"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "TROS 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "TROS 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Uçar modeli <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab)
 msgid "Alerts"
 msgstr "Duýduryşlar"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Bütin gün"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Ähli tertipler"
@@ -478,6 +505,10 @@ msgstr "Artýan tertipde"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimmetriýa"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Deňizde"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Tagta"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Gyzyklanmany ýokarlandyrmak"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Çäk reňki"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, ýaraglar başdan erkin"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Gulpla / boşat"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Senenama serweri"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Üýtgedildi"
 msgid "Changed {field}"
 msgstr "{field} üýtgedildi"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Üýtgedilen gaýtalanma"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Yzarlaýyş görnüşi:"
@@ -856,6 +901,10 @@ msgstr "Bellik gutusy"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Kontrol sanawy"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Senäni saýlaň"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} BILEN ÇAKYŞYK"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Reňk"
 
@@ -1055,6 +1105,10 @@ msgstr "Dowam etmek"
 msgid "Continue with {label}"
 msgstr "{label} bilen dowam et"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} bilen dowam et"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Göçürildi"
@@ -1063,6 +1117,10 @@ msgstr "Göçürildi"
 msgid "Copied to clipboard"
 msgstr "Aralyk buferine nusgalandy"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Nusgalamak"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Hususy"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "HOWPLY"
 
@@ -1543,6 +1602,10 @@ msgstr "Boş pilon"
 msgid "Enable sound"
 msgstr "Sesi işjeňleşdir"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Başlamanka tamamlanýar"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "HÜJÜM EDÝÄRIN"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Goşundy ýüklenmedi"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "ORTAÇA"
 
@@ -2216,6 +2280,10 @@ msgstr "ÇEP MOTOR ÖÇÜRILEN"
 msgid "L GEAR"
 msgstr "ÇEP ŞASSI"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Gonuş"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderasiýa"
 msgid "Monday"
 msgstr "Duşenbe"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Aý"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Köp opsiýalar"
@@ -2564,6 +2636,13 @@ msgstr "Göçürildi"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} göçürildi"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} senesine geçirilýär"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Täze oýun"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Indiki surat"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Indiki aý"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Indiki ýyl"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Dünýä serweri ýok."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "BAHA ÝOK"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "oflaýn"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Bolýar"
 
@@ -3059,6 +3148,14 @@ msgstr "Basyň…"
 msgid "Previous image"
 msgstr "Öňki surat"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Öňki aý"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Öňki ýyl"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Bu tagta sütüniniň adyny üýtget"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Şekillendirme <0>three.js</0> arkaly amala aşyrylýar (MIT ygtyýarnamasy)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Gaýtalanýar"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "GARŞYDAŞA GARAŞYLÝAR"
 msgid "Watch"
 msgstr "Synla"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Botuň uçuşyna tomaşa et"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Diňe synlandy"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "GONMAGY ÝATYR"
 
@@ -4380,6 +4487,10 @@ msgstr "Ryskan çepe"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Ryskan saga"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Ýyl"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

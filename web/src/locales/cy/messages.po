@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#mun} other {#mun}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#wyth} other {#wyth}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} i {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Enw {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} i {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, zero {+# arall} one {+# arall} two {+# arall} few {+# arall} many {+# arall} other {+# arall}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Llusgwch</0> neu <1>←→</1> i gylchdroi"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "CEBL 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "CEBL 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 awr"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "CEBL 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "CEBL 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Model awyren <0>“F/A-18C Hornet”</0> gan <1>CreadorDeMu</1> (Sketchf
 msgid "Alerts"
 msgstr "Rhybuddion"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Trwy'r dydd"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Pob modd"
@@ -478,6 +505,10 @@ msgstr "Esgynnol"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "anghymesuredd"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Ar y môr"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Bwrdd"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Hybu diddordeb"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Lliw ymyl"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, arfau'n rhydd o'r dechrau"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Cloi / rhyddhau"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Gweinydd calendr"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Newidiwyd"
 msgid "Changed {field}"
 msgstr "Newidiwyd {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Achlysur wedi'i newid"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Golwg ymlid:"
@@ -856,6 +901,10 @@ msgstr "Blwch ticio"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Rhestr wirio"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Dewiswch ddyddiad"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "GWRTHDRAWIAD Â {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Lliw"
 
@@ -1055,6 +1105,10 @@ msgstr "Parhau"
 msgid "Continue with {label}"
 msgstr "Parhau gyda {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Parhau gyda {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Copïwyd"
@@ -1063,6 +1117,10 @@ msgstr "Copïwyd"
 msgid "Copied to clipboard"
 msgstr "Wedi'i gopïo i'r clipfwrdd"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Copïo"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Wedi'i addasu"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "PERYGLUS"
 
@@ -1543,6 +1602,10 @@ msgstr "Peilon gwag"
 msgid "Enable sound"
 msgstr "Galluogi sain"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Yn gorffen cyn iddo ddechrau"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "DWI'N YMOSOD"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Methwyd llwytho'r atodiad"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "GWEDDOL"
 
@@ -2216,6 +2280,10 @@ msgstr "PEIRIANT CHWITH WEDI'I DDIFFODD"
 msgid "L GEAR"
 msgstr "OLWYN CHWITH"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Glanio"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Cymedroli"
 msgid "Monday"
 msgstr "Dydd Llun"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Mis"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Rhagor o opsiynau"
@@ -2564,6 +2636,13 @@ msgstr "Symudwyd"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Symudwyd {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Yn symud i {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Gêm newydd"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Delwedd nesaf"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Mis nesaf"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Blwyddyn nesaf"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Dim gweinydd byd."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "DIM GRADD"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "all-lein"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Iawn"
 
@@ -3059,6 +3148,14 @@ msgstr "Pwyswch…"
 msgid "Previous image"
 msgstr "Delwedd flaenorol"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Mis blaenorol"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Blwyddyn flaenorol"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Ailenwi'r golofn bwrdd hon"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendro gan <0>three.js</0> (trwydded MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Yn ailadrodd"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "YN AROS AM WRTHWYNEBYDD"
 msgid "Watch"
 msgstr "Gwylio"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Gwylio bot yn ei hedfan"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Wedi'i wylio yn unig"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ATAL Y GLANIO"
 
@@ -4380,6 +4487,10 @@ msgstr "Gwyro i'r chwith"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Gwyro i'r dde"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Blwyddyn"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

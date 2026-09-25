@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#മി} other {#മി}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ആ} other {#ആ}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} മുതൽ {to} വരെ"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} പേര്"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} മുതൽ {to} വരെ"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# കൂടി} other {+# കൂടി}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>വലിക്കുക</0> അല്ലെങ്കിൽ <1>←→</1> ചുറ്റാൻ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "കമ്പി 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "കമ്പി 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 മണിക്കൂർ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "കമ്പി 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "കമ്പി 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "വിമാന മാതൃക <0>“F/A-18C Hornet”</0>, നിർ�
 msgid "Alerts"
 msgstr "മുന്നറിയിപ്പുകൾ"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "ദിവസം മുഴുവൻ"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "എല്ലാ മോഡുകളും"
@@ -478,6 +505,10 @@ msgstr "ആരോഹണ ക്രമം"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "അസമമിതി"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "കടലിൽ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "ബോർഡ്"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "ബോൾട്ടർ"
 
@@ -635,6 +667,10 @@ msgstr "താൽപ്പര്യം വർദ്ധിപ്പിക്ക�
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "ബോർഡർ നിറം"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ബോട്ട്"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, തുടക്കം മുതൽ ആയുധങ്ങൾ സ്�
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ലോക്ക് ചെയ്യുക / സ്വതന്ത്രമാക്കുക"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "കലണ്ടർ സെർവർ"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -763,7 +803,7 @@ msgstr "അടിക്കുറിപ്പ്"
 
 #: src/components/MissionSetup.tsx
 msgid "Case I"
-msgstr "Case I"
+msgstr "കേസ് I"
 
 #: src/components/MissionSetup.tsx
 msgid "Case I (day)"
@@ -775,7 +815,7 @@ msgstr "Case I: കപ്പലിന്റെ വേക്കിലൂടെ �
 
 #: src/components/MissionSetup.tsx
 msgid "Case II"
-msgstr "Case II"
+msgstr "കേസ് II"
 
 #: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
@@ -787,7 +827,7 @@ msgstr "Case II: ഫൈനലിൽ, {heading}, 1200', ഗിയർ, ഫ്ല�
 
 #: src/components/MissionSetup.tsx
 msgid "Case III"
-msgstr "Case III"
+msgstr "കേസ് III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -826,6 +866,11 @@ msgstr "മാറ്റി"
 msgid "Changed {field}"
 msgstr "{field} മാറ്റി"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "മാറ്റിയ ആവർത്തനം"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "പിന്തുടരൽ കാഴ്ച:"
@@ -856,6 +901,10 @@ msgstr "ചെക്ക്ബോക്സ്"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "ചെക്ക്‌ലിസ്റ്റ്"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "ഒരു തീയതി തിരഞ്ഞെടുക്കുക"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign}-മായി കൂട്ടിയിടി"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "നിറം"
 
@@ -1055,6 +1105,10 @@ msgstr "തുടരുക"
 msgid "Continue with {label}"
 msgstr "{label} ഉപയോഗിച്ച് തുടരുക"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} ഉപയോഗിച്ച് തുടരുക"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "പകർത്തി"
@@ -1063,6 +1117,10 @@ msgstr "പകർത്തി"
 msgid "Copied to clipboard"
 msgstr "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "പകർത്തുക"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "ഇഷ്ടാനുസൃതം"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "അപകടകരം"
 
@@ -1543,6 +1602,10 @@ msgstr "ഒഴിഞ്ഞ പൈലൺ"
 msgid "Enable sound"
 msgstr "ശബ്ദം പ്രവർത്തനക്ഷമമാക്കുക"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "തുടങ്ങുന്നതിനു മുമ്പ് അവസാനിക്കുന്നു"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "ആക്രമിക്കുന്നു"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "അറ്റാച്ച്മെന്റ് അപ്‌ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "ശരാശരി"
 
@@ -2216,6 +2280,10 @@ msgstr "ഇടത് എഞ്ചിൻ ഓഫ്"
 msgid "L GEAR"
 msgstr "ഇടത് ചക്രം"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "ലാൻഡിംഗ്"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "മോഡറേഷൻ"
 msgid "Monday"
 msgstr "തിങ്കളാഴ്ച"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "മാസം"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "കൂടുതൽ ഓപ്ഷനുകൾ"
@@ -2564,6 +2636,13 @@ msgstr "നീക്കി"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} നീക്കി"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} എന്നതിലേക്ക് നീക്കുന്നു"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "പുതിയ ഗെയിം"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "അടുത്ത ചിത്രം"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "അടുത്ത മാസം"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "അടുത്ത വർഷം"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "വേൾഡ് സെർവർ ഇല്ല."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "ഗ്രേഡ് ഇല്ല"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ഓഫ്‌ലൈൻ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "ശരി"
 
@@ -2916,7 +3005,7 @@ msgstr "നോട്ടം സ്വതന്ത്രം"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Parent"
-msgstr "parent"
+msgstr "പാരന്റ്"
 
 #: src/components/GameCanvas.tsx
 msgid "PARK"
@@ -3059,10 +3148,18 @@ msgstr "അമർത്തുക…"
 msgid "Previous image"
 msgstr "മുമ്പത്തെ ഫോട്ടോ"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "മുൻ മാസം"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "മുൻ വർഷം"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
-msgstr "സ്വകാര്യതാ നയം"
+msgstr "സ്വകാര്യത"
 
 #: src/components/GameCanvas.tsx
 msgid "PROBE"
@@ -3079,7 +3176,7 @@ msgstr "പ്രോസസ്സ് ചെയ്യുന്നു…"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Profile saved"
-msgstr "നിരോധിതമോ നിയമവിരുദ്ധമോ ആയ ഇനം"
+msgstr "പ്രൊഫൈൽ സംരക്ഷിച്ചു"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
@@ -3145,7 +3242,7 @@ msgstr "സമീപകാലം"
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 msgid "Recommended"
-msgstr "ശുപാർശ ചെയ്യുന്ന CRM-കൾ"
+msgstr "ശുപാർശ ചെയ്തത്"
 
 #: ../../../lib/web/src/lib/chat-ui.ts
 msgid "Reconnecting ({retries})..."
@@ -3255,7 +3352,7 @@ msgstr "\"{0}\" എന്നതിനുള്ള ആക്‌സസ് നി�
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Remove access?"
-msgstr "അക്കൗണ്ട് നീക്കം ചെയ്യണോ?"
+msgstr "ആക്സസ് നീക്കം ചെയ്യണോ?"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -3264,7 +3361,7 @@ msgstr "item നീക്കം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Remove item"
-msgstr "ലിസ്റ്റിങ് നീക്കം ചെയ്യുക"
+msgstr "ഇനം നീക്കം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
@@ -3274,11 +3371,11 @@ msgstr "ലിങ്ക് നീക്കം ചെയ്യുക"
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename"
-msgstr "കോളം പുനർനാമകരണം ചെയ്യുക"
+msgstr "പുനർനാമകരണം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename column"
-msgstr "പേജ് പുനർനാമകരണം ചെയ്യുക"
+msgstr "കോളം പുനർനാമകരണം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename this board column"
@@ -3288,10 +3385,15 @@ msgstr "design മാറ്റിസ്ഥാപിക്കണോ?"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "റെൻഡറിംഗ് <0>three.js</0> വഴി (MIT ലൈസൻസ്)."
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "ആവർത്തിക്കുന്നു"
+
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Reply"
-msgstr "റിപ്പോർട്ട് ചെയ്യുക"
+msgstr "മറുപടി"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -3300,7 +3402,7 @@ msgstr "{0} എന്നയാൾക്ക് മറുപടി..."
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
-msgstr "Reserve പൂർത്തിയായില്ല"
+msgstr "ആവശ്യമാണ്"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Resend email"
@@ -3328,15 +3430,15 @@ msgstr "കാഴ്ച പുനഃസജ്ജമാക്കുക"
 
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx
 msgid "Resign"
-msgstr "ഗെയിം പിന്മാറണോ?"
+msgstr "പിന്മാറുക"
 
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx
 msgid "Resign game?"
-msgstr "പിന്മാറുന്നു..."
+msgstr "ഗെയിമിൽ നിന്ന് പിന്മാറണോ?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "പരിഹരിക്കുക"
+msgstr "പരിഹാരം"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3423,7 +3525,7 @@ msgstr "RSS ആക്‌സസ് പിൻവലിച്ചു"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
-msgstr "റാങ്ക്"
+msgstr "RSS ഫീഡ്"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"
@@ -4038,7 +4140,7 @@ msgstr "HUD ന് അരികിലെ ആമ്പർ ലൈറ്റിന�
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim hat"
-msgstr "ട്രിം തൊപ്പി"
+msgstr "ട്രിം ഹാറ്റ്"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4272,6 +4374,10 @@ msgstr "എതിരാളിക്കായി കാത്തിരിക്�
 msgid "Watch"
 msgstr "നിരീക്ഷിക്കുക"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "ബോട്ട് പറത്തുന്നത് കാണുക"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "വാച്ച് ചെയ്തവ മാത്രം"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ഗോ എറൗണ്ട്"
 
@@ -4380,6 +4487,10 @@ msgstr "യാവ് ഇടത്തേക്ക്"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "യാവ് വലത്തേക്ക്"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "വർഷം"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

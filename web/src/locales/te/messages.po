@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#ని} other {#ని}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#వా} other {#వా}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} నుండి {to} వరకు"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} పేరు"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} నుండి {to} వరకు"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# మరిన్ని} other {+# మరిన్ని}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>లాగండి</0> లేదా <1>←→</1> చుట్టూ తిరగడానికి"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "కేబుల్ 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "కేబుల్ 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 గంటలు"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "కేబుల్ 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "కేబుల్ 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "విమానం మోడల్ <0>“F/A-18C Hornet”</0>, <1>Cread
 msgid "Alerts"
 msgstr "హెచ్చరికలు"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "రోజంతా"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "అన్ని మోడ్‌లు"
@@ -478,6 +505,10 @@ msgstr "ఆరోహణ"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "అసమతుల్యత"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "సముద్రంలో"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "బోర్డు"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "బోల్టర్"
 
@@ -635,6 +667,10 @@ msgstr "ఆసక్తిని పెంచండి"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "అంచు రంగు"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "బాట్"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, మొదటి నుంచే ఆయుధాలు స్వే�
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "లాక్ చేయి / విడుదల చేయి"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "క్యాలెండర్ సర్వర్"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "మార్చబడింది"
 msgid "Changed {field}"
 msgstr "{field} మార్చబడింది"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "మార్చిన పునరావృత్తి"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "వెంబడింపు వీక్షణ:"
@@ -856,6 +901,10 @@ msgstr "చెక్‌బాక్స్"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "చెక్‌లిస్ట్"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "తేదీని ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} తో ఢీకొన్నారు"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "రంగు"
 
@@ -1055,6 +1105,10 @@ msgstr "కొనసాగించండి"
 msgid "Continue with {label}"
 msgstr "{label}తో కొనసాగించండి"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} తో కొనసాగించండి"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "కాపీ అయింది"
@@ -1063,6 +1117,10 @@ msgstr "కాపీ అయింది"
 msgid "Copied to clipboard"
 msgstr "క్లిప్‌బోర్డ్‌కి కాపీ చేయబడింది"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "కాపీ చేయండి"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "అనుకూల"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "ప్రమాదకరం"
 
@@ -1543,6 +1602,10 @@ msgstr "ఖాళీ పైలాన్"
 msgid "Enable sound"
 msgstr "ధ్వనిని ప్రారంభించండి"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "ప్రారంభానికి ముందే ముగుస్తుంది"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "దాడి చేస్తున్నా"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "జోడింపును అప్‌లోడ్ చేయడంలో విఫలమైంది"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "సగటు"
 
@@ -2216,6 +2280,10 @@ msgstr "ఎడమ ఇంజిన్ ఆఫ్"
 msgid "L GEAR"
 msgstr "ఎడమ గేర్"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "ల్యాండింగ్"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "మోడరేషన్"
 msgid "Monday"
 msgstr "సోమవారం"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "నెల"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "మరిన్ని ఎంపికలు"
@@ -2564,6 +2636,13 @@ msgstr "తరలించబడింది"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} తరలించబడింది"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0}కి తరలిస్తోంది"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "కొత్త గేమ్"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "తదుపరి చిత్రం"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "తదుపరి నెల"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "తదుపరి సంవత్సరం"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "వరల్డ్ సర్వర్ లేదు."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "గ్రేడ్ లేదు"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ఆఫ్‌లైన్"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "సరే"
 
@@ -3059,6 +3148,14 @@ msgstr "నొక్కండి…"
 msgid "Previous image"
 msgstr "మునుపటి చిత్రం"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "మునుపటి నెల"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "మునుపటి సంవత్సరం"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "ఈ బోర్డ్ కాలమ్ పేరును మార్�
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "రెండరింగ్ <0>three.js</0> ద్వారా (MIT లైసెన్స్)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "పునరావృతమవుతుంది"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "ప్రత్యర్థి కోసం వేచి ఉంది"
 msgid "Watch"
 msgstr "చూడండి"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "బాట్ ఎగరడాన్ని చూడండి"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "వాచ్ చేసినవి మాత్రమే"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "గో అరౌండ్"
 
@@ -4380,6 +4487,10 @@ msgstr "యా ఎడమకు"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "యా కుడికి"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "సంవత్సరం"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#daq} other {#daq}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#tor} other {#tor}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} hanga {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Maqaa {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} hanga {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# dabalataa} other {+# dabalataa}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Harkisi</0> ykn <1>←→</1> naanna'uuf"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "HAADA 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "HAADA 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "Sa'aatii 24"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "HAADA 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "HAADA 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Moodeelii xayyaaraa <0>“F/A-18C Hornet”</0> kan <1>CreadorDeMu</1> (
 msgid "Alerts"
 msgstr "Akeekkachiisa"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Guyyaa guutuu"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Haala hunda"
@@ -478,6 +505,10 @@ msgstr "Ol kaʼaa"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "madaallii dhabuu"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Galaana irratti"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Boordii"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Fedhii cimsi"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Halluu marsaa"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "botii"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, meeshaaleen jalqabaa kaasee bilisa"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Cufi / gadi dhiisi"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Sarvarii kaalaandarii"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Jijjiirameera"
 msgid "Changed {field}"
 msgstr "{field} jijjiirameera"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Taatee jijjiirame"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Mul'ata ari'achuu:"
@@ -856,6 +901,10 @@ msgstr "Saanduqa filannoo"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Tarree shakkii"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Guyyaa filadhu"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} WAJJIN WAL DHAHE"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Halluu"
 
@@ -1055,6 +1105,10 @@ msgstr "Itti fufi"
 msgid "Continue with {label}"
 msgstr "{label} waliin itti fufi"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} waliin itti fufi"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Garagalfame"
@@ -1063,6 +1117,10 @@ msgstr "Garagalfame"
 msgid "Copied to clipboard"
 msgstr "Garagalfamee gara saanduqa garagalchaa"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Garagalchi"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Mataa keetiin"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "BALAA"
 
@@ -1543,6 +1602,10 @@ msgstr "Paayilonii duwwaa"
 msgid "Enable sound"
 msgstr "Sagalee banuu"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Osoo hin jalqabin xumurama"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "HALEELAA JIRA"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Mallattoo olkaa'uu hin dandeenye"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "GIDDUGALEESSA"
 
@@ -2216,6 +2280,10 @@ msgstr "INJINII BITAA DHAAMSAMEERA"
 msgid "L GEAR"
 msgstr "GOMMAA BITAA"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Qubannaa"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Too'annoo"
 msgid "Monday"
 msgstr "Wiixata"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Ji'a"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Filannoo dabalataa"
@@ -2564,6 +2636,13 @@ msgstr "Sochoofameera"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} sochoofameera"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Gara {0} sochoosaa jira"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Taphaa haaraa"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Suuraa itti aanu"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Ji'a itti aanu"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Waggaa itti aanu"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Serveriin addunyaa hin jiru."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "QABXII HIN JIRU"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "toora alaa"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Tole"
 
@@ -3059,6 +3148,14 @@ msgstr "Dhiibi…"
 msgid "Previous image"
 msgstr "Suuraa duraa"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Ji'a darbe"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Waggaa darbe"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Maqaa tarjaa gabatee kanaa jijjiiri"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderingiin <0>three.js</0> tiin raawwatama (hayyama MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Ni irra deebi'a"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "MORKATAA EEGAA JIRA"
 msgid "Watch"
 msgstr "Daawwadhu"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Botiin yeroo balali'u ilaali"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Kan daawwataman qofa"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "QUBACHUU DHAABI"
 
@@ -4380,6 +4487,10 @@ msgstr "Yaw bitaatti"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw mirgatti"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Waggaa"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

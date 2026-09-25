@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#nóim} other {#nóim}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#sea} other {#sea}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} go {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Ainm {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} go {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# eile} two {+# eile} few {+# eile} many {+# eile} other {+# eile}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Tarraing</0> nó <1>←→</1> chun fithisiú"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "CÁBLA 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "CÁBLA 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 uair"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "CÁBLA 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "CÁBLA 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Múnla aerárthaigh <0>“F/A-18C Hornet”</0> le <1>CreadorDeMu</1> (S
 msgid "Alerts"
 msgstr "Foláirimh"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Lá iomlán"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Gach mód"
@@ -478,6 +505,10 @@ msgstr "Ardaitheach"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "neamhshiméadracht"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Ar muir"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Clár"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Spreag spéis"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Dath na himlíne"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bota"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, airm saor ón tús"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Glasáil / scaoil"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Freastalaí féilire"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Athraithe"
 msgid "Changed {field}"
 msgstr "Athraíodh {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Tarlú athraithe"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Amharc tóraíochta:"
@@ -856,6 +901,10 @@ msgstr "Ticbhosca"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Seicliosta"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Roghnaigh dáta"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "IMBHUALADH LE {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Dath"
 
@@ -1055,6 +1105,10 @@ msgstr "Lean ar aghaidh"
 msgid "Continue with {label}"
 msgstr "Lean ar aghaidh le {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Lean ar aghaidh le {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Cóipeáilte"
@@ -1063,6 +1117,10 @@ msgstr "Cóipeáilte"
 msgid "Copied to clipboard"
 msgstr "Cóipeáilte chuig an ngearrthaisce"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Cóipeáil"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Saincheaptha"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "CONTÚIRTEACH"
 
@@ -1543,6 +1602,10 @@ msgstr "Piolón folamh"
 msgid "Enable sound"
 msgstr "Cumasaigh fuaim"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Críochnaíonn sé sula dtosaíonn sé"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "TÁIM AG IONSAÍ"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Theip ar uaslódáil ceangaltáin"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "MEASARTHA"
 
@@ -2216,6 +2280,10 @@ msgstr "INNEALL CLÉ MÚCHTA"
 msgid "L GEAR"
 msgstr "ROTH CLÉ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Tuirlingt"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Modhnóireacht"
 msgid "Monday"
 msgstr "Dé Luain"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Mí"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Tuilleadh roghanna"
@@ -2564,6 +2636,13 @@ msgstr "Bogtha"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Bogadh {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Á bhogadh go {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Cluiche nua"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "An chéad íomhá eile"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "An mhí seo chugainn"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "An bhliain seo chugainn"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Níl aon fhreastalaí domhain ann."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "GAN GHRÁD"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "as líne"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Brúigh…"
 msgid "Previous image"
 msgstr "Íomhá roimhe seo"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "An mhí roimhe seo"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "An bhliain roimhe seo"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Athainmnigh colún an chláir seo"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rindreáil le <0>three.js</0> (ceadúnas MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Athdhéantar é"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "AG FANACHT LE CÉILE COMHRAIC"
 msgid "Watch"
 msgstr "Faire"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Féach ar bhota á eitilt"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Faoi fhaire amháin"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ÉIRIGH AS AN TUIRLINGT"
 
@@ -4380,6 +4487,10 @@ msgstr "Casadh ar chlé"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Casadh ar dheis"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Bliain"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

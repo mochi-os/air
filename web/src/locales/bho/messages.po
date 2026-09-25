@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#मि} other {#मि}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#सप्ता} other {#सप्ता}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} से {to} तक"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} के नाम"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} से {to} तक"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# अउरी} other {+# अउरी}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>खींचीं</0> भा <1>←→</1> घुमावे खातिर"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "तार 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "तार 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 घंटा"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "तार 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "तार 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "हवाई जहाज मॉडल <0>“F/A-18C Hornet”</0> <1>Cr
 msgid "Alerts"
 msgstr "चेतावनी"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "पूरा दिन"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "सब मोड"
@@ -478,6 +505,10 @@ msgstr "बढ़त क्रम"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "असंतुलन"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "समुद्र में"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "बोर्ड"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "बोल्टर"
 
@@ -635,6 +667,10 @@ msgstr "रुचि बढ़ाईं"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "किनारा रंग"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "बॉट"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, शुरुए से हथियार आज़ाद"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "लॉक करीं / मुक्त करीं"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "कैलेंडर सर्वर"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "बदलल गइल"
 msgid "Changed {field}"
 msgstr "{field} बदलल गइल"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "बदलल गइल दोहराव"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "पाछा दृश्य:"
@@ -856,6 +901,10 @@ msgstr "Checkbox"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checklist"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "तारीख चुनीं"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} से टक्कर"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "रंग"
 
@@ -1055,6 +1105,10 @@ msgstr "जारी रखीं"
 msgid "Continue with {label}"
 msgstr "{label} के साथ आगे बढ़ीं"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} से आगे बढ़ीं"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "कॉपी हो गइल"
@@ -1063,6 +1117,10 @@ msgstr "कॉपी हो गइल"
 msgid "Copied to clipboard"
 msgstr "क्लिपबोर्ड पर कॉपी कइल गइल"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "कॉपी करीं"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "अनुकूलित"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "खतरनाक"
 
@@ -1543,6 +1602,10 @@ msgstr "खाली पाइलन"
 msgid "Enable sound"
 msgstr "आवाज चालू करीं"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "शुरू होखे से पहिले खतम हो जाला"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "हमला करत बानी"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "अटैचमेंट अपलोड करे में विफल"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "मध्यम"
 
@@ -2216,6 +2280,10 @@ msgstr "बावां इंजन बंद"
 msgid "L GEAR"
 msgstr "बावां गियर"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "लैंडिंग"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "मॉडरेशन"
 msgid "Monday"
 msgstr "सोमवार"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "महीना"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "अउरी विकल्प"
@@ -2564,6 +2636,13 @@ msgstr "खिसकावल गइल"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} खिसकावल गइल"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} पर खिसकावल जा रहल बा"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "नया खेल"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "अगिला तस्वीर"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "अगिला महीना"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "अगिला साल"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "कवनो वर्ल्ड सर्वर नइखे।"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "ग्रेड नइखे"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ऑफलाइन"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "ठीक बा"
 
@@ -3059,6 +3148,14 @@ msgstr "दबाईं…"
 msgid "Previous image"
 msgstr "पिछिला तस्वीर"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "पिछला महीना"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "पिछला साल"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "ए बोर्ड कॉलम के नाम बदलीं"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "रेंडरिंग <0>three.js</0> से होला (MIT लाइसेंस)।"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "दोहरावेला"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "प्रतिद्वंद्वी के इंतजार बा
 msgid "Watch"
 msgstr "देखीं"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "बॉट के उड़ावत देखीं"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "खाली देखल"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "गो अराउंड"
 
@@ -4380,6 +4487,10 @@ msgstr "यॉ बाएँ"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "यॉ दाहिने"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "साल"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#ph} other {#ph}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#tu} other {#tu}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} đến {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Tên {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} đến {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, other {+# nữa}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Kéo</0> hoặc <1>←→</1> để xoay quanh"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "CÁP 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "CÁP 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 giờ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "CÁP 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "CÁP 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Mô hình máy bay <0>“F/A-18C Hornet”</0> của <1>CreadorDeMu</1> 
 msgid "Alerts"
 msgstr "Cảnh báo"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Cả ngày"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Tất cả chế độ"
@@ -478,6 +505,10 @@ msgstr "Tăng dần"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "bất đối xứng"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Trên biển"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Bảng"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Đẩy mạnh sở thích"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Màu viền"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, vũ khí tự do từ đầu"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Khóa / nhả"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Máy chủ lịch"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Đã thay đổi"
 msgid "Changed {field}"
 msgstr "Đã thay đổi {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Lần lặp đã thay đổi"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Góc nhìn bám đuôi:"
@@ -856,6 +901,10 @@ msgstr "Hộp kiểm"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Danh sách kiểm tra"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Chọn ngày"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "VA CHẠM VỚI {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Màu"
 
@@ -1055,6 +1105,10 @@ msgstr "Tiếp tục"
 msgid "Continue with {label}"
 msgstr "Tiếp tục với {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Tiếp tục với {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Đã sao chép"
@@ -1063,6 +1117,10 @@ msgstr "Đã sao chép"
 msgid "Copied to clipboard"
 msgstr "Đã sao chép vào bộ nhớ tạm"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Sao chép"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Tùy chỉnh"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "NGUY HIỂM"
 
@@ -1543,6 +1602,10 @@ msgstr "Giá treo trống"
 msgid "Enable sound"
 msgstr "Bật âm thanh"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Kết thúc trước khi bắt đầu"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "VÀO CÔNG KÍCH"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Không tải tệp đính kèm lên được"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "TRUNG BÌNH"
 
@@ -2216,6 +2280,10 @@ msgstr "ĐC TRÁI TẮT"
 msgid "L GEAR"
 msgstr "CÀNG TRÁI"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Hạ cánh"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Kiểm duyệt"
 msgid "Monday"
 msgstr "Thứ Hai"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Tháng"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Tùy chọn khác"
@@ -2564,6 +2636,13 @@ msgstr "Đã di chuyển"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Đã di chuyển {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Đang chuyển đến {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Trò chơi mới"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Hình tiếp theo"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Tháng sau"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Năm sau"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Không có máy chủ thế giới."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "KHÔNG XẾP LOẠI"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ngoại tuyến"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Nhấn…"
 msgid "Previous image"
 msgstr "Hình trước"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Tháng trước"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Năm trước"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Đổi tên cột bảng này"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Kết xuất đồ họa bằng <0>three.js</0> (giấy phép MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Được lặp lại"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "ĐANG CHỜ ĐỐI THỦ"
 msgid "Watch"
 msgstr "Theo dõi"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Xem bot bay"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Chỉ đã theo dõi"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "BAY VÒNG LẠI"
 
@@ -4380,6 +4487,10 @@ msgstr "Đảo lái trái"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Đảo lái phải"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Năm"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

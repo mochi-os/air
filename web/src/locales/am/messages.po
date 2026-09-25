@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#ደ} other {#ደ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ሳ} other {#ሳ}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, ከ{from} እስከ {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "የ{entityLabel} ስም"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "ከ{from} እስከ {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ተጨማሪ} other {+# ተጨማሪ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ጎትት</0> ወይም <1>←→</1> ለመዞር"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "ገመድ 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "ገመድ 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 ሰዓት"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "ገመድ 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "ገመድ 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "የአውሮፕላን ሞዴል <0>“F/A-18C Hornet”</0> በ<1>Creado
 msgid "Alerts"
 msgstr "ማስጠንቀቂያዎች"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "ሙሉ ቀን"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "ሁሉም ሁነታዎች"
@@ -478,6 +505,10 @@ msgstr "ከታች ወደ ላይ"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "አለመመጣጠን"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "በባሕር ላይ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "ሰሌዳ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "ቦልተር"
 
@@ -635,6 +667,10 @@ msgstr "ፍላጎትን አሳድግ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "የጠርዝ ቀለም"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ቦት"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR፣ ውጊያ ከመነሻ ይጀምራል"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ቆልፍ / ልቀቅ"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "የቀን መቁጠሪያ ሰርቨር"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "ተቀይሯል"
 msgid "Changed {field}"
 msgstr "{field} ተቀይሯል"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "የተቀየረ ድግግሞሽ"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "የክትትል እይታ:"
@@ -856,6 +901,10 @@ msgstr "ቼክቦክስ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "ዝርዝር"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "ቀን ይምረጡ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ከ{callsign} ጋር ተጋጭቷል"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "ቀለም"
 
@@ -1055,6 +1105,10 @@ msgstr "ቀጥል"
 msgid "Continue with {label}"
 msgstr "በ{label} ይቀጥሉ"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "በ{providerLabel} ይቀጥሉ"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "ተቀድቷል"
@@ -1063,6 +1117,10 @@ msgstr "ተቀድቷል"
 msgid "Copied to clipboard"
 msgstr "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "ቅዳ"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "ብጁ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "አደገኛ"
 
@@ -1543,6 +1602,10 @@ msgstr "ባዶ ፓይሎን"
 msgid "Enable sound"
 msgstr "ድምፅ አንቃ"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "ከመጀመሩ በፊት ያበቃል"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "እያጠቃሁ ነው"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "አባሪ መስቀል አልተሳካም"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "መካከለኛ"
 
@@ -2216,6 +2280,10 @@ msgstr "ግራ ሞተር ጠፍቷል"
 msgid "L GEAR"
 msgstr "ግራ ጎማ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "ማረፊያ"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "ቁጥጥር"
 msgid "Monday"
 msgstr "ሰኞ"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "ወር"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "ተጨማሪ አማራጮች"
@@ -2564,6 +2636,13 @@ msgstr "ተንቀሳቅሷል"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} ተንቀሳቅሷል"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "ወደ {0} በማንቀሳቀስ ላይ"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "አዲስ ጨዋታ"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "ቀጣይ ምስል"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "ቀጣይ ወር"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "ቀጣይ ዓመት"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "የዓለም አገልጋይ የለም።"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "ደረጃ የለም"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ከመስመር ውጭ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "እሺ"
 
@@ -3059,6 +3148,14 @@ msgstr "ተጫን…"
 msgid "Previous image"
 msgstr "ቀዳሚ ምስል"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "ቀዳሚ ወር"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "ቀዳሚ ዓመት"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "የዚህ ቦርድ አምድ ስም ቀይር"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ሬንደሪንግ በ<0>three.js</0> ይከናወናል (የMIT ፈቃድ)።"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "ይደገማል"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "ተቃዋሚ በመጠበቅ ላይ"
 msgid "Watch"
 msgstr "ተከታተል"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "ቦት ሲበር ይመልከቱ"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "የተመለከቱ ብቻ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ጎ አራውንድ"
 
@@ -4380,6 +4487,10 @@ msgstr "ያው ወደ ግራ"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ያው ወደ ቀኝ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "ዓመት"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#분} other {#분}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#주} other {#주}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day} {from}~{to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} 이름"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from}~{to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, other {+#개 더}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>드래그</0> 또는 <1>←→</1> 로 선회"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "1번 와이어"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "2번 와이어"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24시간"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "3번 와이어"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "4번 와이어"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "항공기 모델 <0>“F/A-18C Hornet”</0>, 제작 <1>CreadorDeMu</1> 
 msgid "Alerts"
 msgstr "경고"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "종일"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "모든 모드"
@@ -478,6 +505,10 @@ msgstr "오름차순"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "비대칭"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "해상"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "보드"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "볼터"
 
@@ -635,6 +667,10 @@ msgstr "관심도 부스트"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "테두리 색상"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "봇"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, 시작부터 무기 자유"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "고정 / 해제"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "캘린더 서버"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "변경됨"
 msgid "Changed {field}"
 msgstr "{field} 변경됨"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "변경된 일정"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "추적 시점:"
@@ -856,6 +901,10 @@ msgstr "체크박스"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "체크리스트"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "날짜 선택"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign}와(과) 충돌"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "색상"
 
@@ -1055,6 +1105,10 @@ msgstr "계속"
 msgid "Continue with {label}"
 msgstr "{label}(으)로 계속하기"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel}(으)로 계속"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "복사됨"
@@ -1063,6 +1117,10 @@ msgstr "복사됨"
 msgid "Copied to clipboard"
 msgstr "클립보드에 복사되었어요"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "복사"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "사용자 지정"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "위험"
 
@@ -1543,6 +1602,10 @@ msgstr "빈 파일런"
 msgid "Enable sound"
 msgstr "소리 켜기"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "시작하기 전에 종료됨"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "교전 개시"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "첨부 파일 업로드에 실패했어요"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "보통"
 
@@ -2216,6 +2280,10 @@ msgstr "좌 엔진 정지"
 msgid "L GEAR"
 msgstr "좌 기어"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "착함"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "중재"
 msgid "Monday"
 msgstr "월요일"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "월"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "추가 옵션"
@@ -2564,6 +2636,13 @@ msgstr "이동됨"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} 이동됨"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0}(으)로 이동 중"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "새 게임"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "다음 이미지"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "다음 달"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "다음 연도"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "월드 서버가 없습니다."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "등급 없음"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "오프라인"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "확인"
 
@@ -3059,6 +3148,14 @@ msgstr "누르세요…"
 msgid "Previous image"
 msgstr "이전 이미지"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "이전 달"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "이전 연도"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "이 보드 열 이름 변경"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "렌더링은 <0>three.js</0> 사용 (MIT 라이선스)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "반복됨"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "상대를 기다리는 중"
 msgid "Watch"
 msgstr "관찰"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "봇이 비행하는 것을 보기"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "관찰 중만"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "복행"
 
@@ -4380,6 +4487,10 @@ msgstr "왼쪽 요"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "오른쪽 요"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "연도"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

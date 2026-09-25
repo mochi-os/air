@@ -266,6 +266,7 @@ export interface MissionConfig {
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
   start: 'air' | 'runway' | 'carrier' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205)
+  demonstration: boolean // a Case I start flown by the scripted pilot while the player watches (engine demonstration.ts); inert for every other start
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
   pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
   cat: number // carrier-start catapult 1-4
@@ -367,6 +368,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   sticks: {},
   keys: {},
   start: 'carrier',
+  demonstration: false,
   servers: '',
   pilot: '',
   cat: 2,
