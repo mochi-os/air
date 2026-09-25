@@ -62,6 +62,10 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {中弹 # 发}}"
 
 #. placeholder {0}: displayInfo.count
+#. placeholder {0}: selectedIds.length
+#. placeholder {0}: unknownIds.length
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {已选 #} other {已选 #}}"
@@ -922,6 +926,7 @@ msgstr "选择语言"
 #: ../../../lib/web/src/components/banner-section.tsx
 #: ../../../lib/web/src/components/colour-picker.tsx
 #: ../../../lib/web/src/components/colour-picker.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: ../../../lib/web/src/components/travelling-picker.tsx
@@ -953,22 +958,15 @@ msgstr "向{side}做脱离转弯，随后在 500' 平行于 {heading}，300 节�
 msgid "Climb out: runway heading {heading}, 350 knots"
 msgstr "爬升离场: 跑道航向 {heading}，350 节"
 
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/ui/dialog.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/sheet.tsx
+#: ../../../lib/web/src/components/ui/side-panel.tsx
+#: ../../../lib/web/src/components/ui/side-panel.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "关闭"
-
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx
-#: ../../../lib/web/src/components/entity/add-field-dialog.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Close dialog"
-msgstr "关闭对话框"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
@@ -1484,7 +1482,6 @@ msgid "Does not match the required pattern"
 msgstr "与所需的模式不匹配"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
-#: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Done"
@@ -3361,6 +3358,8 @@ msgstr "移除 {0} 筛选"
 
 #: ../../../lib/web/src/components/member-list.tsx
 #: ../../../lib/web/src/components/member-list.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
 msgid "Remove {name}"
 msgstr "移除 {name}"
 
