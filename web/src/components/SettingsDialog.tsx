@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import {
   useEffect,
+  useId,
   useRef,
   useState,
   type ChangeEvent,
@@ -801,6 +802,7 @@ function SoundPanel({
     ...((config.volume ?? {}) as Record<string, number>),
   }
   const sound = config.sound !== false
+  const masterVolumeId = useId()
   return (
     <div className='space-y-4'>
       <SwitchRow
@@ -810,25 +812,21 @@ function SoundPanel({
         onChange={(v) => set('sound', v)}
       />
 
-      <SectionLabel>
+      <SectionLabel id={masterVolumeId}>
         <Trans>Master volume</Trans>
       </SectionLabel>
       <div
         className={`flex items-center gap-4 p-3${sound ? '' : 'opacity-50'}`}
       >
         <Slider
-          value={volume.master}
+          aria-labelledby={masterVolumeId}
+          value={[volume.master]}
           min={0}
           max={100}
           step={5}
           disabled={!sound}
           className='flex-1'
-          onChange={(e) =>
-            set('volume', {
-              ...volume,
-              master: parseFloat(e.currentTarget.value),
-            })
-          }
+          onValueChange={([master]) => set('volume', { ...volume, master })}
         />
         <span
           className='text-foreground bg-muted border-border rounded border px-1.5 py-0.5 font-mono text-xs font-semibold tabular-nums'
