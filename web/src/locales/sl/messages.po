@@ -440,7 +440,7 @@ msgstr "Zasidrani strani"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Android push obvestila"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -765,8 +765,12 @@ msgstr "Kamera ni na voljo"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Prekliči"
 
@@ -924,10 +928,14 @@ msgstr "Izberite jezik"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Počisti"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Jasno"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -2241,7 +2249,7 @@ msgstr "Dvoboj proti botu"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Igralna palica"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "Strežnik MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Srednje"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Srednje"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Napaka omrežja"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Novo"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Najnovejše"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "Obvestila: {0}"
 msgid "Novice"
 msgstr "Začetnik"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Številka"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Številka"
 
@@ -2914,8 +2934,9 @@ msgstr "brez povezave"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "V redu"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "Ups! Strani ni bilo mogoče najti!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Odpri"
+msgstr "Odprto"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3445,7 +3466,7 @@ msgstr "Odstopi od igre?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Resolucija"
+msgstr "Ločljivost"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "Iskanje..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Izberi"
+msgstr "Izbira"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "STRUKTURA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Zadeva"
+msgstr "Uporabnik ali skupina"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Nadčloveški"
 msgid "Switch to view 1-9"
 msgstr "Preklopi na pogled 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistem"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
@@ -4119,7 +4144,7 @@ msgstr "Preveč zahtev"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Vrh"
+msgstr "Najboljše"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4362,7 +4387,7 @@ msgstr "Kontrole pogleda"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Ogledi"
+msgstr "Pogledi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4533,7 +4558,7 @@ msgstr "Vaše besedilo bo izgubljeno."
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom"
-msgstr "Zoom"
+msgstr "Povečava"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom in"

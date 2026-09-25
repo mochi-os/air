@@ -440,7 +440,7 @@ msgstr "Закотвени страни"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push за Android"
+msgstr "Пуш за Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -560,7 +560,7 @@ msgstr "Назад на почетна"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Повик за ball: одговори, лета по ball до допирот"
+msgstr "Повик за топката: одговори, лета по топката до допирот"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -653,11 +653,11 @@ msgstr "БОЛТЕР"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: полн гас, сопирачки внатре, кука долу, качи се на 1200', сврти низветер, {heading}"
+msgstr "Болтер: полн гас, сопирачки внатре, кука долу, качи се на 1200', сврти низветер, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: полн гас, сопирачки внатре, кука долу, качи се на 600', сврти низветер, {heading}"
+msgstr "Болтер: полн гас, сопирачки внатре, кука долу, качи се на 600', сврти низветер, {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -694,7 +694,7 @@ msgstr "СВРТИ КОГА СИ ПОДГОТВЕН"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: рамен свртеж, гас на минимум, сопирачки надвор, повлечи 1 g на секои 100 јазли"
+msgstr "Свртување: рамен свртеж, гас на минимум, сопирачки надвор, повлечи 1 g на секои 100 јазли"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -765,8 +765,12 @@ msgstr "Камерата не е достапна"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Откажи"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -924,10 +928,14 @@ msgstr "Избери јазик"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Исчисти"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ведро"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1636,7 +1644,7 @@ msgstr "Внесете го кодот од вашата е-пошта"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Enter your authenticator code"
-msgstr "Внесете го кодот од authenticator"
+msgstr "Внесете го кодот од автентикаторот"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -2082,7 +2090,7 @@ msgstr "Историја"
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 msgid "Home"
-msgstr "Дома"
+msgstr "Почетна"
 
 #: src/components/GameCanvas.tsx
 msgid "hook"
@@ -2375,7 +2383,7 @@ msgstr "Врска"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
-msgstr "Линкови"
+msgstr "Врски"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Средно"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Средно"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Грешка во мрежата"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Ново"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Најново"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "Известувања: {0}"
 msgid "Novice"
 msgstr "Почетник"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Број"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Број"
 
@@ -2914,8 +2934,9 @@ msgstr "офлајн"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Во ред"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "Упс! Страницата не е пронајдена!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Отвори"
+msgstr "Отворено"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3029,12 +3050,12 @@ msgstr "Паркинг кочница"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Passkey"
-msgstr "Криптографски клуч"
+msgstr "Клуч за пристап"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "Потврдата на passkey не успеа. Обидете се повторно."
+msgstr "Потврдата на клучот за пристап не успеа. Обидете се повторно."
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
@@ -3125,11 +3146,11 @@ msgstr "Почекајте момент и обидете се повторно.
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
-msgstr "Позитивно качување: трап горе; закрилца на auto при 250 јазли"
+msgstr "Позитивно качување: трап горе; закрилца на авто при 250 јазли"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
-msgstr "Позитивно качување: земи ја палката, трап горе, закрилца на auto"
+msgstr "Позитивно качување: земи ја палката, трап горе, закрилца на авто"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3201,7 +3222,7 @@ msgstr "Јавни сервери"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push известување"
+msgstr "Пуш известување"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3623,7 +3644,7 @@ msgstr "Пребарување..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Избери"
+msgstr "Избор"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3863,7 +3884,7 @@ msgstr "Превлекување, конфигурација за слетува
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "Десен бок: држи 800'; break по прамецот"
+msgstr "Десен бок: држи 800'; свртување по прамецот"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3892,7 +3913,7 @@ msgstr "СТРУКТУРА"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Предмет"
+msgstr "Корисник или група"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Натчовечки"
 msgid "Switch to view 1-9"
 msgstr "Префрли на приказ 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Систем"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Систем"
 
@@ -3994,7 +4019,7 @@ msgstr "Премногу големо за прикачување. Отстра�
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45-ката: 325-375', влези во groove, {heading}, лета по ball со гас"
+msgstr "45-ката: 325-375', влези во финалното приоѓање, {heading}, лета по топката со гас"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4022,7 +4047,7 @@ msgstr "Мисијата запре."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Барањето за passkey не доби одговор"
+msgstr "Барањето за клуч за пристап не доби одговор"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "Серверот врати веб-страница наместо по�
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "Оваа апликација нема дозвола да го користи вашиот passkey. Дозволете го во Поставки, под Дозволи."
+msgstr "Оваа апликација нема дозвола да го користи вашиот клуч за пристап. Дозволете го во Поставки, под Дозволи."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "Премногу барања"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Врв"
+msgstr "Најдобри"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4301,7 +4326,7 @@ msgstr "Напредок на прикачувањето"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "Користете го вашиот passkey"
+msgstr "Користете го вашиот клуч за пристап"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4345,7 +4370,7 @@ msgstr "Прегледувач на видео: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Прикажи"
+msgstr "Поглед"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Прикажи контроли"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Прикази"
+msgstr "Погледи"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4401,11 +4426,11 @@ msgstr "ОТКАЖИ СЛЕТУВАЊЕ"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: полн гас, сопирачки внатре, крилја рамно, качи се на 1200', {heading}"
+msgstr "Откажување на слетувањето: полн гас, сопирачки внатре, крилја рамно, качи се на 1200', {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: полн гас, сопирачки внатре, крилја рамно, качи се, {heading}"
+msgstr "Откажување на слетувањето: полн гас, сопирачки внатре, крилја рамно, качи се, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

@@ -38,6 +38,7 @@ import {
   History,
   Pin,
   PinOff,
+  Play,
   ShieldAlert,
 } from 'lucide-react'
 import {
@@ -123,7 +124,13 @@ function SortHead({
   )
 }
 
-export function MatchLog({ recording }: { recording?: () => Replay | null }) {
+export function MatchLog({
+  recording,
+  onReplay,
+}: {
+  recording?: () => Replay | null
+  onReplay?: (text: string) => void // watch a flight's recording flown back
+}) {
   const { t } = useLingui()
   // Rendering the buffered flight costs 25-75 ms for a 5-20 minute sortie, and
   // the accessor rebuilds the whole ACMI string every call. The log only needs
@@ -131,6 +138,11 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
   // over the text when one is pressed - so it is read once per mount rather
   // than on every filter, sort and hover.
   const replay = useMemo(() => recording?.() ?? null, [recording])
+  // A row's recording: the stored copy, which exists for every flight, or the
+  // in-memory buffer for a flight whose upload has not landed yet.
+  const text_of = async (m: MatchRow): Promise<string | null> =>
+    (m.recording ? await recording_load(m.recording) : null) ??
+    (replay && replay.session === m.session ? replay.text : null)
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
   const [totals, setTotals] = useState<MatchTotals | null>(null)
@@ -179,7 +191,7 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
   // trap (GameCanvas's catalogue), so the log and the glass agree.
   const gradeLabel = (grade: string): string => {
     const labels: Record<string, string> = {
-      OK: t`OK`,
+      OK: t({ message: 'OK', context: 'landing grade' }),
       FAIR: t`FAIR`,
       'NO-GRADE': t`NO-GRADE`,
       CUT: t`CUT`,
@@ -489,7 +501,30 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
               <TableCell className='text-muted-foreground'>
                 {m.cheated ? <ShieldAlert className='size-4' /> : null}
               </TableCell>
-              <TableCell className='text-right'>
+              <TableCell className='text-right whitespace-nowrap'>
+                {onReplay &&
+                (m.recording || (replay && replay.session === m.session)) ? (
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    // Revealed with the download button beside it.
+                    className='mr-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
+                    onClick={() =>
+                      void (async () => {
+                        const text = await text_of(m)
+                        if (!text) {
+                          toast.error(t`Could not play the recording`)
+                          return
+                        }
+                        onReplay(text)
+                      })()
+                    }
+                  >
+                    <Play className='size-4' />
+                    <Trans>Replay</Trans>
+                  </Button>
+                ) : null}
                 {m.recording || (replay && replay.session === m.session) ? (
                   <Button
                     type='button'
@@ -503,16 +538,7 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                     className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
                     onClick={() =>
                       void (async () => {
-                        // Prefer the stored copy (exists for every flight); the
-                        // in-memory buffer covers a flight whose upload has not
-                        // landed yet.
-                        const text =
-                          (m.recording
-                            ? await recording_load(m.recording)
-                            : null) ??
-                          (replay && replay.session === m.session
-                            ? replay.text
-                            : null)
+                        const text = await text_of(m)
                         if (!text) {
                           toast.error(t`Could not save the recording`)
                           return

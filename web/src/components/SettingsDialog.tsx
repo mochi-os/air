@@ -1144,7 +1144,7 @@ function GraphicsPanel({
   const active = graphicsPreset(config)
   const presets: { id: GraphicsPreset; label: ReactNode }[] = [
     { id: 'low', label: <Trans>Low</Trans> },
-    { id: 'med', label: <Trans>Medium</Trans> },
+    { id: 'med', label: <Trans context='quality level'>Medium</Trans> },
     { id: 'high', label: <Trans>High</Trans> },
     { id: 'ultra', label: <Trans>Ultra</Trans> },
   ]

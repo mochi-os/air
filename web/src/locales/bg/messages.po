@@ -440,7 +440,7 @@ msgstr "Закотвени страни"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push за Android"
+msgstr "Пуш известия за Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -525,7 +525,7 @@ msgstr "Удостоверени потребители"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Код от authenticator"
+msgstr "Код от удостоверител"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -765,10 +765,14 @@ msgstr "Камерата не е достъпна"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cancel"
 msgstr "Отказ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
+msgid "Cancel"
+msgstr "Анулирай"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Cancel comment"
@@ -924,10 +928,14 @@ msgstr "Изберете език"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Изчисти"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ясно"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -2527,9 +2535,13 @@ msgid "MCP server"
 msgstr "MCP сървър"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
-#: src/components/SettingsDialog.tsx
 msgid "Medium"
 msgstr "Среден"
+
+#: src/components/SettingsDialog.tsx
+msgctxt "quality level"
+msgid "Medium"
+msgstr "Средно"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Members"
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Мрежова грешка"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Ново"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Най-нови"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "Известия: {0}"
 msgid "Novice"
 msgstr "Начинаещ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Номер"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Номер"
 
@@ -2914,6 +2934,7 @@ msgstr "офлайн"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2941,7 +2962,7 @@ msgstr "Опа! Страницата не е намерена!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Отвори"
+msgstr "Открит"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3042,7 +3063,7 @@ msgstr "Ключове за достъп"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys не са налични в този браузър"
+msgstr "Ключовете за достъп не са налични в този браузър"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
@@ -3201,7 +3222,7 @@ msgstr "Публични сървъри"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push известие"
+msgstr "Пуш известие"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3445,7 +3466,7 @@ msgstr "Да се предадеш ли в играта?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Резолюция"
+msgstr "Разделителна способност"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "Търси се..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Избери"
+msgstr "Падащ списък"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "КОНСТРУКЦИЯ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Тема"
+msgstr "Потребител или група"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Свръхчовек"
 msgid "Switch to view 1-9"
 msgstr "Превключи към изглед 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Система"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
@@ -4022,7 +4047,7 @@ msgstr "Мисията спря."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Заявката за passkey остана без отговор"
+msgstr "Заявката за ключ за достъп остана без отговор"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "Сървърът върна уеб страница вместо дан�
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "Това приложение няма разрешение да използва вашия passkey. Разрешете го в Настройки, под Разрешения."
+msgstr "Това приложение няма разрешение да използва вашия ключ за достъп. Разрешете го в Настройки, под Разрешения."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "Твърде много заявки"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Най-горе"
+msgstr "Най-добри"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "Преглед на видео: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Преглед"
+msgstr "Изглед"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Контроли за изглед"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Прегледи"
+msgstr "Изгледи"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

@@ -593,19 +593,21 @@ export function Multiplayer({
                       offer, and without this the match you then left would
                       sit in every list until the idle sweep. One somebody is
                       flying is theirs now. */}
-                  {pilot && s.mine && (s.offer || (s.players ?? []).length === 0) && (
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      onClick={async () => {
-                        await world_withdraw(address, pilot)
-                        void refresh()
-                      }}
-                    >
-                      <Trans>Cancel</Trans>
-                    </Button>
-                  )}
+                  {pilot &&
+                    s.mine &&
+                    (s.offer || (s.players ?? []).length === 0) && (
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        onClick={async () => {
+                          await world_withdraw(address, pilot)
+                          void refresh()
+                        }}
+                      >
+                        <Trans context='withdraw'>Cancel</Trans>
+                      </Button>
+                    )}
                   {s.mode === 'teams' && (
                     <>
                       <Button
@@ -719,7 +721,7 @@ export function Multiplayer({
                   group={group + 'clouds'}
                   value='none'
                   icon={CLOUD_ICONS.none}
-                  label={<Trans>Clear</Trans>}
+                  label={<Trans context='weather'>Clear</Trans>}
                 />
                 <Option
                   group={group + 'clouds'}

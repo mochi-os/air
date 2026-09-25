@@ -440,7 +440,7 @@ msgstr "Бэхлэгдсэн талууд"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push мэдэгдэл"
+msgstr "Android пуш мэдэгдэл"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -525,7 +525,7 @@ msgstr "Баталгаажсан хэрэглэгчид"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator код"
+msgstr "Баталгаажуулагчийн код"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -560,7 +560,7 @@ msgstr "Нүүр хуудас руу буцах"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Ball дуудлага: хариул, хүрэлт хүртэл ball-аар нис"
+msgstr "Бөмбөгийн дуудлага: хариул, хүрэлт хүртэл бөмбөгөөр нис"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -653,11 +653,11 @@ msgstr "БОЛТЕР"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: бүрэн хүч, тоормос хураа, дэгээ доош, 1200' хүртэл өндөрс, салхины дагуу эргэ, {heading}"
+msgstr "Болтер: бүрэн хүч, тоормос хураа, дэгээ доош, 1200' хүртэл өндөрс, салхины дагуу эргэ, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: бүрэн хүч, тоормос хураа, дэгээ доош, 600' хүртэл өндөрс, салхины дагуу эргэ, {heading}"
+msgstr "Болтер: бүрэн хүч, тоормос хураа, дэгээ доош, 600' хүртэл өндөрс, салхины дагуу эргэ, {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -694,7 +694,7 @@ msgstr "БЭЛЭН БОЛМОГЦ ЭРГЭ"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: тэгш эргэлт, хий сул, тоормос гарга, 100 зангилаа тутамд 1 g тат"
+msgstr "Огцом эргэлт: тэгш эргэлт, хий сул, тоормос гарга, 100 зангилаа тутамд 1 g тат"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -765,8 +765,12 @@ msgstr "Камер ашиглах боломжгүй"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Цуцлах"
 
@@ -924,10 +928,14 @@ msgstr "Хэл сонгох"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Цэвэрлэх"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Цэлмэг"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -993,7 +1001,7 @@ msgstr "Хураах"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
-msgstr "Sidebar хумих"
+msgstr "Хажуугийн самбарыг хумих"
 
 #: src/components/GameCanvas.tsx
 msgid "COLLIDED"
@@ -1730,7 +1738,7 @@ msgstr "Холбоос устгаж чадсангүй"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to get RSS token"
-msgstr "RSS token авч чадсангүй"
+msgstr "RSS токен авч чадсангүй"
 
 #: ../../../lib/web/src/hooks/use-load-more.ts
 msgid "Failed to load"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Дунд"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Дунд"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Сүлжээний алдаа"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Шинэ"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Хамгийн шинэ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "Мэдэгдэл: {0}"
 msgid "Novice"
 msgstr "Шинэ суралцагч"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Тоо"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "Дугаар"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,6 +2934,7 @@ msgstr "офлайн"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2941,7 +2962,7 @@ msgstr "Уучлаарай! Хуудас олдсонгүй!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Нээх"
+msgstr "Нээлттэй"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3125,11 +3146,11 @@ msgstr "Түр хүлээгээд дахин оролдоно уу."
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
-msgstr "Эерэг өсөлт: шасси дээш; 250 зангилаа өнгөрөхөд флап auto"
+msgstr "Эерэг өсөлт: шасси дээш; 250 зангилаа өнгөрөхөд флап автомат"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
-msgstr "Эерэг өсөлт: бариулаа бариад, шасси дээш, флап auto"
+msgstr "Эерэг өсөлт: бариулаа бариад, шасси дээш, флап автомат"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3188,7 +3209,7 @@ msgstr "Профайл хадгалагдсан"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "Prompt хадгалагдсан"
+msgstr "Промпт хадгалагдсан"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3201,7 +3222,7 @@ msgstr "Нийтийн серверүүд"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push мэдэгдэл"
+msgstr "Пуш мэдэгдэл"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3386,7 +3407,7 @@ msgstr "Багана нэр өөрчлөх"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename this board column"
-msgstr "Энэ board-ын баганын нэр өөрчлөх"
+msgstr "Энэ самбарын баганын нэр өөрчлөх"
 
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -3445,7 +3466,7 @@ msgstr "Тоглоомоос тэрсэх үү?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Тогтоол"
+msgstr "Нягтрал"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3536,7 +3557,7 @@ msgstr "RSS фид"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"
-msgstr "RSS URL clipboard руу хуулагдсан"
+msgstr "RSS URL түр санах ой руу хуулагдсан"
 
 #: src/components/GameCanvas.tsx
 msgid "RUN UP ENGINE"
@@ -3623,7 +3644,7 @@ msgstr "Хайж байна..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Сонгох"
+msgstr "Сонголт"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3863,7 +3884,7 @@ msgstr "Өргөх хүч алдалт, буултын тохиргоо (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "Баруун тал: 800' барь; хөлгийн хамрыг өнгөрөөд break"
+msgstr "Баруун тал: 800' барь; хөлгийн хамрыг өнгөрөөд огцом эргэ"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3892,7 +3913,7 @@ msgstr "БҮТЭЦ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Сэдэв"
+msgstr "Хэрэглэгч эсвэл бүлэг"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Хүнээс давсан"
 msgid "Switch to view 1-9"
 msgstr "1-9 харагдац руу шилжих"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Систем"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Систем"
 
@@ -3994,7 +4019,7 @@ msgstr "Байршуулахад хэт том байлаа. Файлуудыг 
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45-ийн цэг: 325-375', groove руу эргэ, {heading}, хийгээр ball-аар нис"
+msgstr "45-ийн цэг: 325-375', эцсийн ойртолтын шугам руу эргэ, {heading}, хийгээр бөмбөгөөр нис"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4022,7 +4047,7 @@ msgstr "Даалгавар зогслоо."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey хүсэлтэд хариу ирсэнгүй"
+msgstr "Нэвтрэх түлхүүрийн хүсэлтэд хариу ирсэнгүй"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "Сервер өгөгдлийн оронд вэб хуудас буца�
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "Энэ аппад таны passkey-г ашиглахыг зөвшөөрөөгүй. Тохиргооны Зөвшөөрөл хэсэгт зөвшөөрнө үү."
+msgstr "Энэ аппад таны нэвтрэх түлхүүрийг ашиглахыг зөвшөөрөөгүй. Тохиргооны Зөвшөөрөл хэсэгт зөвшөөрнө үү."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "Хэт олон хүсэлт"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Дээд"
+msgstr "Шилдэг"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "Видео үзэгч: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Үзэх"
+msgstr "Харагдац"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Хяналт үзэх"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Үзлэгүүд"
+msgstr "Харагдацууд"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4401,11 +4426,11 @@ msgstr "БУУЛТЫГ ЦУЦАЛ"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: бүрэн хүч, тоормос хураа, жигүүр тэгш, 1200' хүртэл өндөрс, {heading}"
+msgstr "Буултыг цуцлах: бүрэн хүч, тоормос хураа, жигүүр тэгш, 1200' хүртэл өндөрс, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: бүрэн хүч, тоормос хураа, жигүүр тэгш, өндөрс, {heading}"
+msgstr "Буултыг цуцлах: бүрэн хүч, тоормос хураа, жигүүр тэгш, өндөрс, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

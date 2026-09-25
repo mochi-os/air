@@ -440,7 +440,7 @@ msgstr "Закріплені сторони"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push для Android"
+msgstr "Пуш для Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -560,7 +560,7 @@ msgstr "На головну"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Виклик ball: відповідай, веди ball до торкання"
+msgstr "Виклик м’яча: відповідай, веди м’яч до торкання"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -653,11 +653,11 @@ msgstr "БОЛТЕР"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: повна тяга, щитки прибрати, гак випустити, набирай до 1200', розворот на зворотний курс, {heading}"
+msgstr "Болтер: повна тяга, щитки прибрати, гак випустити, набирай до 1200', розворот на зворотний курс, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: повна тяга, щитки прибрати, гак випустити, набирай до 600', розворот на зворотний курс, {heading}"
+msgstr "Болтер: повна тяга, щитки прибрати, гак випустити, набирай до 600', розворот на зворотний курс, {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -694,7 +694,7 @@ msgstr "РОЗВОРОТ ЗА ГОТОВНІСТЮ"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: розворот без зміни висоти, РУД на малий газ, щитки випустити, 1 g на кожні 100 вузлів"
+msgstr "Розворот: розворот без зміни висоти, РУД на малий газ, щитки випустити, 1 g на кожні 100 вузлів"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -765,8 +765,12 @@ msgstr "Камера недоступна"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -835,7 +839,7 @@ msgstr "Випадок III (ніч)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero"
-msgstr "Case III: marshal 6000', 250 вузлів, фінальний пеленг {heading}, починай на нулі"
+msgstr "Case III: зона очікування 6000', 250 вузлів, фінальний пеленг {heading}, починай на нулі"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -924,10 +928,14 @@ msgstr "Виберіть мову"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Очистити"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ясно"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP-сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Середній"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Середній"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Помилка мережі"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Нове"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Нові"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "Сповіщення: {0}"
 msgid "Novice"
 msgstr "Початківець"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Число"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "Номер"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,6 +2934,7 @@ msgstr "не в мережі"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2941,7 +2962,7 @@ msgstr "Ой! Сторінку не знайдено!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Відкрити"
+msgstr "Відкритий"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3201,7 +3222,7 @@ msgstr "Публічні сервери"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push-сповіщення"
+msgstr "Пуш-сповіщення"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3445,7 +3466,7 @@ msgstr "Здатися у грі?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Вирішення"
+msgstr "Роздільна здатність"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "Пошук..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Вибрати"
+msgstr "Вибір"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3863,7 +3884,7 @@ msgstr "Звалювання, посадкова конфігурація (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "Правий борт: тримай 800'; break після носа корабля"
+msgstr "Правий борт: тримай 800'; розворот після носа корабля"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3892,7 +3913,7 @@ msgstr "КОНСТРУКЦІЯ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Тема"
+msgstr "Користувач або група"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Надлюдський"
 msgid "Switch to view 1-9"
 msgstr "Перейти до вигляду 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Система"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
@@ -3994,7 +4019,7 @@ msgstr "Завеликий розмір для завантаження. Вид�
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45: 325-375', вихід на посадкову пряму, {heading}, веди ball тягою"
+msgstr "45: 325-375', вихід на посадкову пряму, {heading}, веди м’яч тягою"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4119,7 +4144,7 @@ msgstr "Забагато запитів"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Верх"
+msgstr "Найкращі"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "Перегляд відео: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Переглянути"
+msgstr "Вид"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Елементи керування виглядом"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Перегляди"
+msgstr "Види"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4401,11 +4426,11 @@ msgstr "ЙДИ НА ДРУГЕ КОЛО"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: повна тяга, щитки прибрати, крила горизонтально, набирай до 1200', {heading}"
+msgstr "Відхід на друге коло: повна тяга, щитки прибрати, крила горизонтально, набирай до 1200', {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: повна тяга, щитки прибрати, крила горизонтально, набирай, {heading}"
+msgstr "Відхід на друге коло: повна тяга, щитки прибрати, крила горизонтально, набирай, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

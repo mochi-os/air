@@ -525,11 +525,11 @@ msgstr "සත්‍යාපිත පරිශීලකයන්"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator කේතය"
+msgstr "සත්‍යාපන කේතය"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
-msgstr "පවතින keyboard shortcuts"
+msgstr "පවතින යතුරුපුවරු කෙටි මං"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar"
@@ -765,8 +765,12 @@ msgstr "කැමරාව නොමැත"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "අවලංගු කරන්න"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "අවලංගු කරන්න"
 
@@ -924,10 +928,14 @@ msgstr "භාෂාව තෝරන්න"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "හිස් කරන්න"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "පැහැදිලි අහස"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1122,7 +1130,7 @@ msgstr "පිටපත් කළා"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copied to clipboard"
-msgstr "Clipboard එකට පිටපත් කරන ලදී"
+msgstr "ක්ලිප්බෝඩ් වෙත පිටපත් කරන ලදී"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -1399,11 +1407,11 @@ msgstr "ගින්නෙන් විනාශ විය"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "විස්තරය"
+msgstr "විස්තර මට්ටම"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
-msgstr "විස්තර Panel"
+msgstr "විස්තර පුවරුව"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1771,7 +1779,7 @@ msgstr "අදහස පළ කිරීමට අසමත් විය"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "prompt එක යළි පිහිටුවීමට අසමත් විය"
+msgstr "විමසුම යළි පිහිටුවීමට අසමත් විය"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1783,7 +1791,7 @@ msgstr "සුරැකීමට අසමත් විය"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "prompt එක සුරැකීමට අසමත් විය"
+msgstr "විමසුම සුරැකීමට අසමත් විය"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP සේවාදායකය"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "මධ්‍යම"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "මධ්‍යම"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "ජාල දෝෂය"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "අලුත්"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "නවතම"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2756,7 +2772,7 @@ msgstr "ජොයිස්ටික් එකක් හමු නොවීය �
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "No matching objects"
-msgstr "ගැලපෙන objects නැත"
+msgstr "ගැලපෙන වස්තු නැත"
 
 #: src/components/Multiplayer.tsx
 msgid "No open matches — create one."
@@ -2800,7 +2816,7 @@ msgstr "වේලා කලාප හමු නොවීය."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "No topic record yet — try again after the next notification."
-msgstr "තවම topic වාර්තාවක් නැත — ඊළඟ දැනුම්දීමෙන් පසු නැවත උත්සාහ කරන්න."
+msgstr "තවම මාතෘකා වාර්තාවක් නැත — ඊළඟ දැනුම්දීමෙන් පසු නැවත උත්සාහ කරන්න."
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 msgid "No unread notifications"
@@ -2894,9 +2910,13 @@ msgstr "දැනුම්දීම්: {0}"
 msgid "Novice"
 msgstr "ආධුනික"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "අංකය"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "අංකය"
 
@@ -2914,8 +2934,9 @@ msgstr "නොබැඳි"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "හරි"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "අහෝ! පිටුව හමු නොවීය!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "විවෘත කරන්න"
+msgstr "විවෘත"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -2970,12 +2991,12 @@ msgstr "තේරූ කාඩ්පත විවෘත කරන්න"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Open view actions"
-msgstr "view ක්‍රියා විවෘත කරන්න"
+msgstr "දසුන් ක්‍රියා විවෘත කරන්න"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Open view controls"
-msgstr "view පාලන විවෘත කරන්න"
+msgstr "දසුන් පාලන විවෘත කරන්න"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
@@ -3042,7 +3063,7 @@ msgstr "මුරයතුරු"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "මෙම බ්‍රව්සරයේ passkeys නොමැත"
+msgstr "මෙම බ්‍රව්සරයේ මුරයතුරු නොමැත"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
@@ -3079,7 +3100,7 @@ msgstr "නියමුවා මිය ගියේය"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Pin"
-msgstr "pin කරන්න"
+msgstr "අමුණන්න"
 
 #: src/components/GameCanvas.tsx
 msgid "pitch"
@@ -3188,7 +3209,7 @@ msgstr "පැතිකඩ සුරකින ලදී"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "prompt එක සුරකින ලදී"
+msgstr "විමසුම සුරකින ලදී"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3197,7 +3218,7 @@ msgstr "ගුණාංග"
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Public servers"
-msgstr "public සේවාදායක"
+msgstr "ප්‍රසිද්ධ සේවාදායක"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
@@ -3386,7 +3407,7 @@ msgstr "තීරුව නැවත නම් කරන්න"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename this board column"
-msgstr "මෙම board තීරුව නැවත නම් කරන්න"
+msgstr "මෙම පුවරු තීරුව නැවත නම් කරන්න"
 
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -3417,7 +3438,7 @@ msgstr "විද්‍යුත් තැපෑල නැවත එවන්න
 
 #: src/components/SettingsDialog.tsx
 msgid "Reset"
-msgstr "reset"
+msgstr "යළි සකසන්න"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -3623,7 +3644,7 @@ msgstr "සොයමින්..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "තෝරන්න"
+msgstr "තේරීම"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3761,7 +3782,7 @@ msgstr "නෞකාව අසලින්: 27-30° ඇල කරන්න, 200-
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
-msgstr "classes පෙන්වන්න"
+msgstr "පන්ති පෙන්වන්න"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show fields"
@@ -3777,7 +3798,7 @@ msgstr "{total}න් {totalShown}ක් පෙන්වමින්"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Sidebar"
-msgstr "sidebar"
+msgstr "පැති තීරුව"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 msgid "Sign in with an account that has access <0/> to this resource."
@@ -3892,7 +3913,7 @@ msgstr "ව්‍යුහය"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "විෂය"
+msgstr "පරිශීලකයා හෝ කණ්ඩායම"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "අධිමානුෂික"
 msgid "Switch to view 1-9"
 msgstr "දර්ශනය 1-9 වෙත මාරු වන්න"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "පද්ධතිය"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "පද්ධතිය"
 
@@ -4022,7 +4047,7 @@ msgstr "මෙහෙයුම නතර විය."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey ඉල්ලීමට පිළිතුරු ලැබුණේ නැත"
+msgstr "මුරයතුරු ඉල්ලීමට පිළිතුරු ලැබුණේ නැත"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "සේවාදායකය දත්ත වෙනුවට වෙබ්
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "මෙම යෙදුමට ඔබගේ passkey භාවිතා කිරීමට අවසර නැත. සැකසුම් තුළ, අවසර යටතේ එයට ඉඩ දෙන්න."
+msgstr "මෙම යෙදුමට ඔබගේ මුරයතුර භාවිතා කිරීමට අවසර නැත. සැකසුම් තුළ, අවසර යටතේ එයට ඉඩ දෙන්න."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "ඉල්ලීම් ඕනෑවට වඩා වැඩියි"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ඉහළ"
+msgstr "හොඳම"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4214,7 +4239,7 @@ msgstr "දුරස්ථ සේවාදායකයට සම්බන්ධ 
 #: ../../../lib/web/src/lib/auth-manager.ts
 #: ../../../lib/web/src/lib/auth-manager.ts
 msgid "Unable to redirect to login. Please try again."
-msgstr "login එකට යළි-යොමු කළ නොහැක. කරුණාකර නැවත උත්සාහ කරන්න."
+msgstr "පිවිසුමට යළි-යොමු කළ නොහැක. කරුණාකර නැවත උත්සාහ කරන්න."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Unassigned"
@@ -4345,7 +4370,7 @@ msgstr "වීඩියෝ දර්ශකය: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "බලන්න"
+msgstr "දසුන"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
