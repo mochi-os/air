@@ -440,7 +440,7 @@ msgstr "Ukotvené strany"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Push oznámenia pre Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -644,7 +644,7 @@ msgstr "Modrí boti"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Board"
-msgstr "Doska"
+msgstr "Tabuľa"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -765,8 +765,12 @@ msgstr "Kamera nie je k dispozícii"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Zrušiť"
 
@@ -924,10 +928,14 @@ msgstr "Vyberte jazyk"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Vymazať"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Jasno"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Stredné"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Stredné"
 
@@ -2610,7 +2622,7 @@ msgstr "Misia sa skončila"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
-msgstr "Mochi web"
+msgstr "Mochi v prehliadači"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Chyba siete"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Nový"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Najnovšie"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "Oznámenia: {0}"
 msgid "Novice"
 msgstr "Začiatočník"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Číslo"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Číslo"
 
@@ -2914,6 +2934,7 @@ msgstr "offline"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2941,7 +2962,7 @@ msgstr "Ups! Stránka sa nenašla!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Otvoriť"
+msgstr "Otvorený"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3445,7 +3466,7 @@ msgstr "Vzdať hru?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Riešenie"
+msgstr "Rozlíšenie"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "Hľadám..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Vybrať"
+msgstr "Výber"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "KONŠTRUKCIA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Predmet"
+msgstr "Používateľ alebo skupina"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Nadľudský"
 msgid "Switch to view 1-9"
 msgstr "Prepnúť na zobrazenie 1 – 9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Systém"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Systém"
 
@@ -4119,7 +4144,7 @@ msgstr "Príliš veľa požiadaviek"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Hore"
+msgstr "Najlepšie"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "Prehliadač videí: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Zobraziť"
+msgstr "Pohľad"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Ovládacie prvky zobrazenia"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Zobrazenia"
+msgstr "Pohľady"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

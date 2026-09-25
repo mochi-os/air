@@ -453,7 +453,7 @@ msgstr "የገባ ማንኛውም ሰው"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
-msgstr "በዚህ ምግብ የተመዘገበ ማንኛውም ነገር መቀበሉን ያቆማል። ከዚያ በኋላ አዲስ URL መቅዳት ይችላሉ።"
+msgstr "በዚህ ፊድ የተመዘገበ ማንኛውም ነገር መቀበሉን ያቆማል። ከዚያ በኋላ አዲስ URL መቅዳት ይችላሉ።"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -765,10 +765,14 @@ msgstr "ካሜራ አይገኝም"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cancel"
 msgstr "ይቅር"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
+msgid "Cancel"
+msgstr "ይሰርዙ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Cancel comment"
@@ -924,10 +928,14 @@ msgstr "ቋንቋ ምረጥ"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "አጽዳ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "ጥርት ያለ"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "በእሳት ወድሟል"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "ዝርዝር"
+msgstr "የዝርዝር ደረጃ"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1456,7 +1464,7 @@ msgstr "ተቋርጧል"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Dismiss"
-msgstr "አጥፋ"
+msgstr "ዝጋ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "የMCP አገልጋይ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "መካከለኛ"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "መካከለኛ"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "የአውታረ መረብ ስህተት"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "አዲስ"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "አዳዲስ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "ማሳወቂያዎች፦ {0}"
 msgid "Novice"
 msgstr "ጀማሪ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "ቁጥር"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "ቁጥር"
 
@@ -2914,8 +2934,9 @@ msgstr "ከመስመር ውጭ"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "እሺ"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "ኦህ! ገጽ አልተገኘም!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "ክፈት"
+msgstr "ክፍት"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3029,12 +3050,12 @@ msgstr "የማቆሚያ ፍሬን"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Passkey"
-msgstr "የይለፍ ቁልፍ"
+msgstr "ፓስኪ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "የይለፍ ቁልፍ ማረጋገጫ አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
+msgstr "ፓስኪ ማረጋገጫ አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
@@ -3445,7 +3466,7 @@ msgstr "ጨዋታ ይለቀቅ?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "ፍታት"
+msgstr "ጥራት"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "በመፈለግ ላይ..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "ይምረጡ"
+msgstr "ምርጫ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "መዋቅር"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "ርዕሰ ጉዳይ"
+msgstr "ተጠቃሚ ወይም ቡድን"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,11 +3943,15 @@ msgstr "ከሰው በላይ"
 msgid "Switch to view 1-9"
 msgstr "ወደ ዕይታ 1-9 ቀይር"
 
-#: ../../../lib/web/src/components/audit-timeline.tsx
 #: ../../../lib/web/src/lib/preference-utils.ts
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "System"
 msgstr "ስርዓት"
+
+#: ../../../lib/web/src/components/audit-timeline.tsx
+msgctxt "actor"
+msgid "System"
+msgstr "ስርዓቱ"
 
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
@@ -4119,7 +4144,7 @@ msgstr "በጣም ብዙ ጥያቄዎች"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ላይ"
+msgstr "ምርጥ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4301,7 +4326,7 @@ msgstr "የመስቀል ሂደት"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "የይለፍ ቁልፍዎን ይጠቀሙ"
+msgstr "ፓስኪዎን ይጠቀሙ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4345,7 +4370,7 @@ msgstr "የቪዲዮ መመልከቻ፦ {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ይመልከቱ"
+msgstr "እይታ"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

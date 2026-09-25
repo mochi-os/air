@@ -525,7 +525,7 @@ msgstr "تصدیق شوي کارنان"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "د Authenticator کوډ"
+msgstr "د تصدیق کوونکي کوډ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -560,7 +560,7 @@ msgstr "کور ته بېرته"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "د ball غږ: ځواب ورکړه، تر ښکته کېدو پورې ball والوزه"
+msgstr "د توپ غږ: ځواب ورکړه، تر ښکته کېدو پورې توپ والوزه"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -694,7 +694,7 @@ msgstr "چمتو شئ نو وګرځئ"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: هوار ګرځېدل، تروټل کم، بریکونه بهر، په هرو 100 ناټ کې 1 g راکاږه"
+msgstr "ګرځېدل: هوار ګرځېدل، تروټل کم، بریکونه بهر، په هرو 100 ناټ کې 1 g راکاږه"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -765,8 +765,12 @@ msgstr "کامره شتون نلري"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "لغوه کول"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "لغوه کول"
 
@@ -924,10 +928,14 @@ msgstr "ژبه وټاکئ"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "پاک کړئ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "صاف آسمان"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1456,7 +1464,7 @@ msgstr "پرېکړل شوی"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Dismiss"
-msgstr "وردکړه"
+msgstr "وتړئ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1771,7 +1779,7 @@ msgstr "د تبصرې پوسټ کولو پاتې راغلل"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "د prompt د بیا تنظیم پاتې راغلل"
+msgstr "د پرامپټ د بیا تنظیم پاتې راغلل"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1783,7 +1791,7 @@ msgstr "د خوندي کولو پاتې راغلل"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "د prompt د خوندي کولو پاتې راغلل"
+msgstr "د پرامپټ د خوندي کولو پاتې راغلل"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP سرور"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "منځنی"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "منځنی"
 
@@ -2586,7 +2598,7 @@ msgstr "په هوا کې ټکر"
 
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
-msgstr "د Midway Atoll نقشه — انځورونه بدل شوي <0>Copernicus Sentinel-2</0> معلومات (۲۰۲۶) لري؛ د هوايي ډګر جیومیټري (د الوتنې کرښه، د ټکسي کرښې، اپرانونه) © د <1>OpenStreetMap</1> ونډه‌والان، تر <2>ODbL</2> لاندې جواز لري؛ د ساحل کرښې او مرجاني ډبرو معلومات له <3>NOAA NCCOS</3> څخه (عامه ملکیت)."
+msgstr "د میډوې اټول نقشه — انځورونه بدل شوي <0>Copernicus Sentinel-2</0> معلومات (۲۰۲۶) لري؛ د هوايي ډګر جیومیټري (د الوتنې کرښه، د ټکسي کرښې، اپرانونه) © د <1>OpenStreetMap</1> ونډه‌والان، تر <2>ODbL</2> لاندې جواز لري؛ د ساحل کرښې او مرجاني ډبرو معلومات له <3>NOAA NCCOS</3> څخه (عامه ملکیت)."
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "د شبکې تېروتنه"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "نوی"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "تر ټولو نوي"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "خبرتیاوې: {0}"
 msgid "Novice"
 msgstr "نوی زده کوونکی"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "شمیره"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "شمیره"
 
@@ -2914,8 +2934,9 @@ msgstr "آفلاین"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "سمه ده"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "اوه! پاڼه ونه موندل شوه!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "خلاص"
+msgstr "پرانيستې"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3034,15 +3055,15 @@ msgstr "پاسکي"
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "د پاس کیلۍ تایید ناکام شو. مهرباني وکړئ بیا هڅه وکړئ."
+msgstr "د پاسکي تایید ناکام شو. مهرباني وکړئ بیا هڅه وکړئ."
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
-msgstr "د لاسرسي کيلۍ"
+msgstr "پاسکي ګانې"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys په دې براوزر کې شتون نلري"
+msgstr "پاسکي په دې براوزر کې شتون نلري"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
@@ -3125,11 +3146,11 @@ msgstr "مهرباني وکړئ یوه شېبه انتظار وکړئ او بی�
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
-msgstr "مثبت پورته کېدل: ګیر پورته; د 250 ناټ په تېرېدو فلېپ auto"
+msgstr "مثبت پورته کېدل: ګیر پورته; د 250 ناټ په تېرېدو فلېپ اتومات"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
-msgstr "مثبت پورته کېدل: سټک ونیسه، ګیر پورته، فلېپ auto"
+msgstr "مثبت پورته کېدل: سټک ونیسه، ګیر پورته، فلېپ اتومات"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3238,7 +3259,7 @@ msgstr "پر دې سرور خپل حسابونه بیا وصل کړئ"
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Re-register your passkeys on this server"
-msgstr "خپل د لاسرسي کيلۍ پدې سرور کې بیا ثبت کړئ"
+msgstr "خپل پاسکي ګانې پدې سرور کې بیا ثبت کړئ"
 
 #: src/components/GameCanvas.tsx
 msgid "REARMED"
@@ -3445,7 +3466,7 @@ msgstr "لوبه تسلیم کړو؟"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "حل"
+msgstr "ریزولوشن"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "د لټون په حال کې..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "وټاکئ"
+msgstr "ټاکنه"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3863,7 +3884,7 @@ msgstr "سټال، د ښکته کېدو بڼه (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "ښي لوری: 800' وساته; د بېړۍ له مخې له تېرېدو وروسته break"
+msgstr "ښي لوری: 800' وساته; د بېړۍ له مخې له تېرېدو وروسته ګرځېدل"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3892,7 +3913,7 @@ msgstr "جوړښت"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "موضوع"
+msgstr "کاروونکی یا ګروپ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "له انسانه لوړ"
 msgid "Switch to view 1-9"
 msgstr "د 1-9 لیدلو ته بدل کړئ"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "سیسټم"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "سیسټم"
 
@@ -3994,7 +4019,7 @@ msgstr "د پورته کولو لپاره ډېر لوی و. دوتنې لرې ک
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "د 45 ټکی: 325-375'، ګروف ته ورګرځه، {heading}، په ځواک سره ball والوزه"
+msgstr "د 45 ټکی: 325-375'، ګروف ته ورګرځه، {heading}، په ځواک سره توپ والوزه"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4022,7 +4047,7 @@ msgstr "ماموریت ودرېد."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "د passkey غوښتنې ته ځواب ورنکړل شو"
+msgstr "د پاسکي غوښتنې ته ځواب ورنکړل شو"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "سرور د معلوماتو پر ځای یوه ویب پاڼه راست
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "دې اپ ته اجازه نشته چې ستاسو passkey وکاروي. په تنظیماتو کې، د اجازو لاندې یې اجازه ورکړئ."
+msgstr "دې اپ ته اجازه نشته چې ستاسو پاسکي وکاروي. په تنظیماتو کې، د اجازو لاندې یې اجازه ورکړئ."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "ډېرې زیاتې غوښتنې"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "بره"
+msgstr "غوره"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4301,7 +4326,7 @@ msgstr "د پورته کولو پرمختګ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "خپله پاس کیلۍ وکاروئ"
+msgstr "خپل پاسکي وکاروئ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4336,7 +4361,7 @@ msgstr "بریا"
 
 #: ../../../lib/web/src/components/attachment-gallery.tsx
 msgid "Video thumbnail"
-msgstr "د ویډیو thumbnail"
+msgstr "د ویډیو کوچنی انځور"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -4345,7 +4370,7 @@ msgstr "د ویډیو کتونکی: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ولید"
+msgstr "لید"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "د کنټرول لیدل"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "لیدنې"
+msgstr "لیدونه"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

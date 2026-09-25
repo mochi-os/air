@@ -525,7 +525,7 @@ msgstr "પ્રમાણિત વપરાશકર્તાઓ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator કોડ"
+msgstr "ઑથેન્ટિકેટર કોડ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -765,8 +765,12 @@ msgstr "કૅમેરો ઉપલબ્ધ નથી"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "રદ કરો"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "રદ કરો"
 
@@ -924,10 +928,14 @@ msgstr "ભાષા પસંદ કરો"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "સાફ કરો"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "સ્વચ્છ"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "આગથી નાશ પામ્યું"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "વિગત"
+msgstr "વિગતનું સ્તર"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP સર્વર"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "મધ્યમ"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "મધ્યમ"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "નેટવર્ક ભૂલ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "નવું"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "નવીનતમ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "સૂચનાઓ: {0}"
 msgid "Novice"
 msgstr "શિખાઉ"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "સંખ્યા"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "ક્રમાંક"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,8 +2934,9 @@ msgstr "ઑફલાઇન"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ઓકે"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "ઓહ! પેજ મળ્યું નથી!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "ખોલો"
+msgstr "ઓપન"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3623,7 +3644,7 @@ msgstr "શોધી રહ્યું છે..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "પસંદ કરો"
+msgstr "પસંદગી"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "માળખું"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "વિષય"
+msgstr "વપરાશકર્તા અથવા ગ્રુપ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "અતિમાનવ"
 msgid "Switch to view 1-9"
 msgstr "દૃશ્ય 1-9 પર સ્વિચ કરો"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "સિસ્ટમ"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "સિસ્ટમ"
 
@@ -4119,7 +4144,7 @@ msgstr "ઘણી બધી વિનંતીઓ"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ટોચ"
+msgstr "શ્રેષ્ઠ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "વિડિઓ દર્શક: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "જુઓ"
+msgstr "દૃશ્ય"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "નિયંત્રણો જુઓ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "વ્યૂ"
+msgstr "દૃશ્યો"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

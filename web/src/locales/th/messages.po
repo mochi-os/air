@@ -525,7 +525,7 @@ msgstr "ผู้ใช้ที่ยืนยันตัวตนแล้ว
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "รหัส Authenticator"
+msgstr "รหัสยืนยันตัวตน"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -765,8 +765,12 @@ msgstr "กล้องไม่พร้อมใช้งาน"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -924,10 +928,14 @@ msgstr "เลือกภาษา"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "ล้าง"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "แจ่มใส"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "ถูกไฟเผาทำลาย"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "รายละเอียด"
+msgstr "ระดับรายละเอียด"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1730,7 +1738,7 @@ msgstr "ไม่สามารถลบลิงก์ได้"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to get RSS token"
-msgstr "ไม่สามารถรับ RSS token ได้"
+msgstr "ไม่สามารถรับโทเคน RSS ได้"
 
 #: ../../../lib/web/src/hooks/use-load-more.ts
 msgid "Failed to load"
@@ -1771,7 +1779,7 @@ msgstr "ไม่สามารถโพสต์ความคิดเห็
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "ไม่สามารถรีเซ็ต prompt ได้"
+msgstr "ไม่สามารถรีเซ็ตพรอมต์ได้"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1783,7 +1791,7 @@ msgstr "ไม่สามารถบันทึกได้"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "ไม่สามารถบันทึก prompt ได้"
+msgstr "ไม่สามารถบันทึกพรอมต์ได้"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -1847,7 +1855,7 @@ msgstr "ปุ่มการบินคงที่"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
-msgstr "Flags"
+msgstr "แฟล็ก"
 
 #: src/components/GameCanvas.tsx
 msgid "FLAMEOUT"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "เซิร์ฟเวอร์ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "กลาง"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "กลาง"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "ข้อผิดพลาดของเครือข่าย"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "ใหม่"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "ใหม่ล่าสุด"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "การแจ้งเตือน: {0}"
 msgid "Novice"
 msgstr "มือใหม่"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ตัวเลข"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "หมายเลข"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,8 +2934,9 @@ msgstr "ออฟไลน์"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ตกลง"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3042,7 +3063,7 @@ msgstr "พาสคีย์"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys ไม่พร้อมใช้งานในเบราว์เซอร์นี้"
+msgstr "พาสคีย์ไม่พร้อมใช้งานในเบราว์เซอร์นี้"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
@@ -3188,7 +3209,7 @@ msgstr "บันทึกโปรไฟล์แล้ว"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "บันทึก prompt แล้ว"
+msgstr "บันทึกพรอมต์แล้ว"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3445,7 +3466,7 @@ msgstr "ยอมแพ้เกม?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "การแก้ปัญหา"
+msgstr "ความละเอียด"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "กำลังค้นหา..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "เลือก"
+msgstr "ตัวเลือก"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "โครงสร้าง"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "หัวเรื่อง"
+msgstr "ผู้ใช้หรือกลุ่ม"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "เหนือมนุษย์"
 msgid "Switch to view 1-9"
 msgstr "เปลี่ยนเป็นมุมมอง 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "ระบบ"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "ระบบ"
 
@@ -4022,7 +4047,7 @@ msgstr "ภารกิจหยุดลง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "คำขอ passkey ไม่ได้รับการตอบกลับ"
+msgstr "คำขอพาสคีย์ไม่ได้รับการตอบกลับ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "เซิร์ฟเวอร์ส่งคืนหน้าเว็
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "แอปนี้ไม่ได้รับอนุญาตให้ใช้ passkey ของคุณ อนุญาตได้ในการตั้งค่า ภายใต้สิทธิ์"
+msgstr "แอปนี้ไม่ได้รับอนุญาตให้ใช้พาสคีย์ของคุณ อนุญาตได้ในการตั้งค่า ภายใต้สิทธิ์"
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "คำขอมากเกินไป"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "บนสุด"
+msgstr "คะแนนสูงสุด"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "โปรแกรมดูวิดีโอ: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ดู"
+msgstr "มุมมอง"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "ตัวควบคุมมุมมอง"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "การดู"
+msgstr "มุมมอง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

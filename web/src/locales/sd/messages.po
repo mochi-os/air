@@ -525,7 +525,7 @@ msgstr "تصديق ٿيل صارف"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator ڪوڊ"
+msgstr "تصديق ڪندڙ ڪوڊ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -765,8 +765,12 @@ msgstr "ڪئميرا موجود ناهي"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "منسوخ ڪريو"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "منسوخ ڪريو"
 
@@ -924,10 +928,14 @@ msgstr "ٻولي چونڊيو"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "صاف ڪريو"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "صاف آسمان"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "باهه ۾ تباهه ٿيو"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "تفصيل"
+msgstr "تفصيل جي سطح"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP سرور"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "وچولو"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "وچولو"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "نيٽ ورڪ جي خرابي"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "نئون"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "سڀ کان نوان"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "اطلاعون: {0}"
 msgid "Novice"
 msgstr "نئون سکندڙ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "نمبر"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "نمبر"
 
@@ -2914,8 +2934,9 @@ msgstr "آف لائين"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ٺيڪ"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "افسوس! صفحو نه مليو!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "کوليو"
+msgstr "کليل"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3042,7 +3063,7 @@ msgstr "پاسي ڪيز"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys هن برائوزر ۾ موجود ناهن"
+msgstr "پاس ڪيز هن برائوزر ۾ موجود ناهن"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
@@ -3445,7 +3466,7 @@ msgstr "گيم هار مڃجي؟"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "حل"
+msgstr "ريزوليوشن"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "ڳولي رهيو آهي..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "چونڊيو"
+msgstr "چونڊ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "ڍانچو"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "موضوع"
+msgstr "صارف يا گروپ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "انسان کان مٿي"
 msgid "Switch to view 1-9"
 msgstr "ڏيک 1-9 تي مٽايو"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "سسٽم"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "سسٽم"
 
@@ -4022,7 +4047,7 @@ msgstr "مشن رڪجي ويو."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey درخواست جو جواب نه مليو"
+msgstr "پاس ڪي درخواست جو جواب نه مليو"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "سرور ڊيٽا جي بجاءِ ويب پيج موٽايو."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "هن ايپ کي توهان جي passkey استعمال ڪرڻ جي اجازت ناهي. سيٽنگن ۾، اجازتن هيٺ ان کي اجازت ڏيو."
+msgstr "هن ايپ کي توهان جي پاس ڪي استعمال ڪرڻ جي اجازت ناهي. سيٽنگن ۾، اجازتن هيٺ ان کي اجازت ڏيو."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "تمام گهڻيون درخواستون"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "مٿي"
+msgstr "بهترين"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "وڊيو ڏسڻ وارو: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ڏسو"
+msgstr "منظر"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "ڏيک ڪنٽرول"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "ڏيک"
+msgstr "منظر"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

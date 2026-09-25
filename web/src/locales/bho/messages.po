@@ -525,7 +525,7 @@ msgstr "प्रमाणित प्रयोगकर्ता"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator कोड"
+msgstr "ऑथेंटिकेटर कोड"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -573,11 +573,11 @@ msgstr "बैनर"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Banner removed"
-msgstr "Banner हटा दिहल गइल"
+msgstr "बैनर हटा दिहल गइल"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Banner updated"
-msgstr "Banner अद्यतन कइल गइल"
+msgstr "बैनर अद्यतन कइल गइल"
 
 #: src/components/GameCanvas.tsx
 msgid "BELOW 250 — GEAR AND FLAPS"
@@ -698,7 +698,7 @@ msgstr "ब्रेक: सीधा मोड़, थ्रॉटल कम, �
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
-msgstr "Browser सूचना"
+msgstr "ब्राउज़र सूचना"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -765,8 +765,12 @@ msgstr "कैमरा उपलब्ध नइखे"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "रद्द करीं"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "रद्द करीं"
 
@@ -896,11 +900,11 @@ msgstr "चीट"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checkbox"
-msgstr "Checkbox"
+msgstr "चेकबॉक्स"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
-msgstr "Checklist"
+msgstr "चेकलिस्ट"
 
 #: ../../../lib/web/src/components/ui/date-picker.tsx
 msgid "Choose a date"
@@ -924,10 +928,14 @@ msgstr "भाषा चुनीं"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "साफ करीं"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "साफ"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "आग से नष्ट भइल"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "विवरण"
+msgstr "विस्तार स्तर"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1419,7 +1427,7 @@ msgstr "पता लगाईं"
 #: ../../../lib/web/src/lib/preference-utils.ts
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Detect from web browser"
-msgstr "Web browser से पता लगाईं"
+msgstr "वेब ब्राउज़र से पता लगाईं"
 
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
@@ -1486,7 +1494,7 @@ msgstr "हो गइल"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Download"
-msgstr "डाउनलोड"
+msgstr "डाउनलोड करीं"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP सर्वर"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "मध्यम"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "मध्यम"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "नेटवर्क त्रुटि"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "नया"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "सबसे नया"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "सूचना: {0}"
 msgid "Novice"
 msgstr "नौसिखिया"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "संख्या"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "क्रमांक"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,8 +2934,9 @@ msgstr "ऑफलाइन"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ठीक बा"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "ओह! पन्ना ना मिलल!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "खोलीं"
+msgstr "खुलल"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3038,7 +3059,7 @@ msgstr "पासकी सत्यापन विफल हो गइल। �
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
-msgstr "Passkey"
+msgstr "पासकी सब"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
@@ -3445,7 +3466,7 @@ msgstr "खेल में हार मानीं?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "समाधान"
+msgstr "रिज़ॉल्यूशन"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "खोज रहल बा..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "चुनीं"
+msgstr "चयन"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "ढांचा"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "विषय"
+msgstr "उपयोगकर्ता भा समूह"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "अतिमानव"
 msgid "Switch to view 1-9"
 msgstr "1-9 दृश्य पर स्विच करीं"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "सिस्टम"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "सिस्टम"
 
@@ -4022,7 +4047,7 @@ msgstr "मिशन रुक गइल।"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey अनुरोध के जवाब ना मिलल"
+msgstr "पासकी अनुरोध के जवाब ना मिलल"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4034,7 +4059,7 @@ msgstr "सर्वर डेटा के बजाय एगो वेब प
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "ई ऐप के रउआ passkey इस्तेमाल करे के अनुमति नइखे। सेटिंग में, अनुमति के नीचे एकरा के अनुमति दीं।"
+msgstr "ई ऐप के रउआ पासकी इस्तेमाल करे के अनुमति नइखे। सेटिंग में, अनुमति के नीचे एकरा के अनुमति दीं।"
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4119,7 +4144,7 @@ msgstr "बहुते जादा अनुरोध"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ऊपर"
+msgstr "टॉप"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "वीडियो दर्शक: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "देखीं"
+msgstr "दृश्य"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

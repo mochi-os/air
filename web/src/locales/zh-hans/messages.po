@@ -644,7 +644,7 @@ msgstr "蓝队机器人"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Board"
-msgstr "棋盘"
+msgstr "看板"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -765,8 +765,12 @@ msgstr "相机不可用"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "取消"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "取消"
 
@@ -924,10 +928,14 @@ msgstr "选择语言"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "清除"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "晴"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP 服务器"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "中"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "中"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "网络错误"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "新建"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "最新"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,11 +2910,15 @@ msgstr "通知：{0}"
 msgid "Novice"
 msgstr "新手"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "数字"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "编号"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2914,8 +2934,9 @@ msgstr "离线"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "确定"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2941,7 +2962,7 @@ msgstr "抱歉!页面未找到!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "打开"
+msgstr "开放"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3445,7 +3466,7 @@ msgstr "认输?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "解决方式"
+msgstr "分辨率"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3892,7 +3913,7 @@ msgstr "结构"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "主题"
+msgstr "对象"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "超人"
 msgid "Switch to view 1-9"
 msgstr "切换到视图 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "系统"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "系统"
 
@@ -4119,7 +4144,7 @@ msgstr "请求次数过多"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "顶部"
+msgstr "最佳"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "视频查看器：{0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "查看"
+msgstr "视角"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "视图控制"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "查看"
+msgstr "视角"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

@@ -440,7 +440,7 @@ msgstr "Sabit tərəflər"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Android push bildirişi"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -765,8 +765,12 @@ msgstr "Kamera əlçatan deyil"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Ləğv et"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Ləğv et"
 
@@ -924,10 +928,14 @@ msgstr "Dil seçin"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Təmizlə"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Buludsuz"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1399,7 +1407,7 @@ msgstr "Yanğında məhv oldu"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Təfərrüat"
+msgstr "Detallaşdırma"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -2082,7 +2090,7 @@ msgstr "Tarixçə"
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 msgid "Home"
-msgstr "Ev"
+msgstr "Ana səhifə"
 
 #: src/components/GameCanvas.tsx
 msgid "hook"
@@ -2486,7 +2494,7 @@ msgstr "Kateqoriyaları idarə et"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Manual"
-msgstr "Manual"
+msgstr "Əl ilə"
 
 #: src/components/GameCanvas.tsx
 msgid "map"
@@ -2527,7 +2535,11 @@ msgid "MCP server"
 msgstr "MCP serveri"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Orta"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Orta"
 
@@ -2682,9 +2694,13 @@ msgid "Network error"
 msgstr "Şəbəkə xətası"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Yeni"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Ən yeni"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2894,9 +2910,13 @@ msgstr "Bildirişlər: {0}"
 msgid "Novice"
 msgstr "Yeni başlayan"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Nömrə"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Nömrə"
 
@@ -2914,6 +2934,7 @@ msgstr "oflayn"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2941,7 +2962,7 @@ msgstr "Hopa! Səhifə Tapılmadı!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Aç"
+msgstr "Açıq"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3445,7 +3466,7 @@ msgstr "Oyundan təslim olunsun?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Çözüm"
+msgstr "Ayırdetmə qabiliyyəti"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3623,7 +3644,7 @@ msgstr "Axtarılır..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Seç"
+msgstr "Seçim"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3892,7 +3913,7 @@ msgstr "KONSTRUKSİYA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Mövzu"
+msgstr "İstifadəçi və ya qrup"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3922,9 +3943,13 @@ msgstr "Fövqəlinsan"
 msgid "Switch to view 1-9"
 msgstr "1-9 görünüşünə keç"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistem"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
@@ -4119,7 +4144,7 @@ msgstr "Həddindən çox sorğu"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Yuxarı"
+msgstr "Ən yaxşı"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4345,7 +4370,7 @@ msgstr "Video göstəricisi: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Bax"
+msgstr "Görünüş"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4362,7 +4387,7 @@ msgstr "Görünüş seçimləri"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Baxışlar"
+msgstr "Görünüşlər"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

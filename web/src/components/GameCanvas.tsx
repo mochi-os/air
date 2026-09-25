@@ -100,7 +100,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   '2 WIRE': msg`2 WIRE`,
   '3 WIRE': msg`3 WIRE`,
   '4 WIRE': msg`4 WIRE`,
-  OK: msg`OK`,
+  OK: msg({ message: 'OK', context: 'landing grade' }),
   FAIR: msg`FAIR`,
   'NO-GRADE': msg`NO-GRADE`,
   CUT: msg`CUT`,
@@ -302,9 +302,11 @@ export function GameCanvas({
   onConfigChange,
   onConfig,
   onAgain,
+  replay = null,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
+  replay?: string | null // a stored recording to watch flown back, instead of a mission
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
   onConfigChange?: (config: MissionConfig) => void
@@ -385,6 +387,7 @@ export function GameCanvas({
           setMenu(true)
         },
         onChat: (scope) => setChat(scope as Scope),
+        replay,
         translate,
       })
     } catch (error) {
@@ -696,7 +699,13 @@ export function GameCanvas({
             >
               <LogOut className='size-4' />
               {/* A MISSION is yours to leave; a MATCH continues without you. */}
-              {join ? <Trans>Exit match</Trans> : <Trans>Exit mission</Trans>}
+              {join ? (
+                <Trans>Exit match</Trans>
+              ) : replay ? (
+                <Trans>Exit replay</Trans>
+              ) : (
+                <Trans>Exit mission</Trans>
+              )}
             </Button>
           </div>
         </div>
