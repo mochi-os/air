@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ned} other {#ned}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, no {from} līdz {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} nosaukums"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "no {from} līdz {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, zero {+# vēl} one {+# vēl} other {+# vēl}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Velciet</0> vai <1>←→</1> lai riņķotu"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "TROSE 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "TROSE 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 stundas"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "TROSE 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "TROSE 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Lidmašīnas modelis <0>“F/A-18C Hornet”</0>, autors <1>CreadorDeMu<
 msgid "Alerts"
 msgstr "Brīdinājumi"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Visu dienu"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Visi režīmi"
@@ -478,6 +505,10 @@ msgstr "Augošā secībā"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimetrija"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Jūrā"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Galds"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Veicināt interesi"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Apmales krāsa"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bots"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, ieroči brīvi no sākuma"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Fiksēt / atbrīvot"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Kalendāra serveris"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Mainīts"
 msgid "Changed {field}"
 msgstr "Mainīts {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Mainīts atkārtojums"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Sekošanas skats:"
@@ -856,6 +901,10 @@ msgstr "Izvēles rūtiņa"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Kontrolsaraksts"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Izvēlieties datumu"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "SADURSME AR {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Krāsa"
 
@@ -1055,6 +1105,10 @@ msgstr "Turpināt"
 msgid "Continue with {label}"
 msgstr "Turpināt ar {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Turpināt ar {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Nokopēts"
@@ -1063,6 +1117,10 @@ msgstr "Nokopēts"
 msgid "Copied to clipboard"
 msgstr "Nokopēts starpliktuvē"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopēt"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Pielāgots"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "BĪSTAMI"
 
@@ -1543,6 +1602,10 @@ msgstr "Tukšs pilons"
 msgid "Enable sound"
 msgstr "Ieslēgt skaņu"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Beidzas, pirms sākas"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "UZBRŪKU"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Neizdevās augšupielādēt pielikumu"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "APMIERINOŠI"
 
@@ -2216,6 +2280,10 @@ msgstr "KR DZINĒJS IZSLĒGTS"
 msgid "L GEAR"
 msgstr "KREISĀ ŠASIJA"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Nosēšanās"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderēšana"
 msgid "Monday"
 msgstr "Pirmdiena"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Mēnesis"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Vairāk opciju"
@@ -2564,6 +2636,13 @@ msgstr "Pārvietots"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Pārvietots {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Pārvieto uz {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Jauna spēle"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Nākamais attēls"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Nākamais mēnesis"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Nākamais gads"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Nav pasaules servera."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "BEZ VĒRTĒJUMA"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "bezsaistē"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Labi"
 
@@ -3059,6 +3148,14 @@ msgstr "Nospiediet…"
 msgid "Previous image"
 msgstr "Iepriekšējais attēls"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Iepriekšējais mēnesis"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Iepriekšējais gads"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Pārdēvēt šo dēļa kolonnu"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderēšanu nodrošina <0>three.js</0> (MIT licence)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Atkārtojas"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "GAIDA PRETINIEKU"
 msgid "Watch"
 msgstr "Skatīties"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Skatīties, kā bots to lido"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Tikai skatīts"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "PĀRTRAUC NOSĒŠANOS"
 
@@ -4380,6 +4487,10 @@ msgstr "Novirze pa kreisi"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Novirze pa labi"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Gads"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

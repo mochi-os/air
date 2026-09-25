@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#წთ} other {#წთ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#კვ} other {#კვ}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from}-დან {to}-მდე"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel}-ის სახელი"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from}-დან {to}-მდე"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# სხვა} other {+# სხვა}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>გადაათრიეთ</0> ან <1>←→</1> შემოვლისთვის"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "ტროსი 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "ტროსი 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 საათი"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "ტროსი 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "ტროსი 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "თვითმფრინავის მოდელი <0>“F/A-18C
 msgid "Alerts"
 msgstr "გაფრთხილებები"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "მთელი დღე"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "ყველა რეჟიმი"
@@ -478,6 +505,10 @@ msgstr "ზრდადობით"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "ასიმეტრია"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "ზღვაზე"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "დაფა"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "ბოლტერი"
 
@@ -635,6 +667,10 @@ msgstr "ინტერესის გაძლიერება"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "კონტურის ფერი"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ბოტი"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, იარაღი თავისუფალია დასა�
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ჩაკეტვა / გათავისუფლება"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "კალენდრის სერვერი"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "შეიცვალა"
 msgid "Changed {field}"
 msgstr "შეიცვალა {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "შეცვლილი გამეორება"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "დევნის ხედი:"
@@ -856,6 +901,10 @@ msgstr "ფლაგი"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "ჩამონათვალი"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "აირჩიეთ თარიღი"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "შეჯახება {callsign}-თან"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "ფერი"
 
@@ -1055,6 +1105,10 @@ msgstr "გაგრძელება"
 msgid "Continue with {label}"
 msgstr "გაგრძელება {label}-ით"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "გაგრძელება {providerLabel}-ით"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "დაკოპირდა"
@@ -1063,6 +1117,10 @@ msgstr "დაკოპირდა"
 msgid "Copied to clipboard"
 msgstr "ბუფერში დაკოპირდა"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "კოპირება"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "მორგებული"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "საშიში"
 
@@ -1543,6 +1602,10 @@ msgstr "ცარიელი პილონი"
 msgid "Enable sound"
 msgstr "ხმის ჩართვა"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "სრულდება დაწყებამდე"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "ვუტევ"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "დანართის ატვირთვა ვერ მოხერხდა"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "საშუალო"
 
@@ -2216,6 +2280,10 @@ msgstr "მარცხ ძრავა გამორთული"
 msgid "L GEAR"
 msgstr "მარცხენა შასი"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "დაშვება"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2410,7 +2478,7 @@ msgstr "კატეგორიების მართვა"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Manual"
-msgstr "სახელმძღვანელო"
+msgstr "ხელით"
 
 #: src/components/GameCanvas.tsx
 msgid "map"
@@ -2549,6 +2617,10 @@ msgstr "მოდერაცია"
 msgid "Monday"
 msgstr "ორშაბათი"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "თვე"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "მეტი ვარიანტი"
@@ -2564,6 +2636,13 @@ msgstr "გადაადგილდა"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "გადაადგილდა {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "მიმდინარეობს გადატანა {0}-ზე"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "ახალი თამაში"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "შემდეგი სურათი"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "შემდეგი თვე"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "შემდეგი წელი"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "სამყაროს სერვერი არ არის."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "შეფასების გარეშე"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "ოფლაინ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "კარგი"
 
@@ -3059,6 +3148,14 @@ msgstr "დააჭირეთ…"
 msgid "Previous image"
 msgstr "წინა სურათი"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "წინა თვე"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "წინა წელი"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "ამ დაფის სვეტის სახელის შე�
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "რენდერინგს ასრულებს <0>three.js</0> (MIT ლიცენზია)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "მეორდება"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4010,7 +4112,7 @@ msgstr "ზედმეტად ბევრი მოთხოვნა"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ძალიან დიდი"
+msgstr "ზედა"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4113,7 +4215,7 @@ msgstr "მიუნიჭებელი"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 msgid "Unavailable"
-msgstr "არაავტორიზებული წვდომა"
+msgstr "მიუწვდომელი"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4127,7 +4229,7 @@ msgstr "API-ის მოულოდნელი შეცდომა"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
-msgstr "ამ ვიკის უნიკალური იდენტიფიკატორები."
+msgstr "შეერთებული შტატები"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
@@ -4136,11 +4238,11 @@ msgstr "ამ ვიკის უნიკალური იდენტიფ
 #: ../../../lib/web/src/components/tree-table-header.tsx
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Unknown"
-msgstr "ერთეულები"
+msgstr "უცნობი"
 
 #: src/components/Multiplayer.tsx
 msgid "Unlimited"
-msgstr "უცნობი მოწყობილობა"
+msgstr "შეუზღუდავი"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -4164,12 +4266,12 @@ msgstr "შეუზღუდავი საწვავი (ყველა �
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Unsubscribe"
-msgstr "ამოუცნობი ანგარიში"
+msgstr "გამოწერის გაუქმება"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/lib/entity-title.ts
 msgid "Untitled"
-msgstr "შეჩერება მოხსნილია"
+msgstr "უსათაურო"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
@@ -4211,7 +4313,7 @@ msgstr "შემოწმება"
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify"
-msgstr "შემოწმებული"
+msgstr "შემოწმება"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify email address"
@@ -4236,7 +4338,7 @@ msgstr "ვიდეოს მნახველი: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ვიდეოს ესკიზი"
+msgstr "ნახვა"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4272,16 +4374,21 @@ msgstr "ველოდებით მოწინააღმდეგეს"
 msgid "Watch"
 msgstr "თვალყურის დევნება"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "უყურეთ, როგორ ფრენს ბოტი"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
-msgstr "ყურება"
+msgstr "თვალყურის ქვეშ"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Watched only"
-msgstr "ნანახი"
+msgstr "მხოლოდ თვალყურის ქვეშ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "შეწყვიტე დაფრენა"
 
@@ -4380,6 +4487,10 @@ msgstr "ცხვირი მარცხნივ"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ცხვირი მარჯვნივ"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "წელი"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

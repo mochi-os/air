@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#ìṣ} other {#ìṣ}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ọs} other {#ọs}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, láti {from} sí {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Orúkọ {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "láti {from} sí {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, other {+# mìíràn}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Fà</0> tàbí <1>←→</1> láti yíká"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "WAYA 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "WAYA 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "Wákàtí 24"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "WAYA 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "WAYA 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Àwòṣe ọkọ̀ òfurufú <0>“F/A-18C Hornet”</0> láti ọwọ�
 msgid "Alerts"
 msgstr "Ìkìlọ̀"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Gbogbo ọjọ́"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Gbogbo ipò"
@@ -478,6 +505,10 @@ msgstr "Gòkè"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "àìdọ́gba"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Lórí òkun"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Pátákó"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Mú ìfẹ́ pọ̀"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Àwọ̀ ààlà"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, ohun ìjà lómìnira láti ìbẹ̀rẹ̀"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Tìpa / tú sílẹ̀"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Sáfà kàlẹ́ńdà"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "A yí padà"
 msgid "Changed {field}"
 msgstr "A yí {field} padà"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Ìgbà tí a yípadà"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Ìwòran ìlépa:"
@@ -857,9 +902,13 @@ msgstr "Àpótí àyẹ̀wò"
 msgid "Checklist"
 msgstr "Àkọsílẹ̀ àyẹ̀wò"
 
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Yan ọjọ́ kan"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
-msgstr "Yan eré kan láti sidebar tàbí bẹ̀rẹ̀ ọ̀kan tuntun."
+msgstr "Yan eré kan láti ọ̀pá ẹ̀gbẹ́ tàbí bẹ̀rẹ̀ ọ̀kan tuntun."
 
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
@@ -937,7 +986,7 @@ msgstr "Ká jọ"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
-msgstr "Hó sidebar"
+msgstr "Ká ọ̀pá ẹ̀gbẹ́"
 
 #: src/components/GameCanvas.tsx
 msgid "COLLIDED"
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ÌJÀMBÁ PẸ̀LÚ {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Àwọ̀"
 
@@ -1055,6 +1105,10 @@ msgstr "Tẹ̀síwájú"
 msgid "Continue with {label}"
 msgstr "Tẹ̀síwájú pẹ̀lú {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Tẹ̀síwájú pẹ̀lú {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Ti dàkọ"
@@ -1063,6 +1117,10 @@ msgstr "Ti dàkọ"
 msgid "Copied to clipboard"
 msgstr "A ti ṣe àdàkọ sí clipboard"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Ṣe àdàkọ"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Àṣà"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "EWU"
 
@@ -1399,7 +1458,7 @@ msgstr "Ẹ̀rọ àtúnfihàn"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
-msgstr "Ó ń fi sidebar fóònù hàn."
+msgstr "Ó ń fi ọ̀pá ẹ̀gbẹ́ fóònù hàn."
 
 #: src/components/SettingsDialog.tsx
 msgid "Distance LOD"
@@ -1543,6 +1602,10 @@ msgstr "Pylon òfìfo"
 msgid "Enable sound"
 msgstr "Mú ìró ṣiṣẹ́"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Ó parí kí ó tó bẹ̀rẹ̀"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "MO Ń KỌLU"
@@ -1596,7 +1659,7 @@ msgstr "Ṣílẹ̀kùn"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
-msgstr "Fẹ̀ sidebar"
+msgstr "Fẹ̀ ọ̀pá ẹ̀gbẹ́"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Kò lè gbé àfikún sókè"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "ÀROPIN"
 
@@ -2216,6 +2280,10 @@ msgstr "ẸNJINNI ÒSÌ TI PA"
 msgid "L GEAR"
 msgstr "GÍYÀ ÒSÌ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Ìbalẹ̀"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Ìṣàkóso"
 msgid "Monday"
 msgstr "Ọjọ́ Ajé"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Oṣù"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Awọn aṣayan diẹ sii"
@@ -2564,6 +2636,13 @@ msgstr "A gbé lọ"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "A gbé {field} lọ"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Ń kó lọ sí {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Eré tuntun"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Àwòrán tó kàn"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Oṣù tó ń bọ̀"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Ọdún tó ń bọ̀"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Kò sí olùpín ayé."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "KÒ SÍ GÍRÉÈDÌ"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "kò sopọ̀"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "Ó dára"
 
@@ -3059,6 +3148,14 @@ msgstr "Tẹ…"
 msgid "Previous image"
 msgstr "Àwòrán tó kọjá"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Oṣù tó kọjá"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Ọdún tó kọjá"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Tún ọ̀wọ́n bóòdù yìí sọ orúkọ"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ìfihàn àwòrán jẹ́ nípasẹ̀ <0>three.js</0> (ìwé àṣẹ MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Ó máa ń tún wáyé"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "Ń DÚRÓ DE ALÁTAKO"
 msgid "Watch"
 msgstr "Wo"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Wo bot tí ó ń fò ó"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Ti ṣọ́ nìkan"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "DÁWỌ́ ÌBALẸ̀ DÚRÓ"
 
@@ -4380,6 +4487,10 @@ msgstr "Yaw sí òsì"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw sí ọ̀tún"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Ọdún"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

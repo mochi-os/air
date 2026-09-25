@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#мин} other {#мин}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#сед} other {#сед}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} до {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Име на {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} до {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# още} other {+# още}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Плъзнете</0> или <1>←→</1> за обиколка"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 часа"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "ТРОС 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Модел на самолет <0>“F/A-18C Hornet”</0> от <1>Cread
 msgid "Alerts"
 msgstr "Предупреждения"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Цял ден"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Всички режими"
@@ -478,6 +505,10 @@ msgstr "Възходящ"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "асиметрия"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "В морето"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Дъска"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "БОЛТЪР"
 
@@ -635,6 +667,10 @@ msgstr "Усили интереса"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Цвят на рамката"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "бот"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, свободна стрелба от старта"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Фиксиране / освобождаване"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Сървър за календари"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Променено"
 msgid "Changed {field}"
 msgstr "Променено {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Променено повторение"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Следящ изглед:"
@@ -856,6 +901,10 @@ msgstr "Чекбокс"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Чек-лист"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Изберете дата"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "СБЛЪСЪК С {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Цвят"
 
@@ -1055,6 +1105,10 @@ msgstr "Продължи"
 msgid "Continue with {label}"
 msgstr "Продължи с {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Продължи с {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Копирано"
@@ -1063,6 +1117,10 @@ msgstr "Копирано"
 msgid "Copied to clipboard"
 msgstr "Копирано в клипборда"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Копирай"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Персонализирано"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "ОПАСНО"
 
@@ -1543,6 +1602,10 @@ msgstr "Празен пилон"
 msgid "Enable sound"
 msgstr "Включване на звука"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Свършва преди да е започнало"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "АТАКУВАМ"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Неуспешно качване на прикачен файл"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "ЗАДОВОЛИТЕЛНО"
 
@@ -2216,6 +2280,10 @@ msgstr "ЛЯВ ДВИГ ИЗКЛ"
 msgid "L GEAR"
 msgstr "Л КОЛЕСНИК"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Кацане"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Модерация"
 msgid "Monday"
 msgstr "Понеделник"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Месец"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Още опции"
@@ -2564,6 +2636,13 @@ msgstr "Преместено"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Преместено {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Преместване на {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Нова игра"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Следващо изображение"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Следващ месец"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Следваща година"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Няма сървър на света."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "БЕЗ ОЦЕНКА"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "офлайн"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Натисни…"
 msgid "Previous image"
 msgstr "Предишно изображение"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Предишен месец"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Предишна година"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Преименувай тази колона"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендерирането се извършва от <0>three.js</0> (лиценз MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Повтаря се"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "ИЗЧАКВАНЕ НА ПРОТИВНИК"
 msgid "Watch"
 msgstr "Наблюдавай"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Гледайте как бот лети"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Само наблюдавани"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ПРЕКРАТИ КАЦАНЕТО"
 
@@ -4380,6 +4487,10 @@ msgstr "Рискане наляво"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Рискане надясно"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Година"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

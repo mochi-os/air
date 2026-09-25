@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#Min} other {#Min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#Wo} other {#Wo}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} bis {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel}-Name"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} bis {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# weiterer} other {+# weitere}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Ziehen</0> oder <1>←→</1> zum Umkreisen"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "SEIL 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "SEIL 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 Stunden"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "SEIL 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "SEIL 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Flugzeugmodell <0>“F/A-18C Hornet”</0> von <1>CreadorDeMu</1> (Sketc
 msgid "Alerts"
 msgstr "Warnungen"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Ganztägig"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Alle Modi"
@@ -478,6 +505,10 @@ msgstr "Aufsteigend"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "Asymmetrie"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Auf See"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Brett"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Interesse hervorheben"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Randfarbe"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "Bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, Waffen frei ab Start"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Arretieren / entriegeln"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Kalenderserver"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Geändert"
 msgid "Changed {field}"
 msgstr "{field} geändert"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Geänderter Einzeltermin"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Verfolgeransicht:"
@@ -856,6 +901,10 @@ msgstr "Kontrollkästchen"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checkliste"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Datum wählen"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "KOLLISION MIT {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Farbe"
 
@@ -1055,6 +1105,10 @@ msgstr "Fortfahren"
 msgid "Continue with {label}"
 msgstr "Mit {label} fortsetzen"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Weiter mit {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Kopiert"
@@ -1063,6 +1117,10 @@ msgstr "Kopiert"
 msgid "Copied to clipboard"
 msgstr "In die Zwischenablage kopiert"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopieren"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Benutzerdefiniert"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "GEFÄHRLICH"
 
@@ -1543,6 +1602,10 @@ msgstr "Leerer Pylon"
 msgid "Enable sound"
 msgstr "Ton aktivieren"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Endet vor dem Beginn"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "GREIFE AN"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Anhang konnte nicht hochgeladen werden"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "BEFRIEDIGEND"
 
@@ -2216,6 +2280,10 @@ msgstr "L TRW ABGESTELLT"
 msgid "L GEAR"
 msgstr "FAHRWERK L"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Landung"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderation"
 msgid "Monday"
 msgstr "Montag"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Monat"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Weitere Optionen"
@@ -2564,6 +2636,13 @@ msgstr "Verschoben"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} verschoben"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Wird auf {0} verschoben"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Neues Spiel"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Nächstes Bild"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Nächster Monat"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Nächstes Jahr"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Kein Weltserver."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "KEINE WERTUNG"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "offline"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Drücken…"
 msgid "Previous image"
 msgstr "Vorheriges Bild"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Vorheriger Monat"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Vorheriges Jahr"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Diese Board-Spalte umbenennen"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering durch <0>three.js</0> (MIT-Lizenz)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Wiederholt sich"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "WARTE AUF GEGNER"
 msgid "Watch"
 msgstr "Beobachten"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Einem Bot beim Fliegen zusehen"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Nur beobachtet"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "DURCHSTARTEN"
 
@@ -4380,6 +4487,10 @@ msgstr "Gieren nach links"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Gieren nach rechts"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Jahr"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#分} other {#分}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#週間} other {#週間}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day} {from}～{to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} の名前"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from}～{to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, other {他 +# 件}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>ドラッグ</0> または <1>←→</1> で旋回"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "1番ワイヤー"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "2番ワイヤー"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24時間"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "3番ワイヤー"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "4番ワイヤー"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "航空機モデル <0>“F/A-18C Hornet”</0>（<1>CreadorDeMu</1> 作�
 msgid "Alerts"
 msgstr "警報"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "終日"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "すべてのモード"
@@ -478,6 +505,10 @@ msgstr "昇順"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "非対称"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "海上"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "ボード"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "ボルター"
 
@@ -635,6 +667,10 @@ msgstr "関心を高める"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "枠線の色"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "ボット"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR、開始直後から攻撃自由"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "固定 / 解放"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "カレンダーサーバー"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "変更しました"
 msgid "Changed {field}"
 msgstr "{field}を変更しました"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "変更された予定"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "追跡視点："
@@ -856,6 +901,10 @@ msgstr "チェックボックス"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "チェックリスト"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "日付を選択"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} と衝突"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "色"
 
@@ -1055,6 +1105,10 @@ msgstr "続行"
 msgid "Continue with {label}"
 msgstr "{label} で続行"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel}で続行"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "コピーしました"
@@ -1063,6 +1117,10 @@ msgstr "コピーしました"
 msgid "Copied to clipboard"
 msgstr "クリップボードにコピーしました"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "コピー"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "カスタム"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "危険"
 
@@ -1543,6 +1602,10 @@ msgstr "空のパイロン"
 msgid "Enable sound"
 msgstr "サウンドを有効にする"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "開始より前に終了"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "エンゲージ"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "添付ファイルのアップロードに失敗しました"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "可"
 
@@ -2216,6 +2280,10 @@ msgstr "左エンジン停止"
 msgid "L GEAR"
 msgstr "左脚"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "着艦"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "モデレーション"
 msgid "Monday"
 msgstr "月曜日"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "月"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "その他のオプション"
@@ -2564,6 +2636,13 @@ msgstr "移動しました"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field}を移動しました"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} に移動しています"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "新しいゲーム"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "次の画像"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "翌月"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "翌年"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "ワールドサーバーがありません。"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "評価なし"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "オフライン"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "押してください…"
 msgid "Previous image"
 msgstr "前の画像"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "前月"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "前年"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "このボード列の名前を変更"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "レンダリングは <0>three.js</0> による（MIT ライセンス）。"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "繰り返しあり"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "対戦相手を待っています"
 msgid "Watch"
 msgstr "ウォッチ"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "ボットの飛行を見る"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "ウォッチ中のみ"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ウェーブオフ"
 
@@ -4380,6 +4487,10 @@ msgstr "左ヨー"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "右ヨー"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "年"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

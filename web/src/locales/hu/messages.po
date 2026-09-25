@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#p} other {#p}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#hét} other {#hét}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} és {to} között"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} neve"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} és {to} között"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# további} other {+# további}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Húzza</0> vagy <1>←→</1> a keringéshez"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "KÖTÉL 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "KÖTÉL 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 óra"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "KÖTÉL 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "KÖTÉL 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Repülőgépmodell <0>“F/A-18C Hornet”</0>, készítette <1>CreadorD
 msgid "Alerts"
 msgstr "Riasztások"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Egész nap"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Minden mód"
@@ -478,6 +505,10 @@ msgstr "Növekvő"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "aszimmetria"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Tengeren"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Tábla"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Érdeklődés növelése"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Szegélyszín"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, tűzszabadság az indulástól"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Rögzítés / kioldás"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Naptárkiszolgáló"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Módosítva"
 msgid "Changed {field}"
 msgstr "{field} módosítva"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Módosított előfordulás"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Követő nézet:"
@@ -856,6 +901,10 @@ msgstr "Jelölőnégyzet"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Ellenőrzőlista"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Válasszon dátumot"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ÜTKÖZÉS: {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Szín"
 
@@ -1055,6 +1105,10 @@ msgstr "Folytatás"
 msgid "Continue with {label}"
 msgstr "Folytatás a következővel: {label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Folytatás ezzel: {providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Másolva"
@@ -1063,6 +1117,10 @@ msgstr "Másolva"
 msgid "Copied to clipboard"
 msgstr "A vágólapra másolva"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Másolás"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Egyéni"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "VESZÉLYES"
 
@@ -1543,6 +1602,10 @@ msgstr "Üres pilon"
 msgid "Enable sound"
 msgstr "Hang bekapcsolása"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Előbb ér véget, mint elkezdődik"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "TÁMADOK"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Nem sikerült feltölteni a mellékletet"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "KÖZEPES"
 
@@ -2216,6 +2280,10 @@ msgstr "BAL HAJTÓMŰ LEÁLLÍTVA"
 msgid "L GEAR"
 msgstr "BAL FUTÓ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Leszállás"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderálás"
 msgid "Monday"
 msgstr "Hétfő"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Hónap"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "További lehetőségek"
@@ -2564,6 +2636,13 @@ msgstr "Áthelyezve"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} áthelyezve"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Áthelyezés ide: {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Új játék"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Következő kép"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Következő hónap"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Következő év"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Nincs világszerver."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "NINCS OSZTÁLYZAT"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "offline"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Nyomd meg…"
 msgid "Previous image"
 msgstr "Előző kép"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Előző hónap"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Előző év"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Tábla oszlopának átnevezése"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "A megjelenítést a <0>three.js</0> végzi (MIT licenc)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Ismétlődik"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4374,10 @@ msgstr "VÁRAKOZÁS AZ ELLENFÉLRE"
 msgid "Watch"
 msgstr "Figyelés"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Nézd, ahogy egy bot repüli"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Csak figyelt"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "ÁTSTARTOLÁS"
 
@@ -4380,6 +4487,10 @@ msgstr "Legyezés balra"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Legyezés jobbra"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Év"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -129,9 +129,23 @@ msgstr "{count, plural, one {#dəq} other {#dəq}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#h} other {#h}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, {from} ilə {to} arası"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "{entityLabel} adı"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "{from} ilə {to} arası"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# daha} other {+# daha}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +209,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Sürüşdürün</0> və ya <1>←→</1> fırlanmaq üçün"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "TROS 1"
 
@@ -215,6 +230,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "TROS 2"
 
@@ -223,12 +239,18 @@ msgid "24 hours"
 msgstr "24 saat"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "TROS 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "TROS 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +399,11 @@ msgstr "Təyyarə modeli <0>“F/A-18C Hornet”</0> <1>CreadorDeMu</1> tərəfi
 msgid "Alerts"
 msgstr "Xəbərdarlıqlar"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Bütün gün"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Bütün rejimlər"
@@ -478,6 +505,10 @@ msgstr "Artan"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimmetriya"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Dənizdə"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +647,7 @@ msgid "Board"
 msgstr "Lövhə"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +667,10 @@ msgstr "Marağı artır"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Sərhəd rəngi"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +721,10 @@ msgstr "BVR, silahlar başlanğıcdan sərbəst"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Bərkit / sərbəst burax"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Təqvim serveri"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +866,11 @@ msgstr "Dəyişdirildi"
 msgid "Changed {field}"
 msgstr "{field} dəyişdirildi"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Dəyişdirilmiş təkrar"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Təqib görünüşü:"
@@ -847,7 +892,7 @@ msgstr "Hamı ilə çat"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
-msgstr "Çitlər"
+msgstr "Hilələr"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checkbox"
@@ -856,6 +901,10 @@ msgstr "İşarələmə qutusu"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Yoxlama siyahısı"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Tarix seçin"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -948,6 +997,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "{callsign} İLƏ TOQQUŞMA"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Rəng"
 
@@ -1055,6 +1105,10 @@ msgstr "Davam et"
 msgid "Continue with {label}"
 msgstr "{label} ilə davam edin"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "{providerLabel} ilə davam et"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Kopyalandı"
@@ -1063,6 +1117,10 @@ msgstr "Kopyalandı"
 msgid "Copied to clipboard"
 msgstr "Mübadilə yaddaşına kopyalandı"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Kopyala"
@@ -1190,6 +1248,7 @@ msgid "Custom"
 msgstr "Xüsusi"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "TƏHLÜKƏLİ"
 
@@ -1543,6 +1602,10 @@ msgstr "Boş pilon"
 msgid "Enable sound"
 msgstr "Səsi aktiv et"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Başlamazdan əvvəl bitir"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "HÜCUM EDİRƏM"
@@ -1731,6 +1794,7 @@ msgid "Failed to upload attachment"
 msgstr "Əlavəni yükləmək alınmadı"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "ORTA"
 
@@ -2216,6 +2280,10 @@ msgstr "SOL MÜHƏRRİK SÖNDÜRÜLÜB"
 msgid "L GEAR"
 msgstr "SOL ŞASSİ"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Eniş"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2617,10 @@ msgstr "Moderasiya"
 msgid "Monday"
 msgstr "Bazar ertəsi"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Ay"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Digər seçimlər"
@@ -2564,6 +2636,13 @@ msgstr "Köçürüldü"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "{field} köçürüldü"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "{0} tarixinə köçürülür"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2687,14 @@ msgstr "Yeni oyun"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Növbəti şəkil"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Növbəti ay"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Növbəti il"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2812,7 @@ msgid "No world server."
 msgstr "Dünya serveri yoxdur."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "QİYMƏT VERİLMƏDİ"
 
@@ -2817,6 +2905,7 @@ msgid "offline"
 msgstr "oflayn"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3148,14 @@ msgstr "Bas…"
 msgid "Previous image"
 msgstr "Əvvəlki şəkil"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Əvvəlki ay"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Əvvəlki il"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3287,6 +3384,11 @@ msgstr "Bu lövhə sütununun adını dəyiş"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderinq <0>three.js</0> ilə həyata keçirilir (MIT lisenziyası)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Təkrarlanır"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4010,7 +4112,7 @@ msgstr "Həddindən çox sorğu"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Mövzular"
+msgstr "Yuxarı"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4109,11 +4211,11 @@ msgstr "Girişə yönləndirmək mümkün olmadı. Yenidən cəhd edin."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Unassigned"
-msgstr "İcazəsiz giriş"
+msgstr "Təyin edilməyib"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 msgid "Unavailable"
-msgstr "Hesabın banını götür"
+msgstr "Əlçatan deyil"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4127,7 +4229,7 @@ msgstr "Gözlənilməz API xətası"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
-msgstr "Naməlum"
+msgstr "Birləşmiş Ştatlar"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
@@ -4136,7 +4238,7 @@ msgstr "Naməlum"
 #: ../../../lib/web/src/components/tree-table-header.tsx
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Unknown"
-msgstr "Naməlum cihaz"
+msgstr "Naməlum"
 
 #: src/components/Multiplayer.tsx
 msgid "Unlimited"
@@ -4164,18 +4266,18 @@ msgstr "Limitsiz yanacaq (bütün oyunçular)"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Unsubscribe"
-msgstr "CRM-dən abunəlikdən çıx"
+msgstr "Abunəlikdən çıx"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/lib/entity-title.ts
 msgid "Untitled"
-msgstr "Təsdiqlənməyib"
+msgstr "Başlıqsız"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Updated"
-msgstr "Yenilənir..."
+msgstr "Yeniləndi"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Updated {field}"
@@ -4198,7 +4300,7 @@ msgstr "Giriş açarınızdan istifadə edin"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
-msgstr "İstifadəçi yaradıldı"
+msgstr "İstifadəçi"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"
@@ -4211,7 +4313,7 @@ msgstr "Yoxlama uğursuz oldu"
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify"
-msgstr "DNS-i yoxla"
+msgstr "Yoxla"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify email address"
@@ -4253,7 +4355,7 @@ msgstr "Görünüş seçimləri"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Səs ver və bax"
+msgstr "Baxışlar"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4272,6 +4374,10 @@ msgstr "RƏQİB GÖZLƏNİLİR"
 msgid "Watch"
 msgstr "İzlə"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Botun uçmasına baxın"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4388,7 @@ msgid "Watched only"
 msgstr "Yalnız izlənilənlər"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "İKİNCİ DÖVRƏYƏ GET"
 
@@ -4380,6 +4487,10 @@ msgstr "Sola dönmə"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Sağa dönmə"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "İl"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

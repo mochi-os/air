@@ -596,6 +596,12 @@ export function caution_shape(d: Float32Array, r: number): void {
 }
 
 // bake pre-renders every one-shot into a named buffer.
+// decay is the exponential envelope every baked shot is shaped with: sample i
+// at `rate`, falling to 1/e after t seconds.
+function decay(i: number, rate: number, t: number): number {
+  return Math.exp(-i / (rate * t))
+}
+
 async function bake(): Promise<void> {
   const c = context as AudioContext
   const render = async (
@@ -611,9 +617,6 @@ async function bake(): Promise<void> {
     fill(buffer.getChannelData(0), offline.sampleRate)
     return buffer
   }
-  const decay = (i: number, rate: number, t: number) =>
-    Math.exp(-i / (rate * t))
-
   // M61 burr: 100 rounds/s — each round a 3 ms crack over a 140 Hz thump.
   // The M61 from inside: at 6,000 rpm the repetition fuses into one deep
   // tearing roar felt through the airframe — a 100 Hz pulse comb over heavy
@@ -657,16 +660,9 @@ async function bake(): Promise<void> {
     for (let i = 0; i < r * 0.01; i++)
       d[i] += (Math.random() * 2 - 1) * decay(i, r, 0.004) * 0.8
   })
-  // Explosion: crack into a long low rumble (distance shaping at play time).
-  shots.explosion = await render(2.2, (d, r) => {
-    let last = 0
-    for (let i = 0; i < d.length; i++) {
-      const white = Math.random() * 2 - 1
-      if (i < r * 0.03) d[i] += white * decay(i, r, 0.012) * 1.2
-      last = (last + 0.03 * white) / 1.03
-      d[i] += last * 3.2 * decay(i, r, 0.7)
-    }
-  })
+  // Explosion: a crack and a thump into a long low rumble; shaped in
+  // blast_shape, beside the cue that plays it (distance shaping at play time).
+  shots.explosion = await render(2.2, blast_shape)
   // Missile away: a bandpass whoosh sweeping down with a rumble tail.
   shots.launch = await render(1.4, (d, r) => {
     let last = 0
@@ -1031,11 +1027,55 @@ export function audio_hit(count: number): void {
 // is the conservative end of honest for a missile warhead, and past it the
 // report is lost under the engine anyway.
 export const BLAST_REACH = 5000
+// The warhead itself. This opened on 30 ms of noise at 1.2 over a low rumble
+// at 3.2 decaying across 0.7 s: by energy the rumble was six times the crack
+// and twenty times its length, so a heater fusing 9 m off the canopy arrived
+// as a rumble with a tick on the front, and the pilot it killed reported a
+// crash with no crack (recording 01a0c91b, 2026-09-22). Kilograms of high
+// explosive at nine metres is an impulse first: the crack carries the
+// buffer's energy and its peak, and a thump follows it through the structure.
+// The rumble stays at 3.2 because it is all a distant burst is made of: the
+// play-time lowpass closes toward 180 Hz past 150 m and removes the crack, so
+// cutting the rumble to make room for the crack made every far burst about
+// 3 dB quieter on a small speaker. The crack and thump are sized to leave the
+// peak inside the headroom with the rumble at full strength. `random` is the
+// noise source, so a test can draw the same buffer twice.
+export function blast_shape(
+  d: Float32Array,
+  rate: number,
+  random: () => number = Math.random
+): void {
+  let last = 0
+  for (let i = 0; i < d.length; i++) {
+    const white = random() * 2 - 1
+    if (i < rate * 0.08) d[i] += white * decay(i, rate, 0.03) * 1.45
+    d[i] += Math.sin((i / rate) * 2 * Math.PI * 60) * decay(i, rate, 0.12) * 0.5
+    last = (last + 0.03 * white) / 1.03
+    d[i] += last * 3.2 * decay(i, rate, 0.7)
+  }
+}
+
+// blast_level is the gain a burst at `distance` plays at. Pressure falls as
+// 1/r from the near field, over a floor that keeps a far burst audible, faded
+// to nothing at BLAST_REACH so the gate is a horizon rather than a wall. The
+// near field is held at NEAR: a close burst at that level already peaks at the
+// limiter (the buffer's 2.3 x 1.4 x the 0.33 headroom, panned), so a louder
+// close burst would only be squashed. The floor was 0.1, and a pilot listening
+// on headphones found the far bursts too quiet: 0.3 lifts a burst 600 m off by
+// 3.4 dB and one 3 km off by 6.9 dB, and leaves everything inside 150 m as it was.
+export const NEAR = 1.4
+export function blast_level(distance: number): number {
+  const near = 150 / Math.max(distance, 150)
+  const fade = Math.max(0, Math.min(1, 1 - distance / BLAST_REACH))
+  return Math.min(NEAR, (0.3 + 1.3 * near) * fade)
+}
+
 export function audio_explosion(
   distance: number,
   x?: number,
   y?: number,
-  z?: number
+  z?: number,
+  muffled = false // the jet's own fireball: the burst that killed it has already cracked, and a crash is felt, not heard sharp
 ): void {
   // #192: a pilot who had fought for weeks had never heard one. The chain was
   // intact; the reach was the defect. A warhead this size carries for miles in
@@ -1043,16 +1083,12 @@ export function audio_explosion(
   // almost every burst is further out than that, so the cue effectively never
   // fired. It also fell off a cliff: 0.4 at 699 m, nothing at 701.
   if (distance > BLAST_REACH) return
-  // Pressure falls as 1/r, anchored at the near field so #66's close-in tuning
-  // is untouched, and faded to nothing at the edge so the gate is a horizon
-  // rather than a wall.
-  const near = 150 / Math.max(distance, 150)
   const fade = Math.max(0, Math.min(1, 1 - distance / BLAST_REACH))
   // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
   // toward the raw buffer inside 150 m. Beyond it the air itself eats the highs,
   // so a distant burst arrives as a rumble, not a quiet crack.
-  const crack = Math.max(0, Math.min(1, 1 - distance / 150))
-  const level = (0.1 + 1.3 * near) * fade
+  const crack = muffled ? 0 : Math.max(0, Math.min(1, 1 - distance / 150))
+  const level = blast_level(distance)
   const cutoff = 180 + 7800 * crack + 1200 * fade * fade
   if (x !== undefined)
     playAt('explosion', level, x, y as number, z as number, cutoff, distance / 343)
