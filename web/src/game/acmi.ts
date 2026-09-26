@@ -251,6 +251,18 @@ export function metres(
   return { x, z }
 }
 
+// airspeed is the true airspeed, m/s, that the flight core flew at Mach
+// number mach and altitude metres: its own standard atmosphere
+// (world/games/air/flight/atmosphere.go, which a match flies with no
+// temperature offset), so it gives back the core's speed through the air,
+// wind and gusts removed. A jet's speed over the ground is not it: in single
+// player the trades blow 21 kt at the surface and over 60 kt at 15,000 ft.
+export function airspeed(mach: number, altitude: number): number {
+  const h = Math.max(0, altitude)
+  const temperature = 288.15 - 0.0065 * Math.min(h, 11000)
+  return mach * Math.sqrt(1.4 * 287.053 * temperature)
+}
+
 const round = (v: number, places: number) => {
   const f = Math.pow(10, places)
   return Math.round(v * f) / f
