@@ -8,7 +8,13 @@
 import { lazy, Suspense, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { LazyBoundary, toast, useShellImmersive } from '@mochi/web'
+import {
+  cn,
+  isInShell,
+  LazyBoundary,
+  toast,
+  useShellImmersive,
+} from '@mochi/web'
 import { BackButton } from '@mochi/web/components/layout/back-button'
 import { MatchLog } from '../components/MatchLog'
 // From the replay seam, NOT from the engine: importing engine.ts here pulled
@@ -59,13 +65,17 @@ function Log() {
         </LazyBoundary>
       )}
       {/* Hidden, not unmounted, while a replay plays: the table painted over
-          the game, and its sort and filters are still there on the way back. */}
+          the game, and its sort and filters are still there on the way back.
+          In the shell at desktop widths the menu is painted over the page's
+          top-left corner, and a page without a sidebar clears it with the
+          start padding the shared layout uses. */}
       <div
-        className={
+        className={cn(
           watched !== null
             ? 'hidden'
-            : 'bg-background min-h-screen overflow-auto p-6'
-        }
+            : 'bg-background min-h-screen overflow-auto p-6',
+          watched === null && isInShell() && 'md:ps-24'
+        )}
       >
         <div className='w-full'>
           {/* The SHARED back button, not a hand-rolled one: it returns to
