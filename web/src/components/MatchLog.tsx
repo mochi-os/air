@@ -431,11 +431,12 @@ export function MatchLog({
             <TableHead>
               <Trans>Result</Trans>
             </TableHead>
+            {/* Remarks on the flight - whether cheats were on, and the last
+                pass as the LSO wrote it up - in the sense of notes on a
+                record, which some languages word apart from people's comments
+                on a post. */}
             <TableHead>
-              <Trans>Landing</Trans>
-            </TableHead>
-            <TableHead>
-              <Trans>Cheats</Trans>
+              <Trans context='flight log'>Comments</Trans>
             </TableHead>
             <TableHead />
           </TableRow>
@@ -489,13 +490,24 @@ export function MatchLog({
                 {formatNumber(m.deaths)}
               </TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
-              {/* The last pass as the LSO wrote it up: the grade and the wire
+              {/* The cheat mark first, where it always sits, then the last
+                  pass as the LSO wrote it up: the grade and the wire
                   translated, the shorthand verbatim - it is the same in every
-                  language, like the radio calls. */}
-              {/* The grade and wire hold together; the write-up wraps (the
-                  table's cells otherwise never do), so a long one does not
-                  push the row's buttons off the side. */}
+                  language, like the radio calls. The grade and wire hold
+                  together; the write-up wraps (the table's cells otherwise
+                  never do), so a long one does not push the row's buttons off
+                  the side. */}
               <TableCell className='min-w-40 whitespace-normal'>
+                {m.cheated ? (
+                  <span
+                    role='img'
+                    aria-label={t`Cheats`}
+                    title={t`Cheats`}
+                    className='text-muted-foreground me-2 inline-block align-text-bottom'
+                  >
+                    <ShieldAlert className='size-4' />
+                  </span>
+                ) : null}
                 {m.grade ? (
                   <>
                     <span className='whitespace-nowrap'>
@@ -510,9 +522,6 @@ export function MatchLog({
                     ) : null}
                   </>
                 ) : null}
-              </TableCell>
-              <TableCell className='text-muted-foreground'>
-                {m.cheated ? <ShieldAlert className='size-4' /> : null}
               </TableCell>
               <TableCell className='text-right whitespace-nowrap'>
                 {onReplay &&
