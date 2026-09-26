@@ -5691,6 +5691,7 @@ function playback_expected(){ const out={ struck:0, flares:0, fuses:0, fate:null
 		if((last.properties.Type||"").includes("Missile")&&last.properties.Fate==="fuse") out.fuses++;
 		if(own&&last.properties.Fate) out.fate=last.properties.Fate; }
 	return out; }
+if(DEV_MODE) (globalThis as any).dev_rigs=()=>[...remotes.entries()].map(([slot,st])=>({ slot, bandit:st===bandit, visible:!!(st.group&&st.group.visible), gear:st.gear??null, target:st.gearTarget??null, flame:st.flameOn?[...st.flameOn]:null, burner:Math.max(...burners(st)) }));   // dev: each remote's drawn rig - its gear as eased, its flames against its own burner
 if(DEV_MODE) (globalThis as any).dev_leave=()=>exit_match();   // dev: leave the flight as the menu's Exit does - the row is written and the recording uploads a moment later
 if(DEV_MODE) (globalThis as any).dev_recorder=()=>({ samples:recorder.length, started:!!record_started, record:!!cfg.record, running, paused:game_paused, multiplayer:MULTIPLAYER, clock:sim_time });   // dev: is the recorder sampling, and if not, which gate holds it
 if(DEV_MODE) (globalThis as any).dev_silence=function(){ tone_silence(); return tone_silenced; };   // dev: press the warning tone silence button (#22) until #20 gives it a key and a click target
@@ -6994,7 +6995,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "speedbrake": f=THREE.MathUtils.clamp(st.speedbrake??0,0,1); break;
 		case "probe": f=THREE.MathUtils.clamp(st.probe??0,0,1); break;
 		case "nozzle": { const own=st===ownship;   // F404 exit-area schedule: open at idle, closed by ~70% spool (military), opening again with the reheat stage — so the AB zones read in daylight, not just by glow. The core's slewed spool/stage keep the motion smooth
-			const spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):(cfg.afterburner?1:0);
+			const spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):Math.max(...burners(st));   // another jet's nozzle opens with its own burner
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
@@ -7091,7 +7092,15 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		sw.object.quaternion.copy(sw.base);
 		if(Math.abs(st.steer??0)>0.001) sw.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(sw.axis,st.steer)); } }   // st.steer = the slewed, authority-blended state from update_anim (LOW 22.5° at taxi, HI near standstill, ~23°/s actuator rate)
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
-function update_anim(dt){ for(const st of [ownship,bandit]){
+// burners is a jet's reheat per engine: the pilot's and the bandit's as their
+// cores achieve it, a remote's single burner off the pose wire on both.
+function burners(st){ return st===ownship?(ownship.reheats||[0,0]):(st.reheats||[st.reheat??0,st.reheat??0]); }
+// update_anim eases and draws the moving parts of every jet in sight: the
+// pilot's, the bandit's (the first remote in a match), and every other remote,
+// which in a furball used to fly its whole match in the model's authored pose.
+function update_anim(dt){ const jets=[ownship,bandit];
+	for(const st of remotes.values()) if(st!==bandit&&st.group&&st.group.visible) jets.push(st);
+	for(const st of jets){
 	const owned=st===ownship&&flight_active;   // the core's actuators drive ownship gear + speedbrake progress (sync_core); don't ease over them
 	const settled=(st===ownship)?(ownship.grounded?1:0):0;   // weight on wheels: the drawn oleo compresses (squat scrub); remotes stay unloaded for now
 	st.squish=(st.squish??0)+THREE.MathUtils.clamp(settled-(st.squish??0),-3*dt,3*dt);
@@ -7109,7 +7118,7 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 		const auth=(22.5+(75-22.5)*THREE.MathUtils.clamp(1-sp/2.5,0,1))*D2R;
 		const target=pedal*auth*THREE.MathUtils.clamp(1-sp/60,0.1,1)*(st.squish??0);
 		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt); }   // ~23°/s — hydraulic, not snappy
-	{ const rh=(st===ownship)?(ownship.reheats||[0,0]):[cfg.afterburner?1:0,cfg.afterburner?1:0];   // flame discs churn with each engine's reheat: ~0.5 rev/s at min zone to ~3 rev/s at max
+	{ const rh=(st===ownship)?(ownship.reheats||[0,0]):(cfg.afterburner?burners(st):[0,0]);   // flame discs churn with each engine's reheat: ~0.5 rev/s at min zone to ~3 rev/s at max. Another jet's are its own burner's, not the setting's (which lit them for the whole flight); the setting still puts them out
 		st.flameA=(st.flameA??0)+(rh[0]>0.02?(0.5+2.5*rh[0])*6.283*dt:0); st.flameB=(st.flameB??0)+(rh[1]>0.02?(0.5+2.5*rh[1])*6.283*dt:0);
 		st.flameOn=[rh[0]>0.02, rh[1]>0.02]; }
 	{ const rolling=(st===ownship)?(st.squish??0)>0.1:((st.gear??1)<0.1 && st.speed>1);   // wheel spin: on the ground the tires match ground speed; airborne they freewheel down (~2.5 s), and retraction brakes them (real jets auto-brake the wheels in the wells)
@@ -7146,7 +7155,9 @@ function visuals(dt){
 function step_world(dt){ sim_time+=dt;
 	marshal_watch(); pattern_watch(); hints_watch();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
-	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); afterburner(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
+	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
+	afterburner(bandit.group,cfg.afterburner&&Math.max(...burners(bandit))>0.15);   // every other jet by its own burner too, where the setting alone used to light it all flight
+	for(const st of remotes.values()) if(st!==bandit&&st.group.visible) afterburner(st.group,cfg.afterburner&&Math.max(...burners(st))>0.15);
 	// player guns
 	{ const pull=trigger_own();
 		if(pull&&!firing){ graze=null; burst_tick=battle_tick; }   // the TRIGGER opening starts a new burst, and a new burst starts a new miss. Not `fired>0`: at 100 rounds/s a frame faster than 100 Hz often emits no whole round, and every such frame would read as a fresh burst
