@@ -557,6 +557,11 @@ msgstr "Kalîbrasyon û tayînkirina tewereyan"
 msgid "Back"
 msgstr "Vegere"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 çirke paş"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Ev belge nikarîbû were barkirin. Ji kerema xwe re paşê dîsa bicerib
 msgid "Could not load your flights"
 msgstr "Firînên te nehatin barkirin"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Qeyd nehat lîstin"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profîl nehat tomarkirin"
@@ -1490,6 +1499,8 @@ msgstr "Qediya"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Daxe"
 
@@ -1662,6 +1673,12 @@ msgstr "Ji maçê derkeve"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Ji peywirê derkeve"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Ji lîstinê derkeve"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Dîsa bifire"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Derziyan bişopîne û dakeve: 1200' li 3NM, 800' li 2NM, 400' li 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 çirke pêş"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Şablon (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Rawestîne"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Hatiye rawestandin"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, li 1200' asoyî"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Bilîze"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Cihê lîstinê"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Ji nû ve girêdan ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Firînan qeyd bike"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Qeydkirin"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Daxwaza kamerayê nehat bersivandin"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Lîstik nehat barkirin. Ji bo dîsa biceribînî rûpelê ji nû ve bar bike."
 

@@ -557,6 +557,11 @@ msgstr "Kalibrimi dhe caktimi i boshteve"
 msgid "Back"
 msgstr "Mbrapa"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekonda prapa"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Nuk mund të ngarkohej ky dokument. Provo më vonë."
 msgid "Could not load your flights"
 msgstr "Fluturimet tuaja nuk u ngarkuan dot"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Regjistrimi nuk u luajt dot"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profili nuk u ruajt dot"
@@ -1490,6 +1499,8 @@ msgstr "Përfunduar"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Shkarko"
 
@@ -1662,6 +1673,12 @@ msgstr "Dil nga ndeshja"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Dil nga misioni"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Dil nga luajtja"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Fluturo sërish"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Zbrit sipas gjilpërave: 1200' në 3NM, 800' në 2NM, 400' në 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekonda përpara"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Modeli (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pauzë"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "I ndaluar"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORMË"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, në nivel në 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Luaj"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Pozicioni i luajtjes"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Po rilidhet ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Regjistro fluturimet"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Regjistrimi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Kërkesa për kamerë nuk mori përgjigje"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Loja nuk u ngarkua dot. Ringarko faqen për të provuar sërish."
 

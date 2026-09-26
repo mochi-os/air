@@ -25,6 +25,7 @@ import { bench_register } from './bench'   // FIRST: the #148 sampler must survi
 import { atc_step } from './atc'
 import { pass_grade, pass_sample, pass_start, pass_wire } from './lso'
 import { demonstration_start, demonstration_step } from './demonstration'
+import { items as playback_items, number as playback_number, parse as playback_parse, scene as playback_scene } from './playback'
 import { KEY_DEFAULTS } from './keys'
 import { SPOKEN, voice_queue, voice_step } from './voice'
 import { identity as replay_identity, publish as publish_recording } from './replay'
@@ -84,6 +85,9 @@ export interface GameHandle {
   exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
   recording: () => { text: string; session: string; kind: string } | null   // the buffered flight recording, rendered as ACMI (#212)
   pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
+  timeline: () => { clock: number; duration: number; held: boolean } | null   // a replay's clock and length, s, and whether it is paused; null when not replaying
+  seek: (seconds: number) => void               // move a replay to a moment
+  hold: (on: boolean) => void                   // pause (true) or play a replay
   chat: (text: string, scope: string) => void   // send one match-chat line (#84): "team" or "all", the match wire's scopes
   say: (text: string) => void                   // send one line to everyone on the server: the lobby ring beside the match list
   scope: () => string                           // what the chat key opens: "team" in a teams match, else "match"
@@ -107,6 +111,7 @@ export function startGame({
   onChat,
   onConfig,
   onOver,
+  replay = null,
   translate = (s) => s,
 }: {
   stage: HTMLCanvasElement
@@ -121,6 +126,7 @@ export function startGame({
   onOver?: (result: { fate: string; struck: number; seconds: number }) => void // the SP mission ended at a crash (#240): how, how wounded, how long
   onMenu?: () => void
   onChat?: (scope: string) => void
+  replay?: string | null // a stored recording's ACMI text: watch it flown back instead of flying (playback_arm)
   translate?: (text: string) => string
 }): GameHandle {
   const __ac = new AbortController()
@@ -184,6 +190,13 @@ function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 }
 Object.assign(cfg, config);   // mission-setup menu overrides defaults — the server-backed config store is the single source (the joust_cfg_v1 localStorage era silently no-opped in the sandboxed shell and shadowed the store outside it)
 sanitize_cfg();
+// Declared here, before anything can raise a message: comm() and notice() read
+// both, and a message raised during start-up would otherwise meet them unset.
+let playback=null, playback_clock=0, playback_spool=0, playback_darts=0, playback_held=false, playback_snap=false;   // ...and held: the clock stopped by the player or at the end, the scene still drawn; snap: a seek, so the engines take the recorded lever at once   // the parsed recording while a replay runs, seconds into it, and the own engines' spool lagged off the recorded lever
+// What the pilot was told, kept for the recording until the next sample it
+// keeps: radio and chat lines, and the centre banners. Never in a replay,
+// which shows a recording's own.
+const record_radio=[], record_notices=[]; let notice_last="", notice_at=-9;
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 
 let running=false, has_enemy=true;
@@ -2441,6 +2454,8 @@ function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 	u.tex.needsUpdate=true; }
 if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, armed:law_armed }; };   // dev: press a UFC pushbutton headless and read the windows
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
+if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
+if(DEV_MODE) (globalThis as any).dev_overlays=function(on){ let n=0; ownship.group.traverse(o=>{ if(o.userData&&o.userData.overlay){ o.visible=!!on; n++; } }); return n; };   // dev: hide or show every canvas face laid over the model, to see the modeled surface beneath
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
 	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
 if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
@@ -4906,11 +4921,19 @@ function hints_carrier(st){ hinting="carrier";
 function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
+// watching: the keys a replay answers - the views, the zoom, the corner
+// repeater, the map and the menu. Nothing that works the jet. Space pauses
+// and plays it, as it does any player, wherever the focus is: this handler
+// cancels Space's default (the page must not scroll), so a focused control
+// bar button never answers Space itself.
+function watching(ch,k,shift){ if(k==="Space"&&!shift){ playback_hold(!playback_held); return false; }
+	return (!shift&&/^Digit[1-6]$/.test(k)) || ["view","view.reset","zoom.in","zoom.out","repeater","map","menu"].some(action=>ch===key_of(action)); }
 addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
+		if(!playback||watching(ch,k,e.shiftKey)){   // a replay answers only the keys that choose what to see
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
@@ -4974,7 +4997,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
 		if(ch===key_of("atc")) pit_press("atc",0);   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
-		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
+		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
 	if(e.code==="ShiftLeft"||e.code==="ShiftRight") for(const held of [...keys]) if(held.startsWith("Shift+")) keys.delete(held); },{ signal });
@@ -5016,7 +5039,7 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
-	if(e.button===2){ pit_switch(e); return; }   // the right button only works the switches (#19): the screens, the IFEI and the lenses keep their left-click behaviour
+	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
 	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
@@ -5317,6 +5340,13 @@ let record_started=null;
 // calling it anywhere else would steal entries from the recording.
 function bandit_notes(){ if(!DEV_MODE||!bandit_brain) return {};
 	const drained=bandit_journal(); return drained?journal_notes(drained):{}; }
+// damage_words is a core state's damage in the order the recording carries it:
+// the forty per-element losses, the three gear struts, the eight jammed channels.
+function damage_words(words){ const out=[];
+	for(let e=0;e<40;e++) out.push(words[STATE.element+e]||0);
+	for(let leg=0;leg<3;leg++) out.push(words[STATE.gear_harm+leg]||0);
+	for(let j=0;j<8;j++) out.push(words[STATE.jam+j]||0);
+	return out; }
 function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
 	const due=recorder.due(sim_time);   // the bandit's journal is DRAINED to build the sample: only on a frame the recorder will keep, or the entries go with the dropped frame (they did, seven in eight)
@@ -5349,7 +5379,7 @@ function recording_sample(){
 	// "what did that fight cost me" is a debrief question every pilot asks, and
 	// without them the answer was unrecoverable once the mission ended. Fuel is
 	// kg straight from the state (the gauge is what multiplies to pounds).
-	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:(ownship.speed||0),   // the death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
+	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, beta:(out[STATE.beta]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:(ownship.speed||0),   // the death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		stress:out[STATE.stress]||0,   // (#33 debrief): overstress exposure, g·s beyond the airframe's own limit - already fed the STRUCTURE caution, now also recorded
@@ -5357,7 +5387,7 @@ function recording_sample(){
 		missiles:(ownship.msl|0)+Math.max(0,ownship.amraam|0), cue:hud_cue,   // stores and the HUD's advice (#33 debrief)
 		...(graze?{graze:graze.gap, miss:{ahead:graze.ahead, above:graze.above, right:graze.right}}:{}),   // this burst's closest MISS and which way it went past, in the bandit's body frame: the gun's Least and Off, and the only channel that says why a burst that landed nothing landed nothing
 		flares:ownship.flares|0, chaff:ownship.chaff|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
-		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0,   // configuration (#86): which pitch law the FCS was flying
+		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0, hook:ownship.hook??0, speedbrake:ownship.speedbrake??0,   // configuration (#86): which pitch law the FCS was flying, and the hook a replay draws
 		override:!!(last_controls&&last_controls.override),   // (#33 debrief): the g-limit paddle switch - raises the commanded ceiling from 7.5 to 10 g and is what lets Stress accrue in that band at all
 		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
 		// Acquire/undesignate presses that actually landed (#33 debrief): drained
@@ -5380,11 +5410,25 @@ function recording_sample(){
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
 		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
-		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R, lateral:last_controls?last_controls.roll:0 }:{}) }:undefined;
+		// The hands on the controls (shipped, where they were developer-only):
+		// the one way to judge the handling against what the jet did.
+		stick:last_controls?last_controls.pitch:0, lateral:last_controls?last_controls.roll:0, pedal:last_controls?last_controls.yaw:0,
+		...(DEV_MODE?{ stabilator:(out[STATE.stabilator]||0)/D2R }:{}),
+		// What a replay draws (2026-09-26): the surfaces, the weapon and the HUD
+		// switch, the stores, the catapult and the wire, the lights and the deck
+		// states, the achieved spool, the airframe's damage, the seat, and what
+		// the pilot was told - coaching, radio and banners.
+		surfaces:[out[STATE.stabilator]||0,out[STATE.stabilator+1]||0,out[STATE.flaperon]||0,out[STATE.flaperon+1]||0,out[STATE.rudder]||0,out[STATE.slat]||0],
+		master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, amraams:Math.max(0,ownship.amraam|0),
+		catapult:core_catapult, stroke:core_stroke, wire:ownship.trapped?(ownship.wire|0):0, waving:!!ownship.waving,
+		lights:!!ownship.lights, canopy:ownship.canopy??0, fold:ownship.fold??0, probe:ownship.probe??0, spool:ownship.spool??0,
+		damage:damage_words(out), ...(ejected?{eject:true}:{}), coach:hint_rows?[...hint_rows]:[],
+		...(due&&record_radio.length?{radio:record_radio.splice(0)}:{}), ...(due&&record_notices.length?{notice:record_notices.splice(0)}:{}) }:undefined;
 	if(own!=="gone") add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
+				speedbrake:bandit.speedbrake??0,   // the board, for a replay to draw
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				structure:bandit.harm.wreck||0, wing:bandit.harm.wing||0, ...(bandit.fate?{fate:bandit.fate}:{}),   // #103: the element TOTAL and the aero-relevant wing loss are different numbers, and only the total used to be recorded — under the name Wing, which is what made a fight's damage unattributable
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
@@ -5393,10 +5437,12 @@ function recording_sample(){
 				// The brain bandit flies the real model, so its own STATE tail
 				// carries the same telemetry the ownship records: TacView graphs
 				// both, and a debrief judges its plays from its inputs.
-				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
+				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, beta:(bandit_words[STATE.beta]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
 					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
-					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}),
+					stabilator:(bandit_words[STATE.stabilator]||0)/D2R,
+					surfaces:[bandit_words[STATE.stabilator]||0,bandit_words[STATE.stabilator+1]||0,bandit_words[STATE.flaperon]||0,bandit_words[STATE.flaperon+1]||0,bandit_words[STATE.rudder]||0,bandit_words[STATE.slat]||0],
+					damage:damage_words(bandit_words) }:{}),
 				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
@@ -5405,8 +5451,8 @@ function recording_sample(){
 		// acmi.channels so the mapping is testable without the engine.
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange",undefined,
 			channels({ spent:st.spent, struck:st.struck, speed:st.speed, burning:st.burning, burn:st.burn,
-				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, missiles:st.msl,
-				aoa:st.aoa, g:st.gload },
+				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, speedbrake:st.speedbrakeTarget, missiles:st.msl,
+				aoa:st.aoa, beta:st.beta, g:st.gload },
 				net.emitters.get(slot), net.slot)); } }
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
@@ -5445,6 +5491,8 @@ function recording_file(){
 		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
 		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(), passes:passes_text(),
+		wind:(()=>{ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed<0.1) return "calm";   // the vector points where the air goes: it comes from the reciprocal
+			const from=Math.round((Math.atan2(w.x,-w.z)*180/Math.PI+180+360)%360); return String(from).padStart(3,"0")+"/"+Math.round(speed/0.514444); })(),
 		...(()=>{ const pad=read_gamepad();   // the device as the browser reports it NOW, at the moment the recording is rendered
 			if(!pad) return { stick:"", mapping:"", axes:0, buttons:0, unreachable:"" };
 			return { stick:pad.id||"", mapping:pad.mapping||"", axes:pad.axes.length, buttons:pad.buttons.length,
@@ -5619,6 +5667,28 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };
 if(DEV_MODE) (globalThis as any).dev_recording=()=>recording_file();   // dev (#171): the header the recorder would write, so a probe can read what the file claims the fight WAS
+if(DEV_MODE) (globalThis as any).dev_playback=()=>{ if(!playback) return null;
+	const at=playback_scene(playback,playback_clock,WORLD_WRAP).find(p=>p.id===playback.own);
+	return { clock:+playback_clock.toFixed(2), duration:+playback.duration.toFixed(2), own:playback.own, jets:[...playback_jets.entries()].filter(([,st])=>st.group.visible).map(([id])=>id), running, record:!!cfg.record, samples:recorder.length,   // i18n-format-ok: developer telemetry, never shown to a user
+		at:at?{ x:+at.x.toFixed(1), y:+at.y.toFixed(1), z:+at.z.toFixed(1), yaw:+at.yaw.toFixed(1) }:null,   // i18n-format-ok: developer telemetry, never shown to a user
+		jet:{ x:+ownship.pos.x.toFixed(1), y:+ownship.pos.y.toFixed(1), z:+ownship.pos.z.toFixed(1), yaw:+((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360).toFixed(1), gear:+(ownship.gear??1).toFixed(2), speed:+(ownship.speed||0).toFixed(1), handle:ownship.gearTarget??1, brake:+(ownship.speedbrake??0).toFixed(2) }, darts:playback_darts, view:cfg.view, held:playback_held, braked:!!playback.tracks.get(playback.own)?.frames.some(f=>playback_number(f.properties,"SpeedBrake",0)>0.5),   // i18n-format-ok: developer telemetry, never shown to a user
+		recorded:at?{ surfaces:at.properties.Surfaces??null, master:at.properties.Master??null, stores:at.properties.Stores??null, heaters:at.properties.Heaters??null, lights:at.properties.Lights??null, canopy:at.properties.Canopy??null, catapult:at.properties.Catapult??null, wire:at.properties.Wire??null, spool:at.properties.Spool??null, stick:at.properties.Stick??null, coach:at.properties.Coach??null, damage:at.properties.Damage??null, beta:at.properties.Beta??null, yawrate:at.properties.YawRate??null }:null, messages:(playback.tracks.get(playback.own)?.frames||[]).filter(f=>f.properties.Radio!==undefined||f.properties.Notice!==undefined).length,
+		effects:{ sparks:_spark_count, bursts:spawn_report.burst, flares:flares.activeList.length }, expect:(playback_expect??=playback_expected()),
+		drawn:{ surfaces:ownship.surfaces?[ownship.surfaces.stabL,ownship.surfaces.stabR,ownship.surfaces.flapL,ownship.surfaces.flapR,ownship.surfaces.rudder,ownship.surfaces.slat].map(r=>Math.round(r/D2R)).join("|"):null, master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, lights:!!ownship.lights, canopy:+(ownship.canopy??0).toFixed(2), catapult:core_catapult, launching:!!ownship.launching, wire:ownship.trapped?ownship.wire:0, spool:+(ownship.spool??0).toFixed(2), stick:last_controls?+last_controls.pitch.toFixed(3):null, hints:hint_rows?[...hint_rows]:null, comms:comms.map(c=>c.text), banner:net_notice_t>0?net_notice:"", fate:ownship.fate??null, crashed:crash_t>0, heard:playback_heard, damage:last_out?damage_words(last_out).join("|"):null, beta:last_out?(last_out[STATE.beta]||0)/D2R:null, yawrate:last_out?-(last_out[STATE.omega+1]||0)/D2R:null } }; };   // i18n-format-ok: developer telemetry, never shown to a user. dev: the replay's clock, where the recording has the jet and where it is drawn
+// playback_expected counts, for the developer hook, what a recording should
+// make a replay draw: the hits taken, the flares dispensed, the missiles that
+// fused, and how the pilot's own jet ended.
+let playback_expect=null;
+function playback_expected(){ const out={ struck:0, flares:0, fuses:0, fate:null };
+	for(const track of playback.tracks.values()){ const own=track.id===playback.own; let struck=null, flares=null;
+		for(const f of track.frames){ const s=playback_number(f.properties,"Struck",NaN), n=playback_number(f.properties,"Flares",NaN);
+			if(Number.isFinite(s)){ if(struck!==null&&s>struck) out.struck+=s-struck; struck=s; }
+			if(Number.isFinite(n)){ if(flares!==null&&(own?n<flares:n>flares)) out.flares+=Math.abs(n-flares); flares=n; } }
+		const last=track.frames[track.frames.length-1];
+		if((last.properties.Type||"").includes("Missile")&&last.properties.Fate==="fuse") out.fuses++;
+		if(own&&last.properties.Fate) out.fate=last.properties.Fate; }
+	return out; }
+if(DEV_MODE) (globalThis as any).dev_leave=()=>exit_match();   // dev: leave the flight as the menu's Exit does - the row is written and the recording uploads a moment later
 if(DEV_MODE) (globalThis as any).dev_recorder=()=>({ samples:recorder.length, started:!!record_started, record:!!cfg.record, running, paused:game_paused, multiplayer:MULTIPLAYER, clock:sim_time });   // dev: is the recorder sampling, and if not, which gate holds it
 if(DEV_MODE) (globalThis as any).dev_silence=function(){ tone_silence(); return tone_silenced; };   // dev: press the warning tone silence button (#22) until #20 gives it a key and a click target
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
@@ -6156,6 +6226,219 @@ function demonstration_drive(dt){
 	if(flap_select!==c.flap) pit_press("flaps",c.flap>flap_select?-1:1);   // one notch a frame, through the switch the legend reads
 	if(c.released) demonstration=null;   // the pass is over: the player has the jet, wherever it is
 }
+// ============================================================ replay
+// A stored recording flown back through the renderer (playback.ts reads it):
+// the pilot's own jet through sync_core, the seam the flight core feeds every
+// display through, so the HUD, the gauges and the DDIs read the recording as
+// they read the flight; every other jet as a remote is drawn, and missiles as
+// darts. Nothing is simulated and nothing is recorded, the player has no
+// controls, and leaving writes nothing to the log.
+const playback_jets=new Map();   // recorded id -> the jet state drawing it
+const playback_rounds=new Map(), playback_fired=new Map();   // recorded id -> the last Rounds read, and when it last fell: a burst
+const playback_counts=new Map();   // recorded id and channel -> the last Flares, Chaff or Struck read: a dispense or a hit is a step in it
+const playback_gone=new Set();   // recorded ids whose end (a jet's death, a missile's fuse) has been drawn
+const playback_out=new Float64Array(STATE.stage+1);
+const playback_words=new Map();   // recorded id -> the damage words another jet's shed panels read
+let playback_heard=-1, playback_stores="", playback_coach=null, playback_rails=[-1,-1,null];   // the own track's last frame whose messages were raised; the loadout hung; the coaching shown
+const _pf=new THREE.Vector3(), _pu=new THREE.Vector3(), _pr=new THREE.Vector3(), _pl=new THREE.Vector3(), _pm=new THREE.Matrix4(), _pw=new THREE.Vector3(0,1,0);
+// playback_arm sets the mission up as the recording's header describes it.
+function playback_arm(text){
+	playback=playback_parse(text); playback_expect=null; playback_clock=0; playback_spool=0; playback_heard=-1; playback_stores=""; playback_coach=null; playback_rails=[-1,-1,null];
+	const info=playback.information;
+	if(info.Match_start) cfg.start=info.Match_start;
+	if(info.Match_tod) cfg.tod=info.Match_tod;
+	if(info.Match_clouds) cfg.clouds=info.Match_clouds;
+	cfg.task="free"; cfg.record=false; cfg.hints=false; cfg.demonstration=false; cfg.cheats={}; }
+// playback_attitude is the recorder's attitude() undone: yaw=atan2(fwd.x,-fwd.z),
+// pitch=asin(fwd.y), roll=atan2(right.y,up.y), with the body's x, y and z
+// along fwd, up and right.
+function playback_attitude(pose,q){
+	const yaw=pose.yaw*D2R, pitch=pose.pitch*D2R, roll=pose.roll*D2R;
+	_pf.set(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch));
+	_pr.crossVectors(_pf,_pw); if(_pr.lengthSq()<1e-8) _pr.set(Math.cos(yaw),0,Math.sin(yaw)); _pr.normalize();   // wings level about this heading (straight up or down, the heading's own right)
+	_pu.crossVectors(_pr,_pf);
+	const c=Math.cos(roll), s=Math.sin(roll);
+	_pl.copy(_pr).multiplyScalar(c).addScaledVector(_pu,s); _pu.multiplyScalar(c).addScaledVector(_pr,-s); _pr.copy(_pl);
+	_pm.makeBasis(_pf,_pu,_pr); q.setFromRotationMatrix(_pm); return q; }
+// playback_burst reports whether a jet is firing: its Rounds fell within the
+// last fifth of a second.
+function playback_burst(pose){ const rounds=playback_number(pose.properties,"Rounds",-1);
+	const before=playback_rounds.get(pose.id); playback_rounds.set(pose.id,rounds);
+	if(before!==undefined&&rounds>=0&&rounds<before) playback_fired.set(pose.id,playback_clock);
+	return playback_clock-(playback_fired.get(pose.id)??-9)<0.2; }
+// playback_change is how far a counted channel moved since the last frame
+// read it: 0 the first time, and after a seek.
+function playback_change(pose,channel){ const now=playback_number(pose.properties,channel,NaN); if(!Number.isFinite(now)) return 0;
+	const key=pose.id+":"+channel, before=playback_counts.get(key); playback_counts.set(key,now);
+	return before===undefined?0:now-before; }
+// playback_surfaces reads the recorded control surfaces (degrees) into the
+// rig's shape, radians; null for a recording without them.
+function playback_surfaces(p){ const v=(p.Surfaces||"").split("|").map(Number);
+	return v.length===6&&v.every(Number.isFinite)?{ stabL:v[0]*D2R, stabR:v[1]*D2R, flapL:v[2]*D2R, flapR:v[3]*D2R, rudder:v[4]*D2R, slat:v[5]*D2R }:null; }
+// playback_damage writes the recorded damage into core words: the element
+// losses the shed panels read, the gear struts and the jammed channels.
+function playback_damage(p,words){ const v=(p.Damage||"").split("|").map(Number); if(v.length!==51||!v.every(Number.isFinite)) return false;
+	for(let e=0;e<40;e++) words[STATE.element+e]=v[e];
+	for(let leg=0;leg<3;leg++) words[STATE.gear_harm+leg]=v[40+leg];
+	for(let j=0;j<8;j++) words[STATE.jam+j]=v[43+j];
+	return true; }
+// playback_effects draws what a recording carries but nothing flies: fire,
+// fuel mist and engine smoke, flares and chaff as they were dispensed, and the
+// sparks of the rounds that landed. Held, nothing new is thrown into the air.
+function playback_effects(st,pose,own,dt){ if(dt<=0) return;
+	const n=(key,fallback)=>playback_number(pose.properties,key,fallback);
+	if(n("Burning",0)>0) burn_trail(st.pos,0.8,st.velx,st.vely,st.velz);
+	const leak=n("Leak",0); if(leak>0.05) leak_trail(st.pos,leak,st.velx,st.vely,st.velz);
+	const thrust=n("Thrust",0); if(thrust>0.06) engine_smoke(st.pos,thrust,st.velx,st.vely,st.velz);
+	// The pilot's jet counts its magazines down; the bandit counts its dispenses up.
+	const flares=playback_change(pose,"Flares"), chaff=playback_change(pose,"Chaff");
+	for(let i=0;i<Math.min(2,own?-flares:flares);i++) dispense_flare(st);
+	for(let i=0;i<Math.min(2,-chaff);i++) dispense_chaff(st);
+	const hits=Math.min(3,playback_change(pose,"Struck"));
+	for(let i=0;i<hits;i++){ const w=local_offset(st,(Math.random()-0.5)*9,(Math.random()-0.3)*1.2,(Math.random()-0.5)*2.4);
+		hit_sparks(w.x,w.y,w.z,st.velx,st.vely,st.velz,null,null); } }   // no target: a recording does not say where on the skin a round landed, so no mark is left on it
+// playback_death draws a jet's end once, on its last sample, when the
+// recording says how it died - and for the pilot's own jet the banner they saw.
+function playback_death(pose,own){ if(!pose.final||!pose.properties.Fate||playback_gone.has(pose.id)) return;
+	playback_gone.add(pose.id);
+	if(own){ ownship.fate=pose.properties.Fate; own_killer=pose.properties.Killer||""; ejected=pose.properties.Eject==="1"; crash_t=3.0; }
+	explosion_at(pose.x,pose.y,pose.z,own?"own":(pose.properties.Fate==="sea"?"water":undefined)); }
+// playback_loadout hangs the recorded stores and missiles: a jettison drops
+// what it lost as falling pieces, a launch empties its rail. A seek hangs the
+// stores of the new moment without dropping anything.
+function playback_loadout(p){ let hung=false;
+	if(p.Stores&&p.Stores!==playback_stores){ let lo=null; try{ lo=JSON.parse(p.Stores); }catch{ lo=null; }
+		if(lo&&typeof lo==="object"){ const next=stores_normalize(lo);
+			if(playback_stores&&!playback_snap&&ownship.loadout){ const gone=[];
+				for(let station=1;station<=9;station++){ const before=ownship.loadout[String(station)]; if(!before||!before.fixture) continue;
+					const keep=new Set(stores_entries(station,next[String(station)]||{fixture:"",stores:[]}));
+					for(const name of stores_entries(station,before)) if(!keep.has(name)) gone.push(name); }
+				separate_debris(ownship,gone); }
+			assign_loadout(ownship,next); hung=true; }
+		playback_stores=p.Stores; }
+	const heaters=playback_number(p,"Heaters",-1), amraams=playback_number(p,"Amraams",-1);
+	if(heaters>=0) ownship.msl=heaters; if(amraams>=0) ownship.amraam=amraams;
+	if(hung||heaters!==playback_rails[0]||amraams!==playback_rails[1]||ownship.racks!==playback_rails[2]){ playback_rails=[heaters,amraams,ownship.racks]; update_rails(ownship,ownship.msl); } }   // fresh racks (a new loadout, or the stores model arriving) draw every rail full until the counts empty them
+// playback_messages raises what the pilot was told as the clock passes it:
+// each radio line and banner once, on the sample it was recorded on, and the
+// coaching slot as it stood. A seek lands without raising what it skipped.
+function playback_messages(){ const track=playback.tracks.get(playback.own); if(!track) return;
+	const f=track.frames; let i=playback_heard;
+	while(i+1<f.length&&f[i+1].time<=playback_clock){ i++;
+		for(const line of playback_items(f[i].properties.Radio)){ const m=/^(#[0-9a-fA-F]{3,8}) (.*)$/.exec(line); comm(m?m[2]:line,m?m[1]:undefined); }
+		for(const line of playback_items(f[i].properties.Notice)) notice(line,3); }
+	playback_heard=i;
+	const coach=i>=0?f[i].properties.Coach:undefined;
+	if(coach!==undefined&&coach!==playback_coach){ playback_coach=coach; const rows=playback_items(coach); hint_rows=rows.length?rows:null; } }
+// playback_own flies the pilot's jet: a core state built from the recording,
+// handed through sync_core like the core's own.
+function playback_own(pose,dt){
+	const o=playback_out, p=pose.properties, n=(key,fallback)=>playback_number(p,key,fallback);
+	o.fill(0);
+	o[STATE.position]=pose.x; o[STATE.position+1]=pose.y; o[STATE.position+2]=pose.z;
+	o[STATE.velocity]=pose.vx; o[STATE.velocity+1]=pose.vy; o[STATE.velocity+2]=pose.vz;
+	const q=playback_attitude(pose,_q); o[STATE.attitude]=q.w; o[STATE.attitude+1]=q.x; o[STATE.attitude+2]=q.y; o[STATE.attitude+3]=q.z;
+	const lever=n("Throttle",0.8), heat=n("Afterburner",0), spool=n("Spool",NaN);
+	playback_spool=Number.isFinite(spool)?spool:(playback_snap?lever:playback_spool+(lever-playback_spool)*Math.min(1,dt/1.2));   // the recorded spool; before it was recorded, the engines follow the lever at their own pace and a seek lands on it
+	o[STATE.fuel]=n("FuelWeight",ownship.fuel??0);
+	o[STATE.engine]=playback_spool; o[STATE.engine+1]=heat; o[STATE.engine+2]=playback_spool; o[STATE.engine+3]=heat;
+	o[STATE.engine_harm]=o[STATE.engine_harm+1]=n("Thrust",0);
+	o[STATE.extension]=1-n("Gear",1);   // Gear is the retraction fraction, 0 down
+	o[STATE.speedbrake]=n("SpeedBrake",0);   // the board, where the recording has it (recordings before it was written show it stowed)
+	const surfaces=playback_surfaces(p);
+	if(surfaces){ o[STATE.stabilator]=surfaces.stabL; o[STATE.stabilator+1]=surfaces.stabR; o[STATE.flaperon]=surfaces.flapL; o[STATE.flaperon+1]=surfaces.flapR; o[STATE.rudder]=surfaces.rudder; o[STATE.slat]=surfaces.slat; }
+	playback_damage(p,o);
+	o[STATE.catapult]=n("Catapult",-1); o[STATE.stroke]=n("Stroke",-1); o[STATE.wire]=-1; o[STATE.contact]=-1;   // the shot through the core's own words, so the shuttle runs; the wire below, not through sync_core's trap
+	const ground=ground_height(pose.x,pose.z); o[STATE.wow]=(ground>-1e9&&pose.y-ground<3)?1:0;   // on its wheels: the CG rides about 2.6 m over them
+	o[STATE.stress]=n("Stress",0);
+	o[STATE.omega+1]=-n("YawRate",0)*D2R;   // the recorder's real-world sign undone: the departure tone reads the yaw rate
+	o[STATE.alpha]=n("AOA",0)*D2R; o[STATE.beta]=n("Beta",0)*D2R; o[STATE.nz]=n("G",1); o[STATE.mach]=n("Mach",0); o[STATE.cas]=n("IAS",Math.hypot(pose.vx,pose.vy,pose.vz));
+	o[STATE.power]=playback_spool; o[STATE.stage]=heat;
+	fuel_read=false;   // BINGO and FUEL LO come from the recording's banners, not a second time from its fuel
+	sync_core(o); last_out=o;
+	ownship.flown=false; ownship.turned=true; ownship.taxied=true;   // the deck crew's rearm and its REARMED banner are the recording's too
+	const wire=n("Wire",0); ownship.trapped=wire>0; ownship.wire=wire;
+	ownship.waving=n("Waving",0)>0;
+	const lights=n("Lights",-1); if(lights>=0&&!!ownship.lights!==(lights>0)){ ownship.lights=lights>0; lighting_set(); }
+	ownship.canopyTarget=n("Canopy",ownship.canopyTarget??0); ownship.foldTarget=n("Fold",ownship.foldTarget??0); ownship.probeTarget=n("Probe",ownship.probeTarget??0);
+	if(p.Master&&p.Master!==master) set_master(p.Master);
+	declutter=n("Declutter",declutter)|0;
+	own_burning=n("Burning",0)>0; own_leak=n("Leak",0);
+	ownship.throttle=lever; ownship.burner=heat; flap_select=n("Flaps",flap_select)|0; ownship.hookTarget=n("Hook",0); ownship.rounds=n("Rounds",ownship.rounds??0);
+	last_controls={ pitch:n("Stick",0), roll:n("Lateral",0), yaw:n("Pedal",0), override:n("Override",0)>0 }; input.yaw=last_controls.yaw;   // the hands: the cockpit's stick draws them, and the pedal steers the nosewheel
+	playback_loadout(p);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	shed_panels(ownship,o);
+	const firing=playback_burst(pose);
+	fire_gun(ownship,null,"own",dt,firing);
+	playback_effects(ownship,pose,true,dt);
+	audio_frame({ spool:ownship.spool||0, stage:ownship.stage||0, speed:ownship.speed||0, alpha:ownship.aoa||0,
+		wow:!!ownship.grounded, burn:own_burning?1:0, harm:[o[STATE.engine_harm],o[STATE.engine_harm+1]], drag:1-(ownship.gear??1) });
+	audio_gun(firing);
+	audio_view(cfg.view==="chase"||cfg.view==="flypast", ownship.pos.x, ownship.pos.y, ownship.pos.z);
+	playback_death(pose,true); }
+// playback_jet draws one other jet where the recording has it.
+function playback_jet(pose,dt){ const p=pose.properties, n=(key,fallback)=>playback_number(p,key,fallback);
+	const st=remote_for(pose.id); playback_jets.set(pose.id,st);
+	st.pos.set(pose.x,pose.y,pose.z);
+	playback_attitude(pose,st.group.quaternion); st.group.position.copy(st.pos);
+	st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
+	(st.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(st.group.quaternion);
+	(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
+	st.velx=pose.vx; st.vely=pose.vy; st.velz=pose.vz; st.speed=Math.hypot(pose.vx,pose.vy,pose.vz);
+	st.gearTarget=n("Gear",1); st.hookTarget=n("Hook",0); st.speedbrakeTarget=n("SpeedBrake",0); st.reheat=n("Afterburner",0); st.rounds=undefined;
+	const surfaces=playback_surfaces(p); if(surfaces) st.surfaces=surfaces;
+	{ let words=playback_words.get(pose.id); if(!words){ words=new Float64Array(STATE.stage+1); playback_words.set(pose.id,words); }
+		if(playback_damage(p,words)) shed_panels(st,words); }
+	st.name=p.Pilot||""; st.group.visible=true;
+	if(playback.information.Match_multiplayer==="1"&&model_active){ const team=p.Color==="Red"?"red":(p.Color==="Blue"?"blue":"");
+		if(st.livery!==team){ apply_livery(st.group,team); st.livery=team; } }
+	fire_gun(st,null,"p"+pose.id,dt,playback_burst(pose));
+	playback_effects(st,pose,false,dt);
+	const rx=st.pos.x-ownship.pos.x, ry=st.pos.y-ownship.pos.y, rz=st.pos.z-ownship.pos.z, range=Math.hypot(rx,ry,rz)||1;
+	audio_remote("p"+pose.id, st.pos.x, st.pos.y, st.pos.z, -((st.velx-ownship.velx)*rx+(st.vely-ownship.vely)*ry+(st.velz-ownship.velz)*rz)/range, st.reheat>0.3);
+	playback_death(pose,false); }
+// playback_seek moves the replay to a moment, clamped to the recording.
+// Everything read as a step between frames - a burst, a dispense, a hit, a
+// jettison, a message - is re-armed, so a jump across one does not draw it,
+// and every end drawn once is re-armed so a jump back draws it again when it
+// comes; the pilot's own death banner goes until then.
+function playback_seek(seconds){ if(!playback) return;
+	playback_clock=THREE.MathUtils.clamp(seconds,0,playback.duration);
+	playback_rounds.clear(); playback_fired.clear(); playback_counts.clear(); playback_gone.clear();
+	for(const track of playback.tracks.values()){ const last=track.frames[track.frames.length-1]; if(last.properties.Fate&&last.time<playback_clock) playback_gone.add(track.id); }
+	const track=playback.tracks.get(playback.own); playback_heard=-1;
+	if(track) while(playback_heard+1<track.frames.length&&track.frames[playback_heard+1].time<=playback_clock) playback_heard++;
+	playback_coach=null; playback_stores=""; playback_rails=[-1,-1,null];
+	crash_t=0; ownship.fate=undefined; own_killer=""; ejected=false;
+	playback_snap=true; }
+// playback_hold pauses or plays the replay; playing from the end starts it over.
+function playback_hold(on){ if(!playback) return; if(!on&&playback_clock>=playback.duration) playback_seek(0); playback_held=!!on; }
+// playback_step advances the replay one frame, in step_world's place. Held,
+// it still poses everything where the clock stands - a seek while paused
+// shows the new moment - but nothing moves on.
+function playback_step(frame){ const dt=playback_held?0:frame;
+	sim_time+=dt; playback_clock=Math.min(playback.duration,playback_clock+dt);
+	if(playback_clock>=playback.duration) playback_held=true;   // the end: hold on the last frame, where the controls can take it back
+	const poses=playback_scene(playback,playback_clock,WORLD_WRAP);
+	const seen=new Set(), darts=[];
+	for(const pose of poses){
+		if(pose.id===playback.own){ playback_own(pose,dt); continue; }
+		const type=pose.properties.Type||"";
+		if(type.includes("Missile")){
+			darts.push({ position:[pose.x,pose.y,pose.z], velocity:[pose.vx,pose.vy,pose.vz], radar:pose.properties.Name==="AIM-120C" });
+			if(pose.final&&pose.properties.Fate==="fuse"&&!playback_gone.has(pose.id)){ playback_gone.add(pose.id); explosion_at(pose.x,pose.y,pose.z); }   // its warhead, where it went off
+			continue; }
+		if(!type.includes("Air")) continue;
+		seen.add(pose.id); playback_jet(pose,dt); }
+	for(const [id,st] of playback_jets) if(!seen.has(id)&&st.group.visible){ st.group.visible=false; audio_remote_drop("p"+id); }
+	draw_darts(darts,0,dt); playback_darts=darts.length;
+	falling_update(dt);   // jettisoned stores falling away
+	playback_messages();
+	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??0)>0.15);
+	for(const st of playback_jets.values()) if(st.group.visible) afterburner(st.group,cfg.afterburner&&(st.reheat??0)>0.15);
+	visuals(dt);
+	playback_snap=false; }
 // ============================================================ flight core host glue
 // The wasm blade-element core owns the ownship physics; this section feeds it
 // the world, delivers state on spawns/resets, and syncs its output back onto
@@ -6830,19 +7113,16 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 		st.wheelSpeed=rolling?st.speed:(st.gear??1)>0.5?0:(st.wheelSpeed??0)*Math.exp(-dt/2.5);
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	apply_anim(st,dt); } }
-function step_world(dt){ sim_time+=dt;
-	marshal_watch(); pattern_watch(); hints_watch();
-	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
-	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
-		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
-		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
-	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
-	// player guns
-	{ const pull=trigger_own();
-		if(pull&&!firing){ graze=null; burst_tick=battle_tick; }   // the TRIGGER opening starts a new burst, and a new burst starts a new miss. Not `fired>0`: at 100 rounds/s a frame faster than 100 Hz often emits no whole round, and every such frame would read as a fresh burst
-		firing=pull;
-		const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,pull);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
-		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
+// afterburner shows or hides a jet's burner cones and flame boxes.
+function afterburner(g,on){
+	if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
+	const flick=0.6+Math.random()*0.4;
+	g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); }
+// visuals advances everything drawn that no aircraft flies: the guns' flash
+// and gas, contrails, tracers, missiles, flares, smoke and debris, the
+// airframes' moving parts, and the ship's and field's lights - shared by the
+// flown world and a replay.
+function visuals(dt){
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	contrail_effects();   // every jet's contrail, where the air is cold enough
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
@@ -6859,6 +7139,18 @@ function step_world(dt){ sim_time+=dt;
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
+}
+function step_world(dt){ sim_time+=dt;
+	marshal_watch(); pattern_watch(); hints_watch();
+	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
+	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); afterburner(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
+	// player guns
+	{ const pull=trigger_own();
+		if(pull&&!firing){ graze=null; burst_tick=battle_tick; }   // the TRIGGER opening starts a new burst, and a new burst starts a new miss. Not `fired>0`: at 100 rounds/s a frame faster than 100 Hz often emits no whole round, and every such frame would read as a fresh burst
+		firing=pull;
+		const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,pull);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
+		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
+	visuals(dt);
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
 		const s=ols_dev(ownship.pos,carrier_ols);
 		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
@@ -7915,11 +8207,11 @@ function draw_hud(){
 	// meaningless, and INVULNERABLE rides the caution stack above — drawn there
 	// with the team score, so nothing can land on top of a caution.
 	hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
-	if(!authentic&&(comms.length||(hint_rows&&cfg.hints!==false))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
+	if(!authentic&&(comms.length||(hint_rows&&(cfg.hints!==false||playback)))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
 		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
 		let cy=128;
-		if(hint_rows&&cfg.hints!==false){ hctx.globalAlpha=1;   // the coaching slot (#70): no fade — it stands until the next hint replaces it
+		if(hint_rows&&(cfg.hints!==false||playback)){ hctx.globalAlpha=1;   // a replay's hints are off, and its coaching is the recording's   // the coaching slot (#70): no fade — it stands until the next hint replaces it
 			for(const row of hint_rows){ hctx.fillStyle="#00000090"; hctx.fillText(row,41,cy+1);
 				hctx.fillStyle="#ffce7a"; hctx.fillText(row,40,cy); cy+=19; }
 			cy+=6; }
@@ -8032,9 +8324,11 @@ let net=null, flare_flag=false, missile_flag=false, fox3_flag=false, session_ove
 let net_notice="", net_notice_t=0;
 function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
-function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
+function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift();
+	if(cfg.record&&!playback&&record_radio.length<20) record_radio.push((colour&&String(colour).startsWith("#")?colour+" ":"")+String(text).slice(0,80)); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"match"; }
 function exit_match(){ if(!running) return; running=false; /* #57 parked: head_close(); */
+	if(playback){ if(onExit) onExit(); return; }   // a replay is watched, not flown: it leaves no history row and uploads nothing
 	// A flight under five seconds is an aborted start, not a sortie (#51 ruling 2026-08-21): it leaves NOTHING —
 	// no history row, no recording. The sub-5s carve-out is the one exception to #212's every-flight-is-history.
 	const sortie=sim_time-mission_zero>=5;
@@ -8229,7 +8523,8 @@ function default_radar(){
 	if(merge_joust()){ RADAR.mode="rws"; RADAR.auto=true; }
 	else RADAR.mode=master==="120c"?"tws":"rws";
 	rdr_reset(); }
-function notice(text,secs){ net_notice=text; net_notice_t=secs||3; }   // the single centre-banner slot; each call REPLACES the last (the LSO grade, BOLTER and REARMED all route through here so they can never overprint each other)
+function notice(text,secs){ net_notice=text; net_notice_t=secs||3;
+	if(cfg.record&&!playback&&record_notices.length<20&&(text!==notice_last||sim_time-notice_at>1)){ record_notices.push(String(text)); notice_last=text; notice_at=sim_time; } }   // a banner raised afresh every frame is recorded once, not sixty times a second   // the single centre-banner slot; each call REPLACES the last (the LSO grade, BOLTER and REARMED all route through here so they can never overprint each other)
 // Team liveries (#130): the separately-named rig subtrees double as paint
 // masks — the rudder nodes ride the tail fins and the folding outer panels
 // are the wingtips, so tinting them flies team colours without touching the
@@ -8452,7 +8747,7 @@ function net_frame(dt){
 		// MP debrief reads his damage and his expenditure as ground truth
 		// rather than inferring them from his flight path.
 		st.spent=pose.spent||0; st.leak=pose.leak||0; st.thrust=pose.thrust||0;
-		st.aoa=pose.aoa||0; st.gload=pose.g||0;   // #164: his alpha and g off the wire — the two a recording cannot derive (#44)
+		st.aoa=pose.aoa||0; st.beta=pose.beta||0; st.gload=pose.g||0;   // #164: his alpha, sideslip and g off the wire — what a recording cannot derive (#44)
 		st.burn=pose.burn; st.burning=!!pose.burning; st.reheat=pose.reheat||0;
 		st.name=pose.name; st.group.visible=pose.alive;
 		{ const team=net.teams.get(slot)||"";
@@ -8477,11 +8772,14 @@ function net_frame(dt){
 const darts_pool=[]; const fox3_pool=[]; const _dart_axis=new THREE.Vector3(1,0,0); const _dart_q=new THREE.Quaternion();
 function update_darts(dt){
 	if(!net) return;
-	while(darts_pool.length<6){ const mesh=new THREE.Mesh(missile_geo,missile_mat); mesh.visible=false; scene.add(mesh); darts_pool.push({mesh,acc:0}); }
 	const age=(performance.now()-(net.dartsAt||0))/1000;   // seconds since the dart set arrived
+	draw_darts((net.darts||[]).filter(d=>d.shooter!==net.slot),age,dt); }
+// draw_darts draws missiles given as position and velocity, dead-reckoned
+// `age` seconds on: the server's darts, and a replay's recorded rounds.
+function draw_darts(darts,age,dt){
+	while(darts_pool.length<6){ const mesh=new THREE.Mesh(missile_geo,missile_mat); mesh.visible=false; scene.add(mesh); darts_pool.push({mesh,acc:0}); }
 	let used=0, fox3=0;
-	for(const d of (net.darts||[])){
-		if(d.shooter===net.slot) continue;
+	for(const d of darts){
 		// The round's KIND rides the wire (#27): an AIM-120 draws as the real
 		// model, three and a half metres of it, not as a heater's dart — the
 		// difference a defender can see coming.
@@ -8583,7 +8881,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
-	recorder.clear(); record_started=new Date(); publish_recording(recording_file); passes=[];   // a fresh recording per mission, and a fresh LSO book (#212)
+	if(!playback){ recorder.clear(); record_started=new Date(); publish_recording(recording_file); } passes=[];   // a fresh recording per mission, and a fresh LSO book (#212) - but a replay records nothing, and publishing would hand the log page's buffer of the last flight over to an empty one
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
@@ -8625,7 +8923,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		if(rate<200) turn_probe.rate+=(rate-turn_probe.rate)*Math.min(1,dt*8);   // EMA; ignore teleports/respawns
 		turn_probe.x=vx; turn_probe.y=vy; turn_probe.z=vz; }
 	game_paused = running && !MULTIPLAYER && (map_on || menu_hold);
-	audio_enable(cfg.sound!==false && running && !game_paused);   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
+	audio_enable(cfg.sound!==false && running && !game_paused && !(playback&&playback_held));   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
 	audio_volumes(cfg.volume);
 	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
 		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready(), face:face_ready };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
@@ -8644,7 +8942,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			else { draw_loading(); __raf=requestAnimationFrame(frame); return; } }
 	}
 	if(running){
-		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); radar_step(dt); rwr_step(dt); }   // frozen world stops advancing (the radar and RWR freeze with it)
+		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; if(playback) playback_step(dt); else { step_world(dt); radar_step(dt); rwr_step(dt); } }   // frozen world stops advancing (the radar and RWR freeze with it)
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
@@ -8660,7 +8958,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	// resized buffer is repainted below before the compositor ever sees it.
 	refresh_perf(dt); dynamic_res(dt);
 	render_frame();
-	stage.style.cursor=(running && !game_paused && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
+	stage.style.cursor=(running && !game_paused && !playback && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
 	if(running){ draw_hud();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
@@ -8676,6 +8974,7 @@ function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.
 	const lp=load_progress();   // real download percentage across the byte-counted assets (models + flight core)
 	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3)+(lp.percent>0&&lp.percent<100?" "+lp.percent+"%":""), HW/2, HH/2);
 	if(load_pending.length){ hctx.font="12px monospace"; hctx.fillStyle="#8fa4b8"; hctx.fillText(load_pending.join(" · "), HW/2, HH/2+24); hctx.font="20px monospace"; } }   // what the gate is still waiting on — the answer to "what is taking so long
+if(replay) playback_arm(replay);   // before the mission: the recording's header chooses the start, the weather and the light
 start_mission();
 if(MULTIPLAYER && !loading) net_connect();   // assets already cached: dial at once; otherwise the loading gate dials on completion
 __raf = requestAnimationFrame(frame);
@@ -8710,7 +9009,10 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
   return { stop, resume,
     recording: recording_file,   // kept on the handle for callers that already hold one
     exit: exit_match,
-    pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
+    pause: (on) => { menu_hold = !!on },
+    timeline: () => playback ? { clock: playback_clock, duration: playback.duration, held: playback_held } : null,
+    seek: playback_seek,
+    hold: playback_hold,   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
     say: (words) => { if (MULTIPLAYER && join) world_say(join.server, join.name, String(words).slice(0, 200)).catch(() => {}) },   // the lobby echoes it back through the poll below, like the match wire echoes a match line
     scope: chat_scope,

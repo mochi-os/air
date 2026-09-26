@@ -557,6 +557,11 @@ msgstr "محورن جي ڪيليبريشن ۽ ميپنگ"
 msgid "Back"
 msgstr "واپس"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 سيڪنڊ پوئتي"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "هي دستاويز لوڊ نه ٿي سگهيو. مهرباني ڪري �
 msgid "Could not load your flights"
 msgstr "توهان جون اڏامون لوڊ نه ٿي سگهيون"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "رڪارڊنگ هلائي نه سگهي"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "پروفائل محفوظ نه ٿي سگهيو"
@@ -1490,6 +1499,8 @@ msgstr "مڪمل"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ڊائون لوڊ"
 
@@ -1662,6 +1673,12 @@ msgstr "ميچ مان نڪرو"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "مشن ڇڏيو"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "هلائڻ ڇڏيو"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "ٻيهر اڏام ڀريو"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "سُين سان هيٺ لهو: 3NM تي 1200'، 2NM تي 800'، 1NM تي 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 سيڪنڊ اڳتي"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "نمونو (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "روڪيو"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "روڪيل"
 
@@ -3122,6 +3150,18 @@ msgstr "پليٽ فارم"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "پليٽ فارم: 2000 FPM، 1200' تي سڌو"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "هلايو"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "هلائڻ جي جاءِ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "ٻيهر ڳنڍجي رهيو آهي ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "اڏامون رڪارڊ ڪريو"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "رڪارڊنگ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "ڪئميرا درخواست جو جواب نه مليو"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "راند لوڊ نه ٿي سگهي. ٻيهر ڪوشش لاءِ صفحو ٻيهر لوڊ ڪريو."
 

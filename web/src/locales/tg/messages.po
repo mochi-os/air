@@ -557,6 +557,11 @@ msgstr "Калибровка ва таъинкунии меҳварҳо"
 msgid "Back"
 msgstr "Бозгашт"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 сония ба қафо"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Ин ҳуҷҷатро бор карда натавонист. Лутфа
 msgid "Could not load your flights"
 msgstr "Парвозҳои шумо бор карда нашуданд"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Сабт пахш карда нашуд"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Профилро нигоҳ доштан нашуд"
@@ -1490,6 +1499,8 @@ msgstr "Иҷро шуд"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Боргирӣ"
 
@@ -1662,6 +1673,12 @@ msgstr "Баромадан аз бозӣ"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Баромадан аз супориш"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Баромадан аз пахш"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Боз парвоз кунед"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Аз рӯи ақрабакҳо фуруд ой: 1200' дар 3NM, 800' дар 2NM, 400' дар 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 сония ба пеш"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Намуна (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Таваққуф"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Таваққуфшуда"
 
@@ -3122,6 +3150,18 @@ msgstr "ПЛАТФОРМА"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Платформа: 2000 FPM, дар 1200' уфуқӣ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Пахш"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Мавқеи пахш"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Аз нав пайваст шуда истодааст ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Сабти парвозҳо"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Сабт"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Ба дархости камера ҷавоб дода нашуд"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Бозӣ бор карда нашуд. Барои аз нав кӯшиш кардан саҳифаро аз нав бор кунед."
 

@@ -557,6 +557,11 @@ msgstr "Kalibraj ak mapaj aks yo"
 msgid "Back"
 msgstr "Retounen"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 segonn dèyè"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Pa t kapab chaje dokiman sa a. Tanpri eseye ankò pita."
 msgid "Could not load your flights"
 msgstr "Nou pa t ka chaje vòl ou yo"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Nou pa t ka jwe anrejistreman an"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Pa t kapab anrejistre pwofil la"
@@ -1490,6 +1499,8 @@ msgstr "Fini"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Telechaje"
 
@@ -1662,6 +1673,12 @@ msgstr "Kite match la"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Kite misyon"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Kite lekti a"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Vole ankò"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Swiv zegwi yo desann: 1200' nan 3NM, 800' nan 2NM, 400' nan 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 segonn devan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Modèl (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pòz"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "An pòz"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFÒM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platfòm: 2000 FPM, plat nan 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Jwe"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Pozisyon rejwe"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Rekoneksyon ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Anrejistre vòl yo"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Anrejistreman"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Demann kamera a pa jwenn repons"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Jwèt la pa t ka chaje. Rechaje paj la pou eseye ankò."
 

@@ -557,6 +557,11 @@ msgstr "Калибриране и задаване на оси"
 msgid "Back"
 msgstr "Назад"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 секунди назад"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Документът не може да бъде зареден. Мол�
 msgid "Could not load your flights"
 msgstr "Полетите ви не можаха да бъдат заредени"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Записът не можа да бъде възпроизведен"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Профилът не можа да бъде запазен"
@@ -1490,6 +1499,8 @@ msgstr "Готово"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Изтегляне"
 
@@ -1662,6 +1673,12 @@ msgstr "Напусни мача"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Изход от мисията"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Изход от възпроизвеждането"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Лети отново"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Води стрелките надолу: 1200' на 3NM, 800' на 2NM, 400' на 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 секунди напред"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Шаблон (регулярен израз)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Пауза"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Спрян"
 
@@ -3122,6 +3150,18 @@ msgstr "ПЛАТФОРМА"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Платформа: 2000 FPM, хоризонтално на 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Възпроизведи"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Позиция на възпроизвеждане"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Повторно свързване ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Записване на полетите"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Запис"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Заявката за камера остана без отговор"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Играта не можа да се зареди. Презаредете страницата, за да опитате отново."
 

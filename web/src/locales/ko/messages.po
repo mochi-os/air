@@ -557,6 +557,11 @@ msgstr "축 보정 및 매핑"
 msgid "Back"
 msgstr "뒤로"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5초 뒤로"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "이 문서를 불러올 수 없었습니다. 잠시 후 다시 시도해
 msgid "Could not load your flights"
 msgstr "비행을 불러올 수 없습니다"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "기록을 재생하지 못했습니다"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "프로필을 저장할 수 없습니다"
@@ -1490,6 +1499,8 @@ msgstr "완료"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "다운로드"
 
@@ -1662,6 +1673,12 @@ msgstr "매치 나가기"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "미션 종료"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "재생 종료"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "다시 비행하기"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "지시침을 따라 강하: 3NM에서 1200', 2NM에서 800', 1NM에서 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5초 앞으로"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "패턴 (정규식)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "일시 정지"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "일시 정지됨"
 
@@ -3122,6 +3150,18 @@ msgstr "플랫폼"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "플랫폼: 2000 FPM, 1200'에서 수평"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "재생"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "재생 위치"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "다시 연결하는 중 ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "비행 기록"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "기록"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "카메라 요청에 응답이 없었습니다"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "게임을 불러올 수 없습니다. 다시 시도하려면 페이지를 새로 고치세요."
 

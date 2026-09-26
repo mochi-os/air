@@ -557,6 +557,11 @@ msgstr "As-kalibrasie en -toewysing"
 msgid "Back"
 msgstr "Terug"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekondes terug"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Kon nie hierdie dokument laai nie. Probeer asseblief later weer."
 msgid "Could not load your flights"
 msgstr "Kon nie jou vlugte laai nie"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Kon nie die opname speel nie"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Kon nie die profiel stoor nie"
@@ -1490,6 +1499,8 @@ msgstr "Klaar"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Laai af"
 
@@ -1662,6 +1673,12 @@ msgstr "Verlaat wedstryd"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Verlaat missie"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Verlaat terugspeling"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Vlieg weer"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Vlieg die naalde af: 1200' op 3NM, 800' op 2NM, 400' op 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekondes vorentoe"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Patroon (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pouse"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Gepouseer"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, gelyk op 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Speel"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Terugspeelposisie"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Herverbind tans ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Neem vlugte op"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Opname"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Die kameraversoek is nie beantwoord nie"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Die speletjie kon nie gelaai word nie. Herlaai die bladsy om weer te probeer."
 

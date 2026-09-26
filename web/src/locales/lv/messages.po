@@ -557,6 +557,11 @@ msgstr "Asu kalibrēšana un piesaiste"
 msgid "Back"
 msgstr "Atpakaļ"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekundes atpakaļ"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Nevarēja ielādēt šo dokumentu. Lūdzu, mēģini vēlāk vēlreiz."
 msgid "Could not load your flights"
 msgstr "Neizdevās ielādēt jūsu lidojumus"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Neizdevās atskaņot ierakstu"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Neizdevās saglabāt profilu"
@@ -1490,6 +1499,8 @@ msgstr "Pabeigts"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Lejupielādēt"
 
@@ -1662,6 +1673,12 @@ msgstr "Pamest maču"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Iziet no misijas"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Iziet no atskaņošanas"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Lidot vēlreiz"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Seko rādītājiem lejup: 1200' pie 3NM, 800' pie 2NM, 400' pie 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekundes uz priekšu"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Šablons (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pauze"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Apturēts"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, horizontāli 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Atskaņot"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Atskaņošanas pozīcija"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Notiek atkārtota savienošana ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Ierakstīt lidojumus"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Ierakstīšana"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Uz kameras pieprasījumu netika atbildēts"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Spēli neizdevās ielādēt. Lai mēģinātu vēlreiz, pārlādējiet lapu."
 

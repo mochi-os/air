@@ -557,6 +557,11 @@ msgstr "Calibrazione e mappatura degli assi"
 msgid "Back"
 msgstr "Indietro"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Indietro di 5 secondi"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Impossibile caricare questo documento. Riprova più tardi."
 msgid "Could not load your flights"
 msgstr "Impossibile caricare i tuoi voli"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Impossibile riprodurre la registrazione"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Impossibile salvare il profilo"
@@ -1490,6 +1499,8 @@ msgstr "Fatto"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Scarica"
 
@@ -1662,6 +1673,12 @@ msgstr "Esci dalla partita"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Esci dalla missione"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Esci dalla riproduzione"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Vola ancora"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Segui le barre in discesa: 1200' a 3NM, 800' a 2NM, 400' a 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Avanti di 5 secondi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Modello (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pausa"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "In pausa"
 
@@ -3122,6 +3150,18 @@ msgstr "PIATTAFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, in piano a 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Riproduci"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posizione di riproduzione"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Riconnessione ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Registra i voli"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Registrazione"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "La richiesta della fotocamera non ha ricevuto risposta"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Impossibile caricare il gioco. Ricarica la pagina per riprovare."
 

@@ -557,6 +557,11 @@ msgstr "Umerjanje in preslikava osi"
 msgid "Back"
 msgstr "Nazaj"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekund nazaj"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Tega dokumenta ni bilo mogoče naložiti. Poskusite znova kasneje."
 msgid "Could not load your flights"
 msgstr "Vaših letov ni bilo mogoče naložiti"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Posnetka ni bilo mogoče predvajati"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profila ni bilo mogoče shraniti"
@@ -1490,6 +1499,8 @@ msgstr "Končano"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Prenesi"
 
@@ -1662,6 +1673,12 @@ msgstr "Zapusti tekmo"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Zapusti misijo"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Zapusti predvajanje"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Poleti znova"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Spuščaj se po iglah: 1200' na 3NM, 800' na 2NM, 400' na 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekund naprej"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Vzorec (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Premor"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "V premoru"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, horizontalno na 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Predvajaj"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Položaj predvajanja"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Ponovno povezovanje ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Snemaj lete"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Snemanje"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Zahteva za kamero ni dobila odgovora"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Igre ni bilo mogoče naložiti. Znova naložite stran, da poskusite znova."
 

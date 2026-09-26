@@ -557,6 +557,11 @@ msgstr "Akselien kalibrointi ja määritys"
 msgid "Back"
 msgstr "Takaisin"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekuntia taaksepäin"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Tätä dokumenttia ei voitu ladata. Yritä myöhemmin uudelleen."
 msgid "Could not load your flights"
 msgstr "Lentojasi ei voitu ladata"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Tallenteen toistaminen epäonnistui"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profiilin tallennus epäonnistui"
@@ -1490,6 +1499,8 @@ msgstr "Valmis"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Lataa"
 
@@ -1662,6 +1673,12 @@ msgstr "Poistu ottelusta"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Poistu tehtävästä"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Poistu toistosta"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Lennä uudelleen"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Seuraa neuloja alas: 1200' 3NM:llä, 800' 2NM:llä, 400' 1NM:llä"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekuntia eteenpäin"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Kuvio (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Tauko"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Tauolla"
 
@@ -3122,6 +3150,18 @@ msgstr "TASANNE"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Tasaustaso: 2000 FPM, vaakalento 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Toista"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Toistokohta"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Yhdistetään uudelleen ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Tallenna lennot"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Tallennus"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Kamerapyyntöön ei vastattu"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Peliä ei voitu ladata. Yritä uudelleen lataamalla sivu uudelleen."
 

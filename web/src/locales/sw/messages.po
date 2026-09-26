@@ -557,6 +557,11 @@ msgstr "Urekebishaji na upangaji wa mihimili"
 msgid "Back"
 msgstr "Rudi"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Rudi nyuma sekunde 5"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Haikuweza kupakia hati hii. Tafadhali jaribu tena baadaye."
 msgid "Could not load your flights"
 msgstr "Imeshindwa kupakia safari zako za ndege"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Imeshindikana kucheza rekodi"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Imeshindwa kuhifadhi wasifu"
@@ -1490,6 +1499,8 @@ msgstr "Imekamilika"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Pakua"
 
@@ -1662,6 +1673,12 @@ msgstr "Toka kwenye mechi"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Ondoka kwenye misheni"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Ondoka kwenye kucheza"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Ruka tena"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Shuka kwa sindano: 1200' kwenye 3NM, 800' kwenye 2NM, 400' kwenye 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Songa mbele sekunde 5"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Muundo (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Sitisha"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Imesimamishwa"
 
@@ -3122,6 +3150,18 @@ msgstr "JUKWAA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Jukwaa: 2000 FPM, sawa kwenye 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Cheza"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Mahali pa kucheza"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Inaunganisha upya ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Rekodi safari za ndege"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Kurekodi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Ombi la kamera halikujibiwa"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Mchezo haukuweza kupakiwa. Pakia upya ukurasa ili kujaribu tena."
 

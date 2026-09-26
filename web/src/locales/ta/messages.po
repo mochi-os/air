@@ -557,6 +557,11 @@ msgstr "அச்சு அளவீடு மற்றும் ஒதுக்
 msgid "Back"
 msgstr "பின்"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 வினாடிகள் பின்னோக்கி"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "இந்த ஆவணத்தை ஏற்ற முடியவில
 msgid "Could not load your flights"
 msgstr "உங்கள் பறத்தல்களை ஏற்ற முடியவில்லை"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "பதிவை இயக்க முடியவில்லை"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "சுயவிவரத்தைச் சேமிக்க முடியவில்லை"
@@ -1490,6 +1499,8 @@ msgstr "முடிந்தது"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "பதிவிறக்கு"
 
@@ -1662,6 +1673,12 @@ msgstr "போட்டியிலிருந்து வெளியேற�
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "பணியிலிருந்து வெளியேறு"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "இயக்கத்திலிருந்து வெளியேறு"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "மீண்டும் பறக்கவும்"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ஊசிகளைப் பின்தொடர்ந்து இறங்கு: 3NM-ல் 1200', 2NM-ல் 800', 1NM-ல் 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 வினாடிகள் முன்னோக்கி"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "வடிவம் (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "இடைநிறுத்து"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "இடைநிறுத்தப்பட்டது"
 
@@ -3122,6 +3150,18 @@ msgstr "மேடை"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "மேடை: 2000 FPM, 1200' இல் நிலை"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "இயக்கு"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "இயக்க நிலை"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "மீண்டும் இணைக்கிறது ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "பறத்தல்களைப் பதிவு செய்"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "பதிவு"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "கேமரா கோரிக்கைக்கு பதில் இல்லை"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "விளையாட்டை ஏற்ற முடியவில்லை. மீண்டும் முயல பக்கத்தை மீண்டும் ஏற்றவும்."
 

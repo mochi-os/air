@@ -557,6 +557,11 @@ msgstr "การปรับเทียบและการแมปแกน
 msgid "Back"
 msgstr "ย้อนกลับ"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "ย้อนกลับ 5 วินาที"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "ไม่สามารถโหลดเอกสารนี้ได
 msgid "Could not load your flights"
 msgstr "ไม่สามารถโหลดการบินของคุณได้"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ไม่สามารถเล่นไฟล์การบินได้"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "ไม่สามารถบันทึกโปรไฟล์ได้"
@@ -1490,6 +1499,8 @@ msgstr "เสร็จสิ้น"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ดาวน์โหลด"
 
@@ -1662,6 +1673,12 @@ msgstr "ออกจากแมตช์"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ออกจากการเล่น"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "บินอีกครั้ง"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ลดระดับตามเข็ม: 1200' ที่ 3NM, 800' ที่ 2NM, 400' ที่ 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "ข้ามไป 5 วินาที"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "รูปแบบ (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "หยุดชั่วคราว"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "หยุดชั่วคราวแล้ว"
 
@@ -3122,6 +3150,18 @@ msgstr "แพลตฟอร์ม"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "แพลตฟอร์ม: 2000 FPM, ระดับที่ 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "เล่น"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ตำแหน่งการเล่น"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "กำลังเชื่อมต่อใหม่ ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "บันทึกการบิน"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "การบันทึก"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "คำขอกล้องไม่ได้รับการตอบกลับ"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "โหลดเกมไม่ได้ โหลดหน้านี้ใหม่เพื่อลองอีกครั้ง"
 

@@ -557,6 +557,11 @@ msgstr "ਧੁਰਾ ਕੈਲੀਬ੍ਰੇਸ਼ਨ ਅਤੇ ਮੈਪਿੰ
 msgid "Back"
 msgstr "ਵਾਪਸ"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 ਸਕਿੰਟ ਪਿੱਛੇ"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "ਇਹ ਦਸਤਾਵੇਜ਼ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜ�
 msgid "Could not load your flights"
 msgstr "ਤੁਹਾਡੀਆਂ ਉਡਾਣਾਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ਰਿਕਾਰਡਿੰਗ ਚਲਾਈ ਨਹੀਂ ਜਾ ਸਕੀ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "ਪ੍ਰੋਫਾਈਲ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ"
@@ -1490,6 +1499,8 @@ msgstr "ਹੋ ਗਿਆ"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ਡਾਊਨਲੋਡ ਕਰੋ"
 
@@ -1662,6 +1673,12 @@ msgstr "ਮੈਚ ਛੱਡੋ"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "ਮਿਸ਼ਨ ਛੱਡੋ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ਪਲੇਬੈਕ ਛੱਡੋ"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "ਦੁਬਾਰਾ ਉਡਾਣ ਭਰੋ"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ਸੂਈਆਂ ਦੇ ਨਾਲ ਹੇਠਾਂ ਆਓ: 3NM ਉੱਤੇ 1200', 2NM ਉੱਤੇ 800', 1NM ਉੱਤੇ 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 ਸਕਿੰਟ ਅੱਗੇ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "ਪੈਟਰਨ (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "ਰੋਕੋ"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "ਰੁਕਿਆ ਹੋਇਆ"
 
@@ -3122,6 +3150,18 @@ msgstr "ਪਲੇਟਫਾਰਮ"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "ਪਲੇਟਫਾਰਮ: 2000 FPM, 1200' ਉੱਤੇ ਪੱਧਰੇ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ਚਲਾਓ"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ਪਲੇਬੈਕ ਸਥਿਤੀ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "ਮੁੜ ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "ਉਡਾਣਾਂ ਰਿਕਾਰਡ ਕਰੋ"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "ਰਿਕਾਰਡਿੰਗ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "ਕੈਮਰਾ ਬੇਨਤੀ ਦਾ ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ਗੇਮ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਪੰਨਾ ਮੁੜ ਲੋਡ ਕਰੋ।"
 
