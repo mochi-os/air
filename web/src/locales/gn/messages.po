@@ -557,6 +557,11 @@ msgstr "Calibración ha mapeo eje rehegua"
 msgid "Back"
 msgstr "Tapykuépe"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 segundo tapykuévo"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Ndaikatúi oñemyanyhẽ ko documento. Eha'ã jeýta upéi."
 msgid "Could not load your flights"
 msgstr "Ndaikatúi oñemyanyhẽ nde veve-kuéra"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Ndaikatúi ojehechauka pe grabación"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Ndaikatúi ñeñongatu profil"
@@ -1490,6 +1499,8 @@ msgstr "Apopyre"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Emboguejy"
 
@@ -1662,6 +1673,12 @@ msgstr "Esẽ partidágui"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Misión jeheja"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Jehechauka jeheja"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Eveve jey"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Eho aguja rapykuéri oguejývo: 1200' 3NM-pe, 800' 2NM-pe, 400' 1NM-pe"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 segundo tenondévo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Tape (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pytu’u"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Oñembohejéi"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATAFÓRMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Plataforma: 2000 FPM, joja 1200'-pe"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Jehechauka"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Jehechauka renda"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Ojoajujey ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Emboguapy veve-kuéra"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Grabación"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Cámara jerure ndojehechái mbohovái"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ndaikatúi oñemyanyhẽ pe juego. Emyanyhẽ jey pe rogue eha'ã jey hag̃ua."
 

@@ -557,6 +557,11 @@ msgstr "Kalibrasi jeung pemetaan sumbu"
 msgid "Back"
 msgstr "Tukang"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Mundur 5 detik"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Teu bisa ngamuat dokumén ieu. Mangga cobian deui engké."
 msgid "Could not load your flights"
 msgstr "Teu bisa mungkahan hiber anjeun"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Rekaman teu bisa diputer"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profil teu bisa disimpen"
@@ -1490,6 +1499,8 @@ msgstr "Beres"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Unduh"
 
@@ -1662,6 +1673,12 @@ msgstr "Kaluar tina pertandingan"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Kaluar tina misi"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Kaluar tina puteran"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Ngapung deui"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Turun nuturkeun jarum: 1200' dina 3NM, 800' dina 2NM, 400' dina 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Maju 5 detik"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Pola (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Eureun"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Diereunkeun"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, datar dina 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Puter"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posisi puteran"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Nyambungkeun deui ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Rekam hiber"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Rekaman"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Paménta kaméra teu diwaler"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Kaulinan teu tiasa dimuat. Muat deui kacana pikeun nyobian deui."
 

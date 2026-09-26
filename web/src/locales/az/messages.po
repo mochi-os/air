@@ -557,6 +557,11 @@ msgstr "Ox kalibrləməsi və təyinatı"
 msgid "Back"
 msgstr "Geri"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 saniyə geri"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Bu sənəd yüklənə bilmədi. Daha sonra yenidən cəhd edin."
 msgid "Could not load your flights"
 msgstr "Uçuşlarınızı yükləmək mümkün olmadı"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Qeydi oynatmaq mümkün olmadı"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profil saxlanıla bilmədi"
@@ -1490,6 +1499,8 @@ msgstr "Hazırdır"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Yüklə"
 
@@ -1662,6 +1673,12 @@ msgstr "Matçdan çıx"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Missiyadan çıx"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Oynatmadan çıx"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Yenidən uç"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Əqrəbləri aşağı izlə: 1200' 3NM-də, 800' 2NM-də, 400' 1NM-də"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 saniyə irəli"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Şablon (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Fasilə"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Dayandırıldı"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, 1200'-də üfüqi"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Oynat"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Oynatma mövqeyi"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Yenidən qoşulur ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Uçuşları qeyd et"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Qeyd"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Kamera sorğusu cavablandırılmadı"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Oyun yüklənə bilmədi. Yenidən cəhd etmək üçün səhifəni yeniləyin."
 

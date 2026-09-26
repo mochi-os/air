@@ -557,6 +557,11 @@ msgstr "Daidaitawa da tsarin axis"
 msgid "Back"
 msgstr "Komawa"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Koma baya daƙiƙa 5"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Ba a iya loda wannan takarda ba. Da fatan a sake gwadawa daga baya."
 msgid "Could not load your flights"
 msgstr "An kasa loda tashinka"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "An kasa kunna rikodin"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "An kasa ajiye bayanan"
@@ -1490,6 +1499,8 @@ msgstr "An gama"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Sauke"
 
@@ -1662,6 +1673,12 @@ msgstr "Fita daga wasan"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Bar manufa"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Bar kunnawa"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Sake tashi"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Bi allurai ƙasa: 1200' a 3NM, 800' a 2NM, 400' a 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Gaba daƙiƙa 5"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Tsari (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Dakata"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "An tsaya"
 
@@ -3122,6 +3150,18 @@ msgstr "DANDALI"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Dandali: 2000 FPM, daidaita a 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Kunna"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Matsayin kunnawa"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Ana sake haɗawa ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Yi rikodin tashi"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Rikodi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Ba a amsa buƙatar kyamara ba"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ba a iya loda wasan ba. Sake loda shafin don sake gwadawa."
 

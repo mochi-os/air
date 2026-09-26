@@ -557,6 +557,11 @@ msgstr "Kaalibreeshinii fi ramaddii siiqqee"
 msgid "Back"
 msgstr "Duuba"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Sekondii 5 duubatti"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Galmee kana fe'uu hin dandeenye. Booda yaali."
 msgid "Could not load your flights"
 msgstr "Balali'uuwwan kee fe'uun hin danda'amne"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Galmeen taphachiifamuu hin dandeenye"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Piroofaayilii olkaa'uun hin danda'amne"
@@ -1490,6 +1499,8 @@ msgstr "Xumurame"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Buufadhu"
 
@@ -1662,6 +1673,12 @@ msgstr "Taphicha keessaa bahi"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Ergama irraa ba’i"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Taphachiisuu irraa ba’i"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Ammas balali'i"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Lilmoolee hordofii gad bu'i: 3NM irratti 1200', 2NM irratti 800', 1NM irratti 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Sekondii 5 fuulduratti"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Bocaa (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Dhaabi"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Dhaabbate"
 
@@ -3122,6 +3150,18 @@ msgstr "WALTAJJII"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Pilaatfoormii: 2000 FPM, 1200' irratti wal qixxee"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Taphachiisi"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Iddoo taphachiisuu"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Irra deebi'ee walqunnamsiisaa jira ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Balali'uuwwan galmeessuu"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Galmeessa"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Gaaffiin kaameraa deebii hin arganne"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Taphichi fe'uu hin dandeenye. Irra deebi'anii yaaluuf fuula irra deebi'ii fe'i."
 

@@ -557,6 +557,11 @@ msgstr "Pag-calibrate at pag-map ng axis"
 msgid "Back"
 msgstr "Bumalik"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Bumalik nang 5 segundo"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Hindi ma-load ang document na ito. Subukan muli mamaya."
 msgid "Could not load your flights"
 msgstr "Hindi ma-load ang iyong mga paglipad"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Hindi ma-play ang recording"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Hindi ma-save ang profile"
@@ -1490,6 +1499,8 @@ msgstr "Tapos na"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "I-download"
 
@@ -1662,6 +1673,12 @@ msgstr "Umalis sa match"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Lumabas sa misyon"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Lumabas sa pag-play"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Lumipad ulit"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Sundan pababa ang mga karayom: 1200' sa 3NM, 800' sa 2NM, 400' sa 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Sumulong nang 5 segundo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Pattern (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "I-pause"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Naka-pause"
 
@@ -3122,6 +3150,18 @@ msgstr "PLATAPORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, patag sa 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "I-play"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posisyon ng pag-play"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Muling kumokonekta ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "I-record ang mga paglipad"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Pag-record"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Hindi nasagot ang kahilingan sa camera"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Hindi ma-load ang laro. I-reload ang pahina para subukang muli."
 

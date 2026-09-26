@@ -557,6 +557,11 @@ msgstr "అక్షం క్రమాంకనం మరియు మ్యా
 msgid "Back"
 msgstr "వెనుకకు"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 సెకన్లు వెనక్కి"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "ఈ పత్రాన్ని లోడ్ చేయలేకపోయ
 msgid "Could not load your flights"
 msgstr "మీ విమానయానాలను లోడ్ చేయడం సాధ్యపడలేదు"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "రికార్డింగ్‌ను ప్లే చేయలేకపోయాం"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "ప్రొఫైల్‌ను సేవ్ చేయలేకపోయాం"
@@ -1490,6 +1499,8 @@ msgstr "పూర్తయింది"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "డౌన్‌లోడ్ చేయండి"
 
@@ -1662,6 +1673,12 @@ msgstr "మ్యాచ్ నుండి నిష్క్రమించం�
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "మిషన్ నుండి నిష్క్రమించు"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ప్లేబ్యాక్ నుండి నిష్క్రమించు"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "మళ్లీ ఎగరండి"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ముళ్ళను అనుసరించి దిగు: 3NM వద్ద 1200', 2NM వద్ద 800', 1NM వద్ద 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 సెకన్లు ముందుకు"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "నమూనా (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "పాజ్ చేయి"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "పాజ్ చేయబడింది"
 
@@ -3122,6 +3150,18 @@ msgstr "వేదిక"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "ప్లాట్‌ఫారమ్: 2000 FPM, 1200' వద్ద సమతలం"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ప్లే చేయి"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ప్లేబ్యాక్ స్థానం"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "మళ్లీ కనెక్ట్ అవుతోంది ({retries
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "విమానయానాలను రికార్డ్ చేయి"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "రికార్డింగ్"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "కెమెరా అభ్యర్థనకు స్పందన లేదు"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "గేమ్‌ను లోడ్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి."
 

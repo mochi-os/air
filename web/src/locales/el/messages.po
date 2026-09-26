@@ -557,6 +557,11 @@ msgstr "Βαθμονόμηση και αντιστοίχιση αξόνων"
 msgid "Back"
 msgstr "Πίσω"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 δευτερόλεπτα πίσω"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Δεν ήταν δυνατή η φόρτωση αυτού του εγγ�
 msgid "Could not load your flights"
 msgstr "Δεν ήταν δυνατή η φόρτωση των πτήσεών σας"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Δεν ήταν δυνατή η αναπαραγωγή της καταγραφής"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Δεν ήταν δυνατή η αποθήκευση του προφίλ"
@@ -1490,6 +1499,8 @@ msgstr "Ολοκληρώθηκε"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Λήψη"
 
@@ -1662,6 +1673,12 @@ msgstr "Έξοδος από τον αγώνα"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Έξοδος από αποστολή"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Έξοδος από αναπαραγωγή"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Πέταξε ξανά"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Οδήγησε τις βελόνες κάτω: 1200' στα 3NM, 800' στα 2NM, 400' στο 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 δευτερόλεπτα μπροστά"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Μοτίβο (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Παύση"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Σε παύση"
 
@@ -3122,6 +3150,18 @@ msgstr "ΠΛΑΤΦΌΡΜΑ"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Πλατφόρμα: 2000 FPM, οριζόντια στα 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Αναπαραγωγή"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Θέση αναπαραγωγής"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Επανασύνδεση ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Καταγραφή πτήσεων"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Καταγραφή"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Το αίτημα κάμερας δεν απαντήθηκε"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Δεν ήταν δυνατή η φόρτωση του παιχνιδιού. Φορτώστε ξανά τη σελίδα για να δοκιμάσετε ξανά."
 

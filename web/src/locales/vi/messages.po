@@ -557,6 +557,11 @@ msgstr "Hiệu chỉnh và gán trục"
 msgid "Back"
 msgstr "Quay lại"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Lùi 5 giây"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Không thể tải tài liệu này. Vui lòng thử lại sau."
 msgid "Could not load your flights"
 msgstr "Không thể tải các chuyến bay của bạn"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Không thể phát bản ghi"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Không thể lưu hồ sơ"
@@ -1490,6 +1499,8 @@ msgstr "Xong"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Tải xuống"
 
@@ -1662,6 +1673,12 @@ msgstr "Rời trận đấu"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Thoát nhiệm vụ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Thoát phát"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Bay lại"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Bám kim hạ xuống: 1200' ở 3NM, 800' ở 2NM, 400' ở 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Tới 5 giây"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Mẫu (biểu thức chính quy)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Tạm dừng"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Đã tạm dừng"
 
@@ -3122,6 +3150,18 @@ msgstr "BỆ"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, bay bằng ở 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Phát"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Vị trí phát"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Đang kết nối lại ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Ghi lại chuyến bay"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Bản ghi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Yêu cầu máy ảnh không được trả lời"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Không thể tải trò chơi. Tải lại trang để thử lại."
 

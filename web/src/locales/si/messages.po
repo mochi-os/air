@@ -557,6 +557,11 @@ msgstr "අක්ෂ ක්‍රමාංකනය සහ සිතියම්
 msgid "Back"
 msgstr "ආපසු"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "තත්පර 5ක් පසුපසට"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "මෙම ලේඛනය පූරණය කළ නොහැකි ව�
 msgid "Could not load your flights"
 msgstr "ඔබේ පියාසර පූරණය කිරීමට නොහැකි විය"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "වාර්තාව ධාවනය කිරීමට නොහැකි විය"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "පැතිකඩ සුරැකිය නොහැකි විය"
@@ -1490,6 +1499,8 @@ msgstr "නිමයි"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "බාගත කරන්න"
 
@@ -1662,6 +1673,12 @@ msgstr "තරගයෙන් ඉවත් වන්න"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "මෙහෙයුමෙන් ඉවත්"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ධාවනයෙන් ඉවත්"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "නැවත පියාසර කරන්න"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ඉඳිකටු අනුව බසින්න: 3NM දී 1200', 2NM දී 800', 1NM දී 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "තත්පර 5ක් ඉදිරියට"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "රටාව (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "විරාම කරන්න"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "විරාම කර ඇත"
 
@@ -3122,6 +3150,18 @@ msgstr "වේදිකාව"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "වේදිකාව: 2000 FPM, 1200' හි සමතලාව"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ධාවනය"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ධාවන ස්ථානය"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "නැවත සම්බන්ධ වෙමින් ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "පියාසර වාර්තා කරන්න"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "වාර්තා කිරීම"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "කැමරා ඉල්ලීමට පිළිතුරු ලැබුණේ නැත"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ක්‍රීඩාව පූරණය කළ නොහැකි විය. නැවත උත්සාහ කිරීමට පිටුව නැවත පූරණය කරන්න."
 

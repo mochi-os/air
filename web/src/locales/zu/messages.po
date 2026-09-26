@@ -557,6 +557,11 @@ msgstr "Ukulinganisa nokwaba ama-axis"
 msgid "Back"
 msgstr "Emuva"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Buyela emuva imizuzwana engu-5"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Akukwazanga ukulayisha le dokhumenti. Sicela uzame futhi kamuva."
 msgid "Could not load your flights"
 msgstr "Akukwazekanga ukulayisha ukundiza kwakho"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Akukwazekanga ukudlala irekhodi"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Ayikwazanga ukulondoloza iphrofayela"
@@ -1490,6 +1499,8 @@ msgstr "Kwenziwe"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Landa"
 
@@ -1662,6 +1673,12 @@ msgstr "Phuma emdlalweni"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Phuma emsebenzini"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Phuma ekudlaleni"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Ndiza futhi"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Landela izinaliti wehla: 1200' ku-3NM, 800' ku-2NM, 400' ku-1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Yiya phambili imizuzwana engu-5"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Iphethini (i-regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Misa okwesikhashana"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Kumisiwe"
 
@@ -3122,6 +3150,18 @@ msgstr "INKUNDLA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, ulingene ku-1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Dlala"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Indawo yokudlala"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Iyaxhuma kabusha ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Rekhoda ukundiza"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Ukuqopha"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Isicelo sekhamera asiphendulwanga"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Umdlalo awukwazanga ukulayishwa. Layisha kabusha ikhasi ukuze uzame futhi."
 

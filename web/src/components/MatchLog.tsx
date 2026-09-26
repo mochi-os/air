@@ -140,7 +140,7 @@ export function MatchLog({
   const replay = useMemo(() => recording?.() ?? null, [recording])
   // A row's recording: the stored copy, which exists for every flight, or the
   // in-memory buffer for a flight whose upload has not landed yet.
-  const text_of = async (m: MatchRow): Promise<string | null> =>
+  const recorded = async (m: MatchRow): Promise<string | null> =>
     (m.recording ? await recording_load(m.recording) : null) ??
     (replay && replay.session === m.session ? replay.text : null)
   const { formatDateTime, formatNumber } = useFormat()
@@ -201,7 +201,12 @@ export function MatchLog({
     return labels[grade] ?? grade
   }
   const wireLabel = (wire: number): string => {
-    const labels: Record<number, string> = { 1: t`1 WIRE`, 2: t`2 WIRE`, 3: t`3 WIRE`, 4: t`4 WIRE` }
+    const labels: Record<number, string> = {
+      1: t`1 WIRE`,
+      2: t`2 WIRE`,
+      3: t`3 WIRE`,
+      4: t`4 WIRE`,
+    }
     return labels[wire] ?? String(wire)
   }
 
@@ -487,13 +492,21 @@ export function MatchLog({
               {/* The last pass as the LSO wrote it up: the grade and the wire
                   translated, the shorthand verbatim - it is the same in every
                   language, like the radio calls. */}
-              <TableCell className='whitespace-nowrap'>
+              {/* The grade and wire hold together; the write-up wraps (the
+                  table's cells otherwise never do), so a long one does not
+                  push the row's buttons off the side. */}
+              <TableCell className='min-w-40 whitespace-normal'>
                 {m.grade ? (
                   <>
-                    {gradeLabel(m.grade)}
-                    {m.wire ? ', ' + wireLabel(m.wire) : ''}
+                    <span className='whitespace-nowrap'>
+                      {gradeLabel(m.grade)}
+                      {m.wire ? ', ' + wireLabel(m.wire) : ''}
+                    </span>
                     {m.remarks ? (
-                      <span className='text-muted-foreground'> · {m.remarks}</span>
+                      <span className='text-muted-foreground'>
+                        {' '}
+                        · {m.remarks}
+                      </span>
                     ) : null}
                   </>
                 ) : null}
@@ -508,11 +521,16 @@ export function MatchLog({
                     type='button'
                     variant='outline'
                     size='sm'
+                    // An icon alone, like Pin: the label is for a screen
+                    // reader and the tooltip. Its own context, so this sense
+                    // never meets a Play that starts a game.
+                    aria-label={t({ message: 'Play', context: 'recording' })}
+                    title={t({ message: 'Play', context: 'recording' })}
                     // Revealed with the download button beside it.
                     className='mr-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
                     onClick={() =>
                       void (async () => {
-                        const text = await text_of(m)
+                        const text = await recorded(m)
                         if (!text) {
                           toast.error(t`Could not play the recording`)
                           return
@@ -522,7 +540,6 @@ export function MatchLog({
                     }
                   >
                     <Play className='size-4' />
-                    <Trans>Replay</Trans>
                   </Button>
                 ) : null}
                 {m.recording || (replay && replay.session === m.session) ? (
@@ -530,6 +547,8 @@ export function MatchLog({
                     type='button'
                     variant='outline'
                     size='sm'
+                    aria-label={t`Download`}
+                    title={t`Download`}
                     // Revealed on hover (and kept for keyboard focus, which
                     // hover alone would strand): a button on every row competes
                     // with the flight data for attention. A coarse pointer has
@@ -538,7 +557,7 @@ export function MatchLog({
                     className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
                     onClick={() =>
                       void (async () => {
-                        const text = await text_of(m)
+                        const text = await recorded(m)
                         if (!text) {
                           toast.error(t`Could not save the recording`)
                           return
@@ -555,7 +574,6 @@ export function MatchLog({
                     }
                   >
                     <Download className='size-4' />
-                    <Trans>Recording</Trans>
                   </Button>
                 ) : null}
                 {m.recording ? (

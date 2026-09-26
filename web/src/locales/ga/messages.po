@@ -557,6 +557,11 @@ msgstr "Calabrú agus mapáil na n-aiseanna"
 msgid "Back"
 msgstr "Ar ais"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 soicind siar"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "Níorbh fhéidir an cháipéis seo a luchtú. Bain triail eile as ar bal
 msgid "Could not load your flights"
 msgstr "Níorbh fhéidir d’eitiltí a luchtú"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Níorbh fhéidir an taifeadadh a sheinm"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Níorbh fhéidir an phróifíl a shábháil"
@@ -1490,6 +1499,8 @@ msgstr "Críochnaithe"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Íoslódáil"
 
@@ -1662,6 +1673,12 @@ msgstr "Fág an cluiche"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Fág an misean"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Fág an seinm"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "Eitil arís"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Lean na snáthaidí síos: 1200' ag 3NM, 800' ag 2NM, 400' ag 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 soicind ar aghaidh"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "Patrún (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Cuir ar sos"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Ar sos"
 
@@ -3122,6 +3150,18 @@ msgstr "ARDÁN"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Ardán: 2000 FPM, cothrom ag 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Seinn"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Suíomh athsheinm"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "Ag athcheangal ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Taifead eitiltí"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Taifeadadh"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "Níor freagraíodh an t-iarratas ceamara"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Níorbh fhéidir an cluiche a lódáil. Athlódáil an leathanach chun triail eile a bhaint as."
 

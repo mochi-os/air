@@ -557,6 +557,11 @@ msgstr "ღერძების კალიბრაცია და მინ
 msgid "Back"
 msgstr "უკან"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 წამით უკან"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -1158,6 +1163,10 @@ msgstr "ამ დოკუმენტის ჩატვირთვა ვე
 msgid "Could not load your flights"
 msgstr "თქვენი ფრენების ჩატვირთვა ვერ მოხერხდა"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ჩანაწერის დაკვრა ვერ მოხერხდა"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "პროფილის შენახვა ვერ მოხერხდა"
@@ -1490,6 +1499,8 @@ msgstr "მზადაა"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ჩამოტვირთვა"
 
@@ -1662,6 +1673,12 @@ msgstr "მატჩიდან გასვლა"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "მისიიდან გასვლა"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "დაკვრიდან გასვლა"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1914,6 +1931,11 @@ msgstr "ისევ ფრენა"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "იფრინე ისრებით ქვევით: 1200' 3NM-ზე, 800' 2NM-ზე, 400' 1NM-ზე"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 წამით წინ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -3067,6 +3089,12 @@ msgid "Pattern (regex)"
 msgstr "შაბლონი (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "პაუზა"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "შეჩერებული"
 
@@ -3122,6 +3150,18 @@ msgstr "ᲞᲚᲐᲢᲤᲝᲠᲛᲐ"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "პლატფორმა: 2000 FPM, ჰორიზონტალურად 1200'-ზე"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "დაკვრა"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "დაკვრის პოზიცია"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3277,10 +3317,6 @@ msgstr "ხელახლა დაკავშირება ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "ფრენების ჩაწერა"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "ჩაწერა"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -4033,6 +4069,7 @@ msgid "The camera request was not answered"
 msgstr "კამერის მოთხოვნას პასუხი არ მოჰყვა"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "თამაშის ჩატვირთვა ვერ მოხერხდა. ხელახლა საცდელად გადატვირთეთ გვერდი."
 

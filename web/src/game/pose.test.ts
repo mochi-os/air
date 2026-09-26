@@ -12,9 +12,10 @@ const { Net } = await import('./net')
 type Net = InstanceType<typeof Net>
 
 // The server's 39-byte pose record (world/games/air/air.go, func pose): slot,
-// position f32x3, ..., flags at 26, fire bytes at 29/30, leak at 31, the
-// radar emitter at 34 (#30), the gun expenditure at 35 (#163) and his alpha
-// and g at 37/38 (#164). Only the fields this test asserts on are filled; the
+// position f32x3, ..., flags at 26, both engine fires in byte 29 (fifteenths,
+// the left high), his sideslip at 30, leak at 31, the radar emitter at 34
+// (#30), the gun expenditure at 35 (#163) and his alpha and g at 37/38
+// (#164). Only the fields this test asserts on are filled; the
 // rest stay zero — except the emitter byte, whose "nothing" is 63.
 const RECORD = 39
 function pose(options: {
@@ -29,6 +30,7 @@ function pose(options: {
   spent?: number
   aoa?: number
   load?: number
+  beta?: number
 }): Uint8Array {
   const b = new Uint8Array(RECORD)
   const v = new DataView(b.buffer)
@@ -39,8 +41,9 @@ function pose(options: {
   if (options.burning) flags |= 32
   if (options.jamming) flags |= 64 // #31: the radiating-jammer bit
   v.setUint8(26, flags)
-  v.setUint8(29, Math.round((options.fire?.[0] ?? 0) * 255))
-  v.setUint8(30, Math.round((options.fire?.[1] ?? 0) * 255))
+  const fire = (level: number) => Math.ceil(level * 15) // rounded up, as the server does
+  v.setUint8(29, (fire(options.fire?.[0] ?? 0) << 4) | fire(options.fire?.[1] ?? 0))
+  v.setInt8(30, options.beta ?? 0) // sideslip, whole degrees
   v.setUint8(31, Math.round((options.leak ?? 0) * 10))
   v.setUint8(34, ((options.emitter ?? 0) << 6) | (options.target ?? 63))
   v.setUint16(35, options.spent ?? 0, true)
@@ -105,6 +108,21 @@ describe('self pose', () => {
     expect(mine.leak).toBe(0)
   })
 
+  it('lights a fire the server rounded up from the faintest flame, on the engine it is in', () => {
+    const s = session(2)
+    feed(s, concat([pose({ slot: 2, fire: [0, 0.01] })]))
+    const mine = s.self()!
+    expect(mine.burn[0]).toBe(0)
+    expect(mine.burn[1]).toBeGreaterThan(0) // the right engine's FIRE light reads anything above zero
+  })
+
+  it('reads his sideslip either way, whole degrees', () => {
+    const s = session(4)
+    feed(s, concat([pose({ slot: 4, beta: 7 }), pose({ slot: 5, beta: -12 })]))
+    expect(s.self()!.beta).toBe(7)
+    expect(s.remote(5)!.beta).toBe(-12)
+  })
+
   it('follows the newest sample as the fire grows', () => {
     const s = session(1)
     feed(s, concat([pose({ slot: 1, fire: [0.2, 0] })]), 60)
@@ -120,7 +138,7 @@ describe('self pose', () => {
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e45000000000a7f00000000990f7f0000d00731000099000f00003ff0000e40'
+      '0000a02d4500e08e45000000000d7e0000391600006fe2cccf0731000093fb0f00003ff0000e40'
         .match(/../g)!
         .map((h) => parseInt(h, 16))
     )
@@ -128,12 +146,13 @@ describe('self pose', () => {
     const s = session(0)
     feed(s, golden)
     const mine = s.self()!
-    expect(mine.burn[0]).toBeCloseTo(0.6, 2)
-    expect(mine.burn[1]).toBe(0)
+    expect(mine.burn[0]).toBeCloseTo(0.6, 3) // 9 fifteenths, the high half of byte 29
+    expect(mine.burn[1]).toBeCloseTo(0.2, 3) // 3 fifteenths, the low half
     expect(mine.burning).toBe(true)
     expect(mine.leak).toBeCloseTo(1.5, 2)
     expect(mine.alive).toBe(true)
     expect(mine.spent).toBe(240) // the uint16 at 35, from the same encoder run
+    expect(mine.beta).toBe(-5) // byte 30: the flow from his left
     expect(mine.aoa).toBe(14) // byte 37 (#164)
     expect(mine.g).toBeCloseTo(6.4, 3) // byte 38 (#164)
   })
