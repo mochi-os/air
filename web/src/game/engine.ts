@@ -74,7 +74,7 @@ import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
-import { Recorder, stamp, channels, MIDWAY } from './acmi'
+import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
@@ -5382,7 +5382,7 @@ function recording_sample(){
 	// "what did that fight cost me" is a debrief question every pilot asks, and
 	// without them the answer was unrecoverable once the mission ended. Fuel is
 	// kg straight from the state (the gauge is what multiplies to pounds).
-	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, beta:(out[STATE.beta]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:(ownship.speed||0),   // the death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
+	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, beta:(out[STATE.beta]||0)/D2R, g:out[STATE.nz]||0, tas:own==="death"?undefined:airspeed(out[STATE.mach]||0,ownship.pos.y),   // TAS through the air, not ownship.speed over the ground: the trades blow up to 60 kt at a joust's height. The death sample leaves TAS out, so the file keeps the last true reading: crash_ownship has already zeroed the speed, and the rest of the tail is the core's last step, which stopped with the jet
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		stress:out[STATE.stress]||0,   // (#33 debrief): overstress exposure, g·s beyond the airframe's own limit - already fed the STRUCTURE caution, now also recorded
@@ -5440,7 +5440,7 @@ function recording_sample(){
 				// The brain bandit flies the real model, so its own STATE tail
 				// carries the same telemetry the ownship records: TacView graphs
 				// both, and a debrief judges its plays from its inputs.
-				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, beta:(bandit_words[STATE.beta]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
+				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, beta:(bandit_words[STATE.beta]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:airspeed(bandit_words[STATE.mach]||0,bandit.pos.y),
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
 					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R,

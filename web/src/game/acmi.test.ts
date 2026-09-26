@@ -14,6 +14,7 @@ import {
   type Sample,
   stamp,
   channels,
+  airspeed,
 } from './acmi'
 
 // engine.ts cannot be imported (WebGL at module scope): the recorder's engine
@@ -1118,6 +1119,25 @@ describe('stamp', () => {
   })
 })
 
+describe('true airspeed', () => {
+  // The core's own standard atmosphere: a = sqrt(1.4 x 287.053 x T), T falling
+  // 6.5 K per km from 288.15 K to the tropopause at 11 km.
+  it('is Mach times the speed of sound the core flew in', () => {
+    expect(airspeed(1, 0)).toBeCloseTo(340.294, 2)
+    expect(airspeed(0.8, 4572)).toBeCloseTo(0.8 * Math.sqrt(1.4 * 287.053 * (288.15 - 0.0065 * 4572)), 6) // a joust's 15,000 ft
+    expect(airspeed(1, 11000)).toBeCloseTo(295.07, 1)
+    expect(airspeed(1, 15000)).toBeCloseTo(airspeed(1, 11000), 9) // isothermal above it
+    expect(airspeed(1, -40)).toBeCloseTo(airspeed(1, 0), 9) // the core clamps a jet below the sea to it
+  })
+
+  it('is what the engine records for the pilot and the bandit, not their speed over the ground', () => {
+    const sample = lift('recording_sample')
+    expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)
+    expect(sample).toMatch(/tas:airspeed\(bandit_words\[STATE\.mach\]\|\|0,bandit\.pos\.y\)/)
+    expect(sample).not.toMatch(/tas:[^,]*\.speed/)
+  })
+})
+
 describe('what a replay draws is recorded', () => {
   const lines = (data: Recorded['data'][]) =>
     acmi(
@@ -1510,7 +1530,7 @@ describe("the ownship's death in the recording", () => {
     expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
     const sample = lift('recording_sample')
     expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tconst own=own_record\(due\);/)
-    expect(sample).toMatch(/tas:own==="death"\?undefined:\(ownship\.speed\|\|0\)/)
+    expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)
     expect(sample).toMatch(/\n\tif\(own!=="gone"\) add\(ownship,1,/)
   })
 
