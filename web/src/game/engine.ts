@@ -41,6 +41,7 @@ import {
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
 import { journal_notes } from './journal'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
+import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
 import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
@@ -3479,16 +3480,18 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	const t=m.target;
 	const fox3=m.kind==="120c";   // #27 phase 1: the radar round shares the pool with different constants and no IR frailties
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
-	// Bandit flares: one seduction roll per flare window (SP only — MP damage is the server's). Flares mean nothing to a radar seeker (chaff is #29).
+	// Flares: one seduction roll per flare window (SP only — MP damage is the server's). Flares mean nothing to a radar seeker (chaff is #29).
 	if(tracking && !fox3 && t && sim_time-(t.flared_at??-9)<0.8){   // the TARGET's dispense, whoever the target is: the bandit's flares seduce our heaters, ours seduce its
 		if(!m.window){ m.window=true;
-			const dx=m.px-bandit.pos.x, dy=m.py-bandit.pos.y, dz=m.pz-bandit.pos.z; const dd=Math.hypot(dx,dy,dz)||1;
-			const tail=THREE.MathUtils.clamp(-(dx*bandit.fwd.x+dy*bandit.fwd.y+dz*bandit.fwd.z)/dd,0,1);
-			let decoy=(0.35+0.40*(1-tail))*0.55;
-			if((bandit.reheat??0)>0.05) decoy*=0.5;   // the burner is the brightest thing in view (mirrors the server — the client never had this factor)
+			// The TARGET's aspect and burner, not the bandit's: the bandit's
+			// heaters chase the pilot, whose flare is judged on his own tail
+			// and flame (decoy.ts). His achieved reheat per engine, as the
+			// bandit's is, a dead engine showing no flame.
+			const tail=decoy_aspect({ x:wrap_axis(m.px-t.pos.x), y:m.py-t.pos.y, z:wrap_axis(m.pz-t.pos.z) },t.fwd);
+			let decoy=decoy_chance(tail,t===ownship?Math.max(...(ownship.reheats||[0])):(t.reheat??0));
 			decoy*=Math.pow(0.5,m.rejected||0);   // diminishing returns, not independent coin flips: a jet dispensing continuously used to stack ten full rolls in front of one round (measured 2026-08-17: twelve 9Ms, seven seduced, none arriving) — a seeker that has resolved this target through four flares has demonstrated the discrimination the M's counter-countermeasures exist for
 			if(Math.random()>=decoy){ m.rejected=(m.rejected||0)+1; }
-			else { m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false; } }   // the seeker is ON the flare now. No re-reference is needed at the swap: the sight-line rate has no memory (seeker.ts), so an aim-point jump cannot read as rotation
+			else { m.blind=1.5; const lure=decoy_lure(t.pos); m.lx=lure.x; m.ly=lure.y; m.lz=lure.z; tracking=false; } }   // the seeker is ON the flare now, below the jet that dropped it. No re-reference is needed at the swap: the sight-line rate has no memory (seeker.ts), so an aim-point jump cannot read as rotation
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
 	// Proximity fuse: independent of the seeker (a broken lock leaves the warhead
 	// live), judged at the closest approach within the step rather than the first
