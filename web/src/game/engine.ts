@@ -1191,7 +1191,7 @@ const AIRCRAFT_MODELS={
 	      // None of these nodes may be matched by a scrubbed-clip track regex, or
 	      // the mixer fights the writes.
 	      { name:"adiPitch",  node:"INSTRUMENT_AttitudeIndicator_Pitch_AN_Pitch_503",        axis:"x", gauge:"pitch" },
-	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", sign:-1, gauge:"bank" },
+	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", gauge:"bank" },
 	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
 	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttle" },
 	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttle" },
@@ -4481,7 +4481,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		yaw_state.rate+=(d/(t-yaw_state.t)-yaw_state.rate)*Math.min(1,(t-yaw_state.t)/0.5); yaw_state.t=t; yaw_state.heading=heading; }
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
-		bank:Math.atan2(ownship.right.y,ownship.up.y),
+		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
 		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds(),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
 		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool

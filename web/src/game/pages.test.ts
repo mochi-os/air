@@ -18,16 +18,27 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][] }
+interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
   const run = new Function(`const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     ${lift('ddi_legend')} ${lift(name)}
-    const text=[], rects=[], arcs=[];
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:()=>true });
-    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs };`)
+    const text=[], rects=[], arcs=[], rotate=[], moves=[];
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>moves.push([mx,my]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:()=>true });
+    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves };`)
   return run() as Drawn
 }
+// The bank gauge every attitude display reads, lifted from the gauges block and
+// evaluated for a jet facing +x rolled right: the right wing (+z) dips.
+function bank_right(degrees: number): number {
+  const expression = /\n\township\.gauges=\{[\s\S]*?\n\t\tbank:(.*?),(?:\s*\/\/[^\n]*)?\n/.exec(source)?.[1] ?? ''
+  if (!expression) throw new Error('the bank gauge not found in engine.ts')
+  const r = degrees * Math.PI / 180
+  const ownship = { right: { x: 0, y: -Math.sin(r), z: Math.cos(r) }, up: { x: 0, y: Math.cos(r), z: Math.sin(r) } }
+  return new Function('ownship', `return ${expression}`)(ownship) as number
+}
+// The pointer's tip: the one path start at that radius from the display centre.
+const tip = (d: Drawn, cx: number, cy: number, radius: number) => d.moves.filter(([mx, my]) => Math.abs(Math.hypot(mx - cx, my - cy) - radius) < 1e-6)
 const texts = (d: Drawn) => d.text.map((t) => t[0])
 const at = (d: Drawn, s: string) => d.text.find((t) => t[0] === s)?.slice(1)
 
@@ -70,6 +81,32 @@ describe('the EADI page', () => {
     expect(press).toEqual([true, 'ins', true, 'stby', false])
     expect(source).toMatch(/adi:\{draw:ddi_adi,press:adi_press\}/)
     expect(source).toMatch(/adi_source=\(st==="runway"\|\|st==="carrier"\)\?"stby":"ins";/)
+  })
+})
+
+// In a right bank the world turns anticlockwise about the jet: the attitude
+// ball and ladder turn that way, a sky pointer at the top swings left, and a
+// pointer at the bottom (the HUD's) swings right.
+describe('the attitude pages in a right bank', () => {
+  const gauges = `pitch:0, bank:${bank_right(30)}, yaw:0, slip:0, altitude:1500, vspeed:0, casKt:250, mach:0.4, fpm:0, heading:0`
+  const turn = -30 * Math.PI / 180 // the canvas y axis runs down, so a negative turn is anticlockwise
+
+  it('turns the EADI ball anticlockwise and swings its sky pointer left', () => {
+    const d = page('ddi_adi', `const ownship={ cas:100, speed:100, gauges:{ ${gauges} } };
+      const alt_radar=false, adi_source="ins", approach_deviation=()=>null;`)
+    expect(d.rotate[0]).toBeCloseTo(turn, 9)
+    const [pointer] = tip(d, 256, 246, 186 - 4)
+    expect(pointer[0]).toBeCloseTo(256 + Math.cos(-Math.PI / 2 + turn) * 182, 6)
+    expect(pointer[0]).toBeLessThan(256)
+  })
+
+  it('turns the HUD repeater ladder anticlockwise and swings its bank pointer right, as the HUD does', () => {
+    const d = page('ddi_hud', `const ownship={ aoa:0, gload:1, gauges:{ ${gauges} } };`)
+    expect(d.rotate[0]).toBeCloseTo(turn, 9)
+    const [pointer] = tip(d, 256, 250, 180 - 4)
+    expect(pointer[0]).toBeCloseTo(256 + Math.cos(Math.PI / 2 + turn) * 176, 6)
+    expect(pointer[0]).toBeGreaterThan(256)
+    expect(pointer[1]).toBeGreaterThan(250)
   })
 })
 
