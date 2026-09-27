@@ -74,3 +74,35 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     expect(conformal).toMatch(/const ladFwd=new THREE\.Vector3\(marked\.x,0,marked\.z\)/)
   })
 })
+
+// NATOPS 2.13.4.8.11 item 13: the centre of the AOA bracket is the optimum
+// approach AOA, and the bracket moves lower with respect to the velocity vector
+// as AOA increases and higher as it decreases - a slow jet sees its marker ride
+// high in the bracket. The section is run against a recording context.
+describe('the AoA bracket rides the velocity vector', () => {
+  const bracket = source.slice(source.indexOf('// ---- E bracket'), source.indexOf('// ---- ILS deviation bars'))
+  const HH = 900, dpp = HH / 45, fpm = [400, 300]
+  const offset = (aoa: number) => {
+    const moves = new Function('aoa', `const fpm=[${fpm}], pa=true, HH=${HH}, hs=1, ownship={ grounded:false, aoa };
+      const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+      const moves=[]; const hctx=new Proxy({}, { get:(t,k)=>k==='moveTo'?(x,y)=>moves.push([x,y]):()=>{}, set:()=>true });
+      ${bracket} return moves;`)(aoa) as [number, number][]
+    expect(moves.length).toBe(2) // the bracket's open end, then its centre tick
+    return moves[1][1] - fpm[1]
+  }
+
+  it('centres on the marker at the optimum approach AOA', () => {
+    expect(bracket).toMatch(/^\/\/ ---- E bracket/)
+    expect(offset(8.1)).toBeCloseTo(0, 9)
+  })
+
+  it('sits lower when slow and higher when fast, a degree of AOA to a degree of the HUD', () => {
+    expect(offset(9.3)).toBeCloseTo(1.2 * dpp, 9) // canvas y runs down: positive is lower
+    expect(offset(6.9)).toBeCloseTo(-1.2 * dpp, 9)
+  })
+
+  it('stops 3.5° off the marker', () => {
+    expect(offset(20)).toBeCloseTo(3.5 * dpp, 9)
+    expect(offset(0)).toBeCloseTo(-3.5 * dpp, 9)
+  })
+})
