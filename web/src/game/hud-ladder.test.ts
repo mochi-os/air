@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as THREE from 'three'
 
 // The pitch ladder rotates about the velocity vector (NATOPS A1-F18AC-NFM-000,
 // I-2-102), so the two are drawn from one flight path and the ladder hangs on
@@ -63,7 +64,7 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     expect(bore(null, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
     expect(bore({}, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
     expect(bore(null, () => null, { fwd: 'nose' }, 640, 380)).toEqual([640, 380])
-    expect(conformal).toMatch(/const limit=p=>\{ const dx=p\[0\]-bore\[0\], dy=p\[1\]-bore\[1\]/)
+    expect(conformal).toMatch(/const centre=proj_dir\([^\n]*\)\|\|bore;/) // the limit's own centre, the optical centre, is found from the nose
   })
 
   it('references the ladder to the marker as drawn, limit included', () => {
@@ -129,5 +130,34 @@ describe('the landing symbology gate', () => {
     expect(gate([{ gear: 1, speed: 60 }])).toEqual([false])
     expect(gate([{ gear: 0.3, speed: 60 }])).toEqual([false]) // in transit
     expect(gate([{ gear: 0, speed: 70 }, { gear: 1, speed: 70 }])).toEqual([true, false]) // a bolter's climb-out
+  })
+})
+
+// NATOPS 2.13.4.8.11 item 10: the velocity vector is limited to an 8° radius
+// circle centred at the HUD optical centre, which item 2 puts 4° below the
+// waterline. The code between the flight path and the cage is run with the
+// nose along -z and an equidistant projection, so a screen pixel is a degree
+// off the nose, y down.
+describe('the velocity vector limit', () => {
+  const from = conformal.indexOf('\n', conformal.indexOf('if(path.lengthSq()>1e-9)')) + 1
+  const section = conformal.slice(from, conformal.indexOf('\tconst cage='))
+  const proj_dir = (d: THREE.Vector3) => [Math.atan2(d.x, -d.z) / (Math.PI / 180), -Math.atan2(d.y, Math.hypot(d.x, d.z)) / (Math.PI / 180)]
+  const ownship = { fwd: new THREE.Vector3(0, 0, -1), up: new THREE.Vector3(0, 1, 0) }
+  const limit = new Function('THREE', 'ownship', 'proj_dir', 'bore', 'ppd', 'D2R', `${section} return limit;`)(
+    THREE, ownship, proj_dir, [0, 0], 1, Math.PI / 180) as (p: number[]) => [number[], boolean]
+
+  it('leaves an on-speed approach and a path 11° below the nose alone', () => {
+    expect(section).toMatch(/const limit=/)
+    expect(limit([0, 8.1])[1]).toBe(false)
+    expect(limit([0, 11])[1]).toBe(false)
+  })
+
+  it('holds a path 5° above the nose, or 8° to the side of it, on the circle 8° from the optical centre', () => {
+    for (const path of [[0, -5], [8, 0], [-8, 0]]) {
+      const [held, limited] = limit(path)
+      expect(limited, String(path)).toBe(true)
+      expect(Math.hypot(held[0], held[1] - 4), String(path)).toBeCloseTo(8, 6)
+    }
+    expect(limit([0, -5])[0][1]).toBeCloseTo(-4, 6) // straight up from the centre, 4° above the nose
   })
 })

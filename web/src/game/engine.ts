@@ -7839,10 +7839,10 @@ function draw_hud(){
 	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
 	if(flight_symbols){
-	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
-	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
-	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
-	// approach. A crawling jet's velocity has no meaningful direction, and
+	// ---- velocity vector, limited to an 8° circle about the HUD optical centre
+	// and flashing when limited (NATOPS 2.13.4.8.11 item 10). The optical centre
+	// is 4° below the waterline (item 2), so an on-speed approach at 8.1° alpha
+	// sits about 4° from it. A crawling jet's velocity has no meaningful direction, and
 	// vel_dir switches from the nose to the velocity at 0.5 m/s, which snapped
 	// the marker and the ladder sideways in a slow taxi turn: the flight path
 	// fades from the nose to the velocity over the first 2 m/s instead.
@@ -7854,7 +7854,8 @@ function draw_hud(){
 	// more than 2° away, limited and flashing like the marker. NAV cages on the
 	// key; the A/A masters are always caged (ED manual: "In A/A it is always
 	// caged"); the landing symbology never is.
-	const limit=p=>{ const dx=p[0]-bore[0], dy=p[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd; return r>rmax?[[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax],true]:[p,false]; };
+	const centre=proj_dir(new THREE.Vector3().copy(ownship.fwd).multiplyScalar(Math.cos(4*D2R)).addScaledVector(ownship.up,-Math.sin(4*D2R)))||bore;   // the optical centre, 4° down the airframe from the nose, so it banks with the jet
+	const limit=p=>{ const dx=p[0]-centre[0], dy=p[1]-centre[1], r=Math.hypot(dx,dy), rmax=8*ppd; return r>rmax?[[centre[0]+dx/r*rmax,centre[1]+dy/r*rmax],true]:[p,false]; };
 	const cage=master==="nav"?caged:!pa;
 	fpm=proj_dir(path);
 	let fpm_limited=false, ghost=null, ghost_limited=false;
