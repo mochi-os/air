@@ -98,3 +98,33 @@ describe('the instrument cluster rides the nose', () => {
     expect(c.rects[0]).toEqual([25, cy - 70])
   })
 })
+
+// NATOPS 2.13.4.8.1 and figure 2-26 sheet 2: REJ 1 removes the airspeed and
+// altitude boxes, and REJ 2 with it - the airspeed, the altitude and the
+// altimeter setting under it stay at every reject level. The section is run
+// against a recording canvas.
+describe('the reject switch keeps the airspeed and altitude', () => {
+  const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
+  const boxes = source.slice(start, end)
+  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false };
+    const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0;
+    let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
+    const text=[], rects=[];
+    const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):k==='strokeRect'?(x,y,w,h)=>rects.push([x,y,w,h]):k==='measureText'?(s)=>({ width:7*String(s).length }):()=>{}, set:()=>true });
+    ${boxes} return { text, rects };`)(declutter) as { text: string[]; rects: number[][] }
+
+  it('boxes them at NORM', () => {
+    expect(start).toBeGreaterThan(0)
+    const d = draw(0)
+    expect(d.rects.length).toBe(2)
+    for (const value of ['194', '3', '281', '29.92']) expect(d.text).toContain(value)
+  })
+
+  it('removes only the boxes at REJ 1 and REJ 2', () => {
+    for (const declutter of [1, 2]) {
+      const d = draw(declutter)
+      expect(d.rects, `REJ ${declutter}`).toEqual([])
+      for (const value of ['194', '3', '281', '29.92']) expect(d.text, `REJ ${declutter}`).toContain(value)
+    }
+  })
+})
