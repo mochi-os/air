@@ -5176,7 +5176,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "brake.parking": parking=!parking; break;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
-	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; break;   // NORM at the top, REJ 2 at the bottom
+	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
 	case "lights": ownship.lights=!ownship.lights; break;
 	case "dump": fuel_dump=!fuel_dump; break;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
@@ -8099,11 +8099,13 @@ function draw_hud(){
 		hctx.moveTo(mx-6,hty+21); hctx.lineTo(mx,hty+14); hctx.lineTo(mx+6,hty+21); hctx.stroke(); }
 	hctx.restore(); }
 
-	// ---- airspeed box (left): boxed KCAS, top at the waterline ----
+	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
+	// remove the airspeed and altitude boxes and keep the values in them (NATOPS
+	// 2.13.4.8.1, figure 2-26 sheet 2) ----
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
-	if(!declutter){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
-		hctx.strokeRect(ax-84,wly,84,30);
-		hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); }
+	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
+	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
+	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084; const lx=cx+4.2*ppdv;
@@ -8111,8 +8113,8 @@ function draw_hud(){
 	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
 		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
 		if(agl<=5000&&!RADAR.sil){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
-	if(!declutter){ hctx.strokeRect(lx,wly,96,30);
-		const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
+	if(!declutter) hctx.strokeRect(lx,wly,96,30);
+	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
 		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
 			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
@@ -8126,7 +8128,7 @@ function draw_hud(){
 		if(baro>=10000) baro_armed=true;
 		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
 		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
-		if(!declutter&&sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
+		if(sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
 			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
 	// and the range, stacked under the altitude box where the jet puts them - RDR

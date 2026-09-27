@@ -201,21 +201,21 @@ const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
-  hook_bypass?: string; flap_select?: number
+  hook_bypass?: string; flap_select?: number; peak_g?: number
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
-  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', `
     const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0;
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1;
     const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g };`)
   return run(action, direction, state) as Pressed
 }
 
@@ -286,6 +286,13 @@ describe('the clickable switches', () => {
     expect(press('gear', 1, { ground: false }).ownship.gearTarget).toBe(1)
     expect(press('gear', -1, { ground: false, gearTarget: 1 }).ownship.gearTarget).toBe(0)
     expect(press('gear', 1, { ground: true }).ownship.gearTarget).toBe(0)
+  })
+
+  it('clear peak g when the reject switch moves into a reject position, and not on the way back to NORM (NATOPS 2.13.4.8.11 item 8)', () => {
+    expect(press('reject', -1, { declutter: 0, peak_g: 6.2 }).peak_g).toBe(1) // NORM to REJ 1
+    expect(press('reject', -1, { declutter: 1, peak_g: 6.2 }).peak_g).toBe(1) // REJ 1 to REJ 2
+    expect(press('reject', 1, { declutter: 1, peak_g: 6.2 }).peak_g).toBe(6.2) // REJ 1 to NORM
+    expect(press('reject', 0, { declutter: 2, peak_g: 6.2 }).peak_g).toBe(6.2) // the key's cycle from REJ 2 wraps to NORM
   })
 
   it('enter the NAV master mode when the gear handle is lowered, and only then (NATOPS 2.13.2)', () => {
