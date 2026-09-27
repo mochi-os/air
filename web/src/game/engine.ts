@@ -7910,10 +7910,11 @@ function draw_hud(){
 		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3*hs,3*hs]); marker(ghost); hctx.setLineDash([]); } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
-	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
+	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
+	// 2.13.4.8.11 item 13), so a slow jet sees its velocity vector high in the bracket.
 	if(fpm && pa && !ownship.grounded){
 		const dpp=HH/45*hs;   // the HUD's own degrees, not the world's: the HUD view's layout scale, carried onto the glass by hs
-		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*dpp,-3.5*dpp,3.5*dpp);
+		const off=THREE.MathUtils.clamp(((ownship.aoa??8.1)-8.1)*dpp,-3.5*dpp,3.5*dpp);
 		const bx=fpm[0]-30*hs, by=fpm[1]+off, half=1.2*dpp;
 		hctx.beginPath(); hctx.moveTo(bx+7*hs,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7*hs,by+half);
 		hctx.moveTo(bx,by); hctx.lineTo(bx+5*hs,by); hctx.stroke(); }   // centre tick marks on-speed
