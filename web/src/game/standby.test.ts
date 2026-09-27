@@ -229,6 +229,15 @@ function face(name: string, ...args: number[]): Drawn {
   return run(args) as Drawn
 }
 const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
+// The bank gauge every attitude display reads, lifted from the gauges block and
+// evaluated for a jet facing +x rolled right: the right wing (+z) dips.
+function bank_right(degrees: number): number {
+  const expression = /\n\township\.gauges=\{[\s\S]*?\n\t\tbank:(.*?),(?:\s*\/\/[^\n]*)?\n/.exec(source)?.[1] ?? ''
+  if (!expression) throw new Error('the bank gauge not found in engine.ts')
+  const r = degrees * Math.PI / 180
+  const ownship = { right: { x: 0, y: -Math.sin(r), z: Math.cos(r) }, up: { x: 0, y: Math.cos(r), z: Math.sin(r) } }
+  return new Function('ownship', `return ${expression}`)(ownship) as number
+}
 
 describe('the standby instrument faces', () => {
   it('turn the airspeed needle to the dial angle the rig uses, over that dial\'s labels', () => {
@@ -258,6 +267,12 @@ describe('the standby instrument faces', () => {
     expect(d.rotate[0]).toBeCloseTo(-bank, 9) // the ball's roll comes first; the bank pointer's rotate follows
     const px = 118 * 0.22 // 10° of pitch
     expect(d.translate.some(([dx, dy]) => dx === 0 && Math.abs(dy - px) < 1e-6)).toBe(true)
+  })
+
+  it('roll the ball anticlockwise in a right bank, the sky pointer with it', () => {
+    const d = face('adi_face', 0, bank_right(30))
+    expect(d.rotate[0]).toBeCloseTo(-30 * Math.PI / 180, 9) // the canvas y axis runs down, so a negative turn is anticlockwise
+    expect(d.rotate[1]).toBeCloseTo(-30 * Math.PI / 180, 9)
   })
 
   it('letter the ball CLIMB on its white half and DIVE on its black half, as FO-5 item 25 draws it', () => {
