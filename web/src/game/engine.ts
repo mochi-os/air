@@ -267,6 +267,21 @@ const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false
 		col=mix(col, vec3(dot(col,vec3(0.333)))*u_ovct, u_ovc*(1.0-smoothstep(0.0,u_ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) — under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze tone) — the real field extends far beyond the 90 km march and its stacked distant clouds read as a hazy band riding the sea line. Horizon-weighted so sky overhead stays blue. LOCKSTEP with the cloud skybg
 		float s=max(dot(d,normalize(u_sun)),0.0); col+=u_sun_col*pow(s,220.0)*1.4; col+=u_sun_col*pow(s,8.0)*0.18; gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
+// The canopy's rear-view mirrors (#99) reflect the sky behind the pilot: an
+// environment map baked from the sky dome whenever the time of day sets it. The
+// dome writes display values, so the bake converts them to the linear light a
+// lit material expects, or the mirror would wash out.
+const mirror_mats=[];
+let mirror_env=null;
+function mirror_bake(){
+	const generator=new THREE.PMREMGenerator(renderer);
+	const bake=new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, uniforms:sky_mat.uniforms, vertexShader:sky_mat.vertexShader,
+		fragmentShader:sky_mat.fragmentShader.replace("gl_FragColor=vec4(col*u_blackout,1.0);","gl_FragColor=vec4(pow(col*u_blackout,vec3(2.2)),1.0);") });
+	const room=new THREE.Scene(); room.add(new THREE.Mesh(new THREE.SphereGeometry(50,32,16),bake));
+	const target=generator.fromScene(room,0,0.1,100);
+	if(mirror_env) mirror_env.dispose(); mirror_env=target;
+	for(const m of mirror_mats){ m.envMap=target.texture; m.needsUpdate=true; }
+	bake.dispose(); generator.dispose(); }
 
 // stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
 // placed by ./sky for the map origin at local midnight on today's date, the hour a full moon
@@ -318,6 +333,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
 		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio;
 		contrail_mat.color.setHex(p.sunCol).lerp(new THREE.Color(0xffffff),0.5).multiplyScalar(Math.pow(ratio,1/2.2)); }   // ice lit by the sun: white at noon, warmed by a low sun, dim at night   // foam is a white surface, lit like the land's white paint; encoded because the sea writes display-referred
+	mirror_bake();   // the mirrors reflect this sky
 }
 // Beam-versus-ambient balance under a cloud layer, applied PER FRAGMENT by the
 // receivers (cloud_shadow_receive) and never to the global lights: a jet marshalling
@@ -1135,7 +1151,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
-		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer))/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page
+		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
@@ -1202,10 +1218,11 @@ const AIRCRAFT_MODELS={
 	      { name:"clockH",    node:"Clock_hourAction_AN_Hour_364", axis:"z", gain:6.2832/12, gauge:"clockH" },
 	      { name:"clockM",    node:"ClockMinutesAction_AN__367",   axis:"z", gain:6.2832/60, gauge:"clockM" },
 	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" },
-	      // right-console gauges: batteries are calibrated ±143° y-axis sweeps; hyd/cabin follow
-	      // the needle family's clock-anchored +z convention with game-plausible drives
+	      // right-console gauges: batteries are calibrated ±143° y-axis sweeps; hyd follows
+	      // the needle family's clock-anchored +z convention with a game-plausible drive. The
+	      // model's CabinPress needle turns on the radar altimeter's dial (FO-5 item 41), whose
+	      // face build_radalt draws, needle and all: it is hidden
 	      { name:"hyd",       node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd" },
-	      { name:"cabin",     node:"INSTRUMENT_Needle_CabinPress_AN_CabinPress_526",   axis:"z", gauge:"cabin" },
 	      { name:"voltE",     node:"INSTRUMENT_Needle_Battery_AN_BatteryE_520",  axis:"y", sign:-1, gauge:"volts" },
 	      { name:"voltU",     node:"INSTRUMENT_Needle_BatteryUAction_AN_BatteryU_523", axis:"y", gauge:"volts" },
 	      // cockpit levers ride their authored clips (single calibrated sweeps), scrubbed from state
@@ -1338,41 +1355,89 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; }); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
-	ownship.group.updateMatrixWorld(true);
+	const g=ownship.group; g.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
-	ownship.group.worldToLocal(p);
-	ownship.group.userData.eye={ x:p.x+0.17, y:p.y+0.17 };   // head origin -> eye offset (y tuned from captures: more world over the glareshield; x moved 7 cm nearer the glass so the canopy bow reads slim, DCS-style, instead of looming); z forced to the centreline by the camera branch
-	const pane=ownship.group.getObjectByName("Object_1042");   // the combining glass: the only small transparent pane centred just forward-above the eye line (identified by geometry — the GLB leaves it anonymous)
+	g.worldToLocal(p);
+	g.userData.eye={ x:p.x+0.17, y:p.y+0.17 };   // head origin -> eye: x forward of the head, where the canopy bow is thinnest for the windshield it frames - further aft thins the band but pulls it in over the windshield and costs the HUD its floor, further forward swells it; y is the fallback until the glass calibrates below; z forced to the centreline by the camera branch
+	const pane=g.getObjectByName("Object_1042");   // the combining glass: the only small transparent pane centred just forward-above the eye line (identified by geometry — the GLB leaves it anonymous)
 	let mesh=null; if(pane) pane.traverse(o=>{ if(!mesh&&o.isMesh&&o.geometry) mesh=o; });
-	if(mesh){ ownship.group.updateMatrixWorld(true);
+	if(mesh){
 		mesh.geometry.computeBoundingBox();   // the node's OWN geometry only — setFromObject would sweep in child meshes and fatten the pane
 		const box=mesh.geometry.boundingBox;
 		const lo=new THREE.Vector3(Infinity,Infinity,Infinity), hi=new THREE.Vector3(-Infinity,-Infinity,-Infinity), c=new THREE.Vector3();
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
-			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
-		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+			c.applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); lo.min(c); hi.max(c); }
+		const glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+		g.userData.glass=glass;
+		// The design eye, from the HUD. The aircraft waterline is 4° up from the
+		// HUD's optical centre and the field is 20° (NATOPS 2.13.4.8.11 item 2),
+		// so it runs from 6° above the waterline to 14° below; the heading scale
+		// rides its top. The modeled pane is shorter than that field and its
+		// lower part is hidden by the HUD housing, so the eye takes the field's
+		// top from the pane's top edge, 6.5° above the waterline, and the
+		// housing sets the floor, near 10.5° below: room for the approach's
+		// velocity vector at 8° with its bracket and needles. The modeled pilot
+		// sits over ten centimetres lower, which put the waterline at the foot
+		// of the glass and the velocity vector, the horizon and the gun cross
+		// under the glareshield in level flight.
+		const eye=g.userData.eye;
+		{ const pos=mesh.geometry.attributes.position, top=new THREE.Vector3(0,-Infinity,0);
+			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k)).applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); if(c.y>top.y) top.copy(c); }
+			eye.y=top.y-(top.x-eye.x)*Math.tan(6.5*D2R); }
+		{ const at=DEV_MODE&&new URLSearchParams(location.search).get("eye"); if(at){ const [ex,ey]=at.split(",").map(Number); if(isFinite(ex)&&isFinite(ey)){ eye.x=ex; eye.y=ey; } } }   // &eye=x,y (dev): try an eye point
 		// Clip to the pane's outline, not its box: the combining glass is an octagon
 		// and a rectangular clip lets symbology float on sky at the sloped corners
 		// (#16). Convex-hull the pane's vertices, pre-clipped at the visible glass
-		// line.
+		// line: the lowest point of the pane the eye sees over the HUD housing,
+		// raycast down the pane's centreline, since the 2D overlay cannot be
+		// occluded by geometry.
+		// What the eye sees of the pane: a ray to a pane point is clear when it
+		// meets the pane before anything opaque - the housing below, the frame
+		// posts at the sides. The floor is the lowest clear point down the
+		// centreline; each side, the last clear point out from the centre along
+		// the waterline's row and the floor's row, whichever is narrower. The
+		// clip outline is the pane's hull cut to that window, since the 2D
+		// overlay cannot be occluded by geometry.
+		const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
+		const from=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0)), toward=new THREE.Vector3();
+		const clear=(y,z)=>{ toward.copy(g.localToWorld(new THREE.Vector3(glass.x,y,z))).sub(from).normalize(); rc.set(from,toward);
+			const hits=rc.intersectObject(g,true).filter(h=>h.distance>0.15&&shown(h.object)&&!h.object.userData.overlay);   // past the pilot's own head, which is still drawn outside the cockpit view
+			const onto=hits.find(h=>h.object===mesh); if(!onto) return null;   // off the pane
+			const blocked=hits.some(h=>h.distance<onto.distance-0.002&&!(((Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}).transparent));
+			return blocked?false:g.worldToLocal(onto.point.clone()); };
+		let floor=hi.y, base=null;
+		for(let y=hi.y-0.004;y>lo.y;y-=0.002){ const at=clear(y,0); if(at===null) continue; if(at===false) break; floor=at.y; base=at; }
+		glass.floor=floor;
+		const angle=(v,x)=>Math.atan2(v,x-eye.x)/D2R;
+		let left=-hi.z, right=hi.z, side=Infinity;   // the window's z edges, and its narrowest half-width in degrees
+		for(const row of [eye.y,floor+0.006]) for(const sign of [-1,1]){ let last=null;
+			for(let z=0;z<hi.z+0.01;z+=0.002){ const at=clear(row,sign*z); if(!at) break; last=at; }
+			if(!last) continue;
+			if(sign<0) left=Math.max(left,last.z); else right=Math.min(right,last.z);
+			side=Math.min(side,angle(Math.abs(last.z),last.x)); }
 		{ const pos=mesh.geometry.attributes.position, pts=[];
 			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k));
-				c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
+				c.applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
 			pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
 			const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
 			const half=(list)=>{ const out=[]; for(const p of list){
 				while(out.length>1&&cross(out[out.length-2],out[out.length-1],p)<=0) out.pop(); out.push(p); } return out; };
 			const lower=half(pts), upper=half(pts.slice().reverse());
-			const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
-			const floor=ownship.group.userData.glass.y-ownship.group.userData.glass.hh*0.42;   // the visible glass line — same raise glass_rect always applied
-			const clipped=[];
-			for(let k=0;k<hull.length;k++){ const a=hull[k], b=hull[(k+1)%hull.length];
-				if(a[1]>=floor) clipped.push(a);
-				if((a[1]>=floor)!==(b[1]>=floor)){ const f=(floor-a[1])/(b[1]-a[1]);
-					clipped.push([a[0]+(b[0]-a[0])*f, floor, a[2]+(b[2]-a[2])*f]); } }
-			if(clipped.length>=3) ownship.group.userData.outline=clipped; } }   // [z, y, x] per hull vertex, group frame
-	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
-	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }   // i18n-format-ok: developer console output, never shown to a user
+			let clipped=lower.slice(0,-1).concat(upper.slice(0,-1));
+			const cut=(poly,axis,bound,above)=>{ const out=[], inside=(p)=>above?p[axis]>=bound:p[axis]<=bound;   // one half-plane of the window
+				for(let k=0;k<poly.length;k++){ const a=poly[k], b=poly[(k+1)%poly.length];
+					if(inside(a)) out.push(a);
+					if(inside(a)!==inside(b)){ const f=(bound-a[axis])/(b[axis]-a[axis]); out.push(a.map((v,i)=>v+(b[i]-v)*f)); } }
+				return out; };
+			clipped=cut(cut(cut(clipped,1,floor,true),0,left,true),0,right,false);
+			if(clipped.length>=3) g.userData.outline=clipped;   // [z, y, x] per hull vertex, group frame
+			// The field the pilot sees through the glass, in degrees from the
+			// waterline: up to the pane's top, down to the housing, and the
+			// narrower side. draw_hud fits the symbology to it.
+			let up=-Infinity; for(const p of clipped) up=Math.max(up,angle(p[1]-eye.y,p[2]));
+			glass.field={ top:up, floor:angle(eye.y-floor,base?base.x:glass.x), side:isFinite(side)?side:angle(glass.hw,glass.x) }; } }
+	try{ build_indexer(g); }catch(e){ build_error=String(e&&e.message||e); }
+	console.warn("cockpit eye", g.userData.eye.x.toFixed(3), g.userData.eye.y.toFixed(3), "glass floor", g.userData.glass&&g.userData.glass.floor.toFixed(3)); }   // i18n-format-ok: developer console output, never shown to a user
 // AoA indexer (#99): the GLB has no indexer lights, so three unlit emissive
 // shapes beside the combining glass stand in (green chevron slow, amber donut
 // on-speed, red chevron fast). Driven from alpha in update_gauges; LAYER_OWN so
@@ -1411,30 +1476,37 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); mount_compass(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); }
 // The standby flight instruments (#32): the model hides its mechanical airspeed,
 // altimeter, vertical speed and attitude parts 8 cm behind opaque black discs
 // painted on the cockpit tub, so, like the radar altimeter, each gets a canvas
-// face proud of its disc, drawn from the gauges. The centres are the hidden
-// needles' pivots and the ball's centre (dev_origin on the rig nodes), the radii
-// the apertures they turn in; the tub's discs sit at x 6.211.
-const STANDBY={ x:6.207, asi:{ y:0.097, z:0.125, r:0.026 }, alt:{ y:0.097, z:0.192, r:0.026 }, vsi:{ y:0.096, z:0.258, r:0.026 }, adi:{ y:0.163, z:0.154, r:0.045 }, clock:{ y:0.150, z:0.279, r:0.045 } };   // the clock's bezel (2.12.7, #33) has nothing behind it: its centre is the tub's disc, measured by click
+// face proud of its disc, drawn from the gauges. The seats are the discs the
+// pilot sees, not the hidden needles' pivots, which sit up to 5 cm off them:
+// each disc's edge fitted as a circle on a head-on luminance map of the bare
+// tub (dev_overlays, dev_screen), the tub at x 6.211. The climb indicator's
+// disc is half behind the lever in front of it, so it takes the row's height,
+// pitch and radius.
+const STANDBY={ x:6.207, asi:{ y:0.082, z:0.132, r:0.031 }, alt:{ y:0.083, z:0.218, r:0.031 }, vsi:{ y:0.083, z:0.304, r:0.031 }, adi:{ y:0.177, z:0.158, r:0.043 } };   // radii a millimetre inside each disc's edge, so the painted rim frames the face
 const STANDBY_C=128, STANDBY_R=118;   // the faces' canvas centre and dial radius
 const ADI_PIXELS=STANDBY_R*0.22/10;   // pixels per degree of pitch on the standby ball: 10° is 0.22 of the radius
+// A mechanical instrument's face: lit by the cockpit like the model's own gauges,
+// with the integral lighting behind it following the INST PNL level (#21) - the
+// displays (DDIs, IFEI, UFC, RWR) are self-lit and stay basic.
+function gauge_material(tex){ const m=new THREE.MeshStandardMaterial({ map:tex, emissiveMap:tex, emissive:new THREE.Color(0xffffff), emissiveIntensity:lighting.instrument, roughness:0.85, metalness:0, side:THREE.DoubleSide });
+	instrument_mats.push(m); return m; }
 function build_standby(g){
 	if(g.userData.standby&&g.userData.standby.asi.mesh.parent) return;
 	const faces={};
-	for(const name of ["asi","alt","vsi","adi","clock"]){ const seat=STANDBY[name];
+	for(const name of ["asi","alt","vsi","adi"]){ const seat=STANDBY[name];
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=256;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), gauge_material(tex));
 		surface_pose(mesh,STANDBY.x,0,seat.y,seat.z); mesh.layers.set(LAYER_OWN); mesh.name=name+"face"; g.add(mesh);
 		faces[name]={ mesh, canvas, tex }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
 	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0);
-	clock_face(faces.clock,gz.clockH||0,gz.clockM||0,gz.clockS||0);
-	for(const k of ["asi","alt","vsi","adi","clock"]) faces[k].tex.needsUpdate=true; }
+	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
 	x.strokeStyle="#e8e8e0"; x.fillStyle="#e8e8e0"; x.lineWidth=2; x.textAlign="center"; x.textBaseline="middle"; return x; }
@@ -1469,38 +1541,36 @@ function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
 		x.font="bold 20px monospace"; face_label(x,a,R-34,label); }
 	x.font="11px monospace"; x.fillText("UP",C-36,C-52); x.fillText("DOWN",C-36,C+52); x.fillText("X1000",C+30,C-8); x.fillText("FT/MIN",C+30,C+8);
 	face_needle(x,-Math.PI/2+angle,R-14,5); }
-// The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder and the fixed
-// bank scale, the ADI page's sign conventions, no ILS carriages
-function adi_face(f,pitch,bank){ const x=face_start(f,"#3a6ea8"), C=STANDBY_C, R=STANDBY_R;
-	x.save(); x.beginPath(); x.arc(C,C,R,0,Math.PI*2); x.clip();
+// The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder, its
+// upper half white and lettered CLIMB, its lower half black and lettered DIVE (FO-5 item 25),
+// seen through a round window in a black mask that carries the fixed bank scale; the ADI
+// page's sign conventions, no ILS carriages
+function adi_face(f,pitch,bank){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
+	const white="#dcdcd4", black="#141514";
+	x.save(); x.beginPath(); x.arc(C,C,W,0,Math.PI*2); x.clip();
 	x.translate(C,C); x.rotate(-bank); x.translate(0,pitch/D2R*ADI_PIXELS);
-	x.fillStyle="#7a5230"; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle="#3a6ea8"; x.fillRect(-3*R,-3*R,6*R,3*R);
-	x.strokeStyle="#f0f0e8"; x.lineWidth=3; x.beginPath(); x.moveTo(-3*R,0); x.lineTo(3*R,0); x.stroke();
-	x.lineWidth=2; x.font="bold 14px monospace"; x.fillStyle="#f0f0e8";
-	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?22:38;
-		x.beginPath(); x.moveTo(-w,y); x.lineTo(w,y); x.stroke(); x.fillText(String(Math.abs(d)),w+16,y); x.fillText(String(Math.abs(d)),-w-16,y); }
+	x.fillStyle=black; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle=white; x.fillRect(-3*R,-3*R,6*R,3*R);
+	x.lineWidth=2; x.font="bold 13px monospace";
+	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?20:34, ink=d>0?black:white;
+		x.strokeStyle=ink; x.fillStyle=ink; x.beginPath(); x.moveTo(-w,y); x.lineTo(w,y); x.stroke(); x.fillText(String(Math.abs(d)),w+14,y); x.fillText(String(Math.abs(d)),-w-14,y); }
+	x.font="bold 15px monospace"; x.fillStyle=black; x.fillText("CLIMB",0,-15*ADI_PIXELS); x.fillStyle=white; x.fillText("DIVE",0,15*ADI_PIXELS);
 	x.restore();
-	x.save(); x.translate(C,C); x.strokeStyle="#f0f0e8"; x.lineWidth=3;
+	x.save(); x.translate(C,C); x.strokeStyle="#e8e8e0"; x.lineWidth=3;
 	for(const d of [-60,-30,-20,-10,0,10,20,30,60]){ const a=d*D2R-Math.PI/2, len=d===0?14:(d%30?8:12);
 		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len)); x.stroke(); }
-	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#f0f0e8"; x.beginPath(); x.moveTo(0,-R+18); x.lineTo(-7,-R+32); x.lineTo(7,-R+32); x.closePath(); x.fill();
+	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#e8e8e0"; x.beginPath(); x.moveTo(0,-W+2); x.lineTo(-7,-W+16); x.lineTo(7,-W+16); x.closePath(); x.fill();
 	x.restore();
 	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
-// The clock (2.12.7): a twelve-hour dial with hour, minute and sweep second hands from the game clock the rig's pedestal clock also reads
-function clock_face(f,hours,minutes,seconds){ const x=face_start(f), R=STANDBY_R;
-	for(let i=0;i<60;i++){ const a=i/60*Math.PI*2-Math.PI/2, major=i%5===0; face_tick(x,a,R,major?R-14:R-7,major?3:1.5);
-		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-30,String(i/5||12)); } }
-	face_needle(x,hours/12*Math.PI*2,R-56,6); face_needle(x,minutes/60*Math.PI*2,R-26,5);
-	x.save(); x.translate(STANDBY_C,STANDBY_C); x.rotate(seconds/60*Math.PI*2); x.strokeStyle="#e0a020"; x.lineWidth=2; x.beginPath(); x.moveTo(0,16); x.lineTo(0,-(R-14)); x.stroke(); x.restore(); }
-// The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26 puts it in the
-// round housing on the right vertical panel where the model seated its standby
-// compass, which mount_compass hangs on the arch. The housing's bezel, measured
-// by panel click (&panelpoint=1), is about 5 cm across on a face at x 6.023.
-const RWR_FACE={ x:6.020, y:0.353, z:0.305, r:0.024 };
+// The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26, the upper
+// right of the standby cluster beside the attitude indicator (25), over the
+// ASI, altimeter and climb indicator (27-29). The seat is the tub's disc there,
+// fitted like the standby faces'. The clock is item 37, the model's rigged dial
+// on the pedestal under the AMPCD.
+const RWR_FACE={ x:6.207, y:0.177, z:0.277, r:0.042 };
 function build_rwr(g){
 	if(g.userData.rwr&&g.userData.rwr.mesh.parent) return;
 	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
 	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RWR_FACE.r,36), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
 	surface_pose(mesh,RWR_FACE.x,0,RWR_FACE.y,RWR_FACE.z); mesh.layers.set(LAYER_OWN); g.add(mesh);
 	g.userData.rwr={ mesh, canvas, tex, last:0, count:0 };
@@ -1508,25 +1578,9 @@ function build_rwr(g){
 function rwr_draw(w){ const x=w.canvas.getContext("2d");
 	x.fillStyle="#0b120d"; x.fillRect(0,0,160,160); x.globalAlpha=1; x.textBaseline="middle";
 	ew_draw(x,80,80,68,11); w.count=RWR.contacts.length; w.tex.needsUpdate=true; }
-// Standby magnetic compass (#2): the model spins its card in a bezel at the top of
-// the right vertical panel, where foldout FO-5 item 26 puts the RWR azimuth
-// indicator; NATOPS 2.12.9 hangs the compass from the right windshield arch, and
-// the model has the housing there - a pendant under the arch box on the canopy
-// frame. Re-seat the card in that housing, reparented so it rides the frame the
-// housing rides, and tilt it to read from below rather than above.
-const COMPASS_SEAT={ x:6.01, y:0.70, z:0.10, scale:0.6, tilt:-20 };   // group frame: hung under the right windshield arch just inboard of the LOCK/SHOOT pendant, placed by panel click (&panelpoint=1) and framed by capture - the arch mesh (Object_622) is the whole frame, both sides, so its bounds cannot place it, and the model has no compass housing to seat into. scale takes the panel-sized card drum down to a hanging compass; tilt (degrees about the lateral axis) turns the authored lean, made for a pilot looking DOWN at the card, toward one looking up. &compass=x,y,z,scale,tilt (dev) overrides for recalibration
-function mount_compass(g){
-	const card=g.getObjectByName("INSTRUMENT_MagneticCompass_518"), housing=g.getObjectByName("Object_622");
-	if(!card||!housing||card.userData.mounted) return;
-	g.updateMatrixWorld(true);
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("compass");
-	const [x,y,z,scale,tilt]=at?at.split(",").map(Number):[COMPASS_SEAT.x,COMPASS_SEAT.y,COMPASS_SEAT.z,COMPASS_SEAT.scale,COMPASS_SEAT.tilt];
-	if(![x,y,z,scale,tilt].every(isFinite)) return;
-	housing.parent.attach(card);   // keeps the world pose across the reparent; the seat, the size and the tilt follow
-	card.position.copy(housing.parent.worldToLocal(g.localToWorld(new THREE.Vector3(x,y,z))));
-	card.scale.multiplyScalar(scale);
-	card.rotateOnWorldAxis(new THREE.Vector3(0,0,1).transformDirection(g.matrixWorld).normalize(),tilt*D2R);
-	card.userData.mounted=true; g.userData.compass={ at:[x,y,z], scale, tilt }; }
+// The standby magnetic compass (NATOPS 2.12.9, FO-5 item 19) is the model's own:
+// the card turns in its housing on the right windshield arch's foot beside the
+// right DDI, where the foldout draws it, driven by the rig's compass entry.
 // legend makes an annunciator lens: the legend painted dark on the face until
 // lit, then in its colour, as the real backlit lenses read. Annunciator text
 // is English by policy. lamp_set drives either kind of lamp - a lens by its
@@ -1536,7 +1590,7 @@ function legend(text,colour,w=0.026,h=0.010){
 		x.fillStyle=on?"#262826":"#141614"; x.fillRect(0,0,160,64);
 		x.fillStyle=on?colour:"#3a3c38"; x.font="bold 24px monospace"; x.textAlign="center"; x.textBaseline="middle";
 		const lines=text.split("\n"); lines.forEach((t,i)=>x.fillText(t,80,32+(i-(lines.length-1)/2)*26));
-		const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; return tex; };
+		const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace; return tex; };
 	const off=make(false), on=make(true);
 	const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:off, side:THREE.DoubleSide, toneMapped:false, depthWrite:false }));
 	m.userData.lens={ off, on }; m.userData.on=false; return m; }
@@ -1626,8 +1680,8 @@ function build_lamps(g){
 	g.userData.emergency=emergency;
 	// The LOCK and SHOOT lights (FO-5 item 1, NATOPS 2.6.2.2, #14) are the pendant under the right
 	// windshield arch, LOCK over SHOOT painted on its aft face, which panel clicks put at x 6.04,
-	// y 0.715 to 0.726, z 0.143 to 0.170, just outboard of the standby compass (COMPASS_SEAT); the painted
-	// window reads a centimetre above those hits, so the lenses sit at 0.740 and 0.729.
+	// y 0.715 to 0.726, z 0.143 to 0.170; the painted window reads a centimetre above those hits,
+	// so the lenses sit at 0.740 and 0.729.
 	const PENDANT={ x:6.033, y:0.740, z:0.160, pitch:0.011 };
 	const bow=new THREE.Group();
 	lamps.lock=legend("LOCK","#2fd24a",0.026,0.010); lamps.lock.position.set(0,0,0);
@@ -1672,7 +1726,7 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index, RADAR.sil); } }
+		radalt_draw(r, (ownship.pos.y-(surface>-1e8?Math.max(surface,0):0))*3.28084, law_index, RADAR.sil); } }   // feet, as the dial, the index and the 5,000 ft limit are, and as the aural reads it
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
 	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } }
 	const sb=ownship.group.userData.standby;   // the standby flight instruments (#32): needles want ten frames a second
@@ -1723,21 +1777,22 @@ function surface_pose(mesh,x,tilt,cy,cz){
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
 	mesh.position.set(x,cy,cz).addScaledVector(N,0.003);
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
+// The radar altimeter (NATOPS 2.12.5, FO-5 item 41) is the dial on the right
+// vertical panel above the hydraulic pressure indicator (47): the model paints
+// its face - the x100 FT scale, the OFF flag, the BIT and low-altitude lights -
+// on a panel turned up and inboard toward the pilot. The seat is that dial's
+// centre, face normal and up, from a head-on luminance map in the panel's own
+// plane (dev_pick, dev_screen).
+const RADALT_SEAT={ centre:[6.222,0.010,0.285], normal:[-0.762,0.503,-0.408], up:[0.615,0.761,-0.209], r:0.0185 };
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
-	// The GLB has no radar-altimeter face node; the dial position was measured by
-	// a panel click (&panelpoint=1). &radalt=y,z (dev) overrides for
-	// recalibration.
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("radalt");
-	const [y,z]=at?at.split(",").map(Number):[0.535,0.011];
-	if(!isFinite(y)||!isFinite(z)) return;
-	const box={ lo:new THREE.Vector3(6.20,y-0.04,z-0.04), hi:new THREE.Vector3(6.25,y+0.04,z+0.04) };
 	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(0.023,36),   // sized to the right cluster's small-gauge aperture (~6 cm pitch), not the imagined big face the bogus anchor implied
-		new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
-	const fit=surface_fit(g,box);
-	surface_pose(mesh,fit?fit.x:box.lo.x,fit?fit.tilt:0,(box.lo.y+box.hi.y)/2,(box.lo.z+box.hi.z)/2);
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RADALT_SEAT.r,36), gauge_material(tex));
+	const N=new THREE.Vector3(...RADALT_SEAT.normal).normalize(), Y=new THREE.Vector3(...RADALT_SEAT.up).normalize(), X=new THREE.Vector3().crossVectors(Y,N).normalize();
+	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
+	mesh.position.set(...RADALT_SEAT.centre).addScaledVector(N,0.001);   // over the painted dial, under its cover glass
+	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
 	radalt_draw(g.userData.radalt, 1e9, law_index, RADAR.sil); }
@@ -1765,22 +1820,27 @@ function radalt_draw(r, agl, index, silent){   // index: the low-altitude settin
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
 	r.index=index; r.lamp=lamp; r.off=off;   // what the face shows, for dev_probe
 	r.tex.needsUpdate=true; }
-// DDI/AMPCD screens (#99): the three screen meshes exist in the GLB but are
-// bare dark glass; each gets a canvas quad proud of its pane, drawn by the
-// shared page renderers below. left/right are the monochrome DDIs, center the
-// colour-capable AMPCD.
+// DDI/AMPCD screens (#99): each display gets a canvas quad on the dark screen
+// the pilot sees, drawn by the shared page renderers below. left/right are the
+// monochrome DDIs, center the colour-capable AMPCD. The visible screens are
+// painted on the cockpit shell's panel face (x 6.163); the GLB's screen plates
+// (Object_1045/1048/1051) sit 8 cm behind it, hidden, and are offset from the
+// painted apertures, so a quad sized and centred on a plate's box landed a
+// quarter too small and 2-3 cm off its bezel. DDI_FACE holds the painted
+// apertures, measured by thresholding a capture of the bare panel and picking
+// the edges into the group frame (dev_overlays, dev_pick).
+const DDI_FACE={ left:{ y:[0.295,0.441], z:[-0.293,-0.137] }, right:{ y:[0.295,0.442], z:[0.137,0.294] }, center:{ y:[0.053,0.191], z:[-0.072,0.072] } };
 function build_screens(g){
 	if(g.userData.screens&&g.userData.screens.every(sc=>sc.mesh.parent)) return;
-	const spec=[ ["Object_1045","left"], ["Object_1048","right"], ["Object_1051","center"] ];
 	const list=[];
-	for(const [name,display] of spec){ const node=g.getObjectByName(name); if(!node) continue;
-		const box=node_box(g,node); if(!box) continue;
+	for(const display of ["left","right","center"]){ const face=DDI_FACE[display];
+		const box={ lo:new THREE.Vector3(6.16,face.y[0],face.z[0]), hi:new THREE.Vector3(6.2,face.y[1],face.z[1]) };
 		const fit=surface_fit(g,box);
 		const tilt=fit?fit.tilt:0;
-		const cy=(box.lo.y+box.hi.y)/2+0.002, cz=(box.lo.z+box.hi.z)/2-0.002;   // the recess reads a hair up-left of the plate box in grid captures
-		const w=(box.hi.z-box.lo.z)*0.92, h=(box.hi.y-box.lo.y)*0.92/Math.cos(tilt);
+		const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2;
+		const w=(box.hi.z-box.lo.z)*0.97, h=(box.hi.y-box.lo.y)*0.97/Math.cos(tilt);   // a hair inside the aperture, whose corners are rounded
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;   // the default filter would REGENERATE mipmaps on every upload
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;   // the default filter would REGENERATE mipmaps on every upload
 		const flat=DEV_MODE&&new URLSearchParams(location.search).get("ddiflat");   // &ddiflat=1: untextured magenta quads — separates a mesh-render problem from a texture problem
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
 			flat?new THREE.MeshBasicMaterial({ color:0xff00ff, side:THREE.DoubleSide })
@@ -2296,11 +2356,16 @@ function fuel_press(pb){
 	if(pb===3){ bingo_set(fuel_state.bingo-100); return true; }
 	return false; }
 // The IFEI (NATOPS 2.1.1.7.5, 2.2.10.1, 2.12.8): the C's LCD block under the
-// left DDI, a canvas quad over the face of the model's A/B drum unit (hidden by
-// spec.hide), drawn from the face ifei.ts computes. fuel_state owns BINGO; the
-// rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives here.
+// left DDI, drawn from the face ifei.ts computes. The cockpit shell paints the
+// unit: the engine window on the left, the six pushbuttons down the middle, the
+// fuel window and the time window on the right (FO-5 item 22), with its legends
+// above them. A transparent canvas quad over the unit's face lights the three
+// windows and leaves the painted buttons and legends showing, as the UFC's does.
+// The windows are self-lit: white digits in the DAY mode, green in NITE (the
+// brightness knob works only in NITE and NVG, 2.6.2.6). fuel_state owns BINGO;
+// the rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives
+// here.
 let ifei_state=ifei_fresh(fuel_state.bingo), ifei_dirty=true;
-const IFEI_W=512, IFEI_H=224, IFEI_BUTTON_X=[300,372], IFEI_BUTTON_Y=6, IFEI_BUTTON_PITCH=36;   // canvas layout: engine block left, the six buttons down the middle, fuel and time right
 function ifei_view(){ return { ...ifei_state, bingo:fuel_state.bingo }; }
 function tanks_fitted(){ const lo=ownship.loadout||{};   // which external stations carry a tank: 3 and 7 the wings, 5 the centreline
 	const has=(station)=>{ const slot=lo[String(station)]; return !!slot&&stores_entries(station,slot).some(n=>n.startsWith("tank")); };
@@ -2309,47 +2374,56 @@ function ifei_reading(){ const gz=ownship.gauges||{};
 	return { rpm:[gz.rpmL??NaN,gz.rpmR??NaN], egt:[gz.egtL??NaN,gz.egtR??NaN], flow:[gz.flowL??NaN,gz.flowR??NaN], noz:[gz.nozL??NaN,gz.nozR??NaN], oil:[gz.oilL??NaN,gz.oilR??NaN],
 		internal:gz.fuelRaw??NaN, external:gz.externalRaw??0, tanks:tanks_fitted() }; }
 function ifei_current(){ return ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }
-const IFEI_FACE={ y:0.208, z:-0.189, w:0.122 };   // the modeled unit's face, group frame, measured by panel click (&panelpoint=1) on its legend row and window edges: the drum nodes behind it sit 8 cm deep and off their windows, so their boxes mislocate the face. &ifei=y,z,w (dev) overrides for recalibration
+// The unit's face and windows in the group frame, on the panel face at x 6.211:
+// measured by thresholding captures of the bare panel, the stick hidden, and
+// picking each window's edges (dev_overlays, dev_hide, dev_pick). The buttons
+// are the painted legends' centres.
+const IFEI_FACE={ y:[0.088,0.218], z:[-0.314,-0.126] };
+const IFEI_WINDOWS={ engine:{ y:[0.094,0.212], z:[-0.309,-0.223] }, fuel:{ y:[0.168,0.210], z:[-0.186,-0.131] }, time:{ y:[0.097,0.164], z:[-0.185,-0.130] } };
+const IFEI_BUTTONS={ mode:0.200, qty:0.181, up:0.163, down:0.142, zone:0.121, et:0.102 }, IFEI_BUTTON_Z=-0.205, IFEI_RADIUS=0.009;   // y of each, one column
+const IFEI_SCALE=3600;   // canvas pixels per metre of face
 function build_ifei(g){
 	if(g.userData.ifei&&g.userData.ifei.mesh.parent===g) return;
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("ifei");
-	const [y,z,w]=at?at.split(",").map(Number):[IFEI_FACE.y,IFEI_FACE.z,IFEI_FACE.w];
-	if(!isFinite(y)||!isFinite(z)||!isFinite(w)) return;
-	const h=w*IFEI_H/IFEI_W;   // the LCD's own aspect
-	const box={ lo:new THREE.Vector3(6.20,y-h/2,z-w/2), hi:new THREE.Vector3(6.25,y+h/2,z+w/2) };   // the face reads at x≈6.21; the fit finds its exact depth and lean through the cover, as the radalt's does
+	const w=IFEI_FACE.z[1]-IFEI_FACE.z[0], h=IFEI_FACE.y[1]-IFEI_FACE.y[0], y=(IFEI_FACE.y[0]+IFEI_FACE.y[1])/2, z=(IFEI_FACE.z[0]+IFEI_FACE.z[1])/2;
+	const box={ lo:new THREE.Vector3(6.20,IFEI_FACE.y[0],IFEI_FACE.z[0]), hi:new THREE.Vector3(6.25,IFEI_FACE.y[1],IFEI_FACE.z[1]) };   // the fit finds the face's exact depth and lean
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
-	const canvas=document.createElement("canvas"); canvas.width=IFEI_W; canvas.height=IFEI_H;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+	const canvas=document.createElement("canvas"); canvas.width=Math.round(w*IFEI_SCALE); canvas.height=Math.round(h*IFEI_SCALE);
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted buttons and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.211,tilt,y,z);
 	g.add(mesh);
 	g.userData.ifei={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
 	ifei_dirty=true; ifei_update(true); }
-function ifei_button_at(uv){ const px=uv.x*IFEI_W, py=(1-uv.y)*IFEI_H;   // canvas pixel under a click -> the pushbutton, or null
-	if(px<IFEI_BUTTON_X[0]||px>IFEI_BUTTON_X[1]) return null;
-	const i=Math.floor((py-IFEI_BUTTON_Y)/IFEI_BUTTON_PITCH); return ifei_buttons[i]||null; }
+function ifei_button_at(point){ const p=ownship.group.worldToLocal(point.clone());   // the painted pushbutton nearest a click on the unit, or null
+	let best=null, bd=IFEI_RADIUS*IFEI_RADIUS;
+	for(const b of ifei_buttons){ const d=(IFEI_BUTTONS[b]-p.y)**2+(IFEI_BUTTON_Z-p.z)**2; if(d<bd){ bd=d; best=b; } }
+	return best; }
 function ifei_click(button,hold){
 	const next=ifei_press(ifei_view(),button,performance.now()/1000,hold||0);
 	if(next.bingo!==fuel_state.bingo) bingo_set(next.bingo);
 	ifei_state={ ...next, bingo:fuel_state.bingo }; ifei_dirty=true; ifei_update(true); }
 function ifei_update(stale){ const u=ownship.group.userData.ifei; if(!u||!(ifei_dirty||stale)) return; ifei_dirty=false;
-	const x=u.canvas.getContext("2d"), f=ifei_current();
-	x.fillStyle="#b9c2b0"; x.fillRect(0,0,IFEI_W,IFEI_H);   // the LCD's pale face; legends and digits are the dark segments
-	x.fillStyle="#0e120e"; x.textBaseline="middle";
-	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("L",70,16); x.fillText("ENGINE",150,16); x.fillText("R",230,16);
-	f.engine.forEach((row,i)=>{ const y=48+i*36;
-		x.font="bold 14px monospace"; x.textAlign="center"; x.fillText(row.label,150,y);
-		x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(row.left,118,y); x.textAlign="left"; x.fillText(row.right,182,y); });
-	ifei_buttons.forEach((b,i)=>{ const y=IFEI_BUTTON_Y+i*IFEI_BUTTON_PITCH;
-		x.fillStyle="#2a2d2a"; x.fillRect(IFEI_BUTTON_X[0]+2,y,IFEI_BUTTON_X[1]-IFEI_BUTTON_X[0]-4,30);
-		x.fillStyle="#e8e8e0"; x.font="bold 13px monospace"; x.textAlign="center"; x.fillText(b==="up"?"▲":b==="down"?"▼":b.toUpperCase(),(IFEI_BUTTON_X[0]+IFEI_BUTTON_X[1])/2,y+15); });
-	x.fillStyle="#0e120e"; x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("FUEL",446,16);
-	const counter=(c,y)=>{ x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(c.value,470,y);
-		x.font="bold 13px monospace"; if(c.legend.length>2){ x.textAlign="left"; x.fillText(c.legend,384,y+17); } else { x.textAlign="left"; x.fillText(c.legend,476,y); } };   // T / I / FL... ride beside the counter; BINGO reads beneath its value, as the real window labels it
-	counter(f.fuel.upper,44); counter(f.fuel.middle,76); counter(f.fuel.lower,108);
-	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("TIME",446,150);
-	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.clock,470,176); if(f.zulu){ x.font="bold 13px monospace"; x.textAlign="left"; x.fillText("Z",476,176); }
-	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.elapsed,470,206);
+	const x=u.canvas.getContext("2d"), f=ifei_current(), W=u.canvas.width, H=u.canvas.height;
+	const rect=(win)=>({ l:(win.z[0]-IFEI_FACE.z[0])*IFEI_SCALE, t:(IFEI_FACE.y[1]-win.y[1])*IFEI_SCALE, w:(win.z[1]-win.z[0])*IFEI_SCALE, h:(win.y[1]-win.y[0])*IFEI_SCALE });
+	const lit=lighting.mode==="nite"?"#5cf08a":"#eef2ee", dim=lighting.mode==="nite"?"#3fae62":"#aab2ac";   // DAY white, NITE green (2.6.2.6)
+	const face=(r)=>{ const k=Math.min(r.w,r.h)*0.08; x.fillStyle="#040605"; x.beginPath(); x.roundRect(r.l,r.t,r.w,r.h,k); x.fill(); };
+	const digits=(size)=>"bold "+Math.round(size)+"px 'Hornet Display', monospace";   // i18n-format-ok: a CSS font size
+	x.clearRect(0,0,W,H); x.textBaseline="middle";
+	{ const r=rect(IFEI_WINDOWS.engine); face(r);   // five rows: left value, the parameter in the middle, right value
+		const row=r.h/5.4, big=row*0.62;
+		f.engine.forEach((e,i)=>{ const cy=r.t+row*(0.7+i);
+			x.fillStyle=dim; x.font=digits(big*0.46); x.textAlign="center"; x.fillText(e.label,r.l+r.w/2,cy);
+			x.fillStyle=lit; x.font=digits(big); x.textAlign="right"; x.fillText(e.left,r.l+r.w*0.40,cy); x.textAlign="left"; x.fillText(e.right,r.l+r.w*0.60,cy); }); }
+	{ const r=rect(IFEI_WINDOWS.fuel); face(r);   // three counters: total (T), internal (I) and BINGO, the legends beside them
+		const row=r.h/3.2, big=row*0.72;
+		[f.fuel.upper,f.fuel.middle,f.fuel.lower].forEach((c,i)=>{ const cy=r.t+row*(0.6+i);
+			x.fillStyle=lit; x.font=digits(big); x.textAlign="right"; x.fillText(c.value,r.l+r.w*0.80,cy);
+			x.fillStyle=dim; x.font=digits(big*0.5); x.textAlign="left"; x.fillText(c.legend,r.l+r.w*(c.legend.length>2?0.03:0.84),c.legend.length>2?cy+big*0.62:cy); }); }
+	{ const r=rect(IFEI_WINDOWS.time); face(r);   // the clock (Z when zulu) over elapsed time
+		const big=r.h*0.22;
+		x.fillStyle=lit; x.font=digits(big); x.textAlign="right";
+		x.fillText(f.clock,r.l+r.w*0.86,r.t+r.h*0.34); x.fillText(f.elapsed,r.l+r.w*0.86,r.t+r.h*0.72);
+		if(f.zulu){ x.fillStyle=dim; x.font=digits(big*0.5); x.textAlign="left"; x.fillText("Z",r.l+r.w*0.88,r.t+r.h*0.34); } }
 	u.tex.needsUpdate=true; }
 // The arrows scroll while held (a second's hold, then 100 lb every 150 ms,
 // NATOPS 2.2.10.1); ET needs the hold length to tell a reset from a press.
@@ -2357,8 +2431,8 @@ let ifei_hold=null;
 function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 	const u=ownship.group.userData.ifei; if(!u) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
-	const hit=_click_ray.intersectObject(u.mesh,false)[0]; if(!hit||!hit.uv) return;
-	const button=ifei_button_at(hit.uv); if(button!=="up"&&button!=="down") return;
+	const hit=_click_ray.intersectObject(u.mesh,false)[0]; if(!hit) return;
+	const button=ifei_button_at(hit.point); if(button!=="up"&&button!=="down") return;
 	const hold={ button, fired:false, interval:null, timeout:null };
 	hold.timeout=setTimeout(()=>{ hold.interval=setInterval(()=>{ hold.fired=true; ifei_click(button,0); },150); },1000);
 	ifei_hold=hold; }
@@ -2433,7 +2507,7 @@ function build_ufc(g){
 	const box={ lo:new THREE.Vector3(6.12,y-h/2,z-w/2), hi:new THREE.Vector3(6.16,y+h/2,z+w/2) };   // the face reads at x≈6.13-6.14 with a lean of a few degrees; the fit finds both
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
 	const canvas=document.createElement("canvas"); canvas.width=UFC_W; canvas.height=UFC_H;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
 	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.138,tilt,y,z);
 	g.add(mesh);
@@ -2456,6 +2530,11 @@ function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, armed:law_armed }; };   // dev: press a UFC pushbutton headless and read the windows
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
+if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
+	rc.setFromCamera(new THREE.Vector2(px/HW*2-1,-(py/HH)*2+1),cockpit_cam); ownship.group.updateMatrixWorld(true);
+	return rc.intersectObject(ownship.group,true).filter(h=>all||shown(h.object)).slice(0,8).map(h=>{ const m=(Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}; const p=ownship.group.worldToLocal(h.point.clone());
+		return { at:p.toArray().map(n=>+n.toFixed(3)), node:h.object.name, parent:h.object.parent&&h.object.parent.name, material:m.name, type:m.type, transparent:m.transparent, opacity:m.opacity, depthWrite:m.depthWrite, map:!!m.map, emissive:m.emissive&&m.emissive.getHexString(), colour:m.color&&m.color.getHexString(), metal:m.metalness, rough:m.roughness, shown:shown(h.object), overlay:!!h.object.userData.overlay }; }); };   // i18n-format-ok: dev readout
+if(DEV_MODE) (globalThis as any).dev_hide=function(name,hidden){ const o=ownship.group.getObjectByName(name); if(!o) return false; o.visible=!hidden; return true; };   // dev: hide a model node (the stick, say) to measure what it covers
 if(DEV_MODE) (globalThis as any).dev_overlays=function(on){ let n=0; ownship.group.traverse(o=>{ if(o.userData&&o.userData.overlay){ o.visible=!!on; n++; } }); return n; };   // dev: hide or show every canvas face laid over the model, to see the modeled surface beneath
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
 	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
@@ -2851,6 +2930,7 @@ async function init_external_model(kind){
 				}
 				proto.traverse(o=>{ if(o.isMesh&&o.material){ const list=Array.isArray(o.material)?o.material:[o.material]; list.forEach((mm,ix)=>{
 					if(/^EMISSIVE_LIGHTS$/.test(mm.name||"")) instrument_mats.push(mm);   // the main panel's own emissive placards follow the INST PNL knob too (#21)
+					if(mm.name==="Mirrors"){ const glass=mm.clone(); glass.metalness=1; glass.roughness=0.05; glass.color=new THREE.Color(0xd4d8dc); glass.envMap=mirror_env&&mirror_env.texture; mirror_mats.push(glass); if(Array.isArray(o.material)) o.material[ix]=glass; else o.material=glass; }   // the canopy bow's side mirrors: matte white plastic in the model, silvered glass here
 					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
@@ -4416,7 +4496,6 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
-		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
 		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
 		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
@@ -4442,6 +4521,7 @@ const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
+const PIT_REST=-8*D2R;   // the cockpit view's resting head pitch: from the design eye the waterline runs through the upper HUD, and a level gaze leaves the displays half under the frame; a pilot's rest is a few degrees down, with the HUD high and the DDIs whole. head_el is the look relative to it
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
 /* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
 block, the import at the top, the head_apply/head_begin/head_close call sites,
@@ -5044,7 +5124,7 @@ function pit_click(e){
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
-		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
+		const button=on&&ifei_button_at(on.point); if(button){ ifei_click(button,(performance.now()-press_at)/1000); return; } }   // a click elsewhere on the unit falls through to the panel behind it
 	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
 		const p=h&&ownship.group.worldToLocal(h.point.clone()), button=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null;
 		if(button){ ufc_press(button); return; } }
@@ -6115,8 +6195,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
-		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
-		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi","clock"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
+		compass:(()=>{ const card=ownship.group.getObjectByName("INSTRUMENT_MagneticCompass_518"); if(!card) return null; const p=new THREE.Vector3(); card.getWorldPosition(p); ownship.group.worldToLocal(p); return { at:p.toArray().map(n=>+n.toFixed(3)) }; })(),   // the standby compass card in the model's housing (FO-5 item 19), group frame (i18n-format-ok: dev readout)
+		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
 		rwr:u.rwr?{ at:u.rwr.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.rwr.mesh.layers.mask, count:u.rwr.count }:null,   // i18n-format-ok: dev readout — the azimuth indicator's seat (#28), its layer and the contacts it last drew
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
@@ -6141,7 +6221,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
 			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi","clock"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
+		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
 			.filter(([,o])=>o).map(([name,o])=>({ name, ...probe(o) }));   // every face and lamp the pit builds (#25): the probe wants each on the ownship layer, visible and in the scene
 		return { sweep, radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -7324,7 +7404,7 @@ function update_camera(dt){
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
-			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br)),-1.047,1.396);
+			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br))-(cfg.view==="cockpit"?PIT_REST:0),-1.047,1.396);   // head_el is taken from the view's rest
 			const k=1-Math.exp(-dt*9), R=dt*7;   // ease constant ~0.11 s, rate cap ~400°/s
 			head_az+=THREE.MathUtils.clamp((azT-head_az)*k,-R,R);
 			head_el+=THREE.MathUtils.clamp((elT-head_el)*k,-R,R); } }
@@ -7362,7 +7442,7 @@ function update_camera(dt){
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
 		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
-		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el+PIT_REST)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
 		}
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
 		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
@@ -7668,6 +7748,15 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
+// The HUD's scale on the glass in the cockpit view, in screen pixels per pixel of
+// the HUD view's layout (whose pixels per degree are HH/45): the true angular
+// size, collimated like the real HUD's, unless the modeled glass is too small
+// for the layout, when every symbol shrinks evenly about the waterline datum.
+// The field is the glass's at the design eye, so a head turn does not rescale.
+function hud_fit(){ const glass=ownship.group.userData.glass, field=glass&&glass.field;
+	const ppd=HH/camera.fov, ppdv=HH/45, k=ppd/ppdv; if(!field) return k;
+	const up=Math.max(ppdv,172-2.75*ppdv), down=12.6*ppdv+8, half=4.2*ppdv+112;   // the layout's reach from the waterline datum: the A/A heading labels above, the NAV weapon word below, the altitude box's R suffix to the side
+	return Math.min(k,0.97*field.top*ppd/up,0.97*field.floor*ppd/down,0.97*field.side*ppd/half); }
 function draw_hud(){
 	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
@@ -7683,6 +7772,7 @@ function draw_hud(){
 	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
 	const cx=HW/2, cy=HH/2;
 	const glass=(cfg.view==="cockpit")?glass_rect():null;   // #99: flight symbology binds to the combining glass in cockpit view
+	const hs=glass?hud_fit():1;   // the symbol scale: the HUD view's pixel sizes, carried onto the glass at the angle they subtend there
 	// The combining glass is bolted to the airframe: in HUD view the symbology
 	// fades as the head leaves boresight and is gone by ~25° off, about a real
 	// HUD's field of view. Cockpit view gets this from the glass rectangle.
@@ -7782,51 +7872,51 @@ function draw_hud(){
 		if(DEV_MODE){ hud_ladder.axis=[]; for(let q=-60;q<=60;q+=0.5){ const P=proj_dir(dir_at(ladFwd,rightH,0,q*D2R)); if(P) hud_ladder.axis.push(P); } }   // dev: the ladder's centre line on screen, so a probe can check the marker sits on it
 		for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
 			if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
-				hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7,0,Math.PI*2); hctx.stroke();
-				if(p<0){ hctx.beginPath(); hctx.moveTo(Z[0]-5,Z[1]-5); hctx.lineTo(Z[0]+5,Z[1]+5); hctx.moveTo(Z[0]+5,Z[1]-5); hctx.lineTo(Z[0]-5,Z[1]+5); hctx.stroke(); }
+				hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7*hs,0,Math.PI*2); hctx.stroke();
+				if(p<0){ const q=5*hs; hctx.beginPath(); hctx.moveTo(Z[0]-q,Z[1]-q); hctx.lineTo(Z[0]+q,Z[1]+q); hctx.moveTo(Z[0]+q,Z[1]-q); hctx.lineTo(Z[0]-q,Z[1]+q); hctx.stroke(); }
 				continue; }
 			const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
 			const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
 			const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
 			if(p===0) hud_ladder.horizon=[midx,midy];
 			const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
-			const gap=p===0?30:22;
+			const gap=(p===0?30:22)*hs;
 			hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
-			hctx.setLineDash(p<0?[7,6]:[]);
+			hctx.setLineDash(p<0?[7*hs,6*hs]:[]);
 			const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
-			const tick=p===0?0:(p>0?9:-9);                     // outer end-ticks point toward the horizon
+			const tick=p===0?0:(p>0?9:-9)*hs;                  // outer end-ticks point toward the horizon
 			for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
 				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); if(tick) hctx.lineTo(x1,y1+tick); hctx.stroke(); }
-			if(p!==0){ hctx.setLineDash([]); hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance
+			if(p!==0){ hctx.setLineDash([]); hctx.font=(11*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance (i18n-format-ok: a CSS font size)
 				for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
-					hctx.fillText(String(Math.abs(p)),x1+half*14,y1+(p>0?tick*0.6:tick*0.6)); } }
+					hctx.fillText(String(Math.abs(p)),x1+half*14*hs,y1+(p>0?tick*0.6:tick*0.6)); } }
 			hctx.restore(); } }
 
 	// ---- boresight gun cross: A/A master modes only (the NAV HUD carries none) ----
 	if(master!=="nav"&&!pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-12,bore[1]); hctx.lineTo(bore[0]-4,bore[1]); hctx.moveTo(bore[0]+4,bore[1]); hctx.lineTo(bore[0]+12,bore[1]);
-		hctx.moveTo(bore[0],bore[1]-12); hctx.lineTo(bore[0],bore[1]-4); hctx.stroke(); }
+		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
+		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
 
 	// ---- waterline symbol (landing configuration) ----
 	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-16,bore[1]); hctx.lineTo(bore[0]-6,bore[1]); hctx.lineTo(bore[0],bore[1]+7); hctx.lineTo(bore[0]+6,bore[1]); hctx.lineTo(bore[0]+16,bore[1]); hctx.stroke(); }
+		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-6*hs,bore[1]); hctx.lineTo(bore[0],bore[1]+7*hs); hctx.lineTo(bore[0]+6*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
 
 	// ---- the velocity vector, placed above with the ladder that hangs on it ----
 	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost;
-		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
-			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
+		const marker=(m)=>{ hctx.beginPath(); hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
+			hctx.moveTo(m[0]-6*hs,m[1]); hctx.lineTo(m[0]-14*hs,m[1]); hctx.moveTo(m[0]+6*hs,m[1]); hctx.lineTo(m[0]+14*hs,m[1]); hctx.moveTo(m[0],m[1]-6*hs); hctx.lineTo(m[0],m[1]-12*hs); hctx.stroke(); };
+		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
 		// The ghost, dashed so it cannot be taken for the caged marker it stands beside.
-		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3,3]); hctx.beginPath(); hctx.arc(ghost[0],ghost[1],6,0,Math.PI*2);
-			hctx.moveTo(ghost[0]-6,ghost[1]); hctx.lineTo(ghost[0]-14,ghost[1]); hctx.moveTo(ghost[0]+6,ghost[1]); hctx.lineTo(ghost[0]+14,ghost[1]); hctx.moveTo(ghost[0],ghost[1]-6); hctx.lineTo(ghost[0],ghost[1]-12); hctx.stroke(); hctx.setLineDash([]); } }
+		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3*hs,3*hs]); marker(ghost); hctx.setLineDash([]); } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
 	if(fpm && pa && !ownship.grounded){
-		const dpp=ppd/(view_zoom||1);   // zoom-independent degrees->px, tracking the view's base field
+		const dpp=HH/45*hs;   // the HUD's own degrees, not the world's: the HUD view's layout scale, carried onto the glass by hs
 		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*dpp,-3.5*dpp,3.5*dpp);
-		const bx=fpm[0]-30, by=fpm[1]+off, half=1.2*dpp;
-		hctx.beginPath(); hctx.moveTo(bx+7,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7,by+half);
-		hctx.moveTo(bx,by); hctx.lineTo(bx+5,by); hctx.stroke(); }   // centre tick marks on-speed
+		const bx=fpm[0]-30*hs, by=fpm[1]+off, half=1.2*dpp;
+		hctx.beginPath(); hctx.moveTo(bx+7*hs,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7*hs,by+half);
+		hctx.moveTo(bx,by); hctx.lineTo(bx+5*hs,by); hctx.stroke(); }   // centre tick marks on-speed
 
 	// ---- ILS deviation bars, referenced to the velocity vector (replacing the old centred needles) ----
 	if(fpm){ const dev=approach_deviation(); if(dev){ hctx.strokeStyle=GR; hctx.setLineDash([]);
@@ -7887,16 +7977,16 @@ function draw_hud(){
 	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); }
 	const brk=boxed&&rng<(master==="9m"?300:150)+THREE.MathUtils.clamp(vc,0,1000)*1.5;   // breakaway: reaching minimum range within 1.5 s at the current closure — time-based like the real cue, so a 900 kt merge breaks far earlier than a tail-chase (vc clamped: a boxed-target switch in MP spikes one frame)
 	const td=boxed?proj_point(boxed.pos):null;
-	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14,td[1]-14,28,28); }   // the target designator box — the real (monochrome green) marking, both views
+	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
 	if(boxed&&!(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH)){   // target locator line (NATIP): the boxed target is off the HUD — a line from the boresight points the shortest way to it, angle-off at the tip
 		const to=new THREE.Vector3(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();
 		const off=Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(to),-1,1))*57.29578;
 		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert()); const sd=Math.hypot(cs.x,cs.y);
 		if(sd>1e-4){ const ux=cs.x/sd, uy=-cs.y/sd;
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2;
-			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18,bore[1]+uy*18); hctx.lineTo(bore[0]+ux*70,bore[1]+uy*70); hctx.stroke(); hctx.lineWidth=1.5;
-			hctx.fillStyle=GR; hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="center";
-			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
+			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18*hs,bore[1]+uy*18*hs); hctx.lineTo(bore[0]+ux*70*hs,bore[1]+uy*70*hs); hctx.stroke(); hctx.lineWidth=1.5;
+			hctx.fillStyle=GR; hctx.font=(12*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size
+			hctx.fillText(String(Math.round(off)),bore[0]+ux*84*hs,bore[1]+uy*84*hs+4*hs); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
 			const muz=body_offset(ownship,6.0,0.35,0.0);
@@ -7930,8 +8020,8 @@ function draw_hud(){
 				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*(R-dash),pip[1]+Math.sin(tick)*(R-dash)); hctx.lineTo(pip[0]+Math.cos(tick)*(R+dash),pip[1]+Math.sin(tick)*(R+dash)); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0) hud_cue="gun";
-				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hud_shoot=true; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
-					hctx.fillText("SHOOT",pip[0],pip[1]-R-12); } } }
+				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hud_shoot=true; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. The director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
+					hctx.fillText("SHOOT",pip[0],pip[1]-R-12*hs); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 			const rails=[[],[]];
@@ -7952,21 +8042,21 @@ function draw_hud(){
 		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
 		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
-		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
-			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); hud_shoot=true; }
+		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
+			hctx.fillText("SHOOT",at[0],at[1]-seeker-16*hs); hud_shoot=true; }
 		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
-			hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
-			const top=bore[1]-3.0*ppd, bottom=bore[1]+3.0*ppd, sx=bore[0]+9*ppd;   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
+			hctx.save(); hctx.font=(13*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;   // i18n-format-ok: a CSS font size
+			const hd=HH/45*hs, top=bore[1]-3.0*hd, bottom=bore[1]+3.0*hd, sx=bore[0]+9*hd;   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
 			const scale=Math.max(zone.max,zone.range)*1.05;
 			const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
 			hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
 			for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
 				if(range<=0) continue; const y=y_of(range);
-				hctx.beginPath(); hctx.moveTo(sx-5,y); hctx.lineTo(sx+5,y); hctx.stroke();
-				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5,y-3); hctx.lineTo(sx+5,y-3); hctx.stroke(); } }
+				hctx.beginPath(); hctx.moveTo(sx-5*hs,y); hctx.lineTo(sx+5*hs,y); hctx.stroke();
+				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5*hs,y-3*hs); hctx.lineTo(sx+5*hs,y-3*hs); hctx.stroke(); } }
 			const y=y_of(zone.range);
-			hctx.beginPath(); hctx.moveTo(sx+7,y); hctx.lineTo(sx+15,y-4); hctx.lineTo(sx+15,y+4); hctx.closePath(); hctx.fill();
-			hctx.fillText((zone.range/1852).toFixed(1),sx+18,y+4);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.beginPath(); hctx.moveTo(sx+7*hs,y); hctx.lineTo(sx+15*hs,y-4*hs); hctx.lineTo(sx+15*hs,y+4*hs); hctx.closePath(); hctx.fill();
+			hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,y+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 			hctx.restore(); }
 		if(cue==="break"&&lockon&&(sim_time*5)%2<1){ const R=2.2*ppd; hctx.strokeStyle=AM; hctx.setLineDash([]); hctx.lineWidth=2.5;   // inside the heater's own minimum: the breakaway X
 			hctx.beginPath(); hctx.moveTo(at[0]-R,at[1]-R); hctx.lineTo(at[0]+R,at[1]+R); hctx.moveTo(at[0]+R,at[1]-R); hctx.lineTo(at[0]-R,at[1]+R); hctx.stroke(); hctx.lineWidth=1.5; } }
@@ -7980,7 +8070,7 @@ function draw_hud(){
 	// cockpit view the cluster is clipped to the quad and SCALED into it (the
 	// transform maps the virtual layout centred on cx,cy onto the glass).
 	if(flight_symbols){ if(glass){ hctx.save(); glass_clip(glass);
-		hctx.translate(glass.rcx,glass.rcy); hctx.scale(glass.scale,glass.scale); hctx.translate(-cx,-cy); }
+		hctx.translate(bore[0],bore[1]); hctx.scale(hs,hs); hctx.translate(-cx,-(cy-4*HH/45)); }   // the layout's waterline datum onto the nose: the box tops ride the waterline (NATOPS 2.13.4.8.11 item 2)
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on

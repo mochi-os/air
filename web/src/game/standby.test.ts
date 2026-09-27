@@ -33,17 +33,12 @@ describe('the standby attitude indicator', () => {
     expect(rig).not.toMatch(/AttitudeIndicator_(Glide|Localizer)/)
   })
 
-  it('seats the magnetic compass card in the arch housing and keeps its heading drive', () => {
-    // NATOPS 2.12.9: the standby magnetic compass is on the right windshield
-    // arch. The model spins its card in the right vertical panel's bezel and
-    // carries the arch housing (Object_622) empty; mount_compass re-seats the
-    // card there from build_indexer, reparented so it rides the housing's frame.
-    const mount = /\nfunction mount_compass\(g\)\{[\s\S]*?card\.userData\.mounted=true;[^\n]*\n/.exec(source)?.[0] ?? ''
-    expect(mount).not.toBe('')
-    expect(mount).toMatch(/getObjectByName\("INSTRUMENT_MagneticCompass_518"\)/)
-    expect(mount).toMatch(/getObjectByName\("Object_622"\)/)
-    expect(mount).toMatch(/housing\.parent\.attach\(card\)/)
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); mount_compass\(g\); \}/)
+  it('leaves the magnetic compass card in the model\'s housing and keeps its heading drive', () => {
+    // NATOPS 2.12.9 and foldout FO-5 item 19: the standby magnetic compass sits
+    // on the right windshield arch's foot beside the right DDI, which is where
+    // the model spins its card. Nothing re-seats it.
+    expect(source).not.toMatch(/function mount_compass\(/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); \}/)
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
   })
@@ -59,7 +54,7 @@ describe('the standby attitude indicator', () => {
     expect(draw).toMatch(/lamp=!off&&agl<index/)
     expect(draw).not.toMatch(/250/)
     expect(draw).toMatch(/the green BIT light/)
-    expect(source).toMatch(/radalt_draw\(r, ownship\.pos\.y-\(surface>-1e8\?surface:0\), law_index, RADAR\.sil\);/)
+    expect(source).toMatch(/radalt_draw\(r, \(ownship\.pos\.y-\(surface>-1e8\?Math\.max\(surface,0\):0\)\)\*3\.28084, law_index, RADAR\.sil\);/) // feet, like the dial, the index and the aural
     expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index, RADAR\.sil\);/)
   })
 
@@ -113,8 +108,8 @@ describe('the ALR-67 azimuth indicator', () => {
     expect(source).toMatch(/ew_draw\(x,80,80,68,11\); w\.count=RWR\.contacts\.length; w\.tex\.needsUpdate=true;/)
   })
 
-  it('seats the disc in the right vertical panel housing on the ownship layer, refreshed with the radar altimeter', () => {
-    expect(source).toMatch(/const RWR_FACE=\{ x:6\.020, y:0\.353, z:0\.305, r:0\.024 \};/) // the housing bezel, measured by panel click
+  it('seats the disc at the standby cluster\'s upper right (FO-5 item 26) on the ownship layer, refreshed with the radar altimeter', () => {
+    expect(source).toMatch(/const RWR_FACE=\{ x:6\.207, y:0\.177, z:0\.277, r:0\.042 \};/) // the tub's disc beside the attitude indicator
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\);/)
     expect(source).toMatch(/new THREE\.CircleGeometry\(RWR_FACE\.r,36\)/)
     expect(source).toMatch(/surface_pose\(mesh,RWR_FACE\.x,0,RWR_FACE\.y,RWR_FACE\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
@@ -265,18 +260,20 @@ describe('the standby instrument faces', () => {
     expect(d.translate.some(([dx, dy]) => dx === 0 && Math.abs(dy - px) < 1e-6)).toBe(true)
   })
 
-  it('turn the clock hands from the game clock over a twelve-hour dial', () => {
-    const d = face('clock_face', 4, 15, 50) // four fifteen and fifty seconds: three distinct angles
-    expect(has(d.rotate, 4 / 12 * Math.PI * 2)).toBe(true)
-    expect(has(d.rotate, 15 / 60 * Math.PI * 2)).toBe(true)
-    expect(has(d.rotate, 50 / 60 * Math.PI * 2)).toBe(true)
-    for (const label of ['12', '3', '6', '9']) expect(d.text).toContain(label)
+  it('letter the ball CLIMB on its white half and DIVE on its black half, as FO-5 item 25 draws it', () => {
+    const d = face('adi_face', 0, 0)
+    expect(d.text).toContain('CLIMB')
+    expect(d.text).toContain('DIVE')
+    const draw = lift('adi_face')
+    expect(draw).toMatch(/white="#dcdcd4", black="#141514"/)
+    expect(draw).not.toMatch(/#3a6ea8|#7a5230/) // no blue sky or brown earth
   })
 
   it('are seated proud of the tub\'s discs at the measured bezels and refreshed from the gauges', () => {
-    expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.097, z:0\.125, r:0\.026 \}, alt:\{ y:0\.097, z:0\.192, r:0\.026 \}, vsi:\{ y:0\.096, z:0\.258, r:0\.026 \}, adi:\{ y:0\.163, z:0\.154, r:0\.045 \}, clock:\{ y:0\.150, z:0\.279, r:0\.045 \} \};/) // the hidden needles' pivots, the ball's centre and the clock's empty bezel
-    expect(source).toMatch(/clock_face\(faces\.clock,gz\.clockH\|\|0,gz\.clockM\|\|0,gz\.clockS\|\|0\);/)
-    expect(source).toMatch(/for\(const name of \["asi","alt","vsi","adi","clock"\]\)\{ const seat=STANDBY\[name\];/)
+    expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.082, z:0\.132, r:0\.031 \}, alt:\{ y:0\.083, z:0\.218, r:0\.031 \}, vsi:\{ y:0\.083, z:0\.304, r:0\.031 \}, adi:\{ y:0\.177, z:0\.158, r:0\.043 \} \};/) // the tub's painted discs, fitted as circles
+    expect(source).not.toMatch(/function clock_face\(/) // the clock is the model's rigged dial on the pedestal (FO-5 item 37)
+    expect(source).toMatch(/for\(const name of \["asi","alt","vsi","adi"\]\)\{ const seat=STANDBY\[name\];/)
+    expect(source).toMatch(/new THREE\.CircleGeometry\(seat\.r,48\), gauge_material\(tex\)\)/) // lit like the model's own gauges
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
     expect(source).toMatch(/surface_pose\(mesh,STANDBY\.x,0,seat\.y,seat\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
     expect(source).toMatch(/if\(now-\(sb\.last\|\|0\)>100\)\{ sb\.last=now; standby_draw\(sb,ownship\.gauges\|\|\{\}\); \}/)

@@ -185,6 +185,30 @@ describe('the UFC windows', () => {
   })
 })
 
+// The IFEI's six pushbuttons are painted on the cockpit shell down the unit's
+// middle column; a click on the unit's quad answers the nearest painted legend.
+function ifeibutton(y: number, z: number): string | null {
+  const defs = /\nconst IFEI_BUTTONS=[^\n]*\n/.exec(source)?.[0] ?? ''
+  const run = new Function('y', 'z', `${defs} const ifei_buttons=["mode","qty","up","down","zone","et"], ownship={ group:{ worldToLocal:(p)=>p } };
+    ${lift('ifei_button_at')} return ifei_button_at({ clone:()=>({ x:6.211, y, z }) });`)
+  return run(y, z) as string | null
+}
+
+describe('the IFEI pushbuttons', () => {
+  it('answer at their painted legends, MODE at the top of the column to ET at its foot', () => {
+    expect(ifeibutton(0.200, -0.205)).toBe('mode')
+    expect(ifeibutton(0.163, -0.203)).toBe('up')
+    expect(ifeibutton(0.142, -0.207)).toBe('down')
+    expect(ifeibutton(0.102, -0.205)).toBe('et')
+  })
+
+  it('leave the windows either side and the panel below to the rest of the pit', () => {
+    expect(ifeibutton(0.150, -0.265)).toBe(null) // the engine window
+    expect(ifeibutton(0.190, -0.160)).toBe(null) // the fuel window
+    expect(ifeibutton(0.080, -0.205)).toBe(null)
+  })
+})
+
 describe('the UFC pushbuttons', () => {
   it('fill the entry from the keypad to seven digits, and CLR clears it first and the windows second', () => {
     expect(ufcpress(['1', '2', '3', '4', '5', '6', '7', '8'], { func: 'ap' }).ufc.entry).toBe('1234567')
@@ -251,7 +275,7 @@ describe('the UFC pushbuttons', () => {
   })
 
   it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC and the index shared', () => {
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); mount_compass\(g\);/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); \}/)
     expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)

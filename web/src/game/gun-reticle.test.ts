@@ -29,7 +29,7 @@ function director(ppd: number, range: number, shoot = true): Drawn {
       beginPath(){ path=[]; }, moveTo(x,y){ pen=[x,y]; }, lineTo(x,y){ lines.push({from:pen, to:[x,y]}); pen=[x,y]; },
       arc(x,y,r,start,end){ path.push({x,y,r,start,end}); }, stroke(){ for(const a of path) arcs.push({...a, fill:false}); path=[]; },
       fill(){ for(const a of path) arcs.push({...a, fill:true}); path=[]; }, fillText(t,x,y){ text.push([t,x,y]); } };
-    const GR='g', THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(Math.max(v,a),b) } }, pip=[500,400];
+    const GR='g', hs=1, THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(Math.max(v,a),b) } }, pip=[500,400];
     const impact={x:0,y:0,z:0}, boxed={pos:{x:shoot?0:100,y:0,z:0}}, wrap_axis=(v)=>v, brk=false, weapons_hold=false, ownship={rounds:500}, sim_time=0;
     let hud_cue='';
     ${block}
