@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest'
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 // The match ends on the line that also closes update_gauges, so its last brace
 // is dropped to leave just the else-if block.
-const block = (/\n\telse if\(ind\)\{ const devd=[\s\S]*?ind\.donut\.opacity=[^\n]*\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
+const block = (/\n\telse if\(ind\)\{ const [a-z]+=\(out\[STATE\.alpha\]\|\|0\)\/D2R[\s\S]*?ind\.donut\.opacity=[^\n]*\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
 
 interface Moment { hook: number; bypass: 'carrier' | 'field'; time: number }
 interface Result { lit: boolean; bypass: string }
@@ -51,6 +51,44 @@ describe('the AOA indexer flash', () => {
     const [up, down] = indexer([{ hook: 0, bypass: 'field', time: 0.1 }, { hook: 1, bypass: 'field', time: 0.2 }])
     expect(up.bypass).toBe('field')
     expect(down.bypass).toBe('carrier')
+  })
+})
+
+// NATOPS figure 2-19 (aircraft 161520 and up): five indications, each a set
+// of symbols fully lit or dark - SLOW 9.3-90° top chevron, SLIGHTLY SLOW
+// 8.8-9.3° chevron and donut, ON SPEED 7.4-8.8° donut, SLIGHTLY FAST 6.9-7.4°
+// donut and bottom chevron, FAST 0-6.9° bottom chevron.
+function lamps(alpha: number): { slow: number; donut: number; fast: number } {
+  if (!block) throw new Error('indexer block not found in engine.ts')
+  return new Function('alpha', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:false};
+    let sim_time=0, hook_bypass="carrier";
+    const out=[alpha*D2R, 1];
+    if(false){} ${block}
+    return { slow:ind.slow.opacity, donut:ind.donut.opacity, fast:ind.fast.opacity };`)(alpha)
+}
+const lit = (alpha: number) => { const l = lamps(alpha); return [l.slow, l.donut, l.fast] }
+
+describe('the AOA indexer bands', () => {
+  it('shows the five indications of figure 2-19, each lamp fully lit or dark', () => {
+    expect(lit(12)).toEqual([1, 0, 0]) // SLOW
+    expect(lit(9)).toEqual([1, 1, 0]) // SLIGHTLY SLOW
+    expect(lit(8.1)).toEqual([0, 1, 0]) // ON SPEED
+    expect(lit(7.5)).toEqual([0, 1, 0])
+    expect(lit(8.7)).toEqual([0, 1, 0])
+    expect(lit(7.1)).toEqual([0, 1, 1]) // SLIGHTLY FAST
+    expect(lit(5)).toEqual([0, 0, 1]) // FAST
+  })
+
+  it('changes indication at the figure\'s band edges', () => {
+    expect(lit(9.29)).toEqual([1, 1, 0])
+    expect(lit(9.3)).toEqual([1, 0, 0])
+    expect(lit(8.79)).toEqual([0, 1, 0])
+    expect(lit(8.8)).toEqual([1, 1, 0])
+    expect(lit(7.39)).toEqual([0, 1, 1])
+    expect(lit(7.4)).toEqual([0, 1, 0])
+    expect(lit(6.89)).toEqual([0, 0, 1])
+    expect(lit(6.9)).toEqual([0, 1, 1])
   })
 })
 
