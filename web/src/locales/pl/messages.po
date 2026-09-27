@@ -26,6 +26,11 @@ msgstr "(edytowane)"
 msgid "(expand)"
 msgstr "(rozwiń)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Bez tytułu)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ty)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Nazwa {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "od {from} do {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# więcej} few {+# więcej} many {+# więcej} other {+# więcej}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -796,6 +798,11 @@ msgstr "Anuluj odpowiedź"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "Anulowane"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Odwołane"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -3381,6 +3388,11 @@ msgstr "Trafność {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Trafność {relevance}, zainteresowanie {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Przypomnienie"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -4031,6 +4043,11 @@ msgstr "Drużyny"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "Drużyny — czerwoni kontra niebiescy"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Wstępne"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
