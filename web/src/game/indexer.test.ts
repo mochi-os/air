@@ -205,17 +205,17 @@ interface Pit {
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
-  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', `
     const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
     let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0;
-    const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true;
+    const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters };`)
   return run(action, direction, state) as Pressed
 }
 
@@ -286,6 +286,14 @@ describe('the clickable switches', () => {
     expect(press('gear', 1, { ground: false }).ownship.gearTarget).toBe(1)
     expect(press('gear', -1, { ground: false, gearTarget: 1 }).ownship.gearTarget).toBe(0)
     expect(press('gear', 1, { ground: true }).ownship.gearTarget).toBe(0)
+  })
+
+  it('enter the NAV master mode when the gear handle is lowered, and only then (NATOPS 2.13.2)', () => {
+    expect(press('gear', -1, { ground: false, gearTarget: 1 }).masters).toEqual(['nav'])
+    expect(press('gear', 0, { ground: false, gearTarget: 1 }).masters).toEqual(['nav'])
+    expect(press('gear', 1, { ground: false, gearTarget: 0 }).masters).toEqual([]) // raising it leaves the mode alone
+    expect(press('gear', -1, { ground: false, gearTarget: 0 }).masters).toEqual([]) // already down
+    expect(press('gear', -1, { ground: true, gearTarget: 1 }).masters).toEqual([]) // the handle does not move on deck
   })
 
   it('move the flap lever one notch, FULL at the bottom, and arm the selection', () => {

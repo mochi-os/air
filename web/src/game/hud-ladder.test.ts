@@ -106,3 +106,28 @@ describe('the AoA bracket rides the velocity vector', () => {
     expect(offset(0)).toBeCloseTo(-3.5 * dpp, 9)
   })
 })
+
+// NATOPS 2.13.4.8.11 item 13: when any two landing gear are down, Mach, g and
+// peak g are deleted and the AOA bracket, extended horizon bar and waterline
+// appear - the gear alone decides, at any airspeed. The section of draw_hud
+// that sets the gate is run for a sequence of states, so any memory it keeps
+// from frame to frame carries over as it does in flight.
+describe('the landing symbology gate', () => {
+  const start = source.indexOf('\tconst ppd=HH/camera.fov;'), end = source.indexOf('\tlet fpm=null;', start)
+  const section = source.slice(start, end)
+  const gate = (states: { gear: number; speed: number }[]) => new Function('states', `const HH=900, camera={ fov:60 }, trim_law=()=>0;
+    let trim_manual=0, hud_pa=false;
+    return states.map((s)=>{ const ownship={ gear:s.gear, cas:s.speed, speed:s.speed }; ${section} return pa; });`)(states) as boolean[]
+
+  it('is on whenever the gear is down and locked, at any airspeed', () => {
+    expect(section).toMatch(/const pa=/)
+    expect(gate([{ gear: 0, speed: 60 }])).toEqual([true])
+    expect(gate([{ gear: 0, speed: 130 }])).toEqual([true]) // 253 knots
+  })
+
+  it('is off whenever the gear is not down and locked, including just after it comes up', () => {
+    expect(gate([{ gear: 1, speed: 60 }])).toEqual([false])
+    expect(gate([{ gear: 0.3, speed: 60 }])).toEqual([false]) // in transit
+    expect(gate([{ gear: 0, speed: 70 }, { gear: 1, speed: 70 }])).toEqual([true, false]) // a bolter's climb-out
+  })
+})

@@ -5181,7 +5181,8 @@ function pit_press(action,direction){ const d=direction||0;
 	case "dump": fuel_dump=!fuel_dump; break;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
-	case "gear": if(!on_ground()) ownship.gearTarget=d>0?1:d<0?0:(ownship.gearTarget??0)>0.5?0:1; break;   // never on deck or runway; the SOUND follows the real transit in the audio block
+	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
+			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
 	case "flaps": if(d<0&&flap_select<2){ flap_select++; flap_armed=sim_time+4; } else if(d>0&&flap_select>0){ flap_select--; flap_armed=sim_time+4; } break;   // AUTO at the top, FULL at the bottom; no notice: the legend shows the selection and its travel
 	case "atc": if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here once, so ATC only ever engaged CLEAN and refused on every real approach
@@ -5727,7 +5728,6 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.4+Math.random()*0.8; smoke.sz[k]=0.26+Math.random()*0.10; smoke.gr[k]=0.55;   // fuel vapour: pale, fast-swelling, quick to thin (#239)
 	smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
-let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
 // The HUD trim readout shows the PA pitch datum, which the core holds only in its PA law, so it follows
 // that law's own trigger (flight/fcs.go), mirrored because the law state never crosses the wire: the flap
 // switch at HALF or FULL, the deck's takeoff-leg latch (set on the wheels under 40 m/s, cleared by a
@@ -7829,15 +7829,12 @@ function draw_hud(){
 	// vector, zenith/nadir, gun cross (A/A only), waterline (landing), the
 	// velocity vector with its 8° limit, E-bracket, and ILS deviation bars.
 	const ppd=HH/camera.fov;                      // true pixels per degree at the camera's LIVE field (tracks the pit's wide base and the zoom ease alike)
-	// Landing symbology is still inferred from the gear: a virtual flap schedule
-	// armed with the gear down below 125 m/s CAS and dropped passing 92.6 clean
-	// (180 KCAS) or 135 dirty, from before the client had a flap switch. The FCS
-	// law follows the switch instead, so the trim readout reads trim_law().
-	{ const geardown=(ownship.gear??1)<0.5, kcas=ownship.cas??ownship.speed;
-		if(hud_pa){ if((!geardown&&kcas>92.6)||kcas>135) hud_pa=false; }
-		else if(geardown&&kcas<125) hud_pa=true; }
+	// Landing symbology follows the gear alone: when any two gear are down the
+	// bracket, extended horizon and waterline appear and Mach, g and peak g go
+	// (NATOPS 2.13.4.8.11 item 13). One gear value stands for all three legs, and
+	// down means down and locked. The trim readout reads the FCS law, trim_law().
 	trim_manual=trim_law();
-	const pa=hud_pa;                              // landing symbology gate (flaps HALF/FULL)
+	const pa=(ownship.gear??1)<0.02;              // landing symbology gate
 	let fpm=null;
 	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
