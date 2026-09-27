@@ -26,6 +26,11 @@ msgstr "(संपादित)"
 msgid "(expand)"
 msgstr "(फइलाईं)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(बिना शीर्षक)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(राउर)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} के नाम"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} से {to} तक"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# अउरी} other {+# अउरी}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -796,6 +798,11 @@ msgstr "जवाब रद्द करीं"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "रद्द कइल गइल"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "रद्द"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -3381,6 +3388,11 @@ msgstr "प्रासंगिकता {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "प्रासंगिकता {relevance}, रुचि {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "रिमाइंडर"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -4031,6 +4043,11 @@ msgstr "टीम सभ"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "टीम सभ — लाल बनाम नीला"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "अस्थायी"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx

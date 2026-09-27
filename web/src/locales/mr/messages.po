@@ -26,6 +26,11 @@ msgstr "(संपादित)"
 msgid "(expand)"
 msgstr "(विस्तार करा)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(शीर्षक नाही)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(तुम्ही)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} नाव"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ते {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# आणखी} other {+# आणखी}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -796,6 +798,11 @@ msgstr "उत्तर रद्द करा"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "रद्द केले"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "रद्द"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -3381,6 +3388,11 @@ msgstr "सुसंगतता {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "सुसंगतता {relevance}, स्वारस्य {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "स्मरणपत्र"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -4031,6 +4043,11 @@ msgstr "संघ"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "संघ — लाल विरुद्ध निळा"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "तात्पुरते"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx

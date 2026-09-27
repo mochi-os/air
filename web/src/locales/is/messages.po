@@ -26,6 +26,11 @@ msgstr "(breytt)"
 msgid "(expand)"
 msgstr "(útvíkka)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Enginn titill)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(þú)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Nafn {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} til {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# til viðbótar} other {+# til viðbótar}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -796,6 +798,11 @@ msgstr "Hætta við svar"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "Hætt við"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Aflýst"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -3381,6 +3388,11 @@ msgstr "Mikilvægi {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Mikilvægi {relevance}, áhugi {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Áminning"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -4031,6 +4043,11 @@ msgstr "Lið"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "Lið — rautt gegn bláu"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Bráðabirgða"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx

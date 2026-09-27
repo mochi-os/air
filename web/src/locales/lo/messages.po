@@ -26,6 +26,11 @@ msgstr "(ແກ້ໄຂແລ້ວ)"
 msgid "(expand)"
 msgstr "(ຂະຫຍາຍ)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(ບໍ່ມີຊື່)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ທ່ານ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "ຊື່ {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ຫາ {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# ລາຍການ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -794,6 +796,11 @@ msgstr "ຍົກເລີກການຕອບກັບ"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "ຍົກເລີກແລ້ວ"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "ຍົກເລີກແລ້ວ"
 
@@ -3381,6 +3388,11 @@ msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}, ຄວາມສົນໃຈ {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "ການແຈ້ງເຕືອນ"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -4031,6 +4043,11 @@ msgstr "ທີມ"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "ທີມ — ສີແດງ ປະທະ ສີຟ້າ"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "ຊົ່ວຄາວ"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
