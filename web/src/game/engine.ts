@@ -8068,16 +8068,19 @@ function draw_hud(){
 		hctx.beginPath(); hctx.moveTo(bore[0]-R,bore[1]-R); hctx.lineTo(bore[0]+R,bore[1]+R); hctx.moveTo(bore[0]+R,bore[1]-R); hctx.lineTo(bore[0]-R,bore[1]+R); hctx.stroke(); hctx.lineWidth=1.5; }
 	if(glass) hctx.restore(); }
 
-	// ---- instrument furniture (#133): NATOPS boxes and scales. On the glass in
-	// cockpit view the cluster is clipped to the quad and SCALED into it (the
-	// transform maps the virtual layout centred on cx,cy onto the glass).
-	if(flight_symbols){ if(glass){ hctx.save(); glass_clip(glass);
-		hctx.translate(bore[0],bore[1]); hctx.scale(hs,hs); hctx.translate(-cx,-(cy-4*HH/45)); }   // the layout's waterline datum onto the nose: the box tops ride the waterline (NATOPS 2.13.4.8.11 item 2)
+	// ---- instrument furniture (#133): NATOPS boxes and scales, laid out about
+	// cx,cy with the waterline datum 4° above. Both first-person views move that
+	// datum onto the projected nose, so the cluster rides the airframe as the
+	// conformal symbols do; on the glass in cockpit view it is also clipped to
+	// the quad and SCALED into it. screen keeps the window's own transform for
+	// the HUD view's game furniture, which stays against the window's edges.
+	if(flight_symbols){ const screen=hctx.getTransform(); hctx.save(); if(glass) glass_clip(glass);
+		hctx.translate(bore[0],bore[1]); hctx.scale(hs,hs); hctx.translate(-cx,-(cy-4*HH/45));   // the layout's waterline datum onto the nose: the box tops ride the waterline (NATOPS 2.13.4.8.11 item 2)
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
 	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
-	if(declutter<2){
+	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
 	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
 	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
@@ -8094,7 +8097,7 @@ function draw_hud(){
 		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(mx-6,hty+21); hctx.lineTo(mx,hty+14); hctx.lineTo(mx+6,hty+21); hctx.stroke(); }
-	}
+	hctx.restore(); }
 
 	// ---- airspeed box (left): boxed KCAS, top at the waterline ----
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
@@ -8199,7 +8202,7 @@ function draw_hud(){
 		hctx.font="17px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
-	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
+	if(!authentic){ hctx.save(); hctx.setTransform(screen); const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-5,tgcy-tgh/2,10,tgh);
 	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-5,tgcy+tgh/2-fh,10,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
 	{ const lever=pad_levers.throttle; if(lever&&!lever.armed&&lever.last!==undefined){ const ly=tgcy+tgh/2-tgh*(1-lever.last);   // where the physical lever is while it does not hold the throttle: move it to the bar to take over
@@ -8208,8 +8211,9 @@ function draw_hud(){
 	hctx.font="11px 'Hornet Display', monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
 	hctx.font="15px 'Hornet Display', monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
-	if((ownship.stage??0)>0.05){ hctx.font="11px 'Hornet Display', monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); } }
-	if(glass) hctx.restore(); }   // end of the on-glass instrument cluster
+	if((ownship.stage??0)>0.05){ hctx.font="11px 'Hornet Display', monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); }
+	hctx.restore(); }
+	hctx.restore(); }   // end of the instrument cluster
 
 	// ---- gear / hook status (bottom-right) ----
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
