@@ -23,7 +23,9 @@ function body(name: string): string[] {
   return lines.slice(start, end)
 }
 const drawers = [...body('draw_hud'), ...body('hud_launch_zone'), ...body('hud_message')]
-const fonts = drawers.flatMap((l) => [...l.matchAll(/hctx\.font="([^"]+)"/g)].map((m) => [m[1], l] as const))
+// A size scaled onto the cockpit glass is built as (n*hs).toFixed(1)+"px ...": its
+// literal tail carries the face.
+const fonts = drawers.flatMap((l) => [...l.matchAll(/hctx\.font=(?:"([^"]+)"|\(\d+\*hs\)\.toFixed\(1\)\+"([^"]+)")/g)].map((m) => [m[1] ?? m[2], l] as const))
 const FACE = "'Hornet Display', monospace"
 
 describe('the HUD face', () => {
