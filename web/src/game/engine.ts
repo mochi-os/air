@@ -4504,7 +4504,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
-	else if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
+	else if(ind){ const alpha=(out[STATE.alpha]||0)/D2R;
 		// The indexer lights with the gear down and weight off wheels, and flashes
 		// when the hook is up with the hook bypass switch in CARRIER (NATOPS
 		// 2.12.10); FIELD holds it steady, and the solenoid lets FIELD go the
@@ -4512,9 +4512,12 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		if((ownship.hook??0)>=0.5) hook_bypass="carrier";
 		const blink=((ownship.hook??0)<0.5&&hook_bypass==="carrier")?(Math.floor(sim_time*3)%2):1;
 		const lit=(out[STATE.extension]||0)>0.9 && !ownship.grounded && blink>0;
-		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
-		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
-		ind.donut.opacity= lit?THREE.MathUtils.clamp(1-(Math.abs(devd)-0.5)/0.5,0,1):0; } }
+		// The bands of NATOPS figure 2-19 (161520 and up), each symbol fully lit or
+		// dark: SLOW 9.3° up, SLIGHTLY SLOW 8.8-9.3° (chevron and donut), ON SPEED
+		// 7.4-8.8°, SLIGHTLY FAST 6.9-7.4° (donut and chevron), FAST below 6.9°.
+		ind.slow.opacity = lit&&alpha>=8.8?1:0;
+		ind.fast.opacity = lit&&alpha<7.4?1:0;
+		ind.donut.opacity= lit&&alpha>=6.9&&alpha<9.3?1:0; } }
 generate_world();
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
