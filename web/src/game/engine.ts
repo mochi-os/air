@@ -8087,19 +8087,18 @@ function draw_hud(){
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
-	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
+	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
 	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
 	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
 	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
-	hctx.beginPath(); hctx.moveTo(cx-halfd*hppx,hty); hctx.lineTo(cx+halfd*hppx,hty); hctx.stroke();
 	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
 	const m0=Math.ceil((hdg-halfd)/5)*5;
 	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
 		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
-		if(major) hctx.fillText(val===0?"36":String(val/10).padStart(2,"0"),hx,hty-16); }
+		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
 	hctx.restore();
-	hctx.fillStyle=GR; hctx.beginPath(); hctx.moveTo(cx,hty+5); hctx.lineTo(cx-5,hty+13); hctx.lineTo(cx+5,hty+13); hctx.closePath(); hctx.fill();
+	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
 	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a hollow chevron sliding under the scale; pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
 		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
 		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
