@@ -7708,6 +7708,7 @@ function reset_ownship(){
 	const st=mission_start();
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
+	ddi_fresh=true; if(cfg.view==="ddi") ddi_open();   // and its first 3 opens the radar
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
@@ -8142,6 +8143,13 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 // the sim and audio run on. Re-press 3 cycles the display (cfg.ddi).
 const DDI_ORDER=["left","right","center"];
 function ddi_focus(){ return DDI_ORDER.includes(cfg.ddi)?cfg.ddi:"left"; }
+// The first 3 of a mission opens the display carrying the radar page - the
+// right DDI in A/A - whichever was looked at last; with no radar up it keeps
+// the remembered one. After that 3 returns to the display last shown. The pick
+// is the game's, not the pilot's, so it is not saved.
+let ddi_fresh=true;
+function ddi_open(){ if(!ddi_fresh) return; ddi_fresh=false;
+	const d=[ddi_focus(),...DDI_ORDER].find(k=>ddi_state[k].page==="rdr"); if(d) cfg.ddi=d; }
 const ddi_face=document.createElement("canvas");
 let ddi_view_last=0, ddi_view_rect=null;
 function draw_ddi_view(){
@@ -8846,7 +8854,7 @@ function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]
 function set_view(v){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
 		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
-	if(v==="ddi") ddi_view_last=0;   // entering: draw the remembered display's face this frame
+	if(v==="ddi"){ ddi_open(); ddi_view_last=0; }   // entering: draw the display's face this frame
 	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected

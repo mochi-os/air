@@ -376,3 +376,73 @@ describe('the TIMEUFC page', () => {
   })
 })
 
+
+// The DDI view (#12): the first 3 of a mission opens the display carrying the
+// radar page, so a BVR fight starts on the attack format whichever display the
+// pilot last looked at; after that 3 returns to the display last shown.
+describe('the DDI view', () => {
+  const start = source.indexOf('function set_view(v){')
+  const view = source.slice(start, source.indexOf('\n}\n', start) + 2)
+  function rig(pages: Record<string, string>, remembered: string) {
+    const run = new Function('pages', 'remembered', `
+      const DDI_ORDER=["left","right","center"];
+      const cfg={ view:"hud", ddi:remembered }, saved=[];
+      const ddi_state={ left:{page:pages.left,menu:""}, right:{page:pages.right,menu:""}, center:{page:pages.center,menu:""} };
+      const on_config=(c)=>saved.push(c.ddi);
+      let ddi_view_last=0, cam_psi=0, cam_az=0, cam_el=0, cam_dist=0, flyby_pos=null, hist_valid=true, zoom_target=1, view_zoom=1;
+      const ownship={ fwd:{x:0,z:1} }, zoom_recall=()=>1, cockpit_hidden=()=>{};
+      let ddi_fresh=true;
+      ${lift('ddi_focus')} ${lift('ddi_open')} ${view}
+      return { press:(v)=>set_view(v), shown:()=>cfg.view==="ddi"?ddi_focus():null, saved, spawn:()=>{ ddi_fresh=true; if(cfg.view==="ddi") ddi_open(); }, move:(d,p)=>{ ddi_state[d].page=p; } };`)
+    return run(pages, remembered) as { press(v: string): void; shown(): string | null; saved: string[]; spawn(): void; move(d: string, p: string): void }
+  }
+  const aa = { left: 'sms', right: 'rdr', center: 'sa' }
+
+  it('opens the radar on the first 3 of a mission, whichever display was looked at last', () => {
+    const r = rig(aa, 'left')
+    r.press('ddi')
+    expect(r.shown()).toBe('right')
+  })
+  it('does not save that pick: it is the game\'s, not the pilot\'s', () => {
+    const r = rig(aa, 'left')
+    r.press('ddi')
+    expect(r.saved).toEqual([])
+  })
+  it('cycles from the radar on a re-press, and saves the pilot\'s choice', () => {
+    const r = rig(aa, 'left')
+    r.press('ddi'); r.press('ddi')
+    expect(r.shown()).toBe('center')
+    expect(r.saved).toEqual(['center'])
+  })
+  it('returns to the display last shown after that, not to the radar', () => {
+    const r = rig(aa, 'left')
+    r.press('ddi'); r.press('ddi'); r.press('hud'); r.press('ddi')
+    expect(r.shown()).toBe('center')
+  })
+  it('follows the radar page to whichever display carries it', () => {
+    const r = rig({ left: 'rdr', right: 'fuel', center: 'sa' }, 'center')
+    r.press('ddi')
+    expect(r.shown()).toBe('left')
+  })
+  it('keeps the remembered display when it carries the radar too', () => {
+    const r = rig({ left: 'rdr', right: 'rdr', center: 'sa' }, 'right')
+    r.press('ddi')
+    expect(r.shown()).toBe('right')
+  })
+  it('keeps the remembered display when no display carries the radar', () => {
+    const r = rig({ left: 'chklst', right: 'fuel', center: 'hsi' }, 'center')
+    r.press('ddi')
+    expect(r.shown()).toBe('center')
+  })
+  it('opens the radar again on the first 3 of the next mission, and at once if the view is already up', () => {
+    const r = rig(aa, 'left')
+    r.press('ddi'); r.press('ddi'); r.press('hud')
+    r.spawn(); r.press('ddi')
+    expect(r.shown()).toBe('right')
+    r.press('ddi'); r.spawn()
+    expect(r.shown()).toBe('right')
+  })
+  it('re-arms at every spawn, after the spawn\'s display set is recalled', () => {
+    expect(source).toMatch(/\tddi_recall\(\);[^\n]*\n\tddi_fresh=true; if\(cfg\.view==="ddi"\) ddi_open\(\);/)
+  })
+})
