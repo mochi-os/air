@@ -20,12 +20,12 @@ const stackCode = /\n\t\{ const rows=\[\]; {3}\/\/ bottom of the stack first\n[\
 const cautionCode = /\n\tif\(\(ownship\.foldTarget\?\?0\)>0\.5\|\|\(ownship\.fold\?\?0\)>0\.02\) push\("WING UNLK"\);[\s\S]*?push\("PROBE UNLK"\);/.exec(source)?.[0] ?? ''
 
 interface Jet { hook?: number; gear?: number; speedbrake?: number; fold?: number; foldTarget?: number; canopy?: number; canopyTarget?: number; probe?: number; probeTarget?: number; gauges?: { rpmL: number; rpmR: number } }
-interface World { jet?: Jet; parking?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number }
+interface World { jet?: Jet; parking?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number; authentic?: boolean }
 
 // The rows the stack draws for a world, as [colour, text] with GR/AM as names.
 function stack(world: World): string[] {
   if (!stackCode) throw new Error('status stack not found in engine.ts')
-  const run = new Function('w', `const ownship={gear:1,hook:0,...w.jet}, authentic=false, GR="GR", AM="AM", STATE={datum:0,bank:1}, last_out=null, trim_manual=false, stab_cycle=0, flap_select=0;
+  const run = new Function('w', `const ownship={gear:1,hook:0,...w.jet}, authentic=!!w.authentic, GR="GR", AM="AM", STATE={datum:0,bank:1}, last_out=null, trim_manual=false, stab_cycle=0, flap_select=0;
     const parking=!!w.parking, fuel_dump=!!w.dump, secured=w.secured||[false,false], declutter=w.declutter||0;
     const RADAR={sil:!!w.sil, auto:!!w.acm, acm:w.acm||"bst"}, jammer_armed=(w.jammer||"off")!=="off", jammer_loud=()=>w.jammer==="loud";
     const translate=t=>t, hud_stack={}, hctx={}, HW=0, HH=0; let drawn=[];
@@ -107,3 +107,18 @@ describe('switch states sit on the status stack', () => {
     }
   })
 })
+
+// The cockpit has the gear lights in the handle and on the panel and the HOOK
+// light (NATOPS 2.10.1, FO-5), so GEAR and HOOK leave the cockpit view's screen
+// corner; the HUD view, which has no panel, keeps them.
+describe('the gear and hook legends', () => {
+  const jet = { gear: 0.5, hook: 1 }
+  it('show in the HUD view', () => {
+    expect(stack({ jet })).toEqual(expect.arrayContaining(['AM:GEAR', 'GR:HOOK']))
+  })
+  it('leave the cockpit view, where the panel lights show the gear and hook', () => {
+    const rows = stack({ jet, authentic: true })
+    expect(rows.some((row) => row.endsWith(':GEAR') || row.endsWith(':HOOK'))).toBe(false)
+  })
+})
+

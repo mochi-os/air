@@ -95,3 +95,15 @@ describe('the BINGO judgements', () => {
     expect(run(tanks.above)).toBe('g')
   })
 })
+
+// NATOPS 2.2.10.4: BINGO is a DDI caution with a voice alert; the HUD draws no
+// BINGO legend in either first-person view.
+describe('the BINGO annunciation', () => {
+  it('stays off the HUD', () => {
+    const start = source.indexOf('if(flight_symbols){'), end = source.indexOf('// end of the instrument cluster', start)
+    expect(start).toBeGreaterThan(0)
+    expect(end).toBeGreaterThan(start)
+    expect(source.slice(start, end)).not.toMatch(/fillText\("BINGO"/)
+  })
+})
+

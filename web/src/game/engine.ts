@@ -8614,7 +8614,7 @@ function draw_hud(){
 		// drawn there.
 		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
 		hctx.textAlign="center";
-		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); hctx.fillStyle=GR; }
+		if(master==="gun"){ hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); }   // green like the rest of the HUD, firing or not; the HUD view's counter at the screen edge carries the firing cue
 		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
 		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
 		hctx.textAlign="left"; }
@@ -8625,9 +8625,7 @@ function draw_hud(){
 		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
-	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
-	if(bingo_low()&&(sim_time*2)%2<1){
-		hctx.font="17px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
+	// BINGO is annunciated on the DDI and by voice, not on the HUD (NATOPS 2.2.10.4)
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
 	if(!authentic){ hctx.save(); hctx.setTransform(screen); const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
@@ -8655,9 +8653,9 @@ function draw_hud(){
 	// keep the place they have always had.
 	hctx.textAlign="right"; hctx.font="13px 'Hornet Display', monospace";
 	{ const rows=[];   // bottom of the stack first
-		if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
-		if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
-		if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
+		if(!authentic){   // hud-view furniture: the real HUD carries no configuration legend (#133), and the cockpit has the gear and HOOK lights
+			if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
+			if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // a gear-up trap is a game-ender, and the HUD view has no panel
 			if((ownship.speedbrake??0)>0.02) rows.push([AM,translate("SPD BK")]);
 			if(stab_cycle>0) rows.push([AM,"STAB "+stab_cycle]);   // Shift+E calibration state
 			// Wing fold and the parking brake follow their handles, not the panels or the brakes
