@@ -11,7 +11,8 @@ rhasspy/piper-voices (MIT), trained on the LJ Speech dataset (public domain):
   https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/ljspeech/high/en_US-ljspeech-high.onnx
   https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/ljspeech/high/en_US-ljspeech-high.onnx.json
 
-Usage: voice.py <piper directory> <model.onnx>
+Usage: voice.py <piper directory> <model.onnx> [message ...]
+Named messages are spoken alone, leaving the other recordings untouched.
 Needs bwrap, sox and ffmpeg. Piper is a downloaded binary, so it runs in
 bubblewrap with no network and no view of $HOME. Each message is spoken twice,
 as the jet's are (NATOPS A1-F18AC-NFM-000 2.17.3): the two sayings are voiced
@@ -37,6 +38,7 @@ MESSAGES = {
     "engine-right": (("Engine right.", "Engine right."), 0.9, 0.32),
     "fuel-low": (("Fuel low.", "Fuel low."), 0.9, 0.32),
     "bingo": (("Bingo,", "bingo."), 1.35, 0.55),   # said as a sentence the short word loses its "go"; the comma and the slower pace keep it
+    "altitude": (("Altitude.", "Altitude."), 0.9, 0.32),
 }
 HEADSET = ["gain", "-8", "highpass", "300", "lowpass", "4800", "equalizer", "2500", "1q", "3",
            "compand", "0.01,0.20", "-60,-60,-30,-14,-20,-9,0,-5", "-3", "norm", "-1"]
@@ -46,6 +48,8 @@ PAD = ["pad", "0.03", "0.03"]
 
 piper = Path(sys.argv[1]).resolve()
 model = Path(sys.argv[2]).resolve()
+chosen = sys.argv[3:] or list(MESSAGES)
+assert all(name in MESSAGES for name in chosen), f"unknown message in {chosen}"
 out = Path(__file__).resolve().parent.parent / "web/src/assets/voice"
 out.mkdir(exist_ok=True)
 
@@ -61,7 +65,8 @@ def speak(text, target, scale, work):
                    input=text.encode(), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 with tempfile.TemporaryDirectory() as work:
-    for name, (sayings, scale, gap) in MESSAGES.items():
+    for name in chosen:
+        sayings, scale, gap = MESSAGES[name]
         pause = Path(work) / f"{name}-pause.wav"
         subprocess.run(["sox", "-n", "-r", str(rate), "-c", "1", str(pause), "trim", "0", str(gap)], check=True)
         pieces = []

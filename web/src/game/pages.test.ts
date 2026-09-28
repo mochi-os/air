@@ -158,22 +158,22 @@ const ufcdefs = ['UFC_PAGES', 'UFC_CUES', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) =
 interface Face { scratch: string; options: string[] }
 interface Ufc { func: string; ralt: boolean; entry: string; error: boolean; blink: number }
 interface Live { silent?: boolean; atc?: boolean; ils?: boolean; index?: number }
-interface Pressed { ufc: Ufc; index: number; armed: boolean; set: boolean; pressed: string[]; silent: boolean; atc: boolean }
+interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; silent: boolean; atc: boolean }
 const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', ralt: false, entry: '', error: false, blink: 0, ...over })
 function ufcface(state: Ufc, live: Live, now = 0): Face {
   const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')} return ufc_face(state, { silent:false, atc:false, ils:false, index:200, ...live }, now);`)
   return run(state, live, now) as Face
 }
-function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200): Pressed {
-  const run = new Function('buttons', 'start', 'index', `${ufcdefs}
-    let law_index=index, law_armed=true, law_set=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pressed=[];
+function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false): Pressed {
+  const run = new Function('buttons', 'start', 'index', 'sounding', `${ufcdefs}
+    let law_index=index, law_primary=sounding, law_disabled=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pressed=[];
     const pit_press=(a)=>{ pressed.push(a); if(a==="radar") RADAR.sil=!RADAR.sil; if(a==="atc") atc_on=!atc_on; };
     const ufc_update=()=>{}; const performance={ now:()=>1000 };
     const ufc={ func:"", ralt:false, entry:"", error:false, blink:0, ...start };
     ${lift('ufc_press')}
     for(const b of buttons) ufc_press(b);
-    return { ufc, index:law_index, armed:law_armed, set:law_set, pressed, silent:RADAR.sil, atc:atc_on };`)
-  return run(buttons, start, index) as Pressed
+    return { ufc, index:law_index, disabled:law_disabled, pressed, silent:RADAR.sil, atc:atc_on };`)
+  return run(buttons, start, index, sounding) as Pressed
 }
 function ufcbutton(y: number, z: number): string | null {
   const run = new Function('y', 'z', `${ufcdefs} ${lift('ufc_button_at')} return ufc_button_at(y, z);`)
@@ -192,11 +192,11 @@ describe('the UFC windows', () => {
     expect(ufcface(fresh({ func: 'ap' }), { atc: true }).scratch).toBe('ON       ')
   })
 
-  it('cue :RALT and put the index, then the keyed entry, in the scratchpad', () => {
-    const f = ufcface(fresh({ func: 'ap', ralt: true }), { index: 200 })
+  it('cue :RALT, with only a keyed entry in the scratchpad: the index is the knob\'s (NATOPS 2.12.5.4.1)', () => {
+    const f = ufcface(fresh({ func: 'ap', ralt: true }), {})
     expect(f.options[3]).toBe(':RALT')
-    expect(f.scratch).toBe('      200')
-    expect(ufcface(fresh({ func: 'ap', ralt: true, entry: '500' }), { index: 200 }).scratch).toBe('      500')
+    expect(f.scratch).toBe(blank)
+    expect(ufcface(fresh({ func: 'ap', ralt: true, entry: '500' }), {}).scratch).toBe('      500')
   })
 
   it('show TACAN on in T/R on the X band, and ILS on only while the needles are live', () => {
@@ -255,28 +255,23 @@ describe('the UFC pushbuttons', () => {
     expect(ufcpress(['1', '2', 'clr', 'clr'], { func: 'ap' }).ufc.func).toBe('')
   })
 
-  it('key the low-altitude index through :RALT and ENT, up to 5,000 ft, and flag the rest ERROR', () => {
-    const ok = ufcpress(['ap', 'opt3', '5', '0', '0', 'ent'])
-    expect(ok.index).toBe(500)
-    expect(ok.set).toBe(true)
-    expect(ok.ufc.entry).toBe('')
-    expect(ok.ufc.blink).toBeCloseTo(1.3)
-    expect(ok.ufc.error).toBe(false)
-    const high = ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent'])
-    expect(high.index).toBe(200)
-    expect(high.ufc.error).toBe(true)
+  it('key nothing with ENT: the low-altitude index is the knob\'s, not the UFC\'s, so an entry flags ERROR', () => {
+    const keyed = ufcpress(['ap', 'opt3', '5', '0', '0', 'ent'])
+    expect(keyed.index).toBe(200)
+    expect(keyed.ufc.error).toBe(true)
     expect(ufcpress(['ap', 'opt3', 'ent']).ufc.error).toBe(true)
     expect(ufcpress(['ap', '5', 'ent']).ufc.error).toBe(true)
-    expect(ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent', '7']).ufc.entry).toBe('5001')
-    expect(ufcpress(['ap', 'opt3', '5', '0', '0', '1', 'ent', 'clr']).ufc.error).toBe(false)
+    expect(ufcpress(['ap', 'opt3', '5', '0', '0', 'ent', '7']).ufc.entry).toBe('500')
+    expect(ufcpress(['ap', 'opt3', '5', '0', '0', 'ent', 'clr']).ufc.error).toBe(false)
   })
 
-  it('select :RALT on the autopilot page only, and disable the warning when it is pressed again', () => {
+  it('select :RALT on the autopilot page only, and disable a sounding primary warning with it or with another UFC mode (NATOPS 2.12.5.1)', () => {
     expect(ufcpress(['ap', 'opt3']).ufc.ralt).toBe(true)
-    const off = ufcpress(['ap', 'opt3', 'opt3'])
-    expect(off.ufc.ralt).toBe(false)
-    expect(off.armed).toBe(false)
-    expect(ufcpress(['ap', 'opt3']).armed).toBe(true)
+    expect(ufcpress(['ap', 'opt3', 'opt3']).ufc.ralt).toBe(false)
+    expect(ufcpress(['opt3'], { func: 'ap' }, 200, true).disabled).toBe(true)
+    expect(ufcpress(['tcn'], {}, 200, true).disabled).toBe(true)
+    expect(ufcpress(['opt3'], { func: 'ap' }, 200, false).disabled).toBe(false) // nothing sounding, nothing to disable
+    expect(ufcpress(['1', 'clr'], { func: 'ap' }, 200, true).disabled).toBe(false) // the keypad is not a mode change
     expect(ufcpress(['tcn', 'opt3']).ufc.ralt).toBe(false)
     expect(ufcpress(['ap', 'opt2']).ufc.ralt).toBe(false)
   })
@@ -318,8 +313,8 @@ describe('the UFC pushbuttons', () => {
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
     expect(source).toMatch(/if\(ch===key_of\("atc"\)\) pit_press\("atc",0\);/)
     expect(source).toMatch(/case "atc": if\(atc_on\) atc_on=false; else if\(ownship\.gearTarget<0\.5 && !on_ground\(\)\)\{ atc_on=true;/)
-    expect(source).toMatch(/if\(agl>400\)\{ law_armed=true; if\(!law_set\) law_index=200; \}/)
-    expect(source).toMatch(/ufc\.func=""; ufc\.ralt=false; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; law_set=false; ufc_dirty=true;/)
+    expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
+    expect(source).toMatch(/ufc\.func=""; ufc\.ralt=false; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true;/)
     expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\);   \/\/ transparent: the painted keypad/)
   })
 })

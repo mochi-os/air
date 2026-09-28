@@ -198,24 +198,25 @@ describe('the state-driven switches', () => {
 // pit_press, the right button up, forward or clockwise and the left the other way.
 // pit_press is lifted from engine.ts and run against stand-ins for the state it works.
 const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
+const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
-  hook_bypass?: string; flap_select?: number; peak_g?: number
+  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
-  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', `
     const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1;
-    const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
-    ${pressfn}
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200;
+    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
+    ${pressfn} ${indexfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index };`)
   return run(action, direction, state) as Pressed
 }
 
@@ -286,6 +287,12 @@ describe('the clickable switches', () => {
     expect(press('gear', 1, { ground: false }).ownship.gearTarget).toBe(1)
     expect(press('gear', -1, { ground: false, gearTarget: 1 }).ownship.gearTarget).toBe(0)
     expect(press('gear', 1, { ground: true }).ownship.gearTarget).toBe(0)
+  })
+
+  it('turn the radar altimeter\'s index knob a notch, the right button clockwise to raise it (NATOPS 2.12.5.4.1)', () => {
+    expect(press('index', 1, { index: 200 }).index).toBe(250)
+    expect(press('index', -1, { index: 200 }).index).toBe(150)
+    expect(press('index', 1, { index: 40 }).index).toBe(50)
   })
 
   it('clear peak g when the reject switch moves into a reject position, and not on the way back to NORM (NATOPS 2.13.4.8.11 item 8)', () => {

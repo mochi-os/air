@@ -10,6 +10,7 @@
 // voice through tools/voice.py and decoded when the context is built. The
 // context starts suspended until the first user gesture; every entry point is
 // safe to call before init or with audio off.
+import altitude from '../assets/voice/altitude.mp3?url'
 import bingo from '../assets/voice/bingo.mp3?url'
 import check_gear from '../assets/voice/check-gear.mp3?url'
 import engine_fire_left from '../assets/voice/engine-fire-left.mp3?url'
@@ -124,6 +125,7 @@ const RECORDINGS: Record<Message, string> = {
   'ENGINE FIRE LEFT': engine_fire_left,
   'ENGINE FIRE RIGHT': engine_fire_right,
   'CHECK GEAR': check_gear,
+  ALTITUDE: altitude,
   'FLIGHT CONTROLS': flight_controls,
   'ENGINE LEFT': engine_left,
   'ENGINE RIGHT': engine_right,

@@ -36,6 +36,8 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'brake.speed': 'Slash',
   gear: 'KeyG',
   hook: 'KeyH',
+  'index.down': 'KeyN', // the radar altimeter's low-altitude index knob, anticlockwise (NATOPS 2.12.5.4.1): for the views without the panel
+  'index.up': 'Shift+KeyN',
   'hook.bypass': 'Shift+KeyH', // the hook bypass switch, CARRIER <-> FIELD: FIELD stops the AOA indexer flashing with the hook up (NATOPS 2.12.10) and drops back to CARRIER when the hook comes down
   atc: 'KeyP',
   lights: 'KeyL',

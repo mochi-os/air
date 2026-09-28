@@ -136,13 +136,20 @@ function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: numbe
     ${block} return { alt:Math.round(alt), radar, flashB };`)
   return run(feet, rdr, silent) as { alt: number; radar: boolean; flashB: boolean }
 }
-function law_call(silent: boolean): { calls: number; armed: boolean } {
-  const block = (/\n\t\t\tlaw_active=closure&&flying;[\s\S]*?else if\(law_index<200&&agl>law_index\) law_armed=true; \} \}\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
-  if (!block) throw new Error('low-altitude warning block not found in engine.ts')
-  const run = new Function('silent', `const closure=false, flying=true, dirty=true, agl=100, RADAR={sil:silent};
-    let law_active=false, law_armed=true, law_index=200, law_calls=0, calls=0; const audio_law=()=>{ calls++; };
-    ${block} return { calls, armed:law_armed };`)
-  return run(silent) as { calls: number; armed: boolean }
+// The primary radar low-altitude warning (NATOPS 2.12.5.1), lifted from the
+// low-altitude block and stepped frame by frame: each frame gives the gear
+// (1 up), the radar altitude, the index, radar silence and whether the UFC
+// disabled the warning before it, and returns whether the whoop sounded.
+interface Frame { gear?: number; agl: number; index?: number; silent?: boolean; disable?: boolean }
+function primary(frames: Frame[]): boolean[] {
+  const block = /\n\t\t\tlaw_active=closure&&flying;[\s\S]*?law_calls\+\+; \}[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('primary low-altitude warning not found in engine.ts')
+  const run = new Function('frames', `const closure=false, flying=true, RADAR={ sil:false }, ownship={ gear:1 };
+    let law_active=false, law_primary=false, law_disabled=false, law_index=200, law_calls=0, sounded=false; const audio_law=()=>{ sounded=true; };
+    return frames.map((f)=>{ ownship.gear=f.gear??1; RADAR.sil=!!f.silent; law_index=f.index??200; const agl=f.agl; sounded=false;
+      if(f.disable) law_disabled=law_disabled||law_primary;
+      ${block} return sounded; });`)
+  return run(frames) as boolean[]
 }
 
 describe('the radar altimeter under radar silence', () => {
@@ -158,10 +165,31 @@ describe('the radar altimeter under radar silence', () => {
     expect(hud_altitude(1000, false, true)).toEqual({ alt: 1000, radar: false, flashB: false })
   })
 
-  it('withholds the primary low-altitude call while silent and keeps the set armed', () => {
-    expect(law_call(false)).toEqual({ calls: 1, armed: false })
-    expect(law_call(true)).toEqual({ calls: 0, armed: true })
+  it('withholds the primary low-altitude warning while silent', () => {
+    expect(primary([{ agl: 100 }])).toEqual([true])
+    expect(primary([{ agl: 100, silent: true }])).toEqual([false])
   })
+})
+
+describe('the primary radar low-altitude warning (NATOPS 2.12.5.1)', () => {
+  it('sounds with the gear up and locked below the index, and keeps sounding', () => {
+    expect(primary([{ agl: 150 }, { agl: 150 }, { agl: 120 }])).toEqual([true, true, true])
+    expect(primary([{ agl: 250 }])).toEqual([false])
+  })
+
+  it('is silent with the gear down or travelling, at any height below the index', () => {
+    expect(primary([{ gear: 0, agl: 150 }, { gear: 0, agl: 20 }])).toEqual([false, false])
+    expect(primary([{ gear: 0.5, agl: 150 }])).toEqual([false])
+  })
+
+  it('stays quiet once disabled until it is reset by a climb above the index', () => {
+    expect(primary([{ agl: 150 }, { agl: 150, disable: true }, { agl: 120 }, { agl: 250 }, { agl: 150 }])).toEqual([true, false, false, false, true])
+  })
+
+  it('resets when the index is turned below the present altitude', () => {
+    expect(primary([{ agl: 150 }, { agl: 150, disable: true }, { agl: 150, index: 100 }, { agl: 150, index: 200 }])).toEqual([true, false, false, true])
+  })
+
 })
 
 // The standby altimeter's barometric setting (NATOPS 2.12.4) and the HUD
@@ -292,5 +320,73 @@ describe('the standby instrument faces', () => {
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
     expect(source).toMatch(/surface_pose\(mesh,STANDBY\.x,0,seat\.y,seat\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
     expect(source).toMatch(/if\(now-\(sb\.last\|\|0\)>100\)\{ sb\.last=now; standby_draw\(sb,ownship\.gauges\|\|\{\}\); \}/)
+  })
+})
+
+// The secondary radar and barometric low-altitude warnings (NATOPS 2.12.5.2,
+// 2.12.5.3): one ALTITUDE, ALTITUDE as the jet descends through the altitude
+// set for each, 0 disabling it. The loop is lifted from the low-altitude block
+// and stepped frame by frame; each frame returns whether the call was made.
+interface Pass { radar?: number; baro: number; silent?: boolean; flying?: boolean }
+function called(frames: Pass[], set: { radar: number; baro: number }): boolean[] {
+  const block = /\n\t\t\t\{ const readings=[\s\S]*?altitude_called=sim_time; \} \} \}/.exec(source)?.[0] ?? ''
+  if (!block) throw new Error('secondary low-altitude warnings not found in engine.ts')
+  const run = new Function('frames', 'set', `const RADAR={ sil:false }, ownship={ pos:{ y:0 } }, altitude_set=set, altitude_armed={ radar:false, baro:false };
+    let altitude_called=-Infinity, sim_time=0, flying=true, agl=0;
+    return frames.map((f)=>{ sim_time++; RADAR.sil=!!f.silent; flying=f.flying??true; agl=f.radar??9999; ownship.pos.y=f.baro/3.28084;
+      ${block} return altitude_called===sim_time; });`)
+  return run(frames, set) as boolean[]
+}
+
+describe('the secondary and barometric low-altitude warnings', () => {
+  const power = { radar: 0, baro: 5000 } // power-up with weight on wheels (2.12.5.2, 2.12.5.3)
+
+  it('call once descending through the barometric altitude, and again only after climbing back above it', () => {
+    expect(called([{ baro: 5500 }, { baro: 5100 }, { baro: 4990 }, { baro: 4800 }, { baro: 4600 }], power)).toEqual([false, false, true, false, false])
+    expect(called([{ baro: 5500 }, { baro: 4990 }, { baro: 5200 }, { baro: 4900 }], power)).toEqual([false, true, false, true])
+  })
+
+  it('stay quiet for a jet levelled at the setting', () => {
+    expect(called([{ baro: 5000 }, { baro: 4999 }, { baro: 5020 }, { baro: 4998 }], power)).toEqual([false, false, false, false])
+  })
+
+  it('leave the radar warning off at its power-up 0, and call it once set', () => {
+    expect(called([{ radar: 700, baro: 9000 }, { radar: 450, baro: 9000 }], power)).toEqual([false, false])
+    expect(called([{ radar: 700, baro: 9000 }, { radar: 450, baro: 9000 }], { radar: 500, baro: 0 })).toEqual([false, true])
+  })
+
+  it('make no radar call while radar silence inhibits the set, and none on the ground', () => {
+    expect(called([{ radar: 700, baro: 9000, silent: true }, { radar: 450, baro: 9000, silent: true }], { radar: 500, baro: 0 })).toEqual([false, false])
+    expect(called([{ baro: 5500, flying: false }, { baro: 4900, flying: false }], power)).toEqual([false, false])
+  })
+
+  it('power up each spawn as the ground power-up leaves them, and speak through the voice queue', () => {
+    expect(source).toMatch(/altitude_set\.radar=0; altitude_set\.baro=5000; altitude_armed\.radar=altitude_armed\.baro=false; altitude_called=-Infinity;/)
+    expect(source).toMatch(/if\(sim_time-altitude_called<1\) active\.add\("ALTITUDE"\);/)
+  })
+})
+
+// The height indicator's knob (NATOPS 2.12.5.4.1): clockwise raises the index,
+// in notches that follow the dial's expanded scale, from 0 to 5,000 ft.
+describe('the low-altitude index knob', () => {
+  const fn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  const step = (index: number, direction: number) => new Function('index', 'direction', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${fn} return index_step(index, direction);`)(index, direction) as number
+
+  it('turns in notches that follow the dial', () => {
+    expect(fn).not.toBe('')
+    expect([step(40, 1), step(200, 1), step(200, -1), step(100, -1), step(600, 1), step(1000, -1), step(1000, 1)]).toEqual([50, 250, 150, 90, 700, 900, 1500])
+  })
+
+  it('stops at 0 and 5,000 ft', () => {
+    expect(step(0, -1)).toBe(0)
+    expect(step(5000, 1)).toBe(5000)
+  })
+
+  it('is the only thing that moves the index, from the face, the keys and nothing else', () => {
+    expect(source).toMatch(/case "index": law_index=index_step\(law_index,d\|\|1\); break;/)
+    expect(source).toMatch(/if\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("index",e\.button===2\?1:-1\); return; \}/)
+    expect(source).toMatch(/if\(ch===key_of\("index\.up"\)\) pit_press\("index",1\);/)
+    expect(source).toMatch(/if\(ch===key_of\("index\.down"\)\) pit_press\("index",-1\);/)
+    expect((source.match(/law_index=/g) ?? []).length).toBe(3) // its declaration, the knob, and the spawn's pre-flight setting
   })
 })

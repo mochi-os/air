@@ -13,12 +13,14 @@
 
 // Every message, highest priority first. NATOPS orders the fire warnings
 // (2.14.1: ENGINE FIRE LEFT, then RIGHT) and gives the GPWS calls priority over
-// the other cues (2.17.4.3.1); the cautions follow the severity of what they
-// announce.
+// the other cues (2.17.4.3.1); ALTITUDE is a warning (2.17.3), the single call of
+// the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3);
+// the cautions follow the severity of what they announce.
 export const MESSAGES = [
   'ENGINE FIRE LEFT',
   'ENGINE FIRE RIGHT',
   'CHECK GEAR',
+  'ALTITUDE',
   'FLIGHT CONTROLS',
   'ENGINE LEFT',
   'ENGINE RIGHT',
