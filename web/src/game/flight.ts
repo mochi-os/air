@@ -116,6 +116,8 @@ interface Core {
   ): string
   stores(mask: number): string
   catalog(aircraft: string): string
+  wake_shed?(count: number, poses: Uint8Array): string
+  wake_state?(): string
   approach(
     x: number,
     y: number,
@@ -937,6 +939,61 @@ export function round_drop(slot: number): void {
   if (!core) return
   round_input[0] = slot
   core.round_drop(round_input_bytes)
+}
+
+// A remote's pose, as the pilot's core lays its wake: its slot, where it is,
+// its attitude (w, x, y, z), its velocity over the ground and its load factor.
+export interface WakePose {
+  slot: number
+  position: readonly [number, number, number]
+  attitude: readonly [number, number, number, number]
+  velocity: readonly [number, number, number]
+  g: number
+}
+const WAKE_POSE = 12 // words per pose, the order the core reads them in
+let wake_poses = new Float64Array(WAKE_POSE * 8)
+
+// flight_wake_shed lays a match's remote jets' wakes in the pilot's core from
+// their poses, so the pilot flies through them as the server's own model of
+// his jet does. The core lays a mark no more often than five times a second
+// however often it is called.
+export function flight_wake_shed(poses: readonly WakePose[]): void {
+  if (!core?.wake_shed || poses.length === 0) return
+  if (wake_poses.length < poses.length * WAKE_POSE)
+    wake_poses = new Float64Array(poses.length * WAKE_POSE)
+  poses.forEach((p, k) => {
+    wake_poses.set(
+      [p.slot, ...p.position, ...p.attitude, ...p.velocity, p.g],
+      k * WAKE_POSE
+    )
+  })
+  const error = core.wake_shed(
+    poses.length,
+    new Uint8Array(wake_poses.buffer, 0, poses.length * WAKE_POSE * 8)
+  )
+  if (error) console.error('flight wake:', error)
+}
+
+// flight_wake reports what the pilot's core was handed on its last frame - how
+// many pieces of wake, and the air they induce at the jet's CG, m/s - and how
+// many jets have a wake laid in it. Null before the core is up.
+export function flight_wake(): {
+  pieces: number
+  swirl: [number, number, number]
+  trails: number
+} | null {
+  const raw = core?.wake_state?.()
+  if (!raw) return null
+  const parsed = JSON.parse(raw) as {
+    Pieces: number
+    Swirl: number[]
+    Trails: number
+  }
+  return {
+    pieces: parsed.Pieces,
+    swirl: [parsed.Swirl[0], parsed.Swirl[1], parsed.Swirl[2]],
+    trails: parsed.Trails,
+  }
 }
 
 // flight_stores sets the attached-store bitmask over the airframe's fitment
