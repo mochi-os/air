@@ -130,10 +130,10 @@ function radalt_face(agl: number, index: number, silent: boolean): { off: boolea
   return run(agl, index, silent) as { off: boolean; lamp: boolean }
 }
 function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: number; radar: boolean; flashB: boolean } {
-  const block = /\n\tlet alt=baro, radar=false, flashB=false;[\s\S]*?else flashB=true; \}[^\n]*\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('HUD altitude source block not found in engine.ts')
-  const run = new Function('feet', 'rdr', 'silent', `const ownship={pos:{x:0,y:feet/3.28084,z:0}}, baro=feet, ground_height=()=>0, alt_radar=rdr, RADAR={sil:silent}, radalt_inhibited=()=>RADAR.sil;
-    ${block} return { alt:Math.round(alt), radar, flashB };`)
+  const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
+  if (!reading) throw new Error('altitude_reading not found in engine.ts')
+  const run = new Function('feet', 'rdr', 'silent', `const ownship={pos:{x:0,y:feet/3.28084,z:0}}, baro_error=()=>0, ground_height=()=>0, alt_radar=rdr, RADAR={sil:silent}, radalt_inhibited=()=>RADAR.sil;
+    ${reading} const r=altitude_reading(); return { alt:Math.round(r.feet), radar:r.radar, flashB:r.fallback };`)
   return run(feet, rdr, silent) as { alt: number; radar: boolean; flashB: boolean }
 }
 // The primary radar low-altitude warning (NATOPS 2.12.5.1), lifted from the
@@ -171,6 +171,8 @@ describe('the radar altimeter under radar silence', () => {
     expect(hud_altitude(1000, true, false)).toEqual({ alt: 1000, radar: true, flashB: false })
     expect(hud_altitude(1000, true, true)).toEqual({ alt: 1000, radar: false, flashB: true })
     expect(hud_altitude(1000, false, true)).toEqual({ alt: 1000, radar: false, flashB: false })
+    expect(hud_altitude(6000, true, false)).toEqual({ alt: 6000, radar: false, flashB: true }) // above the set's 5,000 ft
+    expect(source).toMatch(/\n\tconst reading=altitude_reading\(\), alt=reading\.feet, radar=reading\.radar, flashB=reading\.fallback;/) // the HUD reads it, as the EADI does
   })
 
   it('withholds the primary low-altitude warning while silent', () => {
@@ -609,7 +611,7 @@ describe('the radar altimeter height indicator', () => {
     // the gates the power joins: the primary warning, the secondary warning's reading and the HUD's radar altitude
     expect(source).toMatch(/const below=flying&&\(ownship\.gear\?\?1\)>0\.98&&!radalt_inhibited\(\)&&agl<law_index;/)
     expect(source).toMatch(/radar:\(!radalt_inhibited\(\)&&agl<=5000\)\?agl:null/)
-    expect(source).toMatch(/if\(agl<=5000&&!radalt_inhibited\(\)\)\{ alt=Math\.max\(agl,0\); radar=true; \}/)
+    expect(source).toMatch(/if\(agl<=5000&&!radalt_inhibited\(\)\) return \{ feet:Math\.max\(agl,0\), radar:true, fallback:false \};/)
   })
 
   it('sounds the familiarisation whoop once at ground power-up, and a spawn on the deck or the runway is one', () => {

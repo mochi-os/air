@@ -106,8 +106,9 @@ describe('the instrument cluster rides the nose', () => {
 describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
-  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0;
-    const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0;
+  const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
+  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil;
+    const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0; ${reading}
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];
     const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):k==='strokeRect'?(x,y,w,h)=>rects.push([x,y,w,h]):k==='measureText'?(s)=>({ width:7*String(s).length }):()=>{}, set:()=>true });
