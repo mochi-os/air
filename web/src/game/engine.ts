@@ -5688,6 +5688,7 @@ function cautions_update(){
 	const active=new Set();
 	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
 	if(gpws.gear) active.add("CHECK GEAR");
+	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
 	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
@@ -5702,10 +5703,10 @@ let altitude_called=-Infinity;   // sim time of the last ALTITUDE, ALTITUDE, whi
 function index_step(index,direction){ const notch=v=>v<100?10:v<500?50:v<1000?100:500;
 	return THREE.MathUtils.clamp(direction>0?index+notch(index):index-notch(index-1),0,5000); }
 let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
-const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
+const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false,call:""};   // the GPWS: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, whether CHECK GEAR is due, and the recovery call a warning makes ("" with none)
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
-let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
+let law_active=false;   // the GPWS warning (NATOPS 2.17.5) is live this frame: its recovery call (gpws.call) and the HUD's recovery arrow (#243 - the user flew into the sea padlocked, gear up, in silence)
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity
 // (#239) - one connected clumped plume, darkest and warmest at the head, paling
@@ -6840,7 +6841,7 @@ function fly_player(dt){
 			audio_prev.droop=droop; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // the radar altimeter's height above the surface, ft, for its warnings and the GPWS escape model
 			const sink=-(ownship.vely??0);   // m/s down
-			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
+			// The GPWS warning models the ESCAPE, as the real one does (#94, NATOPS 2.17.5.2):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
 			// early — consumed against the altitude available. The old rule
@@ -6849,7 +6850,7 @@ function fly_player(dt){
 			// already needed 5,200: a time-of-sink rule cannot lead a steep,
 			// accelerating dive, and the pilot heard it with the arithmetic
 			// already lost.
-			const closure=(()=>{ if((ownship.gearTarget??0)<=0.5||sink<=10) return false;
+			const closure=(()=>{ if(sink<=10) return false;   // any gear position: the GPWS protects the approach too (2.17.5)
 				const speed=Math.max(ownship.speed,50), steep=Math.min(sink/speed,1), level=Math.sqrt(1-steep*steep);
 				const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level);
 				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
@@ -6864,9 +6865,14 @@ function fly_player(dt){
 				if(-sink>5.08&&agl<500&&slow){ if(gpws.climb<0) gpws.climb=sim_time; else if(sim_time-gpws.climb>5) gpws.waveoff=sim_time; }
 				else gpws.climb=-1;
 				gpws.gear=flying&&agl<150&&sink>0.5&&slow&&(ownship.gear??1)>=0.02&&sim_time-Math.max(gpws.wheels,gpws.waveoff)>60; }
-			// law_active is the GPWS escape warning (NATOPS 2.17.5, #243) and carries its
-			// whole presentation: the repeating aural (#47) and the break-X.
-			law_active=closure&&flying;
+			// law_active is the GPWS warning (NATOPS 2.17.5, #243): no protection for the first
+			// 6 seconds after weight off wheels. It speaks the recovery the jet needs first
+			// (2.17.5.4) - ROLL LEFT or RIGHT past 45 degrees of bank, the shorter way to wings
+			// level, then POWER below 210 knots or PULL UP - and the HUD shows the recovery
+			// arrow (2.17.5.3). It does not use the radar altimeter's whoop.
+			law_active=closure&&flying&&sim_time-gpws.wheels>=6;
+			{ const bank=-Math.atan2(ownship.right.y,ownship.up.y)/D2R, knots=(ownship.cas??ownship.speed)*1.94384;   // bank + = right wing down
+				gpws.call=!law_active?"":Math.abs(bank)>45?(bank>0?"ROLL LEFT":"ROLL RIGHT"):knots<210?"POWER":"PULL UP"; }
 			// The primary radar low-altitude warning (2.12.5.1): gear up and locked and the
 			// radar altitude below the index, the whoop repeating until it is reset - a climb
 			// above the index, or the index turned below the present altitude - or disabled
@@ -6875,7 +6881,7 @@ function fly_player(dt){
 			const below=flying&&(ownship.gear??1)>0.98&&!RADAR.sil&&agl<law_index;   // the index stops at 5,000 ft, where the set's reading ends
 			if(!below) law_disabled=false;
 			law_primary=below&&!law_disabled;
-			if(law_active||law_primary){ audio_law(); law_calls++; }   // repeats while either holds
+			if(law_primary){ audio_law(); law_calls++; }   // repeats while it holds
 			// The secondary radar and barometric warnings (2.12.5.2, 2.12.5.3): one ALTITUDE,
 			// ALTITUDE as the jet descends through the altitude set for each; 0, which no
 			// reading goes below, disables it. Each arms 50 ft above its altitude - the game's
@@ -7750,6 +7756,13 @@ function hud_fit(){ const glass=ownship.group.userData.glass, field=glass&&glass
 	const ppd=HH/camera.fov, ppdv=HH/45, k=ppd/ppdv; if(!field) return k;
 	const up=Math.max(ppdv,172-2.75*ppdv), down=12.6*ppdv+8, half=4.2*ppdv+112;   // the layout's reach from the waterline datum: the A/A heading labels above, the NAV weapon word below, the altitude box's R suffix to the side
 	return Math.min(k,0.97*field.top*ppd/up,0.97*field.floor*ppd/down,0.97*field.side*ppd/half); }
+// gpws_arrow draws the GPWS recovery cue (NATOPS 2.17.5.3, figure 2-41): a steady
+// outlined arrow at the HUD centre, perpendicular to the horizon and pointing the
+// way to pull, up the ladder, so it turns with the bank (+ right wing down).
+function gpws_arrow(x,cx,cy,dpp,bank){ const tip=4.5*dpp, neck=1.0*dpp, head=2.6*dpp, shaft=1.2*dpp, tail=3.5*dpp;
+	x.save(); x.translate(cx,cy); x.rotate(-bank); x.setLineDash([]); x.lineWidth=2;
+	x.beginPath(); x.moveTo(0,-tip); x.lineTo(head,-neck); x.lineTo(shaft,-neck); x.lineTo(shaft,tail); x.lineTo(-shaft,tail); x.lineTo(-shaft,-neck); x.lineTo(-head,-neck); x.closePath(); x.stroke();
+	x.restore(); }
 function draw_hud(){
 	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
@@ -7915,6 +7928,7 @@ function draw_hud(){
 		const reach=2.2*ppd, lx=fpm[0]+dev.az*reach, gy=fpm[1]+dev.gs*reach;
 		hctx.beginPath(); hctx.moveTo(lx,fpm[1]-reach); hctx.lineTo(lx,fpm[1]+reach); hctx.stroke();
 		hctx.beginPath(); hctx.moveTo(fpm[0]-reach,gy); hctx.lineTo(fpm[0]+reach,gy); hctx.stroke(); } }
+	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	}
 	if(glass) hctx.restore();
 
@@ -8285,13 +8299,13 @@ function draw_hud(){
 	// 2026-09-11: "highly distracting, and completely unrealistic"). They were
 	// #243's answer to a padlocked gear-up flight into the sea in silence, and
 	// the silence was the real defect — but the remedy was invented, not
-	// modelled. The Hornet's low-altitude indication is a warning light on the
-	// radar altimeter's own face; nothing goes on the HUD, and an X across a
-	// Hornet display means the data is invalid, which is close to the opposite
-	// of what this was saying. The warning is the AURAL, as it is in the jet:
-	// one call descending through the index with the gear down, repeating
-	// while the escape margin is gone. Do not put it back on the glass without
-	// a modelled instrument to put it on.
+	// modelled. The radar altimeter's low-altitude indication is a warning light
+	// on its own face, and an X across a Hornet display means the data is
+	// invalid, which is close to the opposite of what this was saying. The
+	// radar and barometric warnings are AURAL, as they are in the jet (the
+	// whoop and ALTITUDE, ALTITUDE), and the one HUD cue is the GPWS recovery
+	// arrow NATOPS gives it (2.17.5.3, gpws_arrow). Do not put anything else
+	// back on the glass without a modelled instrument to put it on.
 	if(hit_flash>0){   // rounds are landing on us (#239): an edge-weighted vignette, not a flat wash —
 		// the pain lives at the periphery and the pilot keeps the picture. In single
 		// player the shooter is known, so the vignette centre shifts AWAY from the

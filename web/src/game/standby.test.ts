@@ -140,16 +140,24 @@ function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: numbe
 // low-altitude block and stepped frame by frame: each frame gives the gear
 // (1 up), the radar altitude, the index, radar silence and whether the UFC
 // disabled the warning before it, and returns whether the whoop sounded.
-interface Frame { gear?: number; agl: number; index?: number; silent?: boolean; disable?: boolean }
-function primary(frames: Frame[]): boolean[] {
-  const block = /\n\t\t\tlaw_active=closure&&flying;[\s\S]*?law_calls\+\+; \}[^\n]*\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('primary low-altitude warning not found in engine.ts')
-  const run = new Function('frames', `const closure=false, flying=true, RADAR={ sil:false }, ownship={ gear:1 };
-    let law_active=false, law_primary=false, law_disabled=false, law_index=200, law_calls=0, sounded=false; const audio_law=()=>{ sounded=true; };
-    return frames.map((f)=>{ ownship.gear=f.gear??1; RADAR.sil=!!f.silent; law_index=f.index??200; const agl=f.agl; sounded=false;
+// The GPWS lines that open the same block run too: escape is the GPWS recovery
+// model's verdict, bank + is right wing down, knots the calibrated airspeed and
+// wheels the seconds since weight off wheels.
+interface Frame { gear?: number; agl: number; index?: number; silent?: boolean; disable?: boolean; escape?: boolean; bank?: number; knots?: number; wheels?: number }
+interface Heard { whoop: boolean; gpws: boolean; call: string }
+const lowblock = /\n\t\t\tlaw_active=closure&&flying[^\n]*\n[\s\S]*?law_calls\+\+; \}[^\n]*\n/.exec(source)?.[0] ?? ''
+function warned(frames: Frame[]): Heard[] {
+  if (!lowblock) throw new Error('low-altitude warnings not found in engine.ts')
+  const run = new Function('frames', `const D2R=Math.PI/180, flying=true, sim_time=100, RADAR={ sil:false }, ownship={ gear:1, cas:0, right:{ y:0 }, up:{ y:1 } }, gpws={ wheels:-Infinity, call:"" };
+    let closure=false, law_active=false, law_primary=false, law_disabled=false, law_index=200, law_calls=0, sounded=false; const audio_law=()=>{ sounded=true; };
+    return frames.map((f)=>{ ownship.gear=f.gear??1; RADAR.sil=!!f.silent; law_index=f.index??200; const agl=f.agl; sounded=false; closure=!!f.escape;
+      const r=(f.bank??0)*D2R; ownship.right.y=-Math.sin(r); ownship.up.y=Math.cos(r); ownship.cas=(f.knots??300)/1.94384; gpws.wheels=f.wheels===undefined?-Infinity:sim_time-f.wheels;
       if(f.disable) law_disabled=law_disabled||law_primary;
-      ${block} return sounded; });`)
-  return run(frames) as boolean[]
+      ${lowblock} return { whoop:sounded, gpws:law_active, call:gpws.call }; });`)
+  return run(frames) as Heard[]
+}
+function primary(frames: Frame[]): boolean[] {
+  return warned(frames).map((h) => h.whoop)
 }
 
 describe('the radar altimeter under radar silence', () => {
@@ -388,5 +396,67 @@ describe('the low-altitude index knob', () => {
     expect(source).toMatch(/if\(ch===key_of\("index\.up"\)\) pit_press\("index",1\);/)
     expect(source).toMatch(/if\(ch===key_of\("index\.down"\)\) pit_press\("index",-1\);/)
     expect((source.match(/law_index=/g) ?? []).length).toBe(3) // its declaration, the knob, and the spawn's pre-flight setting
+  })
+})
+
+// The GPWS (NATOPS 2.17.5): its recovery model works in any gear position, stays
+// out of the first 6 seconds after weight off wheels, and speaks the recovery the
+// jet needs first (2.17.5.4) rather than sounding the radar altimeter's whoop.
+describe('the GPWS warning', () => {
+  it('calls ROLL LEFT or RIGHT past 45 degrees of bank, the shorter way to wings level', () => {
+    const call = (bank: number) => warned([{ agl: 800, escape: true, bank }])[0].call
+    expect([call(60), call(-60), call(170), call(-170)]).toEqual(['ROLL LEFT', 'ROLL RIGHT', 'ROLL LEFT', 'ROLL RIGHT'])
+    expect(call(45)).toBe('PULL UP')
+  })
+
+  it('calls POWER below 210 knots and PULL UP at or above it', () => {
+    expect(warned([{ agl: 800, escape: true, knots: 180 }])[0].call).toBe('POWER')
+    expect(warned([{ agl: 800, escape: true, knots: 210 }])[0].call).toBe('PULL UP')
+  })
+
+  it('speaks instead of whooping, and warns with the gear down too', () => {
+    expect(warned([{ agl: 800, escape: true }])[0]).toEqual({ whoop: false, gpws: true, call: 'PULL UP' })
+    expect(warned([{ agl: 800, escape: true, gear: 0 }])[0].gpws).toBe(true)
+    expect(warned([{ agl: 800 }])[0]).toEqual({ whoop: false, gpws: false, call: '' })
+  })
+
+  it('gives no protection in the first 6 seconds after weight off wheels', () => {
+    expect(warned([{ agl: 800, escape: true, wheels: 3 }])[0]).toMatchObject({ gpws: false, call: '' })
+    expect(warned([{ agl: 800, escape: true, wheels: 7 }])[0].gpws).toBe(true)
+  })
+
+  it('runs its recovery model whatever the gear', () => {
+    const model = /const closure=\(\(\)=>\{[\s\S]*?\}\)\(\);/.exec(source)?.[0] ?? ''
+    expect(model).not.toBe('')
+    const escape = (gearTarget: number) => new Function('gearTarget', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+      const ownship={ gearTarget, speed:200, up:{ y:1 } }, sink=40, agl=250; ${model} return closure;`)(gearTarget) as boolean
+    expect(escape(0)).toBe(true) // gear down, diving at 250 ft
+    expect(escape(1)).toBe(true)
+  })
+})
+
+// The recovery arrow (NATOPS 2.17.5.3, figure 2-41): a steady arrow at the HUD
+// centre, perpendicular to the horizon and pointing the way to pull, so it turns
+// with the bank. The draw runs against a canvas stand-in that tracks the transform.
+describe('the GPWS recovery arrow', () => {
+  const fn = /\nfunction gpws_arrow\(x,cx,cy,dpp,bank\)\{[\s\S]*?\n\tx\.restore\(\); \}\n/.exec(source)?.[0] ?? ''
+  const tip = (bank: number) => new Function('bank', `let a=1,b=0,c=0,d=1,e=0,f=0; const tips=[];
+    const x={ save(){}, restore(){}, setLineDash(){}, beginPath(){}, lineTo(){}, closePath(){}, stroke(){}, set lineWidth(v){},
+      translate(dx,dy){ e+=a*dx+c*dy; f+=b*dx+d*dy; }, rotate(t){ const k=Math.cos(t), s=Math.sin(t); [a,b,c,d]=[a*k+c*s, b*k+d*s, c*k-a*s, d*k-b*s]; },
+      moveTo(px,py){ tips.push([a*px+c*py+e, b*px+d*py+f]); } };
+    ${fn} gpws_arrow(x, 400, 300, 10, bank); return tips[0];`)(bank) as number[]
+
+  it('points up the ladder when level and to the sky side in a bank', () => {
+    expect(fn).not.toBe('')
+    const [x0, y0] = tip(0)
+    expect(x0).toBeCloseTo(400, 6)
+    expect(y0).toBeCloseTo(300 - 45, 6)
+    const [x1, y1] = tip(Math.PI / 2) // right wing down 90 degrees: the sky is to the left
+    expect(x1).toBeCloseTo(400 - 45, 6)
+    expect(y1).toBeCloseTo(300, 6)
+  })
+
+  it('is drawn at the HUD optical centre while the warning holds', () => {
+    expect(source).toMatch(/if\(law_active\)\{ hctx\.strokeStyle=GR; gpws_arrow\(hctx,centre\[0\],centre\[1\],HH\/45\*hs,-Math\.atan2\(ownship\.right\.y,ownship\.up\.y\)\); \}/)
   })
 })
