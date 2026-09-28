@@ -49,7 +49,7 @@ describe('the HUD face', () => {
     const overlays = fonts.filter(([f]) => !f.endsWith(FACE))
     for (const [, line] of overlays) expect(line).toMatch(/#ff5040|#7fc8ff|#8fa0aa|ui-monospace/)
     // the sites the references were measured on
-    for (const anchor of [/\+"ET",ax-84/, /String\(Math\.round\(kcas\)\)/, /hctx\.fillText\(String\(thousands\)/, /hctx\.fillText\("c",right/, /fillText\(translate\("GUN"\)/]) {
+    for (const anchor of [/hctx\.fillText\(text,ax-84/, /String\(Math\.round\(kcas\)\)/, /hctx\.fillText\(String\(thousands\)/, /hctx\.fillText\("c",right/, /fillText\(translate\("GUN"\)/]) {
       const at = source.search(anchor)
       expect(at).toBeGreaterThan(0)
       const set = [...source.slice(0, at).matchAll(/hctx\.font="([^"]+)"/g)].pop()?.[1] ?? ''
