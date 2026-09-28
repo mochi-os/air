@@ -227,7 +227,7 @@ describe('the radar page click (rdr_face) and its UNDES bezel (rdr_press)', () =
     // snap tolerance, so both the brick and a matching contact are needed.
     const r = rig([{ id: 'bandit', x: 0, y: 0, z: -20000 }])
     r.RADAR.mode = 'rws'
-    r.RADAR.bricks = [{ id: 'bandit', azimuth: 0, range: 20000, at: 0 }]
+    r.RADAR.bricks = [{ id: 'bandit', azimuth: 0, range: 20000, at: 0, x: 0, z: -20000 }]
     r.clock(30)
     r.rdrClick(0, 20000)
     expect(r.RADAR.stt).toBe('bandit')
@@ -378,5 +378,78 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     expect(lift('acquire_acm')).toMatch(/\tdesignated=id;\n\tif\(radar_lock\(id\)/)
     for (const name of ['radar_designate', 'radar_lock', 'radar_undesignate', 'acquire_press', 'undesignate_press', 'acquire_acm'])
       expect(lift(name)).not.toMatch(/MULTIPLAYER/) // nothing kept for a match alone
+  })
+})
+
+describe('the known picture: what the SA page and the map draw', () => {
+  // known lifted with the bandit alone, or a match with the pilot on blue, a
+  // blue teammate (slot 2) and a red hostile (slot 3); the pilot at the origin.
+  type Mark = { x: number; z: number; fx: number; fz: number; team: string; name: string }
+  function page(multiplayer: boolean, night = false, far = 100000) {
+    return new Function(
+      'Radar',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=${multiplayer}, net=MULTIPLAYER?{ slot:1, teams:new Map([[1,'blue'],[2,'blue'],[3,'red']]) }:null;
+       const cfg={ tod:${night}?'night':'day' }, ownship={ pos:{ x:0, y:0, z:0 } }, wrap_axis=(v)=>v;
+       const jets=MULTIPLAYER
+         ?[{ id:2, x:100, y:0, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
+         :[{ id:'bandit', x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'', team:'' }];
+       const contacts=()=>jets;
+       ${lift('known').replace(/^function known/, 'const SIGHT=12000; function known')}
+       return { RADAR, known };`
+    )(Radar) as { RADAR: Radar; known(): Mark[] }
+  }
+  const track = (id: number | string, z: number, at = 0) => ({ id, x: 0, y: 0, z, vx: 0, vy: 0, vz: 250, at, hits: 1 })
+  const paint = (id: number | string, z: number, at: number) => ({ id, azimuth: 0, range: -z, at, x: 0, z })
+
+  it('shows no bandit beyond sight that the radar does not hold', () => {
+    expect(page(false).known()).toEqual([])
+  })
+  it('shows a hostile close enough to see as it is, unnamed, radar or none', () => {
+    expect(page(false, false, 11000).known()).toEqual([{ x: 0, z: -11000, fx: 0, fz: 1, team: '', name: '' }])
+    expect(page(false, false, 13000).known()).toEqual([])
+  })
+  it("names no hostile in sight in a match: the eyes read no callsign", () => {
+    expect(page(true, false, 11000).known().map((m) => m.name)).toEqual(['two', ''])
+  })
+  it('sees half as far at night', () => {
+    expect(page(false, true, 7000).known()).toEqual([])
+    expect(page(false, true, 5000).known()).toHaveLength(1)
+  })
+  it('draws a trackfile where its last fix, carried on by its velocity, puts it, unnamed', () => {
+    const p = page(false)
+    p.RADAR.tracks = [track('bandit', -80000)]
+    p.RADAR.time = 4
+    expect(p.known()).toEqual([{ x: 0, z: -79000, fx: 0, fz: 250, team: '', name: '' }])
+  })
+  it('draws a seen hostile once, as seen, over its trackfile', () => {
+    const p = page(false, false, 9000)
+    p.RADAR.tracks = [track('bandit', -9500)]
+    expect(p.known()).toEqual([{ x: 0, z: -9000, fx: 0, fz: 1, team: '', name: '' }])
+  })
+  it('marks an RWS paint without a heading: its newest paint, and none beside a trackfile', () => {
+    const p = page(false)
+    p.RADAR.bricks = [paint('bandit', -90000, 0), paint('bandit', -89500, 2)]
+    expect(p.known()).toEqual([{ x: 0, z: -89500, fx: 0, fz: 0, team: '', name: '' }])
+    p.RADAR.tracks = [track('bandit', -89000, 2)]
+    p.RADAR.time = 2
+    expect(p.known().map((m) => m.fz)).toEqual([250])
+  })
+  it("shows a match's teammate by datalink at any range, named, and a hostile only as tracked, unnamed", () => {
+    const p = page(true)
+    expect(p.known().map((m) => m.name)).toEqual(['two'])
+    p.RADAR.tracks = [track(3, -30000), track(2, -50000)] // the teammate's own trackfile adds nothing
+    expect(p.known()).toEqual([
+      { x: 100, z: -50000, fx: 1, fz: 0, team: 'blue', name: 'two' },
+      { x: 0, z: -30000, fx: 0, fz: 250, team: 'red', name: '' },
+    ])
+  })
+  it('draws the SA page and the map from it, a paint with no heading as a plain mark', () => {
+    const sa = lift('ddi_sa'), map = lift('draw_map')
+    expect(sa).toContain('for(const c of known()) jet(c.x,c.z,c.fx,c.fz,')
+    expect(sa).toMatch(/if\(!fx&&!fz\)\{ [^\n]*x\.arc\(dx,dz,6,0,Math\.PI\*2\); x\.stroke\(\); return; \}/)
+    expect(map).toContain('for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,')
+    expect(map).toMatch(/if\(!fx&&!fz\)\{ [^\n]*mctx\.arc\(x2,y2,5,0,Math\.PI\*2\); mctx\.stroke\(\); return; \}/)
+    expect(map).not.toMatch(/remotes\.entries\(\)|bandit\.pos/)
   })
 })

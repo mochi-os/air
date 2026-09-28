@@ -27,6 +27,8 @@ export type Brick = {
   azimuth: number
   range: number
   at: number
+  x: number // where the paint put the target, for the SA page's plan view
+  z: number
 }
 export type Track = {
   id: number | string
@@ -315,6 +317,8 @@ export class Radar {
           azimuth: g.azimuth,
           range: g.range,
           at: this.time,
+          x: target.x,
+          z: target.z,
         })
       else this.fix(target)
     }

@@ -280,7 +280,9 @@ describe('the standby instrument faces', () => {
     const angle = 242 * Math.PI / 180 // ASI_DIAL: 300 knots
     const d = face('asi_face', angle)
     expect(has(d.rotate, angle)).toBe(true)
-    for (const label of ['100', '300', '800']) expect(d.text).toContain(label)
+    // FO-5 item 27: hundreds of knots, .6 to 8, and KNOTS X 100 about the hub
+    for (const label of ['.6', '1', '1.5', '2', '3', '8', 'KNOTS', 'X 100']) expect(d.text).toContain(label)
+    for (const label of ['100', '300', '800']) expect(d.text).not.toContain(label)
   })
 
   it('turn the altimeter pointer once per 1,000 ft and show the thousands and the baro setting', () => {
@@ -302,10 +304,29 @@ describe('the standby instrument faces', () => {
   })
 
   it('put the rate of climb needle at nine o\'clock plus the dial angle', () => {
-    const angle = 44 * Math.PI / 180 // VSI_DIAL: 1,000 ft/min
+    const angle = 60 * Math.PI / 180 // VSI_DIAL: 1,000 ft/min
     const d = face('vsi_face', angle)
     expect(has(d.rotate, -Math.PI / 2 + angle)).toBe(true)
     for (const label of ['0', '1', '6']) expect(d.text).toContain(label)
+  })
+
+  // FO-5 item 29, measured at 600 dpi from the dial's fitted centre, the climb and
+  // dive sides averaged: 2,000 ft/min at twelve o'clock, 6,000 short of three.
+  it('put the climb scale where FO-5 draws it', () => {
+    const consts = /\nconst ASI_DIAL=[^\n]*\nconst VSI_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
+    const degrees = (fpm: number) => new Function('fpm', `const D2R=Math.PI/180; ${consts} ${lift('dial')} return dial(VSI_DIAL,fpm)/D2R;`)(fpm) as number
+    expect(degrees(500)).toBeCloseTo(35.5, 1)
+    expect(degrees(1000)).toBeCloseTo(60, 1)
+    expect(degrees(2000)).toBeCloseTo(94, 1)
+    expect(degrees(-4000)).toBeCloseTo(-140.5, 1)
+    expect(degrees(6000)).toBeCloseTo(171, 1)
+  })
+
+  it('tick the climb scale every 100 ft/min to 1,000 and every 500 beyond, lettered as FO-5 is', () => {
+    const d = face('vsi_face', 0)
+    expect(d.strokes).toBe(41) // 20 each side and the zero
+    expect(d.text).toEqual(expect.arrayContaining(['UP', 'DOWN', '1000 FT PER MN']))
+    expect(d.text.filter((s) => s === '6')).toHaveLength(1) // one 6, at three o'clock between the climb and dive ticks
   })
 
   it('roll the ball against the bank and slide it with the pitch, as the ADI page does', () => {
