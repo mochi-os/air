@@ -2229,7 +2229,7 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 		x.beginPath(); x.moveTo(tx,ty-9); x.lineTo(tx+7,ty); x.lineTo(tx,ty+9); x.lineTo(tx-7,ty); x.closePath(); x.stroke(); }
 	const dx=CARRIER.x-ownship.pos.x, dz=CARRIER.z-ownship.pos.z;
 	const brg=Math.atan2(dx,-dz), rel=brg-hdg;   // world bearing in the heading convention, relative to the nose
-	x.rotate(rel); x.strokeStyle="#ffd24a"; x.lineWidth=5;   // TACAN pointer to the boat
+	x.rotate(rel); x.strokeStyle=display==="center"?"#ffd24a":"#39e07a"; x.lineWidth=5;   // TACAN pointer to the boat: green on the monochrome DDIs, colour only on the AMPCD
 	x.beginPath(); x.moveTo(0,-196); x.lineTo(0,-140); x.stroke();
 	x.beginPath(); x.moveTo(-12,-172); x.lineTo(0,-196); x.lineTo(12,-172); x.stroke();
 	x.restore();

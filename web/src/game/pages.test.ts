@@ -18,14 +18,14 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][] }
+interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
   const run = new Function(`const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     ${lift('ddi_legend')} ${lift(name)}
-    const text=[], rects=[], arcs=[], rotate=[], moves=[];
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>moves.push([mx,my]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:()=>true });
-    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves };`)
+    const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[]; let style='';
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>{ moves.push([mx,my]); styled.push([style,mx,my]); }; if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:(t,k,v)=>{ if(k==='strokeStyle') style=v; return true; } });
+    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves, styled };`)
   return run() as Drawn
 }
 // The bank gauge every attitude display reads, lifted from the gauges block and
@@ -136,6 +136,15 @@ describe('the HSI page', () => {
     expect(at(d, 'ZTOD 12:34:56')).toEqual([24, 458])
     expect(at(d, 'ET 0:12:34')).toEqual([488, 458])
     expect(at(d, 'T')).toEqual([256, 52])
+  })
+
+  // The C's DDIs are monochrome green; only the centre AMPCD is colour. The
+  // TACAN pointer starts at (0,-196) in the pointer's rotated frame.
+  it('draws the TACAN pointer green on a DDI and in colour only on the AMPCD', () => {
+    const pointer = (display: string) => page('ddi_hsi', setup, display).styled.find(([, mx, my]) => mx === 0 && my === -196)?.[0]
+    expect(pointer('left')).toBe('#39e07a')
+    expect(pointer('right')).toBe('#39e07a')
+    expect(pointer('center')).toBe('#ffd24a')
   })
 })
 
