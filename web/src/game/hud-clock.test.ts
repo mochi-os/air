@@ -121,9 +121,11 @@ describe('the lower-right data block', () => {
     const text = new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
       const atc_on=false, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0;
       const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 } }, SHIP={ ident:'NIM' }, wrap_axis=(v)=>v;
+      ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
       const marshal={ push:400, commenced:false }, clock_text=(s)=>String(s);
       ${data}
       return text;`)() as string[]
     expect(text).toEqual(['10.0 NIM'])
+    expect(data).toMatch(/const slant=tacan\(\)\.slant\/1852;/) // the HSI's TACAN fix
   })
 })

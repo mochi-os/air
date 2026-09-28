@@ -222,26 +222,142 @@ describe('the engine monitor display', () => {
   })
 })
 
+// The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
+// rose are recorded relative to the aircraft (the translated frame); the aircraft
+// symbol and the text on the page.
+interface Hsi { altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string }
+function hsi(o: Hsi = {}, display = 'left'): Drawn {
+  const deg = (v: number | null | undefined, d: number) => v === null ? 'null' : `${(v ?? d)}*D2R`
+  return page('ddi_hsi', `const ownship={ pos:{x:0,y:${o.altitude ?? 1000},z:0}, speed:${o.speed ?? 100}, gauges:{ heading:${deg(o.heading, 0)}, ground:${o.ground ?? 200}, track:${deg(o.track, 0)}, zulu:45296 } };
+    const hsi_state={ scale:${o.scale ?? 40}, dctr:${o.dctr ?? false}, map:${o.map ?? false}, north:${o.north ?? false}, mode:${o.mode ?? false} }, ufc={ func:"" }, CARRIER={ x:${o.east ?? 18520}, z:${-(o.north_m ?? 0)} };
+    const island_polygons=[], airports=[], wrap_axis=${o.wrap ?? '(v)=>v'}, SHIP={ ident:"NIM" }, timer={ shown:${JSON.stringify(o.timer ?? '')} }, timer_text=()=>"01:30";
+    ${lift('tacan')} ${lift('time_to_go')}`, display)
+}
+const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-6)
+const polar = (r: number, degrees: number) => [Math.sin(degrees * Math.PI / 180) * r, -Math.cos(degrees * Math.PI / 180) * r]
 describe('the HSI page', () => {
-  const setup = `const ownship={ pos:{x:0,y:1000,z:0}, gauges:{ heading:0, ground:200, track:0, zulu:45296 } };
-    const hsi_state={ scale:40, dctr:false, map:false }, ufc={ func:"" }, CARRIER={ x:18520, z:0 }, island_polygons=[], airports=[], wrap_axis=(v)=>v;
-    const ifei_current=()=>({ elapsed:'0:12:34' });`
-  it('puts the TACAN data at the upper left, ZTOD lower left, ET lower right and a T under the lubber line', () => {
-    const d = page('ddi_hsi', setup)
-    expect(at(d, 'TCN 090')).toEqual([24, 92])
-    expect(at(d, '10.0 NM  3 MIN')).toEqual([24, 118])
-    expect(at(d, 'ZTOD 12:34:56')).toEqual([24, 458])
-    expect(at(d, 'ET 0:12:34')).toEqual([488, 458])
-    expect(at(d, 'T')).toEqual([256, 52])
+  const R = 164, T = 12
+
+  it('scales to the inside of the rose, holding the station there beyond the scale', () => {
+    const d = hsi() // the station 10 nm east at SCL/40: a quarter of the way to the rose
+    expect(d.moves.some((m) => near(m, [R / 4, -9]))).toBe(true)
+    const beyond = hsi({ scale: 5 })
+    expect(beyond.moves.some((m) => near(m, [R, -9]))).toBe(true)
   })
 
-  // The C's DDIs are monochrome green; only the centre AMPCD is colour. The
-  // TACAN pointer starts at (0,-196) in the pointer's rotated frame.
-  it('draws the TACAN pointer green on a DDI and in colour only on the AMPCD', () => {
-    const pointer = (display: string) => page('ddi_hsi', setup, display).styled.find(([, mx, my]) => mx === 0 && my === -196)?.[0]
-    expect(pointer('left')).toBe('#39e07a')
-    expect(pointer('right')).toBe('#39e07a')
-    expect(pointer('center')).toBe('#ffd24a')
+  it('shows the scale as SCL at the top centre, doubled in DCTR, and steps it down on a press', () => {
+    expect(at(hsi(), 'SCL/40')).toEqual([256, 30])
+    expect(texts(hsi({ dctr: true }))).toContain('SCL/80')
+    const steps = new Function(`const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, mode:false }, ufc_press=()=>{}; ${lift('hsi_press')}
+      const seen=[]; for(let i=0;i<6;i++){ hsi_press(8,"left"); seen.push(hsi_state.scale); } return seen;`)() as number[]
+    expect(steps).toEqual([20, 10, 5, 160, 80, 40])
+  })
+
+  it('ticks the rose every 10° with the figures every 30°, and draws no ring', () => {
+    const d = hsi()
+    const ticks = d.lines.filter(([x0, y0, x1, y1]) => Math.abs(Math.hypot(x0, y0) - R) < 1e-6 && Math.abs(Math.hypot(x1, y1) - R - T) < 1e-6)
+    const angles = ticks.map(([x0, y0]) => Math.round((Math.atan2(x0, -y0) * 180 / Math.PI + 360) % 360)).sort((a, b) => a - b)
+    expect(angles).toEqual([...Array(36).keys()].map((i) => i * 10).filter((a) => a % 30))
+    const figures = ['N', '3', '6', 'E', '12', '15', 'S', '21', '24', 'W', '30', '33']
+    figures.forEach((f, i) => expect(d.text.some(([s, fx, fy]) => s === f && near([fx, fy], polar(R + T / 2, i * 30)))).toBe(true))
+    expect(d.arcs).toEqual([])
+  })
+
+  it('turns the rose to the ground track, with the lubber line and the T at the heading', () => {
+    const d = hsi({ heading: 40, track: 30 })
+    expect(d.text.some(([s, fx, fy]) => s === '3' && near([fx, fy], polar(R + T / 2, 0)))).toBe(true) // 030 at the top
+    expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [...polar(R - 18, 10), ...polar(R + T + 6, 10)]))).toBe(true)
+    expect(d.text.some(([s, fx, fy]) => s === 'T' && near([fx, fy], polar(R - 30, 10)))).toBe(true)
+    expect(d.moves.some((m) => near(m, polar(R - 2, 0)))).toBe(true) // the ground track diamond at the top
+    expect(texts(d)).not.toContain('040')
+  })
+
+  it('turns the rose to north in N UP, and to the heading below taxi speed', () => {
+    const north = hsi({ heading: 40, track: 30, north: true })
+    expect(north.text.some(([s, fx, fy]) => s === 'N' && near([fx, fy], polar(R + T / 2, 0)))).toBe(true)
+    expect(north.moves.some((m) => near(m, polar(R - 2, 30)))).toBe(true)
+    const taxi = hsi({ heading: 40, track: null })
+    expect(taxi.lines.some((l) => near(l.slice(0, 4) as number[], [...polar(R - 18, 0), ...polar(R + T + 6, 0)]))).toBe(true)
+    expect(taxi.moves.some((m) => near(m, polar(R - 2, 0)))).toBe(false) // no track, no diamond
+  })
+
+  it('draws the aircraft symbol as a cross at the heading, true airspeed left and groundspeed right', () => {
+    const d = hsi({ heading: 40, track: 30 })
+    const a = 10 * Math.PI / 180, f = ([px, py]: number[]) => [256 + Math.cos(a) * px - Math.sin(a) * py, 260 + Math.sin(a) * px + Math.cos(a) * py]
+    for (const [p, q] of [[[0, -7], [0, 27]], [[-18, 0], [18, 0]], [[-6, 25], [6, 25]]]) expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [...f(p), ...f(q)]))).toBe(true)
+    expect(at(d, '194T')).toEqual([240, 282])
+    expect(at(d, '200G')).toEqual([272, 282])
+    expect(texts(d).some((s) => s.startsWith('GS'))).toBe(false)
+  })
+
+  it('puts the TACAN pointer outside the rose with its tail outside the far side, in colour only on the AMPCD', () => {
+    for (const [display, ink] of [['left', '#39e07a'], ['right', '#39e07a'], ['center', '#ffd24a']]) {
+      const d = hsi({}, display)
+      const head = d.styled.find(([, mx, my]) => near([mx, my], polar(R + T + 3, 90)))
+      expect(head?.[0]).toBe(ink)
+      const tail = d.lines.find((l) => near(l.slice(0, 4) as number[], [...polar(R + T + 3, 270), ...polar(R + T + 17, 270)]))
+      expect(tail?.[4]).toBe(ink)
+    }
+  })
+
+  it('reads the TACAN block as bearing and slant range, TTG at the groundspeed, and the ident, across the world wrap', () => {
+    const d = hsi()
+    expect(at(d, '090°/ 10.0')).toEqual([20, 66])
+    expect(at(d, '3:00')).toEqual([120, 90]) // right-aligned under the range
+    expect(at(d, 'NIM')).toEqual([36, 114])
+    expect(texts(hsi({ ground: 20 })).filter((s) => /^\d+:\d\d(:\d\d)?$/.test(s))).toEqual(['12:34:56']) // no TTG at taxi speed, only ZTOD
+    expect(texts(hsi({ altitude: 5000 }))).toContain('090°/ 10.4') // slant: 10 nm out and 5 km up
+    const wrapped = hsi({ east: 81480, wrap: '(v)=>v>50000?v-100000:v' })
+    expect(texts(wrapped)).toContain('270°/ 10.0')
+    const run = new Function(`${lift('time_to_go')} return [time_to_go(346), time_to_go(3827), time_to_go(40000)];`)() as string[]
+    expect(run).toEqual(['5:46', '1:03:47', '8:59:59'])
+  })
+
+  it('shows ZTOD at the lower left and the timer shown, ET or CD, at the lower right', () => {
+    const d = hsi()
+    expect(at(d, '12:34:56')).toEqual([20, 458])
+    expect(texts(d)).not.toContain('ET')
+    const et = hsi({ timer: 'et' })
+    expect(at(et, 'ET')).toEqual([452, 434])
+    expect(at(et, '01:30')).toEqual([452, 458])
+    expect(texts(hsi({ timer: 'cd' }))).toContain('CD')
+    expect(texts(hsi({ timer: 'ztod' }))).not.toContain('01:30')
+  })
+
+  it('writes TRUE under the scale', () => {
+    expect(at(hsi(), 'TRUE')).toEqual([256, 52])
+  })
+
+  it('keeps DCTR, MAP and the orientation on the MODE sublevel, as figure 24-2 does', () => {
+    const top = hsi({}, 'center')
+    expect(at(top, 'MODE')).toEqual([10, 256])
+    expect(at(top, 'TIMEUFC')).toEqual([336, 482])
+    for (const gone of ['DCTR', 'MAP', 'T UP', 'HSI', '↑', '↓']) expect(texts(top)).not.toContain(gone)
+    const sub = hsi({ mode: true }, 'center')
+    expect(at(sub, 'T UP')).toEqual([10, 176])
+    expect(at(sub, 'DCTR')).toEqual([10, 336])
+    expect(at(sub, 'MAP')).toEqual([96, 30])
+    expect(at(sub, 'HSI')).toEqual([416, 30])
+    for (const gone of ['MODE', 'TIMEUFC']) expect(texts(sub)).not.toContain(gone)
+    expect(texts(hsi({ mode: true, north: true }))).toContain('N UP')
+    expect(texts(hsi({ mode: true }, 'left'))).not.toContain('MAP')
+    const presses = new Function(`const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, dctr:false, map:true, north:false, mode:false }, pressed=[], ufc_press=(b)=>pressed.push(b); ${lift('hsi_press')}
+      const r=[hsi_press(4,"left"), hsi_press(9,"left"), hsi_press(3,"left"), hsi_state.mode, hsi_press(4,"left"), hsi_state.north, hsi_press(2,"left"), hsi_state.dctr,
+        hsi_press(6,"left"), hsi_state.map, hsi_press(6,"center"), hsi_state.map, hsi_press(17,"left"), hsi_press(10,"left"), hsi_state.mode, hsi_press(17,"left"), pressed.join()];
+      return r;`)() as unknown[]
+    expect(presses).toEqual([false, false, true, true, true, true, true, true, false, true, true, false, false, true, false, true, 'time'])
+  })
+
+  it('in DCTR puts the aircraft near the bottom with the rose centred on it at twice the radius, at the same scale', () => {
+    const d = hsi({ dctr: true })
+    expect(d.lines.some(([x0, y0, x1, y1]) => Math.abs(Math.hypot(x0, y0) - 2 * R) < 1e-6 && Math.abs(Math.hypot(x1, y1) - 2 * R - T) < 1e-6)).toBe(true)
+    expect(d.moves.some((m) => near(m, [R / 4, -9]))).toBe(true) // the station where it was
+    expect(at(d, '194T')).toEqual([240, 452])
+  })
+
+  it('turns the AMPCD map as the rose turns', () => {
+    const d = hsi({ heading: 40, track: 30, map: true }, 'center')
+    expect(d.rotate[0]).toBeCloseTo(-30 * Math.PI / 180, 9)
   })
 })
 

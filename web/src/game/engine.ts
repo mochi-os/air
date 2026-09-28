@@ -2018,19 +2018,24 @@ const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{d
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
 	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
 // HSI page state (#99): one nav picture shared by every display showing the
-// format. The rose ring sits at half the selected scale; DCTR slides the rose
-// down; the map underlay is AMPCD-only.
+// format. scale: the distance to the inside of the rose; north: N UP, else T UP;
+// mode: the MODE sublevel is up (24.1.3.2, figure 24-2); the map underlay is
+// AMPCD-only.
 const HSI_SCALES=[5,10,20,40,80,160];
-const hsi_state={ scale:40, dctr:false, map:true };
+const hsi_state={ scale:40, dctr:false, map:true, north:false, mode:false };
 function hsi_range(direction){ const i=HSI_SCALES.indexOf(hsi_state.scale);
 	hsi_state.scale=HSI_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,HSI_SCALES.length-1)]; }   // zoom-in steps the scale DOWN
 function hsi_reset(){ hsi_state.scale=40; }   // 0: range to default — DCTR and MAP are pilot layout choices and stay
 function hsi_press(pb,display){
-	if(pb===4){ hsi_range(-1); return true; }   // ↑ scale out
-	if(pb===3){ hsi_range(1); return true; }    // ↓ scale in
-	if(pb===9){ hsi_state.dctr=!hsi_state.dctr; return true; }
+	if(pb===8){ const i=HSI_SCALES.indexOf(hsi_state.scale); hsi_state.scale=HSI_SCALES[(i+HSI_SCALES.length-1)%HSI_SCALES.length]; return true; }   // SCL: each press steps the scale down, then starts over at 160 (24.1.3.8)
+	if(hsi_state.mode){   // the MODE sublevel (figure 24-2)
+		if(pb===4){ hsi_state.north=!hsi_state.north; return true; }   // T UP and N UP, one option toggling the two (24.1.3.4.1)
+		if(pb===2){ hsi_state.dctr=!hsi_state.dctr; return true; }
+		if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
+		if(pb===10){ hsi_state.mode=false; return true; }   // HSI: back to the top level
+		return false; }
+	if(pb===3){ hsi_state.mode=true; return true; }
 	if(pb===17){ ufc_press("time"); return true; }   // TIMEUFC loads the UFC with the timer options (24.1.3.15)
-	if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
 	return false; }
 // ---- SA page state (#99 pages): the datalink-style tactical picture, its own
 // scale independent of the HSI's. It shows exactly what the client already
@@ -2246,15 +2251,30 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 		if(reading.radar) x.fillText("R",470,59);
 		else if(reading.fallback&&(sim_time*3)%2<1) x.fillText("B",470,59); }
 	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,16,"STBY",true,adi_source==="stby"); }
+// tacan: the ship's TACAN as the jet reads it - true bearing (the heading
+// convention), horizontal range and slant range, in metres, across the world wrap.
+function tacan(){ const dx=wrap_axis(CARRIER.x-ownship.pos.x), dz=wrap_axis(CARRIER.z-ownship.pos.z);
+	return { bearing:Math.atan2(dx,-dz), range:Math.hypot(dx,dz), slant:Math.hypot(dx,ownship.pos.y,dz) }; }
+// time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
+function time_to_go(seconds){ const s=Math.min(Math.round(seconds),8*3600+59*60+59), two=(v)=>String(v).padStart(2,"0");
+	return s>=3600?Math.floor(s/3600)+":"+two(Math.floor(s/60)%60)+":"+two(s%60):Math.floor(s/60)+":"+two(s%60); }
+// ddi_hsi: the HSI (2.13.4.7, figures 2-24 and 24-2). The scale is the distance from
+// the aircraft to the inside of the compass rose (24.1.3.8). The rose turns to the
+// ground track (T UP) or to north (N UP), and the lubber line and the aircraft
+// symbol sit at the heading. DCTR puts the aircraft near the bottom with the rose
+// centred on it at twice the radius, so the scale shown doubles (2.13.4.4.1).
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
-	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
-	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
+	const scale=hsi_state.scale, R=164, T=12, cy=hsi_state.dctr?430:260, rose=hsi_state.dctr?2*R:R;
+	const ppm=R/(scale*NM);   // pixels per metre: the selected scale out to the inside of the centred rose
+	const rot=hsi_state.north?0:(gz.track??hdg);   // up on the display: north, or the ground track, the heading standing in below taxi speed
+	const polar=(r,a)=>[Math.sin(a)*r,-Math.cos(a)*r];   // a display angle, clockwise from up
+	const ink=display==="center"?"#ffd24a":"#39e07a";   // the TACAN symbology: green on the monochrome DDIs, colour only on the AMPCD
 	// TAMMAC-style underlay, AMPCD only: the same Midway coastline / airport /
-	// carrier set the tactical map draws, ownship-centred and heading-up, in
-	// muted chart colours so the symbology stays on top of it.
+	// carrier set the tactical map draws, ownship-centred and turned as the rose is,
+	// in muted chart colours so the symbology stays on top of it.
 	if(display==="center"&&hsi_state.map){ x.save();
-		x.beginPath(); x.arc(256,cy,R+34,0,Math.PI*2); x.clip();
-		x.translate(256,cy); x.rotate(-hdg);
+		x.beginPath(); x.arc(256,cy,rose+T+30,0,Math.PI*2); x.clip();
+		x.translate(256,cy); x.rotate(-rot);
 		x.fillStyle="#33402f"; x.strokeStyle="#55684e"; x.lineWidth=1.5;
 		for(const polygon of island_polygons||[]){ x.beginPath();
 			for(let k=0;k<polygon.length;k++){ const sx=wrap_axis(polygon[k][0]-ownship.pos.x)*ppm, sy=wrap_axis(polygon[k][1]-ownship.pos.z)*ppm;
@@ -2266,45 +2286,47 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 		{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;
 			x.fillStyle="#ffd27a"; x.fillRect(kx-6,kz-6,12,12); }   // the boat, in the AMPCD's colour licence
 		x.restore(); }
-	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
-	x.font="16px monospace"; x.fillText("T",256,52); x.font="26px monospace";   // true heading under the lubber line (2.13.4.7)
+	const station=tacan();
 	x.save(); x.translate(256,cy);
-	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // rose ring (half scale) and the quarter-scale ring inside it
-	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
-	x.strokeStyle="rgba(57,224,122,0.22)";
-	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
-	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center";
-	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
-		const cx=Math.cos(a), cyy=Math.sin(a);
-		x.beginPath(); x.moveTo(cx*196,cyy*196); x.lineTo(cx*180,cyy*180); x.stroke();
-		x.fillText(d%90===0?"NESW"[d/90]:String(d/10),cx*158,cyy*158); }
-	if(gz.track!=null){ const a=gz.track-hdg, tx=Math.sin(a)*R, ty=-Math.cos(a)*R;   // ground-track diamond on the rim — the gap off the lubber line is drift
-		x.lineWidth=2.5;
-		x.beginPath(); x.moveTo(tx,ty-9); x.lineTo(tx+7,ty); x.lineTo(tx,ty+9); x.lineTo(tx-7,ty); x.closePath(); x.stroke(); }
-	const dx=CARRIER.x-ownship.pos.x, dz=CARRIER.z-ownship.pos.z;
-	const brg=Math.atan2(dx,-dz), rel=brg-hdg;   // world bearing in the heading convention, relative to the nose
-	x.rotate(rel); x.strokeStyle=display==="center"?"#ffd24a":"#39e07a"; x.lineWidth=5;   // TACAN pointer to the boat: green on the monochrome DDIs, colour only on the AMPCD
-	x.beginPath(); x.moveTo(0,-196); x.lineTo(0,-140); x.stroke();
-	x.beginPath(); x.moveTo(-12,-172); x.lineTo(0,-196); x.lineTo(12,-172); x.stroke();
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	for(let d=0;d<360;d+=10){ const a=d*D2R-rot;   // the rose: a tick every 10°, the figures in their place every 30°, no ring
+		if(d%30){ const [ix,iy]=polar(rose,a), [ox,oy]=polar(rose+T,a); x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke(); }
+		else { const [lx,ly]=polar(rose+T/2,a); x.fillText(d%90===0?"NESW"[d/90]:String(d/10),lx,ly); } }
+	{ const a=hdg-rot, [ix,iy]=polar(rose-18,a), [ox,oy]=polar(rose+T+6,a), [tx,ty]=polar(rose-30,a);   // the lubber line at the heading, the T under it: the game's headings are true (item 13)
+		x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke();
+		x.font="16px monospace"; x.fillText("T",tx,ty); }
+	if(gz.track!=null){ const a=gz.track-rot, c=Math.cos(a), s=Math.sin(a), [px,py]=polar(rose-2,a), [mx,my]=polar(rose-10,a), [bx,by]=polar(rose-18,a), [ex,ey]=polar(rose-28,a);   // the ground track pointer, a diamond on a stem: at the top in T UP
+		x.beginPath(); x.moveTo(px,py); x.lineTo(mx+5*c,my+5*s); x.lineTo(bx,by); x.lineTo(mx-5*c,my-5*s); x.closePath(); x.moveTo(bx,by); x.lineTo(ex,ey); x.stroke(); }
+	{ const a=station.bearing-rot, c=Math.cos(a), s=Math.sin(a);   // the TACAN bearing pointer outside the rose, its tail outside the far side, and the station where it lies (item 4)
+		x.strokeStyle=ink; x.fillStyle=ink;
+		const [hx,hy]=polar(rose+T+3,a), [kx,ky]=polar(rose+T+17,a);
+		x.beginPath(); x.moveTo(hx,hy); x.lineTo(kx+7*c,ky+7*s); x.lineTo(kx-7*c,ky-7*s); x.closePath(); x.fill();
+		const [ax,ay]=polar(rose+T+3,a+Math.PI), [zx,zy]=polar(rose+T+17,a+Math.PI);
+		x.lineWidth=4; x.beginPath(); x.moveTo(ax,ay); x.lineTo(zx,zy); x.stroke(); x.lineWidth=2;
+		const [sx,sy]=polar(Math.min(station.range*ppm,rose),a);   // held at the inside of the rose beyond the scale
+		x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke(); }
 	x.restore();
-	x.strokeStyle="#39e07a"; x.lineWidth=3;   // ownship symbol
-	x.beginPath(); x.moveTo(256,cy-20); x.lineTo(246,cy+16); x.lineTo(266,cy+16); x.closePath(); x.stroke();
-	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // range scale arrows, the scale value between them
-	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
-	x.fillText(String(scale),14,216);
-	if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
-	ddi_legend(x,9,"DCTR",true,hsi_state.dctr);
-	ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time");   // boxed while the UFC holds the timer options (figure 24-9)
-	if(gz.ground>50) x.fillText("GS "+Math.round(gz.ground),24,64);
-	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN data at the upper left (2.13.4.7 item 2): bearing / range / minutes to the boat at present groundspeed
+	{ const a=hdg-rot, c=Math.cos(a), s=Math.sin(a), f=([px,py])=>[256+c*px-s*py,cy+s*px+c*py];   // the aircraft symbol at the heading: fuselage, wings and tail bar
+		x.strokeStyle="#39e07a"; x.lineWidth=2;
+		for(const [p,q] of [[[0,-7],[0,27]],[[-18,0],[18,0]],[[-6,25],[6,25]]]){ const [px,py]=f(p), [qx,qy]=f(q); x.beginPath(); x.moveTo(px,py); x.lineTo(qx,qy); x.stroke(); } }
+	x.fillStyle="#39e07a"; x.font="18px monospace"; x.textBaseline="middle";
+	x.textAlign="right"; x.fillText(Math.round(ownship.speed*1.94384)+"T",240,cy+22);   // true airspeed left of the symbol, groundspeed right
+	x.textAlign="left"; x.fillText(Math.round(gz.ground||0)+"G",272,cy+22);
 	x.font="20px monospace";
-	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,92);
-	let tline=rngnm.toFixed(1)+" NM";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
-	x.fillText(tline,24,118);
-	const z=gz.zulu||0, two=(v)=>String(v).padStart(2,"0");   // ZTOD lower left and the IFEI's elapsed time lower right (2.13.4.7)
-	x.fillText("ZTOD "+two(Math.floor(z/3600))+":"+two(Math.floor(z/60)%60)+":"+two(z%60),24,458);
-	x.textAlign="right"; x.fillText("ET "+ifei_current().elapsed,488,458); }
+	{ const nm=station.slant/NM, line=String(Math.round(station.bearing/D2R+360)%360).padStart(3,"0")+"°/ "+nm.toFixed(1), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		x.fillText(line,20,66);
+		if((gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),20+w,90); }
+		x.textAlign="left"; x.fillText(SHIP.ident,36,114); }
+	const z=gz.zulu||0, two=(v)=>String(Math.floor(v)).padStart(2,"0");
+	x.fillText(two(z/3600)+":"+two(z/60%60)+":"+two(z%60),20,458);   // ZTOD at the lower left (item 10)
+	x.textAlign="center";
+	if(timer.shown==="et"||timer.shown==="cd"){ x.fillText(timer.shown.toUpperCase(),452,434); x.fillText(timer_text(z),452,458); }   // the timer shown, ET or CD, at the lower right (item 12)
+	x.font="16px monospace"; x.fillText("TRUE",256,52);   // under the scale, with true heading (item 13)
+	ddi_legend(x,8,"SCL/"+(hsi_state.dctr?2*scale:scale),true,false);
+	if(hsi_state.mode){ ddi_legend(x,4,hsi_state.north?"N UP":"T UP",true,false); ddi_legend(x,2,"DCTR",true,hsi_state.dctr);
+		if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
+		ddi_legend(x,10,"HSI",true,false); }
+	else { ddi_legend(x,3,"MODE",true,false); ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time"); } }   // TIMEUFC boxed while the UFC holds the timer options (figure 24-9)
 // known is the picture the pilot holds, which the SA page and the map draw: a
 // teammate by its datalink position report, a hostile close enough to see as
 // it is, and otherwise a hostile only as the radar holds it - a trackfile at
@@ -8699,7 +8721,7 @@ function draw_hud(){
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
-	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
+	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=tacan().slant/1852;
 		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
@@ -9494,6 +9516,7 @@ function start_mission(){
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
 	const cheatq=devq.get("cheat"); if(cheatq){ const on={...(cfg.cheats as Record<string,boolean>)}; for(const c of cheatq.split(",")) if(c==="invulnerable"||c==="ammunition"||c==="fuel") on[c]=true; cfg.cheats=on; }   // &cheat=invulnerable,... — harness survival without teaching the rig to fly BFM
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
+	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="pilot"||banditq==="ace"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
 	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock
