@@ -94,6 +94,16 @@ describe('the glareshield panels', () => {
     expect(panel({ armed: true, loud: true })).toEqual(['aspj', 'xmit'])
   })
 
+  // The lights are the jammer's cockpit indication: the radar attack format
+  // carries no JAM ARM or XMIT text, and a monochrome DDI no amber.
+  it('are the jammer\'s indication, with nothing about it on the radar page', () => {
+    const start = source.indexOf('function ddi_rdr('), end = source.indexOf('\nfunction ', start + 1)
+    expect(start).toBeGreaterThan(0)
+    const page = source.slice(start, end)
+    expect(page).not.toMatch(/JAM ARM|"XMIT"|jammer_/)
+    expect(page).not.toMatch(/#ffc14d/)
+  })
+
   it('light AI for any radar the RWR hears', () => {
     expect(panel({ contacts: 2 })).toEqual(['ai'])
   })
