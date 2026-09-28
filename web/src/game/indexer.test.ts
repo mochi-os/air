@@ -221,21 +221,21 @@ const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exe
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
-  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number
+  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
-  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', `
-    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200;
+    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test };`)
   return run(action, direction, state) as Pressed
 }
 
@@ -255,8 +255,9 @@ describe('the clickable switches', () => {
 
   it('route the right button to the switches and keep the context menu closed', () => {
     expect(source).toMatch(/stage\.addEventListener\("contextmenu",e=>e\.preventDefault\(\)/)
-    expect(source).toMatch(/if\(e\.button===2\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
-    expect(source).toMatch(/if\(e\.button===2\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
+    // the middle button too: a stationary press, the height indicator's push-to-test (#58)
+    expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
+    expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
     expect(source).toMatch(/if\(e\.button===2\)\{ if\(!playback\) pit_switch\(e\); return; \}/)   // a replay's switches are the recording's
     // a left click reaches the switches only after the screens miss, ahead of the panel-point measurement
     expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
@@ -312,6 +313,21 @@ describe('the clickable switches', () => {
     expect(press('index', 1, { index: 200 }).index).toBe(250)
     expect(press('index', -1, { index: 200 }).index).toBe(150)
     expect(press('index', 1, { index: 40 }).index).toBe(50)
+  })
+
+  // NATOPS 2.12.5.4.1: turning the knob clockwise applies power to the set, further
+  // clockwise raises the index; fully anticlockwise it is off. Pushing it runs the BIT.
+  it('power the radar altimeter with its knob: off past index 0, on again clockwise with the familiarisation whoop on the ground', () => {
+    expect(press('index', -1, { index: 10 })).toMatchObject({ index: 0, on: true })
+    expect(press('index', -1, { index: 0 })).toMatchObject({ index: 0, on: false })
+    expect(press('index', 1, { index: 0, on: false })).toMatchObject({ index: 0, on: true, greet: true })
+    expect(press('index', 1, { index: 0, on: false, ground: false })).toMatchObject({ on: true, greet: false })
+    expect(press('index', -1, { index: 0, on: false })).toMatchObject({ on: false })
+  })
+
+  it('run the BIT on a push, only with the set powered', () => {
+    expect(press('radalt.test', 0).test).toBe(10)
+    expect(press('radalt.test', 0, { on: false }).test).toBe(-Infinity)
   })
 
   it('clear peak g when the reject switch moves into a reject position, and not on the way back to NORM (NATOPS 2.13.4.8.11 item 8)', () => {

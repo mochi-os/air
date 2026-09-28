@@ -1752,7 +1752,7 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, (ownship.pos.y-(surface>-1e8?Math.max(surface,0):0))*3.28084, law_index, RADAR.sil); } }   // feet, as the dial, the index and the 5,000 ft limit are, and as the aural reads it
+		radalt_draw(r, (ownship.pos.y-(surface>-1e8?Math.max(surface,0):0))*3.28084, law_index, radalt_inhibited(), radalt_on&&sim_time-radalt_test<5); } }   // feet, as the dial, the index and the 5,000 ft limit are, and as the aural reads it
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
 	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } }
 	const sb=ownship.group.userData.standby;   // the standby flight instruments (#32): needles want ten frames a second
@@ -1760,7 +1760,7 @@ function lamps_update(out){
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
-const RADALT_DIAL=[[0,35],[100,52],[200,70],[300,103],[400,149],[600,202],[800,235],[1000,280],[3000,305],[5000,325]];
+const RADALT_DIAL=[[0,0],[100,40.2],[200,79.2],[300,118.2],[400,159.1],[500,174.1],[600,189.2],[700,206.5],[800,223.5],[900,240.6],[1000,257.6],[2000,272.6],[3000,287.6],[4000,303],[5000,319.9]];   // FO-5 item 41, measured from the dial's fitted centre: 0 at twelve o'clock, 1,000 ft at 258°, 5,000 at 320°
 // node_box: the node's own geometry corners in the group frame. A world Box3
 // tilts with the parked heading and centres inside the housing depth, which
 // buries quads placed from it behind the painted faces.
@@ -1821,26 +1821,27 @@ function build_radalt(g){
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
-	radalt_draw(g.userData.radalt, 1e9, law_index, RADAR.sil); }
-function radalt_draw(r, agl, index, silent){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: radar silence, the EMCON inhibit (2.12.5, #29)
+	radalt_draw(g.userData.radalt, 1e9, law_index, radalt_inhibited(), false); }
+function radalt_draw(r, agl, index, silent, test){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: the set off or inhibited by radar silence (2.12.5, #29); test: its push-to-test BIT running
 	const x=r.canvas.getContext("2d"), W=160, C=80;
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
 	x.font="16px monospace"; x.textAlign="center"; x.textBaseline="middle";
-	for(const [ft,deg] of RADALT_DIAL){ if(!ft) continue;
-		const a=(deg-90)*D2R, inner=ft<=1000&&ft%200===0||ft>=3000;
-		x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*58,C+Math.sin(a)*58); x.stroke();
-		if(inner) x.fillText(String(ft/100),C+Math.cos(a)*46,C+Math.sin(a)*46); }
-	x.font="9px monospace"; x.fillText("RADAR ALT",C,C-22); x.fillText("X100 FT",C,C+24);
+	for(let ft=0;ft<=5000;ft+=ft<100?20:ft<1000?50:500){   // FO-5 item 41: every 20 ft to 100, every 50 to 1,000, every 500 to 5,000; long every 100 then every 1,000
+		const a=dial(RADALT_DIAL,ft)-Math.PI/2, long=ft<=1000?ft%100===0:ft%1000===0;
+		x.lineWidth=long?2:1; x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*(long?57:61),C+Math.sin(a)*(long?57:61)); x.stroke(); }
+	x.lineWidth=2;
+	for(const ft of [0,100,200,300,400,600,800,1000,3000,5000]){ const a=dial(RADALT_DIAL,ft)-Math.PI/2; x.fillText(String(ft/100),C+Math.cos(a)*47,C+Math.sin(a)*47); }
+	x.font="9px monospace"; x.fillText("R ALT",C,C-30); x.fillText("X100 FT",C,C-20);
 	{ const a=(dial(RADALT_DIAL,index)/D2R-90)*D2R;   // the low-altitude index pointer at the set index (NATOPS 2.12.5.4.4): 200 ft in the pattern, 40 for a cat shot, never a fixed figure the aural disagrees with
 		x.fillStyle="#e8c832"; x.beginPath();
 		x.moveTo(C+Math.cos(a)*70,C+Math.sin(a)*70); x.lineTo(C+Math.cos(a-0.08)*58,C+Math.sin(a-0.08)*58); x.lineTo(C+Math.cos(a+0.08)*58,C+Math.sin(a+0.08)*58); x.closePath(); x.fill();
 		x.fillStyle="#d8d8d0"; }
 	const off=silent||agl>5000, lamp=!off&&agl<index;   // OFF with the set inhibited or above 5,000 ft AGL (2.12.5.4.6); the red light whenever the pointer is below the index (2.12.5.4.3) - the aural's gear gate is the aural's, not the lamp's
-	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill();   // the red low-altitude warning light, upper right
-	x.fillStyle="#173a17"; x.beginPath(); x.arc(C-30,C-30,7,0,7); x.fill();   // the green BIT light (2.12.5.4.5): dark - the game runs no initiated BIT
+	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+27,C-9,7,0,7); x.fill();   // the red low-altitude warning light, right of the hub (FO-5 item 41)
+	x.fillStyle=test&&!off?"#30d040":"#173a17"; x.beginPath(); x.arc(C-27,C-9,7,0,7); x.fill();   // the green BIT light, left of it: GO while the initiated BIT runs (2.12.5.4.5)
 	x.fillStyle="#d8d8d0";
-	if(off){ x.fillStyle="#a02020"; x.fillRect(C-18,C+34,36,14); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+41); }
+	if(off){ x.fillStyle="#a02020"; x.fillRect(C-16,C+21,32,12); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+27); }   // the flag's window below the hub
 	else{ const ang=(dial(RADALT_DIAL,Math.max(0,agl))/D2R-90)*D2R;
 		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
@@ -5545,7 +5546,7 @@ addEventListener("pagehide",()=>{ exit_match(); },{ signal });   // closing/navi
 let dragging=false, drag_x=0, drag_y=0, press_moved=0, press_at=0, right_press=null;
 stage.addEventListener("contextmenu",e=>e.preventDefault(),{ signal });   // the right button works the pit's switches the other way (#19)
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
-	if(e.button===2){ right_press=(cfg.view==="cockpit"&&running&&!map_on)?{ x:e.clientX, y:e.clientY }:null; e.preventDefault(); return; }   // a right press is a switch press only: no head drag, no DDI bezel
+	if(e.button===2||e.button===1){ right_press=(cfg.view==="cockpit"&&running&&!map_on)?{ x:e.clientX, y:e.clientY }:null; e.preventDefault(); return; }   // a right or middle press is a switch press only: no head drag, no DDI bezel
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
 	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; press_at=performance.now(); ifei_hold_begin(e); try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
@@ -5554,7 +5555,7 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
-stage.addEventListener("pointerup",e=>{ if(e.button===2){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
+stage.addEventListener("pointerup",e=>{ if(e.button===2||e.button===1){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
 	const pressed=dragging&&head_drag&&press_moved<6, scrolled=ifei_hold_end(); end_drag(e); if(pressed&&!scrolled) pit_click(e); },{ signal });   // an arrow that scrolled while held has already stepped: no extra step on release
 stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on||!ddi_view_rect) return;   // the TDC follows the mouse over the full-screen attack format (#30) — position only; the click designates
 	const st=ddi_state[ddi_focus()]; if(!st||st.menu||st.page!=="rdr") return;
@@ -5573,6 +5574,8 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	if(e.button===1){ const u=ownship.group.userData.radalt;   // the middle button pushes the height indicator's knob, the pit's one push-to-test (2.12.5.4.1); it presses nothing else
+		if(u&&!playback&&_click_ray.intersectObject(u.mesh,false)[0]) pit_press("radalt.test",0); return; }
 	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
 		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
 	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
@@ -5634,7 +5637,8 @@ function pit_press(action,direction){ const d=direction||0;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
-	case "index": law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, raises the low-altitude index
+	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
+	case "radalt.test": if(radalt_on) radalt_test=sim_time; break;   // pushing the knob runs the BIT (2.12.5.4.1, 2.12.5.4.5)
 	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
@@ -6152,6 +6156,13 @@ function cautions_update(){
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
 let law_disabled=false;   // the primary warning was disabled from the UFC (:RALT, or another UFC mode) and stays quiet until it is reset
+// The radar altimeter set's knob (2.12.5.4.1): turning it clockwise applies power and
+// then raises the index; fully anticlockwise the set is off, with its OFF flag, no radar
+// altitude and neither radar warning, as under radar silence. Pushing it runs the BIT,
+// the green light GO for its 5 s. At ground power-up the set sounds the whoop once to
+// familiarise the pilot (2.12.5.1): greet is that whoop, owed.
+let radalt_on=true, radalt_test=-Infinity, radalt_greet=false;
+function radalt_inhibited(){ return RADAR.sil||!radalt_on; }
 let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
 const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
 const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
@@ -7349,16 +7360,17 @@ function fly_player(dt){
 			// above the index, or the index turned below the present altitude - or disabled
 			// from the UFC (ufc_press), after which it stays quiet until that reset. With the
 			// gear down it does not sound. Radar silence inhibits the set and it with it (#29).
-			const below=flying&&(ownship.gear??1)>0.98&&!RADAR.sil&&agl<law_index;   // the index stops at 5,000 ft, where the set's reading ends
+			const below=flying&&(ownship.gear??1)>0.98&&!radalt_inhibited()&&agl<law_index;   // the index stops at 5,000 ft, where the set's reading ends
 			if(!below) law_disabled=false;
 			law_primary=below&&!law_disabled;
 			if(law_primary){ audio_law(); law_calls++; }   // repeats while it holds
+			if(radalt_greet){ radalt_greet=false; audio_law(); }   // the familiarisation whoop at ground power-up
 			// The secondary radar and barometric warnings (2.12.5.2, 2.12.5.3): one ALTITUDE,
 			// ALTITUDE as the jet descends through the altitude set for each; 0, which no
 			// reading goes below, disables it. Each arms 50 ft above its altitude - the game's
 			// margin, which NATOPS does not give - so a jet levelled at the setting does not
 			// call on every ripple.
-			{ const readings={ radar:(!RADAR.sil&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084+baro_error() };
+			{ const readings={ radar:(!radalt_inhibited()&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084+baro_error() };
 				for(const kind of ["radar","baro"]){ const set=altitude_set[kind], now=readings[kind];
 					if(now===null||!flying){ altitude_armed[kind]=false; continue; }
 					if(now>set+50) altitude_armed[kind]=true;
@@ -7761,7 +7773,7 @@ function reset_ownship(){
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
-	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
+	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true;   // the UFC powers up clear (#15)
@@ -8599,7 +8611,7 @@ function draw_hud(){
 	let alt=baro, radar=false, flashB=false;
 	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
 		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
-		if(agl<=5000&&!RADAR.sil){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
+		if(agl<=5000&&!radalt_inhibited()){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
 	if(!declutter) hctx.strokeRect(lx,wly,96,30);
 	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
