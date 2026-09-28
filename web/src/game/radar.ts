@@ -56,7 +56,7 @@ const GIMBAL = 1.222 // STT gimbal limit off the nose, rad (±70°)
 const HOLD = 1.15 // STT holds a lock out to this multiple of detection range
 
 export const WIDTHS = [1.222, 0.785, 0.349] // selectable azimuth half-widths: ±70°, ±45°, ±20°
-export const SCALES = [5, 10, 20, 40] // display range scales, nmi
+export const SCALES = [5, 10, 20, 40, 80, 160] // display range scales, nmi: the F/A-18C's APG-65/73 air-to-air scales, the HSI's too
 
 // geometry resolves a target into the radar's frame: azimuth relative to own
 // heading (the engine's bearing convention: atan2(dx, -dz)), elevation off

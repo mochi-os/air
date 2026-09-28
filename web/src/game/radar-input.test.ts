@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { Radar, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, geometry, pick, type Track } from './radar'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -249,5 +249,33 @@ describe('the radar page click (rdr_face) and its UNDES bezel (rdr_press)', () =
     r.clock(2)
     r.rdrUndesignate()
     expect(r.events()).toEqual([])
+  })
+})
+
+describe('the range scale (the RDR page\'s arrows, the castle zoom)', () => {
+  // rdr_range, lifted as the rig does, stepping a real Radar's scale.
+  function stepper() {
+    return new Function(
+      'Radar',
+      'RADAR_SCALES',
+      `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
+       const RADAR=new Radar();
+       ${lift('rdr_range')}
+       return { RADAR, out:()=>rdr_range(-1), in:()=>rdr_range(1) };`
+    )(Radar, SCALES) as { RADAR: Radar; out(): void; in(): void }
+  }
+
+  it("steps out through the F/A-18C's scales to 160 nm and no further, and back in to 5", () => {
+    expect(SCALES).toEqual([5, 10, 20, 40, 80, 160])
+    const r = stepper()
+    expect(r.RADAR.scale).toBe(40) // the search scale a fight starts on
+    const seen = [r.RADAR.scale]
+    for (let i = 0; i < 4; i++) {
+      r.out()
+      seen.push(r.RADAR.scale)
+    }
+    expect(seen).toEqual([40, 80, 160, 160, 160])
+    for (let i = 0; i < 6; i++) r.in()
+    expect(r.RADAR.scale).toBe(5)
   })
 })
