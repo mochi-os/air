@@ -26,6 +26,11 @@ msgstr "(संपादित)"
 msgid "(expand)"
 msgstr "(विस्तार करें)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(कोई शीर्षक नहीं)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(आप)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} नाम"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} से {to} तक"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# और} other {+# और}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -385,7 +387,7 @@ msgstr "आफ्टरबर्नर"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
-msgstr "एआई"
+msgstr "AI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Aircraft"
@@ -556,6 +558,11 @@ msgstr "अक्ष कैलिब्रेशन और मैपिंग"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "वापस"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 सेकंड पीछे"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "कैमरा उपलब्ध नहीं"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "रद्द करें"
 
@@ -787,6 +798,11 @@ msgstr "उत्तर रद्द करें"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "रद्द किया गया"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "रद्द"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "सभी से चैट"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "भाषा चुनें"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "साफ़ करें"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "साफ़ आसमान"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "टिप्पणी क्रियाएँ"
 msgid "Comments"
 msgstr "टिप्पणियाँ"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1067,7 +1093,7 @@ msgstr "पुष्टि करें"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect"
-msgstr "कनेक्ट"
+msgstr "कनेक्ट करें"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect to private server"
@@ -1149,6 +1175,10 @@ msgstr "यह दस्तावेज़ लोड नहीं किया �
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "आपकी उड़ानें लोड नहीं हो सकीं"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "रिकॉर्डिंग चलाई नहीं जा सकी"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,8 +1512,10 @@ msgstr "पूर्ण"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
-msgstr "डाउनलोड"
+msgstr "डाउनलोड करें"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -1654,6 +1686,12 @@ msgstr "मैच छोड़ें"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "मिशन छोड़ें"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "प्लेबैक छोड़ें"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "फिर से उड़ान भरें"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "सुइयों का नीचे तक पीछा करें: 3NM पर 1200', 2NM पर 800', 1NM पर 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 सेकंड आगे"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2242,7 +2285,7 @@ msgstr "जॉयस्टिक"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
-msgstr "अभी"
+msgstr "अभी-अभी"
 
 #: src/components/MatchLog.tsx
 msgid "K/D"
@@ -2284,10 +2327,6 @@ msgstr "बायाँ इंजन बंद"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "बायाँ गियर"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "लैंडिंग"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP सर्वर"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "मध्यम"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "मध्यम"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "नेटवर्क त्रुटि"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "नया"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "नवीनतम"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "सूचनाएँ: {0}"
 msgid "Novice"
 msgstr "नौसिखिया"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "संख्या"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "क्रमांक"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,6 +2962,7 @@ msgstr "ऑफ़लाइन"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "ओह! पेज नहीं मिला!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "खोलें"
+msgstr "खुला"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "पैटर्न (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "रोकें"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "रुका हुआ"
 
@@ -3101,6 +3159,18 @@ msgstr "प्लेटफ़ॉर्म"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "प्लेटफॉर्म: 2000 FPM, 1200' पर लेवल"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "चलाएँ"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "प्लेबैक की स्थिति"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "पुनः कनेक्ट हो रहा है ({retries})..."
 msgid "Record flights"
 msgstr "उड़ानें रिकॉर्ड करें"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "रिकॉर्डिंग"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "रिकॉर्डिंग विफल रही। कृपया फिर से कोशिश करें।"
@@ -3321,6 +3387,11 @@ msgstr "प्रासंगिकता {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "प्रासंगिकता {relevance}, रुचि {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "रिमाइंडर"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "खोजा जा रहा है..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "चुनें"
+msgstr "चयन"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "संरचना"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "विषय"
+msgstr "यूज़र या ग्रुप"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "अतिमानव"
 msgid "Switch to view 1-9"
 msgstr "व्यू 1-9 पर स्विच करें"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "सिस्टम"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "सिस्टम"
 
@@ -3969,6 +4044,11 @@ msgstr "टीमें"
 msgid "Teams — red versus blue"
 msgstr "टीमें — लाल बनाम नीला"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "अस्थायी"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "कैमरा अनुरोध का उत्तर नहीं मिला"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "गेम लोड नहीं हो सका। फिर से प्रयास करने के लिए पेज दोबारा लोड करें।"
 
@@ -4344,7 +4425,7 @@ msgstr "वीडियो व्यूअर: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "देखें"
+msgstr "दृश्य"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "कंट्रोल देखें"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "व्यू"
+msgstr "दृश्य"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

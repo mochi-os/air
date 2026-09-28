@@ -26,6 +26,11 @@ msgstr "(tahrirlangan)"
 msgid "(expand)"
 msgstr "(yoyish)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Sarlavhasiz)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(siz)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} nomi"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} – {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# ta} other {+# ta}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -444,7 +446,7 @@ msgstr "Langar tashlangan tomonlar"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Android push bildirishnomalari"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -525,7 +527,7 @@ msgstr "Javob fayllarini biriktirish"
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Authenticated users"
-msgstr "Autentifikatsiyadan o'tgan foydalanuvchilar"
+msgstr "Autentifikatsiyadan oʻtgan foydalanuvchilar"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
@@ -556,6 +558,11 @@ msgstr "O‘qlarni kalibrlash va tayinlash"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Orqaga"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 soniya orqaga"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "Kamera mavjud emas"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Bekor qilish"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Bekor qilish"
 
@@ -785,6 +796,11 @@ msgstr "Javobni bekor qilish"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Bekor qilindi"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Bekor qilindi"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Hamma bilan chat"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Tilni tanlang"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Tozalash"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Bulutsiz"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1036,6 +1057,11 @@ msgstr "Izoh amallari"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+msgid "Comments"
+msgstr "Izohlar"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
 msgid "Comments"
 msgstr "Izohlar"
 
@@ -1149,6 +1175,10 @@ msgstr "Bu hujjatni yuklab boʻlmadi. Iltimos, keyinroq qayta urinib koʻring."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Parvozlaringizni yuklab bo‘lmadi"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Yozuvni ijro etib boʻlmadi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "Yongʻinda nobud boʻldi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Tafsilot"
+msgstr "Tafsilot darajasi"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "Bajarildi"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Yuklab olish"
 
@@ -1654,6 +1686,12 @@ msgstr "Oʻyindan chiqish"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Vazifadan chiqish"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Ijrodan chiqish"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Yana uchish"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Strelkalar boʻyicha pasay: 3NM-da 1200', 2NM-da 800', 1NM-da 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 soniya oldinga"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "CHAP DVIGATEL OʻCHIRILGAN"
 msgid "L GEAR"
 msgstr "CHAP SHASSI"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Qoʻnish"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP serveri"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Oʻrta"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Oʻrta"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Tarmoq xatosi"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Yangi"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Eng yangi"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Bildirishnomalar: {0}"
 msgid "Novice"
 msgstr "Yangi o‘rganuvchi"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Raqam"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Raqam"
 
@@ -2911,6 +2962,7 @@ msgstr "oflayn"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Naqsh (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pauza"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Pauza qilingan"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, 1200' da gorizontal"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Ijro etish"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Ijro oʻrni"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Qayta ulanmoqda ({retries})..."
 msgid "Record flights"
 msgstr "Parvozlarni yozib olish"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Yozuv"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Yozib olish muvaffaqiyatsiz tugadi. Qayta urinib koʻring."
@@ -3321,6 +3387,11 @@ msgstr "Moslik {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Moslik {relevance}, qiziqish {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Eslatma"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Oʻyindan voz kechilsinmi?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Yechim"
+msgstr "Aniqlik"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "Qidirilmoqda..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Tanlash"
+msgstr "Tanlov"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "KONSTRUKSIYA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Mavzu"
+msgstr "Foydalanuvchi yoki guruh"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "G‘ayriinsoniy kuchli"
 msgid "Switch to view 1-9"
 msgstr "1-9 koʻrinishiga oʻtish"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Tizim"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Tizim"
 
@@ -3969,6 +4044,11 @@ msgstr "Jamoalar"
 msgid "Teams — red versus blue"
 msgstr "Jamoalar — qizil koʻkka qarshi"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Taxminiy"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Kamera so‘roviga javob berilmadi"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "O'yinni yuklab bo'lmadi. Qayta urinish uchun sahifani qayta yuklang."
 
@@ -4118,7 +4199,7 @@ msgstr "Juda koʻp soʻrovlar"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Yuqori"
+msgstr "Eng yaxshi"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Video ko'ruvchi: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Koʻrish"
+msgstr "Koʻrinish"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Boshqaruvni koʻrish"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Koʻrishlar"
+msgstr "Koʻrinishlar"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

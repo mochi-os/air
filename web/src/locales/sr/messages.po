@@ -26,6 +26,11 @@ msgstr "(измењено)"
 msgid "(expand)"
 msgstr "(прошири)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Без наслова)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ви)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Назив {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "од {from} до {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# више} few {+# више} other {+# више}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -444,7 +446,7 @@ msgstr "Усидрене стране"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push за Android"
+msgstr "Пуш за Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -529,7 +531,7 @@ msgstr "Аутентификовани корисници"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator код"
+msgstr "Код аутентификатора"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -556,6 +558,11 @@ msgstr "Калибрација и мапирање оса"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Назад"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 секунди назад"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "Камера није доступна"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Откажи"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -785,6 +796,11 @@ msgstr "Откажи одговор"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Отказано"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Отказано"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Чет са свима"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Изаберите језик"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Очисти"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ведро"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Радње коментара"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Коментари"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Напомене"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Није могуће учитати овај документ. Поку
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Није могуће учитати ваше летове"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Није могуће репродуковати снимак"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Готово"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Преузми"
 
@@ -1654,6 +1686,12 @@ msgstr "Напусти меч"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Напусти мисију"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Напусти репродукцију"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Лети поново"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Спуштај се по казаљкама: 1200' на 3NM, 800' на 2NM, 400' на 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 секунди напред"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "Л МОТОР ИСКЉУЧЕН"
 msgid "L GEAR"
 msgstr "Л ШАСИЈА"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Слетање"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2517,16 +2556,20 @@ msgstr "Мечеви"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Maximum length"
-msgstr "Najveća dužina"
+msgstr "Највећа дужина"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "MCP server"
 msgstr "MCP сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
-#: src/components/SettingsDialog.tsx
 msgid "Medium"
 msgstr "Средње"
+
+#: src/components/SettingsDialog.tsx
+msgctxt "quality level"
+msgid "Medium"
+msgstr "Средњи"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Members"
@@ -2591,7 +2634,7 @@ msgstr "војна снага"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Minimum length"
-msgstr "Najmanja dužina"
+msgstr "Најмања дужина"
 
 #: src/components/GameCanvas.tsx
 msgid "MISSILE"
@@ -2659,19 +2702,19 @@ msgstr "Мултиплејер захтева WebTransport, који овај п
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Name"
-msgstr "Име"
+msgstr "Назив"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name cannot contain < or > characters"
-msgstr "Име не може да садржи знакове < или >"
+msgstr "Назив не може да садржи знакове < или >"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name is required"
-msgstr "Име је обавезно"
+msgstr "Назив је обавезан"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
-msgstr "Име мора имати 1000 знакова или мање"
+msgstr "Назив мора имати 1000 знакова или мање"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Грешка мреже"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Ново"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Најновије"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Обавештења: {0}"
 msgid "Novice"
 msgstr "Почетник"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Број"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Број"
 
@@ -2911,8 +2962,9 @@ msgstr "ван мреже"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "У реду"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3043,7 +3095,13 @@ msgstr "Passkey-еви нису доступни у овом прегледач�
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
-msgstr "Šablon (regex)"
+msgstr "Шаблон (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Пауза"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3101,6 +3159,18 @@ msgstr "ПЛАТФОРМА"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Платформа: 2000 FPM, хоризонтално на 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Репродукуј"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Положај репродукције"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3185,7 +3255,7 @@ msgstr "Профил сачуван"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "Prompt сачуван"
+msgstr "Упит сачуван"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3198,7 +3268,7 @@ msgstr "Јавни сервери"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push обавештење"
+msgstr "Пуш обавештење"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3256,10 +3326,6 @@ msgstr "Поновно повезивање ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Снимај летове"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Снимање"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -3321,6 +3387,11 @@ msgstr "Релевантност {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Релевантност {relevance}, интересовање {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Подсетник"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "Претраживање..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Изабери"
+msgstr "Избор"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3748,7 +3819,7 @@ msgstr "Постави полазиште и одредиште"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Settings"
-msgstr "Поставке"
+msgstr "Подешавања"
 
 #: src/components/SettingsDialog.tsx
 msgid "Shadows"
@@ -3891,7 +3962,7 @@ msgstr "СТРУКТУРА"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Тема"
+msgstr "Корисник или група"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Натчовечански"
 msgid "Switch to view 1-9"
 msgstr "Пребаци на приказ 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Систем"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Систем"
 
@@ -3969,6 +4044,11 @@ msgstr "Тимови"
 msgid "Teams — red versus blue"
 msgstr "Тимови — црвени против плавих"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Непотврђено"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "На захтев за камеру није одговорено"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Игра није могла да се учита. Поново учитајте страницу да бисте покушали поново."
 
@@ -4021,7 +4102,7 @@ msgstr "Мисија је стала."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "На захтев за passkey није одговорено"
+msgstr "На захтев за приступни кључ није одговорено"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,7 +4114,7 @@ msgstr "Сервер је вратио веб страницу уместо по
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "Овој апликацији није дозвољено да користи ваш passkey. Дозволите јој то у Подешавањима, под Дозволе."
+msgstr "Овој апликацији није дозвољено да користи ваш приступни кључ. Дозволите јој то у Подешавањима, под Дозволе."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4118,7 +4199,7 @@ msgstr "Превише захтева"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Врх"
+msgstr "Најбоље"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Прегледач видеа: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Прикажи"
+msgstr "Приказ"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Контроле приказа"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Прегледи"
+msgstr "Прикази"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

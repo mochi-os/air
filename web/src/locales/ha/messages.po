@@ -26,6 +26,11 @@ msgstr "(an gyara)"
 msgid "(expand)"
 msgstr "(faɗaɗa)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Babu take)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(kai)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Sunan {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} zuwa {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# ƙari} other {+# ƙari}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -444,7 +446,7 @@ msgstr "Bangarori kafaffu"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Tura ta Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -537,7 +539,7 @@ msgstr "Gajerun hanyoyi na keyboard da ake samu"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar"
-msgstr "Avatar"
+msgstr "Hoton bayanin martaba"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar for {name}"
@@ -557,6 +559,11 @@ msgstr "Daidaitawa da tsarin axis"
 msgid "Back"
 msgstr "Komawa"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Koma baya daƙiƙa 5"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -573,7 +580,7 @@ msgstr "Abokin gaba"
 #: ../../../lib/web/src/components/banner-section.tsx
 #: ../../../lib/web/src/components/entity-banner.tsx
 msgid "Banner"
-msgstr "Banner"
+msgstr "Tuta"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Banner removed"
@@ -769,8 +776,12 @@ msgstr "Babu kyamara"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Soke"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Soke"
 
@@ -785,6 +796,11 @@ msgstr "Soke amsa"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "An soke"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "An soke"
 
@@ -886,12 +902,13 @@ msgstr "hira"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
-msgstr "Hira"
+msgstr "Tattaunawa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chat to everyone"
 msgstr "Hira da kowa"
 
+#: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -900,11 +917,11 @@ msgstr "Magudi"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checkbox"
-msgstr "Checkbox"
+msgstr "Akwatin zaɓi"
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
-msgstr "Checklist"
+msgstr "Jerin dubawa"
 
 #: ../../../lib/web/src/components/ui/date-picker.tsx
 msgid "Choose a date"
@@ -929,10 +946,14 @@ msgstr "Zaɓi harshe"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Share"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Babu gajimare"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Ayyukan sharhi"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Sharhi"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Bayanai"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Ba a iya loda wannan takarda ba. Da fatan a sake gwadawa daga baya."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "An kasa loda tashinka"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "An kasa kunna rikodin"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "Wuta ta ƙona jirgin"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Dalla-dalla"
+msgstr "Matakin dalla-dalla"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "An gama"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Sauke"
 
@@ -1500,7 +1532,7 @@ msgstr "Bin iska: daidaita a 600', jirgin ruwa 1NM daga fiffike"
 
 #: src/components/Multiplayer.tsx
 msgid "Drone"
-msgstr "Drone"
+msgstr "Jirgi mara matuƙi"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
@@ -1654,6 +1686,12 @@ msgstr "Fita daga wasan"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Bar manufa"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Bar kunnawa"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Sake tashi"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Bi allurai ƙasa: 1200' a 3NM, 800' a 2NM, 400' a 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Gaba daƙiƙa 5"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Ƙidayar frame a sakan"
@@ -2125,7 +2168,7 @@ msgstr "Mai duba hoto: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
-msgstr "Imperial"
+msgstr "Tsarin Birtaniya"
 
 #: src/components/SettingsDialog.tsx
 msgid "Import"
@@ -2226,7 +2269,7 @@ msgstr "YA SHIGA"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Karawa"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2238,7 +2281,7 @@ msgstr "Karawa da bot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Sandar sarrafawa"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "INJIN HAGU A KASHE"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "ƘAFAR HAGU"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Sauka"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2368,15 +2407,15 @@ msgstr "FITILU"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Link"
-msgstr "Hanya"
+msgstr "Hanyar haɗi"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
-msgstr "Links"
+msgstr "Hanyoyin haɗi"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
-msgstr "List"
+msgstr "Jeri"
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2416,7 +2455,7 @@ msgstr "Kayan yaƙi"
 
 #: src/routes/log.tsx
 msgid "Log"
-msgstr "Rajista"
+msgstr "Bayanin ayyuka"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Sabar MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Matsakaici"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Matsakaici"
 
@@ -2540,7 +2583,7 @@ msgstr "menu"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
-msgstr "Menu"
+msgstr "Jeri"
 
 #: src/components/Multiplayer.tsx
 msgid "Merge — fight on at the pass"
@@ -2565,7 +2608,7 @@ msgstr "Aika saƙo ga ƙungiyarka"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Metric"
-msgstr "Metrik"
+msgstr "Tsarin metrik"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Microphone permission denied"
@@ -2607,7 +2650,7 @@ msgstr "Aikin ya ƙare"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
-msgstr "Mochi web"
+msgstr "Yanar gizon Mochi"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Kuskuren hanyar sadarwa"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Sabon"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Mafi sabo"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Sanarwa: {0}"
 msgid "Novice"
 msgstr "Sabon koyo"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Lamba"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Lamba"
 
@@ -2911,8 +2962,9 @@ msgstr "ba a kan layi ba"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Yi"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Kai! Ba a Sami Shafi Ba!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Buɗe"
+msgstr "A buɗe"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Tsari (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Dakata"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "An tsaya"
 
@@ -3076,7 +3134,7 @@ msgstr "An kashe matuƙin jirgin"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Pin"
-msgstr "Manne"
+msgstr "Liƙa"
 
 #: src/components/GameCanvas.tsx
 msgid "pitch"
@@ -3084,7 +3142,7 @@ msgstr "ɗagawa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "Ɗagawa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch down"
@@ -3101,6 +3159,18 @@ msgstr "DANDALI"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Dandali: 2000 FPM, daidaita a 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Kunna"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Matsayin kunnawa"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Ana sake haɗawa ({retries})..."
 msgid "Record flights"
 msgstr "Yi rikodin tashi"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Rikodi"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Rikodin ya gaza. Da fatan za a sake gwadawa."
@@ -3321,6 +3387,11 @@ msgstr "Dacewa {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Dacewa {relevance}, sha'awa {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Tunatarwa"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "A yi murabus daga wasa?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Warwarewa"
+msgstr "Rezolushan"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3498,7 +3569,7 @@ msgstr "birgima"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll"
-msgstr "Roll"
+msgstr "Birgima"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
@@ -3712,7 +3783,7 @@ msgstr "Sabar"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Server error"
-msgstr "Kuskuren saba"
+msgstr "Kuskuren sabar"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
@@ -3891,7 +3962,7 @@ msgstr "TSARI"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Batu"
+msgstr "Mai amfani ko ƙungiya"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Fiye da mutum"
 msgid "Switch to view 1-9"
 msgstr "Sauya zuwa ra'ayi 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Tsarin"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Tsarin"
 
@@ -3969,6 +4044,11 @@ msgstr "Ƙungiyoyi"
 msgid "Teams — red versus blue"
 msgstr "Ƙungiyoyi — ja da shuɗi"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Na wucin gadi"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Ba a amsa buƙatar kyamara ba"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Ba a iya loda wasan ba. Sake loda shafin don sake gwadawa."
 
@@ -4057,7 +4138,7 @@ msgstr "ƙarfi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Throttle"
-msgstr "Throttle"
+msgstr "Ƙarfin inji"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4118,7 +4199,7 @@ msgstr "Buƙatu sun yi yawa"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Sama"
+msgstr "Mafi kyau"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4126,7 +4207,7 @@ msgstr "Sauka ƙasa: rage throttle; yi birkin iska a 10° hanci sama, sauke hanc
 
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
-msgstr "Tracers"
+msgstr "Harsasai masu haske"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "Travelling"
@@ -4344,7 +4425,7 @@ msgstr "Mai duba bidiyo: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Kalla"
+msgstr "Kallo"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4357,7 +4438,7 @@ msgstr "Kalla kuma gyara cikakkun bayanan abu"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "View controls"
-msgstr "View controls"
+msgstr "Sarrafa kallo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
@@ -4482,7 +4563,7 @@ msgstr "karkata"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Karkata"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4532,7 +4613,7 @@ msgstr "Rubutunka zai ɓace."
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom"
-msgstr "Zoom"
+msgstr "Zuƙowa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom in"

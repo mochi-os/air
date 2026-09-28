@@ -26,6 +26,11 @@ msgstr "(సవరించబడింది)"
 msgid "(expand)"
 msgstr "(విస్తరించు)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(శీర్షిక లేదు)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(మీరు)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} పేరు"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} నుండి {to} వరకు"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# మరిన్ని} other {+# మరిన్ని}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "అక్షం క్రమాంకనం మరియు మ్యా
 msgid "Back"
 msgstr "వెనుకకు"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 సెకన్లు వెనక్కి"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "కెమెరా అందుబాటులో లేదు"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "రద్దు చేయండి"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "రద్దు చేయండి"
 
@@ -785,6 +796,11 @@ msgstr "ప్రత్యుత్తరాన్ని రద్దు చే�
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "రద్దు చేయబడింది"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "రద్దు చేయబడింది"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "అందరితో చాట్"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "భాషను ఎంచుకోండి"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "క్లియర్ చేయండి"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "నిర్మలం"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "వ్యాఖ్య చర్యలు"
 msgid "Comments"
 msgstr "వ్యాఖ్యలు"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "గమనికలు"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1067,7 +1093,7 @@ msgstr "నిర్ధారించండి"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect"
-msgstr "కనెక్ట్"
+msgstr "కనెక్ట్ చేయండి"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect to private server"
@@ -1149,6 +1175,10 @@ msgstr "ఈ పత్రాన్ని లోడ్ చేయలేకపోయ
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "మీ విమానయానాలను లోడ్ చేయడం సాధ్యపడలేదు"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "రికార్డింగ్‌ను ప్లే చేయలేకపోయాం"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "మంటల్లో ధ్వంసమైంది"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "వివరాలు"
+msgstr "వివరాల స్థాయి"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,8 +1512,10 @@ msgstr "పూర్తయింది"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
-msgstr "డౌన్‌లోడ్"
+msgstr "డౌన్‌లోడ్ చేయండి"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -1654,6 +1686,12 @@ msgstr "మ్యాచ్ నుండి నిష్క్రమించం�
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "మిషన్ నుండి నిష్క్రమించు"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ప్లేబ్యాక్ నుండి నిష్క్రమించు"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "మళ్లీ ఎగరండి"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ముళ్ళను అనుసరించి దిగు: 3NM వద్ద 1200', 2NM వద్ద 800', 1NM వద్ద 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 సెకన్లు ముందుకు"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "ఎడమ ఇంజిన్ ఆఫ్"
 msgid "L GEAR"
 msgstr "ఎడమ గేర్"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "ల్యాండింగ్"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP సర్వర్"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "మధ్యస్థం"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "మధ్యస్థం"
 
@@ -2540,7 +2583,7 @@ msgstr "మెను"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
-msgstr "మెను"
+msgstr "మెనూ"
 
 #: src/components/Multiplayer.tsx
 msgid "Merge — fight on at the pass"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "నెట్‌వర్క్ లోపం"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "కొత్తది"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "సరికొత్తవి"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "నోటిఫికేషన్‌లు: {0}"
 msgid "Novice"
 msgstr "కొత్తవారు"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "సంఖ్య"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "సంఖ్య"
 
@@ -2911,8 +2962,9 @@ msgstr "ఆఫ్‌లైన్"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "సరే"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3046,12 +3098,18 @@ msgid "Pattern (regex)"
 msgstr "నమూనా (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "పాజ్ చేయి"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "పాజ్ చేయబడింది"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "People"
-msgstr "పీపుల్"
+msgstr "వ్యక్తులు"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3101,6 +3159,18 @@ msgstr "వేదిక"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "ప్లాట్‌ఫారమ్: 2000 FPM, 1200' వద్ద సమతలం"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ప్లే చేయి"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ప్లేబ్యాక్ స్థానం"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "మళ్లీ కనెక్ట్ అవుతోంది ({retries
 msgid "Record flights"
 msgstr "విమానయానాలను రికార్డ్ చేయి"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "రికార్డింగ్"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "రికార్డింగ్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
@@ -3321,6 +3387,11 @@ msgstr "ఔచిత్యం {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "ఔచిత్యం {relevance}, ఆసక్తి {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "రిమైండర్"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "శోధిస్తోంది..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "ఎంచుకోండి"
+msgstr "ఎంపిక"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "నిర్మాణం"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "విషయం"
+msgstr "వినియోగదారు లేదా సమూహం"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "అతిమానవ"
 msgid "Switch to view 1-9"
 msgstr "వీక్షణ 1-9 కి మారండి"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "సిస్టమ్"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "సిస్టమ్"
 
@@ -3969,6 +4044,11 @@ msgstr "జట్లు"
 msgid "Teams — red versus blue"
 msgstr "జట్లు — ఎరుపు vs నీలం"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "తాత్కాలికం"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "కెమెరా అభ్యర్థనకు స్పందన లేదు"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "గేమ్‌ను లోడ్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి."
 
@@ -4118,7 +4199,7 @@ msgstr "చాలా ఎక్కువ అభ్యర్థనలు"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ఎగువ"
+msgstr "ఉత్తమమైనవి"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "వీడియో వీక్షకం: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "వీక్షించండి"
+msgstr "వీక్షణ"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

@@ -26,6 +26,11 @@ msgstr "(redaktuar)"
 msgid "(expand)"
 msgstr "(zgjero)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Pa titull)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ju)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Emri i {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "nga {from} deri në {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# më shumë} other {+# më shumë}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -385,7 +387,7 @@ msgstr "Pasdjegës"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
-msgstr "IA"
+msgstr "AI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Aircraft"
@@ -557,6 +559,11 @@ msgstr "Kalibrimi dhe caktimi i boshteve"
 msgid "Back"
 msgstr "Mbrapa"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekonda prapa"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -678,7 +685,7 @@ msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
-msgstr "Bots"
+msgstr "Bot-ët"
 
 #: src/components/GameCanvas.tsx
 msgid "brakes"
@@ -769,8 +776,12 @@ msgstr "Kamera nuk është e disponueshme"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Anulo"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Anulo"
 
@@ -787,6 +798,11 @@ msgstr "Anulo përgjigjen"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "I anuluar"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Anuluar"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -886,12 +902,13 @@ msgstr "chat"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
-msgstr "Bisedë"
+msgstr "Bisedimi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chat to everyone"
 msgstr "Chat me të gjithë"
 
+#: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -929,10 +946,14 @@ msgstr "Zgjidh gjuhën"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Pastro"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "I kthjellët"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Veprimet e komentit"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Komentet"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Shënime"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Nuk mund të ngarkohej ky dokument. Provo më vonë."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Fluturimet tuaja nuk u ngarkuan dot"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Regjistrimi nuk u luajt dot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "Shkatërruar nga zjarri"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Detajet"
+msgstr "Niveli i detajeve"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "Përfunduar"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Shkarko"
 
@@ -1654,6 +1686,12 @@ msgstr "Dil nga ndeshja"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Dil nga misioni"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Dil nga luajtja"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Fluturo sërish"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Zbrit sipas gjilpërave: 1200' në 3NM, 800' në 2NM, 400' në 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekonda përpara"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2238,7 +2281,7 @@ msgstr "Duel kundër botit"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Leva"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "MOTORI MAJTË I FIKUR"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "TREN MAJTË"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Ulje"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "I mesëm"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "I mesëm"
 
@@ -2607,7 +2650,7 @@ msgstr "Misioni mbaroi"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
-msgstr "Mochi web"
+msgstr "Mochi në shfletues"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Gabim rrjeti"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "I ri"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Më të rejat"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Njoftimet: {0}"
 msgid "Novice"
 msgstr "Fillestar"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Numri"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Numri"
 
@@ -2911,6 +2962,7 @@ msgstr "jashtë linje"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Ups! Faqja s'u gjet!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Hap"
+msgstr "E hapur"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,12 +3098,18 @@ msgid "Pattern (regex)"
 msgstr "Modeli (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pauzë"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "I ndaluar"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "People"
-msgstr "Persona"
+msgstr "Njerëz"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3101,6 +3159,18 @@ msgstr "PLATFORMË"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, në nivel në 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Luaj"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Pozicioni i luajtjes"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Po rilidhet ({retries})..."
 msgid "Record flights"
 msgstr "Regjistro fluturimet"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Regjistrimi"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Regjistrimi dështoi. Provoni sërish."
@@ -3321,6 +3387,11 @@ msgstr "Përkatësia {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Përkatësia {relevance}, interesi {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Kujtesë"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "Duke kërkuar..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Zgjidh"
+msgstr "Përzgjedhje"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3921,9 +3992,13 @@ msgstr "Mbinjerëzor"
 msgid "Switch to view 1-9"
 msgstr "Kalo te pamja 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistemi"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistemi"
 
@@ -3969,6 +4044,11 @@ msgstr "Ekipe"
 msgid "Teams — red versus blue"
 msgstr "Ekipe — të kuqtë kundër bluve"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Paraprak"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Kërkesa për kamerë nuk mori përgjigje"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Loja nuk u ngarkua dot. Ringarko faqen për të provuar sërish."
 
@@ -4118,7 +4199,7 @@ msgstr "Shumë kërkesa"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Lart"
+msgstr "Më të mirat"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4134,11 +4215,11 @@ msgstr "Duke udhëtuar"
 
 #: src/components/GameCanvas.tsx
 msgid "trim"
-msgstr "trim"
+msgstr "trimim"
 
 #: src/components/SettingsDialog.tsx
 msgid "Trim"
-msgstr "Trim"
+msgstr "Trimi"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4344,7 +4425,7 @@ msgstr "Shikuesi i videove: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Shiko"
+msgstr "Pamja"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4532,7 +4613,7 @@ msgstr "Teksti yt do të humbasë."
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom"
-msgstr "Zoom"
+msgstr "Zmadhimi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom in"

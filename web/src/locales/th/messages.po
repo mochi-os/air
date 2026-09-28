@@ -26,6 +26,11 @@ msgstr "(แก้ไขแล้ว)"
 msgid "(expand)"
 msgstr "(ขยาย)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(ไม่มีชื่อ)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(คุณ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "ชื่อ {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ถึง {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# รายการ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -529,7 +531,7 @@ msgstr "ผู้ใช้ที่ยืนยันตัวตนแล้ว
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "รหัส Authenticator"
+msgstr "รหัสยืนยันตัวตน"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -556,6 +558,11 @@ msgstr "การปรับเทียบและการแมปแกน
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "ย้อนกลับ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "ย้อนกลับ 5 วินาที"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "กล้องไม่พร้อมใช้งาน"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -785,6 +796,11 @@ msgstr "ยกเลิกการตอบกลับ"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "ยกเลิกแล้ว"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "ยกเลิกแล้ว"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "แชทกับทุกคน"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "เลือกภาษา"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "ล้าง"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "แจ่มใส"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "การดำเนินการความคิดเห็น"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "ความคิดเห็น"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "หมายเหตุ"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "ไม่สามารถโหลดเอกสารนี้ได
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "ไม่สามารถโหลดการบินของคุณได้"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ไม่สามารถเล่นไฟล์การบินได้"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "ถูกไฟเผาทำลาย"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "รายละเอียด"
+msgstr "ระดับรายละเอียด"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "เสร็จสิ้น"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ดาวน์โหลด"
 
@@ -1655,6 +1687,12 @@ msgstr "ออกจากแมตช์"
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ออกจากการเล่น"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -1727,7 +1765,7 @@ msgstr "ไม่สามารถลบลิงก์ได้"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to get RSS token"
-msgstr "ไม่สามารถรับ RSS token ได้"
+msgstr "ไม่สามารถรับโทเคน RSS ได้"
 
 #: ../../../lib/web/src/hooks/use-load-more.ts
 msgid "Failed to load"
@@ -1768,7 +1806,7 @@ msgstr "ไม่สามารถโพสต์ความคิดเห็
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "ไม่สามารถรีเซ็ต prompt ได้"
+msgstr "ไม่สามารถรีเซ็ตพรอมต์ได้"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1780,7 +1818,7 @@ msgstr "ไม่สามารถบันทึกได้"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "ไม่สามารถบันทึก prompt ได้"
+msgstr "ไม่สามารถบันทึกพรอมต์ได้"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -1844,7 +1882,7 @@ msgstr "ปุ่มการบินคงที่"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
-msgstr "Flags"
+msgstr "แฟล็ก"
 
 #: src/components/GameCanvas.tsx
 msgid "FLAMEOUT"
@@ -1906,6 +1944,11 @@ msgstr "บินอีกครั้ง"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ลดระดับตามเข็ม: 1200' ที่ 3NM, 800' ที่ 2NM, 400' ที่ 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "ข้ามไป 5 วินาที"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2116,7 +2159,7 @@ msgstr "เข็ม HUD: ตรึงเส้นร่อนและเส้
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
-msgstr "ID"
+msgstr "รหัส"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -2285,10 +2328,6 @@ msgstr "เครื่องยนต์ซ้ายดับ"
 msgid "L GEAR"
 msgstr "ล้อซ้าย"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "การลงจอด"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2416,7 +2455,7 @@ msgstr "การติดตั้งอาวุธ"
 
 #: src/routes/log.tsx
 msgid "Log"
-msgstr "สมุดบันทึก"
+msgstr "บันทึก"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "เซิร์ฟเวอร์ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "กลาง"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "กลาง"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "ข้อผิดพลาดของเครือข่าย"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "ใหม่"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "ใหม่ล่าสุด"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "การแจ้งเตือน: {0}"
 msgid "Novice"
 msgstr "มือใหม่"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ตัวเลข"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "หมายเลข"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,8 +2962,9 @@ msgstr "ออฟไลน์"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ตกลง"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3039,11 +3091,17 @@ msgstr "พาสคีย์"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys ไม่พร้อมใช้งานในเบราว์เซอร์นี้"
+msgstr "พาสคีย์ไม่พร้อมใช้งานในเบราว์เซอร์นี้"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "รูปแบบ (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "หยุดชั่วคราว"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3101,6 +3159,18 @@ msgstr "แพลตฟอร์ม"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "แพลตฟอร์ม: 2000 FPM, ระดับที่ 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "เล่น"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ตำแหน่งการเล่น"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3185,7 +3255,7 @@ msgstr "บันทึกโปรไฟล์แล้ว"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "บันทึก prompt แล้ว"
+msgstr "บันทึกพรอมต์แล้ว"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3257,10 +3327,6 @@ msgstr "กำลังเชื่อมต่อใหม่ ({retries})..."
 msgid "Record flights"
 msgstr "บันทึกการบิน"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "การบันทึก"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "การบันทึกล้มเหลว โปรดลองอีกครั้ง"
@@ -3321,6 +3387,11 @@ msgstr "ความเกี่ยวข้อง {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "ความเกี่ยวข้อง {relevance}, ความสนใจ {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "การแจ้งเตือน"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "ยอมแพ้เกม?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "การแก้ปัญหา"
+msgstr "ความละเอียด"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "กำลังค้นหา..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "เลือก"
+msgstr "ตัวเลือก"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "โครงสร้าง"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "หัวเรื่อง"
+msgstr "ผู้ใช้หรือกลุ่ม"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "เหนือมนุษย์"
 msgid "Switch to view 1-9"
 msgstr "เปลี่ยนเป็นมุมมอง 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "ระบบ"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "ระบบ"
 
@@ -3969,6 +4044,11 @@ msgstr "ทีม"
 msgid "Teams — red versus blue"
 msgstr "ทีม — แดงปะทะน้ำเงิน"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "ยังไม่แน่นอน"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "คำขอกล้องไม่ได้รับการตอบกลับ"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "โหลดเกมไม่ได้ โหลดหน้านี้ใหม่เพื่อลองอีกครั้ง"
 
@@ -4021,7 +4102,7 @@ msgstr "ภารกิจหยุดลง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "คำขอ passkey ไม่ได้รับการตอบกลับ"
+msgstr "คำขอพาสคีย์ไม่ได้รับการตอบกลับ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,7 +4114,7 @@ msgstr "เซิร์ฟเวอร์ส่งคืนหน้าเว็
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "แอปนี้ไม่ได้รับอนุญาตให้ใช้ passkey ของคุณ อนุญาตได้ในการตั้งค่า ภายใต้สิทธิ์"
+msgstr "แอปนี้ไม่ได้รับอนุญาตให้ใช้พาสคีย์ของคุณ อนุญาตได้ในการตั้งค่า ภายใต้สิทธิ์"
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4118,7 +4199,7 @@ msgstr "คำขอมากเกินไป"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "บนสุด"
+msgstr "คะแนนสูงสุด"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "โปรแกรมดูวิดีโอ: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ดู"
+msgstr "มุมมอง"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "ตัวควบคุมมุมมอง"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "การดู"
+msgstr "มุมมอง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

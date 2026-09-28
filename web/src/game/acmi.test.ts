@@ -14,6 +14,7 @@ import {
   type Sample,
   stamp,
   channels,
+  airspeed,
 } from './acmi'
 
 // engine.ts cannot be imported (WebGL at module scope): the recorder's engine
@@ -103,7 +104,14 @@ describe('acmi', () => {
           time: 0,
           objects: [
             jet({
-              data: { aoa: 8.1, g: 1.02, tas: 220, ias: 205, mach: 0.64 },
+              data: {
+                aoa: 8.1,
+                beta: -2.345,
+                g: 1.02,
+                tas: 220,
+                ias: 205,
+                mach: 0.64,
+              },
             }),
           ],
         },
@@ -112,6 +120,7 @@ describe('acmi', () => {
       'Joust'
     )
     expect(text).toContain('AOA=8.1')
+    expect(text).toContain('Beta=-2.35')
     expect(text).toContain('G=1.02')
     expect(text).toContain('TAS=220')
     expect(text).toContain('IAS=205')
@@ -450,7 +459,12 @@ it("records an AMRAAM's midcourse support, and its loss mid-flight", () => {
     label: '120C',
     colour: 'Blue',
     kind: 'Weapon+Missile',
-    round: { shooter: 1, target: 2, seeker, ...(support !== undefined ? { support } : {}) },
+    round: {
+      shooter: 1,
+      target: 2,
+      seeker,
+      ...(support !== undefined ? { support } : {}),
+    },
   })
   const text = acmi(
     [
@@ -525,7 +539,10 @@ it('records a landed acquire/undesignate press once, and several between samples
       { time: 0, objects: [jet(undefined)] },
       { time: 0.1, objects: [jet('160.8|acquire|ls')] },
       { time: 0.2, objects: [jet(undefined)] }, // no press landed this sample: field absent, not repeated
-      { time: 0.3, objects: [jet('161.0|acquire|stt;161.4|undesignate|break')] }, // two landings between samples
+      {
+        time: 0.3,
+        objects: [jet('161.0|acquire|stt;161.4|undesignate|break')],
+      }, // two landings between samples
     ],
     new Date(0),
     't'
@@ -608,8 +625,11 @@ it('records when weapons went free, merge or a BVR start with no hold', () => {
 // they answer "did the pilot override, and did g then accrue overstress" even
 // though the exact shed margin isn't recorded (it needs battle-package wing
 // health that never reaches the client).
-it("records the g-limit override switch on change, and Stress every sample", () => {
-  const jet = (override?: boolean, stress?: number): Sample['objects'][number] => ({
+it('records the g-limit override switch on change, and Stress every sample', () => {
+  const jet = (
+    override?: boolean,
+    stress?: number
+  ): Sample['objects'][number] => ({
     id: 1,
     x: 0,
     y: 1000,
@@ -951,12 +971,17 @@ describe('stamp', () => {
 
   it('names the browser remap when there is one', () => {
     expect(stamp({ ...fight, mapping: 'standard' }).match.mapping).toBe(
-      'standard',
+      'standard'
     )
   })
 
   it('carries the bindings the device cannot reach', () => {
-    const { match } = stamp({ ...fight, axes: 4, buttons: 17, unreachable: 'fire,weapon' })
+    const { match } = stamp({
+      ...fight,
+      axes: 4,
+      buttons: 17,
+      unreachable: 'fire,weapon',
+    })
     expect(match.unreachable).toBe('fire,weapon')
     expect(match.axes).toBe('4')
   })
@@ -986,7 +1011,13 @@ describe('stamp', () => {
     expect(stamp(fight).match.omit).toBe('') // acmi() drops an empty field
     expect(stamp({ ...fight, stage: 0 }).match.stage).toBe('0') // the brain as it stands, said rather than left to be assumed
     expect(stamp({ ...fight, stage: 8, omit: 128 }).match.omit).toBe('128')
-    const other = stamp({ ...fight, multiplayer: true, mode: 'furball', stage: 6, omit: 128 }).match
+    const other = stamp({
+      ...fight,
+      multiplayer: true,
+      mode: 'furball',
+      stage: 6,
+      omit: 128,
+    }).match
     expect(other.stage).toBe('') // a multiplayer match has no bandit brain to name
     expect(other.omit).toBe('')
     expect(stamp({ ...fight, mode: 'free' }).match.stage).toBe('')
@@ -1058,13 +1089,139 @@ describe('stamp', () => {
     expect(match.bandit).toBe('')
   })
 
+  it('carries the day\u2019s wind, and nothing when there is none', () => {
+    expect(stamp({ ...fight, wind: '070/25' }).match.wind).toBe('070/25')
+    const header = (wind?: string) =>
+      acmi(
+        [],
+        new Date('2026-09-26T12:00:00Z'),
+        'Mochi Air: flight',
+        stamp({ ...fight, wind }).match
+      ).split('\n')
+    expect(header('070/25')).toContain('0,Match_wind=070/25')
+    expect(header().join('\n')).not.toContain('Match_wind')
+  })
+
   it('carries the LSO\u2019s write-up of every pass, and nothing when none was flown', () => {
     const passes = 'BOLTER LO IC | NO-GRADE (LUL) IC · (LO)(LUL) IW 1 wire'
     expect(stamp({ ...fight, passes }).match.passes).toBe(passes)
     expect(stamp(fight).match.passes).toBe('')
     const lines = acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free', passes }).match).split('\n')
     expect(lines).toContain('0,Match_passes=' + passes)
-    expect(acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free' }).match)).not.toContain('Match_passes')
+    expect(
+      acmi(
+        [],
+        new Date('2026-09-24T12:00:00Z'),
+        'Mochi Air: flight',
+        stamp({ ...fight, mode: 'free' }).match
+      )
+    ).not.toContain('Match_passes')
+  })
+})
+
+describe('true airspeed', () => {
+  // The core's own standard atmosphere: a = sqrt(1.4 x 287.053 x T), T falling
+  // 6.5 K per km from 288.15 K to the tropopause at 11 km.
+  it('is Mach times the speed of sound the core flew in', () => {
+    expect(airspeed(1, 0)).toBeCloseTo(340.294, 2)
+    expect(airspeed(0.8, 4572)).toBeCloseTo(0.8 * Math.sqrt(1.4 * 287.053 * (288.15 - 0.0065 * 4572)), 6) // a joust's 15,000 ft
+    expect(airspeed(1, 11000)).toBeCloseTo(295.07, 1)
+    expect(airspeed(1, 15000)).toBeCloseTo(airspeed(1, 11000), 9) // isothermal above it
+    expect(airspeed(1, -40)).toBeCloseTo(airspeed(1, 0), 9) // the core clamps a jet below the sea to it
+  })
+
+  it('is what the engine records for the pilot and the bandit, not their speed over the ground', () => {
+    const sample = lift('recording_sample')
+    expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)
+    expect(sample).toMatch(/tas:airspeed\(bandit_words\[STATE\.mach\]\|\|0,bandit\.pos\.y\)/)
+    expect(sample).not.toMatch(/tas:[^,]*\.speed/)
+  })
+})
+
+describe('what a replay draws is recorded', () => {
+  const lines = (data: Recorded['data'][]) =>
+    acmi(
+      data.map((d, k) => ({ time: k / 10, objects: [jet({ data: d })] })),
+      new Date('2026-09-26T10:00:00Z'),
+      'Mochi Air: flight'
+    )
+      .split('\n')
+      .filter((line) => line.startsWith('1,'))
+  const count = (text: string[], channel: string) =>
+    text.filter((line) => line.includes(`,${channel}=`)).length
+
+  it('writes a state on the sample it changes and not while it holds', () => {
+    const steady = {
+      surfaces: [0.02, 0.02, 0, 0, 0, 0],
+      master: 'gun',
+      declutter: 0,
+      heaters: 2,
+      amraams: 0,
+      catapult: -1,
+      stroke: -1,
+      wire: 0,
+      waving: false,
+      lights: false,
+      canopy: 0,
+      fold: 0,
+      probe: 0,
+      damage: new Array(51).fill(0),
+    }
+    const text = lines([
+      steady,
+      steady,
+      { ...steady, master: 'aim9', lights: true, heaters: 1 },
+      { ...steady, master: 'aim9', lights: true, heaters: 1 },
+    ])
+    for (const channel of [
+      'Surfaces',
+      'Declutter',
+      'Amraams',
+      'Catapult',
+      'Stroke',
+      'Wire',
+      'Waving',
+      'Canopy',
+      'Fold',
+      'Probe',
+      'Damage',
+    ])
+      expect(count(text, channel), channel).toBe(1)
+    for (const channel of ['Master', 'Lights', 'Heaters'])
+      expect(count(text, channel), channel).toBe(2)
+    expect(text[2]).toContain(',Master=aim9')
+    expect(text[2]).toContain(',Lights=1')
+    expect(text[0]).toContain(',Surfaces=1|1|0|0|0|0') // degrees, whole
+    expect(text[0]).toContain(`,Damage=${new Array(51).fill(0).join('|')}`)
+  })
+
+  it('writes the pedal every sample, like the stick', () => {
+    const text = lines([{ pedal: 0.2 }, { pedal: 0.2 }, { pedal: -0.1 }])
+    expect(count(text, 'Pedal')).toBe(3)
+  })
+
+  it('writes a message on the sample it was raised on, escaped, and the ejection once', () => {
+    const text = lines([
+      { radio: ['#8fd0ff Tower, 701, ready'], notice: ['BINGO FUEL'] },
+      {},
+      { eject: true },
+      { eject: true },
+    ])
+    expect(text[0]).toContain(',Radio=#8fd0ff Tower\\, 701\\, ready')
+    expect(text[0]).toContain(',Notice=BINGO FUEL')
+    expect(count(text, 'Radio')).toBe(1)
+    expect(count(text, 'Eject')).toBe(1)
+  })
+
+  it('writes the coaching as it changes, and its clearing', () => {
+    const text = lines([
+      { coach: ['Gear down', 'Hook down'] },
+      { coach: ['Gear down', 'Hook down'] },
+      { coach: [] },
+    ])
+    expect(text[0]).toContain(',Coach=Gear down;Hook down')
+    expect(text[1]).not.toContain('Coach=')
+    expect(text[2]).toMatch(/,Coach=(,|$)/)
   })
 })
 
@@ -1104,6 +1261,16 @@ describe('a multiplayer remote is recorded, not just tracked (#163/#164)', () =>
     const out = channels({ aoa: 14, g: 6.4 })
     expect(out.aoa).toBe(14)
     expect(out.g).toBeCloseTo(6.4, 3)
+  })
+
+  it('carries his sideslip, and reads it as none when the wire says nothing', () => {
+    expect(channels({ beta: -7 }).beta).toBe(-7)
+    expect(channels({}).beta).toBe(0)
+  })
+
+  it('carries his speed brake, so a replay can draw it, and reads it stowed when the wire says nothing', () => {
+    expect(channels({ speedbrake: 1 }).speedbrake).toBe(1)
+    expect(channels({}).speedbrake).toBe(0)
   })
 
   it('reports a wings-level jet as zero alpha and one g rather than omitting them', () => {
@@ -1343,8 +1510,16 @@ describe("the ownship's death in the recording", () => {
     expect([own.record(true), own.record(false)]).toEqual(['alive', 'alive'])
     own.crash()
     // Samples the recorder will drop do not count: the death is written on the first KEPT one.
-    expect([own.record(false), own.record(false), own.record(true)]).toEqual(['death', 'death', 'death'])
-    expect([own.record(true), own.record(false), own.record(true)]).toEqual(['gone', 'gone', 'gone'])
+    expect([own.record(false), own.record(false), own.record(true)]).toEqual([
+      'death',
+      'death',
+      'death',
+    ])
+    expect([own.record(true), own.record(false), own.record(true)]).toEqual([
+      'gone',
+      'gone',
+      'gone',
+    ])
     own.respawn()
     expect(own.record(true)).toBe('alive')
     own.crash()
@@ -1355,7 +1530,7 @@ describe("the ownship's death in the recording", () => {
     expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
     const sample = lift('recording_sample')
     expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tconst own=own_record\(due\);/)
-    expect(sample).toMatch(/tas:own==="death"\?undefined:\(ownship\.speed\|\|0\)/)
+    expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)
     expect(sample).toMatch(/\n\tif\(own!=="gone"\) add\(ownship,1,/)
   })
 

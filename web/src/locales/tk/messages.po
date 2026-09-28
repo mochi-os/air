@@ -26,6 +26,11 @@ msgstr "(redaktirlendi)"
 msgid "(expand)"
 msgstr "(giňelt)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Atsyz)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(siz)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} ady"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} bilen {to} aralygy"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# ýene} other {+# ýene}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -444,7 +446,7 @@ msgstr "Berkidilen taraplar"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Android push bildirişleri"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -556,6 +558,11 @@ msgstr "Oklary kalibrlemek we bellemek"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Yza"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekunt yza"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "Kamera elýeterli däl"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Ýatyrmak"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Ýatyrmak"
 
@@ -785,6 +796,11 @@ msgstr "Jogaby ýatyrmak"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Ýatyryldy"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Ýatyryldy"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Hemmeler bilen çat"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Dil saýlaň"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Arassalamak"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Açyk asman"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Teswir hereketleri"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Teswirler"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Bellikler"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Bu resminamany ýüklemedi. Soň gaýtadan synanyşyň."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Uçuşlaryňyz ýüklenip bilinmedi"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Ýazgyny oýnadyp bolmady"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Taýýar"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Ýükläp al"
 
@@ -1654,6 +1686,12 @@ msgstr "Oýundan çyk"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Tabşyrykdan çyk"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Oýnatmakdan çyk"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Ýene uç"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Oklar boýunça aşak uç: 1200' 3NM-de, 800' 2NM-de, 400' 1NM-de"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekunt öňe"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "ÇEP MOTOR ÖÇÜRILEN"
 msgid "L GEAR"
 msgstr "ÇEP ŞASSI"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Gonuş"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP serweri"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Orta"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Orta"
 
@@ -2628,7 +2671,7 @@ msgstr "Aý"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
-msgstr "Köp opsiýalar"
+msgstr "Goşmaça opsiýalar"
 
 #: src/components/SettingsDialog.tsx
 msgid "Move…"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Tor ýalňyşlygy"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Täze"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Iň täze"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "Bildirişler: {0}"
 msgid "Novice"
 msgstr "Täze öwreniji"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "San"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "Belgi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,8 +2962,9 @@ msgstr "oflaýn"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Bolýar"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Eý dostum! Sahypa tapylmady!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Aç"
+msgstr "Açyk"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Nusga (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Arakesme"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Saklanan"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platforma: 2000 FPM, 1200'-de gorizontal"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Oýnat"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Oýnatmak ýeri"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Täzeden birikdirilýär ({retries})..."
 msgid "Record flights"
 msgstr "Uçuşlary ýazga al"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Ýazgy"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Ýazgy şowsuz boldy. Gaýtadan synanyşyň."
@@ -3321,6 +3387,11 @@ msgstr "Degişlilik {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Degişlilik {relevance}, gyzyklanma {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Ýatladyş"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Oýny resign etmek?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Çözgüt"
+msgstr "Aýdyňlyk"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3553,7 +3624,7 @@ msgstr "Şenbe"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx
 #: ../../../lib/web/src/components/ui/secret-field.tsx
 msgid "Save"
-msgstr "Saklaýyş"
+msgstr "Saklamak"
 
 #: src/components/MissionSetup.tsx
 msgid "Sea level"
@@ -3622,7 +3693,7 @@ msgstr "Gözlenýär..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Saýla"
+msgstr "Saýlaw"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3712,7 +3783,7 @@ msgstr "Serwer"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Server error"
-msgstr "Server ýalňyşlygy"
+msgstr "Serwer ýalňyşlygy"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
@@ -3891,7 +3962,7 @@ msgstr "GURLUŞ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Mowzuk"
+msgstr "Ulanyjy ýa-da topar"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Adamdan ýokary"
 msgid "Switch to view 1-9"
 msgstr "1-9 görnüşine geç"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Ulgam"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Ulgam"
 
@@ -3969,6 +4044,11 @@ msgstr "Toparlar"
 msgid "Teams — red versus blue"
 msgstr "Toparlar — gyzyl göge garşy"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Deslapky"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Kamera haýyşyna jogap berilmedi"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Oýun ýüklenip bilmedi. Täzeden synanyşmak üçin sahypany täzeden ýükläň."
 
@@ -4118,7 +4199,7 @@ msgstr "Aşa köp haýyş"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Ýokarky"
+msgstr "Iň gowy"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Wideo görkeziji: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Görkez"
+msgstr "Görnüş"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

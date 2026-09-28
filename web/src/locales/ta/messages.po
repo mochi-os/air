@@ -26,6 +26,11 @@ msgstr "(திருத்தப்பட்டது)"
 msgid "(expand)"
 msgstr "(விரிவாக்கு)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(தலைப்பு இல்லை)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(நீங்கள்)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} பெயர்"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} முதல் {to} வரை"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# மேலும்} other {+# மேலும்}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "அச்சு அளவீடு மற்றும் ஒதுக்
 msgid "Back"
 msgstr "பின்"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 வினாடிகள் பின்னோக்கி"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -728,7 +735,7 @@ msgstr "பூட்டு / விடுவி"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Calendar server"
-msgstr "நாட்காட்டி சர்வர்"
+msgstr "நாட்காட்டி சேவையகம்"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -769,8 +776,12 @@ msgstr "கேமரா கிடைக்கவில்லை"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "ரத்துசெய்"
 
@@ -785,6 +796,11 @@ msgstr "பதிலளிப்பை ரத்துசெய்"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "ரத்துசெய்யப்பட்டது"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "ரத்துசெய்யப்பட்டது"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "அனைவருடனும் அரட்டை"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "மொழியைத் தேர்ந்தெடுக்கவு�
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "அழி"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "தெளிவான வானம்"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "கருத்து செயல்கள்"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "கருத்துகள்"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "குறிப்புகள்"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "இந்த ஆவணத்தை ஏற்ற முடியவில
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "உங்கள் பறத்தல்களை ஏற்ற முடியவில்லை"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "பதிவை இயக்க முடியவில்லை"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1425,7 +1455,7 @@ msgstr "வேறு விளையாட்டு ஹோஸ்ட்"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Directory"
-msgstr "கோப்பகம்"
+msgstr "அடைவு"
 
 #: src/components/GameCanvas.tsx
 msgid "DIRTY UP"
@@ -1482,6 +1512,8 @@ msgstr "முடிந்தது"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "பதிவிறக்கு"
 
@@ -1654,6 +1686,12 @@ msgstr "போட்டியிலிருந்து வெளியேற�
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "பணியிலிருந்து வெளியேறு"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "இயக்கத்திலிருந்து வெளியேறு"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "மீண்டும் பறக்கவும்"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ஊசிகளைப் பின்தொடர்ந்து இறங்கு: 3NM-ல் 1200', 2NM-ல் 800', 1NM-ல் 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 வினாடிகள் முன்னோக்கி"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "இடது என்ஜின் நிறுத்தம்"
 msgid "L GEAR"
 msgstr "இடது கியர்"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "தரையிறக்கம்"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2416,7 +2455,7 @@ msgstr "ஆயுத அமைவு"
 
 #: src/routes/log.tsx
 msgid "Log"
-msgstr "பதிவு"
+msgstr "பதிவேடு"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP சேவையகம்"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "நடுத்தரம்"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "நடுத்தரம்"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "பிணையப் பிழை"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "புதியது"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "சமீபத்தியவை"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "அறிவிப்புகள்: {0}"
 msgid "Novice"
 msgstr "புதியவர்"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "எண்"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "எண்"
 
@@ -2911,8 +2962,9 @@ msgstr "ஆஃப்லைன்"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "சரி"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "அய்யோ! பக்கம் கிடைக்கவில்ல
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "திற"
+msgstr "திறந்த போட்டி"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3031,7 +3083,7 @@ msgstr "கடவுக்குறி"
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "கடவுவிசை சரிபார்ப்பு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்."
+msgstr "கடவுக்குறி சரிபார்ப்பு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்."
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
@@ -3044,6 +3096,12 @@ msgstr "இந்த உலாவியில் passkeyக்கள் கி�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "வடிவம் (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "இடைநிறுத்து"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3076,7 +3134,7 @@ msgstr "விமானி கொல்லப்பட்டார்"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Pin"
-msgstr "பொருத்து"
+msgstr "பின் செய்"
 
 #: src/components/GameCanvas.tsx
 msgid "pitch"
@@ -3101,6 +3159,18 @@ msgstr "மேடை"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "மேடை: 2000 FPM, 1200' இல் நிலை"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "இயக்கு"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "இயக்க நிலை"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3185,7 +3255,7 @@ msgstr "சுயவிவரம் சேமிக்கப்பட்டத�
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "Prompt சேமிக்கப்பட்டது"
+msgstr "தூண்டுதல் சேமிக்கப்பட்டது"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3235,7 +3305,7 @@ msgstr "இந்த சேவையகத்தில் உங்கள் க
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Re-register your passkeys on this server"
-msgstr "இந்த சேவையகத்தில் உங்கள் கடவுச்சாவிகளை மீண்டும் பதிவு செய்யவும்"
+msgstr "இந்த சேவையகத்தில் உங்கள் கடவுக்குறிகளை மீண்டும் பதிவு செய்யவும்"
 
 #: src/components/GameCanvas.tsx
 msgid "REARMED"
@@ -3256,10 +3326,6 @@ msgstr "மீண்டும் இணைக்கிறது ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "பறத்தல்களைப் பதிவு செய்"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "பதிவு"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -3322,6 +3388,11 @@ msgstr "தொடர்புடைமை {relevance}"
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "தொடர்புடைமை {relevance}, ஆர்வம் {weight}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "நினைவூட்டல்"
+
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
@@ -3333,7 +3404,7 @@ msgstr "அகற்று"
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Remove {0} filter"
-msgstr "{0} filter-ஐ அகற்று"
+msgstr "{0} வடிகட்டியை அகற்று"
 
 #: ../../../lib/web/src/components/member-list.tsx
 #: ../../../lib/web/src/components/member-list.tsx
@@ -3444,7 +3515,7 @@ msgstr "விளையாட்டிலிருந்து விலகவ�
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "தீர்வு"
+msgstr "தெளிவுத்திறன்"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3535,7 +3606,7 @@ msgstr "RSS ஃபீட்"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"
-msgstr "RSS URL clipboard-க்கு நகலெடுக்கப்பட்டது"
+msgstr "RSS URL கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
 
 #: src/components/GameCanvas.tsx
 msgid "RUN UP ENGINE"
@@ -3622,7 +3693,7 @@ msgstr "தேடுகிறது..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "தேர்ந்தெடு"
+msgstr "தேர்வு"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "கட்டமைப்பு"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "பொருள்"
+msgstr "பயனர் அல்லது குழு"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "மனிதனுக்கு அப்பால்"
 msgid "Switch to view 1-9"
 msgstr "காட்சி 1-9 க்கு மாறு"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "சிஸ்டம்"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "சிஸ்டம்"
 
@@ -3969,6 +4044,11 @@ msgstr "அணிகள்"
 msgid "Teams — red versus blue"
 msgstr "அணிகள் — சிவப்பு எதிர் நீலம்"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "தற்காலிகம்"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "கேமரா கோரிக்கைக்கு பதில் இல்லை"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "விளையாட்டை ஏற்ற முடியவில்லை. மீண்டும் முயல பக்கத்தை மீண்டும் ஏற்றவும்."
 
@@ -4021,7 +4102,7 @@ msgstr "பணி நின்றது."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey கோரிக்கைக்கு பதில் இல்லை"
+msgstr "கடவுக்குறி கோரிக்கைக்கு பதில் இல்லை"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,7 +4114,7 @@ msgstr "சேவையகம் தரவுக்குப் பதிலா�
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "இந்த ஆப்ஸுக்கு உங்கள் passkey-ஐப் பயன்படுத்த அனுமதி இல்லை. அமைப்புகளில், அனுமதிகள் பிரிவில் அதை அனுமதிக்கவும்."
+msgstr "இந்த ஆப்ஸுக்கு உங்கள் கடவுக்குறியைப் பயன்படுத்த அனுமதி இல்லை. அமைப்புகளில், அனுமதிகள் பிரிவில் அதை அனுமதிக்கவும்."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4118,7 +4199,7 @@ msgstr "மிக அதிகமான கோரிக்கைகள்"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "மேல்"
+msgstr "சிறந்தவை"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4300,7 +4381,7 @@ msgstr "பதிவேற்ற முன்னேற்றம்"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "உங்கள் கடவுவிசையைப் பயன்படுத்தவும்"
+msgstr "உங்கள் கடவுக்குறியைப் பயன்படுத்தவும்"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4344,7 +4425,7 @@ msgstr "வீடியோ காட்சி: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "காட்டு"
+msgstr "காட்சி"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

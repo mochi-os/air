@@ -26,6 +26,11 @@ msgstr "(відредаговано)"
 msgid "(expand)"
 msgstr "(розгорнути)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Без назви)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ви)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Назва {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "з {from} до {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {ще +#} few {ще +#} many {ще +#} other {ще +#}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -385,7 +387,7 @@ msgstr "Форсаж"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
-msgstr "ШІ"
+msgstr "AI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Aircraft"
@@ -444,7 +446,7 @@ msgstr "Закріплені сторони"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push для Android"
+msgstr "Пуш для Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -557,6 +559,11 @@ msgstr "Калібрування та призначення осей"
 msgid "Back"
 msgstr "Назад"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Назад на 5 секунд"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -564,7 +571,7 @@ msgstr "На головну"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Виклик ball: відповідай, веди ball до торкання"
+msgstr "Виклик м’яча: відповідай, веди м’яч до торкання"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -657,11 +664,11 @@ msgstr "БОЛТЕР"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: повна тяга, щитки прибрати, гак випустити, набирай до 1200', розворот на зворотний курс, {heading}"
+msgstr "Болтер: повна тяга, щитки прибрати, гак випустити, набирай до 1200', розворот на зворотний курс, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: повна тяга, щитки прибрати, гак випустити, набирай до 600', розворот на зворотний курс, {heading}"
+msgstr "Болтер: повна тяга, щитки прибрати, гак випустити, набирай до 600', розворот на зворотний курс, {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -698,7 +705,7 @@ msgstr "РОЗВОРОТ ЗА ГОТОВНІСТЮ"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: розворот без зміни висоти, РУД на малий газ, щитки випустити, 1 g на кожні 100 вузлів"
+msgstr "Розворот: розворот без зміни висоти, РУД на малий газ, щитки випустити, 1 g на кожні 100 вузлів"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -769,8 +776,12 @@ msgstr "Камера недоступна"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -785,6 +796,11 @@ msgstr "Скасувати відповідь"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Скасовано"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Скасовано"
 
@@ -839,7 +855,7 @@ msgstr "Випадок III (ніч)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero"
-msgstr "Case III: marshal 6000', 250 вузлів, фінальний пеленг {heading}, починай на нулі"
+msgstr "Case III: зона очікування 6000', 250 вузлів, фінальний пеленг {heading}, починай на нулі"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Чат з усіма"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Виберіть мову"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Очистити"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ясно"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Дії з коментарем"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Коментарі"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Примітки"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Не вдалося завантажити цей документ. Сп
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Не вдалося завантажити ваші польоти"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Не вдалося відтворити запис"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Готово"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Завантажити"
 
@@ -1654,6 +1686,12 @@ msgstr "Покинути матч"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Вийти з місії"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Вийти з відтворення"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Летіти знову"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Знижуйся за стрілками: 1200' на 3NM, 800' на 2NM, 400' на 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Вперед на 5 секунд"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Лічильник частоти кадрів"
@@ -2116,7 +2159,7 @@ msgstr "Стрілки HUD: тримай глісаду й осьову"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
-msgstr "ID"
+msgstr "Ідентифікатор"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -2284,10 +2327,6 @@ msgstr "ЛІВ ДВИГ ВИМК"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "ЛІВ ШАСІ"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Посадка"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP-сервер"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Середній"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Середній"
 
@@ -2659,19 +2702,19 @@ msgstr "Для мультиплеєра потрібен WebTransport, який 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Name"
-msgstr "Ім'я"
+msgstr "Назва"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name cannot contain < or > characters"
-msgstr "Ім'я не може містити символи < або >"
+msgstr "Назва не може містити символи < або >"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name is required"
-msgstr "Ім'я обов'язкове"
+msgstr "Назва обов'язкова"
 
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
-msgstr "Ім'я має містити 1000 символів або менше"
+msgstr "Назва має містити 1000 символів або менше"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Помилка мережі"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Нове"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Нові"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "Сповіщення: {0}"
 msgid "Novice"
 msgstr "Початківець"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Число"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "Номер"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,6 +2962,7 @@ msgstr "не в мережі"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Ой! Сторінку не знайдено!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Відкрити"
+msgstr "Відкритий"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Шаблон (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Пауза"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Призупинено"
 
@@ -3101,6 +3159,18 @@ msgstr "ПЛАТФОРМА"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Платформа: 2000 FPM, горизонт на 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Відтворити"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Позиція відтворення"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3198,7 +3268,7 @@ msgstr "Публічні сервери"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Push-сповіщення"
+msgstr "Пуш-сповіщення"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3256,10 +3326,6 @@ msgstr "Повторне підключення ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Записувати польоти"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Запис"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -3321,6 +3387,11 @@ msgstr "Релевантність {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Релевантність {relevance}, інтерес {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Нагадування"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Здатися у грі?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Вирішення"
+msgstr "Роздільна здатність"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "Пошук..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Вибрати"
+msgstr "Вибір"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3862,7 +3933,7 @@ msgstr "Звалювання, посадкова конфігурація (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "Правий борт: тримай 800'; break після носа корабля"
+msgstr "Правий борт: тримай 800'; розворот після носа корабля"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3891,7 +3962,7 @@ msgstr "КОНСТРУКЦІЯ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Тема"
+msgstr "Користувач або група"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Надлюдський"
 msgid "Switch to view 1-9"
 msgstr "Перейти до вигляду 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Система"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
@@ -3969,6 +4044,11 @@ msgstr "Команди"
 msgid "Teams — red versus blue"
 msgstr "Команди — червоні проти синіх"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Під питанням"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -3993,7 +4073,7 @@ msgstr "Завеликий розмір для завантаження. Вид�
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45: 325-375', вихід на посадкову пряму, {heading}, веди ball тягою"
+msgstr "45: 325-375', вихід на посадкову пряму, {heading}, веди м’яч тягою"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Запит камери залишився без відповіді"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Не вдалося завантажити гру. Перезавантажте сторінку, щоб спробувати ще раз."
 
@@ -4118,7 +4199,7 @@ msgstr "Забагато запитів"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Верх"
+msgstr "Найкращі"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Перегляд відео: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Переглянути"
+msgstr "Вид"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Елементи керування виглядом"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Перегляди"
+msgstr "Види"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4400,11 +4481,11 @@ msgstr "ЙДИ НА ДРУГЕ КОЛО"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: повна тяга, щитки прибрати, крила горизонтально, набирай до 1200', {heading}"
+msgstr "Відхід на друге коло: повна тяга, щитки прибрати, крила горизонтально, набирай до 1200', {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: повна тяга, щитки прибрати, крила горизонтально, набирай, {heading}"
+msgstr "Відхід на друге коло: повна тяга, щитки прибрати, крила горизонтально, набирай, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

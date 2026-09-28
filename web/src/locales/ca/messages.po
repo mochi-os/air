@@ -26,6 +26,11 @@ msgstr "(editat)"
 msgid "(expand)"
 msgstr "(expandeix)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Sense títol)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(tu)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Nom de {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} a {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# més} other {+# més}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Calibratge i assignació d'eixos"
 msgid "Back"
 msgstr "Enrere"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 segons enrere"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "Càmera no disponible"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Cancel·la"
 
@@ -785,6 +796,11 @@ msgstr "Cancel·la la resposta"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Cancel·lat"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Cancel·lat"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Xat amb tothom"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Tria l'idioma"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Esborra"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Serè"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Accions del comentari"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Comentaris"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Observacions"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "No s'ha pogut carregar aquest document. Torna-ho a provar més tard."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "No s'han pogut carregar els teus vols"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "No s’ha pogut reproduir l’enregistrament"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Fet"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Descarrega"
 
@@ -1654,6 +1686,12 @@ msgstr "Surt de la partida"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Surt de la missió"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Surt de la reproducció"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Torna a volar"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Segueix les agulles avall: 1200' a 3NM, 800' a 2NM, 400' a 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 segons endavant"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2238,7 +2281,7 @@ msgstr "Duel contra el bot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Palanca"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "MOTOR ESQ TALLAT"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "TREN ESQ"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Aterratge"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Servidor MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Mitjà"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Mitjà"
 
@@ -2607,7 +2650,7 @@ msgstr "Missió acabada"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
-msgstr "Mochi web"
+msgstr "Web de Mochi"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Error de xarxa"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Nou"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Recent"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Notificacions: {0}"
 msgid "Novice"
 msgstr "Principiant"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Número"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Número"
 
@@ -2911,8 +2962,9 @@ msgstr "fora de línia"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "D'acord"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Vaja! Pàgina no trobada!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Obert"
+msgstr "Oberta"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Patró (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pausa"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "En pausa"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATAFORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Plataforma: 2000 FPM, anivellat a 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Reprodueix"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posició de reproducció"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "S'està reconnectant ({retries})..."
 msgid "Record flights"
 msgstr "Enregistra els vols"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Enregistrament"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "L'enregistrament ha fallat. Torneu-ho a provar."
@@ -3321,6 +3387,11 @@ msgstr "Rellevància {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Rellevància {relevance}, interès {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Recordatori"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "Cercant..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Selecciona"
+msgstr "Selecció"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ESTRUCTURA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Assumpte"
+msgstr "Usuari o grup"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Sobrehumà"
 msgid "Switch to view 1-9"
 msgstr "Canvia a la vista 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistema"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistema"
 
@@ -3969,6 +4044,11 @@ msgstr "Equips"
 msgid "Teams — red versus blue"
 msgstr "Equips — vermell contra blau"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Provisional"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "La sol·licitud de càmera no s'ha respost"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "No s'ha pogut carregar el joc. Torna a carregar la pàgina per tornar-ho a provar."
 
@@ -4118,7 +4199,7 @@ msgstr "Massa sol·licituds"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Amunt"
+msgstr "Millors"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Visor de vídeos: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Visualitza"
+msgstr "Vista"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Controls de visualització"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Visualitzacions"
+msgstr "Vistes"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

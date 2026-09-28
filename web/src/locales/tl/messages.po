@@ -26,6 +26,11 @@ msgstr "(in-edit)"
 msgid "(expand)"
 msgstr "(palawakin)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Walang pamagat)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ikaw)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Pangalan ng {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hanggang {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# pa} other {+# pa}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Pag-calibrate at pag-map ng axis"
 msgid "Back"
 msgstr "Bumalik"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Bumalik nang 5 segundo"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "Hindi available ang camera"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Kanselahin"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Kanselahin"
 
@@ -788,9 +799,14 @@ msgstr "Kanselahin ang sagot"
 msgid "Cancelled"
 msgstr "Kinansela"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Kinansela"
+
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
-msgstr "Canopy"
+msgstr "Kanopi"
 
 #: src/components/GameCanvas.tsx
 msgid "CANOPY"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Chat sa lahat"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Pumili ng wika"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Burahin"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Maaliwalas"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "Mga aksyon sa komento"
 msgid "Comments"
 msgstr "Mga komento"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Mga tala"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1050,7 +1076,7 @@ msgstr "Komunikasyon"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
-msgstr "Compact"
+msgstr "Siksik"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 msgid "Configure option settings"
@@ -1149,6 +1175,10 @@ msgstr "Hindi ma-load ang document na ito. Subukan muli mamaya."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Hindi ma-load ang iyong mga paglipad"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Hindi ma-play ang recording"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Tapos na"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "I-download"
 
@@ -1654,6 +1686,12 @@ msgstr "Umalis sa match"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Lumabas sa misyon"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Lumabas sa pag-play"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Lumipad ulit"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Sundan pababa ang mga karayom: 1200' sa 3NM, 800' sa 2NM, 400' sa 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Sumulong nang 5 segundo"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Counter ng framerate"
@@ -2121,7 +2164,7 @@ msgstr "ID"
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Image viewer: {0}"
-msgstr "Image viewer: {0}"
+msgstr "Tagatingin ng larawan: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
@@ -2146,7 +2189,7 @@ msgstr "Initial: sa ibabaw ng runway, {heading}, 800', 350 knots"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
-msgstr "Initials avatar"
+msgstr "Avatar na inisyal"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar for {name}"
@@ -2284,10 +2327,6 @@ msgstr "KALIWANG MAKINA NAKAPATAY"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "KALIWANG GEAR"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Paglapag"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Katamtaman"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Katamtaman"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Error sa network"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Bago"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Pinakabago"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Mga notification: {0}"
 msgid "Novice"
 msgstr "Baguhan"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Numero"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Numero"
 
@@ -2911,6 +2962,7 @@ msgstr "offline"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Ay! Hindi Nahanap ang Pahina!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Buksan"
+msgstr "Bukas"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Pattern (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "I-pause"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Naka-pause"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATAPORMA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, patag sa 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "I-play"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posisyon ng pag-play"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Muling kumokonekta ({retries})..."
 msgid "Record flights"
 msgstr "I-record ang mga paglipad"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Pag-record"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Nabigo ang pagre-record. Subukang muli."
@@ -3321,6 +3387,11 @@ msgstr "Kaugnayan {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Kaugnayan {relevance}, interes {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Paalala"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "Naghahanap..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Pumili"
+msgstr "Pagpipilian"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ESTRUKTURA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Paksa"
+msgstr "User o grupo"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Higit sa tao"
 msgid "Switch to view 1-9"
 msgstr "Lumipat sa view 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistema"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistema"
 
@@ -3969,6 +4044,11 @@ msgstr "Mga koponan"
 msgid "Teams — red versus blue"
 msgstr "Mga koponan — pula laban sa asul"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Pansamantala"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Hindi nasagot ang kahilingan sa camera"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Hindi ma-load ang laro. I-reload ang pahina para subukang muli."
 
@@ -4118,7 +4199,7 @@ msgstr "Masyadong maraming request"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Itaas"
+msgstr "Pinakamahusay"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4314,7 +4395,7 @@ msgstr "Mga variable: {variables}"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verification code"
-msgstr "Code ng pagpapatunay"
+msgstr "Verification code"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
@@ -4340,11 +4421,11 @@ msgstr "Thumbnail ng video"
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Video viewer: {0}"
-msgstr "Video viewer: {0}"
+msgstr "Tagapanood ng video: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Tingnan"
+msgstr "Tanaw"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Mga view control"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Mga view"
+msgstr "Mga tanaw"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

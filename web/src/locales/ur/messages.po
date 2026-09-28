@@ -26,6 +26,11 @@ msgstr "(ترمیم شدہ)"
 msgid "(expand)"
 msgstr "(پھیلائیں)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(کوئی عنوان نہیں)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(آپ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} کا نام"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} سے {to} تک"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# مزید} other {+# مزید}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -385,7 +387,7 @@ msgstr "آفٹر برنر"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
-msgstr "اے آئی"
+msgstr "AI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Aircraft"
@@ -529,11 +531,11 @@ msgstr "تصدیق شدہ صارفین"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator کوڈ"
+msgstr "تصدیق کنندہ کوڈ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
-msgstr "دستیاب keyboard shortcuts"
+msgstr "دستیاب کی بورڈ شارٹ کٹس"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar"
@@ -557,6 +559,11 @@ msgstr "محور کی کیلیبریشن اور میپنگ"
 msgid "Back"
 msgstr "واپس"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 سیکنڈ پیچھے"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -564,7 +571,7 @@ msgstr "گھر واپس جائیں"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Ball کال: جواب دیں، پہیے لگنے تک ball پر اڑائیں"
+msgstr "بال کا اعلان: جواب دیں، پہیے لگنے تک بال پر اڑائیں"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -657,11 +664,11 @@ msgstr "بولٹر"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: پورا زور، ایئر بریک اندر، ہک نیچے، 1200' تک چڑھیں، ڈاؤن ونڈ کی طرف مڑیں، {heading}"
+msgstr "بولٹر: پورا زور، ایئر بریک اندر، ہک نیچے، 1200' تک چڑھیں، ڈاؤن ونڈ کی طرف مڑیں، {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: پورا زور، ایئر بریک اندر، ہک نیچے، 600' تک چڑھیں، ڈاؤن ونڈ کی طرف مڑیں، {heading}"
+msgstr "بولٹر: پورا زور، ایئر بریک اندر، ہک نیچے، 600' تک چڑھیں، ڈاؤن ونڈ کی طرف مڑیں، {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -698,7 +705,7 @@ msgstr "تیار ہوں تو موڑیں"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: ہموار موڑ، تھروٹل بند، ایئر بریک باہر، ہر 100 ناٹ پر 1 g کھینچیں"
+msgstr "تیز موڑ: ہموار موڑ، تھروٹل بند، ایئر بریک باہر، ہر 100 ناٹ پر 1 g کھینچیں"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -769,8 +776,12 @@ msgstr "کیمرہ دستیاب نہیں"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "منسوخ کریں"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "منسوخ کریں"
 
@@ -785,6 +796,11 @@ msgstr "جواب منسوخ کریں"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "منسوخ"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "منسوخ"
 
@@ -839,7 +855,7 @@ msgstr "کیس III (رات)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero"
-msgstr "Case III: marshal 6000'، 250 ناٹ، حتمی سمت {heading}، صفر پر شروع کریں"
+msgstr "Case III: انتظار کا مقام 6000'، 250 ناٹ، حتمی سمت {heading}، صفر پر شروع کریں"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "سب سے چیٹ"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "زبان منتخب کریں"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "صاف کریں"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "صاف آسمان"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "تبصرے کے اعمال"
 msgid "Comments"
 msgstr "تبصرے"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "کیفیت"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1054,11 +1080,11 @@ msgstr "کمپیکٹ"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 msgid "Configure option settings"
-msgstr "آپشن کی ترتیبات configure کریں"
+msgstr "آپشن کی ترتیبات کنفیگر کریں"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Configure view settings"
-msgstr "ویو کی ترتیبات configure کریں"
+msgstr "ویو کی ترتیبات کنفیگر کریں"
 
 #: ../../../lib/web/src/components/place-picker.tsx
 #: ../../../lib/web/src/components/travelling-picker.tsx
@@ -1067,7 +1093,7 @@ msgstr "تصدیق کریں"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect"
-msgstr "جڑیں"
+msgstr "منسلک کریں"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect to private server"
@@ -1120,7 +1146,7 @@ msgstr "کاپی ہو گیا"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copied to clipboard"
-msgstr "Clipboard پر کاپی ہو گیا"
+msgstr "کلپ بورڈ پر کاپی ہو گیا"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -1149,6 +1175,10 @@ msgstr "یہ دستاویز لوڈ نہیں ہو سکی۔ براہ کرم بعد
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "آپ کی پروازیں لوڈ نہیں ہو سکیں"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ریکارڈنگ چلائی نہیں جا سکی"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1264,7 +1294,7 @@ msgstr "منظر بدلیں"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Dark"
-msgstr "تاریک"
+msgstr "ڈارک"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Data conflict"
@@ -1482,8 +1512,10 @@ msgstr "مکمل"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
-msgstr "ڈاؤن لوڈ"
+msgstr "ڈاؤن لوڈ کریں"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -1654,6 +1686,12 @@ msgstr "میچ چھوڑیں"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "مشن سے نکلیں"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "چلانے سے نکلیں"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "دوبارہ اڑان بھریں"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "سوئیوں کے مطابق نیچے اڑیں: 3NM پر 1200'، 2NM پر 800'، 1NM پر 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 سیکنڈ آگے"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2242,7 +2285,7 @@ msgstr "جوائے اسٹک"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
-msgstr "ابھی"
+msgstr "ابھی ابھی"
 
 #: src/components/MatchLog.tsx
 msgid "K/D"
@@ -2284,10 +2327,6 @@ msgstr "بایاں انجن بند"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "بایاں گیئر"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "لینڈنگ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP سرور"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "درمیانہ"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "درمیانہ"
 
@@ -2565,7 +2608,7 @@ msgstr "اپنی ٹیم کو پیغام بھیجیں"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Metric"
-msgstr "metric"
+msgstr "میٹرک"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Microphone permission denied"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "نیٹ ورک کی خرابی"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "نیا"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "تازہ ترین"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2713,7 +2760,7 @@ msgstr "شامل کرنے کے لیے کوئی {parentClassNames} نہیں"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "No access rules configured. Add rules to control who can access this resource."
-msgstr "کوئی access rules configure نہیں ہیں۔ یہ کنٹرول کرنے کے لیے rules شامل کریں کہ اس resource تک کون رسائی حاصل کر سکتا ہے۔"
+msgstr "رسائی کے کوئی قواعد کنفیگر نہیں ہیں۔ یہ کنٹرول کرنے کے لیے قواعد شامل کریں کہ اس وسیلے تک کون رسائی حاصل کر سکتا ہے۔"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "No activity yet"
@@ -2745,7 +2792,7 @@ msgstr "کوئی گروپ دستیاب نہیں"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No item types can be created yet. Create the required parent items first."
-msgstr "ابھی کوئی item types نہیں بنائے جا سکتے۔ پہلے درکار parent items بنائیں۔"
+msgstr "ابھی کوئی آئٹم اقسام نہیں بنائی جا سکتیں۔ پہلے درکار پیرنٹ آئٹمز بنائیں۔"
 
 #: src/components/SettingsDialog.tsx
 msgid "No joystick detected — press any button on it to wake it up."
@@ -2753,7 +2800,7 @@ msgstr "کوئی جوائے اسٹک شناخت نہیں ہوئی — اسے ج�
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "No matching objects"
-msgstr "کوئی matching objects نہیں"
+msgstr "کوئی مماثل آبجیکٹس نہیں"
 
 #: src/components/Multiplayer.tsx
 msgid "No open matches — create one."
@@ -2793,11 +2840,11 @@ msgstr "کوئی ہدف نہیں"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
 msgid "No time zone found."
-msgstr "کوئی time zone نہیں ملا۔"
+msgstr "کوئی ٹائم زون نہیں ملا۔"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "No topic record yet — try again after the next notification."
-msgstr "ابھی تک کوئی topic record نہیں — اگلی notification کے بعد دوبارہ کوشش کریں۔"
+msgstr "ابھی تک کوئی ٹاپک ریکارڈ نہیں — اگلی اطلاع کے بعد دوبارہ کوشش کریں۔"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 msgid "No unread notifications"
@@ -2809,7 +2856,7 @@ msgstr "کوئی صارفین نہیں ملے"
 
 #: ../../../lib/web/src/components/entity/entity-design-preview.tsx
 msgid "No views"
-msgstr "کوئی views نہیں"
+msgstr "کوئی ویوز نہیں"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2891,9 +2938,13 @@ msgstr "اطلاعات: {0}"
 msgid "Novice"
 msgstr "نو آموز"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "نمبر"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "نمبر"
 
@@ -2911,8 +2962,9 @@ msgstr "آف لائن"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ٹھیک ہے"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "اوہ! صفحہ نہیں ملا!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "کھولیں"
+msgstr "اوپن"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -2955,11 +3007,11 @@ msgstr "مینو کھولیں"
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 msgid "Open navigation"
-msgstr "navigation کھولیں"
+msgstr "نیویگیشن کھولیں"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 msgid "Open option actions"
-msgstr "option actions کھولیں"
+msgstr "آپشن ایکشنز کھولیں"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Open selected card"
@@ -2967,17 +3019,17 @@ msgstr "منتخب کارڈ کھولیں"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Open view actions"
-msgstr "view actions کھولیں"
+msgstr "ویو ایکشنز کھولیں"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Open view controls"
-msgstr "view کنٹرولز کھولیں"
+msgstr "ویو کنٹرولز کھولیں"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 msgid "Option name"
-msgstr "option کا نام"
+msgstr "آپشن کا نام"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
@@ -3010,7 +3062,7 @@ msgstr "نظر آزاد"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Parent"
-msgstr "parent"
+msgstr "پیرنٹ"
 
 #: src/components/GameCanvas.tsx
 msgid "PARK"
@@ -3026,7 +3078,7 @@ msgstr "پارکنگ بریک"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Passkey"
-msgstr "passkey"
+msgstr "پاس کی"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -3035,15 +3087,21 @@ msgstr "پاس کی کی تصدیق ناکام ہو گئی۔ براہ کرم د�
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
-msgstr "passkeys"
+msgstr "پاس کیز"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "اس براؤزر میں passkeys دستیاب نہیں ہیں"
+msgstr "اس براؤزر میں پاس کیز دستیاب نہیں ہیں"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "پیٹرن (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "روکیں"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3076,7 +3134,7 @@ msgstr "پائلٹ ہلاک ہوا"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Pin"
-msgstr "pin کریں"
+msgstr "پن کریں"
 
 #: src/components/GameCanvas.tsx
 msgid "pitch"
@@ -3101,6 +3159,18 @@ msgstr "پلیٹ فارم"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "پلیٹ فارم: 2000 FPM، 1200' پر ہموار"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "چلائیں"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "چلانے کی جگہ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3185,7 +3255,7 @@ msgstr "پروفائل محفوظ ہو گیا"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "prompt محفوظ ہو گیا"
+msgstr "پرامپٹ محفوظ ہو گیا"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3257,10 +3327,6 @@ msgstr "دوبارہ منسلک ہو رہا ہے ({retries})..."
 msgid "Record flights"
 msgstr "پروازیں ریکارڈ کریں"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "ریکارڈنگ"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "ریکارڈنگ ناکام ہو گئی۔ براہ کرم دوبارہ کوشش کریں۔"
@@ -3296,7 +3362,7 @@ msgstr "حوالہ"
 
 #: src/components/Multiplayer.tsx
 msgid "Refresh"
-msgstr "refresh کریں"
+msgstr "ریفریش کریں"
 
 #: src/components/GameCanvas.tsx
 msgid "REJOINING"
@@ -3321,6 +3387,11 @@ msgstr "مطابقت {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "مطابقت {relevance}، دلچسپی {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "یاد دہانی"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3349,7 +3420,7 @@ msgstr "{r} ہٹائیں"
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Remove access rule"
-msgstr "access rule ہٹائیں"
+msgstr "رسائی کا قاعدہ ہٹائیں"
 
 #. placeholder {0}: formatSubject(subject, data.name)
 #: ../../../lib/web/src/features/access/access-list.tsx
@@ -3367,7 +3438,7 @@ msgstr "دلچسپی ہٹائیں"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Remove item"
-msgstr "item ہٹائیں"
+msgstr "آئٹم ہٹائیں"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
@@ -3385,7 +3456,7 @@ msgstr "کالم کا نام تبدیل کریں"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename this board column"
-msgstr "اس board کالم کا نام تبدیل کریں"
+msgstr "اس بورڈ کالم کا نام تبدیل کریں"
 
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -3416,7 +3487,7 @@ msgstr "ای میل دوبارہ بھیجیں"
 
 #: src/components/SettingsDialog.tsx
 msgid "Reset"
-msgstr "reset کریں"
+msgstr "ری سیٹ کریں"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -3436,15 +3507,15 @@ msgstr "منظر ری سیٹ"
 
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx
 msgid "Resign"
-msgstr "resign کریں"
+msgstr "ہار مانیں"
 
 #: ../../../lib/web/src/components/game/game-end-dialogs.tsx
 msgid "Resign game?"
-msgstr "گیم سے resign کریں؟"
+msgstr "گیم میں ہار مانیں؟"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "resolution"
+msgstr "ریزولوشن"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3535,7 +3606,7 @@ msgstr "RSS فیڈ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"
-msgstr "RSS URL clipboard پر copy ہو گیا"
+msgstr "RSS URL کلپ بورڈ پر کاپی ہو گیا"
 
 #: src/components/GameCanvas.tsx
 msgid "RUN UP ENGINE"
@@ -3622,7 +3693,7 @@ msgstr "تلاش کیا جا رہا ہے..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "منتخب کریں"
+msgstr "انتخاب"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3862,7 +3933,7 @@ msgstr "اسٹال، لینڈنگ ترتیب (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "اسٹاربورڈ طرف: 800' برقرار رکھیں; جہاز کے اگلے سرے سے آگے نکل کر break کریں"
+msgstr "اسٹاربورڈ طرف: 800' برقرار رکھیں; جہاز کے اگلے سرے سے آگے نکل کر مڑیں"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3891,7 +3962,7 @@ msgstr "ڈھانچہ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "موضوع"
+msgstr "صارف یا گروپ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "فوق البشر"
 msgid "Switch to view 1-9"
 msgstr "ویو 1-9 پر سوئچ کریں"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "سسٹم"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "سسٹم"
 
@@ -3969,6 +4044,11 @@ msgstr "ٹیمیں"
 msgid "Teams — red versus blue"
 msgstr "ٹیمیں — سرخ بمقابلہ نیلا"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "عارضی"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -3993,7 +4073,7 @@ msgstr "اپ لوڈ کے لیے بہت بڑا تھا۔ فائلیں ہٹائیں
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45: 325-375'، groove میں مڑیں، {heading}، زور سے ball پر اڑائیں"
+msgstr "45: 325-375'، آخری لینڈنگ راستے میں مڑیں، {heading}، زور سے بال پر اڑائیں"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "کیمرے کی درخواست کا جواب نہیں دیا گیا"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "گیم لوڈ نہیں ہو سکی۔ دوبارہ کوشش کے لیے صفحہ دوبارہ لوڈ کریں۔"
 
@@ -4021,7 +4102,7 @@ msgstr "مشن رک گیا۔ دوبارہ کوشش کے لیے صفحہ دوبا
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey کی درخواست کا جواب نہیں دیا گیا"
+msgstr "پاس کی کی درخواست کا جواب نہیں دیا گیا"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,7 +4114,7 @@ msgstr "سرور نے ڈیٹا کے بجائے ایک ویب صفحہ واپس �
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "اس ایپ کو آپ کی passkey استعمال کرنے کی اجازت نہیں ہے۔ ترتیبات میں، اجازتوں کے تحت اسے اجازت دیں۔"
+msgstr "اس ایپ کو آپ کی پاس کی استعمال کرنے کی اجازت نہیں ہے۔ ترتیبات میں، اجازتوں کے تحت اسے اجازت دیں۔"
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4118,7 +4199,7 @@ msgstr "بہت زیادہ درخواستیں"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "اوپر"
+msgstr "بہترین"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "ویڈیو ناظر: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "دیکھیں"
+msgstr "منظر"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "کنٹرولز دیکھیں"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "ویوز"
+msgstr "مناظر"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4400,11 +4481,11 @@ msgstr "لینڈنگ روکو"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: پورا زور، ایئر بریک اندر، بازو ہموار، 1200' تک چڑھیں، {heading}"
+msgstr "لینڈنگ روکیں: پورا زور، ایئر بریک اندر، بازو ہموار، 1200' تک چڑھیں، {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: پورا زور، ایئر بریک اندر، بازو ہموار، چڑھیں، {heading}"
+msgstr "لینڈنگ روکیں: پورا زور، ایئر بریک اندر، بازو ہموار، چڑھیں، {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

@@ -26,6 +26,11 @@ msgstr "(golygwyd)"
 msgid "(expand)"
 msgstr "(ehangu)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Dim teitl)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(chi)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Enw {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} i {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, zero {+# arall} one {+# arall} two {+# arall} few {+# arall} many {+# arall} other {+# arall}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Graddnodi a mapio echelinau"
 msgid "Back"
 msgstr "Yn ôl"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 eiliad yn ôl"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "Camera ddim ar gael"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Canslo"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Canslo"
 
@@ -785,6 +796,11 @@ msgstr "Canslo ateb"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Wedi'i ganslo"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Wedi'i ganslo"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Sgwrs â phawb"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Dewiswch iaith"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Clirio"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Clir"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1036,6 +1057,11 @@ msgstr "Camau gweithredu sylw"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+msgid "Comments"
+msgstr "Sylwadau"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
 msgid "Comments"
 msgstr "Sylwadau"
 
@@ -1149,6 +1175,10 @@ msgstr "Methwyd llwytho'r ddogfen hon. Rhowch gynnig arni eto yn nes ymlaen."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Methwyd llwytho eich hediadau"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Methwyd â chwarae'r recordiad"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Wedi gorffen"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Lawrlwytho"
 
@@ -1654,6 +1686,12 @@ msgstr "Gadael y gêm"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Gadael y genhadaeth"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Gadael y chwarae"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Hedfan eto"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Dilyn y nodwyddau i lawr: 1200' ar 3NM, 800' ar 2NM, 400' ar 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 eiliad ymlaen"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Rhifydd cyfradd fframiau"
@@ -2125,7 +2168,7 @@ msgstr "Gwyliwr delweddau: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
-msgstr "Imperial"
+msgstr "Imperialaidd"
 
 #: src/components/SettingsDialog.tsx
 msgid "Import"
@@ -2226,7 +2269,7 @@ msgstr "WEDI YMUNO"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Gornest"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2284,10 +2327,6 @@ msgstr "PEIRIANT CHWITH WEDI'I DDIFFODD"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "OLWYN CHWITH"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Glanio"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2416,7 +2455,7 @@ msgstr "Arfogaeth"
 
 #: src/routes/log.tsx
 msgid "Log"
-msgstr "Log"
+msgstr "Cofnod"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
@@ -2483,7 +2522,7 @@ msgstr "Rheoli categorïau"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Manual"
-msgstr "Llawlyfr"
+msgstr "Â llaw"
 
 #: src/components/GameCanvas.tsx
 msgid "map"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Gweinydd MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Canolig"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Canolig"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Gwall rhwydwaith"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Newydd"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Diweddaraf"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Hysbysiadau: {0}"
 msgid "Novice"
 msgstr "Dechreuwr"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Rhif"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Rhif"
 
@@ -2911,8 +2962,9 @@ msgstr "all-lein"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Iawn"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Wps! Heb Ddod o Hyd i'r Dudalen!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Agor"
+msgstr "Agored"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Patrwm (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Oedi"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Wedi'i seibio"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATFFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Llwyfan: 2000 FPM, gwastad ar 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Chwarae"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Safle chwarae"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Ailgysylltu ({retries})..."
 msgid "Record flights"
 msgstr "Recordio hediadau"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Recordio"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Methodd y recordiad. Rhowch gynnig arall arni."
@@ -3321,6 +3387,11 @@ msgstr "Perthnasedd {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Perthnasedd {relevance}, diddordeb {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Nodyn atgoffa"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Ymddiswyddo o'r gêm?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Datrysiad"
+msgstr "Cydraniad"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3702,7 +3773,7 @@ msgstr "Anfon neges"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
-msgstr "Serif"
+msgstr "Seriff"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -3891,7 +3962,7 @@ msgstr "STRWYTHUR"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Pwnc"
+msgstr "Defnyddiwr neu grŵp"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Goruwchddynol"
 msgid "Switch to view 1-9"
 msgstr "Newid i olwg 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "System"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "System"
 
@@ -3969,6 +4044,11 @@ msgstr "Timau"
 msgid "Teams — red versus blue"
 msgstr "Timau — coch yn erbyn glas"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Dros dro"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Ni chafodd y cais camera ei ateb"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Methwyd llwytho'r gêm. Ail-lwythwch y dudalen i roi cynnig arall arni."
 
@@ -4118,7 +4199,7 @@ msgstr "Gormod o geisiadau"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Brig"
+msgstr "Gorau"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Gwyliwr fideo: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Gweld"
+msgstr "Golwg"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4482,7 +4563,7 @@ msgstr "gwyro"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Gwyro"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx

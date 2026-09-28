@@ -26,6 +26,11 @@ msgstr "(redigerad)"
 msgid "(expand)"
 msgstr "(visa mer)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Ingen titel)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(du)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel}-namn"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} till {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# till} other {+# till}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Axelkalibrering och mappning"
 msgid "Back"
 msgstr "Tillbaka"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 sekunder bakåt"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -648,7 +655,7 @@ msgstr "Blå bottar"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Board"
-msgstr "Bräde"
+msgstr "Tavla"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -769,8 +776,12 @@ msgstr "Kameran är inte tillgänglig"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -787,6 +798,11 @@ msgstr "Avbryt svar"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "Avbruten"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Inställt"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Chatt till alla"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Välj språk"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Rensa"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Klart"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Kommentarsåtgärder"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Kommentarer"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Anmärkningar"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Kunde inte ladda detta dokument. Försök igen senare."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Kunde inte läsa in dina flygningar"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Det gick inte att spela upp inspelningen"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1365,7 +1395,7 @@ msgstr "Ta bort ditt konto på den gamla servern"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Deleted"
-msgstr "Raderade"
+msgstr "Borttagen"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Deleted {field}"
@@ -1397,7 +1427,7 @@ msgstr "Förstörd av brand"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Detaljer"
+msgstr "Detaljnivå"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "Klar"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Ladda ner"
 
@@ -1654,6 +1686,12 @@ msgstr "Lämna matchen"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Lämna uppdrag"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Lämna uppspelning"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Flyg igen"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Sjunk efter visarna: 1200' vid 3NM, 800' vid 2NM, 400' vid 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 sekunder framåt"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Bildfrekvensräknare"
@@ -2125,7 +2168,7 @@ msgstr "Bildvisare: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
-msgstr "Imperialiskt"
+msgstr "Imperisk"
 
 #: src/components/SettingsDialog.tsx
 msgid "Import"
@@ -2238,7 +2281,7 @@ msgstr "Duell mot bot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Styrspak"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "V MOTOR AVSTÄNGD"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "V STÄLL"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Landning"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,9 +2563,13 @@ msgid "MCP server"
 msgstr "MCP-server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
-#: src/components/SettingsDialog.tsx
 msgid "Medium"
 msgstr "Mellan"
+
+#: src/components/SettingsDialog.tsx
+msgctxt "quality level"
+msgid "Medium"
+msgstr "Medel"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Members"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Nätverksfel"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Ny"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Nyast"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Aviseringar: {0}"
 msgid "Novice"
 msgstr "Nybörjare"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Nummer"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Nummer"
 
@@ -2911,6 +2962,7 @@ msgstr "offline"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Hoppsan! Sidan hittades inte!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Öppna"
+msgstr "Öppen"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Mönster (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Pausa"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Pausad"
 
@@ -3101,6 +3159,18 @@ msgstr "PLATTFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Plattform: 2000 FPM, plan på 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Spela upp"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Uppspelningsposition"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Återansluter ({retries})..."
 msgid "Record flights"
 msgstr "Spela in flygningar"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Inspelning"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Inspelningen misslyckades. Försök igen."
@@ -3321,6 +3387,11 @@ msgstr "Relevans {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Relevans {relevance}, intresse {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Påminnelse"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Ge upp partiet?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Lösning"
+msgstr "Upplösning"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "Söker..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Välj"
+msgstr "Val"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "STRUKTUR"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Ämne"
+msgstr "Användare eller grupp"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Övermänsklig"
 msgid "Switch to view 1-9"
 msgstr "Växla till vy 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "System"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "System"
 
@@ -3969,6 +4044,11 @@ msgstr "Lag"
 msgid "Teams — red versus blue"
 msgstr "Lag — röd mot blå"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Preliminärt"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Kamerabegäran besvarades inte"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Spelet kunde inte läsas in. Ladda om sidan för att försöka igen."
 
@@ -4344,7 +4425,7 @@ msgstr "Videovisare: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Visa"
+msgstr "Vy"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Visningskontroller"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Visningar"
+msgstr "Vyer"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

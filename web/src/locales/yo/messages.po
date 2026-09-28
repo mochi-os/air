@@ -26,6 +26,11 @@ msgstr "(a tunṣe)"
 msgid "(expand)"
 msgstr "(fẹ̀ jáde)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Kò sí àkọlé)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ìwọ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Orúkọ {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "láti {from} sí {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# mìíràn}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -381,7 +383,7 @@ msgstr "Fi ìran kún"
 
 #: src/components/SettingsDialog.tsx
 msgid "Afterburner"
-msgstr "Afterburner"
+msgstr "Áfítábọ̀nà"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
@@ -444,7 +446,7 @@ msgstr "Ẹ̀gbẹ́ tí a dákọ̀ró"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Android push"
+msgstr "Ìfitónilétí push Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -546,7 +548,7 @@ msgstr "Àwòrán fún {name}"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Axis {i}"
-msgstr "Axis {i}"
+msgstr "Ipò {i}"
 
 #: src/components/SettingsDialog.tsx
 msgid "Axis calibration and mapping"
@@ -556,6 +558,11 @@ msgstr "Ìṣàtúnṣe àti ìpín axis"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Padà"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Padà sẹ́yìn ìṣẹ́jú-àáyá 5"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -573,7 +580,7 @@ msgstr "Ọ̀tá"
 #: ../../../lib/web/src/components/banner-section.tsx
 #: ../../../lib/web/src/components/entity-banner.tsx
 msgid "Banner"
-msgstr "Banner"
+msgstr "Àsíá"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Banner removed"
@@ -674,7 +681,7 @@ msgstr "Àwọ̀ ààlà"
 
 #: src/components/MissionSetup.tsx
 msgid "bot"
-msgstr "bot"
+msgstr "bọ́ọ̀tì"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -769,8 +776,12 @@ msgstr "Kamẹra kò sí"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Fagilé"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Fagilé"
 
@@ -788,9 +799,14 @@ msgstr "Fagilé ìdáhùn"
 msgid "Cancelled"
 msgstr "Tí a fagilé"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "Tí a fagilé"
+
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
-msgstr "Canopy"
+msgstr "Ìbojú"
 
 #: src/components/GameCanvas.tsx
 msgid "CANOPY"
@@ -886,12 +902,13 @@ msgstr "ìfọ̀rọ̀wérọ̀"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
-msgstr "Ìjíròrò"
+msgstr "Ìfọ̀rọ̀wérọ̀"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chat to everyone"
 msgstr "Ìfọ̀rọ̀wérọ̀ pẹ̀lú gbogbo ènìyàn"
 
+#: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -929,10 +946,14 @@ msgstr "Yan èdè"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Pa rẹ́"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ojú ọ̀run mọ́"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Awọn iṣe asọye"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Àwọn àlàyé"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Àwọn àkíyèsí"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1150,6 +1176,10 @@ msgstr "Kò lè kó ìwé yìí. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
 msgid "Could not load your flights"
 msgstr "A kò lè gbé àwọn ìfò rẹ wọlé"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "A kò lè ṣàfihàn àkọsílẹ̀ náà"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Kò lè fi profaili pamọ́"
@@ -1250,7 +1280,7 @@ msgstr "Ipò lọ́wọ́lọ́wọ́"
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 #: ../../../lib/web/src/components/colour-picker.tsx
 msgid "Custom"
-msgstr "Àṣà"
+msgstr "Àdáni"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -1295,15 +1325,15 @@ msgstr "Kọ̀"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Default"
-msgstr "Àìpé"
+msgstr "Àìyípadà"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Default AI account"
-msgstr "Àkáǹtì AI àìpé"
+msgstr "Àkáǹtì AI àìyípadà"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Default sort"
-msgstr "Ìtò àìpé"
+msgstr "Ìtò àìyípadà"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -1482,13 +1512,15 @@ msgstr "Ti parí"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Gbà sílẹ̀"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Download failed"
-msgstr "Ìgbasílẹ̀ kùnà"
+msgstr "Ìgbàsílẹ̀ kùnà"
 
 #: src/components/GameCanvas.tsx
 msgid "DOWNWIND 600 FEET"
@@ -1655,12 +1687,18 @@ msgstr "Kúrò nínú ìdíje"
 msgid "Exit mission"
 msgstr "Jáde nínú iṣẹ́"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Jáde nínú àfihàn"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Expand"
-msgstr "Ṣílẹ̀kùn"
+msgstr "Gbòòrò"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
@@ -1907,6 +1945,11 @@ msgstr "Tún fò"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Tẹ̀lé abẹ́rẹ́ sísàlẹ̀: 1200' ní 3NM, 800' ní 2NM, 400' ní 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Lọ síwájú ìṣẹ́jú-àáyá 5"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Òǹkà ìwọ̀n férémù"
@@ -2125,7 +2168,7 @@ msgstr "Ẹ̀rọ ìwo àwòrán: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
-msgstr "Imperial"
+msgstr "Òṣùwọ̀n Gẹ̀ẹ́sì"
 
 #: src/components/SettingsDialog.tsx
 msgid "Import"
@@ -2226,7 +2269,7 @@ msgstr "TI DARAPỌ̀"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Ìjà ojúkojú"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2238,7 +2281,7 @@ msgstr "Ìjà ojúkojú lòdì sí bot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Ọ̀pá ìdarí"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "ẸNJINNI ÒSÌ TI PA"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "GÍYÀ ÒSÌ"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Ìbalẹ̀"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Sáà MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Àárín"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Àárín"
 
@@ -2628,7 +2671,7 @@ msgstr "Oṣù"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
-msgstr "Awọn aṣayan diẹ sii"
+msgstr "Àwọn àṣàyàn síwájú sí i"
 
 #: src/components/SettingsDialog.tsx
 msgid "Move…"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Àṣìṣe nẹ́tíwọ́kì"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Tuntun"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Tuntun jùlọ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Àwọn ìfitónilétí: {0}"
 msgid "Novice"
 msgstr "Olùbẹ̀rẹ̀"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Nọ́mbà"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Nọ́mbà"
 
@@ -2911,8 +2962,9 @@ msgstr "kò sopọ̀"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Ó dára"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Aàá! A Kò Rí Ojú-ìwé!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Ṣílẹ̀"
+msgstr "Gbangba"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Àpẹẹrẹ (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Dánudúró"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Ti dúró"
 
@@ -3084,7 +3142,7 @@ msgstr "gòkè-sọ̀kalẹ̀"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "Gòkè-sọ̀kalẹ̀"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch down"
@@ -3101,6 +3159,18 @@ msgstr "PÈPÉLE"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Pẹpẹ: 2000 FPM, dọ́gba ní 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Ṣàfihàn"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Ibi tí àtúnwò wà"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Ń tún sopọ̀ ({retries})..."
 msgid "Record flights"
 msgstr "Ṣàkọsílẹ̀ àwọn ìfò"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Àkọsílẹ̀"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Gbigbasilẹ kùnà. Jọ̀wọ́ tún gbìyànjú."
@@ -3321,6 +3387,11 @@ msgstr "Ìbáramu {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Ìbáramu {relevance}, ìfẹ́ {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Ìránnilétí"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Fi eré sílẹ̀?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Ìpinnu"
+msgstr "Ìkedere"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3461,7 +3532,7 @@ msgstr "Ká àwọn flaps wọlé"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 msgid "Retry"
-msgstr "Gbìyànjú lẹ́ẹ̀kan si"
+msgstr "Gbìyànjú lẹ́ẹ̀kan sí i"
 
 #: src/components/SettingsDialog.tsx
 msgid "Reversed"
@@ -3498,7 +3569,7 @@ msgstr "yíyí"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll"
-msgstr "Roll"
+msgstr "Yíyí"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
@@ -3622,7 +3693,7 @@ msgstr "Ń wá..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Yan"
+msgstr "Àṣàyàn"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ÌGBÉKALẸ̀"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Àkòrí"
+msgstr "Olùmúlò tàbí ẹgbẹ́"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Ju ènìyàn lọ"
 msgid "Switch to view 1-9"
 msgstr "Yí padà sí ìwòye 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sístẹ́mù"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sístẹ́mù"
 
@@ -3942,7 +4017,7 @@ msgstr "Àmì gbọ́dọ̀ jẹ́ àwọn lẹ́tà 50 tàbí kéré sí"
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
-msgstr "Àwọn tag"
+msgstr "Àwọn àmì"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -3968,6 +4043,11 @@ msgstr "Àwọn ẹgbẹ́"
 #: src/components/Multiplayer.tsx
 msgid "Teams — red versus blue"
 msgstr "Àwọn ẹgbẹ́ — pupa lòdì sí búlúù"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Fún ìgbà díẹ̀"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "A kò dáhùn ìbéèrè kámẹ́rà náà"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Kò ṣeé gbé eré náà wọlé. Tún ojú ìwé náà gbé wọlé láti gbìyànjú lẹ́ẹ̀kan sí i."
 
@@ -4057,7 +4138,7 @@ msgstr "agbára"
 
 #: src/components/SettingsDialog.tsx
 msgid "Throttle"
-msgstr "Throttle"
+msgstr "Agbára"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4118,7 +4199,7 @@ msgstr "Àwọn ìbéèrè ti pọ̀ jù"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Òkè"
+msgstr "Tó dára jùlọ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4126,7 +4207,7 @@ msgstr "Ìbalẹ̀: tírọ́tù sílẹ̀; fi afẹ́fẹ́ dẹ́kun pẹ̀lú
 
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
-msgstr "Tracers"
+msgstr "Ọta ìtọpa"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "Travelling"
@@ -4344,7 +4425,7 @@ msgstr "Ẹ̀rọ ìwo fídíò: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Wo"
+msgstr "Ìwòye"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4482,7 +4563,7 @@ msgstr "yíyà"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Yíyà"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4532,7 +4613,7 @@ msgstr "Ọ̀rọ̀ rẹ yóò sọnù."
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom"
-msgstr "Zoom"
+msgstr "Sísún mọ́ra"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom in"

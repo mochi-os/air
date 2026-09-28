@@ -26,6 +26,11 @@ msgstr "(таҳриршуда)"
 msgid "(expand)"
 msgstr "(васеъ кардан)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Бе сарлавҳа)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(шумо)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Номи {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "аз {from} то {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# бештар} other {+# бештар}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -444,7 +446,7 @@ msgstr "Тарафҳои лангаршуда"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "Push барои Android"
+msgstr "Огоҳиҳои пуш барои Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -529,7 +531,7 @@ msgstr "Корбарони тасдиқшуда"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Коди Authenticator"
+msgstr "Коди аутентификатор"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -556,6 +558,11 @@ msgstr "Калибровка ва таъинкунии меҳварҳо"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Бозгашт"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 сония ба қафо"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "Камера дастрас нест"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Бекор кардан"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Бекор кардан"
 
@@ -785,6 +796,11 @@ msgstr "Бекор кардани ҷавоб"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Бекор карда шуд"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Бекор карда шуд"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Чат бо ҳама"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Забон интихоб кунед"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Тоза кардан"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Осмони соф"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "Амалҳои шарҳ"
 msgid "Comments"
 msgstr "Шарҳҳо"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Эзоҳҳо"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1067,7 +1093,7 @@ msgstr "Тасдиқ"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect"
-msgstr "Пайваст"
+msgstr "Пайваст шудан"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect to private server"
@@ -1149,6 +1175,10 @@ msgstr "Ин ҳуҷҷатро бор карда натавонист. Лутфа
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Парвозҳои шумо бор карда нашуданд"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Сабт пахш карда нашуд"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1454,7 +1484,7 @@ msgstr "Ҷудо шуда"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Dismiss"
-msgstr "Рад кардан"
+msgstr "Пӯшидан"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1482,6 +1512,8 @@ msgstr "Иҷро шуд"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Боргирӣ"
 
@@ -1654,6 +1686,12 @@ msgstr "Баромадан аз бозӣ"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Баромадан аз супориш"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Баромадан аз пахш"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Боз парвоз кунед"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Аз рӯи ақрабакҳо фуруд ой: 1200' дар 3NM, 800' дар 2NM, 400' дар 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 сония ба пеш"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "МУҲАР ЧАП ХОМӮШ"
 msgid "L GEAR"
 msgstr "ШАССИ ЧАП"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Фуруд"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Сервери MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Миёна"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Миёна"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Хатогии шабака"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Нав"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Навтарин"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Огоҳиномаҳо: {0}"
 msgid "Novice"
 msgstr "Навомӯз"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Рақам"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Рақам"
 
@@ -2911,6 +2962,7 @@ msgstr "офлайн"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Эҳ! Саҳифа ёфт нашуд!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Кушодан"
+msgstr "Кушода"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,12 +3098,18 @@ msgid "Pattern (regex)"
 msgstr "Намуна (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Таваққуф"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Таваққуфшуда"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "People"
-msgstr "Шахсон"
+msgstr "Одамон"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3101,6 +3159,18 @@ msgstr "ПЛАТФОРМА"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Платформа: 2000 FPM, дар 1200' уфуқӣ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Пахш"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Мавқеи пахш"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3198,7 +3268,7 @@ msgstr "Серверҳои ҷамъиятӣ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "Огоҳиномаи push"
+msgstr "Огоҳиномаи пуш"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3256,10 +3326,6 @@ msgstr "Аз нав пайваст шуда истодааст ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "Сабти парвозҳо"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Сабт"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -3321,6 +3387,11 @@ msgstr "Мувофиқат {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Мувофиқат {relevance}, таваҷҷуҳ {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Ёдоварӣ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Аз бозӣ таслим шудан?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Қарор"
+msgstr "Вузӯҳ"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3891,7 +3962,7 @@ msgstr "СОХТОР"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Мавзӯъ"
+msgstr "Корбар ё гурӯҳ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Фавқулбашар"
 msgid "Switch to view 1-9"
 msgstr "Гузариш ба назари 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Система"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
@@ -3969,6 +4044,11 @@ msgstr "Дастаҳо"
 msgid "Teams — red versus blue"
 msgstr "Дастаҳо — сурх зидди кабуд"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Пешакӣ"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Ба дархости камера ҷавоб дода нашуд"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Бозӣ бор карда нашуд. Барои аз нав кӯшиш кардан саҳифаро аз нав бор кунед."
 
@@ -4118,7 +4199,7 @@ msgstr "Дархостҳои аз ҳад зиёд"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Боло"
+msgstr "Беҳтарин"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4361,7 +4442,7 @@ msgstr "Назоратҳои намоиш"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Назарҳо"
+msgstr "Намоишҳо"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

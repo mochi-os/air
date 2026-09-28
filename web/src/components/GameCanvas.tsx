@@ -8,9 +8,13 @@ import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react'
 import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { Button } from '@mochi/web/components/ui/button'
+import { Slider } from '@mochi/web/components/ui/slider'
 import {
+  FastForward,
   LogOut,
+  Pause,
   Play,
+  Rewind,
   RotateCcw,
   Send,
   Settings as SettingsIcon,
@@ -100,7 +104,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   '2 WIRE': msg`2 WIRE`,
   '3 WIRE': msg`3 WIRE`,
   '4 WIRE': msg`4 WIRE`,
-  OK: msg`OK`,
+  OK: msg({ message: 'OK', context: 'landing grade' }),
   FAIR: msg`FAIR`,
   'NO-GRADE': msg`NO-GRADE`,
   CUT: msg`CUT`,
@@ -294,6 +298,12 @@ const HINTS: { actions: string[]; label: React.ReactNode }[] = [
   { actions: ['menu'], label: <Trans>menu</Trans> },
 ]
 
+// clock reads seconds as m:ss, as the mission-over line does.
+function clock(seconds: number): string {
+  const whole = Math.max(0, Math.floor(seconds))
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`
+}
+
 export function GameCanvas({
   config,
   join = null,
@@ -302,9 +312,11 @@ export function GameCanvas({
   onConfigChange,
   onConfig,
   onAgain,
+  replay = null,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
+  replay?: string | null // a stored recording to watch flown back, instead of a mission
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
   onConfigChange?: (config: MissionConfig) => void
@@ -336,6 +348,24 @@ export function GameCanvas({
   const menuRef = useRef<HTMLDivElement>(null)
   // The mission ended at a crash (#240): the engine reports how, and the menu
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
+  // A replay's clock, read from the engine a few times a second for the
+  // controls: seconds in, seconds long, and whether it is paused.
+  const [timeline, setTimeline] = useState<{
+    clock: number
+    duration: number
+    held: boolean
+  } | null>(null)
+  useEffect(() => {
+    if (!replay) return
+    const read = () => setTimeline(handleRef.current?.timeline() ?? null)
+    const timer = setInterval(read, 200)
+    return () => clearInterval(timer)
+  }, [replay])
+  // seek moves the replay and shows the new moment at once, not a tick later.
+  const seek = (seconds: number) => {
+    handleRef.current?.seek(seconds)
+    setTimeline(handleRef.current?.timeline() ?? null)
+  }
   const [over, setOver] = useState<{
     fate: string
     struck: number
@@ -385,6 +415,7 @@ export function GameCanvas({
           setMenu(true)
         },
         onChat: (scope) => setChat(scope as Scope),
+        replay,
         translate,
       })
     } catch (error) {
@@ -495,6 +526,75 @@ export function GameCanvas({
       <canvas id='hud' ref={hudRef} />
       <canvas id='map' ref={mapRef} />
       <div className='panel' id='framerate' ref={framerateRef} />
+      {replay && timeline && !menu && (
+        <div className='fixed bottom-6 left-1/2 z-30 flex w-[min(46rem,calc(100vw-2rem))] -translate-x-1/2 items-center gap-1 rounded border border-white/30 bg-black/70 px-2 py-1 text-white'>
+          <button
+            type='button'
+            aria-label={t`Back 5 seconds`}
+            title={t`Back 5 seconds`}
+            className='rounded p-1.5 text-white/80 hover:text-white'
+            onClick={() => seek(timeline.clock - 5)}
+          >
+            <Rewind className='size-4' />
+          </button>
+          <button
+            type='button'
+            aria-label={
+              timeline.held
+                ? t({ message: 'Play', context: 'recording' })
+                : t({ message: 'Pause', context: 'recording' })
+            }
+            title={
+              timeline.held
+                ? t({ message: 'Play', context: 'recording' })
+                : t({ message: 'Pause', context: 'recording' })
+            }
+            className='rounded p-1.5 text-white/80 hover:text-white'
+            onClick={() => {
+              handleRef.current?.hold(!timeline.held)
+              setTimeline(handleRef.current?.timeline() ?? null)
+            }}
+          >
+            {timeline.held ? (
+              <Play className='size-4' />
+            ) : (
+              <Pause className='size-4' />
+            )}
+          </button>
+          <button
+            type='button'
+            aria-label={t`Forward 5 seconds`}
+            title={t`Forward 5 seconds`}
+            className='rounded p-1.5 text-white/80 hover:text-white'
+            onClick={() => seek(timeline.clock + 5)}
+          >
+            <FastForward className='size-4' />
+          </button>
+          <span className='px-2 font-mono text-xs whitespace-nowrap tabular-nums'>
+            {clock(timeline.clock)} / {clock(timeline.duration)}
+          </span>
+          <Slider
+            aria-label={t`Playback position`}
+            className='mx-2 flex-1'
+            min={0}
+            // Rounded up to a whole step, so the slider's end is the
+            // recording's end (the seek clamps to it) and not a step short.
+            max={Math.max(Math.ceil(timeline.duration * 10) / 10, 0.1)}
+            step={0.1}
+            value={[timeline.clock]}
+            onValueChange={([seconds]) => seek(seconds)}
+          />
+          <button
+            type='button'
+            aria-label={t`Exit play`}
+            title={t`Exit play`}
+            className='rounded p-1.5 text-white/80 hover:text-white'
+            onClick={() => handleRef.current?.exit()}
+          >
+            <X className='size-4' />
+          </button>
+        </div>
+      )}
       {chat != null && (
         <div className='fixed top-56 left-10 z-30 flex items-center rounded border border-white/30 bg-black/70 font-mono'>
           <span className='border-r border-white/20 px-2 py-1 text-xs text-amber-200'>
@@ -696,7 +796,13 @@ export function GameCanvas({
             >
               <LogOut className='size-4' />
               {/* A MISSION is yours to leave; a MATCH continues without you. */}
-              {join ? <Trans>Exit match</Trans> : <Trans>Exit mission</Trans>}
+              {join ? (
+                <Trans>Exit match</Trans>
+              ) : replay ? (
+                <Trans>Exit play</Trans>
+              ) : (
+                <Trans>Exit mission</Trans>
+              )}
             </Button>
           </div>
         </div>

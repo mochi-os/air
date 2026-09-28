@@ -26,6 +26,11 @@ msgstr "(ਸੰਪਾਦਿਤ)"
 msgid "(expand)"
 msgstr "(ਫੈਲਾਓ)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(ਕੋਈ ਸਿਰਲੇਖ ਨਹੀਂ)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ਤੁਸੀਂ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} ਨਾਮ"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ਤੋਂ {to} ਤੱਕ"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# ਹੋਰ} other {+# ਹੋਰ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -385,7 +387,7 @@ msgstr "ਆਫਟਰਬਰਨਰ"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
-msgstr "ਏਆਈ"
+msgstr "AI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Aircraft"
@@ -556,6 +558,11 @@ msgstr "ਧੁਰਾ ਕੈਲੀਬ੍ਰੇਸ਼ਨ ਅਤੇ ਮੈਪਿੰ
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "ਵਾਪਸ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 ਸਕਿੰਟ ਪਿੱਛੇ"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "ਕੈਮਰਾ ਉਪਲਬਧ ਨਹੀਂ"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "ਰੱਦ ਕਰੋ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "ਰੱਦ ਕਰੋ"
 
@@ -787,6 +798,11 @@ msgstr "ਜਵਾਬ ਰੱਦ ਕਰੋ"
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Cancelled"
 msgstr "ਰੱਦ ਕੀਤਾ ਗਿਆ"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Cancelled"
+msgstr "ਰੱਦ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Canopy"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "ਸਾਰਿਆਂ ਨਾਲ ਚੈਟ"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "ਭਾਸ਼ਾ ਚੁਣੋ"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "ਸਾਫ਼ ਕਰੋ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "ਸਾਫ਼ ਅਸਮਾਨ"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1036,6 +1057,11 @@ msgstr "ਟਿੱਪਣੀ ਕਾਰਵਾਈਆਂ"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+msgid "Comments"
+msgstr "ਟਿੱਪਣੀਆਂ"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
 msgid "Comments"
 msgstr "ਟਿੱਪਣੀਆਂ"
 
@@ -1149,6 +1175,10 @@ msgstr "ਇਹ ਦਸਤਾਵੇਜ਼ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜ�
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "ਤੁਹਾਡੀਆਂ ਉਡਾਣਾਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ਰਿਕਾਰਡਿੰਗ ਚਲਾਈ ਨਹੀਂ ਜਾ ਸਕੀ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,8 +1512,10 @@ msgstr "ਹੋ ਗਿਆ"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
-msgstr "ਡਾਊਨਲੋਡ"
+msgstr "ਡਾਊਨਲੋਡ ਕਰੋ"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -1654,6 +1686,12 @@ msgstr "ਮੈਚ ਛੱਡੋ"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "ਮਿਸ਼ਨ ਛੱਡੋ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ਪਲੇਬੈਕ ਛੱਡੋ"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "ਦੁਬਾਰਾ ਉਡਾਣ ਭਰੋ"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ਸੂਈਆਂ ਦੇ ਨਾਲ ਹੇਠਾਂ ਆਓ: 3NM ਉੱਤੇ 1200', 2NM ਉੱਤੇ 800', 1NM ਉੱਤੇ 400'"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 ਸਕਿੰਟ ਅੱਗੇ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "ਫਰੇਮਰੇਟ ਕਾਊਂਟਰ"
@@ -2079,7 +2122,7 @@ msgstr "ਇਤਿਹਾਸ"
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 msgid "Home"
-msgstr "ਮੁੱਖ"
+msgstr "ਹੋਮ"
 
 #: src/components/GameCanvas.tsx
 msgid "hook"
@@ -2284,10 +2327,6 @@ msgstr "ਖੱਬਾ ਇੰਜਣ ਬੰਦ"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "ਖੱਬਾ ਪਹੀਆ"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "ਲੈਂਡਿੰਗ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP ਸਰਵਰ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "ਮੱਧਮ"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "ਮੱਧਮ"
 
@@ -2540,7 +2583,7 @@ msgstr "ਮੀਨੂ"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
-msgstr "ਮੇਨੂ"
+msgstr "ਮੀਨੂ"
 
 #: src/components/Multiplayer.tsx
 msgid "Merge — fight on at the pass"
@@ -2583,7 +2626,7 @@ msgstr "ਹਵਾ ਵਿੱਚ ਟੱਕਰ"
 
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
-msgstr "Midway Atoll ਦਾ ਨਕਸ਼ਾ — ਤਸਵੀਰਾਂ ਵਿੱਚ ਸੋਧਿਆ ਹੋਇਆ <0>Copernicus Sentinel-2</0> ਡਾਟਾ (2026) ਸ਼ਾਮਲ ਹੈ; ਹਵਾਈ ਅੱਡੇ ਦੀ ਜਿਓਮੈਟਰੀ (ਰਨਵੇ, ਟੈਕਸੀਵੇ, ਏਪਰਨ) © <1>OpenStreetMap</1> ਯੋਗਦਾਨੀ, <2>ODbL</2> ਅਧੀਨ ਲਾਇਸੰਸਸ਼ੁਦਾ; ਤੱਟਰੇਖਾ ਅਤੇ ਰੀਫ਼ ਡਾਟਾ <3>NOAA NCCOS</3> ਤੋਂ (ਜਨਤਕ ਡੋਮੇਨ)।"
+msgstr "ਮਿਡਵੇ ਐਟੋਲ ਦਾ ਨਕਸ਼ਾ — ਤਸਵੀਰਾਂ ਵਿੱਚ ਸੋਧਿਆ ਹੋਇਆ <0>Copernicus Sentinel-2</0> ਡਾਟਾ (2026) ਸ਼ਾਮਲ ਹੈ; ਹਵਾਈ ਅੱਡੇ ਦੀ ਜਿਓਮੈਟਰੀ (ਰਨਵੇ, ਟੈਕਸੀਵੇ, ਏਪਰਨ) © <1>OpenStreetMap</1> ਯੋਗਦਾਨੀ, <2>ODbL</2> ਅਧੀਨ ਲਾਇਸੰਸਸ਼ੁਦਾ; ਤੱਟਰੇਖਾ ਅਤੇ ਰੀਫ਼ ਡਾਟਾ <3>NOAA NCCOS</3> ਤੋਂ (ਜਨਤਕ ਡੋਮੇਨ)।"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "ਨੈੱਟਵਰਕ ਗੜਬੜ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "ਨਵਾਂ"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "ਸਭ ਤੋਂ ਨਵੇਂ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "ਸੂਚਨਾਵਾਂ: {0}"
 msgid "Novice"
 msgstr "ਨਵਾਂ ਸਿਖਾਂਦਰੂ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "ਨੰਬਰ"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "ਨੰਬਰ"
 
@@ -2911,8 +2962,9 @@ msgstr "ਔਫਲਾਈਨ"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ਠੀਕ ਹੈ"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "ਓਹੋ! ਪੇਜ ਨਹੀਂ ਮਿਲਿਆ!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "ਖੋਲ੍ਹੋ"
+msgstr "ਖੁੱਲ੍ਹਾ"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "ਪੈਟਰਨ (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "ਰੋਕੋ"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "ਰੁਕਿਆ ਹੋਇਆ"
 
@@ -3101,6 +3159,18 @@ msgstr "ਪਲੇਟਫਾਰਮ"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "ਪਲੇਟਫਾਰਮ: 2000 FPM, 1200' ਉੱਤੇ ਪੱਧਰੇ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ਚਲਾਓ"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ਪਲੇਬੈਕ ਸਥਿਤੀ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "ਮੁੜ ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ ({retries})..."
 msgid "Record flights"
 msgstr "ਉਡਾਣਾਂ ਰਿਕਾਰਡ ਕਰੋ"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "ਰਿਕਾਰਡਿੰਗ"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "ਰਿਕਾਰਡਿੰਗ ਅਸਫਲ ਰਹੀ। ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
@@ -3321,6 +3387,11 @@ msgstr "ਸੰਬੰਧਿਤਤਾ {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "ਸੰਬੰਧਿਤਤਾ {relevance}, ਦਿਲਚਸਪੀ {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "ਰਿਮਾਈਂਡਰ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "ਖੋਜ ਰਿਹਾ ਹੈ..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "ਚੁਣੋ"
+msgstr "ਚੋਣ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ਢਾਂਚਾ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "ਵਿਸ਼ਾ"
+msgstr "ਉਪਭੋਗਤਾ ਜਾਂ ਗਰੁੱਪ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "ਅਤਿਮਾਨਵ"
 msgid "Switch to view 1-9"
 msgstr "ਦ੍ਰਿਸ਼ 1-9 'ਤੇ ਜਾਓ"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "ਸਿਸਟਮ"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "ਸਿਸਟਮ"
 
@@ -3969,6 +4044,11 @@ msgstr "ਟੀਮਾਂ"
 msgid "Teams — red versus blue"
 msgstr "ਟੀਮਾਂ — ਲਾਲ ਬਨਾਮ ਨੀਲਾ"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "ਆਰਜ਼ੀ"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "ਕੈਮਰਾ ਬੇਨਤੀ ਦਾ ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ਗੇਮ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਪੰਨਾ ਮੁੜ ਲੋਡ ਕਰੋ।"
 
@@ -4110,7 +4191,7 @@ msgstr "ਦ੍ਰਿਸ਼ ਵਿਕਲਪ ਟੌਗਲ ਕਰੋ"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
-msgstr "watched ਫਿਲਟਰ ਟੌਗਲ ਕਰੋ"
+msgstr "ਨਿਗਰਾਨੀ ਅਧੀਨ ਫਿਲਟਰ ਟੌਗਲ ਕਰੋ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
@@ -4118,7 +4199,7 @@ msgstr "ਬਹੁਤ ਜ਼ਿਆਦਾ ਬੇਨਤੀਆਂ"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ਉੱਪਰ"
+msgstr "ਸਭ ਤੋਂ ਵਧੀਆ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "ਵੀਡੀਓ ਦਰਸ਼ਕ: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ਦੇਖੋ"
+msgstr "ਦ੍ਰਿਸ਼"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
