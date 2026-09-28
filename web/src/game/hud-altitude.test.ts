@@ -106,7 +106,7 @@ describe('the instrument cluster rides the nose', () => {
 describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
-  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false };
+  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0;
     const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0;
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];

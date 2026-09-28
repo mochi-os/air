@@ -1527,17 +1527,20 @@ function asi_face(f,angle){ const x=face_start(f), R=STANDBY_R;
 		if(kt%100===0){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(kt)); } }
 	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+40);
 	face_needle(x,angle,R-14,5); }
-// The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial, the thousands
-// counter left of centre, the barometric setting window lower right
+// The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial of 20
+// graduations, 50 ft each, the thousands counter left of centre, and the barometric setting
+// window centred below under ALT and IN HG with its index beneath (FO-5 item 28)
 function alt_face(f,feet,baro){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
-	for(let i=0;i<50;i++){ const a=i/50*Math.PI*2-Math.PI/2, major=i%5===0;
+	for(let i=0;i<20;i++){ const a=i/20*Math.PI*2-Math.PI/2, major=i%2===0;
 		face_tick(x,a,R,major?R-16:R-8,major?3:1.5);
-		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(i/5)); } }
+		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(i/2)); } }
 	const shown=Math.max(0,Math.min(99999,Math.round(feet)));
 	x.fillStyle="#202220"; x.fillRect(C-58,C-14,52,28); x.strokeStyle="#606460"; x.strokeRect(C-58,C-14,52,28);
 	x.fillStyle="#f0f0e8"; x.font="bold 22px monospace"; x.fillText(String(Math.floor(shown/1000)).padStart(2,"0"),C-32,C+1);
-	x.fillStyle="#202220"; x.fillRect(C+10,C+22,64,22); x.strokeStyle="#606460"; x.strokeRect(C+10,C+22,64,22);
-	x.fillStyle="#f0f0e8"; x.font="bold 16px monospace"; x.fillText((baro/100).toFixed(2),C+42,C+33);   // i18n-format-ok: canvas-drawn instrument window, fixed-format like the real drum
+	x.fillStyle="#f0f0e8"; x.font="bold 12px monospace"; x.fillText("ALT",C,C+26); x.font="bold 10px monospace"; x.fillText("IN HG",C,C+40);
+	x.fillStyle="#202220"; x.fillRect(C-32,C+48,64,22); x.strokeStyle="#606460"; x.strokeRect(C-32,C+48,64,22);
+	x.fillStyle="#f0f0e8"; x.font="bold 16px monospace"; x.fillText(String(Math.round(baro)).padStart(4,"0"),C,C+59);   // the drums read hundredths of inHg, no point
+	x.beginPath(); x.moveTo(C,C+72); x.lineTo(C-5,C+79); x.lineTo(C+5,C+79); x.closePath(); x.fill();   // the index under the window
 	x.strokeStyle="#e8e8e0";
 	face_needle(x,(shown%1000)/1000*Math.PI*2,R-14,5); }
 // The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses
@@ -4875,7 +4878,7 @@ function dial(table,v){ const a=Math.abs(v);
 const yaw_state={t:0,heading:0,rate:0};   // heading rate, rad/s, smoothed over half a second: the EADI's turn indicator (2.13.4.3, #24)
 let flow_state={t:0,fuel:0,pph:0};   // smoothed total burn from the fuel word itself — honest, includes AB and leaks
 function update_gauges(out){   // instrument channels for the cockpit rig (#99)
-	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281);
+	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281+baro_error());
 	const fpm=THREE.MathUtils.clamp((out[STATE.velocity+1]||0)*196.85,-6000,6000);
 	const lbs=Math.max(0,(out[STATE.fuel]||0)*2.2046);
 	const extlbs=Math.max(0,(out[STATE.external]||0)*2.2046);   // external-tank fuel (#17): burns first, shown on the FUEL page and inside the totals
@@ -5543,6 +5546,8 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
+		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
 	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
 		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
@@ -5601,6 +5606,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "dump": fuel_dump=!fuel_dump; break;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
+	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, raises the low-altitude index
 	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
@@ -7325,7 +7331,7 @@ function fly_player(dt){
 			// reading goes below, disables it. Each arms 50 ft above its altitude - the game's
 			// margin, which NATOPS does not give - so a jet levelled at the setting does not
 			// call on every ripple.
-			{ const readings={ radar:(!RADAR.sil&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084 };
+			{ const readings={ radar:(!RADAR.sil&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084+baro_error() };
 				for(const kind of ["radar","baro"]){ const set=altitude_set[kind], now=readings[kind];
 					if(now===null||!flying){ altitude_armed[kind]=false; continue; }
 					if(now>set+50) altitude_armed[kind]=true;
@@ -7726,7 +7732,7 @@ function reset_ownship(){
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
-	baro_armed=false; baro_shown=-1e9; baro_flash=false;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
+	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
@@ -8028,7 +8034,11 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
-const baro_set=2992;   // the standby altimeter's barometric setting, hundredths of inHg: 29.92 on the game's standard day, since no sea-level pressure reaches the core and the pit has no knob (#16)
+let baro_set=2992;   // the standby altimeter's barometric setting, hundredths of inHg, set with its knob (NATOPS 2.12.4); 29.92 is right everywhere on the game's standard day
+// baro_error is how far the barometric altitude reads above true for the setting: the air
+// data computer uses it too (2.12.4), and 1 inHg is about 1,000 ft, so a mis-set altimeter
+// reads wrong on the standby, the HUD and the barometric warning alike.
+function baro_error(){ return (baro_set-2992)*10; }
 let baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;   // the HUD baro-set readout (2.13.4.8.11 item 4): when it last appeared, whether it flashes, and whether a descent through 10,000 ft is armed
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_shoot=false;   // whether the HUD is drawing SHOOT this frame, flash phase included: the canopy bow SHOOT light (#14) mirrors it
@@ -8560,7 +8570,7 @@ function draw_hud(){
 	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
-	const baro=ownship.pos.y*3.28084; const lx=cx+4.2*ppdv;
+	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
 	let alt=baro, radar=false, flashB=false;
 	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
 		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;

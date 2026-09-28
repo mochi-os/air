@@ -222,7 +222,7 @@ describe('the standby altimeter baro setting', () => {
     for (const [name, node, gain] of [['baro1', 'Drum_Baro_1_AN_1_397', '10000'], ['baro2', 'Drum_Baro_2_AN_2_400', '1000'], ['baro3', 'Drum_Baro_3_AN_3_403', '100'], ['baro4', 'Drum_Baro_4_AN_4_406', '10']])
       expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+node:"' + node + '",\\s+axis:"x", sign:-1, gain:6\\.2832/' + gain + ',\\s+gauge:"baro"'))
     expect(source).toMatch(/\n\t\tbaro:baro_set,/)
-    expect(source).toMatch(/\nconst baro_set=2992;/) // no knob and no sea-level pressure reach it yet; the change display waits for one
+    expect(source).toMatch(/\nlet baro_set=2992;/) // set with its knob; the change display shows it
   })
 
   it('flashes the setting for 5 s on a descent through 10,000 ft below 300 knots, armed from above', () => {
@@ -252,16 +252,16 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: string[]; rotate: number[]; translate: [number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][] }
+interface Drawn { text: string[]; rotate: number[]; translate: [number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; strokes: number }
 function face(name: string, ...args: number[]): Drawn {
   const consts = /\nconst ASI_DIAL=[^\n]*\nconst VSI_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
   const sizes = /\nconst STANDBY_C=[^\n]*\nconst ADI_PIXELS=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!consts || !sizes) throw new Error('standby constants not found in engine.ts')
   const run = new Function('args', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${consts} ${sizes}
     ${lift('dial')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
-    const text=[], rotate=[], translate=[], rects=[], arcs=[];
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); return ()=>{}; }, set:()=>true });
-    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs };`)
+    const text=[], rotate=[], translate=[], rects=[], arcs=[]; let strokes=0;
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='stroke') return ()=>{ strokes++; }; if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); return ()=>{}; }, set:()=>true });
+    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs, strokes };`)
   return run(args) as Drawn
 }
 const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
@@ -287,7 +287,18 @@ describe('the standby instrument faces', () => {
     const d = face('alt_face', 1500, 2992)
     expect(has(d.rotate, Math.PI)).toBe(true)
     expect(d.text).toContain('01')
-    expect(d.text).toContain('29.92')
+    expect(d.text).toContain('2992') // the drums read hundredths of inHg with no point (FO-5 item 28)
+    expect(d.text).not.toContain('29.92')
+  })
+
+  // NATOPS 2.12.4 and FO-5 item 28: 20 graduations, 50 ft each, labelled 0 to 9,
+  // and the setting window centred below the hub under ALT and IN HG.
+  it('graduate the altimeter in 50 ft steps and centre the window under ALT and IN HG', () => {
+    const d = face('alt_face', 0, 3001)
+    expect(d.strokes).toBe(20)
+    for (const n of ['0', '1', '5', '9']) expect(d.text).toContain(n)
+    expect(d.text).toEqual(expect.arrayContaining(['ALT', 'IN HG', '3001']))
+    expect(d.rects).toContainEqual([128 - 32, 128 + 48, 64, 22]) // the window, centred on the hub's vertical
   })
 
   it('put the rate of climb needle at nine o\'clock plus the dial angle', () => {
@@ -367,7 +378,7 @@ interface Pass { radar?: number; baro: number; silent?: boolean; flying?: boolea
 function called(frames: Pass[], set: { radar: number; baro: number }): boolean[] {
   const block = /\n\t\t\t\{ const readings=[\s\S]*?altitude_called=sim_time; \} \} \}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('secondary low-altitude warnings not found in engine.ts')
-  const run = new Function('frames', 'set', `const RADAR={ sil:false }, ownship={ pos:{ y:0 } }, altitude_set=set, altitude_armed={ radar:false, baro:false };
+  const run = new Function('frames', 'set', `const RADAR={ sil:false }, ownship={ pos:{ y:0 } }, altitude_set=set, altitude_armed={ radar:false, baro:false }, baro_error=()=>0;
     let altitude_called=-Infinity, sim_time=0, flying=true, agl=0;
     return frames.map((f)=>{ sim_time++; RADAR.sil=!!f.silent; flying=f.flying??true; agl=f.radar??9999; ownship.pos.y=f.baro/3.28084;
       ${block} return altitude_called===sim_time; });`)
@@ -488,3 +499,41 @@ describe('the GPWS recovery arrow', () => {
     expect(source).toMatch(/if\(law_active\)\{ hctx\.strokeStyle=GR; gpws_arrow\(hctx,centre\[0\],centre\[1\],HH\/45\*hs,-Math\.atan2\(ownship\.right\.y,ownship\.up\.y\)\); \}/)
   })
 })
+
+// The altimeter's knob (NATOPS 2.12.4): a click on the face turns it, right raising
+// the setting by 0.01 inHg and left lowering it, over the window's 28.10 to 31.00;
+// the air data use the setting too, so the barometric altitude on the standby, the
+// HUD and the barometric warning reads 10 ft high for every 0.01 inHg set too high.
+describe('the standby altimeter knob', () => {
+  it('reads the barometric altitude off the setting, 1,000 ft to the inch', () => {
+    const line = /\nfunction baro_error\(\)[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const error = (set: number) => new Function('baro_set', `${line} return baro_error();`)(set) as number
+    expect(error(2992)).toBe(0)
+    expect(error(3002)).toBe(100)
+    expect(error(2982)).toBe(-100)
+  })
+
+  it('feeds the setting to every barometric altitude reader', () => {
+    expect(source).toMatch(/altitude=Math\.max\(0,\(out\[STATE\.position\+1\]\|\|0\)\*3\.281\+baro_error\(\)\);/) // the standby altimeter and the ADI page
+    expect(source).toMatch(/const baro=ownship\.pos\.y\*3\.28084\+baro_error\(\); const lx=/) // the HUD's altitude box
+    expect(source).toMatch(/baro:ownship\.pos\.y\*3\.28084\+baro_error\(\) \};/) // the barometric low-altitude warning
+  })
+
+  it('turns 0.01 inHg a click between 28.10 and 31.00', () => {
+    const line = /\n\tcase "baro":[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const turn = (set: number, d: number) => new Function('set', 'd', `let baro_set=set; const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+      switch("baro"){ ${line} } return baro_set;`)(set, d) as number
+    expect(turn(2992, 1)).toBe(2993)
+    expect(turn(2992, -1)).toBe(2991)
+    expect(turn(3100, 1)).toBe(3100)
+    expect(turn(2810, -1)).toBe(2810)
+  })
+
+  it('is turned by a click on the face and set back to 29.92 on a fresh jet', () => {
+    expect(source).toMatch(/const u=ownship\.group\.userData\.standby;[^\n]*\n\t\tif\(u&&u\.alt&&_click_ray\.intersectObject\(u\.alt\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("baro",e\.button===2\?1:-1\); return; \} \}/)
+    expect(source).toMatch(/baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;/)
+  })
+})
+
