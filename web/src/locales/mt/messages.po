@@ -62,6 +62,10 @@ msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Qala' # tir} few {Qala' # tiri} many {Qala' # tir} other {Qala' # tir}}"
 
 #. placeholder {0}: displayInfo.count
+#. placeholder {0}: selectedIds.length
+#. placeholder {0}: unknownIds.length
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
 msgstr "{0, plural, one {# magħżul} few {# magħżula} many {# magħżula} other {# magħżula}}"
@@ -129,9 +133,23 @@ msgstr "{count, plural, one {#min} other {#min}}"
 msgid "{count, plural, one {#w} other {#w}}"
 msgstr "{count, plural, one {#ġim} other {#ġim}}"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{day}, {from} to {to}"
+msgstr "{day}, minn {from} sa {to}"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "{entityLabel} name"
 msgstr "Isem ta' {entityLabel}"
+
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "{from} to {to}"
+msgstr "minn {from} sa {to}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{hidden, plural, one {+# more} other {+# more}}"
+msgstr "{hidden, plural, one {+# ieħor} two {+# oħra} few {+# oħra} many {+# oħra} other {+# oħra}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -195,6 +213,7 @@ msgid "<0>Drag</0> or <1>←→</1> to orbit"
 msgstr "<0>Kaxkar</0> jew <1>←→</1> biex iddur"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "1 WIRE"
 msgstr "KEJBIL 1"
 
@@ -215,6 +234,7 @@ msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "2 WIRE"
 msgstr "KEJBIL 2"
 
@@ -223,12 +243,18 @@ msgid "24 hours"
 msgstr "24 siegħa"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "3 WIRE"
 msgstr "KEJBIL 3"
 
 #: src/components/MissionSetup.tsx
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
+
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+msgid "4 WIRE"
+msgstr "KEJBIL 4"
 
 #: src/components/GameCanvas.tsx
 msgid "7 miles: climb on course"
@@ -377,6 +403,11 @@ msgstr "Mudell tal-ajruplan <0>“F/A-18C Hornet”</0> minn <1>CreadorDeMu</1> 
 msgid "Alerts"
 msgstr "Twissijiet"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "All day"
+msgstr "Il-ġurnata kollha"
+
 #: src/components/MatchLog.tsx
 msgid "All modes"
 msgstr "Il-modi kollha"
@@ -478,6 +509,10 @@ msgstr "Axxendenti"
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
 msgstr "asimmetrija"
+
+#: ../../../lib/web/src/components/timezone-select.tsx
+msgid "At sea"
+msgstr "Fuq il-baħar"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Attach comment files"
@@ -616,6 +651,7 @@ msgid "Board"
 msgstr "Bord"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -635,6 +671,10 @@ msgstr "Saħħaħ l-interess"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Border colour"
 msgstr "Kulur tal-bord"
+
+#: src/components/MissionSetup.tsx
+msgid "bot"
+msgstr "bot"
 
 #: src/components/Multiplayer.tsx
 msgid "Bots"
@@ -685,6 +725,10 @@ msgstr "BVR, armi ħielsa mill-bidu"
 #: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Illokkja / illibera"
+
+#: ../../../lib/web/src/features/accounts/types.ts
+msgid "Calendar server"
+msgstr "Server tal-kalendarju"
 
 #: src/components/GameCanvas.tsx
 msgid "CALL THE BALL"
@@ -826,6 +870,11 @@ msgstr "Inbidel"
 msgid "Changed {field}"
 msgstr "Inbidel {field}"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Changed occurrence"
+msgstr "Okkorrenza mibdula"
+
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
@@ -856,6 +905,10 @@ msgstr "Checkbox"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Checklist"
 msgstr "Checklist"
+
+#: ../../../lib/web/src/components/ui/date-picker.tsx
+msgid "Choose a date"
+msgstr "Agħżel data"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Choose a game from the sidebar or start a new one."
@@ -901,6 +954,7 @@ msgstr "Tlugħ: heading tal-pista {heading}, 350 nott"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/sheet.tsx
+#: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
@@ -948,6 +1002,7 @@ msgid "COLLIDED WITH {callsign}"
 msgstr "ĦABTA MA' {callsign}"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Colour"
 msgstr "Kulur"
 
@@ -1055,6 +1110,10 @@ msgstr "Kompli"
 msgid "Continue with {label}"
 msgstr "Kompli b'{label}"
 
+#: ../../../lib/web/src/features/accounts/account-add.tsx
+msgid "Continue with {providerLabel}"
+msgstr "Kompli b'{providerLabel}"
+
 #: ../../../lib/web/src/lib/toast-utils.ts
 msgid "Copied"
 msgstr "Ikkupjat"
@@ -1063,6 +1122,10 @@ msgstr "Ikkupjat"
 msgid "Copied to clipboard"
 msgstr "Ikkupjat fil-clipboard"
 
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
 msgid "Copy"
 msgstr "Ikkupja"
@@ -1190,6 +1253,7 @@ msgid "Custom"
 msgstr "Personalizzat"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "CUT"
 msgstr "PERIKOLUŻ"
 
@@ -1543,6 +1607,10 @@ msgstr "Pilun vojt"
 msgid "Enable sound"
 msgstr "Attiva l-ħoss"
 
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Ends before it starts"
+msgstr "Jispiċċa qabel ma jibda"
+
 #: src/components/GameCanvas.tsx
 msgid "ENGAGED"
 msgstr "QED NATTAKKA"
@@ -1731,6 +1799,7 @@ msgid "Failed to upload attachment"
 msgstr "Ma rnexxiex jittella' l-attachment"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "FAIR"
 msgstr "SODISFAĊENTI"
 
@@ -2216,6 +2285,10 @@ msgstr "MAGNA XELLUG MITFIJA"
 msgid "L GEAR"
 msgstr "ROTA XELLUG"
 
+#: src/components/MatchLog.tsx
+msgid "Landing"
+msgstr "Inżul"
+
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2549,6 +2622,10 @@ msgstr "Moderazzjoni"
 msgid "Monday"
 msgstr "It-Tnejn"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Month"
+msgstr "Xahar"
+
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "More options"
 msgstr "Aktar għażliet"
@@ -2564,6 +2641,13 @@ msgstr "Ġie mċaqlaq"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Moved {field}"
 msgstr "Ġie mċaqlaq {field}"
+
+#. placeholder {0}: dayName(current.day)
+#. placeholder {0}: dayName(dragging.day)
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Moving to {0}"
+msgstr "Qed jiġi mċaqlaq għal {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
@@ -2608,6 +2692,14 @@ msgstr "Logħba ġdida"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Next image"
 msgstr "Stampa li jmiss"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next month"
+msgstr "Ix-xahar li ġej"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Next year"
+msgstr "Is-sena li ġejja"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -2725,6 +2817,7 @@ msgid "No world server."
 msgstr "M'hemm l-ebda server tad-dinja."
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "NO-GRADE"
 msgstr "L-EBDA GRAD"
 
@@ -2817,6 +2910,7 @@ msgid "offline"
 msgstr "offline"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "OK"
 msgstr "OK"
 
@@ -3059,6 +3153,14 @@ msgstr "Agħfas…"
 msgid "Previous image"
 msgstr "Stampa preċedenti"
 
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous month"
+msgstr "Ix-xahar preċedenti"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Previous year"
+msgstr "Is-sena preċedenti"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Privacy"
@@ -3236,6 +3338,7 @@ msgstr "Neħħi l-filter ta' {0}"
 #: ../../../lib/web/src/components/member-list.tsx
 #: ../../../lib/web/src/components/member-list.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
 msgid "Remove {name}"
 msgstr "Neħħi {name}"
 
@@ -3287,6 +3390,11 @@ msgstr "Irrinomina din il-kolonna tal-bord"
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ir-rendering isir minn <0>three.js</0> (liċenzja MIT)."
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Repeats"
+msgstr "Jirrepeti"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
@@ -4272,6 +4380,10 @@ msgstr "STENNIJA GĦALL-AVVERSARJU"
 msgid "Watch"
 msgstr "Segwi"
 
+#: src/components/MissionSetup.tsx
+msgid "Watch a bot fly it"
+msgstr "Ara bot itajjarha"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
@@ -4282,6 +4394,7 @@ msgid "Watched only"
 msgstr "Segwit biss"
 
 #: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
 msgid "WAVE OFF"
 msgstr "WAQQAF L-INŻUL"
 
@@ -4380,6 +4493,10 @@ msgstr "Yaw lejn ix-xellug"
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw lejn il-lemin"
+
+#: ../../../lib/web/src/components/calendar/date-header.tsx
+msgid "Year"
+msgstr "Sena"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

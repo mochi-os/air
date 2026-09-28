@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   acmi,
@@ -13,6 +15,17 @@ import {
   stamp,
   channels,
 } from './acmi'
+
+// engine.ts cannot be imported (WebGL at module scope): the recorder's engine
+// half is read from its source, and lift cuts one top-level function out of it.
+const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+function lift(name: string): string {
+  const start = source.indexOf(`function ${name}(`)
+  expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+  const rest = source.slice(start)
+  const end = /\n(?=\S)/.exec(rest.slice(1))
+  return end ? rest.slice(0, end.index + 1) : rest
+}
 
 const jet = (over: Partial<Recorded> = {}): Recorded => ({
   id: 1,
@@ -417,6 +430,269 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   expect(lines.filter((l) => l.includes('Burst='))).toHaveLength(1)
 })
 
+// Whether the shooter's own radar still held an AMRAAM's trackfile THIS step
+// (#33 debrief): a shot that goes long could be an unsupported seeker giving
+// up, or the shooter losing the track first - those read identically without
+// this. Heaters never carry it (no midcourse phase to lose).
+it("records an AMRAAM's midcourse support, and its loss mid-flight", () => {
+  const round = (
+    seeker: string,
+    support?: boolean
+  ): Sample['objects'][number] => ({
+    id: 165,
+    x: 0,
+    y: 1000,
+    z: -300,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'AIM-120C',
+    label: '120C',
+    colour: 'Blue',
+    kind: 'Weapon+Missile',
+    round: { shooter: 1, target: 2, seeker, ...(support !== undefined ? { support } : {}) },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [round('midcourse', true)] },
+      { time: 0.1, objects: [round('midcourse', true)] }, // unchanged: suppressed
+      { time: 0.2, objects: [round('midcourse', false)] }, // the shooter lost the track
+      { time: 0.3, objects: [round('active', false)] }, // Seeker changed too, but Support stays written every step it is defined
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('a5,T='))
+  expect(mine[0]).toContain('Support=1')
+  expect(mine[1]).not.toContain('Support=') // unchanged: suppressed with the rest of the combined guide
+  expect(mine[2]).toContain('Support=0')
+  expect(mine[3]).toContain('Support=0')
+  expect(mine[3]).toContain('Seeker=active')
+})
+
+it('never writes Support for a heater, which has no midcourse phase to lose', () => {
+  const text = acmi(
+    [
+      {
+        time: 0,
+        objects: [
+          {
+            id: 166,
+            x: 0,
+            y: 1000,
+            z: -300,
+            roll: 0,
+            pitch: 0,
+            yaw: 0,
+            name: 'AIM-9M',
+            label: '9M',
+            colour: 'Blue',
+            kind: 'Weapon+Missile',
+            round: { shooter: 1, target: 2, seeker: 'track' },
+          },
+        ],
+      },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('a6,T='))
+  expect(mine[0]).not.toContain('Support=')
+})
+
+// The pilot's own acquire/undesignate presses, when they actually land (#33
+// debrief): a debrief could tell a shot never got a real lock, but not why -
+// this is the same journalled-event encoding as the bandit's Decision channel,
+// so several landings between two kept samples join with ';' rather than
+// losing all but the last.
+it('records a landed acquire/undesignate press once, and several between samples joined', () => {
+  const jet = (input?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { input },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(undefined)] },
+      { time: 0.1, objects: [jet('160.8|acquire|ls')] },
+      { time: 0.2, objects: [jet(undefined)] }, // no press landed this sample: field absent, not repeated
+      { time: 0.3, objects: [jet('161.0|acquire|stt;161.4|undesignate|break')] }, // two landings between samples
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).not.toContain('Input=')
+  expect(mine[1]).toContain('Input=160.8|acquire|ls')
+  expect(mine[2]).not.toContain('Input=') // nothing landed: not repeated from the prior sample
+  expect(mine[3]).toContain('Input=161.0|acquire|stt;161.4|undesignate|break')
+})
+
+// Why the ownship's own hard lock broke, when it did (#33 debrief): the
+// automatic, physics-driven counterpart to Input - a lock can drop with no
+// press at all, so it rides its own channel. Same journalled-event encoding.
+it('records a hard-lock break once, and several between samples joined', () => {
+  const jet = (broke?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { break: broke },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(undefined)] },
+      { time: 0.1, objects: [jet('204.3|gimbal')] },
+      { time: 0.2, objects: [jet(undefined)] }, // no break this sample: field absent, not repeated
+      { time: 0.3, objects: [jet('210.1|notch;214.6|range')] }, // two breaks between samples
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).not.toContain('Break=')
+  expect(mine[1]).toContain('Break=204.3|gimbal')
+  expect(mine[2]).not.toContain('Break=') // nothing broke: not repeated from the prior sample
+  expect(mine[3]).toContain('Break=210.1|notch;214.6|range')
+})
+
+// When weapons went free, and why (#33 debrief): removes the need to infer
+// the merge from geometry against the first 3/9 crossing. Same encoding.
+it('records when weapons went free, merge or a BVR start with no hold', () => {
+  const jet = (merge?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { merge },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet('0.0|start')] },
+      { time: 0.1, objects: [jet(undefined)] }, // not repeated
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Merge=0.0|start')
+  expect(mine[1]).not.toContain('Merge=')
+})
+
+// The g-limit override switch and its cost (#33 debrief): the switch is
+// delta-suppressed (a cockpit position, held rarely), Stress is written every
+// sample like G/AOA (a debrief reads its trace, not its steps) - together
+// they answer "did the pilot override, and did g then accrue overstress" even
+// though the exact shed margin isn't recorded (it needs battle-package wing
+// health that never reaches the client).
+it("records the g-limit override switch on change, and Stress every sample", () => {
+  const jet = (override?: boolean, stress?: number): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { override, stress },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(false, 0)] },
+      { time: 0.1, objects: [jet(false, 0)] }, // Override unchanged: suppressed
+      { time: 0.2, objects: [jet(true, 0.4)] }, // override held: switch AND rising stress
+      { time: 0.3, objects: [jet(true, 1.1)] }, // switch unchanged, but Stress still written every sample
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Override=0')
+  expect(mine[0]).toContain('Stress=0')
+  expect(mine[1]).not.toContain('Override=') // unchanged: suppressed
+  expect(mine[1]).toContain('Stress=0') // still written: not delta-suppressed
+  expect(mine[2]).toContain('Override=1')
+  expect(mine[2]).toContain('Stress=0.4')
+  expect(mine[3]).not.toContain('Override=') // still held: suppressed
+  expect(mine[3]).toContain('Stress=1.1') // the trace keeps moving
+})
+
+it('wires the override switch and Stress from the flight core into the recorded sample', () => {
+  expect(source).toMatch(
+    /stress:out\[STATE\.stress\]\|\|0,\s*\/\/ \(#33 debrief\)/
+  )
+  expect(source).toMatch(
+    /override:!!\(last_controls&&last_controls\.override\),/
+  )
+})
+
+// YawRate (#33 debrief): the raw rate departure_drive proxies its tone from,
+// promoted to a real recorded channel - honestly documented as NOT a
+// departure flag (the flight model's real departure signature is sideslip,
+// which is never exposed to the client). Written every sample like AOA/G.
+it('records yaw rate every sample, real-world sign (nose right positive)', () => {
+  const jet = (yawrate?: number): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { yawrate },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(12.3)] },
+      { time: 0.1, objects: [jet(12.3)] }, // unchanged, but still written: not delta-suppressed
+      { time: 0.2, objects: [jet(-40.7)] },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('YawRate=12.3')
+  expect(mine[1]).toContain('YawRate=12.3')
+  expect(mine[2]).toContain('YawRate=-40.7')
+})
+
+it('wires yaw rate with the real-world sign, negated from the raw wasm state', () => {
+  expect(source).toMatch(
+    /yawrate:-\(out\[STATE\.omega\+1\]\|\|0\)\*57\.29578,/
+  )
+})
+
 // The bot's tier rides on its own object, so a debrief judges its plays in
 // context without decoding the mission title (which named the tier only for
 // jousts). Declared once, like the other identity properties.
@@ -642,6 +918,8 @@ describe('stamp', () => {
     mode: 'joust',
     duel: 'bvr',
     bandit: 'superhuman',
+    stage: 6,
+    omit: 0,
     weapons: 'fox2',
     start: 'air',
     clouds: 'none',
@@ -701,6 +979,20 @@ describe('stamp', () => {
     expect(match.bandit).toBe('superhuman')
     expect(match.multiplayer).toBe(0)
     expect(match.world).toBe('') // a single-player flight has no server, whatever the menu last held
+  })
+
+  it('names the brain the bandit flew: its stage always, the omitted stages only when there are any', () => {
+    expect(stamp(fight).match.stage).toBe('6')
+    expect(stamp(fight).match.omit).toBe('') // acmi() drops an empty field
+    expect(stamp({ ...fight, stage: 0 }).match.stage).toBe('0') // the brain as it stands, said rather than left to be assumed
+    expect(stamp({ ...fight, stage: 8, omit: 128 }).match.omit).toBe('128')
+    const other = stamp({ ...fight, multiplayer: true, mode: 'furball', stage: 6, omit: 128 }).match
+    expect(other.stage).toBe('') // a multiplayer match has no bandit brain to name
+    expect(other.omit).toBe('')
+    expect(stamp({ ...fight, mode: 'free' }).match.stage).toBe('')
+    // and the engine hands the stamp the stage it armed the bandit with
+    expect(lift('recording_file')).toMatch(/bandit:cfg\.bandit\|\|"", stage:BANDIT_STAGE, omit:BANDIT_OMIT,/)
+    expect(source).toMatch(/stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
   })
 
   it('names a multiplayer match by the mode the SERVER says it is', () => {
@@ -764,6 +1056,15 @@ describe('stamp', () => {
     expect(match.task).toBe('free')
     expect(match.duel).toBe('')
     expect(match.bandit).toBe('')
+  })
+
+  it('carries the LSO\u2019s write-up of every pass, and nothing when none was flown', () => {
+    const passes = 'BOLTER LO IC | NO-GRADE (LUL) IC · (LO)(LUL) IW 1 wire'
+    expect(stamp({ ...fight, passes }).match.passes).toBe(passes)
+    expect(stamp(fight).match.passes).toBe('')
+    const lines = acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free', passes }).match).split('\n')
+    expect(lines).toContain('0,Match_passes=' + passes)
+    expect(acmi([], new Date('2026-09-24T12:00:00Z'), 'Mochi Air: flight', stamp({ ...fight, mode: 'free' }).match)).not.toContain('Match_passes')
   })
 })
 
@@ -1001,5 +1302,75 @@ describe('a missile records why its lock broke', () => {
     const mine = flown([round('loose', 'cold')])
     expect(mine[0]).toContain('Reason=cold')
     expect(mine[0]).not.toContain('Rate=')
+  })
+})
+
+// The recorder says in advance whether it will keep a sample, so a caller that
+// drains something to build one (the bandit's decision journal) drains only
+// on a frame that is kept. Before this, recording_sample() built every frame
+// and the recorder kept one in eight: the journal lost the other seven.
+it('a sample is due once per interval, and add keeps exactly the due ones', () => {
+  const recorder = new Recorder(0, 8)
+  expect(recorder.due(0)).toBe(true)
+  recorder.add(0, [])
+  expect(recorder.due(0.05)).toBe(false)
+  expect(recorder.due(0.1)).toBe(false)
+  expect(recorder.due(0.125)).toBe(true)
+  recorder.add(0.05, [])
+  recorder.add(0.1, [])
+  expect(recorder.length).toBe(1)
+  recorder.add(0.125, [])
+  expect(recorder.length).toBe(2)
+  expect(recorder.due(0.2)).toBe(false)
+  expect(recorder.due(0.25)).toBe(true)
+})
+
+// The ownship's death in the recording. The core is not stepped through the
+// crash and crash_ownship hides the jet and zeroes its speed, so a recorder
+// that kept sampling it wrote the same still airframe at 0 kt for three
+// seconds, which the debrief read as the pilot's slowest moment. It is written
+// once, on the first kept sample after the death, and not again that life.
+describe("the ownship's death in the recording", () => {
+  // A stand-in for the two globals own_record reads, driven as the engine
+  // drives them: crash_ownship starts a death, a respawn ends it.
+  const life = () =>
+    new Function(
+      `let crash_t=0, own_written=false;\n${lift('own_record')}\nreturn { record:own_record, crash:()=>{ crash_t=3; own_written=false }, respawn:()=>{ crash_t=0 } };`
+    )() as { record(due: boolean): string; crash(): void; respawn(): void }
+
+  it('writes a flying jet every sample, its death once, and nothing after', () => {
+    const own = life()
+    expect([own.record(true), own.record(false)]).toEqual(['alive', 'alive'])
+    own.crash()
+    // Samples the recorder will drop do not count: the death is written on the first KEPT one.
+    expect([own.record(false), own.record(false), own.record(true)]).toEqual(['death', 'death', 'death'])
+    expect([own.record(true), own.record(false), own.record(true)]).toEqual(['gone', 'gone', 'gone'])
+    own.respawn()
+    expect(own.record(true)).toBe('alive')
+    own.crash()
+    expect([own.record(true), own.record(true)]).toEqual(['death', 'gone']) // a second life's death is written too
+  })
+
+  it('is wired where the engine samples and where the jet dies', () => {
+    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
+    const sample = lift('recording_sample')
+    expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tconst own=own_record\(due\);/)
+    expect(sample).toMatch(/tas:own==="death"\?undefined:\(ownship\.speed\|\|0\)/)
+    expect(sample).toMatch(/\n\tif\(own!=="gone"\) add\(ownship,1,/)
+  })
+
+  it('leaves the zeroed speed out of the death sample, so the file keeps the last true reading', () => {
+    const text = acmi(
+      [
+        { time: 0, objects: [jet({ data: { tas: 120 } })] },
+        { time: 0.125, objects: [jet({ data: { fate: 'missile' } })] },
+      ],
+      new Date(0),
+      't'
+    )
+    const lines = text.split('\n').filter((l) => l.startsWith('1,'))
+    expect(lines[0]).toContain('TAS=120')
+    expect(lines[1]).toContain('Fate=missile')
+    expect(lines[1]).not.toContain('TAS=')
   })
 })

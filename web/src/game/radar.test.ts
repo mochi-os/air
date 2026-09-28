@@ -13,6 +13,7 @@ import {
   paint_probability,
   pick,
   WIDTHS,
+  type RadarTarget,
 } from './radar'
 
 const wrap = (v: number) => v
@@ -27,6 +28,17 @@ const beam = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 250, vy: 0, vz: 0 }
 function swept(radar: Radar, targets = [beam], seconds = 4, random = always) {
   for (let i = 0; i < seconds * 60; i++)
     radar.step(1 / 60, own, targets, wrap, random)
+}
+
+// breakReason is transient - reset at the top of every step, exactly like
+// memory - because the engine reads it immediately after each real step
+// (radar_step in engine.ts). swept() runs many steps per call, so checking
+// breakReason only after a whole batch can land on a LATER step that already
+// cleared it. This steps one frame at a time until the lock actually drops,
+// so a test can read the reason at the instant it was set.
+function stepUntilBroken(radar: Radar, targets: RadarTarget[], cap = 600) {
+  for (let i = 0; i < cap && radar.stt != null; i++)
+    radar.step(1 / 60, own, targets, wrap, always)
 }
 
 describe('geometry', () => {
@@ -183,8 +195,10 @@ describe('STT', () => {
     expect(radar.stt).toBe(7)
     expect(radar.memory).toBeGreaterThan(1)
     expect(radar.tracks.find((t) => t.id === 7)?.hits ?? 0).toBeLessThan(10)
-    swept(radar, [beam], 3) // the memory window (4 s) expires
+    expect(radar.breakReason).toBe(null) // still coasting: not broken yet
+    stepUntilBroken(radar, [beam]) // the memory window (4 s) expires
     expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe('notch')
   })
 
   it('a jammer outside burnthrough steals the gate; inside, the echo wins (#31)', () => {
@@ -193,13 +207,25 @@ describe('STT', () => {
     const far = { ...hot, jamming: true } // 15 nmi: well outside 9 km burnthrough
     swept(radar, [far], 2)
     expect(radar.memory).toBeGreaterThan(1)
-    swept(radar, [far], 3)
+    stepUntilBroken(radar, [far])
     expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe('jam')
     radar.designate(7)
     const near = { ...hot, z: -4000, jamming: true } // 4 km: burnt through
     swept(radar, [near], 2)
     expect(radar.stt).toBe(7)
     expect(radar.memory).toBe(0)
+  })
+
+  it('range past the tracker\'s hold multiple breaks the lock, labeled range', () => {
+    const radar = new Radar()
+    radar.designate(7)
+    swept(radar, [beam], 1)
+    expect(radar.stt).toBe(7)
+    const far = { ...beam, z: -90 * NM } // dead ahead still (azimuth 0, no gimbal break), far past HOLD * detect_range (~46 nmi at best aspect)
+    radar.step(1 / 60, own, [far], wrap, always)
+    expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe('range')
   })
 
   it('a radiating emitter draws a bearing-only strobe (#31)', () => {
@@ -222,23 +248,29 @@ describe('STT', () => {
     const behind = { ...beam, x: 0, z: 10 * NM } // dead six
     radar.step(1 / 60, own, [behind], wrap, always)
     expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe('gimbal')
   })
-  it('breaks when the target disappears', () => {
+  it('breaks when the target disappears, labeled lost', () => {
     const radar = new Radar()
     radar.designate(7)
     radar.step(1 / 60, own, [], wrap, always)
     expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe('lost')
   })
 })
 
 describe('emission', () => {
-  it('SIL breaks the lock, stops painting, and reports silent', () => {
+  // SIL is a deliberate mode change the Radar channel already shows directly
+  // (#33 debrief): breakReason stays scoped to breaks a pilot could not
+  // otherwise explain, so a SIL break must not also claim this vocabulary.
+  it('SIL breaks the lock, stops painting, and reports silent, with no breakReason', () => {
     const radar = new Radar()
     radar.designate(7)
     expect(radar.emitter()).toBe(2)
     radar.sil = true
     radar.step(1 / 60, own, [beam], wrap, always)
     expect(radar.stt).toBe(null)
+    expect(radar.breakReason).toBe(null)
     expect(radar.emitter()).toBe(0)
     const bricks = radar.bricks.length
     swept(radar, [beam], 2)

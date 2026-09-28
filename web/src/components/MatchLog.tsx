@@ -175,6 +175,23 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
     }
     return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)
   }
+  // The LSO's grades and the wire, the same words the HUD banner shows at the
+  // trap (GameCanvas's catalogue), so the log and the glass agree.
+  const gradeLabel = (grade: string): string => {
+    const labels: Record<string, string> = {
+      OK: t`OK`,
+      FAIR: t`FAIR`,
+      'NO-GRADE': t`NO-GRADE`,
+      CUT: t`CUT`,
+      BOLTER: t`BOLTER`,
+      'WAVE OFF': t`WAVE OFF`,
+    }
+    return labels[grade] ?? grade
+  }
+  const wireLabel = (wire: number): string => {
+    const labels: Record<number, string> = { 1: t`1 WIRE`, 2: t`2 WIRE`, 3: t`3 WIRE`, 4: t`4 WIRE` }
+    return labels[wire] ?? String(wire)
+  }
 
   // A failed load is an error, never the empty state: the empty state says
   // "you have no flights", which for a 401 or a down server is a lie about
@@ -398,6 +415,9 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
               <Trans>Result</Trans>
             </TableHead>
             <TableHead>
+              <Trans>Landing</Trans>
+            </TableHead>
+            <TableHead>
               <Trans>Cheats</Trans>
             </TableHead>
             <TableHead />
@@ -452,6 +472,20 @@ export function MatchLog({ recording }: { recording?: () => Replay | null }) {
                 {formatNumber(m.deaths)}
               </TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
+              {/* The last pass as the LSO wrote it up: the grade and the wire
+                  translated, the shorthand verbatim - it is the same in every
+                  language, like the radio calls. */}
+              <TableCell className='whitespace-nowrap'>
+                {m.grade ? (
+                  <>
+                    {gradeLabel(m.grade)}
+                    {m.wire ? ', ' + wireLabel(m.wire) : ''}
+                    {m.remarks ? (
+                      <span className='text-muted-foreground'> · {m.remarks}</span>
+                    ) : null}
+                  </>
+                ) : null}
+              </TableCell>
               <TableCell className='text-muted-foreground'>
                 {m.cheated ? <ShieldAlert className='size-4' /> : null}
               </TableCell>

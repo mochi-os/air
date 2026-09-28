@@ -51,6 +51,14 @@ interface Round {
   // rate the seeker measured on the breaking step, rad/s.
   reason?: string
   rate?: number
+  // Whether the shooter's own radar still held this round's trackfile THIS
+  // step (#33 debrief) - AMRAAM only, a heater has no midcourse phase to lose.
+  // A shot that goes long with this false partway through lost its shooter's
+  // guidance before it ever reached the target; one that stays true the whole
+  // flight and still misses is a seeker/geometry failure instead - the same
+  // distinction Reason draws for a heater's broken lock, drawn here for the
+  // radar round's own midcourse support.
+  support?: boolean
   burst?: number // the fuse's CONTINUOUS closest approach, metres — written with the fate (#58)
   closure?: number // relative speed at detonation, m/s
   when?: number // exact sim time of the fuse, s (the frame grid is ~9 Hz)
@@ -70,6 +78,29 @@ interface Flight {
   flaps?: number // flap SELECT: 0 auto, 1 half, 2 full (#86) — the FCS configuration, not the surface
   trim?: number // pitch trim (#86)
   lateral?: number // roll stick input, dev builds (#86)
+  // The g-limit override paddle switch and its cost (#33 debrief): held, the
+  // FCS commands to 10 g instead of the airframe's own 7.5 g ceiling, and the
+  // exposure between those two - g·s beyond 7.5 g - accrues into `stress`
+  // whether or not the pull ever nears 10 g. Structural failure (a shed wing)
+  // is judged against 1.5x the UN-raised ceiling, weakened by accumulated
+  // stress, so a pilot can shed a wing under override alone with no enemy
+  // fire at all - the exact margin isn't recorded (it needs the battle
+  // package's own wing-health state, which never reaches the client), but
+  // override held plus a rising Stress trace is the same finding a real
+  // structural-limits overstress would leave.
+  override?: boolean
+  stress?: number // accumulated overstress exposure, g·s beyond the airframe's un-raised limit
+  // Yaw rate, degrees/second, real-world convention (positive = nose right)
+  // (#33 debrief). NOT a departure flag - it is the raw rate the cockpit's
+  // own departure/AoA tone is proxied from (engine.ts's departure_drive),
+  // and the flight model's actual departure signature is sideslip, which
+  // never reaches the client at all (investigated, not exposed by the wasm
+  // core). Elevated, sustained yaw rate not explained by a rudder/yaw input
+  // is the best signal available without a wire-format change; it will both
+  // miss genuine low-speed ballistic departures with a weaker yaw signature
+  // and fire on a deliberate hard yaw check that never departed anything.
+  // Written every sample like AOA/G - a debrief reads its trace.
+  yawrate?: number
   tas?: number // true airspeed, m/s
   ias?: number // indicated/calibrated airspeed, m/s
   mach?: number
@@ -135,6 +166,34 @@ interface Flight {
   rwrmissile?: boolean
   jammer?: boolean
   target?: number // recorded id of the boxed target the HUD was flying against, if any
+  // Acquire/undesignate presses that actually changed the lock state (#33
+  // debrief): "sim time|acquire or undesignate|effect", effect one of ls / stt
+  // / cone / lost (acquire) or step / break / clear (undesignate). Several
+  // landing between two samples join with ';', like the bandit's own journal
+  // below - the timestamp is what keeps two landings from ever reading alike,
+  // so the delta encoding never mistakes a repeat for no change. A press with
+  // no effect writes nothing: the Radar channel not moving already says so,
+  // and this channel exists precisely to stop guessing whether a lock the
+  // pilot expected ever actually formed.
+  input?: string
+  // Why the ownship's own hard lock (STT) dropped, when it did (#33 debrief):
+  // "sim time|reason", reason one of lost (the target vanished from the
+  // truth feed), gimbal (past the ±70° antenna limit), range (past the
+  // tracker's hold multiple), jam (a jammer starved it past burn-through) or
+  // notch (near-zero closing speed starved it - a beaming defence). This is
+  // the automatic, physics-driven counterpart to Input above: a lock can
+  // break with no press at all, so it rides its own channel rather than
+  // borrowing that vocabulary. A SIL break writes nothing here - the Radar
+  // channel already shows that one directly. Event-encoded like Input;
+  // several breaks between two kept samples join with ';'.
+  break?: string
+  // When weapons went free, and why (#33 debrief): "sim time|reason", reason
+  // 'merge' (an actual 3/9-line crossing opened a hold, single- or
+  // multiplayer) or 'start' (a BVR joust that never held at all - weapons
+  // free from spawn). Without this, a debrief could only infer the merge
+  // from geometry against the first 3/9 crossing; this removes the need.
+  // Event-encoded like Input and Break.
+  merge?: string
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
@@ -254,6 +313,8 @@ export function stamp(fight: {
   mode: string // multiplayer: the welcome's session mode. Single player: cfg.task
   duel: string // single player only: the joust's start shape
   bandit: string // single player only: the bandit's tier - a multiplayer match has none
+  stage: number // single player only: the bandit brain's structural stage (&stage= in a developer build), 0 for the brain as it stands
+  omit: number // single player only: stages left out beneath it, one bit per stage number (&omit=), 0 for none
   weapons: string // 'guns' | 'fox2' | 'open'
   start: string
   clouds: string
@@ -274,6 +335,7 @@ export function stamp(fight: {
   axes: number
   buttons: number
   unreachable: string // bound actions the device does not report, comma-separated
+  passes?: string // the sortie's passes as the LSO wrote them up, '' or absent when none was flown
 }): { kind: string; match: Match } {
   const joust = !fight.multiplayer && fight.mode === 'joust'
   // The kind names the fight for the title, the history row and the file: a
@@ -292,6 +354,10 @@ export function stamp(fight: {
       // nothing else: empty here means "there was none", and acmi() omits it.
       duel: joust ? fight.duel || 'merge' : '',
       bandit: joust ? fight.bandit || 'ace' : '',
+      // Which brain the bandit flew. A stage sortie is judged against that
+      // brain, and without this only the pilot's memory could say which it was.
+      stage: joust ? String(fight.stage || 0) : '',
+      omit: joust && fight.omit ? String(fight.omit) : '',
       weapons: fight.weapons,
       start: fight.start,
       clouds: fight.clouds,
@@ -313,6 +379,8 @@ export function stamp(fight: {
       axes: fight.stick ? String(fight.axes) : '',
       buttons: fight.stick ? String(fight.buttons) : '',
       unreachable: fight.unreachable,
+      // The landings, last of all: "OK (H) X 3 wire | BOLTER LO IC | ...".
+      passes: fight.passes ?? '',
     },
   }
 }
@@ -347,6 +415,7 @@ export function acmi(
   const armed = new Map<number, number>() // last written missiles count, per object
   const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
   const cued = new Map<number, string>() // last written cue, per object
+  const overridden = new Map<number, boolean>() // last written g-limit override state, per object (#33)
   const grazed = new Map<number, number>() // last written burst miss, per object
   const journalled = new Map<string, string>() // last written decision-journal value, per object and channel
   const countered = new Map<number, number>() // last written flares, per object
@@ -376,6 +445,13 @@ export function acmi(
         if (d.ias !== undefined) line += `,IAS=${round(d.ias, 1)}`
         if (d.mach !== undefined) line += `,Mach=${round(d.mach, 3)}`
         if (d.fuel !== undefined) line += `,FuelWeight=${round(d.fuel, 1)}`
+        // Overstress exposure (#33 debrief): g·s beyond the airframe's OWN
+        // limit, whether or not the g-limit override raised the commanded
+        // ceiling - it accrues in that 7.5-10 g band precisely because the
+        // override let the pilot hold it. Written every sample like G/AOA,
+        // not delta-suppressed: a debrief reads its TRACE, not its steps.
+        if (d.stress !== undefined) line += `,Stress=${round(d.stress, 2)}`
+        if (d.yawrate !== undefined) line += `,YawRate=${round(d.yawrate, 1)}`
         // Rounds are delta-suppressed, unlike the rest: they hold still for
         // whole minutes and then step during a burst, so writing them every
         // sample would be pure padding. Written on change, which is also
@@ -424,6 +500,16 @@ export function acmi(
             line += `,Gear=${round(d.gear ?? 1, 2)},Flaps=${d.flaps ?? 0},Trim=${round(d.trim ?? 0, 3)}`
           }
         }
+        // The g-limit override switch (#33 debrief): held rarely and briefly,
+        // so delta-suppressed on its own rather than folded into Gear/Flaps/
+        // Trim, which read as a landing configuration, not a combat one.
+        if (
+          d.override !== undefined &&
+          overridden.get(o.id) !== d.override
+        ) {
+          overridden.set(o.id, d.override)
+          line += `,Override=${d.override ? 1 : 0}`
+        }
         // Missiles and the cue are delta-suppressed like the rounds: the count
         // steps at a launch, the cue at the moments the HUD's advice changed.
         if (d.missiles !== undefined && armed.get(o.id) !== d.missiles) {
@@ -451,6 +537,9 @@ export function acmi(
           ['Forecast', d.forecast],
           ['Bypass', d.bypass],
           ['Demand', d.demand],
+          ['Input', d.input],
+          ['Break', d.break],
+          ['Merge', d.merge],
         ] as const) {
           if (value === undefined) continue
           const key = `${o.id}:${channel}`
@@ -497,6 +586,7 @@ export function acmi(
       const r = o.round
       if (r) {
         let guide = `,Seeker=${field(r.seeker)}`
+        if (r.support !== undefined) guide += `,Support=${r.support ? 1 : 0}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
         if (r.reason) {
           guide += `,Reason=${field(r.reason)}`
@@ -552,10 +642,18 @@ export class Recorder {
     this.last = -1
   }
 
+  // due reports whether a sample offered at `time` would be kept: the caller
+  // builds the sample before offering it, and anything it DRAINS to build it
+  // (the bandit's decision journal) is lost with a sample this drops. At 60
+  // frames a second into an 8 Hz recording that was seven drains in eight.
+  due(time: number) {
+    return this.last < 0 || time - this.last >= 1 / this.rate
+  }
+
   // add samples at the configured rate and drops anything older than the
   // window. `time` is seconds since the mission started.
   add(time: number, objects: Recorded[]) {
-    if (this.last >= 0 && time - this.last < 1 / this.rate) return
+    if (!this.due(time)) return
     this.last = time
     this.samples.push({ time, objects })
     if (!this.window) return // whole-flight recording: ~35 KB per minute of a two-ship, so an hour still fits comfortably in memory

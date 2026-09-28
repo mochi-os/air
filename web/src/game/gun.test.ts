@@ -282,3 +282,58 @@ describe('the trigger the core sees', () => {
     expect(bridge).toMatch(/core\.bandit_step\(bandit_bytes, rounds\)/)
   })
 })
+
+describe('the joust hold in single player', () => {
+  const merge = (start: boolean, calls = 1) =>
+    new Function(
+      'start',
+      'calls',
+      `let weapons_hold=start; let sim_time=9; let merge_events=[]; const notices=[]; const notice=(text)=>notices.push(text); const translate=(text)=>text;\n${lift('merge')}\nfor(let i=0;i<calls;i++) merge();\nreturn { hold: weapons_hold, notices, events: merge_events };`
+    )(start, calls) as { hold: boolean; notices: string[]; events: string[] }
+
+  it("opens once at the merge, with one FIGHT'S ON, and one recorded event", () => {
+    expect(merge(true)).toEqual({
+      hold: false,
+      notices: ["FIGHT'S ON"],
+      events: ['9.0|merge'],
+    })
+    expect(merge(true, 3)).toEqual({
+      hold: false,
+      notices: ["FIGHT'S ON"],
+      events: ['9.0|merge'],
+    })
+    expect(merge(false)).toEqual({ hold: false, notices: [], events: [] })
+  })
+
+  it("binds the bandit's brain by the same rule, and opens on its report before its rounds fly", () => {
+    // The brain is told the hold when it is armed...
+    expect(source).toMatch(/omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
+    expect(bridge).toMatch(/\n {2}hold\?: boolean/)
+    // ...the bridge reads the brain's report of the merge...
+    expect(bridge).toMatch(/\n {4}free: \(flags & 256\) !== 0,/)
+    // ...and the client opens its own hold on it before a round of the brain's is flown.
+    const loop = source.slice(source.indexOf('let step=null, pulled=false'))
+    expect(loop).toMatch(/freed=freed\|\|one\.free; \}/)
+    const opened = loop.indexOf('if(freed) merge();')
+    expect(opened).toBeGreaterThan(0)
+    expect(opened).toBeLessThan(loop.indexOf('launch_bandit_round();'))
+    expect(opened).toBeLessThan(loop.indexOf('launch_bandit_heater();'))
+    // The client's own crossing check opens it through the same door.
+    expect(source).toMatch(/if\(ownBehind\|\|banditBehind\) merge\(\); \}/)
+  })
+
+  // The merge/FIGHT'S ON moment, recorded (#33 debrief): a debrief could
+  // previously only infer it from geometry against the first 3/9 crossing.
+  // All three places weapons go free must write the event, not just merge().
+  it('records when weapons went free at all three release sites', () => {
+    expect(source).toMatch(
+      /notice\(translate\("FIGHT'S ON"\)\); merge_events\.push\(`\$\{sim_time\.toFixed\(1\)\}\|merge`\); \}/
+    ) // merge(): an actual 3/9 crossing, SP or MP-triggered through the same function
+    expect(source).toMatch(
+      /if\(bvr\)\{ notice\(translate\("FIGHT'S ON"\)\); merge_events\.push\(`\$\{sim_time\.toFixed\(1\)\}\|start`\); \} \}/
+    ) // the BVR joust that never held at all
+    expect(source).toMatch(
+      /case "fighton": weapons_hold=false; notice\(translate\("FIGHT'S ON"\)\); merge_events\.push\(`\$\{sim_time\.toFixed\(1\)\}\|merge`\); break;/
+    ) // MP: the server's own report of the merge
+  })
+})

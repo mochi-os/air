@@ -161,6 +161,12 @@ export class Radar {
   memory = 0 // seconds the STT has coasted without real data (0 = tracking); MEM shows past zero
   strobes: number[] = [] // azimuths of jamming emitters this step (#31): bearing-only spokes, range unknown
   time = 0
+  // breakReason: why the STT dropped THIS step - 'lost' (target gone), 'gimbal'
+  // (past ±70° off the nose), 'range' (past HOLD), 'jam' or 'notch' (starved
+  // past MEMORY). null on every other step, including a SIL break: a debrief
+  // can already see SIL directly on the Radar channel, so this vocabulary
+  // stays scoped to breaks a pilot could not otherwise explain.
+  breakReason: string | null = null
 
   // half: the effective azimuth half-width — TWS trades volume for trackfiles
   // and never scans the full ±70°.
@@ -183,6 +189,7 @@ export class Radar {
     random: () => number = Math.random
   ): void {
     this.time += dt
+    this.breakReason = null // this step's cause, if a hard lock breaks below; cleared every step like memory
     this.bricks = this.bricks.filter((b) => this.time - b.at < BRICK_AGE)
     this.tracks = this.tracks.filter(
       (t) => this.time - t.at < TRACK_AGE || t.id === this.stt
@@ -209,14 +216,22 @@ export class Radar {
     if (this.stt != null) {
       const target = targets.find((t) => t.id === this.stt)
       const g = target ? geometry(own, target, wrap) : null
-      if (
-        !target ||
-        !g ||
-        Math.abs(g.azimuth) > GIMBAL ||
-        g.range > HOLD * detect_range(own, target, wrap)
-      ) {
+      if (!target || !g) {
         this.stt = null // broken lock: back to search; the last trackfile remembers
         this.memory = 0
+        this.breakReason = 'lost'
+        return
+      }
+      if (Math.abs(g.azimuth) > GIMBAL) {
+        this.stt = null
+        this.memory = 0
+        this.breakReason = 'gimbal'
+        return
+      }
+      if (g.range > HOLD * detect_range(own, target, wrap)) {
+        this.stt = null
+        this.memory = 0
+        this.breakReason = 'range'
         return
       }
       // MEMORY (#31): a starved tracker coasts on the track's last state (no
@@ -232,13 +247,14 @@ export class Radar {
                 target.vz * wrap(target.z - own.z)) /
                 Math.max(g.range, 1)
             )
-      const starved =
-        (target.jamming && g.range > BURNTHROUGH) || radial < NOTCH
+      const jammed = target.jamming && g.range > BURNTHROUGH
+      const starved = jammed || radial < NOTCH
       if (starved) {
         this.memory += dt
         if (this.memory > MEMORY) {
           this.stt = null
           this.memory = 0
+          this.breakReason = jammed ? 'jam' : 'notch' // the condition AT EXPIRY: the one that finally starved it, not whichever opened the window
         }
         return
       }
