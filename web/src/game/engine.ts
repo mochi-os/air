@@ -1522,10 +1522,11 @@ function face_tick(x,a,outer,inner,width){ x.lineWidth=width; x.beginPath(); x.m
 function face_label(x,a,radius,text){ x.fillText(text,STANDBY_C+Math.cos(a)*radius,STANDBY_C+Math.sin(a)*radius); }
 // The standby airspeed indicator (NATOPS 2.12.3): the needle at the ASI_DIAL angle the rig uses, over that dial's marks
 function asi_face(f,angle){ const x=face_start(f), R=STANDBY_R;
-	for(let kt=60;kt<=850;kt+=10){ if(kt<=200?kt%20:kt%50) continue; const a=dial(ASI_DIAL,kt)-Math.PI/2, major=kt%100===0||kt===60||kt===850;
-		face_tick(x,a,R,major?R-16:R-9,major?3:1.5);
-		if(kt%100===0){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(kt)); } }
-	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+40);
+	for(let kt=60;kt<=850;kt+=10){ if(kt<=200?kt%20:kt%50) continue; const a=dial(ASI_DIAL,kt)-Math.PI/2, major=kt%100===0||kt===60||kt===150||kt===850;
+		face_tick(x,a,R,major?R-16:R-9,major?3:1.5); }
+	for(const [kt,label] of [[60,".6"],[100,"1"],[150,"1.5"],[200,"2"],[300,"3"],[400,"4"],[500,"5"],[600,"6"],[700,"7"],[800,"8"]]){   // hundreds of knots (FO-5 item 27)
+		x.font="bold 20px monospace"; face_label(x,dial(ASI_DIAL,kt)-Math.PI/2,R-32,label); }
+	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+30); x.fillText("X 100",STANDBY_C,STANDBY_C+44);
 	face_needle(x,angle,R-14,5); }
 // The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial of 20
 // graduations, 50 ft each, the thousands counter left of centre, and the barometric setting
@@ -1543,12 +1544,18 @@ function alt_face(f,feet,baro){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
 	x.beginPath(); x.moveTo(C,C+72); x.lineTo(C-5,C+79); x.lineTo(C+5,C+79); x.closePath(); x.fill();   // the index under the window
 	x.strokeStyle="#e8e8e0";
 	face_needle(x,(shown%1000)/1000*Math.PI*2,R-14,5); }
-// The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses
+// The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses.
+// FO-5 item 29: short ticks every 100 ft/min to 1,000 and every 500 beyond, long ones at .5, 1, 2, 3, 4, 5 and 6, the
+// labels .5, 1, 2 and 4 each way with one 6 at three o'clock between the climb and dive ticks, UP and DOWN beside
+// zero and 1000 FT PER MN over the hub
 function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
-	for(const [fpm,label] of [[0,"0"],[500,".5"],[1000,"1"],[2000,"2"],[4000,"4"],[6000,"6"]]) for(const s of (fpm?[1,-1]:[1])){
-		const a=s*dial(VSI_DIAL,fpm)-Math.PI; face_tick(x,a,R,R-16,3);
-		x.font="bold 20px monospace"; face_label(x,a,R-34,label); }
-	x.font="11px monospace"; x.fillText("UP",C-36,C-52); x.fillText("DOWN",C-36,C+52); x.fillText("X1000",C+30,C-8); x.fillText("FT/MIN",C+30,C+8);
+	face_tick(x,-Math.PI,R,R-16,3);
+	for(let fpm=100;fpm<=6000;fpm+=fpm<1000?100:500) for(const s of [1,-1]){ const long=fpm===500||fpm%1000===0;
+		face_tick(x,s*dial(VSI_DIAL,fpm)-Math.PI,R,long?R-16:R-9,long?3:1.5); }
+	x.font="bold 20px monospace";
+	for(const [fpm,label] of [[0,"0"],[500,".5"],[1000,"1"],[2000,"2"],[4000,"4"]]) for(const s of (fpm?[1,-1]:[1])) face_label(x,s*dial(VSI_DIAL,fpm)-Math.PI,R-34,label);
+	face_label(x,0,R-34,"6");
+	x.font="11px monospace"; x.fillText("UP",C-80,C-20); x.fillText("DOWN",C-66,C+24); x.fillText("1000 FT PER MN",C,C-30);
 	face_needle(x,-Math.PI/2+angle,R-14,5); }
 // The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder, its
 // upper half white and lettered CLIMB, its lower half black and lettered DIVE (FO-5 item 25),
@@ -4870,7 +4877,7 @@ function approach_deviation(){   // shared by the HUD ICLS needles and the ADI p
 // clockwise from the needle's rest. The standby ASI expands 60-200 kt (the
 // approach band) and compresses beyond; the VSI is the usual log-ish card.
 const ASI_DIAL=[[0,0],[60,14],[100,54],[150,108],[200,202],[300,242],[400,263],[500,287],[600,302],[700,321],[800,340],[850,350]];
-const VSI_DIAL=[[0,0],[500,28],[1000,44],[2000,73],[4000,119],[6000,180]];
+const VSI_DIAL=[[0,0],[500,35.5],[1000,60],[1500,77],[2000,94],[3000,118],[4000,140.5],[5000,156],[6000,171]];   // FO-5 item 29, measured from the dial's centre with the climb and dive sides averaged: 2,000 ft/min at twelve o'clock, 6,000 short of three
 function dial(table,v){ const a=Math.abs(v);
 	for(let i=1;i<table.length;i++){ if(a<=table[i][0]){ const [v0,d0]=table[i-1], [v1,d1]=table[i];
 		return Math.sign(v)*(d0+(d1-d0)*(a-v0)/(v1-v0))*D2R; } }

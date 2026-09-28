@@ -109,6 +109,11 @@ describe('search', () => {
     expect(radar.bricks[0].id).toBe(7)
     expect(Math.abs(radar.bricks[0].azimuth)).toBeLessThan(0.05)
   })
+  it('records where each paint put the target, for the SA page', () => {
+    const radar = new Radar()
+    swept(radar)
+    expect([radar.bricks[0].x, radar.bricks[0].z]).toEqual([beam.x, beam.z])
+  })
   it('never paints outside the selected azimuth width', () => {
     const radar = new Radar()
     radar.width = 2 // ±20°
