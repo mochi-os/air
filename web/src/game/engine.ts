@@ -1913,9 +1913,13 @@ function next_master(){
 	for(let step=1;step<=order.length;step++){ const m=order[(at+step)%order.length]; if(loaded[m]||m==="gun"&&!order.some(w=>w!=="nav"&&loaded[w])) return m; }
 	return master; }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
-const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
-	tac:[ [6,"HUD","hud"],[7,"RDR","rdr"],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
-	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS","fpas"],[13,"BIT",""],[14,"MUMI",""] ] };
+// DDI_MENUS: [pushbutton, legend, page] where figure 2-22's F/A-18C/D formats put
+// them, the game's own pages only - an option for equipment the jet does not carry
+// is left off, as the real format leaves it off (TAC's sensor, weapon and RECCE
+// displays; SUPT's GPS, NETS, MIDS, HMD, BIT, MUMI and UFC BU).
+const DDI_MENUS={
+	tac:[ [5,"STORES","sms"],[4,"RDR ATTK","rdr"],[3,"HUD","hud"],[13,"SA","sa"],[17,"EW","ew"] ],
+	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -1950,7 +1954,8 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle";
 	const st=ddi_state[display];
-	if(st.menu){ x.fillText(st.menu==="tac"?"TAC":"SUPT",256,256);
+	if(st.menu){ const name=st.menu==="tac"?"TAC":"SUPT", w=x.measureText(name).width;   // the menu's name boxed just above MENU (2.13.4.2.1)
+		x.fillText(name,256,446); x.strokeRect(256-w/2-8,446-17,w+16,34);
 		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
 	if(display==="left") cautions_draw(x);
