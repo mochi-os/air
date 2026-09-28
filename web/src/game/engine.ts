@@ -2129,7 +2129,8 @@ function ddi_rdr(x){
 		x.beginPath(); x.moveTo(px-5,py-9); x.lineTo(px-5,py+9); x.moveTo(px+5,py-9); x.lineTo(px+5,py+9); x.stroke();
 		const reach=Math.max(NM,radar_cursor.range);
 		const hi=Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation+0.175))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation-0.175))*3.281/1000));
-		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); } }
+		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); }
+	if(breakaway_shown()){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } }   // the breakaway X across the attack format's centre, flashing with the HUD's
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
 	x.fillText("ENG",256,36);
 	// The EMD's thirteen rows (2.1.1.7.6), parameter names down the centre with the engine values either
@@ -5477,6 +5478,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("gear")) pit_press("gear",0);   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_press();
 		if(ch===key_of("tone.silence")) tone_silence();   // the warning tone silence button next to the gear handle (#20)   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
+		if(ch===key_of("index.up")) pit_press("index",1);   // the radar altimeter's low-altitude index knob, for the views without the panel
+		if(ch===key_of("index.down")) pit_press("index",-1);
 		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -5527,6 +5530,8 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
+		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		const button=on&&ifei_button_at(on.point); if(button){ ifei_click(button,(performance.now()-press_at)/1000); return; } }   // a click elsewhere on the unit falls through to the panel behind it
@@ -5583,6 +5588,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "dump": fuel_dump=!fuel_dump; break;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
+	case "index": law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, raises the low-altitude index
 	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
@@ -5900,8 +5906,6 @@ function recording_sample(){
 		...(hud_boxed?{target:recorded_state(hud_boxed)}:{}),
 		// battle channels (#238): what the fight did to ME, from the same
 		// state the CAS alerts and damage visuals read
-		if(ch===key_of("index.up")) pit_press("index",1);   // the radar altimeter's low-altitude index knob, for the views without the panel
-		if(ch===key_of("index.down")) pit_press("index",-1);
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
 		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
@@ -5952,8 +5956,6 @@ function recording_sample(){
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
 	// number), never reused within a recording. Shooter and target use the
-	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
-		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	// recorded ids above.
 	const recorded=recorded_state;
 	for(let k=0;k<missiles.length;k++){ const m=missiles[k]; if(!m.kind) continue;
@@ -6011,7 +6013,6 @@ const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
 let atc_flash=-Infinity;   // when ATC last dropped out other than by its switch, or refused to engage: the HUD advisory flashes for 10 s after (NATOPS 2.1.2, 2.13.4.8.15)
-	case "index": law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, raises the low-altitude index
 const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
 let own_written=false;   // this death is in the recording: the ownship's last sample, carrying its Fate and killer, has been kept
@@ -6099,6 +6100,7 @@ function cautions_update(){
 	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
 	if(gpws.gear) active.add("CHECK GEAR");
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
+	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
 	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
@@ -6243,7 +6245,6 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
 if(DEV_MODE) (globalThis as any).dev_gun=()=>{ const loaded=fleet[own_aircraft()], rig=ownship.gun; return { profile:loaded?loaded.profile:null, gas:rig?rig.gas:null, flash:rig?rig.flash.visible:null, light:rig&&rig.light?rig.light.intensity:null }; };   // dev: the measured port and skin line, and the ownship rig's state
-if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
 if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapour - what it is flying, what shows, which shells are drawn and the puffs in the air; dev_vapour({humid, flight}) pins the humidity or the flight every jet is drawn for, dev_vapour(null) frees both
 	if(set!==undefined){ vapour_humid=set&&Number.isFinite(set.humid)?set.humid:null; vapour_force=set&&set.flight?set.flight:null; }
 	const round=(o)=>o?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,Math.round(v*1000)/1000])):null, jets={};
@@ -6255,6 +6256,7 @@ if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase"
 if(DEV_MODE) (globalThis as any).dev_wake=()=>{ const w=flight_wake(), at=(st)=>({ x:+st.pos.x.toFixed(1), y:+st.pos.y.toFixed(1), z:+st.pos.z.toFixed(1), vx:+(st.velx||0).toFixed(1), vy:+(st.vely||0).toFixed(1), vz:+(st.velz||0).toFixed(1) });   // i18n-format-ok: developer telemetry, never shown to a user
 	const others={}; if(has_enemy&&bandit.group.visible) others.bandit=at(bandit); for(const [slot,st] of remotes) if(st.group.visible) others["r"+slot]=at(st);
 	return w?{ pieces:w.pieces, trails:w.trails, swirl:w.swirl.map(v=>Math.round(v*1000)/1000), g:Math.round((ownship.gload??1)*1000)/1000, roll:last_out?Math.round((last_out[STATE.omega]||0)/D2R*100)/100:null, own:at(ownship), others }:null; };   // dev: the wake the pilot's core was handed on its last frame, how many jets have one laid, the air it made at the CG (m/s), the jet's g and roll rate, and where every jet is
+if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
 	const report={};
 	for(const [name,p] of [["smoke",smoke],["strikes",strikes],["debris",debris],["flares",flares],["tracers",tracers]]){
 		const seen=new Set(); let dup=0, dead=0, mis=0, live=0;
@@ -6537,7 +6539,6 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 		let best=null as any;
 		for(let i=0;i<pos.count;i+=stride){ v.fromBufferAttribute(pos,i).applyMatrix4(m);
 			if(!best || v.y<best.y) best={y:v.y,x:v.x,z:v.z}; }
-	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 		if(best) rows.push({n:(o.name||o.parent?.name||"?").slice(0,28), y:+best.y.toFixed(2), x:+best.x.toFixed(2), z:+best.z.toFixed(2)}); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	rows.sort((p1,p2)=>p1.y-p2.y);
 	return JSON.stringify(rows.slice(0,16));
@@ -8018,6 +8019,13 @@ let baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;   // th
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_shoot=false;   // whether the HUD is drawing SHOOT this frame, flash phase included: the canopy bow SHOOT light (#14) mirrors it
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
+// The breakaway X (#120): one flashing X across the HUD and the radar attack
+// format while the frame's cue is break - a weapon inside its minimum range, or
+// closing to it within 1.5 s ("displayed and flashed when the L&S target range is
+// within Rmin", VRS AIM-7 documentation; ED's guide, figure 77). No flash rate is
+// published; it flashes at 2 Hz, as the HUD's other flashing cues do.
+function breakaway_shown(){ return hud_cue==="break"&&(sim_time*4)%2<1; }
+function breakaway(x,cx,cy,r){ x.beginPath(); x.moveTo(cx-r,cy-r); x.lineTo(cx+r,cy+r); x.moveTo(cx+r,cy-r); x.lineTo(cx-r,cy+r); x.stroke(); }
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px 'Hornet Display', monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS ENTER TO LAUNCH / N WIRE)
@@ -8114,9 +8122,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 		hctx.beginPath(); hctx.arc(cx+dxp,cy+dyp,3.5,0,Math.PI*2); hctx.fill(); }
 	const cue=shoot_cue(z);
 	if(cue) hud_cue=cue;   // the radar cue's own words: steady / flash / break
-	if(cue==="break"){ hctx.strokeStyle=AM; hctx.lineWidth=3; const r=28;   // breakaway X: too close to shoot
-		hctx.beginPath(); hctx.moveTo(cx-r,cy-r); hctx.lineTo(cx+r,cy+r); hctx.moveTo(cx+r,cy-r); hctx.lineTo(cx-r,cy+r); hctx.stroke(); }
-	else if(cue&&(cue==="steady"||(sim_time*4)%2<1)){ hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
+	if(cue&&cue!=="break"&&(cue==="steady"||(sim_time*4)%2<1)){   // inside Rmin the breakaway X replaces it (drawn with the rest of the cluster) hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
 		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); hud_shoot=true; }
 	if(flying.length){   // one line per supported round: A-time to the seeker's wake, then T-time
 		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
@@ -8490,12 +8496,8 @@ function draw_hud(){
 			hctx.beginPath(); hctx.moveTo(sx+7*hs,y); hctx.lineTo(sx+15*hs,y-4*hs); hctx.lineTo(sx+15*hs,y+4*hs); hctx.closePath(); hctx.fill();
 			hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,y+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 			hctx.restore(); }
-		if(cue==="break"&&lockon&&(sim_time*5)%2<1){ const R=2.2*ppd; hctx.strokeStyle=AM; hctx.setLineDash([]); hctx.lineWidth=2.5;   // inside the heater's own minimum: the breakaway X
-			hctx.beginPath(); hctx.moveTo(at[0]-R,at[1]-R); hctx.lineTo(at[0]+R,at[1]+R); hctx.moveTo(at[0]+R,at[1]-R); hctx.lineTo(at[0]-R,at[1]+R); hctx.stroke(); hctx.lineWidth=1.5; } }
-	if(brk) hud_cue="break";
-	if(brk&&(sim_time*5)%2<1){   // breakaway X (flashing): the 9M can't arm, a gun pass this close eats debris — break off
-		const R=2.2*ppd; hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2.5;
-		hctx.beginPath(); hctx.moveTo(bore[0]-R,bore[1]-R); hctx.lineTo(bore[0]+R,bore[1]+R); hctx.moveTo(bore[0]+R,bore[1]-R); hctx.lineTo(bore[0]-R,bore[1]+R); hctx.stroke(); hctx.lineWidth=1.5; }
+	}
+	if(brk) hud_cue="break";   // the 9M can't arm, a gun pass this close eats debris: break off (the X is drawn with the cluster)
 	if(glass) hctx.restore(); }
 
 	// ---- instrument furniture (#133): NATOPS boxes and scales, laid out about
@@ -8622,6 +8624,12 @@ function draw_hud(){
 	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
 		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
+	// ---- the breakaway X: one cue for every weapon, however it was reached (the
+	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
+	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
+	// the symbology's green and line (the HUD draws in green only; Chuck's guide
+	// p.391), flashing ----
+	if(breakaway_shown()){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); }
 
 	// BINGO is annunciated on the DDI and by voice, not on the HUD (NATOPS 2.2.10.4)
 
