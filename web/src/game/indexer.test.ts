@@ -178,6 +178,25 @@ describe('the state-driven switches', () => {
     expect(drive('radaropr', {}, { sil: true }, true)).toBeCloseTo(2 / 3)
   })
 
+  // The FLAP switch (NATOPS 2.8.2.2.1) stands where the pilot put it, whatever the
+  // gear is doing; other aircraft send no selection, so theirs follows the gear.
+  it('set the FLAP switch lever to AUTO, HALF and FULL from the selection', () => {
+    const line = /\n\t\tcase "flaplever":[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const run = new Function('st', 'ownship', 'flap_select', `let f; switch("flaplever"){ ${line} } return f;`)
+    // gearTarget and gear run 0 down to 1 up
+    const own = (flap: number, gearTarget: number, grounded: boolean) => { const st = { gearTarget, grounded }; return run(st, st, flap) }
+    for (const [gear, grounded, where] of [[1, false, 'gear up'], [0, false, 'gear down'], [0, true, 'on deck']] as [number, boolean, string][]) {
+      expect(own(0, gear, grounded), `AUTO, ${where}`).toBe(0)
+      expect(own(1, gear, grounded), `HALF, ${where}`).toBe(0.5)
+      expect(own(2, gear, grounded), `FULL, ${where}`).toBe(1)
+    }
+    const other = (gear: number, grounded: boolean) => run({ gear, grounded }, {}, 2)
+    expect(other(1, false)).toBe(0)
+    expect(other(0, true)).toBe(0.5)
+    expect(other(0, false)).toBe(1)
+  })
+
   it('spring the DUMP switch back to OFF when BINGO comes on', () => {
     const line = /\n\tif\(fuel_dump&&bingo_low\(\)\) fuel_dump=false;/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')

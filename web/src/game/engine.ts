@@ -7093,7 +7093,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		// --- end switches
 		case "instpnl": f=lighting.instrument; break; case "consoles": f=lighting.consoles; break; case "flood": f=lighting.flood; break;   // the interior lights panel (#21)
 		case "chart": f=lighting.chart; break; case "warncaut": f=lighting.warn; break; case "mode": f=lighting.mode==="nite"?0.5:1; break;   // only the ownship has a pilot to select FIELD
-		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
+		case "flaplever": f=st===ownship?flap_select/2:(st.gear??1)<0.5?(st.grounded?0.5:1):0; break;   // the FLAP switch (NATOPS 2.8.2.2.1): AUTO, HALF, FULL as selected; other jets send no selection, so theirs follows the gear - AUTO up-and-away, HALF on deck, FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
