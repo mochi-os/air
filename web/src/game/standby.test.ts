@@ -252,16 +252,16 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: string[]; rotate: number[]; translate: [number, number][] }
+interface Drawn { text: string[]; rotate: number[]; translate: [number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][] }
 function face(name: string, ...args: number[]): Drawn {
   const consts = /\nconst ASI_DIAL=[^\n]*\nconst VSI_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
   const sizes = /\nconst STANDBY_C=[^\n]*\nconst ADI_PIXELS=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!consts || !sizes) throw new Error('standby constants not found in engine.ts')
   const run = new Function('args', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${consts} ${sizes}
     ${lift('dial')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
-    const text=[], rotate=[], translate=[];
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); return ()=>{}; }, set:()=>true });
-    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate };`)
+    const text=[], rotate=[], translate=[], rects=[], arcs=[];
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); return ()=>{}; }, set:()=>true });
+    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs };`)
   return run(args) as Drawn
 }
 const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
@@ -309,6 +309,34 @@ describe('the standby instrument faces', () => {
     const d = face('adi_face', 0, bank_right(30))
     expect(d.rotate[0]).toBeCloseTo(-30 * Math.PI / 180, 9) // the canvas y axis runs down, so a negative turn is anticlockwise
     expect(d.rotate[1]).toBeCloseTo(-30 * Math.PI / 180, 9)
+  })
+
+  // NATOPS 2.12.2: pitch display is limited by mechanical stops at about 90° climb
+  // and 80° dive; a needle and ball are at the bottom, one needle width a turn of
+  // 90° a minute. C=128 and R=118, so the mask ring under the window (0.8 R) holds
+  // them: the needle 4 px wide below the window, the ball's tube at C+R-7.
+  it('stop the ball\'s pitch at about 90° climb and 80° dive', () => {
+    const pitched = (degrees: number) => face('adi_face', degrees * Math.PI / 180, 0).translate.find(([dx]) => dx === 0 && true)?.[1]
+    const px = 118 * 0.22 / 10
+    expect(pitched(-89)).toBeCloseTo(-80 * px, 6)
+    expect(pitched(-60)).toBeCloseTo(-60 * px, 6)
+    expect(pitched(89)).toBeCloseTo(89 * px, 6)
+  })
+
+  it('deflect the turn needle one needle width for 90° a minute, to the side of the turn', () => {
+    const needle = (rate: number) => face('adi_face', 0, 0, rate * Math.PI / 180, 0).rects.find(([, y, w, h]) => w === 4 && h === 8 && y > 128)?.[0]
+    expect(needle(0)).toBe(128 - 2)
+    expect(needle(1.5)).toBeCloseTo(128 + 4 - 2, 6)    // one needle width right for a turn right at 90° a minute
+    expect(needle(-3)).toBeCloseTo(128 - 8 - 2, 6)
+    expect(needle(30)).toBeCloseTo(128 + 24 - 2, 6)    // pegged
+  })
+
+  it('slide the ball along its tube with the slip, to the velocity vector\'s side', () => {
+    const ball = (slip: number) => face('adi_face', 0, 0, 0, slip).arcs.find(([, y, r]) => r === 5 && y === 128 + 118 - 7)?.[0]
+    expect(ball(0)).toBe(128)
+    expect(ball(0.5)).toBe(128 + 12)
+    expect(ball(-2)).toBe(128 - 24)
+    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0\);/)
   })
 
   it('letter the ball CLIMB on its white half and DIVE on its black half, as FO-5 item 25 draws it', () => {

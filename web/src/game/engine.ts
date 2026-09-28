@@ -1511,7 +1511,7 @@ function build_standby(g){
 		faces[name]={ mesh, canvas, tex }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0);
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0,gz.yaw||0,gz.slip||0);
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
@@ -1550,11 +1550,15 @@ function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
 // The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder, its
 // upper half white and lettered CLIMB, its lower half black and lettered DIVE (FO-5 item 25),
 // seen through a round window in a black mask that carries the fixed bank scale; the ADI
-// page's sign conventions, no ILS carriages
-function adi_face(f,pitch,bank){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
+// page's sign conventions, no ILS carriages. The ball's pitch stops at about 90° climb and
+// 80° dive (2.12.2), and the needle and ball sit at the bottom of the mask: the needle
+// deflects one needle width for a turn of 90° a minute, to the side the ADI page's turn
+// indicator goes; the ball slides to the side the velocity vector lies, as the rudder
+// that centres it would push the nose.
+function adi_face(f,pitch,bank,yaw=0,slip=0){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
 	const white="#dcdcd4", black="#141514";
 	x.save(); x.beginPath(); x.arc(C,C,W,0,Math.PI*2); x.clip();
-	x.translate(C,C); x.rotate(-bank); x.translate(0,pitch/D2R*ADI_PIXELS);
+	x.translate(C,C); x.rotate(-bank); x.translate(0,THREE.MathUtils.clamp(pitch,-80*D2R,90*D2R)/D2R*ADI_PIXELS);
 	x.fillStyle=black; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle=white; x.fillRect(-3*R,-3*R,6*R,3*R);
 	x.lineWidth=2; x.font="bold 13px monospace";
 	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?20:34, ink=d>0?black:white;
@@ -1566,6 +1570,12 @@ function adi_face(f,pitch,bank){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R
 		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len)); x.stroke(); }
 	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#e8e8e0"; x.beginPath(); x.moveTo(0,-W+2); x.lineTo(-7,-W+16); x.lineTo(7,-W+16); x.closePath(); x.fill();
 	x.restore();
+	{ const needle=4, turn=THREE.MathUtils.clamp(yaw/D2R/1.5*needle,-24,24);   // one needle width per 1.5°/s
+		x.fillStyle="#e8e8e0"; x.fillRect(C+turn-needle/2,C+W+2,needle,8);
+		const by=C+R-7, travel=24, ball=THREE.MathUtils.clamp(slip,-1,1)*travel;
+		x.fillStyle=white; x.fillRect(C-travel-8,by-5,2*travel+16,10);   // the tube
+		x.strokeStyle=black; x.lineWidth=1.5; for(const s of [-1,1]){ x.beginPath(); x.moveTo(C+s*7,by-5); x.lineTo(C+s*7,by+5); x.stroke(); }   // its reference wires
+		x.fillStyle=black; x.beginPath(); x.arc(C+ball,by,5,0,Math.PI*2); x.fill(); }
 	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
 // The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26, the upper
 // right of the standby cluster beside the attitude indicator (25), over the
