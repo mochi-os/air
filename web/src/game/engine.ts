@@ -8376,23 +8376,21 @@ function draw_hud(){
 		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
 		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
 		return mine.sub(his).dot(to); };   // + = closing
-	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
-	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
-		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
-		else designated=-1; }
+	{ const dst=hud_target(); if(dst){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); } }
 	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
 	let lockon=false, drinking=0;
-	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
+	const quarry=heat_quarry(boxed);
+	if(master==="9m"&&!pa&&quarry){ const to=_v.set(wrap_axis(quarry.pos.x-ownship.pos.x),quarry.pos.y-ownship.pos.y,wrap_axis(quarry.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
 		// Plume-conditioned acquisition (#255), mirroring the server: a burner-lit
 		// nose is lockable to half the envelope, a cold one only close aboard, rear
 		// aspect the full reach. Depth inside that reach drives the growl's pitch
 		// (#59).
-		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
-		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
+		const tail=quarry.fwd?Math.max(0,to.dot(quarry.fwd)):0;
+		const floor=0.15+0.35*THREE.MathUtils.clamp(quarry.reheat??0,0,1);
 		const reach=5000*(floor+(1-floor)*tail);
 		lockon=ownship.fwd.dot(to)>0.866&&d<reach;
 		drinking=THREE.MathUtils.clamp(1-d/reach,0,1); }
@@ -8469,7 +8467,7 @@ function draw_hud(){
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
 		const seeker=2.5*ppd;   // the 5° seeker circle
-		const at=(lockon&&td)?td:bore;
+		const at=lockon?(proj_point(quarry.pos)||bore):bore;   // a seeker with tone looks at its heat, boxed or not
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
 		// SHOOT only with a radar lock and the target inside the heater's zone (#47);
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
@@ -8885,7 +8883,7 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
-let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
+let designated=-1;   // the pilot's L&S designation: the contact acquired - a remote's slot in a match, "bandit" alone - or -1 for none. The HUD boxes it and nothing else, like the real jet (the missile's seeker hunts its own cone)
 // ---- A/A radar (#30): the model lives in radar.ts; this block owns its
 // contacts feed, the per-frame step, the designation plumbing that makes the
 // L&S/STT the one target source (`designated`), the emitter uplink for other
@@ -8928,14 +8926,30 @@ let radar_events=[];
 // other. Drained the same way, into the Break channel.
 let radar_breaks=[];
 function radar_designate(id){ if(!RADAR.designate(id)) return false;   // a silent radar refuses; the visual designation stands
-	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+	designated=id; return true; }
 function radar_lock(id){ if(!RADAR.lock(id)) return false;   // the ACM acquisition: straight to STT
-	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+	designated=id; return true; }
 function radar_undesignate(){ const held=RADAR.stt!=null||RADAR.ls!=null; RADAR.undesignate();
-	if(RADAR.stt==null&&RADAR.ls==null&&MULTIPLAYER) designated=-1; return held; }
+	if(RADAR.stt==null&&RADAR.ls==null) designated=-1; return held; }
+// radar_held drops the pilot's designation once the radar no longer holds it:
+// the box stands for what the radar has, so a lock it breaks, or a trackfile
+// it lets go, takes the designation with it. A silent radar holds nothing,
+// and its visual designation stands.
+function radar_held(){ if(!RADAR.sil&&designated!==-1&&designated!==RADAR.stt&&designated!==RADAR.ls) designated=-1; }
+// hud_target is the jet the HUD boxes: the pilot's designation, while it
+// flies - not whatever is out there. Designate, step and undesignate on the
+// acquire key, like the real ACM flow.
+function hud_target(){ const dst=designated==="bandit"?(has_enemy?bandit:null):(MULTIPLAYER&&net?remotes.get(designated):null);
+	if(dst&&dst.group.visible) return dst;
+	designated=-1; return null; }
+// heat_quarry is what the 9M's seeker looks at: in a match the designated
+// jet, alone the one jet out there, boxed by the radar or not - a heat seeker
+// needs no radar.
+function heat_quarry(boxed){ return MULTIPLAYER?boxed:(has_enemy&&bandit.group.visible?bandit:null); }
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
+	radar_held();
 	if(RADAR.breakReason) radar_breaks.push(`${sim_time.toFixed(1)}|${RADAR.breakReason}`);   // i18n-format-ok: ACMI event timestamp, not display text
 	// A commanded ACM condition runs its own cone: with no lock held the radar
 	// takes the first target in it, at the real set's acquisition cadence, and
@@ -8998,7 +9012,7 @@ function acquire_press(){
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		RADAR.ls=order[0].id; radar_events.push(`${sim_time.toFixed(1)}|acquire|ls`);   // i18n-format-ok: ACMI event timestamp, not display text
-		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
+		designated=RADAR.ls;
 		return; }
 	acquire_acm(); }
 // BACKSPACE: undesignate, contextual like the real button — in TWS with no
@@ -9011,7 +9025,7 @@ function undesignate_press(){
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		const at=order.findIndex(t=>t.id===RADAR.ls);
 		RADAR.ls=order[(at+1)%order.length].id; radar_events.push(`${sim_time.toFixed(1)}|undesignate|step`);   // i18n-format-ok: ACMI event timestamp, not display text
-		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
+		designated=RADAR.ls;
 		return; }
 	const held=RADAR.stt!=null;   // which rung this press dropped from, for the label - undesignate() itself has already let go by the time it returns
 	if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
@@ -9036,11 +9050,11 @@ function acquire_acm(auto){
 	// never steps or undesignates, and it must never write to radar_events - a
 	// debrief reading Input as "presses that landed" would otherwise credit the
 	// radar's own polling as pilot input.
-	if(!cone.length){ if(auto) return; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|acquire|lost`); if(MULTIPLAYER&&RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }   // i18n-format-ok: ACMI event timestamp, not display text
-	const current=auto?null:(RADAR.stt??(MULTIPLAYER?designated:null));
+	if(!cone.length){ if(auto) return; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|acquire|lost`); if(RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }   // i18n-format-ok: ACMI event timestamp, not display text
+	const current=auto?null:(RADAR.stt??designated);
 	const at=cone.findIndex(k=>k.id===current);
 	const id=cone[(at+1)%cone.length].id;
-	if(MULTIPLAYER&&typeof id==="number") designated=id;
+	designated=id;
 	if(radar_lock(id)&&!auto) radar_events.push(`${sim_time.toFixed(1)}|acquire|cone`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // acm_press: the castle switch — BST commanded, then VACQ, then back to the
 // search radar. The commanded condition acquires by itself (radar_step); Enter

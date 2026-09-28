@@ -9,6 +9,7 @@ import {
   boresight,
   geometry,
   aspect_factor,
+  clutter,
   detect_range,
   paint_probability,
   pick,
@@ -59,14 +60,39 @@ describe('detection', () => {
     expect(detect_range(own, beam, wrap)).toBeGreaterThan(
       detect_range(own, nose, wrap)
     )
-    expect(aspect_factor(own, nose, wrap)).toBeCloseTo(0.75, 2)
+    expect(aspect_factor(own, nose, wrap)).toBeCloseTo(0.8, 2)
   })
-  it('pays the look-down penalty only below own level', () => {
-    const low = { ...beam, y: 500 }
-    expect(detect_range(own, low, wrap)).toBeCloseTo(
-      detect_range(own, beam, wrap) * 0.65,
-      0
-    )
+  it("paints a head-on fighter before it reaches the AIM-120's ~38 nm head-on reach", () => {
+    // The BVR joust starts the jets the AIM-120's head-on Rmax (~38 nm) plus
+    // a 15 nm buffer apart, nose to nose at the same height.
+    const own = { x: 0, y: 6096, z: 0, heading: 0 }
+    const nose = { id: 7, x: 0, y: 6096, z: -38 * NM, vx: 0, vy: 0, vz: 272 }
+    expect(detect_range(own, nose, wrap)).toBeGreaterThanOrEqual(44 * NM - 1)
+    expect(paint_probability(38 * NM, detect_range(own, nose, wrap))).toBeGreaterThan(0.35) // better than a third a crossing: a paint within a few sweeps
+    const radar = new Radar()
+    for (let i = 0; i < 4 * 60; i++)
+      radar.step(1 / 60, own, [nose], wrap, () => 0.35)
+    expect(radar.bricks.some((b) => b.id === 7)).toBe(true) // painted at 38 nm, a crossing in three landing
+  })
+  it('pays the look-down penalty only for a target seen against the sea, below the horizon', () => {
+    const at = (y: number, z: number) => detect_range(own, { ...beam, y, z }, wrap)
+    const clear = at(3000, -15 * NM)
+    expect(at(2999, -15 * NM)).toBeCloseTo(clear, 6) // a metre below at 15 nm: sky behind it
+    expect(at(2900, -40 * NM)).toBeCloseTo(at(3000, -40 * NM), 6) // a hundred metres below at 40 nm: the sky still
+    expect(at(500, -15 * NM)).toBeCloseTo(clear * 0.65, 0) // far below, against the sea
+    expect(at(3000, -60 * NM)).toBeCloseTo(at(3000, -15 * NM) * 1, 6) // level but far: the earth's curve is still above the horizon's dip
+    const low = { x: 0, y: 300, z: 0, heading: 0 } // at 1,000 ft the horizon is 62 km off
+    expect(clutter(low, { ...beam, y: 300, z: -130000 }, wrap)).toBeGreaterThan(0.5) // a jet level with us past twice that is under it, for the earth's curve: the sea behind
+    expect(clutter(low, { ...beam, y: 300, z: -20000 }, wrap)).toBe(0) // 20 km out, the sky
+    // Descending through the horizon line the penalty comes in smoothly: no
+    // step anywhere between a jet level with us and one on the sea.
+    let last = at(3000, -15 * NM)
+    for (let y = 3000; y >= 0; y -= 10) {
+      const now = at(y, -15 * NM)
+      expect(now).toBeLessThanOrEqual(last + 1e-6)
+      expect(last - now).toBeLessThan(0.05 * clear) // ten metres at a time: never the whole penalty at once
+      last = now
+    }
   })
   it('paints surely close in, marginally at the edge, never beyond', () => {
     expect(paint_probability(10 * NM, 40 * NM)).toBeCloseTo(0.97, 2)
@@ -222,7 +248,7 @@ describe('STT', () => {
     radar.designate(7)
     swept(radar, [beam], 1)
     expect(radar.stt).toBe(7)
-    const far = { ...beam, z: -90 * NM } // dead ahead still (azimuth 0, no gimbal break), far past HOLD * detect_range (~46 nmi at best aspect)
+    const far = { ...beam, z: -90 * NM } // dead ahead still (azimuth 0, no gimbal break), far past HOLD * detect_range (~63 nmi at best aspect)
     radar.step(1 / 60, own, [far], wrap, always)
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe('range')
