@@ -4694,8 +4694,7 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	const low=s.dev<-0.7;
 	const pos=o.ballPts.geometry.attributes.position; pos.setY(0, o.datumY+THREE.MathUtils.clamp(s.dev/0.8,-1,1)*o.travel); pos.needsUpdate=true;
 	const col=o.ballPts.geometry.attributes.color; col.setXYZ(0, 1, low?0.1:0.62, 0); col.needsUpdate=true;
-	if(low && !o.low) o.wavet=performance.now(); o.low=low;   // phase-anchor the red flash to its onset too
-	o.wavePts.visible = low && !!ownship.groove && ((performance.now()-(o.wavet||0))%400)<200;   // paddles only waves an aircraft established in the groove — the lens ball above stays purely geometric (the lights are physical)
+	o.wavePts.visible = !!ownship.waving && ((performance.now()-(ownship.wavet||0))%400)<200;   // the waveoff lights are the LSO's: lit for every waveoff he calls - low, lined up badly, high in close or hook up - and flashing in phase with his call
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
 let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame). (Restored with _wireApex: the #166 sweep removed both while claw_world still used them — carrier traps would throw.)
@@ -7684,7 +7683,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); comm("PADDLES: "+translate("WAVE OFF"), "#9fd0ff"); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -8227,7 +8226,7 @@ function draw_hud(){
 	if(crash_t>0){ const end=demise(ownship.fate,own_killer,ejected);   // the cause the engine already recorded, not a guess: CRASHED was shown for every death including being shot down
 		hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace";
 		hctx.fillText(translate(end.text,end.callsign?{callsign:end.callsign}:undefined),cx,cy-60); return; }
-	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
+	if(crash_t<=0 && ownship.waving && cfg.view!=="cockpit" && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call, HUD-view furniture: the cockpit has the lens's waveoff lights and the LSO's call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
 		const whole=Math.max(0,Math.floor(sim_time));
