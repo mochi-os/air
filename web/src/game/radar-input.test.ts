@@ -279,3 +279,104 @@ describe('the range scale (the RDR page\'s arrows, the castle zoom)', () => {
     expect(r.RADAR.scale).toBe(5)
   })
 })
+
+describe('the HUD box: what the pilot has designated, and nothing else', () => {
+  // hud_target, radar_held and heat_quarry, lifted as the rig does, with the
+  // bandit alone or a match's remotes.
+  type Jet = { group: { visible: boolean }; name: string }
+  function world(multiplayer: boolean) {
+    return new Function(
+      'Radar',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=${multiplayer}, has_enemy=!MULTIPLAYER, net=MULTIPLAYER?{}:null;
+       const bandit={ group:{ visible:true }, name:'bandit' };
+       const remotes=new Map([[3,{ group:{ visible:true }, name:'three' }]]);
+       let designated=-1;
+       ${lift('radar_held')}
+       ${lift('hud_target')}
+       ${lift('heat_quarry')}
+       return { RADAR, bandit, remotes, hud_target, radar_held, heat_quarry,
+         designate:(id)=>{ designated=id; }, designated:()=>designated };`
+    )(Radar) as {
+      RADAR: Radar
+      bandit: Jet
+      remotes: Map<number, Jet>
+      hud_target(): Jet | null
+      radar_held(): void
+      heat_quarry(boxed: Jet | null): Jet | null
+      designate(id: number | string): void
+      designated(): number | string
+    }
+  }
+
+  it('boxes no bandit the pilot has not designated, however near, alone', () => {
+    const w = world(false)
+    expect(w.hud_target()).toBeNull() // at a BVR joust's start: nothing designated, nothing boxed
+    w.designate('bandit')
+    expect(w.hud_target()).toBe(w.bandit) // once acquired, boxed
+    w.bandit.group.visible = false
+    expect(w.hud_target()).toBeNull() // shot down: gone, and the designation with it
+    expect(w.designated()).toBe(-1)
+  })
+
+  it("boxes a match's designated remote, and drops a designation that has gone", () => {
+    const w = world(true)
+    expect(w.hud_target()).toBeNull()
+    w.designate(3)
+    expect(w.hud_target()?.name).toBe('three')
+    w.designate(9) // left the match
+    expect(w.hud_target()).toBeNull()
+    expect(w.designated()).toBe(-1)
+  })
+
+  it('drops the designation when the radar lets it go, and keeps a silent radar\'s visual one', () => {
+    const w = world(false)
+    w.designate('bandit')
+    w.RADAR.stt = 'bandit'
+    w.radar_held()
+    expect(w.designated()).toBe('bandit') // the radar holds it: it stands
+    w.RADAR.stt = null // the lock broke: range, gimbal, memory
+    w.radar_held()
+    expect(w.designated()).toBe(-1) // and the box goes with it
+    w.designate('bandit')
+    w.RADAR.ls = 'bandit' // a TWS L&S holds it too
+    w.radar_held()
+    expect(w.designated()).toBe('bandit')
+    w.RADAR.ls = null
+    w.RADAR.sil = true // silent: a visual designation, the radar holding nothing
+    w.designate('bandit')
+    w.radar_held()
+    expect(w.designated()).toBe('bandit')
+  })
+
+  it("points the 9M's seeker at the bandit alone whether or not the radar has it, and at the designated jet in a match", () => {
+    const alone = world(false)
+    expect(alone.heat_quarry(null)).toBe(alone.bandit) // a heat seeker needs no radar
+    alone.bandit.group.visible = false
+    expect(alone.heat_quarry(null)).toBeNull()
+    const match = world(true)
+    const three = match.remotes.get(3)!
+    expect(match.heat_quarry(three)).toBe(three)
+    expect(match.heat_quarry(null)).toBeNull()
+  })
+
+  it('draws with these: the box from hud_target, the seeker from heat_quarry, the designation checked each radar step', () => {
+    const hud = lift('draw_hud')
+    expect(hud).toMatch(/const dst=hud_target\(\); if\(dst\)\{ boxed=dst;/)
+    expect(hud).not.toMatch(/if\(has_enemy\)\{[^}]*boxed=bandit/) // never the bandit for being there
+    expect(hud).toMatch(/const quarry=heat_quarry\(boxed\);/)
+    expect(hud).toMatch(/if\(master==="9m"&&!pa&&quarry\)/)
+    expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):bore;/) // the seeker circle on its heat, boxed or not
+    expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
+  })
+
+  it('designates the bandit alone as a match designates its remotes: the acquire key, the TWS L&S, the ACM cone', () => {
+    for (const name of ['radar_designate', 'radar_lock'])
+      expect(lift(name)).toMatch(/\tdesignated=id; return true; \}/)
+    expect(lift('acquire_press')).toMatch(/\t\tdesignated=RADAR\.ls;/)
+    expect(lift('undesignate_press')).toMatch(/\t\tdesignated=RADAR\.ls;/)
+    expect(lift('acquire_acm')).toMatch(/\tdesignated=id;\n\tif\(radar_lock\(id\)/)
+    for (const name of ['radar_designate', 'radar_lock', 'radar_undesignate', 'acquire_press', 'undesignate_press', 'acquire_acm'])
+      expect(lift(name)).not.toMatch(/MULTIPLAYER/) // nothing kept for a match alone
+  })
+})

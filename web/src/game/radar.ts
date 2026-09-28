@@ -49,7 +49,7 @@ const BURNTHROUGH = 9000 // m — inside this the skin echo beats the jammer
 const NOTCH = 60 // m/s — radial speed under this sits in the clutter gate
 const MEMORY = 4 // s — how long a track survives on memory before the lock drops
 const ELEVATION = 0.175 // search coverage half-height, rad (~10°) — one generous band in place of bar bookkeeping
-const BASE = 40 * NM // beam-aspect detection range against the game's one fighter
+const BASE = 55 * NM // beam-aspect detection range against the game's one fighter: 44 nm nose-on, so a head-on bandit paints before the AIM-120's ~38 nm head-on reach, within the APG-65/73's published 40-50 nm against a fighter
 const BRICK_AGE = 12 // seconds an RWS paint stays on the format
 const TRACK_AGE = 8 // seconds a TWS trackfile survives without a fresh paint
 const GIMBAL = 1.222 // STT gimbal limit off the nose, rad (±70°)
@@ -81,7 +81,7 @@ export function geometry(
 }
 
 // aspect_factor scales detection by the target's aspect: a beam-on fighter is
-// the biggest reflector (1.0), nose/tail the smallest (0.75). A near-stationary
+// the biggest reflector (1.0), nose/tail the smallest (0.8). A near-stationary
 // target has no meaningful aspect — middle value.
 export function aspect_factor(
   own: RadarOwn,
@@ -97,7 +97,28 @@ export function aspect_factor(
   const along = Math.abs(
     (target.vx * dx + target.vy * dy + target.vz * dz) / (speed * d)
   )
-  return 1 - 0.25 * along
+  return 1 - 0.2 * along
+}
+
+const EARTH = 6371000 // m, the earth's radius
+const CLUTTER = 0.35 // how much of its range a target seen against the sea loses to the clutter behind it
+const EDGE = 0.005 // rad: the band either side of the horizon over which the sea comes in behind a target
+
+// clutter is how far this target is seen against the sea, 0 to 1: its line of
+// sight runs below the horizon, so the sea is behind it. The horizon sits
+// further below level the higher the jet flies (2.5° at 20,000 ft), and a
+// distant target sits lower for the earth's curve; a jet at the same height,
+// or a little below it at long range, has the sky behind it.
+export function clutter(
+  own: RadarOwn,
+  target: RadarTarget,
+  wrap: Wrap
+): number {
+  const across = Math.hypot(wrap(target.x - own.x), wrap(target.z - own.z))
+  const below = Math.atan2(own.y - target.y, across) + across / (2 * EARTH) // how far below level the line of sight runs
+  const horizon = Math.acos(EARTH / (EARTH + Math.max(0, own.y)))
+  const t = Math.min(1, Math.max(0, (below - horizon + EDGE) / (2 * EDGE)))
+  return t * t * (3 - 2 * t)
 }
 
 // detect_range: how far this target paints, this look.
@@ -106,7 +127,7 @@ export function detect_range(
   target: RadarTarget,
   wrap: Wrap
 ): number {
-  const look = target.y < own.y ? 0.65 : 1 // look-down: sea clutter behind everything below own level
+  const look = 1 - CLUTTER * clutter(own, target, wrap) // look-down: sea clutter behind a target below the horizon
   return BASE * aspect_factor(own, target, wrap) * look
 }
 
