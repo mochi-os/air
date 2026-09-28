@@ -38,7 +38,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
 import { journal_notes } from './journal'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
@@ -75,6 +75,7 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
+import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
@@ -3139,9 +3140,11 @@ function pool_spawn(p){ if(p.activeList.length>=(p.limit??p.max)) return -1; for
 		p.pos[k]=p.activeList.length; p.activeList.push(k); return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
 const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX),debris=pool(DB_MAX);
-function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); }
+const VP_MAX=8000, vapour_pool=pool(VP_MAX); vapour_pool.rise=0.01; vapour_pool.pale=0; vapour_pool.alpha=new Float32Array(VP_MAX);   // condensation: shows at once, keeps its white as it goes, and each puff is as dense as the vapour it was laid in
+function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); vapour_pool.limit=Math.floor(VP_MAX*scale); }
 effects_limits();   // and again from apply_effects: computed only at boot, a Settings change over a paused mission silently did nothing until reload
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
+const vp_pts=make_points(VP_MAX,1.6,false,soft,true);   // vapour puffs: sized so a puff's scale is about its width in metres
 const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
 // Strike flashes get their own additive pool: a flash is emissive, and
 // normal-blended in the tracer pool it read as the same dull amber as the
@@ -3157,8 +3160,8 @@ function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,c
 			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left, elapsed=age*p.ttl[i];
 			grow[n]=p.sz[i]+p.gr[i]*elapsed;
 			spin[n]=p.spin[i]+elapsed*(0.08+0.08*Math.sin(p.seed[i]));
-			fade[n]=Math.min(1,elapsed/0.12)*Math.pow(left,0.6);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
-			const t=age*0.75; col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
+			fade[n]=Math.min(1,elapsed/(p.rise??0.12))*Math.pow(left,0.6)*(p.alpha?p.alpha[i]:1);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
+			const t=age*(p.pale??0.75); col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
 		} else {
 			const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; }
 		n++; }
@@ -3330,6 +3333,373 @@ function contrail_effects(){   // lay each flying jet's segment when due, then a
 		if(rig.count===0){ rig.mesh.visible=false; if(!jets.has(rig.owner)||rig.owner.contrail!==rig){ scene.remove(rig.mesh); rig.geo.dispose(); gone.push(rig); } continue; }
 		rig.mesh.visible=true; contrail_vertices(rig,sim_time,camera.position,pixel); }
 	for(const rig of gone) contrails.delete(rig); }
+// ============================================================================
+// Vapour (vapour.ts decides when it shows): the water a jet's own flow
+// condenses in humid air. Ropes along the LEX vortices at high alpha, which
+// trail off behind the jet, streamers off the wingtips and the flap edges at
+// high lift, a film over the wings in a hard pull, and near Mach 1 the cloud
+// the jet flies inside - dense on the shock that ends it, thinning forward to
+// nothing - with a plume rising off the canopy and a sheet over each wing ending
+// on the wing's own shock. Every jet draws its own: the pilot's, the
+// bandit's, a match's remotes and a replay's jets.
+// Three things draw it. The transonic cloud and the canopy's plume are a
+// volume: a stack of slices facing the camera through the sphere they lie in,
+// each pixel of each slice reading the density at its own point, so the cloud
+// has no edge but its own and grows as smoothly as the Mach does; each slice
+// is depth-tested, so the jet shows through the cloud it flies in, from
+// outside or from the cockpit. The LEX ropes are tubes, and the sheet and
+// film over the wings soft sprites, fixed in the jet's frame. What trails is
+// puffs left in the air, so it bends with the jet's path.
+// Places are in the drawn Hornet's frame (x nose, y up, z starboard), from
+// its measured planform: the LEX edge runs from (6.3, 0, 0.75) to (1.5, -0.2,
+// 1.5), the wing's leading edge from (1.3, 2.0) to (-0.5, 5.8) over a
+// trailing edge near x -2.2, the tip near z 5.9, the canopy's top at x 5.5,
+// 0.93 m up, falling to 0.64 at x 3.
+const VAPOUR_VERTEX=`
+attribute float size;
+attribute float part;
+attribute float grain;
+uniform float uHalf, uTime;
+uniform float uStrength;  // the transonic sheet over the wings
+uniform vec2 uWing;       // the film's strength, and the fraction of chord the sheet's shock stands at
+uniform vec3 uSun;        // toward the sun, in the jet's frame
+varying float vAlpha;
+varying float vShade;
+varying float vSpin;
+#include <fog_pars_vertex>
+void main(){
+	vec3 p=position; float s=size; vec3 centre=p-vec3(0.0,0.5,0.0);
+	float lead=1.29-0.5*(abs(p.z)-2.0), c=clamp((lead-p.x)/(lead+2.2),0.0,1.0);
+	float sheet=uStrength*(1.0-smoothstep(uWing.y-0.04,uWing.y+0.04,c))*smoothstep(0.05,max(uWing.y-0.1,0.06),c);   // the supersonic pocket, ending on its shock
+	float film=uWing.x*(1.0-smoothstep(0.15,0.6,c));   // the suction peak, near the leading edge
+	float a=max(sheet,film);
+	a*=0.93+0.07*sin(grain*40.0+uTime*7.0);   // the flow through it never quite holds still
+	vAlpha=a; vSpin=grain*6.2832;
+	vShade=0.78+0.3*dot(normalize(p-centre+vec3(0.0,1e-4,0.0)),uSun);   // lit on the sun's side
+	vec4 mvPosition=modelViewMatrix*vec4(p,1.0);
+	gl_Position=projectionMatrix*mvPosition;
+	gl_PointSize=a>0.004?s*projectionMatrix[1][1]*uHalf/max(-mvPosition.z,0.05):0.0;   // s metres across at any distance, in any camera
+	#include <fog_vertex>
+}`;
+const VAPOUR_FRAGMENT=`
+uniform sampler2D uMap;
+uniform vec3 uColour;
+varying float vAlpha;
+varying float vShade;
+varying float vSpin;
+#include <fog_pars_fragment>
+void main(){
+	vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc;
+	float alpha=clamp(vAlpha*texture2D(uMap,pc+0.5).a*0.45,0.0,1.0);
+	if(alpha<0.002) discard;
+	gl_FragColor=vec4(uColour*vShade,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}`;
+const VAPOUR_SLICES=56;   // across the sphere the volume lies in: half a metre apart across the biggest cloud
+const VAPOUR_VOLUME_VERTEX=`
+attribute vec2 corner;
+attribute float slice;
+uniform vec3 uEye, uForward, uRight, uUp;   // the camera drawing this pass, in the jet's frame
+uniform vec3 uCentre;                       // the sphere the volume lies in, in the jet's frame
+uniform float uRadius, uNear;
+varying vec3 vBody;
+varying float vStep;
+#include <fog_pars_vertex>
+void main(){
+	vec3 toward=uCentre-uEye; float along=dot(toward,uForward);
+	float first=max(uNear,along-uRadius), last=along+uRadius;
+	float t=mix(last,first,slice);   // far to near: the slices are drawn back to front
+	float off=t-along, reach=1.02*sqrt(max(uRadius*uRadius-off*off,0.0))*step(first,last);
+	vec3 p=uEye+uForward*t+(toward-uForward*along)+(uRight*corner.x+uUp*corner.y)*reach;   // each slice a square over the sphere's section, square to the view
+	vBody=p; vStep=max(last-first,0.0)/${VAPOUR_SLICES-1}.0;
+	vec4 mvPosition=modelViewMatrix*vec4(p,1.0);
+	gl_Position=projectionMatrix*mvPosition;
+	#include <fog_vertex>
+}`;
+const VAPOUR_VOLUME_FRAGMENT=`
+uniform vec2 uStrength;   // the transonic cloud, the canopy's plume
+uniform vec3 uCone;       // the transonic cloud: its shock's x on the axis, its length from there to its apex, its base's radius
+uniform float uCanopy;    // the canopy's plume: the x it rises from
+uniform vec3 uSun, uColour;
+uniform float uTime;
+varying vec3 vBody;
+varying float vStep;
+#include <fog_pars_fragment>
+float hash(vec3 p){ return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453); }
+float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+	return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+		mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
+void main(){
+	vec3 p=vBody; float sigma=0.0, r=length(vec2(p.y-0.2,p.z));
+	float top=p.x>5.2?0.93-0.3*(p.x-5.2):0.93-0.13*(5.2-p.x);   // the canopy's crest, over the pilot's head and down to the windscreen and the spine
+	if(uStrength.x>0.0){   // the transonic cloud: a cone from its apex behind the canopy, flaring to its base on the shock
+		float rim=r/uCone.z, base=uCone.x+0.15*uCone.z*rim*rim;   // the shock bulges aft on the axis
+		float u=(p.x-uCone.x)/uCone.y, reach=uCone.z*clamp(1.0-u,0.0,1.0);   // how far out the cone reaches at this station
+		float surface=mix(0.55,1.0,smoothstep(0.0,1.0,r/max(reach,0.01)));   // densest toward its conical skin, so it reads as a cone from any side
+		sigma+=0.8*uStrength.x*smoothstep(base-0.25,base+0.15,p.x)*(1.0-smoothstep(0.3,1.0,u))*(1.0-smoothstep(0.82*reach,reach+0.05,r))*surface;   // dense on the shock, thinning toward the apex
+	}
+	if(uStrength.y>0.0){   // the canopy's vapour: a column rooted on the glass behind the pilot's head, densest on it and thinning as it rises to a rounded top
+		float h=p.y-top+0.9*min(p.z*p.z,0.34), rise=max(h,0.0);   // its height over the canopy, whose glass falls away to either side
+		vec2 q=vec2((p.x-uCanopy)/0.62,p.z/(0.8+0.15*rise));
+		sigma+=6.0*uStrength.y*smoothstep(-0.1,0.05,h)*exp(-1.2*rise-0.6*rise*rise-2.0*dot(q,q));
+	}
+	if(p.x>2.0&&p.x<7.4&&p.y>0.3){   // none inside the canopy: the pilot looks out through clear air
+		float inside=pow((p.y-0.3)/max(top+0.06-0.3,0.05),2.0)+pow(p.z/0.58,2.0);
+		sigma*=smoothstep(1.0,1.15,inside);
+	}
+	sigma*=0.85+0.3*noise(vec3(p.x*0.35+uTime*20.0,p.y*1.1,p.z*1.1));   // streaked aft with the flow through it
+	float alpha=1.0-exp(-sigma*vStep);
+	if(alpha<0.012) discard;   // a slice fainter than a few 8-bit steps: many of them blended round each colour channel apart, and tint the cloud's thin edge
+	float shade=0.74+0.32*dot(normalize(vec3(0.0,p.y-0.2,p.z)+vec3(0.0,1e-4,0.0)),uSun);   // lit on the sun's side, greyer beneath
+	gl_FragColor=vec4(uColour*shade,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}`;
+// vapour_points lays the points the sprites are drawn from: two layers over
+// each wing. Which show, and how densely, the shader decides; a fixed seed
+// keeps captures stable.
+function vapour_points(){ let seed=11; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+	const position=[], size=[], part=[], grain=[], add=(x,y,z,s,p)=>{ position.push(x,y,z); size.push(s); part.push(p); grain.push(rnd()); };
+	for(const side of [1,-1]) for(const lift of [0.12,0.38]) for(let i=0;i<=11;i++) for(let j=0;j<=9;j++){ const c=i/11, z=2.0+3.7*j/9, lead=1.29-0.5*(z-2.0);
+		add(lead+(-2.2-lead)*c+(rnd()-0.5)*0.15, -0.22-0.06*(z-2.0)+lift+(rnd()-0.5)*0.08, side*(z+(rnd()-0.5)*0.15), 0.8+0.3*rnd(), 0); }
+	const geo=new THREE.BufferGeometry();
+	geo.setAttribute("position",new THREE.Float32BufferAttribute(position,3)); geo.setAttribute("size",new THREE.Float32BufferAttribute(size,1));
+	geo.setAttribute("part",new THREE.Float32BufferAttribute(part,1)); geo.setAttribute("grain",new THREE.Float32BufferAttribute(grain,1)); return geo; }
+// vapour_slices is the volume's stack: VAPOUR_SLICES squares, the farthest
+// first, whose corners the vertex shader places each pass.
+function vapour_slices(){ const corner=[], slice=[], index=[];
+	for(let k=0;k<VAPOUR_SLICES;k++){ const base=k*4;
+		for(const [x,y] of [[-1,-1],[1,-1],[1,1],[-1,1]]){ corner.push(x,y); slice.push(k/(VAPOUR_SLICES-1)); }
+		index.push(base,base+1,base+2, base,base+2,base+3); }
+	const geo=new THREE.BufferGeometry();
+	geo.setAttribute("position",new THREE.Float32BufferAttribute(new Array(VAPOUR_SLICES*12).fill(0),3));   // placed by the shader, not from here
+	geo.setAttribute("corner",new THREE.Float32BufferAttribute(corner,2)); geo.setAttribute("slice",new THREE.Float32BufferAttribute(slice,1)); geo.setIndex(index); return geo; }
+// vapour_bounds is the sphere the volume lies in, in the jet's frame: round
+// the transonic cloud's cone and the canopy's plume, or round either alone,
+// tight, so their slices lie close.
+function vapour_bounds(collar,cap,cone){
+	const disc={ x:5.1, y:1.3, z:0, radius:1.65 };   // the canopy's plume, out to where it has faded to a hundredth, wherever on the canopy it rises
+	if(collar<=0) return disc;
+	const lens={ x:cone.x+0.5*cone.y, y:0.2, z:0, radius:Math.hypot(0.5*cone.y+0.25,cone.z) };   // from the cone's middle, past its apex, its base's rim and the soft face of its shock
+	if(cap<=0) return lens;
+	const gap=Math.hypot(disc.x-lens.x,disc.y-lens.y);
+	if(gap+disc.radius<=lens.radius) return lens;
+	const radius=(gap+disc.radius+lens.radius)/2, k=(radius-lens.radius)/gap;   // the smallest sphere round both
+	return { x:lens.x+(disc.x-lens.x)*k, y:lens.y+(disc.y-lens.y)*k, z:0, radius }; }
+// The starboard LEX vortex's core: one straight line from the strake's apex,
+// aft over the wing root and a little outboard, climbing away from the
+// airframe at half the alpha - the relative wind, turned down by the wing's
+// downwash - and on behind the jet along the same line, without a bend.
+const VAPOUR_APEX={ x:5.0, y:0.35, z:0.85 };   // where it starts, over the strake inboard of its edge
+const VAPOUR_LEX={ x:-2.4, spread:0.09, tail:20, fade:2.0 };   // where it leaves the airframe, at the wing root's trailing edge, how far outboard it runs per metre aft, how far behind the airframe it fades out, and how many metres past its burst its vapour is down to a third
+const VAPOUR_POINTS=vapour_points(), VAPOUR_STACK=vapour_slices();
+const VAPOUR_TIP={ x:-1.8, y:-0.45, z:5.95 }, VAPOUR_FLAP={ x:-2.1, y:-0.33, z:3.95 };   // where the tip and the flap-edge vortices leave the starboard wing
+let vapour_time=0;
+let vapour_air={ x:0, z:0 };   // the wind the mission's core flies in, world m/s: what a puff left behind drifts with
+let vapour_humid=null;   // dev: the humidity every jet meets, in place of the sky's
+let vapour_force=null;   // dev: the flight every jet's vapour is drawn for, in place of its own
+const _vapour_viewport=new THREE.Vector4(), _vapour_turn=new THREE.Quaternion(), _vapour_inverse=new THREE.Matrix4(), _vapour_at=new THREE.Vector3(), _vapour_eye=new THREE.Vector3();
+// vapour_texture is the attached cloud's sprite: a soft round falloff with a
+// faint grain drawn out across it, so a hundred overlapping read as one silky
+// cloud rather than a heap of puffs.
+function vapour_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"), image=x.createImageData(64,64);
+	let seed=5; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+	const streaks=Array.from({ length:64 },()=>0.8+0.2*rnd());
+	for(let j=0;j<64;j++) for(let i=0;i<64;i++){ const u=(i-31.5)/32, v=(j-31.5)/32, r=Math.hypot(u,v), k=(j*64+i)*4;
+		image.data[k]=image.data[k+1]=image.data[k+2]=255; image.data[k+3]=Math.round(255*Math.exp(-4.5*r*r)*(r<1?1-r*r*r*r:0)*streaks[j]); }
+	x.putImageData(image,0,0); return new THREE.CanvasTexture(c); }
+const vapour_sprite=vapour_texture();
+function vapour_material(){ const material=new THREE.ShaderMaterial({ vertexShader:VAPOUR_VERTEX, fragmentShader:VAPOUR_FRAGMENT, transparent:true, depthWrite:false, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uHalf:{ value:450 }, uTime:{ value:0 }, uStrength:{ value:0 }, uWing:{ value:new THREE.Vector2() }, uSun:{ value:new THREE.Vector3(0,1,0) }, uColour:{ value:new THREE.Color(1,1,1) }, uMap:{ value:null } }]) });
+	material.uniforms.uMap.value=vapour_sprite; return material; }   // shared: a merge would copy it for every jet
+function vapour_volume(){ return new THREE.ShaderMaterial({ vertexShader:VAPOUR_VOLUME_VERTEX, fragmentShader:VAPOUR_VOLUME_FRAGMENT, transparent:true, depthWrite:false, side:THREE.DoubleSide, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uEye:{ value:new THREE.Vector3() }, uForward:{ value:new THREE.Vector3() }, uRight:{ value:new THREE.Vector3() }, uUp:{ value:new THREE.Vector3() }, uCentre:{ value:new THREE.Vector3() }, uRadius:{ value:1 }, uNear:{ value:0.1 },
+		uStrength:{ value:new THREE.Vector2() }, uCone:{ value:new THREE.Vector3() }, uCanopy:{ value:0 }, uSun:{ value:new THREE.Vector3(0,1,0) }, uColour:{ value:new THREE.Color(1,1,1) }, uTime:{ value:0 } }]) }); }
+// vapour_rig hangs a jet's vapour on its airframe, once per group: the
+// sprites and the volume, neither ever hit by a ray - the cockpit's clicks,
+// the eye's calibration and the picks all see through them.
+function vapour_rig(st){ const g=st.group; if(!g) return null; if(st.vapour&&st.vapour.group===g) return st.vapour;
+	const material=vapour_material(), cloud=new THREE.Points(VAPOUR_POINTS,material);
+	cloud.frustumCulled=false; cloud.visible=false; cloud.renderOrder=2;
+	cloud.raycast=()=>{};
+	cloud.onBeforeRender=(renderer)=>{ renderer.getCurrentViewport(_vapour_viewport); material.uniforms.uHalf.value=_vapour_viewport.w/2; };   // the pass it is drawn in: the world's, or the cockpit's
+	const haze=vapour_volume(), volume=new THREE.Mesh(VAPOUR_STACK,haze);
+	volume.frustumCulled=false; volume.visible=false; volume.renderOrder=2;
+	volume.raycast=()=>{};
+	volume.onBeforeRender=(renderer,scene,camera)=>{ const u=haze.uniforms; _vapour_inverse.copy(g.matrixWorld).invert();   // the camera of the pass it is drawn in, in the jet's frame
+		u.uEye.value.copy(camera.getWorldPosition(_vapour_at)).applyMatrix4(_vapour_inverse);
+		u.uForward.value.copy(camera.getWorldDirection(_vapour_at)).transformDirection(_vapour_inverse);
+		u.uRight.value.setFromMatrixColumn(camera.matrixWorld,0).transformDirection(_vapour_inverse);
+		u.uUp.value.setFromMatrixColumn(camera.matrixWorld,1).transformDirection(_vapour_inverse);
+		u.uNear.value=camera.near*1.5+0.02; };
+	const cores=[rope_mesh(ROPE_ROWS),rope_mesh(ROPE_ROWS)], rows=[0,1].map(()=>Array.from({ length:ROPE_ROWS },()=>({ x:0, y:0, z:0, width:0, alpha:0 })));   // each LEX rope, in the jet's frame
+	g.add(cloud,volume,...cores); if(g.userData.player) layer_own_group(g);   // the cockpit pass draws the pilot's own
+	st.vapour={ group:g, cloud, material, volume, haze, cores, rows, drawn:[], flight:null, shown:null, gone:{ vx:0, vy:0, vz:0, g:1, primed:false } }; return st.vapour; }
+// vapour_flight is what a jet is doing, as its vapour depends on it: the
+// pilot's and the bandit's from their cores, a remote's from its pose, a
+// replay's from its recording; what none of those carry is read from the
+// jet's motion - its alpha from its velocity in its own frame, its load
+// factor from how its velocity turns.
+function vapour_flight(st,dt){ const vx=st.velx||0, vy=st.vely||0, vz=st.velz||0, speed=Math.hypot(vx,vy,vz), sound=airspeed(1,presented(st).y), up=st.up||world_up, s=st.vapour.gone;
+	if(!s.primed||dt>0.5){ s.vx=vx; s.vy=vy; s.vz=vz; s.g=1; s.primed=true; }
+	else if(dt>0){ const nz=((vx-s.vx)/dt*up.x+((vy-s.vy)/dt+9.81)*up.y+(vz-s.vz)/dt*up.z)/9.81;
+		s.g+=(nz-s.g)*Math.min(1,dt/0.3); s.vx=vx; s.vy=vy; s.vz=vz; }
+	const forward=vx*st.fwd.x+vy*st.fwd.y+vz*st.fwd.z, normal=vx*up.x+vy*up.y+vz*up.z;
+	let alpha=speed>1?Math.atan2(-normal,forward)/D2R:0, g=s.g, mach=speed/sound;
+	if(st===ownship){ alpha=ownship.aoa??alpha; g=ownship.gload??g; if(last_out) mach=last_out[STATE.mach]||mach; }
+	else if(st===bandit&&bandit_words){ alpha=(bandit_words[STATE.alpha]||0)/D2R; g=bandit_words[STATE.nz]||g; mach=bandit_words[STATE.mach]||mach; }
+	else { if(Number.isFinite(st.aoa)) alpha=st.aoa; if(Number.isFinite(st.gload)&&st.gload!==0) g=st.gload; if(Number.isFinite(st.mach)&&st.mach>0) mach=st.mach; }
+	return vapour_force?{ ...vapour_force }:{ alpha, g, speed:mach*sound, mach }; }
+// vapour_streamers leaves puffs along the path the tips and the flap edges
+// flew this frame, one every 30 cm, so a streamer is one line at any frame
+// rate; a marginal one is as faint as the vapour, and swells and thins along
+// its length rather than breaking. Each puff is left in the air the jet flies
+// through, drifting with the wind.
+function vapour_streamers(st,shown,dt){ const speed=Math.hypot(st.velx||0,st.vely||0,st.velz||0); if(speed<30||dt<=0) return;
+	const colour=vapour_light(), count=Math.min(40,Math.ceil(speed*dt/0.3)), air=vapour_air;
+	for(const [k,at,width,life,growth] of [[shown.tips,VAPOUR_TIP,0.6,0.5,1.2],[shown.flaps,VAPOUR_FLAP,0.45,0.5,1.2]]){ if(k<=0.01) continue;
+		for(const side of [1,-1]){ const p=body_offset(st,at.x,at.y,at.z*side);
+			for(let i=0;i<count;i++){
+				const n=pool_spawn(vapour_pool); if(n<0) return; const back=dt*(i+Math.random())/count, light=0.9+0.1*Math.random();
+				const vx=air.x+(Math.random()-0.5)*0.6, vy=(Math.random()-0.5)*0.6, vz=air.z+(Math.random()-0.5)*0.6;
+				vapour_pool.px[n]=p.x+(vx-(st.velx||0))*back; vapour_pool.py[n]=p.y+(vy-(st.vely||0))*back; vapour_pool.pz[n]=p.z+(vz-(st.velz||0))*back;   // laid where the source was, and moved on since as it moves
+				vapour_pool.vx[n]=vx; vapour_pool.vy[n]=vy; vapour_pool.vz[n]=vz;
+				vapour_pool.ttl[n]=vapour_pool.life[n]=(0.2+life*k)*(0.8+0.4*Math.random());   // the core warms and the water goes: longer in wetter air, under more lift
+				vapour_pool.sz[n]=width*(0.6+0.4*k); vapour_pool.gr[n]=growth;
+				vapour_pool.alpha[n]=Math.min(1,1.4*k)*(0.7+0.3*Math.sin((vapour_time-back)*9+side*1.7+width*5));
+				vapour_pool.r[n]=colour.r*light; vapour_pool.g[n]=colour.g*light; vapour_pool.b[n]=colour.b*light; } } } }
+// The LEX ropes: each vortex one soft round tube in one straight line from
+// the strake, laid each frame in the jet's frame: thin at its apex, widening
+// aft to its full width where it leaves the airframe and no wider behind,
+// fizzling out within a few metres past its burst, and fading out to
+// nothing behind the airframe. It hangs on the jet, so it never bends, and
+// the cockpit pass draws the pilot's own.
+// A tube, not a flat ribbon turned to the eye: a ribbon has no way to face an
+// eye looking along the rope - and the ropes trail straight back at a chase
+// camera - so its width swings from row to row there and it folds into
+// crosses. Each pixel of the tube is as dense as it faces the eye squarely:
+// thick through the rope's middle, clear at its outline, from any side.
+const ROPE_ROWS=56, ROPE_SIDES=8;   // the rows along each rope, half a metre apart, and the points round each ring
+const rope_mat=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uColour:{ value:new THREE.Color(1,1,1) } }]),
+	vertexShader:`
+attribute float fade;
+varying float vFade;
+varying vec3 vNormal;
+varying vec3 vView;
+#include <fog_pars_vertex>
+void main(){
+	vFade=fade;
+	vec4 mvPosition=modelViewMatrix*vec4(position,1.0);
+	vNormal=normalize(normalMatrix*normal); vView=normalize(-mvPosition.xyz);
+	gl_Position=projectionMatrix*mvPosition;
+	#include <fog_vertex>
+}`,
+	fragmentShader:`
+uniform vec3 uColour;
+varying float vFade;
+varying vec3 vNormal;
+varying vec3 vView;
+#include <fog_pars_fragment>
+void main(){
+	float facing=abs(dot(normalize(vNormal),normalize(vView)));
+	float alpha=vFade*0.55*facing*facing;   // dense through its middle, clear at its outline: a round rope from any side
+	if(alpha<0.004) discard;
+	gl_FragColor=vec4(uColour,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}` });
+// rope_mesh is a tube of rows, a ring of ROPE_SIDES points round each.
+function rope_mesh(rows){ const geo=new THREE.BufferGeometry(), index=[], n=ROPE_SIDES;
+	for(let i=0;i<rows-1;i++) for(let j=0;j<n;j++){ const a=i*n+j, b=i*n+(j+1)%n; index.push(a,a+n,b, b,a+n,b+n); }
+	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(rows*n*3),3)); geo.setAttribute("normal",new THREE.BufferAttribute(new Float32Array(rows*n*3),3));
+	geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(rows*n),1)); geo.setIndex(index); geo.setDrawRange(0,0);
+	const mesh=new THREE.Mesh(geo,rope_mat); mesh.frustumCulled=false; mesh.visible=false; mesh.renderOrder=2; mesh.raycast=()=>{}; return mesh; }
+// rope_fill writes rows - { x, y, z, width, alpha } - into a tube: a ring
+// round each row, square to the rope and as wide as the row, carried from
+// row to row without twisting. eye is the camera in the rows' frame and pixel
+// a pixel's width at unit distance, so a rope far off keeps a pixel and a half
+// and dims rather than breaking into dots. Where the rope's own direction is
+// lost - two rows on one point - a row takes its neighbour's.
+function rope_fill(mesh,rows,count,eye,pixel){ const pos=mesh.geometry.attributes.position.array, nor=mesh.geometry.attributes.normal.array, fad=mesh.geometry.attributes.fade.array, n=ROPE_SIDES;
+	let tx=1, ty=0, tz=0, ux=0, uy=1, uz=0;   // along the rope, and the ring's reference, carried along
+	for(let i=0;i<count;i++){ const r=rows[i], a=rows[Math.max(0,i-1)], b=rows[Math.min(count-1,i+1)];
+		const dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dl=Math.hypot(dx,dy,dz); if(dl>1e-4){ tx=dx/dl; ty=dy/dl; tz=dz/dl; }
+		let d=ux*tx+uy*ty+uz*tz, px=ux-d*tx, py=uy-d*ty, pz=uz-d*tz, pl=Math.hypot(px,py,pz);   // the reference, brought square to the rope here
+		if(pl<1e-3){ const k=Math.abs(tx)<0.9?[1,0,0]:[0,1,0]; d=k[0]*tx+k[1]*ty+k[2]*tz; px=k[0]-d*tx; py=k[1]-d*ty; pz=k[2]-d*tz; pl=Math.hypot(px,py,pz); }
+		ux=px/pl; uy=py/pl; uz=pz/pl;
+		const vx=ty*uz-tz*uy, vy=tz*ux-tx*uz, vz=tx*uy-ty*ux;   // the ring's other axis
+		const least=Math.hypot(eye.x-r.x,eye.y-r.y,eye.z-r.z)*pixel*1.5; let width=r.width, alpha=r.alpha; if(width<least){ alpha*=width/least; width=least; }
+		for(let j=0;j<n;j++){ const q=j/n*Math.PI*2, c=Math.cos(q), s=Math.sin(q), ox=ux*c+vx*s, oy=uy*c+vy*s, oz=uz*c+vz*s, o=(i*n+j)*3;
+			pos[o]=r.x+ox*width/2; pos[o+1]=r.y+oy*width/2; pos[o+2]=r.z+oz*width/2; nor[o]=ox; nor[o+1]=oy; nor[o+2]=oz; fad[i*n+j]=alpha; } }
+	for(const key of ["position","normal","fade"]) mesh.geometry.attributes[key].needsUpdate=true;
+	mesh.geometry.setDrawRange(0,Math.max(0,count-1)*n*6); mesh.visible=count>1; }
+// vapour_burst is where a LEX core bursts at this alpha, x in the jet's
+// frame: over the LEX-wing junction at 35°, at the wing root's trailing edge
+// at 25°, and ever further behind the jet below that, so a rope trails tight
+// for a stretch before it bursts.
+function vapour_burst(alpha){ const a=Math.min(alpha,35); return a>=25?VAPOUR_LEX.x*(35-a)/10:VAPOUR_LEX.x-0.5*(25-a)*(25-a); }
+// vapour_thin is how much of a core's vapour is left this many metres past
+// its burst: its water goes within a few metres as the pressure in it
+// recovers, easing in from the burst so its density bends nowhere.
+function vapour_thin(past){ const t=past/VAPOUR_LEX.fade; return Math.exp(-t*t); }
+// vapour_point lays one row of a LEX rope, back metres aft of its apex, in
+// the jet's frame: side 1 starboard, -1 port; k how strongly it shows, climb
+// its rise per metre aft, burst the x it bursts at.
+function vapour_point(r,back,side,k,climb,burst){ const length=VAPOUR_APEX.x-VAPOUR_LEX.x, x=VAPOUR_APEX.x-back, past=Math.max(0,burst-x), t=Math.min(1,back/length);
+	r.x=x; r.y=VAPOUR_APEX.y+climb*back; r.z=side*(VAPOUR_APEX.z+VAPOUR_LEX.spread*back);
+	r.width=0.2+0.5*(1-(1-t)*(1-t));   // thin at the apex, widening aft and easing to its full width where it leaves the airframe, no wider behind
+	r.alpha=Math.min(1,1.2*k)*THREE.MathUtils.smoothstep(back,0,0.9)*vapour_thin(past)*(1-THREE.MathUtils.smoothstep(back,length,length+VAPOUR_LEX.tail));   // growing in from the apex, fizzling out past the burst, fading out behind the airframe
+	return r; }
+// vapour_core lays one LEX rope's rows, from its apex to where it has faded
+// out behind the airframe.
+function vapour_core(rows,side,k,climb,burst){ const length=VAPOUR_APEX.x-VAPOUR_LEX.x+VAPOUR_LEX.tail;
+	for(let i=0;i<ROPE_ROWS;i++) vapour_point(rows[i],length*i/(ROPE_ROWS-1),side,k,climb,burst);
+	return ROPE_ROWS; }
+// vapour_ropes draws one jet's LEX ropes for this frame.
+function vapour_ropes(st,rig,shown,alpha,burst){ const k=shown?shown.lex:0, speed=Math.hypot(st.velx||0,st.vely||0,st.velz||0);
+	const climb=Math.tan(THREE.MathUtils.clamp(alpha||0,0,40)*D2R/2);   // the core's climb per metre aft: half the alpha, the wing's downwash turning the relative wind down
+	const g=st.group, eye=_vapour_eye.copy(camera.position).sub(g.position).applyQuaternion(_vapour_turn.copy(g.quaternion).invert()), pixel=2*Math.tan(camera.fov*Math.PI/360)/renderer.domElement.height;
+	for(const [i,side] of [[0,1],[1,-1]]){ const core=rig.cores[i];
+		if(k<=0.01||speed<30){ core.visible=false; continue; }
+		rope_fill(core,rig.rows[i],vapour_core(rig.rows[i],side,k,climb,burst),eye,pixel); } }
+// vapour_light is the colour vapour is lit to: as bright as the contrails, by
+// the time of day, but near white - a small cloud in sunlight is white, and
+// the contrails' warm light laid thinly over a blue sky reads as green.
+const _vapour_light=new THREE.Color();
+function vapour_light(){ const c=contrail_mat.color, grey=0.2126*c.r+0.7152*c.g+0.0722*c.b; return _vapour_light.setRGB(grey,grey,grey).lerp(c,0.25); }
+// vapour_effects draws every jet's vapour for this frame.
+function vapour_effects(dt){ vapour_time+=dt;
+	const jets=new Set([ownship,bandit,...remotes.values()]);
+	for(const st of jets){ if(!st) continue;
+		const rig=vapour_rig(st); if(!rig) continue;
+		const flying=st===ownship?!(crash_t>0):!!st.group.visible, y=presented(st).y;
+		const f=flying?vapour_flight(st,dt):null, shown=f?vapour_show(f,vapour_humid??humidity(cfg.clouds,y),y):null;
+		rig.flight=f; rig.shown=shown;
+		const burst=f?vapour_burst(f.alpha):0;   // the cores burst further forward the higher the alpha
+		vapour_ropes(st,rig,shown,f?f.alpha:0,burst);
+		if(!shown){ rig.cloud.visible=false; rig.volume.visible=false; rig.drawn=[]; continue; }
+		const u=rig.material.uniforms, v=rig.haze.uniforms, edge=shown.edge;
+		const collar=0.9*shown.collar, cap=0.8*Math.max(shown.collar,0.8*shown.wing);
+		const sun=_vapour_at.copy(sun_dir).applyQuaternion(_vapour_turn.copy(st.group.quaternion).invert()), light=vapour_light();
+		u.uStrength.value=0.7*shown.wing;
+		u.uWing.value.set(0.6*shown.film,0.62+0.38*edge);
+		u.uSun.value.copy(sun); u.uColour.value.copy(light); u.uTime.value=vapour_time;
+		v.uStrength.value.set(collar,cap);
+		v.uCone.value.set(0.5-9.0*edge,2.0+10.0*edge,1.8+7.2*edge);   // the shock walks aft from mid-wing to the nozzles, the apex staying behind the canopy: a small cone over the wing root first, lengthening and flaring as Mach 1 nears
+		v.uCanopy.value=5.45-0.8*edge;   // from just behind the pilot's head, further aft down the canopy's rear slope as the Mach rises
+		const bounds=vapour_bounds(collar,cap,v.uCone.value); v.uCentre.value.set(bounds.x,bounds.y,bounds.z); v.uRadius.value=bounds.radius;
+		v.uSun.value.copy(sun); v.uColour.value.copy(light); v.uTime.value=vapour_time;
+		rig.drawn=[["lex",shown.lex],["collar",shown.collar],["canopy",cap],["wing",Math.max(shown.wing,shown.film)]].filter(([,value])=>value>0.005).map(([name])=>name);
+		rig.cloud.visible=Math.max(shown.wing,shown.film)>0.005; rig.volume.visible=collar>0.005||cap>0.005;
+		vapour_streamers(st,shown,dt); }
+	const settle=Math.exp(-dt/0.6), air=vapour_air;   // what a puff was given beyond the wind - the downwash, the cores' spread - fades as the jet draws away
+	for(const i of vapour_pool.activeList){ vapour_pool.vx[i]=air.x+(vapour_pool.vx[i]-air.x)*settle; vapour_pool.vy[i]*=settle; vapour_pool.vz[i]=air.z+(vapour_pool.vz[i]-air.z)*settle; }
+	update_pool_ballistic(vapour_pool,dt,0,0); }
 function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
@@ -5838,6 +6208,17 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
 if(DEV_MODE) (globalThis as any).dev_gun=()=>{ const loaded=fleet[own_aircraft()], rig=ownship.gun; return { profile:loaded?loaded.profile:null, gas:rig?rig.gas:null, flash:rig?rig.flash.visible:null, light:rig&&rig.light?rig.light.intensity:null }; };   // dev: the measured port and skin line, and the ownship rig's state
 if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
+if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapour - what it is flying, what shows, which shells are drawn and the puffs in the air; dev_vapour({humid, flight}) pins the humidity or the flight every jet is drawn for, dev_vapour(null) frees both
+	if(set!==undefined){ vapour_humid=set&&Number.isFinite(set.humid)?set.humid:null; vapour_force=set&&set.flight?set.flight:null; }
+	const round=(o)=>o?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,Math.round(v*1000)/1000])):null, jets={};
+	for(const [name,st] of [["own",ownship],["bandit",bandit],...[...remotes.entries()].map(([slot,st])=>["r"+slot,st])]){ const rig=st&&st.vapour; if(!rig) continue;
+		jets[name]={ flight:round(rig.flight), shown:round(rig.shown), drawn:rig.drawn, humid:Math.round((vapour_humid??humidity(cfg.clouds,presented(st).y))*1000)/1000 }; }
+	const rig=ownship.vapour, rows=rig&&rig.cores[0].visible?rig.rows[0].map(r=>[r.x,r.y,r.z,r.width,r.alpha].map(v=>Math.round(v*10000)/10000)):[];
+	return { puffs:vapour_pool.activeList.length, pinned:{ humid:vapour_humid, flight:vapour_force }, jets, rope:rows }; };   // rope: the pilot's starboard LEX rope while it shows, apex first, in the jet's frame - x, y, z, width (m) and density
+if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
+if(DEV_MODE) (globalThis as any).dev_wake=()=>{ const w=flight_wake(), at=(st)=>({ x:+st.pos.x.toFixed(1), y:+st.pos.y.toFixed(1), z:+st.pos.z.toFixed(1), vx:+(st.velx||0).toFixed(1), vy:+(st.vely||0).toFixed(1), vz:+(st.velz||0).toFixed(1) });   // i18n-format-ok: developer telemetry, never shown to a user
+	const others={}; if(has_enemy&&bandit.group.visible) others.bandit=at(bandit); for(const [slot,st] of remotes) if(st.group.visible) others["r"+slot]=at(st);
+	return w?{ pieces:w.pieces, trails:w.trails, swirl:w.swirl.map(v=>Math.round(v*1000)/1000), g:Math.round((ownship.gload??1)*1000)/1000, roll:last_out?Math.round((last_out[STATE.omega]||0)/D2R*100)/100:null, own:at(ownship), others }:null; };   // dev: the wake the pilot's core was handed on its last frame, how many jets have one laid, the air it made at the CG (m/s), the jet's g and roll rate, and where every jet is
 	const report={};
 	for(const [name,p] of [["smoke",smoke],["strikes",strikes],["debris",debris],["flares",flares],["tracers",tracers]]){
 		const seen=new Set(); let dup=0, dead=0, mis=0, live=0;
@@ -6490,6 +6871,7 @@ function playback_jet(pose,dt){ const p=pose.properties, n=(key,fallback)=>playb
 	(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
 	st.velx=pose.vx; st.vely=pose.vy; st.velz=pose.vz; st.speed=Math.hypot(pose.vx,pose.vy,pose.vz);
 	st.gearTarget=n("Gear",1); st.hookTarget=n("Hook",0); st.speedbrakeTarget=n("SpeedBrake",0); st.reheat=n("Afterburner",0); st.rounds=undefined;
+	st.aoa=n("AOA",NaN); st.gload=n("G",NaN); st.mach=n("Mach",NaN);   // what its vapour is drawn for; a recording without them leaves the jet's motion to tell
 	const surfaces=playback_surfaces(p); if(surfaces) st.surfaces=surfaces;
 	{ let words=playback_words.get(pose.id); if(!words){ words=new Float64Array(STATE.stage+1); playback_words.set(pose.id,words); }
 		if(playback_damage(p,words)) shed_panels(st,words); }
@@ -6743,8 +7125,10 @@ function fly_player(dt){
 	if(!flight_active){   // bind the core to this mission's world on the first live frame past the loading gate
 		if(MULTIPLAYER && !(net&&net.welcome&&net.geometry)) return;   // the world payload needs the match seed/wrap from the welcome and the map the server serves
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
-		if(!flight_init(flight_world())){ notice(translate("FLIGHT CORE FAILED")); return; }
+		const world=flight_world();
+		if(!flight_init(world)){ notice(translate("FLIGHT CORE FAILED")); return; }
 		flight_active=true; flight_push();
+		vapour_air=world.environment.wind||{ x:0, z:0 };   // a match's core flies still air
 		if(MULTIPLAYER&&net&&net.welcome.spawn&&net.welcome.spawn.map&&airports.length&&carrier_model){ const chart=net.welcome.spawn.map;   // the served geometry is what the core flies; this build's own is what the scene draws — say so when they differ
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
@@ -7219,6 +7603,7 @@ function afterburner(g,on){
 function visuals(dt){
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	contrail_effects();   // every jet's contrail, where the air is cold enough
+	vapour_effects(dt);   // every jet's vapour, where the air is humid enough
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
@@ -7229,7 +7614,7 @@ function visuals(dt){
 		smoke.vx[k]=debris.vx[i]*0.15; smoke.vy[k]=debris.vy[i]*0.15; smoke.vz[k]=debris.vz[i]*0.15;
 		smoke.ttl[k]=smoke.life[k]=1.2+Math.random()*0.8; smoke.sz[k]=0.16; smoke.gr[k]=0.5;
 		smoke.r[k]=0.30;smoke.g[k]=0.29;smoke.b[k]=0.28; }
-	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts);
+	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts)+flush_points(vapour_pool,vp_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
@@ -8843,7 +9228,7 @@ function net_frame(dt){
 			if(mine.alive){ const worst=Math.max(own_burn[0],own_burn[1],own_burning?1:0);
 				if(worst>0) burn_trail(ownship.pos,worst,ownship.velx,ownship.vely,ownship.velz);
 				if(own_leak>0.1) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz); } } }
-	const seen=new Set();
+	const seen=new Set(), wakes=[];
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
 		const st=remote_for(slot);
 		st.pos.set(pose.position[0],pose.position[1],pose.position[2]); st.speed=pose.speed;
@@ -8866,6 +9251,7 @@ function net_frame(dt){
 		// MP debrief reads his damage and his expenditure as ground truth
 		// rather than inferring them from his flight path.
 		st.spent=pose.spent||0; st.leak=pose.leak||0; st.thrust=pose.thrust||0;
+		if(pose.alive) wakes.push({ slot, position:pose.position, attitude:pose.attitude, velocity:[st.velx,st.vely,st.velz], g:pose.g||1 });   // his wake, laid in the pilot's core as the server lays it, so prediction flies through it too
 		st.aoa=pose.aoa||0; st.beta=pose.beta||0; st.gload=pose.g||0;   // #164: his alpha, sideslip and g off the wire — what a recording cannot derive (#44)
 		st.burn=pose.burn; st.burning=!!pose.burning; st.reheat=pose.reheat||0;
 		st.name=pose.name; st.group.visible=pose.alive;
@@ -8882,6 +9268,7 @@ function net_frame(dt){
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
 			if((pose.thrust||0)>0.06) engine_smoke(st.pos,pose.thrust,st.velx,st.vely,st.velz);   // harmless no-op on wires that do not carry it
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
+	flight_wake_shed(wakes);
 	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot);
 	update_darts(dt); }
 // Server missiles ("darts", net.darts): every missile near the player rides
