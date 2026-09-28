@@ -65,7 +65,31 @@ describe('a lever that lost its control takes it back softly', () => {
   })
 
   it('passes each lever the setting it would command, in its own travel units', () => {
-    expect(source).toContain('pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75))')
+    expect(source).toContain('pad_lever(pad,bind.axes.throttle,"throttle",1-throttle_travel())')
     expect(source).toContain('pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0)')
+  })
+})
+
+// The pit's levers stand where a physical lever would (NATOPS 2.1.1.7.2): the dry
+// range to the MIL detent over the first three quarters of their travel and the
+// afterburner zones over the last, so MIL and MAX no longer look the same.
+describe('the throttle levers', () => {
+  const body = /\nfunction throttle_travel\(\)\{[^\n]*\}\n/.exec(source)?.[0] ?? ''
+  const travel = (throttle: number, burner: number) =>
+    new Function('ownship', `${body} return throttle_travel();`)({ throttle, burner }) as number
+
+  it('run from IDLE through the MIL detent into MAX', () => {
+    expect(body).not.toBe('')
+    expect(travel(0, 0)).toBe(0)
+    expect(travel(0.5, 0)).toBeCloseTo(0.375)
+    expect(travel(1, 0)).toBe(0.75)
+    expect(travel(1, 0.5)).toBeCloseTo(0.875)
+    expect(travel(1, 1)).toBe(1)
+  })
+
+  it('turn each lever through the whole clip from its own gauge', () => {
+    expect(source).toMatch(/\{ name:"throttleA",[^\n]*gain:0\.698, gauge:"throttleL" \}/)
+    expect(source).toMatch(/\{ name:"throttleB",[^\n]*gain:0\.698, gauge:"throttleR" \}/)
+    expect(source).toContain('throttleL:throttle_travel(), throttleR:throttle_travel(),')
   })
 })
