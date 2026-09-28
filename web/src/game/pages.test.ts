@@ -18,14 +18,14 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][] }
+interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][]; lines: [number, number, number, number, string][]; fills: [number, number, number, number, string][]; fonts: [string, string][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
   const run = new Function(`const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     ${lift('ddi_legend')} ${lift(name)}
-    const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[]; let style='';
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>{ moves.push([mx,my]); styled.push([style,mx,my]); }; if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:(t,k,v)=>{ if(k==='strokeStyle') style=v; return true; } });
-    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves, styled };`)
+    const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[], lines=[], fills=[], fonts=[]; let style='', fill='', font='', at=[0,0];
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>{ text.push([String(s),px,py]); fonts.push([String(s),font]); }; if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='fillRect') return (a,b,c,d)=>fills.push([a,b,c,d,fill]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>{ moves.push([mx,my]); styled.push([style,mx,my]); at=[mx,my]; }; if(k==='lineTo') return (lx,ly)=>{ lines.push([at[0],at[1],lx,ly,style]); at=[lx,ly]; }; if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:(t,k,v)=>{ if(k==='strokeStyle') style=v; if(k==='fillStyle') fill=v; if(k==='font') font=v; return true; } });
+    ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves, styled, lines, fills, fonts };`)
   return run() as Drawn
 }
 // The bank gauge every attitude display reads, lifted from the gauges block and
@@ -42,42 +42,139 @@ const tip = (d: Drawn, cx: number, cy: number, radius: number) => d.moves.filter
 const texts = (d: Drawn) => d.text.map((t) => t[0])
 const at = (d: Drawn, s: string) => d.text.find((t) => t[0] === s)?.slice(1)
 
+// The EADI against figures 2-23 and 24-22 and 2.13.4.3. The ball's own marks are
+// recorded in its rotated frame (origin at the ball's centre), the rest on the page.
+interface Eadi { pitch?: number; bank?: number; yaw?: number; source?: string; reading?: string; time?: number; deviation?: string }
+function eadi(o: Eadi = {}, display = 'left'): Drawn {
+  return page('ddi_adi', `const ownship={ cas:100, speed:100, gauges:{ pitch:${o.pitch ?? 10}*D2R, bank:${o.bank ?? 0}, yaw:${o.yaw ?? 0}, vspeed:-480 } };
+    const adi_source=${JSON.stringify(o.source ?? 'ins')}, sim_time=${o.time ?? 0}, altitude_reading=()=>(${o.reading ?? '{ feet:1500, radar:false, fallback:false }'}), approach_deviation=()=>(${o.deviation ?? 'null'});`, display)
+}
 describe('the EADI page', () => {
-  const setup = (yaw: number, source: string) => `const ownship={ cas:100, speed:100, gauges:{ pitch:10*D2R, bank:0, yaw:${yaw}, altitude:1500, vspeed:-480, slip:0 } };
-    const alt_radar=false, adi_source=${JSON.stringify(source)}, approach_deviation=()=>null;`
+  const cx = 256, cy = 240, R = 176, T = 10, ppd = 5.2
   it('draws the zenith circle and the nadir circle with a cross on the ball', () => {
-    const d = page('ddi_adi', setup(0, 'ins'))
-    const ppd = 5.2, off = 10 * ppd
+    const d = eadi()
+    const off = 10 * ppd
     expect(d.arcs.some(([ax, ay, r]) => ax === 0 && Math.abs(ay - (off - 90 * ppd)) < 1e-9 && r === 10)).toBe(true)
     expect(d.arcs.some(([ax, ay, r]) => ax === 0 && Math.abs(ay - (off + 90 * ppd)) < 1e-9 && r === 10)).toBe(true)
   })
 
+  it('marks every 10° to 80° each way, crosses above the horizon and bars at and below it', () => {
+    const d = eadi({ pitch: 0 })
+    const crosses = d.lines.filter(([x0, y0, x1, y1]) => x0 === -9 && x1 === 9 && y0 === y1).map((l) => l[1])
+    expect(crosses).toEqual([80, 70, 60, 50, 40, 30, 20, 10].map((n) => 0 - n * ppd))
+    const bars = d.fills.filter(([fx, , w, h]) => fx === -10 && w === 20 && h === 6).map((f) => f[1] + 3)
+    expect(bars).toEqual([0, -10, -20, -30, -40, -50, -60, -70, -80].map((n) => 0 - n * ppd))
+    for (const n of [10, 20, 30, 40, 50, 60, 70, 80]) {
+      expect(d.text).toContainEqual([String(n), 0, -n * ppd - 22]) // the figure on the zenith side of its mark
+      expect(d.text).toContainEqual([String(n), 0, n * ppd - 22])
+    }
+    expect(d.text).toContainEqual(['0', 0, -22])
+    expect(texts(d)).not.toContain('90')
+  })
+
+  it('keeps the ladder at steep pitch, and the sky over the ball at the vertical', () => {
+    const d = eadi({ pitch: 60 })
+    expect(d.lines).toContainEqual([-9, 0, 9, 0, '#39e07a']) // the 60° cross on the waterline
+    const vertical = eadi({ pitch: 90 })
+    const [, sy, , sh] = vertical.fills[0]
+    expect(sy).toBeLessThanOrEqual(-R)
+    expect(sy + sh).toBeGreaterThanOrEqual(R)
+    const line = vertical.lines.filter(([x0, y0, x1, y1]) => x0 === 0 && x1 === 0 && Math.abs(y1 - y0) > 20)
+    const covered = (y: number) => line.some(([, y0, , y1]) => Math.min(y0, y1) <= y && y <= Math.max(y0, y1))
+    expect(covered(-20)).toBe(true)
+    expect(covered(0)).toBe(false) // broken for the zenith circle
+  })
+
+  it('runs one line down the meridian, broken for each figure and ending at the rim', () => {
+    const d = eadi({ pitch: 0 })
+    const line = d.lines.filter(([x0, y0, x1, y1]) => x0 === 0 && x1 === 0 && Math.abs((y0 + y1) / 2 - 90 * ppd) > 1e-9) // less the nadir's cross
+    for (const [, y0, , y1] of line) {
+      expect(Math.min(y0, y1)).toBeGreaterThanOrEqual(-R)
+      expect(Math.max(y0, y1)).toBeLessThanOrEqual(R)
+    }
+    const covered = (y: number) => line.some(([, y0, , y1]) => Math.min(y0, y1) <= y && y <= Math.max(y0, y1))
+    for (const y of [-160, -100, -50, -5, 5, 60, 100, 170]) expect(covered(y)).toBe(true)
+    for (let n = -30; n <= 30; n += 10) expect(covered(-n * ppd - 22)).toBe(false)
+  })
+
+  it('ticks the bank scale on the lower arc at 0, 10, 20, 30, 60 and 90° each side', () => {
+    const d = eadi({ bank: 45 * Math.PI / 180 })
+    const outside = d.lines.filter(([x0, y0, x1, y1]) => Math.abs(Math.hypot(x0 - cx, y0 - cy) - R) < 1e-6 && Math.abs(Math.hypot(x1 - cx, y1 - cy) - R - T) < 1e-6)
+    const angles = outside.map(([x0, y0]) => Math.round(Math.atan2(x0 - cx, y0 - cy) * 180 / Math.PI)).sort((a, b) => a - b)
+    expect(angles).toEqual([-90, -60, -30, -20, -10, 0, 10, 20, 30, 45, 60, 90]) // the eleven ticks, and the pointer at 45° right
+  })
+
+  it('points at the bank with the ladder line carried out past the rim', () => {
+    const level = eadi({ bank: 0 })
+    const bottom = level.lines.filter(([x0, y0, x1, y1]) => x0 === cx && x1 === cx && Math.abs(y0 - (cy + R)) < 1e-9 && Math.abs(y1 - (cy + R + T)) < 1e-9)
+    expect(bottom).toHaveLength(2) // the 0° tick and the pointer over it
+    const banked = eadi({ bank: 45 * Math.PI / 180 })
+    const [pointer] = banked.lines.filter(([x0, y0]) => Math.abs(x0 - (cx + Math.sin(Math.PI / 4) * R)) < 1e-6 && Math.abs(y0 - (cy + Math.cos(Math.PI / 4) * R)) < 1e-6)
+    expect(pointer).toBeDefined()
+    expect(pointer[4]).toBe('#39e07a')
+    const [colour] = eadi({ bank: 45 * Math.PI / 180 }, 'center').lines.filter(([x0, y0]) => Math.abs(x0 - (cx + Math.sin(Math.PI / 4) * R)) < 1e-6 && Math.abs(y0 - (cy + Math.cos(Math.PI / 4) * R)) < 1e-6)
+    expect(colour[4]).toBe('#e8e8e0') // the ladder's ink on the AMPCD
+  })
+
+  it('draws the waterline as a W at the ball\'s centre', () => {
+    const d = eadi()
+    const w = [[cx - 24, cy], [cx - 14, cy], [cx - 7, cy + 11], [cx, cy], [cx + 7, cy + 11], [cx + 14, cy], [cx + 24, cy]]
+    for (let i = 1; i < w.length; i++) expect(d.lines).toContainEqual([w[i - 1][0], w[i - 1][1], w[i][0], w[i][1], '#39e07a'])
+  })
+
+  it('draws the ILS needles full length about the waterline, full scale a fifth of the radius off it', () => {
+    const L = R * 0.325, F = R * 0.2
+    const needles = (display: string) => eadi({ deviation: '{ gs:1, az:-1 }' }, display).lines
+    const near = (a: (number | string)[], b: (number | string)[]) => a.length === b.length && a.every((v, i) => typeof v === 'number' ? Math.abs(v - (b[i] as number)) < 1e-9 : v === b[i])
+    const left = needles('left')
+    expect(left.some((l) => near(l, [cx - L, cy + F, cx + L, cy + F, '#39e07a']))).toBe(true)
+    expect(left.some((l) => near(l, [cx - F, cy - L, cx - F, cy + L, '#39e07a']))).toBe(true)
+    const centre = needles('center')
+    expect(centre.some((l) => near(l, [cx - L, cy + F, cx + L, cy + F, '#ffd24a']))).toBe(true)
+  })
+
   it('puts the turn indicator\'s lower box under an end box at a standard rate turn', () => {
-    const cx = 256, cy = 246, R = 186, sy = cy + R + 12
-    const level = page('ddi_adi', setup(0, 'ins'))
+    const sy = cy + R + 20
+    const level = eadi({ yaw: 0 })
     expect(level.rects).toContainEqual([cx - 12, sy + 12, 24, 16])
-    const standard = page('ddi_adi', setup(3 * Math.PI / 180, 'ins'))
+    const standard = eadi({ yaw: 3 * Math.PI / 180 })
     expect(standard.rects).toContainEqual([cx + 60 - 12, sy + 12, 24, 16])
     expect(standard.rects).toContainEqual([cx + 60 - 12, sy - 8, 24, 16]) // the end box it sits under
-    expect(texts(level)).not.toContain('slip') // the slip ball went with it
+    expect(sy + 12 + 16).toBeLessThan(482 - 10) // clear of the bottom legends
+    expect(sy - 8).toBeGreaterThan(cy + R + T) // clear of the bank scale
   })
 
-  it('shows airspeed and altitude boxed at the top left, the source beside and vertical velocity above', () => {
-    const d = page('ddi_adi', setup(0, 'ins'))
-    expect(at(d, '194')).toEqual([22, 89]) // 100 m/s in knots, in the airspeed box
-    expect(at(d, '1500')).toEqual([22, 125])
-    expect(at(d, 'BARO')).toEqual([130, 125])
-    expect(at(d, '-480')).toEqual([22, 60])
-    expect(d.rects).toContainEqual([16, 74, 88, 30])
-    expect(d.rects).toContainEqual([16, 110, 104, 30])
+  it('boxes airspeed at the top left and altitude at the top right, vertical velocity above it', () => {
+    const d = eadi()
+    expect(d.rects).toContainEqual([40, 44, 88, 30])
+    expect(d.rects).toContainEqual([360, 44, 104, 30])
+    expect(at(d, '194')).toEqual([120, 59]) // 100 m/s in knots
+    expect(at(d, '500')).toEqual([456, 60])
+    expect(at(d, '1')).toEqual([425, 59]) // the thousands left of the hundreds, larger
+    expect(d.fonts).toContainEqual(['1', '24px monospace'])
+    expect(d.fonts).toContainEqual(['500', '18px monospace'])
+    expect(at(d, '-480')).toEqual([456, 30])
+    const low = eadi({ reading: '{ feet:850, radar:false, fallback:false }' })
+    expect(at(low, '850')).toEqual([456, 59])
+    for (const word of ['R', 'B', 'RDR', 'BARO']) expect(texts(d)).not.toContain(word)
   })
 
-  it('offers INS and STBY at the bottom, boxes the source and switches it on a press', () => {
-    const d = page('ddi_adi', setup(0, 'stby'))
-    expect(texts(d)).toContain('INS')
-    expect(texts(d)).toContain('STBY')
+  it('shows the altitude the HUD shows, with R for radar and the flashing B for its fallback', () => {
+    const radar = eadi({ reading: '{ feet:420, radar:true, fallback:false }' })
+    expect(at(radar, '420')).toEqual([456, 59])
+    expect(at(radar, 'R')).toEqual([470, 59])
+    expect(at(eadi({ reading: '{ feet:9000, radar:false, fallback:true }', time: 0 }), 'B')).toEqual([470, 59])
+    expect(texts(eadi({ reading: '{ feet:9000, radar:false, fallback:true }', time: 0.5 }))).not.toContain('B')
+    expect(source).toMatch(/\n\tconst reading=altitude_reading\(\), alt=reading\.feet, radar=reading\.radar, flashB=reading\.fallback;/)
+  })
+
+  it('offers INS at the bottom left and STBY at the bottom right, boxes the source and switches it on a press', () => {
+    const d = eadi({ source: 'stby' })
+    expect(at(d, 'INS')).toEqual([96, 482])
+    expect(at(d, 'STBY')).toEqual([416, 482])
+    expect(d.rects.some(([bx, by]) => bx === 416 - 20 - 6 && by === 482 - 14)).toBe(true) // STBY boxed
     const press = new Function(`let adi_source='stby'; ${lift('adi_press')}
-      const a=adi_press(20), s1=adi_source; const b=adi_press(19), s2=adi_source; const c=adi_press(17); return [a,s1,b,s2,c];`)() as [boolean, string, boolean, string, boolean]
+      const a=adi_press(20), s1=adi_source; const b=adi_press(16), s2=adi_source; const c=adi_press(19); return [a,s1,b,s2,c];`)() as [boolean, string, boolean, string, boolean]
     expect(press).toEqual([true, 'ins', true, 'stby', false])
     expect(source).toMatch(/adi:\{draw:ddi_adi,press:adi_press\}/)
     expect(source).toMatch(/adi_source=\(st==="runway"\|\|st==="carrier"\)\?"stby":"ins";/)
@@ -91,13 +188,13 @@ describe('the attitude pages in a right bank', () => {
   const gauges = `pitch:0, bank:${bank_right(30)}, yaw:0, slip:0, altitude:1500, vspeed:0, casKt:250, mach:0.4, fpm:0, heading:0`
   const turn = -30 * Math.PI / 180 // the canvas y axis runs down, so a negative turn is anticlockwise
 
-  it('turns the EADI ball anticlockwise and swings its sky pointer left', () => {
+  it('turns the EADI ball anticlockwise and swings the ladder line\'s lower end right', () => {
     const d = page('ddi_adi', `const ownship={ cas:100, speed:100, gauges:{ ${gauges} } };
-      const alt_radar=false, adi_source="ins", approach_deviation=()=>null;`)
+      const adi_source="ins", sim_time=0, altitude_reading=()=>({ feet:1500, radar:false, fallback:false }), approach_deviation=()=>null;`)
     expect(d.rotate[0]).toBeCloseTo(turn, 9)
-    const [pointer] = tip(d, 256, 246, 186 - 4)
-    expect(pointer[0]).toBeCloseTo(256 + Math.cos(-Math.PI / 2 + turn) * 182, 6)
-    expect(pointer[0]).toBeLessThan(256)
+    const pointer = d.lines.filter(([x0, y0]) => Math.abs(x0 - (256 + Math.sin(Math.PI / 6) * 176)) < 1e-6 && Math.abs(y0 - (240 + Math.cos(Math.PI / 6) * 176)) < 1e-6)
+    expect(pointer).toHaveLength(2) // over the 30° tick
+    expect(pointer[0][0]).toBeGreaterThan(256)
   })
 
   it('turns the HUD repeater ladder anticlockwise and swings its bank pointer right, as the HUD does', () => {

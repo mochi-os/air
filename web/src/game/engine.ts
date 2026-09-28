@@ -2012,7 +2012,7 @@ function screens_update(){
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
 // semantics; 0 puts the page's transient state back to defaults).
 let adi_source="ins";   // the EADI's attitude source option (2.13.4.3): STBY boxed on a weight-on-wheels power-up, INS otherwise; a press switches
-function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===19) adi_source="stby"; else return false; return true; }
+function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===16) adi_source="stby"; else return false; return true; }
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
@@ -2181,48 +2181,71 @@ function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: paramete
 		const show=(v)=>q===0.1?(Math.round(v||0)/10).toFixed(1):String(Math.round((v||0)/q)*q);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
 		x.fillText(show(L),192,y); x.fillText(show(R),404,y);
 		y+=29; } }   // the fuel total lives on the FUEL page now
+// altitude_reading: the altitude the HUD and the EADI show - barometric, or with the
+// HUD's ALT switch at RDR the radar altitude, which is invalid above 5,000 ft AGL and
+// with the set inhibited by radar silence (2.12.5, 2.12.5.4.7), when the barometric
+// altitude stands in under a flashing B.
+function altitude_reading(){ const baro=ownship.pos.y*3.28084+baro_error();
+	if(!alt_radar) return { feet:baro, radar:false, fallback:false };
+	const g=ground_height(ownship.pos.x,ownship.pos.z), agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
+	if(agl<=5000&&!radalt_inhibited()) return { feet:Math.max(agl,0), radar:true, fallback:false };
+	return { feet:baro, radar:false, fallback:true }; }
+// ddi_adi: the EADI (2.13.4.3, figures 2-23 and 24-22). The ladder is one line down
+// the ball's meridian with a mark every 10° - thin crosses above the horizon, thick
+// bars at and below it - and each figure on the line beside its mark, zenith side.
+// The line runs out past the rim to the bank scale on the lower arc: its lower end
+// is the bank pointer.
 function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=5.2;
 	const colour=display==="center";   // the AMPCD's colour licence; the DDIs shade the ball in green
-	const cx=256, cy=246, R=186;
+	const cx=256, cy=240, R=176, T=10;   // T: the bank scale's tick length, and the ladder line's reach out to it
+	const ink=colour?"#e8e8e0":"#39e07a";
 	x.save(); x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.clip();   // the attitude BALL, not a full-screen wash
 	x.translate(cx,cy); x.rotate(-bank);
 	const off=pitch/D2R*ppd;
-	x.fillStyle=colour?"#123a5e":"#12351f"; x.fillRect(-280,-280+off,560,280);   // sky
-	x.fillStyle=colour?"#4a3a20":"#050b06"; x.fillRect(-280,off,560,280);        // ground
-	x.strokeStyle=colour?"#e8e8e0":"#39e07a"; x.lineWidth=3;
+	x.fillStyle=colour?"#123a5e":"#12351f"; x.fillRect(-280,off-700,560,700);   // sky, tall enough for the ball at the vertical
+	x.fillStyle=colour?"#4a3a20":"#050b06"; x.fillRect(-280,off,560,700);       // ground
+	x.strokeStyle=ink; x.fillStyle=ink; x.lineWidth=3;
 	x.beginPath(); x.moveTo(-280,off); x.lineTo(280,off); x.stroke();
-	x.fillStyle=colour?"#e8e8e0":"#39e07a"; x.font="18px monospace"; x.lineWidth=2;
-	for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
-		x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
-		x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
+	x.lineWidth=2; x.font="18px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	const gaps=[[off-90*ppd-10,off-90*ppd+10],[off+90*ppd-10,off+90*ppd+10]];   // where the line breaks: the zenith and nadir symbols, and each figure
+	for(let d=80;d>=-80;d-=10){ const py=off-d*ppd; gaps.push([py-32,py-12]);
+		x.fillText(String(Math.abs(d)),0,py-22);
+		if(d>0){ x.beginPath(); x.moveTo(-9,py); x.lineTo(9,py); x.stroke(); } else x.fillRect(-10,py-3,20,6); }
+	gaps.sort((a,b)=>a[0]-b[0]);
+	{ let from=-R; x.beginPath();
+		for(const [top,bottom] of gaps){ if(Math.min(top,R)>from){ x.moveTo(0,from); x.lineTo(0,Math.min(top,R)); } from=Math.max(from,bottom); }
+		if(from<R){ x.moveTo(0,from); x.lineTo(0,R); } x.stroke(); }
 	x.beginPath(); x.arc(0,off-90*ppd,10,0,Math.PI*2); x.stroke();   // the zenith, a small circle (2.13.4.3)
 	x.beginPath(); x.arc(0,off+90*ppd,10,0,Math.PI*2); x.moveTo(-10,off+90*ppd); x.lineTo(10,off+90*ppd); x.moveTo(0,off+90*ppd-10); x.lineTo(0,off+90*ppd+10); x.stroke();   // the nadir, a circle with a cross
 	x.restore();
-	x.strokeStyle="#39e07a"; x.lineWidth=2;   // ball rim, bank scale outside the top arc, pointer at the bank angle
+	x.strokeStyle="#39e07a"; x.lineWidth=2;   // the ball's rim, and the bank scale outside its lower arc at 0, 10, 20, 30, 60 and 90° each side
 	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
-	for(const d of [-60,-45,-30,-20,-10,0,10,20,30,45,60]){ const a=-Math.PI/2+d*D2R, i=d===0?16:10;
-		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+i),cy+Math.sin(a)*(R+i)); x.stroke(); }
-	{ const ba=-Math.PI/2-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3);
-		x.fillStyle="#39e07a";
-		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(R-4),cy+Math.sin(ba)*(R-4)); x.lineTo(cx+Math.cos(ba-0.045)*(R-20),cy+Math.sin(ba-0.045)*(R-20)); x.lineTo(cx+Math.cos(ba+0.045)*(R-20),cy+Math.sin(ba+0.045)*(R-20)); x.closePath(); x.fill(); }
-	x.strokeStyle="#39e07a"; x.lineWidth=4;   // waterline, fixed
-	x.beginPath(); x.moveTo(cx-60,cy); x.lineTo(cx-20,cy); x.lineTo(cx,cy+12); x.lineTo(cx+20,cy); x.lineTo(cx+60,cy); x.stroke();
+	for(const d of [-90,-60,-30,-20,-10,0,10,20,30,60,90]){ const a=Math.PI/2+d*D2R;
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+T),cy+Math.sin(a)*(R+T)); x.stroke(); }
+	{ const a=Math.PI/2-bank;   // the ladder line's lower end, carried on out to the scale
+		x.strokeStyle=ink; x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+T),cy+Math.sin(a)*(R+T)); x.stroke(); }
+	x.strokeStyle="#39e07a"; x.lineWidth=3;   // the waterline W, fixed at the ball's centre
+	x.beginPath(); x.moveTo(cx-24,cy); x.lineTo(cx-14,cy); x.lineTo(cx-7,cy+11); x.lineTo(cx,cy); x.lineTo(cx+7,cy+11); x.lineTo(cx+14,cy); x.lineTo(cx+24,cy); x.stroke();
 	const dev=approach_deviation();
-	if(dev){ x.strokeStyle=colour?"#ffd24a":"#7dff9f"; x.lineWidth=4;   // ICLS needles ride the ball, as on the real format
-		const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
-		x.beginPath(); x.moveTo(cx-176,cy+gs*120); x.lineTo(cx-116,cy+gs*120); x.stroke();
-		x.beginPath(); x.moveTo(cx+az*120,cy+94); x.lineTo(cx+az*120,cy+154); x.stroke(); }
-	{ const sy=cy+R+12, span=60, rate=THREE.MathUtils.clamp((gz.yaw||0)/(3*D2R),-1,1)*span;   // the turn indicator below the ball (2.13.4.3): FCS yaw rate, the lower box under an end box at a standard rate turn of 3°/s
+	if(dev){ x.strokeStyle=colour?"#ffd24a":"#39e07a"; x.lineWidth=3;   // the ICLS needles, full length about the waterline, full scale a fifth of the ball's radius off it; yellow only in the AMPCD's colour
+		const gs=THREE.MathUtils.clamp(dev.gs,-1,1)*R*0.2, az=THREE.MathUtils.clamp(dev.az,-1,1)*R*0.2, L=R*0.325;
+		x.beginPath(); x.moveTo(cx-L,cy+gs); x.lineTo(cx+L,cy+gs); x.moveTo(cx+az,cy-L); x.lineTo(cx+az,cy+L); x.stroke(); }
+	{ const sy=cy+R+20, span=60, rate=THREE.MathUtils.clamp((gz.yaw||0)/(3*D2R),-1,1)*span;   // the turn indicator below the ball (2.13.4.3): FCS yaw rate, the lower box under an end box at a standard rate turn of 3°/s
 		x.strokeStyle="#39e07a"; x.lineWidth=2;
 		for(const bx of [-span,0,span]) x.strokeRect(cx+bx-12,sy-8,24,16);
 		x.strokeRect(cx+rate-12,sy+12,24,16); }
-	{ const kcas=Math.round((ownship.cas??ownship.speed)*1.94384), alt=Math.round(gz.altitude||0), vv=Math.round((gz.vspeed||0)/10)*10;   // the top-left block (2.13.4.3, MC OFP 13C): vertical velocity over the airspeed and altitude boxes, the altitude source beside
-		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="left";
-		x.fillText(String(vv),22,60);
-		x.strokeRect(16,74,88,30); x.fillText(String(kcas),22,89);
-		x.strokeRect(16,110,104,30); x.fillText(String(alt),22,125);
-		x.fillText(alt_radar?"RDR":"BARO",130,125); }
-	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,19,"STBY",true,adi_source==="stby"); }
+	{ const kcas=Math.round((ownship.cas??ownship.speed)*1.94384), reading=altitude_reading(), shown=Math.max(0,Math.round(reading.feet)), thousands=Math.floor(shown/1000), vv=Math.round((gz.vspeed||0)/10)*10;   // airspeed boxed at the top left; altitude boxed at the top right, the thousands larger as on the HUD, with the vertical velocity above it and R (or the flashing B) to its right (2.13.4.3, MC OFP 13C)
+		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.textAlign="right"; x.textBaseline="middle";
+		x.strokeRect(40,44,88,30); x.font="20px monospace"; x.fillText(String(kcas),120,59);
+		x.strokeRect(360,44,104,30);
+		if(thousands>0){ const rest=String(shown%1000).padStart(3,"0"); x.font="18px monospace"; const rw=x.measureText(rest).width;
+			x.fillText(rest,456,60); x.font="24px monospace"; x.fillText(String(thousands),456-rw-1,59); }
+		else { x.font="24px monospace"; x.fillText(String(shown),456,59); }
+		x.font="20px monospace"; x.fillText(String(vv),456,30);
+		x.textAlign="left";
+		if(reading.radar) x.fillText("R",470,59);
+		else if(reading.fallback&&(sim_time*3)%2<1) x.fillText("B",470,59); }
+	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,16,"STBY",true,adi_source==="stby"); }
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
 	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
@@ -8613,10 +8636,7 @@ function draw_hud(){
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
-	let alt=baro, radar=false, flashB=false;
-	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
-		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
-		if(agl<=5000&&!radalt_inhibited()){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
+	const reading=altitude_reading(), alt=reading.feet, radar=reading.radar, flashB=reading.fallback;
 	if(!declutter) hctx.strokeRect(lx,wly,96,30);
 	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
