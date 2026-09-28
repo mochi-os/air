@@ -2547,10 +2547,10 @@ if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei
 // flashing centre legend called BINGO at every join for the fifth of a second
 // that took.
 function bingo_low(){ if(cheat("fuel")||!flight_active) return false;
-	return ((ownship.fuel??0)+(ownship.external??0))*2.20462<fuel_state.bingo; }
+	return (ownship.fuel??0)*2.20462<fuel_state.bingo; }   // internal fuel alone (NATOPS 2.2.10.4)
 function ddi_fuel(x,display){ const gz=ownship.gauges||{};
 	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=(gz.flowL||0)+(gz.flowR||0);
-	const low=bingo_low(), colour=display==="center";   // the BINGO caret watches TOTAL fuel — externals burn first, so they count (#17)
+	const low=bingo_low(), colour=display==="center";   // the BINGO caret watches internal fuel, as the caution does (NATOPS 2.2.10.4)
 	x.fillText("FUEL",256,36);
 	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest INTERNAL total inside — one external figure below it (concurrent transfer drains the tanks in step, so per-tank rows would all read the same)
 	x.beginPath(); x.moveTo(256,86); x.lineTo(292,130); x.lineTo(292,330); x.lineTo(276,364); x.lineTo(236,364); x.lineTo(220,330); x.lineTo(220,130); x.closePath(); x.stroke();
@@ -5653,9 +5653,9 @@ function cautions_update(){
 	if(own_burn[0]>0) push("L ENG FIRE",true); else if(core&&core[STATE.engine_harm]>0.55) push("L ENG");
 	if(own_burn[1]>0) push("R ENG FIRE",true); else if(core&&core[STATE.engine_harm+1]>0.55) push("R ENG");
 	if((core&&core[STATE.leak]>0.1)||own_leak>0.1) push("FUEL LEAK");
-	if(!cheat("fuel")){ const total=(ownship.fuel??0)+(ownship.external??0);
+	if(!cheat("fuel")){ const internal=ownship.fuel??0;   // BINGO appears when the INTERNAL fuel reaches the setting (NATOPS 2.2.10.4)
 		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
-		else if(total>0&&total<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+		else if(internal>0&&internal<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
 	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
@@ -6604,12 +6604,11 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz]; if(ownship.gload>peak_g) peak_g=ownship.gload;   // sticky peak g for the NATOPS readout (#133)
-	{ const read=fuel_read, beforeInternal=ownship.fuel??0, beforeTotal=beforeInternal+(ownship.external??0);   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
+	{ const read=fuel_read, beforeInternal=ownship.fuel??0;   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
 		ownship.fuel=out[STATE.fuel]; ownship.external=out[STATE.external]||0;
-		const total=ownship.fuel+ownship.external;
 		fuel_read=true;
 		if(read&&!cheat("fuel")){   // the calls are crossings, so they need a real reading behind them: the first reading of a mission is a state the legend shows, not a crossing; a frozen tank makes them meaningless
-			if(beforeTotal>=BINGO&&total<BINGO) notice(translate("BINGO FUEL"));   // BINGO is a total-fuel caret (#17: externals count — they burn first, so total is what endurance means)
+			if(beforeInternal>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));   // BINGO judges the internal fuel quantity (NATOPS 2.2.10.4), not the external tanks
 			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
@@ -8350,7 +8349,7 @@ function draw_hud(){
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
 	else { const pounds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/10)*10;   // the IFEI headline is TOTAL fuel, externals included (#17) — they burn first, so this is the number that counts down from the top
 		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes (internal — the feed-tank hardware caution)
-		else if(((ownship.fuel??1e9)+(ownship.external??0))<BINGO) hctx.fillStyle="#ffb050";
+		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";   // BINGO on internal fuel (NATOPS 2.2.10.4)
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; } }
 
 	// ---- catapult prompt ----
