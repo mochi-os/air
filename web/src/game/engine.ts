@@ -2463,7 +2463,6 @@ const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], 
 const UFC_CUES={ tcn:[0,3], ils:[0] };   // the colons the game's fixed equipment states show: TACAN in T/R on the X band, ILS on its channel
 const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 };   // the selected function, the :RALT cue, the keypad entry, the ERROR flash, the blink-once deadline
 let ufc_dirty=true, ufc_last="";
-let law_set=false;   // the low-altitude index was keyed on the UFC: the climb-out no longer restores the pattern's 200
 // ufc_face: what the windows show, from the panel's state and the equipment it
 // reads (silent: EMCON/radar silence; atc; ils: the ICLS needles live; index: the
 // low-altitude index). The scratchpad is nine characters: two alphanumeric (ON for
@@ -2476,30 +2475,28 @@ function ufc_face(state,live,now){
 	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
 	else if(now<state.blink) scratch="         ";
 	else { const on=state.func==="ap"?live.atc:state.func==="tcn"?true:state.func==="ils"?live.ils:false;
-		const seven=state.entry!==""?state.entry:(state.func==="ap"&&state.ralt)?String(live.index):"";
+		const seven=state.entry;
 		scratch=(on?"ON":"  ")+seven.padStart(7); }
 	return { scratch, options }; }
-function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), index:law_index }; }
+function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation() }; }
 function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
 	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
 	return best; }
 // ufc_press works one pushbutton. Digits fill the entry; CLR clears the entry or
-// the ERROR first and the option windows second (2.13.5.9); ENT keys the entry to
-// the selected option, which is only :RALT: the low-altitude index, 0 to 5,000 ft.
-// A function selector shows its page, or clears the display when pressed again;
-// A/P engages the approach power compensator as the autopilot switch engages the
-// autopilot (2.13.5.10). :RALT pressed again disables the warning until it re-arms
-// from above the index (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2).
+// the ERROR first and the option windows second (2.13.5.9); ENT has no entry the
+// game keys, so it flags ERROR. A function selector shows its page, or clears the
+// display when pressed again; A/P engages the approach power compensator as the
+// autopilot switch engages the autopilot (2.13.5.10). Pressing :RALT, or commanding
+// the UFC to another mode, disables a sounding primary low-altitude warning until
+// it is reset (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2).
 function ufc_press(name){ const now=performance.now()/1000;
 	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
 	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else { ufc.func=""; ufc.ralt=false; } }
-	else if(name==="ent"){ const v=ufc.entry===""?NaN:+ufc.entry;
-		if(ufc.func==="ap"&&ufc.ralt&&v>=0&&v<=5000){ law_index=v; law_set=true; ufc.entry=""; ufc.blink=now+0.3; }
-		else ufc.error=true; }
+	else if(name==="ent") ufc.error=true;
 	else if(name==="emcon") pit_press("radar",0);   // one silence: the radar, and the radar altimeter with it (#29)
 	else if(name.startsWith("opt")){ const i=+name.slice(3);
-		if(ufc.func==="ap"&&i===3){ if(ufc.ralt){ ufc.ralt=false; law_armed=false; } else ufc.ralt=true; ufc.entry=""; ufc.error=false; } }
-	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; }
+		if(ufc.func==="ap"&&i===3){ ufc.ralt=!ufc.ralt; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; } }
+	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
 	ufc_dirty=true; ufc_update(true); }
 function build_ufc(g){
 	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
@@ -2527,7 +2524,7 @@ function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 	window_(UFC_SCRATCH.y[0],UFC_SCRATCH.y[1],UFC_SCRATCH.z[0],UFC_SCRATCH.z[1],face.scratch,"right");
 	UFC_OPTIONS.rows.forEach((r,i)=>window_(r-UFC_OPTIONS.h/2,r+UFC_OPTIONS.h/2,UFC_OPTIONS.z[0],UFC_OPTIONS.z[1],face.options[i],"left"));
 	u.tex.needsUpdate=true; }
-if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, armed:law_armed }; };   // dev: press a UFC pushbutton headless and read the windows
+if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, primary:law_primary, disabled:law_disabled }; };   // dev: press a UFC pushbutton headless and read the windows
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
 if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
@@ -5494,6 +5491,8 @@ function recording_sample(){
 		...(hud_boxed?{target:recorded_state(hud_boxed)}:{}),
 		// battle channels (#238): what the fight did to ME, from the same
 		// state the CAS alerts and damage visuals read
+		if(ch===key_of("index.up")) pit_press("index",1);   // the radar altimeter's low-altitude index knob, for the views without the panel
+		if(ch===key_of("index.down")) pit_press("index",-1);
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
 		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
@@ -5544,6 +5543,8 @@ function recording_sample(){
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
 	// number), never reused within a recording. Shooter and target use the
+	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
+		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	// recorded ids above.
 	const recorded=recorded_state;
 	for(let k=0;k<missiles.length;k++){ const m=missiles[k]; if(!m.kind) continue;
@@ -5600,6 +5601,7 @@ function recording_identity(){ return replay_identity(MULTIPLAYER,MULTIPLAYER&&j
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
+	case "index": law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, raises the low-altitude index
 const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
 let own_written=false;   // this death is in the recording: the ownship's last sample, carrying its Fate and killer, has been kept
@@ -5689,8 +5691,16 @@ function cautions_update(){
 	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
 	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
-let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
-let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
+let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
+let law_disabled=false;   // the primary warning was disabled from the UFC (:RALT, or another UFC mode) and stays quiet until it is reset
+let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
+const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
+const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
+let altitude_called=-Infinity;   // sim time of the last ALTITUDE, ALTITUDE, which the voice queue speaks once
+// index_step turns the height indicator's knob one notch: clockwise raises the
+// index (2.12.5.4.1). The dial is expanded low down, so the notches are too.
+function index_step(index,direction){ const notch=v=>v<100?10:v<500?50:v<1000?100:500;
+	return THREE.MathUtils.clamp(direction>0?index+notch(index):index-notch(index-1),0,5000); }
 let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
 const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
@@ -6105,6 +6115,7 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 		let best=null as any;
 		for(let i=0;i<pos.count;i+=stride){ v.fromBufferAttribute(pos,i).applyMatrix4(m);
 			if(!best || v.y<best.y) best={y:v.y,x:v.x,z:v.z}; }
+	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 		if(best) rows.push({n:(o.name||o.parent?.name||"?").slice(0,28), y:+best.y.toFixed(2), x:+best.x.toFixed(2), z:+best.z.toFixed(2)}); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	rows.sort((p1,p2)=>p1.y-p2.y);
 	return JSON.stringify(rows.slice(0,16));
@@ -6827,33 +6838,8 @@ function fly_player(dt){
 			if(audio_prev.droop!==undefined&&dt>0)
 				audio_servo(sim_time<flap_armed&&Math.abs(droop-audio_prev.droop)/dt>0.1);
 			audio_prev.droop=droop; }
-		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
+		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // the radar altimeter's height above the surface, ft, for its warnings and the GPWS escape model
 			const sink=-(ownship.vely??0);   // m/s down
-			// Gear down it is the index call, and it sounds ONCE (#187). The
-			// real APN-194 compares radar altitude against a pilot-set low
-			// altitude index — normally 200 ft, 40 for a cat shot — and the
-			// gear decides the manner: gear UP and below the index the tone
-			// repeats until reset, gear DOWN it sounds once as the jet
-			// descends through it, because the descent is declared. #47 made
-			// the aural repeat, which is right for the escape case below and
-			// was applied to both, so every approach flew its whole glideslope
-			// under a repeating tone and a flashing break-X.
-			//
-			// DESCENDING through the index, which is what the call is: the
-			// real one sounds on the way down and the index is set to 40 ft for
-			// a cat shot precisely so a launch does not trip it. #187 dropped
-			// the old `sink>2` on the grounds that a stabilised approach sinks
-			// 4.2 m/s and so was never excluded by it — true, but the gate was
-			// keeping the TAKEOFF quiet, and without it every rotation got the
-			// call as the jet climbed through 200 ft with the gear still down.
-			// 0.5 m/s is the honest reading of "descending" rather than the old
-			// 400 fpm, which was high enough to look arbitrary.
-			//
-			// gearTarget is the RETRACTION target (0 = down, 1 = up, as the
-			// spawn and the gear horn read it): the old branches were keyed
-			// backwards, so a gear-up fight only ever had the index call — one
-			// second of warning at the crash flight's sink.
-			const dirty=(ownship.gearTarget??0)<=0.5&&agl<law_index&&sink>0.5;
 			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
@@ -6878,24 +6864,28 @@ function fly_player(dt){
 				if(-sink>5.08&&agl<500&&slow){ if(gpws.climb<0) gpws.climb=sim_time; else if(sim_time-gpws.climb>5) gpws.waveoff=sim_time; }
 				else gpws.climb=-1;
 				gpws.gear=flying&&agl<150&&sink>0.5&&slow&&(ownship.gear??1)>=0.02&&sim_time-Math.max(gpws.wheels,gpws.waveoff)>60; }
-			// law_active is the ESCAPE warning and carries the whole
-			// presentation: the repeating aural (#47) and the break-X. The
-			// index call below is aural only and gear-down only, as the jet's
-			// is — a warning light on the altimeter face, not a symbol across
-			// the HUD (#187).
+			// law_active is the GPWS escape warning (NATOPS 2.17.5, #243) and carries its
+			// whole presentation: the repeating aural (#47) and the break-X.
 			law_active=closure&&flying;
-			const declared=dirty&&flying&&!RADAR.sil;   // the primary low-altitude warning is the set's (2.12.5.1): radar silence inhibits the set and the call with it (#29)
-			if(law_active){ audio_law(); law_calls++; } // repeats while below: the escape margin is gone and stays gone until the pilot fixes it
-			else if(declared&&law_armed){ audio_law(); law_calls++; law_armed=false; }   // one call per descent through the index, then quiet: the approach is the pilot's
-			// Armed only from ABOVE the index, since the call is a descent through
-			// it. A jet spawned on the surface starts below any index: heavy, it
-			// settles onto its struts before weight-on-wheels latches, and that
-			// settle read as a descent. The cat shot's 40 ft index arms as the jet
-			// leaves the deck, so the settle off the bow is quiet and a settle
-			// toward the water is not; climbing away restores the pattern's 200.
-			if(!law_active&&!declared){
-				if(agl>400){ law_armed=true; if(!law_set) law_index=200; }   // a keyed index (UFC :RALT, #15) is the pilot's and stays
-				else if(law_index<200&&agl>law_index) law_armed=true; } }
+			// The primary radar low-altitude warning (2.12.5.1): gear up and locked and the
+			// radar altitude below the index, the whoop repeating until it is reset - a climb
+			// above the index, or the index turned below the present altitude - or disabled
+			// from the UFC (ufc_press), after which it stays quiet until that reset. With the
+			// gear down it does not sound. Radar silence inhibits the set and it with it (#29).
+			const below=flying&&(ownship.gear??1)>0.98&&!RADAR.sil&&agl<law_index;   // the index stops at 5,000 ft, where the set's reading ends
+			if(!below) law_disabled=false;
+			law_primary=below&&!law_disabled;
+			if(law_active||law_primary){ audio_law(); law_calls++; }   // repeats while either holds
+			// The secondary radar and barometric warnings (2.12.5.2, 2.12.5.3): one ALTITUDE,
+			// ALTITUDE as the jet descends through the altitude set for each; 0, which no
+			// reading goes below, disables it. Each arms 50 ft above its altitude - the game's
+			// margin, which NATOPS does not give - so a jet levelled at the setting does not
+			// call on every ripple.
+			{ const readings={ radar:(!RADAR.sil&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084 };
+				for(const kind of ["radar","baro"]){ const set=altitude_set[kind], now=readings[kind];
+					if(now===null||!flying){ altitude_armed[kind]=false; continue; }
+					if(now>set+50) altitude_armed[kind]=true;
+					else if(altitude_armed[kind]&&now<set){ altitude_armed[kind]=false; altitude_called=sim_time; } } } }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
@@ -7292,9 +7282,10 @@ function reset_ownship(){
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	baro_armed=false; baro_shown=-1e9; baro_flash=false;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
-	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
+	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
+	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
-	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; law_set=false; ufc_dirty=true;   // the UFC powers up clear (#15)
+	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true;   // the UFC powers up clear (#15)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
