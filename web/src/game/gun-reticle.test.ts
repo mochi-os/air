@@ -137,13 +137,13 @@ describe('the gun ranging data under the altitude box', () => {
 })
 
 // The selected-weapon block as text with its x, baseline and alignment.
-function weapon(master: string, guns = false): { align: string; text: [string, number, number, string][] } {
+function weapon(master: string, guns = false): { align: string; text: [string, number, number, string][]; styles: string[] } {
   if (!legend) throw new Error('selected weapon block not found in engine.ts')
-  const run = new Function('master', 'guns', `const text=[]; let align='left'; const hctx={ fillStyle:'', get textAlign(){ return align; }, set textAlign(v){ align=v; }, fillText(t,x,y){ text.push([t,x,y,align]); } };
+  const run = new Function('master', 'guns', `const text=[], styles=[]; let align='left'; const hctx={ fillStyle:'g', get textAlign(){ return align; }, set textAlign(v){ align=v; }, fillText(t,x,y){ text.push([t,x,y,align]); styles.push(this.fillStyle); } };
     const aa=master!=='nav', cx=500, cy=400, ppdv=20, AM='a', GR='g', amraam_visual=false, input={guns}, cheat=()=>false, translate=(t)=>t;
     const ownship={ rounds:572, msl:2, amraam:6 };
     ${legend}
-    return { align, text };`) as (master: string, guns: boolean) => { align: string; text: [string, number, number, string][] }
+    return { align, text, styles };`) as (master: string, guns: boolean) => { align: string; text: [string, number, number, string][]; styles: string[] }
   return run(master, guns)
 }
 
@@ -160,6 +160,10 @@ describe('the selected weapon block', () => {
   it("puts a missile's count beside its name on one line", () => {
     expect(weapon('9m').text).toEqual([['9M 2', 500, 400 + 7.2 * 20, 'center']])
     expect(weapon('120c').text.map(([t]) => t)).toEqual(['120C 6'])
+  })
+
+  it('stays green while the gun fires, as the whole HUD is', () => {
+    expect(weapon('gun', true).styles).toEqual(['g', 'g'])
   })
 
   it('draws nothing in NAV, where the real HUD has no weapon block (figure 2-26)', () => {
