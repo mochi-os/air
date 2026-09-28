@@ -4491,8 +4491,8 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		fuelLbs:Math.min(lbs,21000),
 		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
 		egtL:300+(150+360*gL)*hL+90*bL, egtR:300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
-		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
-		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
+		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand, main engine only - the IFEI and engine page leave the afterburner out (NATOPS 2.1.1.7.5); a dead engine's counter winds to zero, matching the core's burn (#41)
+		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
