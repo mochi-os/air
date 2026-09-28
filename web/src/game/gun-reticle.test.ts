@@ -170,3 +170,84 @@ describe('the selected weapon block', () => {
     expect(weapon('nav').text).toEqual([])
   })
 })
+
+// The breakaway X (#120): one cue for every weapon - the AMRAAM inside Rmin, the
+// 9M inside its own minimum, or closing to minimum range within 1.5 s - drawn as
+// a large X across the HUD's optical centre, about 7° across, in the symbology's
+// green and line (the HUD draws in green only; Chuck's guide p.391 shows it), and
+// across the radar attack format's centre too, both flashing ("displayed and
+// flashed when the L&S target range is within Rmin", VRS AIM-7 documentation).
+describe('the breakaway X', () => {
+  const helpers = ['breakaway_shown', 'breakaway'].map((name) => new RegExp(`\\nfunction ${name}\\([^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
+  const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const rdr = /\n\t(if\(breakaway_shown\(\)\)\{ x\.strokeStyle=[^}]*\})/.exec(source)?.[1] ?? ''
+  const draw = (code: string, cue: string, time = 0) => {
+    const segments: number[][] = [], state: Record<string, unknown> = {}
+    let at = [0, 0]
+    const canvas = new Proxy(state, { get: (s, k) => {
+      if (k === 'moveTo') return (x: number, y: number) => { at = [x, y] }
+      if (k === 'lineTo') return (x: number, y: number) => { segments.push([...at, x, y]); at = [x, y] }
+      if (k === 'setLineDash') return (d: number[]) => { s.dash = d.length }
+      return k in s ? s[k as string] : () => {}
+    }, set: (s, k, v) => { s[k as string] = v; return true } })
+    new Function('hctx', 'x', 'hud_cue', 'sim_time', 'cx', 'cy', 'ppdv', 'GR', 'AM', `${helpers} ${code}`)(canvas, canvas, cue, time, 640, 360, 20, 'g', 'a')
+    return { segments, state }
+  }
+
+  it('is a large green X across the HUD\'s optical centre, about 7° across, in the symbology line', () => {
+    expect(helpers).toMatch(/function breakaway_shown[\s\S]*function breakaway\(/)
+    expect(hud).not.toBe('')
+    const { segments, state } = draw(hud, 'break')
+    expect(segments).toEqual([[570, 290, 710, 430], [710, 290, 570, 430]])
+    expect(state.strokeStyle).toBe('g')
+    expect(state.lineWidth).toBe(1.5)
+    expect(state.dash).toBe(0)
+  })
+
+  it('flashes twice a second', () => {
+    const shown = (time: number) => draw(hud, 'break', time).segments.length > 0
+    expect([0, 0.1, 0.24].map(shown)).toEqual([true, true, true])
+    expect([0.26, 0.4, 0.49].map(shown)).toEqual([false, false, false])
+    expect(shown(0.5)).toBe(true)
+  })
+
+  it('shows only with the break cue', () => {
+    for (const cue of ['', 'steady', 'flash', '9m', 'gun', 'tone']) expect(draw(hud, cue).segments, cue).toEqual([])
+  })
+
+  it('crosses the radar attack format\'s centre with it, flashing in step', () => {
+    expect(rdr).not.toBe('')
+    const start = source.indexOf('function ddi_rdr('), end = source.indexOf('\nfunction ', start + 1)
+    expect(source.slice(start, end)).toContain(rdr.trim())
+    const { segments, state } = draw(rdr, 'break')
+    expect(segments).toEqual([[191, 185, 321, 315], [321, 185, 191, 315]])
+    expect(state.strokeStyle).toBe('#39e07a')
+    expect(draw(rdr, 'break', 0.3).segments).toEqual([])
+    expect(draw(rdr, '').segments).toEqual([])
+  })
+
+  it('takes the cue from every weapon: the AMRAAM zone draws first, the 9M and the closure breakaway before the cluster', () => {
+    const x = source.indexOf('\t// ---- the breakaway X')
+    expect(source.indexOf('\tif(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);')).toBeLessThan(x)
+    const cluster = source.indexOf('\t// ---- instrument furniture (#133)')
+    expect(source.indexOf('\tif(brk) hud_cue="break";')).toBeLessThan(cluster)
+    expect(source.indexOf('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");')).toBeLessThan(cluster)
+    expect(source).toMatch(/const cue=shoot_cue\(z\);\n\tif\(cue\) hud_cue=cue;/)
+  })
+
+  it('is the only X: no weapon draws its own', () => {
+    expect(source).not.toMatch(/breakaway X[^\n]*\n[^\n]*const R=2\.2\*ppd/)
+    expect(source).not.toMatch(/inside the heater's own minimum: the breakaway X/)
+    expect(source).not.toMatch(/const r=28;   \/\/ breakaway X/)
+    expect(source.match(/(?<!function )breakaway\((hctx|x),/g)?.length).toBe(2)
+  })
+
+  it('keeps the AMRAAM\'s SHOOT off while it is inside Rmin', () => {
+    const line = /\n\tif\(cue&&cue!=="break"&&\(cue==="steady"\|\|\(sim_time\*4\)%2<1\)\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const shoot = (cue: string) => new Function('cue', `const text=[]; let hud_shoot=false; const sim_time=0, GR='g', cx=0, cy=0, ppdv=20;
+      const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t){ text.push(t); } }; ${line} return text;`)(cue) as string[]
+    expect(shoot('break')).toEqual([])
+    expect(shoot('steady')).toEqual(['SHOOT'])
+  })
+})
