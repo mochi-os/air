@@ -2112,7 +2112,6 @@ function ddi_rdr(x){
 		x.strokeStyle="rgba(57,224,122,0.7)"; x.lineWidth=2; x.setLineDash([10,7]);
 		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); x.setLineDash([]);
 		x.font="14px monospace"; x.textAlign="center"; x.fillText("JAM",px,64); }
-	if(jammer_armed){ x.font="16px monospace"; x.textAlign="right"; x.fillStyle=jammer_loud()?"#ffc14d":"#39e07a"; x.fillText(jammer_loud()?"XMIT":"JAM ARM",430,110); x.fillStyle="#39e07a"; }   // #31: the ASPJ state, amber while actually radiating
 	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
 		x.globalAlpha=Math.max(0.15,1-(RADAR.time-b.at)/12); x.fillStyle="#39e07a";
 		x.fillRect(rdr_x(b.azimuth,half)-6,rdr_y(b.range,scaleM)-2,12,5); }
