@@ -48,14 +48,14 @@ describe('the standby attitude indicator', () => {
     // voice come on at. The face once painted the bug and lit the lamp at a
     // fixed 250 ft while the aural fired at law_index (200 in the pattern, 40
     // for a cat shot).
-    const draw = /\nfunction radalt_draw\(r, agl, index, silent\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+    const draw = /\nfunction radalt_draw\(r, agl, index, silent, test\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
     expect(draw).not.toBe('')
     expect(draw).toMatch(/dial\(RADALT_DIAL,index\)/)
     expect(draw).toMatch(/lamp=!off&&agl<index/)
     expect(draw).not.toMatch(/250/)
     expect(draw).toMatch(/the green BIT light/)
-    expect(source).toMatch(/radalt_draw\(r, \(ownship\.pos\.y-\(surface>-1e8\?Math\.max\(surface,0\):0\)\)\*3\.28084, law_index, RADAR\.sil\);/) // feet, like the dial, the index and the aural
-    expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index, RADAR\.sil\);/)
+    expect(source).toMatch(/radalt_draw\(r, \(ownship\.pos\.y-\(surface>-1e8\?Math\.max\(surface,0\):0\)\)\*3\.28084, law_index, radalt_inhibited\(\), radalt_on&&sim_time-radalt_test<5\);/) // feet, like the dial, the index and the aural
+    expect(source).toMatch(/radalt_draw\(g\.userData\.radalt, 1e9, law_index, radalt_inhibited\(\), false\);/)
   })
 
   it('keeps the approach deviation for the HUD and the ADI page only', () => {
@@ -122,17 +122,17 @@ describe('the ALR-67 azimuth indicator', () => {
 // radar altitude to baro with the flashing B (2.12.5.4.7), and the primary
 // low-altitude warning, the set's own (2.12.5.1), stays quiet.
 function radalt_face(agl: number, index: number, silent: boolean): { off: boolean; lamp: boolean } {
-  const draw = /\nfunction radalt_draw\(r, agl, index, silent\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+  const draw = /\nfunction radalt_draw\(r, agl, index, silent, test\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
   if (!draw) throw new Error('radalt_draw not found in engine.ts')
   const run = new Function('agl', 'index', 'silent', `const D2R=Math.PI/180, RADALT_DIAL=[], dial=()=>0;
     const x=new Proxy({}, { get:()=>()=>{}, set:()=>true }); const r={ canvas:{ getContext:()=>x }, tex:{} };
-    ${draw} radalt_draw(r,agl,index,silent); return { off:!!r.off, lamp:!!r.lamp };`)
+    ${draw} radalt_draw(r,agl,index,silent,false); return { off:!!r.off, lamp:!!r.lamp };`)
   return run(agl, index, silent) as { off: boolean; lamp: boolean }
 }
 function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: number; radar: boolean; flashB: boolean } {
   const block = /\n\tlet alt=baro, radar=false, flashB=false;[\s\S]*?else flashB=true; \}[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('HUD altitude source block not found in engine.ts')
-  const run = new Function('feet', 'rdr', 'silent', `const ownship={pos:{x:0,y:feet/3.28084,z:0}}, baro=feet, ground_height=()=>0, alt_radar=rdr, RADAR={sil:silent};
+  const run = new Function('feet', 'rdr', 'silent', `const ownship={pos:{x:0,y:feet/3.28084,z:0}}, baro=feet, ground_height=()=>0, alt_radar=rdr, RADAR={sil:silent}, radalt_inhibited=()=>RADAR.sil;
     ${block} return { alt:Math.round(alt), radar, flashB };`)
   return run(feet, rdr, silent) as { alt: number; radar: boolean; flashB: boolean }
 }
@@ -148,7 +148,7 @@ interface Heard { whoop: boolean; gpws: boolean; call: string }
 const lowblock = /\n\t\t\tlaw_active=closure&&flying[^\n]*\n[\s\S]*?law_calls\+\+; \}[^\n]*\n/.exec(source)?.[0] ?? ''
 function warned(frames: Frame[]): Heard[] {
   if (!lowblock) throw new Error('low-altitude warnings not found in engine.ts')
-  const run = new Function('frames', `const D2R=Math.PI/180, flying=true, sim_time=100, RADAR={ sil:false }, ownship={ gear:1, cas:0, right:{ y:0 }, up:{ y:1 } }, gpws={ wheels:-Infinity, call:"" };
+  const run = new Function('frames', `const D2R=Math.PI/180, flying=true, sim_time=100, RADAR={ sil:false }, radalt_inhibited=()=>RADAR.sil, ownship={ gear:1, cas:0, right:{ y:0 }, up:{ y:1 } }, gpws={ wheels:-Infinity, call:"" };
     let closure=false, law_active=false, law_primary=false, law_disabled=false, law_index=200, law_calls=0, sounded=false; const audio_law=()=>{ sounded=true; };
     return frames.map((f)=>{ ownship.gear=f.gear??1; RADAR.sil=!!f.silent; law_index=f.index??200; const agl=f.agl; sounded=false; closure=!!f.escape;
       const r=(f.bank??0)*D2R; ownship.right.y=-Math.sin(r); ownship.up.y=Math.cos(r); ownship.cas=(f.knots??300)/1.94384; gpws.wheels=f.wheels===undefined?-Infinity:sim_time-f.wheels;
@@ -399,7 +399,7 @@ interface Pass { radar?: number; baro: number; silent?: boolean; flying?: boolea
 function called(frames: Pass[], set: { radar: number; baro: number }): boolean[] {
   const block = /\n\t\t\t\{ const readings=[\s\S]*?altitude_called=sim_time; \} \} \}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('secondary low-altitude warnings not found in engine.ts')
-  const run = new Function('frames', 'set', `const RADAR={ sil:false }, ownship={ pos:{ y:0 } }, altitude_set=set, altitude_armed={ radar:false, baro:false }, baro_error=()=>0;
+  const run = new Function('frames', 'set', `const RADAR={ sil:false }, radalt_inhibited=()=>RADAR.sil, ownship={ pos:{ y:0 } }, altitude_set=set, altitude_armed={ radar:false, baro:false }, baro_error=()=>0;
     let altitude_called=-Infinity, sim_time=0, flying=true, agl=0;
     return frames.map((f)=>{ sim_time++; RADAR.sil=!!f.silent; flying=f.flying??true; agl=f.radar??9999; ownship.pos.y=f.baro/3.28084;
       ${block} return altitude_called===sim_time; });`)
@@ -451,7 +451,7 @@ describe('the low-altitude index knob', () => {
   })
 
   it('is the only thing that moves the index, from the face, the keys and nothing else', () => {
-    expect(source).toMatch(/case "index": law_index=index_step\(law_index,d\|\|1\); break;/)
+    expect(source).toMatch(/case "index": if\(!radalt_on\)\{ if\(\(d\|\|1\)>0\)\{ radalt_on=true; radalt_greet=!!ownship\.grounded; \} \} else if\(\(d\|\|1\)<0&&law_index<=0\) radalt_on=false; else law_index=index_step\(law_index,d\|\|1\); break;/)
     expect(source).toMatch(/if\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("index",e\.button===2\?1:-1\); return; \}/)
     expect(source).toMatch(/if\(ch===key_of\("index\.up"\)\) pit_press\("index",1\);/)
     expect(source).toMatch(/if\(ch===key_of\("index\.down"\)\) pit_press\("index",-1\);/)
@@ -555,6 +555,73 @@ describe('the standby altimeter knob', () => {
   it('is turned by a click on the face and set back to 29.92 on a fresh jet', () => {
     expect(source).toMatch(/const u=ownship\.group\.userData\.standby;[^\n]*\n\t\tif\(u&&u\.alt&&_click_ray\.intersectObject\(u\.alt\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("baro",e\.button===2\?1:-1\); return; \} \}/)
     expect(source).toMatch(/baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;/)
+  })
+})
+
+// The height indicator per FO-5 item 41 and NATOPS 2.12.5 (#58): the scale measured
+// from FO-5's dial, 0 at twelve o'clock; ticks every 20 ft to 100, every 50 to 1,000
+// and every 500 to 5,000; labelled 0 to 50 in hundreds under R ALT X100 FT; the green
+// BIT and red warning lights either side of the hub and the OFF flag's window below
+// it. The set's power (the knob) joins radar silence in every gate, and it sounds the
+// familiarisation whoop at ground power-up.
+describe('the radar altimeter height indicator', () => {
+  const draw = /\nfunction radalt_draw\(r, agl, index, silent, test\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+  const consts = /\nconst RADALT_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
+  const face = (agl: number, silent: boolean, test: boolean) => new Function('agl', 'silent', 'test', `const D2R=Math.PI/180; ${consts} ${lift('dial')}
+    const text=[], lights=[]; let strokes=0, fill='';
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='stroke') return ()=>{ strokes++; }; if(k==='arc') return (ax,ay,r)=>{ if(r===7) lights.push([ax,ay,fill]); }; return ()=>{}; },
+      set:(t,k,v)=>{ if(k==='fillStyle') fill=v; return true; } });
+    const r={ canvas:{ getContext:()=>x }, tex:{} };
+    ${draw} radalt_draw(r,agl,200,silent,test); return { text, strokes, lights, off:!!r.off };`)(agl, silent, test) as { text: string[]; strokes: number; lights: [number, number, string][]; off: boolean }
+
+  it('puts the scale where FO-5 draws it: 0 at twelve o\'clock, 1,000 ft at 258°, 5,000 at 320°', () => {
+    const degrees = (ft: number) => new Function('ft', `const D2R=Math.PI/180; ${consts} ${lift('dial')} return dial(RADALT_DIAL,ft)/D2R;`)(ft) as number
+    expect(degrees(0)).toBe(0)
+    expect(degrees(50)).toBeCloseTo(20.1, 1)
+    expect(degrees(200)).toBeCloseTo(79.2, 1)
+    expect(degrees(1000)).toBeCloseTo(257.6, 1)
+    expect(degrees(5000)).toBeCloseTo(319.9, 1)
+  })
+
+  it('ticks, labels and letters the dial as FO-5 does', () => {
+    const d = face(100, false, false)
+    expect(d.strokes).toBe(6 + 18 + 8 + 1) // 0-100 by 20, 150-1,000 by 50, 1,500-5,000 by 500, and the pointer
+    for (const label of ['0', '1', '4', '6', '8', '10', '30', '50', 'R ALT', 'X100 FT']) expect(d.text).toContain(label)
+    for (const label of ['5', '20', '40', 'RADAR ALT']) expect(d.text).not.toContain(label)
+  })
+
+  it('lights the green BIT light left of the hub while the BIT runs, and never with the set off', () => {
+    const lit = (silent: boolean, test: boolean) => face(100, silent, test).lights.find(([lx]) => lx === 80 - 27)?.[2]
+    expect(lit(false, true)).toBe('#30d040')
+    expect(lit(false, false)).toBe('#173a17')
+    expect(lit(true, true)).toBe('#173a17')
+    expect(face(100, false, false).lights.map(([lx, ly]) => [lx, ly])).toEqual([[80 + 27, 80 - 9], [80 - 27, 80 - 9]]) // red right of the hub, green left, level with it
+  })
+
+  it('shows OFF with the set off, as under radar silence', () => {
+    const inhibited = /\nfunction radalt_inhibited\(\)[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(inhibited).not.toBe('')
+    const run = (sil: boolean, on: boolean) => new Function('sil', 'on', `const RADAR={ sil }, radalt_on=on; ${inhibited} return radalt_inhibited();`)(sil, on) as boolean
+    expect(run(false, true)).toBe(false)
+    expect(run(true, true)).toBe(true)
+    expect(run(false, false)).toBe(true)
+    expect(face(100, run(false, false), false).off).toBe(true)
+    // the gates the power joins: the primary warning, the secondary warning's reading and the HUD's radar altitude
+    expect(source).toMatch(/const below=flying&&\(ownship\.gear\?\?1\)>0\.98&&!radalt_inhibited\(\)&&agl<law_index;/)
+    expect(source).toMatch(/radar:\(!radalt_inhibited\(\)&&agl<=5000\)\?agl:null/)
+    expect(source).toMatch(/if\(agl<=5000&&!radalt_inhibited\(\)\)\{ alt=Math\.max\(agl,0\); radar=true; \}/)
+  })
+
+  it('sounds the familiarisation whoop once at ground power-up, and a spawn on the deck or the runway is one', () => {
+    const line = /\n\t\t\tif\(radalt_greet\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const whoops = new Function(`let radalt_greet=true, whoops=0; const audio_law=()=>{ whoops++; }; for(let i=0;i<3;i++){ ${line} } return whoops;`)() as number
+    expect(whoops).toBe(1)
+    expect(source).toMatch(/radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"\|\|st==="runway";/)
+  })
+
+  it('pushes the knob with the middle button on the face, and presses nothing else with it', () => {
+    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(u&&!playback&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\) pit_press\("radalt\.test",0\); return; \}/)
   })
 })
 
