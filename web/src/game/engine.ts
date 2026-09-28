@@ -2276,6 +2276,25 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	const z=gz.zulu||0, two=(v)=>String(v).padStart(2,"0");   // ZTOD lower left and the IFEI's elapsed time lower right (2.13.4.7)
 	x.fillText("ZTOD "+two(Math.floor(z/3600))+":"+two(Math.floor(z/60)%60)+":"+two(z%60),24,458);
 	x.textAlign="right"; x.fillText("ET "+ifei_current().elapsed,488,458); }
+// known is the picture the pilot holds, which the SA page and the map draw: a
+// teammate by its datalink position report, a hostile close enough to see as
+// it is, and otherwise a hostile only as the radar holds it - a trackfile at
+// its last fix, carried on by its velocity, or an RWS paint with no heading.
+// No sensor gives a hostile's callsign. The eyes reach SIGHT by day and half
+// that at night, as the world's bots see (bot.go visible).
+const SIGHT=12000;   // m
+function known(){
+	const all=contacts(), mine=MULTIPLAYER&&net?(net.teams.get(net.slot)||""):"", reach=cfg.tod==="night"?SIGHT/2:SIGHT;
+	const friend=c=>!!mine&&c.team===mine;
+	const eyes=c=>!friend(c)&&Math.hypot(wrap_axis(c.x-ownship.pos.x),c.y-ownship.pos.y,wrap_axis(c.z-ownship.pos.z))<=reach;
+	const seen=(c,name)=>({ x:c.x, z:c.z, fx:c.fwd.x, fz:c.fwd.z, team:c.team, name });
+	const out=[...all.filter(friend).map(c=>seen(c,c.name)),...all.filter(eyes).map(c=>seen(c,""))];
+	const held=id=>all.some(c=>c.id===id&&(friend(c)||eyes(c))), team=id=>{ const c=all.find(k=>k.id===id); return c?c.team:""; };
+	for(const t of RADAR.tracks){ if(held(t.id)) continue; const age=RADAR.time-t.at;
+		out.push({ x:t.x+t.vx*age, z:t.z+t.vz*age, fx:t.vx, fz:t.vz, team:team(t.id), name:"" }); }
+	for(const b of RADAR.bricks){ if(held(b.id)||RADAR.tracks.some(t=>t.id===b.id)||RADAR.bricks.some(k=>k.id===b.id&&k.at>b.at)) continue;   // the newest paint of each, and none a trackfile already shows
+		out.push({ x:b.x, z:b.z, fx:0, fz:0, team:team(b.id), name:"" }); }
+	return out; }
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
 	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
@@ -2292,13 +2311,14 @@ function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0
 	x.rotate(-hdg);   // heading-up frame: contacts draw at their north-up offsets
 	const jet=(wx,wz,fx,fz,c,label)=>{ const dx=wrap_axis(wx-ownship.pos.x)*ppm, dz=wrap_axis(wz-ownship.pos.z)*ppm;
 		if(Math.hypot(dx,dz)>R+14) return;   // outside the scale: not shown, like the real format
+		if(!fx&&!fz){ x.strokeStyle=c; x.lineWidth=2; x.beginPath(); x.arc(dx,dz,6,0,Math.PI*2); x.stroke(); return; }   // a paint with no heading: a plain mark
 		const fl=Math.hypot(fx,fz)||1, ux=fx/fl, uz=fz/fl, rx=-uz, rz=ux;
 		x.fillStyle=c; x.beginPath();
 		x.moveTo(dx+ux*11,dz+uz*11); x.lineTo(dx-ux*7+rx*6,dz-uz*7+rz*6); x.lineTo(dx-ux*7-rx*6,dz-uz*7-rz*6); x.closePath(); x.fill();
 		if(label){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright
 	{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;   // the boat
 		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5,kz-5,10,10); } }
-	for(const c of contacts()) jet(c.x,c.z,c.fwd.x,c.fwd.z,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);   // the contacts model (#30): today truth-fed (furball is omniscient by design); the BVR rules (#32) will gate it by sensors and this page must not notice
+	for(const c of known()) jet(c.x,c.z,c.fx,c.fz,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);
 	x.restore();
 	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=3;   // ownship
 	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(248,cy+12); x.lineTo(264,cy+12); x.closePath(); x.stroke();
@@ -8014,16 +8034,14 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	// carrier
 	const kx=X(CARRIER.x), ky=Y(CARRIER.z); mctx.fillStyle="#ffd27a"; mctx.fillRect(kx-5,ky-5,10,10);
 	mctx.fillStyle="#ffd27a"; mctx.font="10px monospace"; mctx.fillText("CV",kx,ky-9);
-	// contacts: rendered remotes (and the SP bandit), coloured by side
-	const jet=(x2,y2,fx,fz,colour,label)=>{ const fl=Math.hypot(fx,fz)||1, jux=fx/fl, juz=fz/fl, jrx=-juz, jrz=jux;
+	// contacts: what the pilot knows, coloured by side
+	const jet=(x2,y2,fx,fz,colour,label)=>{
+		if(!fx&&!fz){ mctx.strokeStyle=colour; mctx.lineWidth=2; mctx.beginPath(); mctx.arc(x2,y2,5,0,Math.PI*2); mctx.stroke(); return; }   // a paint with no heading: a plain mark
+		const fl=Math.hypot(fx,fz)||1, jux=fx/fl, juz=fz/fl, jrx=-juz, jrz=jux;
 		mctx.fillStyle=colour; mctx.beginPath();
 		mctx.moveTo(x2+jux*9,y2+juz*9); mctx.lineTo(x2-jux*6+jrx*5,y2-juz*6+jrz*5); mctx.lineTo(x2-jux*6-jrx*5,y2-juz*6-jrz*5); mctx.closePath(); mctx.fill();
 		if(label){ mctx.font="9px monospace"; mctx.textAlign="center"; mctx.fillText(label,x2,y2+18); } };
-	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
-			const team=net.teams.get(slot)||"";
-			const colour=team==="red"?"#ff5a48":team==="blue"?"#5a86ff":"#ffb04a";
-			jet(X(st.pos.x),Y(st.pos.z),st.fwd.x,st.fwd.z,colour,st.name||net.names.get(slot)||""); } }
-	else if(has_enemy&&bandit.group.visible) jet(X(bandit.pos.x),Y(bandit.pos.z),bandit.fwd.x,bandit.fwd.z,"#ffb04a","");
+	for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a",c.name);
 	if(MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){
 		mctx.textAlign="left"; mctx.font="13px monospace";
 		mctx.fillStyle="#ff5a48"; mctx.fillText("RED "+(net.score.red||0),24,70);
