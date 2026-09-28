@@ -455,3 +455,51 @@ describe('the DDI view', () => {
     expect(source).toMatch(/\tddi_recall\(\);[^\n]*\n\tddi_fresh=true; if\(cfg\.view==="ddi"\) ddi_open\(\);/)
   })
 })
+
+// The TAC and SUPT menus against figure 2-22: each option at its jet pushbutton,
+// no legend for a page the game does not build, and the menu's name boxed just
+// above MENU (2.13.4.2.1).
+describe('the TAC and SUPT menus', () => {
+  const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
+  const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
+  function run(menu: string, press = 0) {
+    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='';
+      const ddi_state={ left:{ page:'hud', menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
+      function cautions_draw(){} function ddi_show(d,p){ shown=p; }
+      ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')}
+      const text=[], rects=[];
+      const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:()=>true });
+      if(${press}) ddi_press('left',${press}); else ddi_render(x,512,'left');
+      return { text, rects, shown };`)() as { text: [string, number, number][]; rects: [number, number, number, number][]; shown: string }
+  }
+  it('puts each TAC option at its pushbutton', () => {
+    const d = run('tac')
+    expect(d.text.filter((t) => t[0] !== 'TAC')).toEqual([['STORES', 10, 96], ['RDR ATTK', 10, 176], ['HUD', 10, 256], ['SA', 502, 256], ['EW', 336, 482], ['MENU', 256, 482]])
+  })
+  it('puts each SUPT option at its pushbutton', () => {
+    const d = run('supt')
+    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MENU', 256, 482]])
+  })
+  it('shows only options the game builds', () => {
+    for (const rows of Object.values(menus)) for (const [, , target] of rows) expect(built).toContain(target)
+  })
+  it('opens the page at the pushbutton the jet has it on', () => {
+    expect(run('tac', 5).shown).toBe('sms')
+    expect(run('tac', 13).shown).toBe('sa')
+    expect(run('supt', 20).shown).toBe('fuel')
+    expect(run('supt', 11).shown).toBe('chklst')
+    expect(run('tac', 7).shown).toBe('')
+    expect(run('supt', 13).shown).toBe('')
+  })
+  it('boxes the menu name just above MENU', () => {
+    for (const [menu, name] of [['tac', 'TAC'], ['supt', 'SUPT']]) {
+      const d = run(menu)
+      const [, nx, ny] = d.text.find((t) => t[0] === name) ?? []
+      expect([nx, ny]).toEqual([256, 446])
+      const box = d.rects.find(([bx, by, bw, bh]) => bx < 256 - 5 * name.length && bx + bw > 256 + 5 * name.length && by < 446 && by + bh > 446)
+      expect(box).toBeDefined()
+      const [, by, , bh] = box!
+      expect(by + bh).toBeLessThan(482 - 14)   // clear of the MENU legend's box
+    }
+  })
+})
