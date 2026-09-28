@@ -1998,6 +1998,7 @@ function hsi_press(pb,display){
 	if(pb===4){ hsi_range(-1); return true; }   // ↑ scale out
 	if(pb===3){ hsi_range(1); return true; }    // ↓ scale in
 	if(pb===9){ hsi_state.dctr=!hsi_state.dctr; return true; }
+	if(pb===17){ ufc_press("time"); return true; }   // TIMEUFC loads the UFC with the timer options (24.1.3.15)
 	if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
 	return false; }
 // ---- SA page state (#99 pages): the datalink-style tactical picture, its own
@@ -2239,6 +2240,7 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	x.fillText(String(scale),14,216);
 	if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
 	ddi_legend(x,9,"DCTR",true,hsi_state.dctr);
+	ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time");   // boxed while the UFC holds the timer options (figure 24-9)
 	if(gz.ground>50) x.fillText("GS "+Math.round(gz.ground),24,64);
 	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN data at the upper left (2.13.4.7 item 2): bearing / range / minutes to the boat at present groundspeed
 	x.font="20px monospace";
@@ -2460,8 +2462,38 @@ const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the optio
 	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.450, z:-0.085 },
 	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 } ];
 const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
-const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows
+const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""], time:["","ET","CD","ZTOD",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows; time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
 const UFC_CUES={ tcn:[0,3], ils:[0] };   // the colons the game's fixed equipment states show: TACAN in T/R on the X band, ILS on its channel
+// The mission computer's timers (NATOPS 2.13.4.8.11 item 17, 24.2.5.7.4-6): ZTOD,
+// ET and CD share the HUD's lower-left corner one at a time, each shown and blanked
+// from the TIMEUFC page's options. ET counts 00:00 to 59:59 and wraps; CD counts down
+// from its preset (06:00 at power-up) and leaves the display at 00:00; ENT starts and
+// stops the one shown, and a keypad entry presets CD. since: sim_time a timer started,
+// null while stopped.
+const timer={ shown:"", et:{ seconds:0, since:null }, cd:{ seconds:360, since:null } };
+function timer_reset(){ timer.shown=""; timer.et.seconds=0; timer.et.since=null; timer.cd.seconds=360; timer.cd.since=null; }
+function timer_seconds(kind){ const t=timer[kind], run=t.since===null?0:sim_time-t.since;
+	return kind==="et"?(t.seconds+run)%3600:Math.max(0,t.seconds-run); }
+function timer_run(kind,on){ const t=timer[kind]; if(on===(t.since!==null)) return;
+	if(on) t.since=sim_time; else { t.seconds=timer_seconds(kind); t.since=null; } }
+function timer_update(){ if(timer.cd.since!==null&&timer_seconds("cd")<=0){ timer_run("cd",false); if(timer.shown==="cd") timer.shown=""; } }   // CD run down: stopped, and off the HUD
+// timer_text is the HUD's reading of the timer shown, as bare digits (figure 2-26:
+// 00:00:00, 00:00, 06:00), or "" with none; CD shows its whole seconds rounded up,
+// so it reads 00:00 only as it goes.
+function timer_text(zulu){ const two=v=>String(Math.floor(v)).padStart(2,"0");
+	if(timer.shown==="ztod") return two(zulu/3600)+":"+two(zulu/60%60)+":"+two(zulu%60);
+	if(timer.shown==="et"||timer.shown==="cd"){ const s=timer.shown==="cd"?Math.ceil(timer_seconds("cd")):timer_seconds("et"); return two(s/60)+":"+two(s%60); }
+	return ""; }
+// timer_enter works ENT on the TIMEUFC page: with a keypad entry (minutes and seconds,
+// MMSS) it presets CD and starts it, and a value past 59:59 sets 59:59 and freezes it
+// (24.2.5.7.6); with none it starts or stops the timer shown. false: nothing to act on.
+function timer_enter(entry){
+	if(entry!==""){ const n=+entry, minutes=Math.floor(n/100), seconds=n%100; if(seconds>59) return false;
+		timer_run("cd",false);
+		if(minutes>59) timer.cd.seconds=3599; else { timer.cd.seconds=minutes*60+seconds; timer_run("cd",true); }
+		return true; }
+	if(timer.shown!=="et"&&timer.shown!=="cd") return false;
+	timer_run(timer.shown,timer[timer.shown].since===null); return true; }
 const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 };   // the selected function, the :RALT cue, the keypad entry, the ERROR flash, the blink-once deadline
 let ufc_dirty=true, ufc_last="";
 // ufc_face: what the windows show, from the panel's state and the equipment it
@@ -2471,7 +2503,7 @@ let ufc_dirty=true, ufc_last="";
 // until cleared (2.13.5.9); a valid entry blanks the window once.
 function ufc_face(state,live,now){
 	const options=live.silent?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>{ if(!o) return "";
-		const cue=state.func==="ap"?(i===3&&state.ralt):(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
+		const cue=state.func==="ap"?(i===3&&state.ralt):state.func==="time"?o.toLowerCase()===live.timer:(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
 	let scratch;
 	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
 	else if(now<state.blink) scratch="         ";
@@ -2479,7 +2511,7 @@ function ufc_face(state,live,now){
 		const seven=state.entry;
 		scratch=(on?"ON":"  ")+seven.padStart(7); }
 	return { scratch, options }; }
-function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation() }; }
+function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), timer:timer.shown }; }
 function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
 	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
 	return best; }
@@ -2489,14 +2521,17 @@ function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the p
 // display when pressed again; A/P engages the approach power compensator as the
 // autopilot switch engages the autopilot (2.13.5.10). Pressing :RALT, or commanding
 // the UFC to another mode, disables a sounding primary low-altitude warning until
-// it is reset (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2).
+// it is reset (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2). On the
+// TIMEUFC page an option shows or blanks its timer on the HUD, and ENT works the
+// timers (timer_enter).
 function ufc_press(name){ const now=performance.now()/1000;
 	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
 	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else { ufc.func=""; ufc.ralt=false; } }
-	else if(name==="ent") ufc.error=true;
+	else if(name==="ent"){ if(ufc.func==="time"&&timer_enter(ufc.entry)){ ufc.entry=""; ufc.blink=now+0.3; } else ufc.error=true; }
 	else if(name==="emcon") pit_press("radar",0);   // one silence: the radar, and the radar altimeter with it (#29)
 	else if(name.startsWith("opt")){ const i=+name.slice(3);
-		if(ufc.func==="ap"&&i===3){ ufc.ralt=!ufc.ralt; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; } }
+		if(ufc.func==="ap"&&i===3){ ufc.ralt=!ufc.ralt; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
+		else if(ufc.func==="time"&&UFC_PAGES.time[i]){ const kind=UFC_PAGES.time[i].toLowerCase(); timer.shown=timer.shown===kind?"":kind; ufc.entry=""; ufc.error=false; } }
 	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
 	ufc_dirty=true; ufc_update(true); }
 function build_ufc(g){
@@ -7621,7 +7656,7 @@ function visuals(dt){
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 }
 function step_world(dt){ sim_time+=dt;
-	marshal_watch(); pattern_watch(); hints_watch();
+	marshal_watch(); pattern_watch(); hints_watch(); timer_update();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	afterburner(bandit.group,cfg.afterburner&&Math.max(...burners(bandit))>0.15);   // every other jet by its own burner too, where the setting alone used to light it all flight
@@ -7682,6 +7717,7 @@ function reset_ownship(){
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true;   // the UFC powers up clear (#15)
+	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
@@ -7722,6 +7758,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
+		timer.cd.seconds=MARSHAL_PUSH; timer_run("cd",true); timer.shown="cd";   // the push time on the CD timer, running on the HUD, as a pilot sets it at marshal
 		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff");
 		hint(HINT.stack,{heading:ship_groove()}); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
@@ -8570,27 +8607,22 @@ function draw_hud(){
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
 	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
-		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
-	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
-		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
-		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
+		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
-		// count beside it. NAV has no weapon block on the real HUD; its word sits
-		// below the bank scale, which the A/A masters do not draw.
+		// count beside it. NAV has no weapon block on the real HUD, so nothing is
+		// drawn there.
 		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
 		hctx.textAlign="center";
 		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); hctx.fillStyle=GR; }
 		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
 		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
-		else hctx.fillText("NAV",cx,ly);
 		hctx.textAlign="left"; }
-	// ---- elapsed time, lower-left corner (NATOPS 2.13.4 item 17): the ET stopwatch
-	// from mission start on the sim clock, as the DCS references show it ("10:02ET"),
-	// the hour prefixed once there is one. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
-	if(declutter<2){ const elapsed=Math.max(0,Math.floor(sim_time-mission_zero)), two=(v)=>String(v).padStart(2,"0");
-		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-		hctx.fillText((elapsed>=3600?Math.floor(elapsed/3600)+":":"")+two(Math.floor(elapsed/60)%60)+":"+two(elapsed%60)+"ET",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	// ---- the mission computer's timer, lower-left corner (NATOPS 2.13.4.8.11 item 17):
+	// ZTOD, ET or CD, whichever the TIMEUFC page shows, as bare digits; none until
+	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
+	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
+		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----

@@ -162,9 +162,7 @@ describe('the selected weapon block', () => {
     expect(weapon('120c').text.map(([t]) => t)).toEqual(['120C 6'])
   })
 
-  it('keeps NAV below the bank scale, which the A/A masters do not draw', () => {
-    const [nav] = weapon('nav').text
-    expect(nav[0]).toBe('NAV')
-    expect(nav[2]).toBeGreaterThan(400 + 7.85 * 20) // the scale's pointer reaches 7.4 deg plus its tick
+  it('draws nothing in NAV, where the real HUD has no weapon block (figure 2-26)', () => {
+    expect(weapon('nav').text).toEqual([])
   })
 })

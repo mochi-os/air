@@ -127,7 +127,7 @@ describe('the engine monitor display', () => {
 
 describe('the HSI page', () => {
   const setup = `const ownship={ pos:{x:0,y:1000,z:0}, gauges:{ heading:0, ground:200, track:0, zulu:45296 } };
-    const hsi_state={ scale:40, dctr:false, map:false }, CARRIER={ x:18520, z:0 }, island_polygons=[], airports=[], wrap_axis=(v)=>v;
+    const hsi_state={ scale:40, dctr:false, map:false }, ufc={ func:"" }, CARRIER={ x:18520, z:0 }, island_polygons=[], airports=[], wrap_axis=(v)=>v;
     const ifei_current=()=>({ elapsed:'0:12:34' });`
   it('puts the TACAN data at the upper left, ZTOD lower left, ET lower right and a T under the lubber line', () => {
     const d = page('ddi_hsi', setup)
@@ -318,3 +318,61 @@ describe('the UFC pushbuttons', () => {
     expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\);   \/\/ transparent: the painted keypad/)
   })
 })
+
+// The HSI's TIMEUFC (NATOPS 24.1.3.15, figure 24-9) loads the UFC with the timer
+// options; each shows or blanks its timer on the HUD, one at a time; ENT starts
+// and stops the one shown, and a keypad entry (MMSS) presets CD and starts it, a
+// value past 59:59 setting 59:59 frozen (24.2.5.7.4-6). A number in the button
+// list moves the sim clock to that time.
+describe('the TIMEUFC page', () => {
+  const timers = /\n\/\/ The mission computer's timers[\s\S]*?\n(?=const ufc=\{)/.exec(source)?.[0] ?? ''
+  interface Timed { ufc: Ufc; shown: string; et: number; cd: number; running: { et: boolean; cd: boolean }; face: Face }
+  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', `${ufcdefs} let sim_time=0; ${timers}
+    let law_primary=false, law_disabled=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pit_press=()=>{}, ufc_update=()=>{}, performance={ now:()=>1000 };
+    const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 }, hsi_state={ dctr:false, map:false }, hsi_range=()=>{};
+    ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
+    for(const b of buttons){ if(typeof b==="number") sim_time=b; else if(b==="timeufc") hsi_press(17,"left"); else ufc_press(b); }
+    return { ufc, shown:timer.shown, et:timer_seconds("et"), cd:timer_seconds("cd"), running:{ et:timer.et.since!==null, cd:timer.cd.since!==null },
+      face:ufc_face(ufc, { silent:false, atc:false, ils:false, timer:timer.shown }, 0) };`)(buttons) as Timed
+
+  it('is loaded by TIMEUFC, boxed while it holds the UFC, and cleared by a second press', () => {
+    expect(timers).not.toBe('')
+    expect(timeufc(['timeufc']).ufc.func).toBe('time')
+    expect(timeufc(['timeufc']).face.options).toEqual(['', ' ET', ' CD', ' ZTOD', ''])
+    expect(timeufc(['timeufc', 'timeufc']).ufc.func).toBe('')
+    expect(source).toMatch(/ddi_legend\(x,17,"TIMEUFC",true,ufc\.func==="time"\);/)
+  })
+
+  it('shows one timer at a time, cued with a colon, and blanks it on a second press', () => {
+    expect(timeufc(['timeufc', 'opt1']).shown).toBe('et')
+    expect(timeufc(['timeufc', 'opt1']).face.options[1]).toBe(':ET')
+    expect(timeufc(['timeufc', 'opt1', 'opt2']).shown).toBe('cd')
+    expect(timeufc(['timeufc', 'opt3']).shown).toBe('ztod')
+    expect(timeufc(['timeufc', 'opt1', 'opt1']).shown).toBe('')
+    expect(timeufc(['timeufc', 'opt0', 'opt4']).shown).toBe('')
+  })
+
+  it('starts and stops the timer shown with ENT, and flags ERROR with none to start', () => {
+    const run = timeufc(['timeufc', 'opt1', 'ent', 100])
+    expect(run.running.et).toBe(true)
+    expect(run.et).toBe(100)
+    const stopped = timeufc(['timeufc', 'opt1', 'ent', 100, 'ent', 250])
+    expect(stopped.running.et).toBe(false)
+    expect(stopped.et).toBe(100)
+    expect(timeufc(['timeufc', 'ent']).ufc.error).toBe(true)
+    expect(timeufc(['timeufc', 'opt3', 'ent']).ufc.error).toBe(true)
+  })
+
+  it('presets CD from the keypad and starts it, freezes a value past 59:59 at 59:59, and flags ERROR on bad seconds', () => {
+    const set = timeufc(['timeufc', '0', '3', '3', '0', 'ent', 10])
+    expect(set.cd).toBe(200)
+    expect(set.running.cd).toBe(true)
+    expect(set.ufc.entry).toBe('')
+    expect(set.ufc.error).toBe(false)
+    const frozen = timeufc(['timeufc', '9', '9', '0', '0', 'ent', 10])
+    expect(frozen.cd).toBe(3599)
+    expect(frozen.running.cd).toBe(false)
+    expect(timeufc(['timeufc', '0', '0', '7', '5', 'ent']).ufc.error).toBe(true)
+  })
+})
+
