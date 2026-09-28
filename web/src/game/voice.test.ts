@@ -17,7 +17,7 @@ const tool = readFileSync(fileURLToPath(new URL('../../../tools/voice.py', impor
 const tail = /\n\tcaution_list=rows;\n[\s\S]*?\n\tvoice_step\(voice,sim_time,active,audio_voice\); \}\n/.exec(source)?.[0] ?? ''
 const ground = /\n\t\t\t\{ const slow=\(ownship\.cas\?\?ownship\.speed\)<102\.9;[\s\S]*?gpws\.waveoff\)>60; \}\n/.exec(source)?.[0] ?? ''
 
-const LENGTH: Record<Message, number> = { 'ENGINE FIRE LEFT': 2.8, 'ENGINE FIRE RIGHT': 2.7, 'CHECK GEAR': 1.7, ALTITUDE: 1.7, 'FLIGHT CONTROLS': 2.6, 'ENGINE LEFT': 2.1, 'ENGINE RIGHT': 2, 'FUEL LOW': 1.6, BINGO: 1.1 }
+const LENGTH: Record<Message, number> = { 'PULL UP': 1.3, POWER: 1.3, 'ROLL LEFT': 1.7, 'ROLL RIGHT': 1.7, 'ENGINE FIRE LEFT': 2.8, 'ENGINE FIRE RIGHT': 2.7, 'CHECK GEAR': 1.7, ALTITUDE: 1.7, 'FLIGHT CONTROLS': 2.6, 'ENGINE LEFT': 2.1, 'ENGINE RIGHT': 2, 'FUEL LOW': 1.6, BINGO: 1.1 }
 
 // Runs the queue at 10 Hz from 0 to end seconds, with the messages each time
 // has on, and returns what started when.
@@ -76,6 +76,16 @@ describe('the messages', () => {
     expect(SPOKEN['FUEL LO']).toEqual(['FUEL LOW', 'BINGO']) // the fuel is below bingo too
   })
 
+  it('put the GPWS recovery calls ahead of every other cue (NATOPS 2.17.4.3.1, 2.17.5.4)', () => {
+    expect(MESSAGES.slice(0, 4)).toEqual(['PULL UP', 'POWER', 'ROLL LEFT', 'ROLL RIGHT'])
+  })
+
+  it('repeat a GPWS recovery call back to back while the warning holds, and stop when it clears', () => {
+    const heard = listen(8, (t) => (t < 5 ? ['PULL UP'] : []))
+    expect(heard.map(([time]) => time)).toEqual([0, 1.6, 3.2, 4.8])
+    expect(heard.every(([, message]) => message === 'PULL UP')).toBe(true)
+  })
+
   it('rank ALTITUDE, the low-altitude warnings\' call, after the GPWS call and ahead of the cautions (NATOPS 2.17.3)', () => {
     expect(MESSAGES.indexOf('ALTITUDE')).toBe(MESSAGES.indexOf('CHECK GEAR') + 1)
     expect(MESSAGES.indexOf('ALTITUDE')).toBeLessThan(MESSAGES.indexOf('FLIGHT CONTROLS'))
@@ -94,18 +104,18 @@ describe('the messages', () => {
 })
 
 type Row = [string, string, boolean]
-interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean }
+interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string }
 interface Result { tones: string[]; lamp: boolean; active: string[] }
 // Runs cautions_update's tail once per moment, and returns each moment's tones,
 // the MASTER CAUTION lamp and the messages handed to the queue.
 function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
   const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
-    const voice={}, gpws={gear:false};
+    const voice={}, gpws={gear:false, call:""};
     const audio_caution=()=>tones.push("caution"), audio_warning=()=>tones.push("warning"), audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
     function cautions_update(rows){ ${tail}
-    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time; cautions_update(m.rows); return { tones, lamp:caution_lamp, active:active_passed }; });`)
+    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time; cautions_update(m.rows); return { tones, lamp:caution_lamp, active:active_passed }; });`)
   return run(SPOKEN, moments) as Result[]
 }
 const row = (key: string, red = false): Row => [key, key, red]
@@ -170,6 +180,12 @@ describe('the voice takes over from the caution tone', () => {
   it('hands CHECK GEAR to the queue while the GPWS condition holds', () => {
     const [due, clear] = cautions([{ rows: [], ready: true, gear: true }, { rows: [], ready: true, gear: false }])
     expect(due.active).toEqual(['CHECK GEAR'])
+    expect(clear.active).toEqual([])
+  })
+
+  it('hands the GPWS recovery call to the queue while the warning makes it', () => {
+    const [due, clear] = cautions([{ rows: [], ready: true, call: 'ROLL LEFT' }, { rows: [], ready: true }])
+    expect(due.active).toEqual(['ROLL LEFT'])
     expect(clear.active).toEqual([])
   })
 

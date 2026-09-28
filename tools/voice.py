@@ -39,6 +39,10 @@ MESSAGES = {
     "fuel-low": (("Fuel low.", "Fuel low."), 0.9, 0.32),
     "bingo": (("Bingo,", "bingo."), 1.35, 0.55),   # said as a sentence the short word loses its "go"; the comma and the slower pace keep it
     "altitude": (("Altitude.", "Altitude."), 0.9, 0.32),
+    "pull-up": (("Pull up.", "Pull up."), 0.9, 0.32),
+    "power": (("Power.", "Power."), 0.9, 0.32),
+    "roll-left": (("Roll left.", "Roll left."), 0.9, 0.32),
+    "roll-right": (("Roll right.", "Roll right."), 0.9, 0.32),
 }
 HEADSET = ["gain", "-8", "highpass", "300", "lowpass", "4800", "equalizer", "2500", "1q", "3",
            "compand", "0.01,0.20", "-60,-60,-30,-14,-20,-9,0,-5", "-3", "norm", "-1"]

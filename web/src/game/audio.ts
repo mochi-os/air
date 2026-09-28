@@ -19,6 +19,10 @@ import engine_left from '../assets/voice/engine-left.mp3?url'
 import engine_right from '../assets/voice/engine-right.mp3?url'
 import flight_controls from '../assets/voice/flight-controls.mp3?url'
 import fuel_low from '../assets/voice/fuel-low.mp3?url'
+import power from '../assets/voice/power.mp3?url'
+import pull_up from '../assets/voice/pull-up.mp3?url'
+import roll_left from '../assets/voice/roll-left.mp3?url'
+import roll_right from '../assets/voice/roll-right.mp3?url'
 import type { Message } from './voice'
 
 let context: AudioContext | null = null
@@ -122,6 +126,10 @@ let deck: Voice | null = null
 // Pre-rendered one-shot buffers.
 const shots: Record<string, AudioBuffer> = {}
 const RECORDINGS: Record<Message, string> = {
+  'PULL UP': pull_up,
+  POWER: power,
+  'ROLL LEFT': roll_left,
+  'ROLL RIGHT': roll_right,
   'ENGINE FIRE LEFT': engine_fire_left,
   'ENGINE FIRE RIGHT': engine_fire_right,
   'CHECK GEAR': check_gear,
