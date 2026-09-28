@@ -1355,6 +1355,11 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			for(const o of objects) o.traverse(c=>{ if(c.isMesh) meshes.push(c); });
 			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; }); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
+// model_of is the airframe the model load hung on the group: the pit's sightline
+// casts test only it. The group also carries effects - the gun's flash, plume
+// and bloom - that are no structure to see through or past, and a sprite
+// cannot be ray-cast without a camera, which these casts have none of.
+function model_of(g){ return g.children.find(c=>c.userData&&c.userData.model)||g; }
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
 	const g=ownship.group; g.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
@@ -1402,7 +1407,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
 		const from=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0)), toward=new THREE.Vector3();
 		const clear=(y,z)=>{ toward.copy(g.localToWorld(new THREE.Vector3(glass.x,y,z))).sub(from).normalize(); rc.set(from,toward);
-			const hits=rc.intersectObject(g,true).filter(h=>h.distance>0.15&&shown(h.object)&&!h.object.userData.overlay);   // past the pilot's own head, which is still drawn outside the cockpit view
+			const hits=rc.intersectObject(model_of(g),true).filter(h=>h.distance>0.15&&shown(h.object)&&!h.object.userData.overlay);   // past the pilot's own head, which is still drawn outside the cockpit view
 			const onto=hits.find(h=>h.object===mesh); if(!onto) return null;   // off the pane
 			const blocked=hits.some(h=>h.distance<onto.distance-0.002&&!(((Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}).transparent));
 			return blocked?false:g.worldToLocal(onto.point.clone()); };
@@ -1470,7 +1475,7 @@ function build_indexer(g){
 		const origin=g.localToWorld(new THREE.Vector3(eye.x,IY,IZ));
 		const aim=g.localToWorld(new THREE.Vector3(eye.x+1,IY,IZ)).sub(origin).normalize();
 		rc.set(origin,aim);
-		const h=rc.intersectObject(g,true).find(k=>!k.object.userData.overlay&&shown(k.object));
+		const h=rc.intersectObject(model_of(g),true).find(k=>!k.object.userData.overlay&&shown(k.object));
 		if(h){ const p=g.worldToLocal(h.point.clone());
 			iy=IY; depth=p.x-0.006; edge=IZ; } }   // 6 mm proud of the unit's face
 	box.position.set(depth, iy, edge);
@@ -1759,14 +1764,14 @@ function surface_fit(g,box){
 	let cover=null;
 	const probe=(y)=>{ const pW=g.localToWorld(new THREE.Vector3(box.lo.x,y,cz));
 		rc.set(eyeW,pW.sub(eyeW).normalize());
-		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay||!shown(h.object)) continue;
+		for(const h of rc.intersectObject(model_of(g),true)){ if(h.object.userData.overlay||!shown(h.object)) continue;
 			const p=g.worldToLocal(h.point.clone());
 			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02){ cover=cover||h.object; return p.x; } }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
 		return null; };
 	const xm=probe(cy); if(xm==null) return null;
 	const xt=probe(cy+hh*0.8)??xm, xb=probe(cy-hh*0.8)??xm;
 	const pW=g.localToWorld(new THREE.Vector3(box.lo.x,cy,cz)); rc.set(eyeW,pW.sub(eyeW).normalize());   // diagnostic: the full surface stack on the centre sightline
-	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
+	const stack=rc.intersectObject(model_of(g),true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
 		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack, cover }; }
 // surface_pose orients a +Z-facing geometry onto the fitted surface: width
