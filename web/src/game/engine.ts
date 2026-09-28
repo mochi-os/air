@@ -8277,9 +8277,9 @@ function draw_hud(){
 			hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
 			hctx.setLineDash(p<0?[7*hs,6*hs]:[]);
 			const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
-			const tick=p===0?0:(p>0?9:-9)*hs;                  // outer end-ticks point toward the horizon
+			const tick=(p>=0?9:-9)*hs;                        // outer end-ticks point toward the horizon; the horizon bar's, extended or not, point down (figure 2-26)
 			for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
-				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); if(tick) hctx.lineTo(x1,y1+tick); hctx.stroke(); }
+				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); hctx.lineTo(x1,y1+tick); hctx.stroke(); }
 			if(p!==0){ hctx.setLineDash([]); hctx.font=(11*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance (i18n-format-ok: a CSS font size)
 				for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
 					hctx.fillText(String(Math.abs(p)),x1+half*14*hs,y1+(p>0?tick*0.6:tick*0.6)); } }
@@ -8290,17 +8290,18 @@ function draw_hud(){
 		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
 		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
 
-	// ---- waterline symbol (landing configuration) ----
+	// ---- waterline symbol (landing configuration): a W with level wings (figure 2-26), as the repeater draws it ----
 	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-6*hs,bore[1]); hctx.lineTo(bore[0],bore[1]+7*hs); hctx.lineTo(bore[0]+6*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
+		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-8*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]+7*hs); hctx.lineTo(bore[0],bore[1]);
+		hctx.lineTo(bore[0]+4*hs,bore[1]+7*hs); hctx.lineTo(bore[0]+8*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
 
 	// ---- the velocity vector, placed above with the ladder that hangs on it ----
 	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost;
-		const marker=(m)=>{ hctx.beginPath(); hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
+		const marker=(m,ring=true)=>{ hctx.beginPath(); if(ring) hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
 			hctx.moveTo(m[0]-6*hs,m[1]); hctx.lineTo(m[0]-14*hs,m[1]); hctx.moveTo(m[0]+6*hs,m[1]); hctx.lineTo(m[0]+14*hs,m[1]); hctx.moveTo(m[0],m[1]-6*hs); hctx.lineTo(m[0],m[1]-12*hs); hctx.stroke(); };
 		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
-		// The ghost, dashed so it cannot be taken for the caged marker it stands beside.
-		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3*hs,3*hs]); marker(ghost); hctx.setLineDash([]); } }
+		// The ghost: the wings and tail without the circle (figure 2-26), so it cannot be taken for the caged marker it stands beside.
+		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(ghost,false); } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
@@ -8484,11 +8485,11 @@ function draw_hud(){
 		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
 	hctx.restore();
 	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
-	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a hollow chevron sliding under the scale; pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
+	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
 		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
 		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
-		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(mx-6,hty+21); hctx.lineTo(mx,hty+14); hctx.lineTo(mx+6,hty+21); hctx.stroke(); }
+		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
+		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
 	hctx.restore(); }
 
 	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
@@ -8555,14 +8556,14 @@ function draw_hud(){
 	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
 		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
-			const tl=(b===0||Math.abs(b)>=30)?9:5;
+			const tl=Math.abs(b)===5?5:9;   // figure 2-26: the 5° ticks short, the centre, 15°, 30° and 45° long
 			hctx.beginPath(); hctx.moveTo(sx,sy); hctx.lineTo(cx+Math.sin(a)*(br+tl),pivotY+Math.cos(a)*(br+tl)); hctx.stroke(); }
 		const bank=Math.atan2(ownship.right.y,ownship.up.y)*57.29578;
 		const pegged=Math.abs(bank)>47, shownBank=THREE.MathUtils.clamp(-bank,-45,45)*D2R;
 		if(!pegged||(sim_time*5)%2<1){ const px2=cx+Math.sin(shownBank)*br, py2=pivotY+Math.cos(shownBank)*br;
 			const ix=cx+Math.sin(shownBank)*(br-9), iy=pivotY+Math.cos(shownBank)*(br-9);
 			const tx=Math.cos(shownBank)*5, ty=-Math.sin(shownBank)*5;
-			hctx.beginPath(); hctx.moveTo(ix,iy); hctx.lineTo(px2+tx,py2+ty); hctx.lineTo(px2-tx,py2-ty); hctx.closePath(); hctx.fill(); }
+			hctx.beginPath(); hctx.moveTo(px2,py2); hctx.lineTo(ix+tx,iy+ty); hctx.lineTo(ix-tx,iy-ty); hctx.closePath(); hctx.stroke(); }   // an open triangle pointing down onto the tick at the bank angle (figure 2-26)
 		hctx.lineWidth=1.5; }
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----

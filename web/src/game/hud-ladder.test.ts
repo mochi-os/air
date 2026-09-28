@@ -161,3 +161,64 @@ describe('the velocity vector limit', () => {
     expect(limit([0, -5])[0][1]).toBeCloseTo(-4, 6) // straight up from the centre, 4° above the nose
   })
 })
+
+// Figure 2-26: the waterline symbol is a W with level wings, the ghost velocity
+// vector is the wings and tail without the circle, and the horizon bar, extended
+// or not, ends in short downward ticks as the pitch lines end in ticks toward it.
+describe('the HUD symbols as figure 2-26 draws them', () => {
+  const record = () => {
+    const paths: { points: number[][]; end: string; width: number; dash: number }[] = []
+    let points: number[][] = [], width = 1, dash = 0
+    const arcs: number[][] = []
+    const hctx = new Proxy({}, { get: (_, k) => {
+      if (k === 'beginPath') return () => { points = [] }
+      if (k === 'moveTo' || k === 'lineTo') return (x: number, y: number) => points.push([k === 'moveTo' ? 0 : 1, x, y])
+      if (k === 'arc') return (x: number, y: number, r: number) => arcs.push([x, y, r])
+      if (k === 'setLineDash') return (d: number[]) => { dash = d.length }
+      if (k === 'stroke' || k === 'fill') return () => paths.push({ points, end: String(k), width, dash })
+      return () => {}
+    }, set: (_, k, v) => { if (k === 'lineWidth') width = v; return true } })
+    return { hctx, paths, arcs }
+  }
+  const section = (from: string, to: string) => {
+    const start = source.indexOf(from), end = source.indexOf(to, start)
+    if (start < 0 || end < 0) throw new Error(`${from} not found in engine.ts`)
+    return source.slice(start, end)
+  }
+
+  it('draws the waterline symbol as a W', () => {
+    const c = record()
+    new Function('hctx', 'pa', 'bore', 'hs', 'GR', section('\t// ---- waterline symbol', '\t// ---- the velocity vector'))(c.hctx, true, [100, 100], 1, 'g')
+    const [w] = c.paths
+    expect(w.points.map(([, x, y]) => [x, y])).toEqual([[84, 100], [92, 100], [96, 107], [100, 100], [104, 107], [108, 100], [116, 100]])
+  })
+
+  it('draws the ghost as the wings and tail without the circle, solid', () => {
+    const c = record()
+    new Function('hctx', 'fpm', 'ghost', 'fpm_limited', 'ghost_limited', 'cage', 'bore', 'hs', 'GR', 'sim_time', 'hud_ladder',
+      `${section('\t// ---- the velocity vector, placed above', '\t// ---- E bracket')}`)(c.hctx, [100, 100], [140, 100], false, false, true, [100, 80], 1, 'g', 0, {})
+    expect(c.arcs.map(([x, y]) => [x, y])).toEqual([[100, 100]])
+    const ghost = c.paths.find(path => path.points.some(([, x]) => x > 125))
+    expect(ghost?.points.map(([, x, y]) => [x, y])).toEqual([[134, 100], [126, 100], [146, 100], [154, 100], [140, 94], [140, 88]])
+    expect(ghost?.dash).toBe(0)
+  })
+
+  it('ends the horizon bar in short downward ticks, extended or not, and the pitch lines toward the horizon', () => {
+    const body = /\n(\t\t\tconst wide=[\s\S]*?\n\t\t\thctx\.restore\(\);) \} \}/.exec(source)?.[1] ?? ''
+    expect(body).not.toBe('')
+    const ends = (p: number, pa: boolean) => {
+      const c = record()
+      const D2R = Math.PI / 180
+      // the ladder line's ends straight across the screen, so the local frame is the screen's
+      const dir_at = (_f: unknown, _r: unknown, across: number, up: number) => [400 - across * 1000, 300 - up * 1000]
+      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', 'hud_ladder', `for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
+        c.hctx, p, pa, 1, 'g', D2R, (d: number[]) => d, dir_at, null, null, {})
+      return c.paths.filter(path => path.points.length === 3).map(path => { const [, [, x1, y1], [, x2, y2]] = path.points; return [x2 - x1, y2 - y1] })
+    }
+    expect(ends(0, false)).toEqual([[0, 9], [0, 9]])
+    expect(ends(0, true)).toEqual([[0, 9], [0, 9]])
+    expect(ends(5, false)).toEqual([[0, 9], [0, 9]])
+    expect(ends(-5, false)).toEqual([[0, -9], [0, -9]])
+  })
+})
+
