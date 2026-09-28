@@ -26,6 +26,11 @@ msgstr "(נערך)"
 msgid "(expand)"
 msgstr "(הרחב)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(ללא כותרת)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(אתה)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "שם {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} עד {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# נוסף} two {+# נוספים} many {+# נוספים} other {+# נוספים}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "כיול ומיפוי צירים"
 msgid "Back"
 msgstr "חזור"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 שניות אחורה"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -648,7 +655,7 @@ msgstr "בוטים כחולים"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Board"
-msgstr "Board"
+msgstr "לוח"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -769,10 +776,14 @@ msgstr "המצלמה אינה זמינה"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cancel"
 msgstr "ביטול"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
+msgid "Cancel"
+msgstr "בטל"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Cancel comment"
@@ -785,6 +796,11 @@ msgstr "בטל תשובה"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "בוטל"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "בוטל"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "צ'אט לכולם"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "בחר שפה"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "נקה"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "בהיר"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "פעולות תגובה"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "תגובות"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "הערות"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "לא ניתן היה לטעון מסמך זה. אנא נסה שוב מא
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "לא ניתן היה לטעון את הטיסות שלך"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "לא ניתן היה להפעיל את ההקלטה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "בוצע"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "הורדה"
 
@@ -1655,6 +1687,12 @@ msgstr "יציאה מהמשחק"
 msgid "Exit mission"
 msgstr "צא מהמשימה"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "יציאה מההפעלה"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -1752,7 +1790,7 @@ msgstr "טעינת הפריט נכשלה"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to load prompts"
-msgstr "טעינת ה-prompts נכשלה"
+msgstr "טעינת הפרומפטים נכשלה"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Failed to load video"
@@ -1768,7 +1806,7 @@ msgstr "פרסום התגובה נכשל"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "איפוס ה-prompt נכשל"
+msgstr "איפוס הפרומפט נכשל"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1780,7 +1818,7 @@ msgstr "השמירה נכשלה"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "שמירת ה-prompt נכשלה"
+msgstr "שמירת הפרומפט נכשלה"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -1906,6 +1944,11 @@ msgstr "טוס שוב"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "עקוב אחרי המחוגים בירידה: 1200' ב-3NM, 800' ב-2NM, 400' ב-1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 שניות קדימה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "מנוע שמאל כבוי"
 msgid "L GEAR"
 msgstr "כן שמאלי"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "נחיתה"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "שרת MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "בינוני"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "בינוני"
 
@@ -2616,7 +2659,7 @@ msgstr "מצב"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Moderation"
-msgstr "פיקוח"
+msgstr "ניהול תוכן"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Monday"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "שגיאת רשת"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "חדש"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "חדשים"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "התראות: {0}"
 msgid "Novice"
 msgstr "מתחיל"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "מספר"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "מספר"
 
@@ -2911,8 +2962,9 @@ msgstr "לא מקוון"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "אישור"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "תבנית (ביטוי רגולרי)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "השהיה"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "מושהה"
 
@@ -3101,6 +3159,18 @@ msgstr "פלטפורמה"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "פלטפורמה: 2000 FPM, מאוזן ב-1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "הפעלה"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "מיקום ההפעלה"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "מתחבר מחדש ({retries})..."
 msgid "Record flights"
 msgstr "הקלטת טיסות"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "הקלטה"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "ההקלטה נכשלה. נסו שוב."
@@ -3321,6 +3387,11 @@ msgstr "רלוונטיות {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "רלוונטיות {relevance}, עניין {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "תזכורת"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "לפרוש מהמשחק?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "פתרון"
+msgstr "רזולוציה"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "מחפש..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "בחר"
+msgstr "רשימה נפתחת"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3681,7 +3752,7 @@ msgstr "נבחר: <0>{0}</0>"
 
 #: src/components/MissionSetup.tsx
 msgid "Send"
-msgstr "שליחה"
+msgstr "שלח"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Send again"
@@ -3891,7 +3962,7 @@ msgstr "מבנה"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "נושא"
+msgstr "משתמש או קבוצה"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "על-אנושי"
 msgid "Switch to view 1-9"
 msgstr "עבור לתצוגה 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "מערכת"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "מערכת"
 
@@ -3969,6 +4044,11 @@ msgstr "קבוצות"
 msgid "Teams — red versus blue"
 msgstr "קבוצות — אדום נגד כחול"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "לא סופי"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "בקשת המצלמה לא נענתה"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "לא ניתן היה לטעון את המשחק. טען מחדש את הדף כדי לנסות שוב."
 
@@ -4118,7 +4199,7 @@ msgstr "יותר מדי בקשות"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ראש"
+msgstr "מובילים"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "מציג וידאו: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "הצג"
+msgstr "תצוגה"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "פקדי תצוגה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "צפיות"
+msgstr "תצוגות"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

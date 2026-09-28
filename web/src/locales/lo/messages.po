@@ -26,6 +26,11 @@ msgstr "(ແກ້ໄຂແລ້ວ)"
 msgid "(expand)"
 msgstr "(ຂະຫຍາຍ)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(ບໍ່ມີຊື່)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ທ່ານ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "ຊື່ {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ຫາ {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# ລາຍການ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -397,7 +399,7 @@ msgstr "ເຮືອບັນທຸກເຮືອບິນ <0>“USS Nimitz CVN
 
 #: src/components/MissionSetup.tsx
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
-msgstr "ໂມເດລເຮືອບິນ <0>“F/A-18C Hornet”</0> ໂດຍ <1>CreadorDeMu</1> (Sketchfab), ໄດ້ຮັບອະນຸຍາດພາຍໃຕ້ <2>CC BY 4.0</2>. ດັດແກ້ແລ້ວ: ປັບທິດທາງ ແລະ ປັບຂະໜາດຄືນໃໝ່, ລຶບຂໍ້ມູນເທັກສະເຈີທີ່ບໍ່ໄດ້ໃຊ້ອອກ, ແຍກອຸປະກອນຕິດຕັ້ງພາຍນອກອອກເປັນໄຟລ໌ຕ່າງຫາກ, ແລະ ສະທ້ອນເມສ shroud ອັນໜຶ່ງແບບກະຈົກ."
+msgstr "ໂມເດລເຮືອບິນ <0>“F/A-18C Hornet”</0> ໂດຍ <1>CreadorDeMu</1> (Sketchfab), ໄດ້ຮັບອະນຸຍາດພາຍໃຕ້ <2>CC BY 4.0</2>. ດັດແກ້ແລ້ວ: ປັບທິດທາງ ແລະ ປັບຂະໜາດຄືນໃໝ່, ລຶບຂໍ້ມູນເທັກສະເຈີທີ່ບໍ່ໄດ້ໃຊ້ອອກ, ແຍກອຸປະກອນຕິດຕັ້ງພາຍນອກອອກເປັນໄຟລ໌ຕ່າງຫາກ, ແລະ ສະທ້ອນເມສຝາຄອບ ອັນໜຶ່ງແບບກະຈົກ."
 
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
@@ -444,7 +446,7 @@ msgstr "ຝ່າຍທີ່ຢຶດໄວ້"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Android push"
-msgstr "ການແຈ້ງເຕືອນ Android"
+msgstr "ການແຈ້ງເຕືອນແບບພຸຊ Android"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
@@ -529,7 +531,7 @@ msgstr "ຜູ້ໃຊ້ທີ່ຢືນຢັນແລ້ວ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "ລະຫັດ authenticator"
+msgstr "ລະຫັດຢືນຢັນຕົວຕົນ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -557,6 +559,11 @@ msgstr "ການປັບທຽບ ແລະການກຳນົດແກນ"
 msgid "Back"
 msgstr "ກັບຄືນ"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "ຖອຍຫຼັງ 5 ວິນາທີ"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -564,7 +571,7 @@ msgstr "ກັບໄປໜ້າຫຼັກ"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "Ball call: ຕອບ, ບິນຕາມ ball ຈົນແຕະພື້ນ"
+msgstr "ການແຈ້ງບານ: ຕອບ, ບິນຕາມບານຈົນແຕະພື້ນ"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -698,7 +705,7 @@ msgstr "ລ້ຽວເມື່ອພ້ອມ"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: ລ້ຽວລະດັບ, ຄັນເລັ່ງຕ່ຳສຸດ, ເບຣກລົມອອກ, ດຶງ 1 g ຕໍ່ທຸກ 100 ນັອດ"
+msgstr "ລ້ຽວທັນທີ: ລ້ຽວລະດັບ, ຄັນເລັ່ງຕ່ຳສຸດ, ເບຣກລົມອອກ, ດຶງ 1 g ຕໍ່ທຸກ 100 ນັອດ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -769,8 +776,12 @@ msgstr "ບໍ່ມີກ້ອງຖ່າຍຮູບ"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "ຍົກເລີກ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "ຍົກເລີກ"
 
@@ -785,6 +796,11 @@ msgstr "ຍົກເລີກການຕອບກັບ"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "ຍົກເລີກແລ້ວ"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "ຍົກເລີກແລ້ວ"
 
@@ -839,7 +855,7 @@ msgstr "ກໍລະນີ III (ກາງຄືນ)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero"
-msgstr "Case III: marshal 6000', 250 ນັອດ, ທິດສຸດທ້າຍ {heading}, ເລີ່ມທີ່ສູນ"
+msgstr "Case III: ຈຸດລໍຖ້າ 6000', 250 ນັອດ, ທິດສຸດທ້າຍ {heading}, ເລີ່ມທີ່ສູນ"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -886,12 +902,13 @@ msgstr "ແຊັດ"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
-msgstr "ແຊັດ"
+msgstr "ສົນທະນາ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chat to everyone"
 msgstr "ແຊັດຫາທຸກຄົນ"
 
+#: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -929,10 +946,14 @@ msgstr "ເລືອກພາສາ"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "ລ້າງ"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "ແຈ່ມໃສ"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -972,7 +993,7 @@ msgstr "ປິດແຜງ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Close panel / cancel"
-msgstr "ປິດ panel / ຍົກເລີກ"
+msgstr "ປິດແຜງ / ຍົກເລີກ"
 
 #: ../../../lib/web/src/components/header-search.tsx
 msgid "Close search"
@@ -1028,7 +1049,7 @@ msgstr "ເລີ່ມຕົ້ນ"
 
 #: src/components/GameCanvas.tsx
 msgid "Commencing: inbound {heading}, 250 knots, 4000 FPM down to 5000' platform"
-msgstr "ເລີ່ມເຂົ້າ: ມຸ່ງ {heading}, 250 ນັອດ, ລົງ 4000 FPM ເຖິງ platform 5000'"
+msgstr "ເລີ່ມເຂົ້າ: ມຸ່ງ {heading}, 250 ນັອດ, ລົງ 4000 FPM ເຖິງແທ່ນ 5000'"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "Comment actions"
@@ -1038,6 +1059,11 @@ msgstr "ການກະທຳຄຳເຫັນ"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "ຄຳເຫັນ"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "ໝາຍເຫດ"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "ບໍ່ສາມາດໂຫລດເອກະສານນີ້ໄດ
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "ບໍ່ສາມາດໂຫຼດຖ້ຽວບິນຂອງທ່ານໄດ້"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "ບໍ່ສາມາດຫຼິ້ນການບັນທຶກໄດ້"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "ສຳເລັດແລ້ວ"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ດາວໂຫຼດ"
 
@@ -1633,7 +1665,7 @@ msgstr "ປ້ອນລະຫັດຈາກອີເມວຂອງທ່ານ
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Enter your authenticator code"
-msgstr "ໃສ່ລະຫັດ authenticator ຂອງທ່ານ"
+msgstr "ໃສ່ລະຫັດຢືນຢັນຕົວຕົນຂອງທ່ານ"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -1654,6 +1686,12 @@ msgstr "ອອກຈາກການແຂ່ງຂັນ"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "ອອກຈາກພາລະກິດ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "ອອກຈາກການຫຼິ້ນ"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1752,7 +1790,7 @@ msgstr "ໂຫຼດລາຍການລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to load prompts"
-msgstr "ໂຫຼດ prompt ລົ້ມເຫຼວ"
+msgstr "ໂຫຼດພຣອມທ໌ລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Failed to load video"
@@ -1768,7 +1806,7 @@ msgstr "ໂພສຄຳເຫັນລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to reset prompt"
-msgstr "ຣີເຊັດ prompt ລົ້ມເຫຼວ"
+msgstr "ຣີເຊັດພຣອມທ໌ລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
@@ -1780,7 +1818,7 @@ msgstr "ບັນທຶກລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Failed to save prompt"
-msgstr "ບັນທຶກ prompt ລົ້ມເຫຼວ"
+msgstr "ບັນທຶກພຣອມທ໌ລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/banner-section.tsx
 msgid "Failed to update banner"
@@ -1906,6 +1944,11 @@ msgstr "ບິນອີກຄັ້ງ"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ບິນຕາມເຂັມລົງ: 1200' ທີ່ 3NM, 800' ທີ່ 2NM, 400' ທີ່ 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "ໄປໜ້າ 5 ວິນາທີ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2050,7 +2093,7 @@ msgstr "ປ່ອຍມືຈາກຄັນບັງຄັບ; ກົດ enter 
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
-msgstr "ການເລັ່ງກຣາຟິກຮາດແວຖືກປິດ — ກວດເບິ່ງການຕັ້ງຄ່າບຣາວເຊີ ຫຼືໄດຣເວີກຣາຟິກ."
+msgstr "ການເລັ່ງກຣາຟິກຮາດແວຖືກປິດ — ກວດເບິ່ງການຕັ້ງຄ່າຕົວທ່ອງເວັບ ຫຼືໄດຣເວີກຣາຟິກ."
 
 #: src/lib/parked.ts
 msgid "Head"
@@ -2142,7 +2185,7 @@ msgstr "ລວມທັງຜູ້ໃຊ້ນິລະນາມ"
 
 #: src/components/GameCanvas.tsx
 msgid "Initial: over runway, {heading}, 800', 350 knots"
-msgstr "Initial: ເໜືອທາງແລ່ນ, {heading}, 800', 350 ນັອດ"
+msgstr "ຈຸດເລີ່ມຕົ້ນ: ເໜືອທາງແລ່ນ, {heading}, 800', 350 ນັອດ"
 
 #: ../../../lib/web/src/components/faceless-avatar.tsx
 msgid "Initials avatar"
@@ -2242,7 +2285,7 @@ msgstr "ຈອຍສະຕິກ"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
-msgstr "ຫາກໍ"
+msgstr "ຫາກໍ່ດຽວນີ້"
 
 #: src/components/MatchLog.tsx
 msgid "K/D"
@@ -2284,10 +2327,6 @@ msgstr "ເຄື່ອງຈັກຊ້າຍປິດ"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "ລໍ້ຊ້າຍ"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "ການລົງຈອດ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "ເຊີບເວີ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "ກາງ"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "ກາງ"
 
@@ -2583,7 +2626,7 @@ msgstr "ຊົນກັນກາງອາກາດ"
 
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
-msgstr "ແຜນທີ່ເກາະ Midway Atoll — ຮູບພາບປະກອບມີຂໍ້ມູນ <0>Copernicus Sentinel-2</0> ທີ່ຖືກດັດແກ້ (2026); ຮູບຊົງຂອງສະໜາມບິນ (ທາງແລ່ນ, ທາງຂັບເຄື່ອນ, ລານຈອດ) © ຜູ້ປະກອບສ່ວນ <1>OpenStreetMap</1>, ອະນຸຍາດພາຍໃຕ້ <2>ODbL</2>; ຂໍ້ມູນແຄມຝັ່ງ ແລະ ແນວປະກາລັງ ຈາກ <3>NOAA NCCOS</3> (ສາທາລະນະສົມບັດ)."
+msgstr "ແຜນທີ່ເກາະປະກາລັງມິດເວ — ຮູບພາບປະກອບມີຂໍ້ມູນ <0>Copernicus Sentinel-2</0> ທີ່ຖືກດັດແກ້ (2026); ຮູບຊົງຂອງສະໜາມບິນ (ທາງແລ່ນ, ທາງຂັບເຄື່ອນ, ລານຈອດ) © ຜູ້ປະກອບສ່ວນ <1>OpenStreetMap</1>, ອະນຸຍາດພາຍໃຕ້ <2>ODbL</2>; ຂໍ້ມູນແຄມຝັ່ງ ແລະ ແນວປະກາລັງ ຈາກ <3>NOAA NCCOS</3> (ສາທາລະນະສົມບັດ)."
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -2616,7 +2659,7 @@ msgstr "ໂໝດ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Moderation"
-msgstr "ການຄວບຄຸມ"
+msgstr "ການກວດກາ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Monday"
@@ -2651,7 +2694,7 @@ msgstr "ກຳລັງຍ້າຍໄປ {0}"
 
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
-msgstr "ການຫຼິ້ນຫຼາຍຄົນຕ້ອງການ WebTransport ເຊິ່ງບຣາວເຊີນີ້ຍັງບໍ່ຮອງຮັບເທື່ອ."
+msgstr "ການຫຼິ້ນຫຼາຍຄົນຕ້ອງການ WebTransport ເຊິ່ງຕົວທ່ອງເວັບນີ້ຍັງບໍ່ຮອງຮັບເທື່ອ."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "ຂໍ້ຜິດພາດເຄືອຂ່າຍ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "ໃໝ່"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "ໃໝ່ລ່າສຸດ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "ການແຈ້ງເຕືອນ: {0}"
 msgid "Novice"
 msgstr "ຜູ້ເລີ່ມຕົ້ນ"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ຕົວເລກ"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "ໝາຍເລກ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,8 +2962,9 @@ msgstr "ບໍ່ເຊື່ອມຕໍ່"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ຕົກລົງ"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3026,12 +3078,12 @@ msgstr "ເບຣກຈອດ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Passkey"
-msgstr "Passkey"
+msgstr "ກະແຈຜ່ານ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "ການຢືນຢັນ passkey ລົ້ມເຫລວ. ກະລຸນາລອງອີກຄັ້ງ."
+msgstr "ການຢືນຢັນກະແຈຜ່ານລົ້ມເຫລວ. ກະລຸນາລອງອີກຄັ້ງ."
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
@@ -3039,11 +3091,17 @@ msgstr "ກະແຈຜ່ານ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys ບໍ່ສາມາດໃຊ້ໄດ້ໃນບຣາວເຊີນີ້"
+msgstr "ກະແຈຜ່ານບໍ່ສາມາດໃຊ້ໄດ້ໃນຕົວທ່ອງເວັບນີ້"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "ຮູບແບບ (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "ຢຸດຊົ່ວຄາວ"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3051,7 +3109,7 @@ msgstr "ຢຸດຊົ່ວຄາວ"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "People"
-msgstr "ຄົນ"
+msgstr "ບຸກຄົນ"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -3100,7 +3158,19 @@ msgstr "ແທ່ນ"
 
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
-msgstr "Platform: 2000 FPM, ລະດັບທີ່ 1200'"
+msgstr "ແທ່ນ: 2000 FPM, ລະດັບທີ່ 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "ຫຼິ້ນ"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "ຕຳແໜ່ງການຫຼິ້ນ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3185,7 +3255,7 @@ msgstr "ບັນທຶກໂປຣໄຟລ໌ແລ້ວ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Prompt saved"
-msgstr "ບັນທຶກ prompt ແລ້ວ"
+msgstr "ບັນທຶກພຣອມທ໌ແລ້ວ"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Properties"
@@ -3198,7 +3268,7 @@ msgstr "ເຊີບເວີສາທາລະນະ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Push notification"
-msgstr "ການແຈ້ງເຕືອນ push"
+msgstr "ການແຈ້ງເຕືອນແບບພຸຊ"
 
 #: src/components/GameCanvas.tsx
 msgid "PUSH TIME"
@@ -3256,10 +3326,6 @@ msgstr "ກຳລັງເຊື່ອມຕໍ່ໃໝ່ ({retries})..."
 #: src/components/SettingsDialog.tsx
 msgid "Record flights"
 msgstr "ບັນທຶກຖ້ຽວບິນ"
-
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "ການບັນທຶກ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
@@ -3321,6 +3387,11 @@ msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "ຄວາມກ່ຽວຂ້ອງ {relevance}, ຄວາມສົນໃຈ {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "ການແຈ້ງເຕືອນ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "ກຳລັງຄົ້ນຫາ..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "ເລືອກ"
+msgstr "ລາຍການເລືອກ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3760,11 +3831,11 @@ msgstr "ເຮືອຂະໜານ: ອຽງ 27-30°, ເລີ່ມລົງ
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show classes"
-msgstr "ສະແດງ classes"
+msgstr "ສະແດງຄລາສ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Show fields"
-msgstr "ສະແດງ fields"
+msgstr "ສະແດງຊ່ອງ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Show this help"
@@ -3862,7 +3933,7 @@ msgstr "ຊະງັກ, ຮູບແບບລົງຈອດ (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "ດ້ານຂວາເຮືອ: ຮັກສາ 800'; break ເມື່ອຜ່ານຫົວເຮືອ"
+msgstr "ດ້ານຂວາເຮືອ: ຮັກສາ 800'; ລ້ຽວທັນທີເມື່ອຜ່ານຫົວເຮືອ"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3891,7 +3962,7 @@ msgstr "ໂຄງສ້າງ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "ຫົວຂໍ້"
+msgstr "ຜູ້ໃຊ້ ຫຼື ກຸ່ມ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "ເໜືອມະນຸດ"
 msgid "Switch to view 1-9"
 msgstr "ສະຫຼັບໄປເບິ່ງ 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "ລະບົບ"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "ລະບົບ"
 
@@ -3933,7 +4008,7 @@ msgstr "ແຜນທີ່ຍຸດທະວິທີ"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tag already exists"
-msgstr "Tag ມີຢູ່ແລ້ວ"
+msgstr "ແທັກມີຢູ່ແລ້ວ"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tag must be 50 characters or less"
@@ -3969,6 +4044,11 @@ msgstr "ທີມ"
 msgid "Teams — red versus blue"
 msgstr "ທີມ — ສີແດງ ປະທະ ສີຟ້າ"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "ຊົ່ວຄາວ"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -3993,7 +4073,7 @@ msgstr "ໃຫຍ່ເກີນໄປທີ່ຈະອັບໂຫຼດ. ເ�
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "ຈຸດ 45: 325-375', ລ້ຽວເຂົ້າ groove, {heading}, ບິນຕາມ ball ດ້ວຍກຳລັງ"
+msgstr "ຈຸດ 45: 325-375', ລ້ຽວເຂົ້າແນວລົງຈອດສຸດທ້າຍ, {heading}, ບິນຕາມບານດ້ວຍກຳລັງ"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "ຄຳຮ້ອງຂໍກ້ອງບໍ່ໄດ້ຮັບການຕອບ"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ບໍ່ສາມາດໂຫຼດເກມໄດ້. ໂຫຼດໜ້ານີ້ຄືນໃໝ່ເພື່ອລອງອີກຄັ້ງ."
 
@@ -4021,7 +4102,7 @@ msgstr "ພາລະກິດຢຸດແລ້ວ."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "ຄຳຮ້ອງຂໍ passkey ບໍ່ໄດ້ຮັບການຕອບ"
+msgstr "ຄຳຮ້ອງຂໍກະແຈຜ່ານບໍ່ໄດ້ຮັບການຕອບ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,11 +4114,11 @@ msgstr "ເຊີບເວີສົ່ງຄືນໜ້າເວັບແທນ
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "ແອັບນີ້ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ໃຊ້ passkey ຂອງທ່ານ. ອະນຸຍາດໃນການຕັ້ງຄ່າ, ພາຍໃຕ້ການອະນຸຍາດ."
+msgstr "ແອັບນີ້ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ໃຊ້ ກະແຈຜ່ານຂອງທ່ານ. ອະນຸຍາດໃນການຕັ້ງຄ່າ, ພາຍໃຕ້ການອະນຸຍາດ."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
-msgstr "ບຣາວເຊີນີ້ບໍ່ຮອງຮັບ WebGL 2 ດັ່ງນັ້ນເກມຈຶ່ງແລ່ນບໍ່ໄດ້ — ລອງບຣາວເຊີອື່ນ."
+msgstr "ຕົວທ່ອງເວັບນີ້ບໍ່ຮອງຮັບ WebGL 2 ດັ່ງນັ້ນເກມຈຶ່ງແລ່ນບໍ່ໄດ້ — ລອງຕົວທ່ອງເວັບອື່ນ."
 
 #: src/components/Multiplayer.tsx
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
@@ -4118,7 +4199,7 @@ msgstr "ມີຄຳຮ້ອງຂໍຫຼາຍເກີນໄປ"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "ເທິງ"
+msgstr "ຍອດນິຍົມ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4300,7 +4381,7 @@ msgstr "ຄວາມຄືບໜ້າການອັບໂຫລດ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "ໃຊ້ passkey ຂອງທ່ານ"
+msgstr "ໃຊ້ກະແຈຜ່ານຂອງທ່ານ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4344,7 +4425,7 @@ msgstr "ຕົວເບິ່ງວິດີໂອ: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ເບິ່ງ"
+msgstr "ມຸມມອງ"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,11 +4442,11 @@ msgstr "ການຄວບຄຸມການເບິ່ງ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "ການເບິ່ງ"
+msgstr "ມຸມມອງ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
-msgstr "ບຣາວເຊີນີ້ບໍ່ຮອງຮັບການບັນທຶກສຽງ"
+msgstr "ຕົວທ່ອງເວັບນີ້ບໍ່ຮອງຮັບການບັນທຶກສຽງ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Volumes"
@@ -4400,11 +4481,11 @@ msgstr "ຍົກເລີກການລົງຈອດ"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: ກຳລັງເຕັມ, ເບຣກລົມເຂົ້າ, ປີກລະດັບ, ໄຕ່ຂຶ້ນ 1200', {heading}"
+msgstr "ຍົກເລີກການລົງຈອດ: ກຳລັງເຕັມ, ເບຣກລົມເຂົ້າ, ປີກລະດັບ, ໄຕ່ຂຶ້ນ 1200', {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: ກຳລັງເຕັມ, ເບຣກລົມເຂົ້າ, ປີກລະດັບ, ໄຕ່ຂຶ້ນ, {heading}"
+msgstr "ຍົກເລີກການລົງຈອດ: ກຳລັງເຕັມ, ເບຣກລົມເຂົ້າ, ປີກລະດັບ, ໄຕ່ຂຶ້ນ, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

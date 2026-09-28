@@ -26,6 +26,11 @@ msgstr "(تم التعديل)"
 msgid "(expand)"
 msgstr "(توسيع)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(بلا عنوان)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(أنت)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "اسم {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} إلى {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, zero {+# أخرى} one {+# أخرى} two {+# أخرى} few {+# أخرى} many {+# أخرى} other {+# أخرى}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "معايرة المحاور وتعيينها"
 msgid "Back"
 msgstr "رجوع"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "الرجوع 5 ثوانٍ"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "الكاميرا غير متاحة"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "إلغاء"
 
@@ -785,6 +796,11 @@ msgstr "إلغاء الرد"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "ملغى"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "ملغى"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "الدردشة مع الجميع"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "اختر اللغة"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "مسح"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "سماء صافية"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "إجراءات التعليق"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "التعليقات"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "ملاحظات"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "تعذّر تحميل هذا المستند. يرجى المحاولة �
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "تعذّر تحميل رحلاتك"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "تعذّر تشغيل التسجيل"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "منتهٍ"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "تنزيل"
 
@@ -1655,6 +1687,12 @@ msgstr "مغادرة المباراة"
 msgid "Exit mission"
 msgstr "إنهاء المهمة"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "إنهاء التشغيل"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -1685,7 +1723,7 @@ msgstr "التفاصيل الخارجية"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "External URL"
-msgstr "URL خارجي"
+msgstr "رابط خارجي"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Extra large"
@@ -1907,6 +1945,11 @@ msgstr "حلّق مجددًا"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "اتبع الإبر نزولاً: 1200' عند 3NM، 800' عند 2NM، 400' عند 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "التقدم 5 ثوانٍ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "عداد معدل الإطارات"
@@ -2116,7 +2159,7 @@ msgstr "إبر HUD: أبقِ على مسار الانزلاق وخط المنت�
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
-msgstr "المعرف"
+msgstr "المعرّف"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -2284,10 +2327,6 @@ msgstr "محرك أيسر مطفأ"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "عجلة يسرى"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "الهبوط"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "خادم MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "متوسط"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "متوسط"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "خطأ في الشبكة"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "جديد"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "الأحدث"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "الإشعارات: {0}"
 msgid "Novice"
 msgstr "مبتدئ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "الرقم"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "الرقم"
 
@@ -2911,8 +2962,9 @@ msgstr "غير متصل"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "موافق"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "النمط (تعبير منتظم)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "متوقف مؤقتاً"
 
@@ -3101,6 +3159,18 @@ msgstr "المنصة"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "المنصة: 2000 FPM، استوِ على 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "تشغيل"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "موضع التشغيل"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "جارٍ إعادة الاتصال ({retries})..."
 msgid "Record flights"
 msgstr "تسجيل الرحلات"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "التسجيل"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "فشل التسجيل. يرجى المحاولة مرة أخرى."
@@ -3321,6 +3387,11 @@ msgstr "الصلة {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "الصلة {relevance}، الاهتمام {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "التذكير"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "الاستسلام في اللعبة؟"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "القرار"
+msgstr "الدقة"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3891,7 +3962,7 @@ msgstr "هيكل"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "الموضوع"
+msgstr "صاحب الصلاحية"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "خارق"
 msgid "Switch to view 1-9"
 msgstr "التبديل إلى العرض 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "النظام"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "النظام"
 
@@ -3969,6 +4044,11 @@ msgstr "فرق"
 msgid "Teams — red versus blue"
 msgstr "فرق — الأحمر ضد الأزرق"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "مبدئي"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "لم تتم الإجابة على طلب الكاميرا"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "تعذّر تحميل اللعبة. أعد تحميل الصفحة للمحاولة مجددًا."
 
@@ -4118,7 +4199,7 @@ msgstr "طلبات كثيرة جدًا"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "الأعلى"
+msgstr "الأعلى تقييمًا"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4361,7 +4442,7 @@ msgstr "عناصر تحكم العرض"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "المشاهدات"
+msgstr "طرق العرض"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

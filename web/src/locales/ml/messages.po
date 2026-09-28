@@ -26,6 +26,11 @@ msgstr "(എഡിറ്റ് ചെയ്തു)"
 msgid "(expand)"
 msgstr "(വിപുലീകരിക്കുക)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(തലക്കെട്ടില്ല)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(നിങ്ങൾ)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} പേര്"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} മുതൽ {to} വരെ"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# കൂടി} other {+# കൂടി}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -529,7 +531,7 @@ msgstr "പ്രാമാണീകരിച്ച ഉപയോക്താക�
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator കോഡ്"
+msgstr "ഓതന്റിക്കേറ്റർ കോഡ്"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -556,6 +558,11 @@ msgstr "ആക്സിസ് കാലിബ്രേഷനും മാപ്�
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "തിരികെ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 സെക്കൻഡ് പിന്നോട്ട്"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "ക്യാമറ ലഭ്യമല്ല"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "റദ്ദാക്കുക"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "റദ്ദാക്കുക"
 
@@ -785,6 +796,11 @@ msgstr "മറുപടി റദ്ദാക്കുക"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "റദ്ദാക്കി"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "റദ്ദാക്കി"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "എല്ലാവരോടും ചാറ്റ്"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "ഭാഷ തിരഞ്ഞെടുക്കുക"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "മായ്ക്കുക"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "തെളിഞ്ഞ ആകാശം"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1039,6 +1060,11 @@ msgstr "അഭിപ്രായ പ്രവർത്തനങ്ങൾ"
 msgid "Comments"
 msgstr "അഭിപ്രായങ്ങൾ"
 
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "കുറിപ്പുകൾ"
+
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
@@ -1067,7 +1093,7 @@ msgstr "സ്ഥിരീകരിക്കുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect"
-msgstr "കണക്റ്റ്"
+msgstr "കണക്റ്റ് ചെയ്യുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Connect to private server"
@@ -1149,6 +1175,10 @@ msgstr "ഈ ഡോക്യുമെന്റ് ലോഡ് ചെയ്യാ
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "നിങ്ങളുടെ പറക്കലുകൾ ലോഡുചെയ്യാനായില്ല"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "റെക്കോർഡിംഗ് പ്ലേ ചെയ്യാനായില്ല"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "തീപിടിച്ച് നശിച്ചു"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "വിശദാംശം"
+msgstr "വിശദാംശ നില"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,8 +1512,10 @@ msgstr "പൂർത്തിയായി"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
-msgstr "ഡൗൺലോഡ്"
+msgstr "ഡൗൺലോഡ് ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -1654,6 +1686,12 @@ msgstr "മത്സരത്തിൽ നിന്ന് പുറത്തു�
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "ദൗത്യം അവസാനിപ്പിക്കുക"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "പ്ലേബാക്ക് അവസാനിപ്പിക്കുക"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "വീണ്ടും പറക്കുക"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "സൂചികൾ പിന്തുടർന്ന് താഴുക: 3NM-ൽ 1200', 2NM-ൽ 800', 1NM-ൽ 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 സെക്കൻഡ് മുന്നോട്ട്"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "ഇടത് എഞ്ചിൻ ഓഫ്"
 msgid "L GEAR"
 msgstr "ഇടത് ചക്രം"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "ലാൻഡിംഗ്"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP സെർവർ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "ഇടത്തരം"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "ഇടത്തരം"
 
@@ -2583,7 +2626,7 @@ msgstr "ആകാശത്ത് കൂട്ടിയിടി"
 
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
-msgstr "Midway Atoll ഭൂപടം — ചിത്രങ്ങളിൽ പരിഷ്‌കരിച്ച <0>Copernicus Sentinel-2</0> ഡാറ്റ ഉൾപ്പെടുന്നു (2026); വിമാനത്താവളത്തിന്റെ ജ്യാമിതി (റൺവേ, ടാക്‌സിവേകൾ, അപ്രണുകൾ) © <1>OpenStreetMap</1> സംഭാവകർ, <2>ODbL</2> പ്രകാരം ലൈസൻസ് ചെയ്‌തത്; തീരരേഖയും പവിഴപ്പുറ്റ് ഡാറ്റയും <3>NOAA NCCOS</3> ൽ നിന്ന് (പൊതുസഞ്ചയം)."
+msgstr "മിഡ്‌വേ അറ്റോൾ ഭൂപടം — ചിത്രങ്ങളിൽ പരിഷ്‌കരിച്ച <0>Copernicus Sentinel-2</0> ഡാറ്റ ഉൾപ്പെടുന്നു (2026); വിമാനത്താവളത്തിന്റെ ജ്യാമിതി (റൺവേ, ടാക്‌സിവേകൾ, അപ്രണുകൾ) © <1>OpenStreetMap</1> സംഭാവകർ, <2>ODbL</2> പ്രകാരം ലൈസൻസ് ചെയ്‌തത്; തീരരേഖയും പവിഴപ്പുറ്റ് ഡാറ്റയും <3>NOAA NCCOS</3> ൽ നിന്ന് (പൊതുസഞ്ചയം)."
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "നെറ്റ്‌വർക്ക് പിശക്"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "പുതിയത്"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "ഏറ്റവും പുതിയത്"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2745,7 +2792,7 @@ msgstr "ഗ്രൂപ്പുകളൊന്നും ലഭ്യമല്�
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No item types can be created yet. Create the required parent items first."
-msgstr "ഇതുവരെ ഒരു item type-ഉം സൃഷ്ടിക്കാൻ കഴിയില്ല. ആവശ്യമായ parent items ആദ്യം സൃഷ്ടിക്കുക."
+msgstr "ഇതുവരെ ഒരു ഇന തരവും സൃഷ്ടിക്കാൻ കഴിയില്ല. ആവശ്യമായ പാരന്റ് ഇനങ്ങൾ ആദ്യം സൃഷ്ടിക്കുക."
 
 #: src/components/SettingsDialog.tsx
 msgid "No joystick detected — press any button on it to wake it up."
@@ -2891,11 +2938,15 @@ msgstr "അറിയിപ്പുകൾ: {0}"
 msgid "Novice"
 msgstr "തുടക്കക്കാരൻ"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "സംഖ്യ"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "നമ്പർ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,8 +2962,9 @@ msgstr "ഓഫ്‌ലൈൻ"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ശരി"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "ഓ! പേജ് കണ്ടെത്തിയില്ല!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "തുറക്കുക"
+msgstr "ഓപ്പൺ"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -2955,7 +3007,7 @@ msgstr "മെനു തുറക്കുക"
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 #: ../../../lib/web/src/components/layout/top-bar.tsx
 msgid "Open navigation"
-msgstr "navigation തുറക്കുക"
+msgstr "നാവിഗേഷൻ തുറക്കുക"
 
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx
 msgid "Open option actions"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "പാറ്റേൺ (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "താൽക്കാലികമായി നിർത്തുക"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "താൽക്കാലികമായി നിർത്തി"
 
@@ -3101,6 +3159,18 @@ msgstr "പ്ലാറ്റ്ഫോം"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "പ്ലാറ്റ്ഫോം: 2000 FPM, 1200' ൽ ലെവൽ"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "പ്ലേ ചെയ്യുക"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "പ്ലേബാക്ക് സ്ഥാനം"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "വീണ്ടും കണക്റ്റ് ചെയ്യുന്�
 msgid "Record flights"
 msgstr "പറക്കലുകൾ റെക്കോർഡ് ചെയ്യുക"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "റെക്കോർഡിംഗ്"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "റെക്കോർഡിംഗ് പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
@@ -3321,6 +3387,11 @@ msgstr "പ്രസക്തി {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "പ്രസക്തി {relevance}, താൽപ്പര്യം {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "ഓർമ്മപ്പെടുത്തൽ"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "ഗെയിമിൽ നിന്ന് പിന്മാറണോ?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "പരിഹാരം"
+msgstr "റെസല്യൂഷൻ"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "തിരയുന്നു..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "തിരഞ്ഞെടുക്കുക"
+msgstr "തിരഞ്ഞെടുപ്പ്"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ഘടന"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "വിഷയം"
+msgstr "ഉപയോക്താവ് അല്ലെങ്കിൽ ഗ്രൂപ്പ്"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "അതിമാനുഷൻ"
 msgid "Switch to view 1-9"
 msgstr "കാഴ്ച 1-9 ലേക്ക് മാറുക"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "സിസ്റ്റം"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "സിസ്റ്റം"
 
@@ -3969,6 +4044,11 @@ msgstr "ടീമുകൾ"
 msgid "Teams — red versus blue"
 msgstr "ടീമുകൾ — ചുവപ്പ് vs നീല"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "താൽക്കാലികം"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "ക്യാമറ അഭ്യർത്ഥനയ്ക്ക് മറുപടി ലഭിച്ചില്ല"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "ഗെയിം ലോഡ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കാൻ പേജ് വീണ്ടും ലോഡ് ചെയ്യുക."
 
@@ -4118,7 +4199,7 @@ msgstr "വളരെയധികം അഭ്യർത്ഥനകൾ"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "മുകളിൽ"
+msgstr "മികച്ചവ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "വീഡിയോ വ്യൂവർ: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "കാണുക"
+msgstr "കാഴ്ച"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx

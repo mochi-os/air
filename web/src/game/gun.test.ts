@@ -245,7 +245,9 @@ describe('the port', () => {
   it('is where the tracers leave, the trail starts and the burst is recorded for the rig', () => {
     expect(source).toMatch(/const k=pool_spawn\(tracers\); if\(k<0\) break; const sp=gun_port\(st\);/)
     expect(source).toMatch(/\n\tspend\(fired\);\n\tst\.burst=fired; if\(fired>0\) gun_trail\(st,gun_port\(st\),fired,dt\);/)
-    expect(source).toMatch(/battle_volley\(0,battle_pose\(ownship\),fired,battle_tick\); \} \}\n\tgun_effects\(dt\);/)
+    // The flash and gas for the burst run in the same frame, first thing in the shared visuals.
+    expect(source).toMatch(/battle_volley\(0,battle_pose\(ownship\),fired,battle_tick\); \} \}\n\tvisuals\(dt\);/)
+    expect(source).toMatch(/function visuals\(dt\)\{\n\tgun_effects\(dt\);/)
   })
 })
 

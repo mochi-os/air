@@ -26,6 +26,11 @@ msgstr "(disunting)"
 msgid "(expand)"
 msgstr "(kembangkan)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Tiada tajuk)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(anda)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Nama {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hingga {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# lagi}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Penentukuran dan pemetaan paksi"
 msgid "Back"
 msgstr "Kembali"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Undur 5 saat"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,8 +776,12 @@ msgstr "Kamera tidak tersedia"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Batal"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Batal"
 
@@ -785,6 +796,11 @@ msgstr "Batal balasan"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Dibatalkan"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Dibatalkan"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Sembang dengan semua"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Pilih bahasa"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Kosongkan"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Cerah"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Tindakan komen"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Komen"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Catatan"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Tidak dapat memuatkan dokumen ini. Sila cuba lagi kemudian."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Tidak dapat memuatkan penerbangan anda"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Rakaman tidak dapat dimainkan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Selesai"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Muat turun"
 
@@ -1571,7 +1603,7 @@ msgstr "Perincian kesan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Eject"
-msgstr "Eject"
+msgstr "Lontar keluar"
 
 #: src/components/GameCanvas.tsx
 msgid "EJECTED"
@@ -1654,6 +1686,12 @@ msgstr "Keluar dari perlawanan"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Keluar dari misi"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Keluar dari main balik"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Terbang semula"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Ikut jarum turun: 1200' pada 3NM, 800' pada 2NM, 400' pada 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Maju 5 saat"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2226,7 +2269,7 @@ msgstr "MENYERTAI"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Duel"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2238,7 +2281,7 @@ msgstr "Duel menentang bot"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Kayu bedik"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "ENJIN KIRI DIMATIKAN"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "GEAR KIRI"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Pendaratan"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Pelayan MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Sederhana"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Sederhana"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Ralat rangkaian"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Baharu"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Terbaharu"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Pemberitahuan: {0}"
 msgid "Novice"
 msgstr "Pemula"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Nombor"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Nombor"
 
@@ -2911,6 +2962,7 @@ msgstr "luar talian"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Alamak! Halaman Tidak Dijumpai!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Buka"
+msgstr "Terbuka"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Corak (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Jeda"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Dijeda"
 
@@ -3084,7 +3142,7 @@ msgstr "anggul"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "Anggul"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch down"
@@ -3101,6 +3159,18 @@ msgstr "PLATFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, rata pada 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Main"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Kedudukan main balik"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Menyambung semula ({retries})..."
 msgid "Record flights"
 msgstr "Rakam penerbangan"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Rakaman"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Rakaman gagal. Sila cuba lagi."
@@ -3321,6 +3387,11 @@ msgstr "Kaitan {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Kaitan {relevance}, minat {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Peringatan"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3498,7 +3569,7 @@ msgstr "golek"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll"
-msgstr "Roll"
+msgstr "Golek"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
@@ -3622,7 +3693,7 @@ msgstr "Sedang mencari..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Pilih"
+msgstr "Pilihan"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "STRUKTUR"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Subjek"
+msgstr "Pengguna atau kumpulan"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Luar biasa manusia"
 msgid "Switch to view 1-9"
 msgstr "Tukar ke paparan 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistem"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
@@ -3969,6 +4044,11 @@ msgstr "Pasukan"
 msgid "Teams — red versus blue"
 msgstr "Pasukan — merah lawan biru"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Sementara"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Permintaan kamera tidak dijawab"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Permainan tidak dapat dimuatkan. Muat semula halaman untuk mencuba lagi."
 
@@ -4118,7 +4199,7 @@ msgstr "Terlalu banyak permintaan"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Atas"
+msgstr "Teratas"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Pemapar video: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Lihat"
+msgstr "Paparan"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4482,7 +4563,7 @@ msgstr "rewang"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Rewang"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx

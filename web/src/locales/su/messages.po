@@ -26,6 +26,11 @@ msgstr "(diédit)"
 msgid "(expand)"
 msgstr "(buka)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Tanpa judul)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(anjeun)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Ngaran {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} nepi ka {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, other {+# deui}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -504,7 +506,7 @@ msgstr "Kait panahan"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Ascending"
-msgstr "Naek"
+msgstr "Naék"
 
 #: src/components/MissionSetup.tsx
 msgid "asymmetry"
@@ -556,6 +558,11 @@ msgstr "Kalibrasi jeung pemetaan sumbu"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Tukang"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Mundur 5 detik"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -640,7 +647,7 @@ msgstr "Blok"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue"
-msgstr "Biru"
+msgstr "Bulao"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -769,8 +776,12 @@ msgstr "Kaméra teu sayogi"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Batalkeun"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Batalkeun"
 
@@ -785,6 +796,11 @@ msgstr "Batalkeun balesan"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Dibatalkeun"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Dibatalkeun"
 
@@ -886,12 +902,13 @@ msgstr "chat"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Chat"
-msgstr "Chat"
+msgstr "Obrolan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chat to everyone"
 msgstr "Chat ka sadayana"
 
+#: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
@@ -929,10 +946,14 @@ msgstr "Pilih basa"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Bersihkeun"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Cerah"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Peta koméntar"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Koméntar"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Katerangan"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1150,6 +1176,10 @@ msgstr "Teu bisa ngamuat dokumén ieu. Mangga cobian deui engké."
 msgid "Could not load your flights"
 msgstr "Teu bisa mungkahan hiber anjeun"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Rekaman teu bisa diputer"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "Profil teu bisa disimpen"
@@ -1250,7 +1280,7 @@ msgstr "Lokasi ayeuna"
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 #: ../../../lib/web/src/components/colour-picker.tsx
 msgid "Custom"
-msgstr "Adat"
+msgstr "Kustom"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -1397,7 +1427,7 @@ msgstr "Ancur ku seuneu"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "Détil"
+msgstr "Tingkat détil"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1454,7 +1484,7 @@ msgstr "Pegat"
 #: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Dismiss"
-msgstr "Pasini"
+msgstr "Tutup"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1482,6 +1512,8 @@ msgstr "Beres"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Unduh"
 
@@ -1654,6 +1686,12 @@ msgstr "Kaluar tina pertandingan"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Kaluar tina misi"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Kaluar tina puteran"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "Ngapung deui"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Turun nuturkeun jarum: 1200' dina 3NM, 800' dina 2NM, 400' dina 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Maju 5 detik"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2226,7 +2269,7 @@ msgstr "GABUNG"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Duel"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2284,10 +2327,6 @@ msgstr "MESIN KÉNCA PAREUM"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "RODA KÉNCA"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Badarat"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Sedeng"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Sedeng"
 
@@ -2612,7 +2655,7 @@ msgstr "Mochi web"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Mode"
-msgstr "Mode"
+msgstr "Modeu"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Moderation"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Kasalahan jaringan"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Anyar"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Panganyarna"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,11 +2938,15 @@ msgstr "Wawaran: {0}"
 msgid "Novice"
 msgstr "Pamula"
 
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Wilangan"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
+msgctxt "item number"
+msgid "Number"
+msgstr "Nomer"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ocean detail"
@@ -2911,6 +2962,7 @@ msgstr "offline"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
 msgstr "OK"
 
@@ -2938,7 +2990,7 @@ msgstr "Aduh! Kaca Teu Kapanggih!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Buka"
+msgstr "Kabuka"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Pola (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Eureun"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Diereunkeun"
 
@@ -3076,7 +3134,7 @@ msgstr "Pilot tiwas"
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
 msgid "Pin"
-msgstr "Tempelkeun"
+msgstr "Semat"
 
 #: src/components/GameCanvas.tsx
 msgid "pitch"
@@ -3084,7 +3142,7 @@ msgstr "unggeuk"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "Unggeuk"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch down"
@@ -3101,6 +3159,18 @@ msgstr "PLATFORM"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Platform: 2000 FPM, datar dina 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Puter"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Posisi puteran"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Nyambungkeun deui ({retries})..."
 msgid "Record flights"
 msgstr "Rekam hiber"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Rekaman"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Rékaman gagal. Mangga cobaan deui."
@@ -3321,6 +3387,11 @@ msgstr "Relevansi {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Relevansi {relevance}, minat {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Panginget"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3426,7 +3497,7 @@ msgstr "Reset peringatan utama"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset trim"
-msgstr "Reset trim"
+msgstr "Atur ulang trim"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -3498,7 +3569,7 @@ msgstr "guling"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll"
-msgstr "Roll"
+msgstr "Guling"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
@@ -3622,7 +3693,7 @@ msgstr "Maluruh..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Pilih"
+msgstr "Pilihan"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "STRUKTUR"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Subjek"
+msgstr "Pamaké atawa grup"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Leuwih ti manusa"
 msgid "Switch to view 1-9"
 msgstr "Pindah ka tampilan 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sistem"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
@@ -3969,6 +4044,11 @@ msgstr "Tim"
 msgid "Teams — red versus blue"
 msgstr "Tim — beureum lawan biru"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Samentawis"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Paménta kaméra teu diwaler"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Kaulinan teu tiasa dimuat. Muat deui kacana pikeun nyobian deui."
 
@@ -4057,7 +4138,7 @@ msgstr "gas"
 
 #: src/components/SettingsDialog.tsx
 msgid "Throttle"
-msgstr "Throttle"
+msgstr "Gas"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4118,7 +4199,7 @@ msgstr "Seueur teuing pamundut"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Luhur"
+msgstr "Pangalusna"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4126,7 +4207,7 @@ msgstr "Nyabak: gas idle; erém ku hawa dina 10° irung luhur, turunkeun irung d
 
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
-msgstr "Tracers"
+msgstr "Pélor pelacak"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "Travelling"
@@ -4283,7 +4364,7 @@ msgstr "Tanpa judul"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Updated"
-msgstr "Diapdet"
+msgstr "Diropéa"
 
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Updated {field}"
@@ -4344,7 +4425,7 @@ msgstr "Panempo video: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Tingali"
+msgstr "Tampilan"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4482,7 +4563,7 @@ msgstr "oléng"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Oléng"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx

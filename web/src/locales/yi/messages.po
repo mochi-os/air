@@ -26,6 +26,11 @@ msgstr "(רעדאַגירט)"
 msgid "(expand)"
 msgstr "(פאַרברייטערן)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(אָן קעפּל)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(דו)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} נאָמען"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ביז {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# מער} other {+# מער}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -449,7 +451,7 @@ msgstr "Android פּוש"
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Anyone"
-msgstr "עמעצער"
+msgstr "ווער עס איז"
 
 #: ../../../lib/web/src/features/access/types.ts
 msgid "Anyone who is logged in"
@@ -529,7 +531,7 @@ msgstr "אױטענטיפֿיצירטע באַניצער"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator קאָד"
+msgstr "אויטענטיפֿיקאַטאָר־קאָד"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -557,6 +559,11 @@ msgstr "אַקס־קאַליברירונג און צוטיילונג"
 msgid "Back"
 msgstr "צוריק"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 סעקונדעס צוריק"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -564,7 +571,7 @@ msgstr "צוריק צום הויז"
 
 #: src/components/GameCanvas.tsx
 msgid "Ball call: answer, fly ball to touchdown"
-msgstr "ball-רוף: ענטפֿער, פֿלי דעם ball ביזן אָנריר"
+msgstr "באַלל-רוף: ענטפֿער, פֿלי דעם באַלל ביזן אָנריר"
 
 #: src/components/MissionSetup.tsx
 msgid "Bandit"
@@ -636,7 +643,7 @@ msgstr "געבלאָקירט נאַוויגאַציע צו אומגעטרויט�
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
-msgstr "Blocks"
+msgstr "בלאָקירט"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue"
@@ -657,11 +664,11 @@ msgstr "באָלטער"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 1200', turn downwind, {heading}"
-msgstr "Bolter: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, האָק אַראָפּ, שטײַג צו 1200', דריי אויף מיטווינט, {heading}"
+msgstr "באָלטער: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, האָק אַראָפּ, שטײַג צו 1200', דריי אויף מיטווינט, {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Bolter: full power, boards in, hook down, climb to 600', turn downwind, {heading}"
-msgstr "Bolter: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, האָק אַראָפּ, שטײַג צו 600', דריי אויף מיטווינט, {heading}"
+msgstr "באָלטער: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, האָק אַראָפּ, שטײַג צו 600', דריי אויף מיטווינט, {heading}"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
@@ -698,7 +705,7 @@ msgstr "דרײ װען גרייט"
 
 #: src/components/GameCanvas.tsx
 msgid "Break: level turn, throttle idle, boards out, pull 1 g per 100 knots"
-msgstr "Break: גלײַכער דריי, גאַז אויף מינימום, לופֿטברעמזן אַרויס, צי 1 g פֿאַר יעדע 100 קנאָטן"
+msgstr "שאַרפֿער דריי: גלײַכער דריי, גאַז אויף מינימום, לופֿטברעמזן אַרויס, צי 1 g פֿאַר יעדע 100 קנאָטן"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Browser notifications"
@@ -769,8 +776,12 @@ msgstr "די קאַמערע איז נישט פֿאַראַן"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "אָפּזאָגן"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "אָפּזאָגן"
 
@@ -785,6 +796,11 @@ msgstr "אָפּזאָגן ענטפֿער"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "אָפּגעזאָגט"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "אָפּגעזאָגט"
 
@@ -839,7 +855,7 @@ msgstr "פאַל III (נאַכט)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at zero"
-msgstr "Case III: marshal 6000', 250 קנאָטן, ענד-פּײַלונג {heading}, הייב אָן בײַ נול"
+msgstr "Case III: וואַרט־פּונקט 6000', 250 קנאָטן, ענד-פּײַלונג {heading}, הייב אָן בײַ נול"
 
 #: src/components/MissionSetup.tsx
 msgid "Catapult"
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "שמועס מיט אַלעמען"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "קלײַבט שפּראַך"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "רייניקן"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "קלאָר"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "קאָמענטאַר אַקציעס"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "קאָמענטאַרן"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "באַמערקונגען"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1150,6 +1176,10 @@ msgstr "האָט נישט געקאָנט לאָדן דעם דאָקומענט. �
 msgid "Could not load your flights"
 msgstr "מע האָט נישט געקענט לאָדן דײַנע פֿליען"
 
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "מע האָט נישט געקענט שפּילן די פֿאַרשרײַבונג"
+
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
 msgstr "מען האָט נישט געקענט אויפֿהיטן דעם פּראָפֿיל"
@@ -1250,7 +1280,7 @@ msgstr "איצטיקער אָרט"
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 #: ../../../lib/web/src/components/colour-picker.tsx
 msgid "Custom"
-msgstr "מנהג"
+msgstr "אָנגעפּאַסט"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -1482,6 +1512,8 @@ msgstr "געטאָן"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "אַראָפּלאָדן"
 
@@ -1654,6 +1686,12 @@ msgstr "פֿאַרלאָז דעם מאַטש"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "אַרויסגיין פֿון מיסיע"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "אַרויסגיין פֿון שפּילן"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1906,6 +1944,11 @@ msgstr "פֿלי ווידער"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "פֿלי אַראָפּ נאָך די נאָדלען: 1200' בײַ 3NM, 800' בײַ 2NM, 400' בײַ 1NM"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 סעקונדעס פֿאָרויס"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "ל מאָטאָר אָפּגעשטעלט"
 msgid "L GEAR"
 msgstr "ל שאַסי"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "לאַנדונג"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2416,7 +2455,7 @@ msgstr "באַוואָפֿענונג"
 
 #: src/routes/log.tsx
 msgid "Log"
-msgstr "זשורנאַל"
+msgstr "לאָג"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
@@ -2524,9 +2563,13 @@ msgid "MCP server"
 msgstr "MCP סערװער"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
-#: src/components/SettingsDialog.tsx
 msgid "Medium"
 msgstr "מיטל"
+
+#: src/components/SettingsDialog.tsx
+msgctxt "quality level"
+msgid "Medium"
+msgstr "מיטלמעסיק"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Members"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "נעץ פֿעלער"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "נײַ"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "נײַסטע"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2848,7 +2895,7 @@ msgstr "קיינס"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Normal"
-msgstr "נארמאל"
+msgstr "נאָרמאַל"
 
 #: src/components/GameCanvas.tsx
 msgid "NOSE GEAR"
@@ -2891,9 +2938,13 @@ msgstr "מעלדונגען: {0}"
 msgid "Novice"
 msgstr "אָנהייבער"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "נומער"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "נומער"
 
@@ -2911,8 +2962,9 @@ msgstr "ניט פֿאַרבונדן"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "גוט"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "אױ! זײַטל ניט געפֿונען!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "עפֿן"
+msgstr "אָפֿן"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3031,7 +3083,7 @@ msgstr "פּאַסקיי"
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkey verification failed. Please try again."
-msgstr "די passkey פֿאַריפֿיצירונג איז דורכגעפֿאַלן. ביטע פּרוביר ווידער."
+msgstr "די פּאַסקיי־פֿאַריפֿיצירונג איז דורכגעפֿאַלן. ביטע פּרוביר ווידער."
 
 #: ../../../lib/web/src/components/restore-banner.tsx
 msgid "Passkeys"
@@ -3044,6 +3096,12 @@ msgstr "פּאַסקייס זענען נישט פֿאַראַן אין דעם ב
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "מוסטער (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "פּויזע"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3101,6 +3159,18 @@ msgstr "פּלאַטפאָרמע"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "פּלאַטפֿאָרמע: 2000 FPM, גלײַך אויף 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "שפּיל"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "שפּיל־פּאָזיציע"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "פֿאַרבינדט װידער ({retries})..."
 msgid "Record flights"
 msgstr "פֿאַרשרײַבן פֿליען"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "פֿאַרשרײַבונג"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "די רעקאָרדירונג איז דורכגעפֿאַלן. ביטע פּרוּווט נאָך אַ מאָל."
@@ -3321,6 +3387,11 @@ msgstr "רעלעוואַנץ {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "רעלעוואַנץ {relevance}, אינטערעס {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "דערמאָנונג"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3622,7 +3693,7 @@ msgstr "זוכן..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "קלײַב"
+msgstr "אויסוואַל"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3862,7 +3933,7 @@ msgstr "הייב־פֿאַרלוסט, לאַנדונג־סטעלונג (Vs0)"
 
 #: src/components/GameCanvas.tsx
 msgid "Starboard side: hold 800'; break past bow"
-msgstr "רעכטער באָרט: האַלט 800'; מאַך Break נאָכן פֿאָדערשפּיץ"
+msgstr "רעכטער באָרט: האַלט 800'; מאַך אַ שאַרפֿן דריי נאָכן פֿאָדערשפּיץ"
 
 #: src/components/Multiplayer.tsx
 msgid "Start"
@@ -3891,7 +3962,7 @@ msgstr "סטרוקטור"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "טעמע"
+msgstr "באַניצער אָדער גרופּע"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "איבערמענטשלעך"
 msgid "Switch to view 1-9"
 msgstr "ביט איבער צו ראַם 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "סיסטעם"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "סיסטעם"
 
@@ -3969,6 +4044,11 @@ msgstr "מאַנשאַפֿטן"
 msgid "Teams — red versus blue"
 msgstr "מאַנשאַפֿטן — רויט קעגן בלוי"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "פּראָוויזאָריש"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -3993,7 +4073,7 @@ msgstr "עס איז געווען צו גרויס אַרויפֿצולאָדן. �
 
 #: src/components/GameCanvas.tsx
 msgid "The 45: 325-375', roll into groove, {heading}, fly ball with power"
-msgstr "45: 325-375', דריי אַרײַן אין groove, {heading}, פֿלי דעם ball מיט גאַז"
+msgstr "45: 325-375', דריי אַרײַן אין דער לאַנדונג־ליניע, {heading}, פֿלי דעם באַלל מיט גאַז"
 
 #: src/components/GameCanvas.tsx
 msgid "The 90: 450', 500 FPM"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "די קאַמערע־בקשה איז נישט געענטפֿערט געוואָרן"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "די שפּיל האָט זיך נישט געקענט לאָדן. לאָד איבער די זײַט כּדי צו פּרובירן נאָך אַ מאָל."
 
@@ -4118,7 +4199,7 @@ msgstr "צו פֿיל בקשות"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "אויבן"
+msgstr "בעסטע"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4300,7 +4381,7 @@ msgstr "אַרויפֿלאָד פּראָגרעס"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
-msgstr "ניצט אײַער passkey"
+msgstr "ניצט אײַער פּאַסקיי"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4400,11 +4481,11 @@ msgstr "ברעך אָפּ די לאַנדונג"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb to 1200', {heading}"
-msgstr "Wave-off: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, פֿליגלען גלײַך, שטײַג צו 1200', {heading}"
+msgstr "ברעך אָפּ די לאַנדונג: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, פֿליגלען גלײַך, שטײַג צו 1200', {heading}"
 
 #: src/components/GameCanvas.tsx
 msgid "Wave-off: full power, boards in, wings level, climb, {heading}"
-msgstr "Wave-off: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, פֿליגלען גלײַך, שטײַג, {heading}"
+msgstr "ברעך אָפּ די לאַנדונג: פֿולע קראַפֿט, לופֿטברעמזן אַרײַן, פֿליגלען גלײַך, שטײַג, {heading}"
 
 #. placeholder {0}: account.identifier
 #: ../../../lib/web/src/features/accounts/account-verify.tsx

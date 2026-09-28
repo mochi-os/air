@@ -26,6 +26,11 @@ msgstr "(تبديل ٿيل)"
 msgid "(expand)"
 msgstr "(وڌايو)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(بي عنوان)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(توهان)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "{entityLabel} جو نالو"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} کان {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# وڌيڪ} other {+# وڌيڪ}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -529,7 +531,7 @@ msgstr "تصديق ٿيل صارف"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Authenticator code"
-msgstr "Authenticator ڪوڊ"
+msgstr "تصديق ڪندڙ ڪوڊ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Available keyboard shortcuts"
@@ -556,6 +558,11 @@ msgstr "محورن جي ڪيليبريشن ۽ ميپنگ"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "واپس"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "5 سيڪنڊ پوئتي"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "ڪئميرا موجود ناهي"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "منسوخ ڪريو"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "منسوخ ڪريو"
 
@@ -785,6 +796,11 @@ msgstr "جواب منسوخ ڪريو"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "منسوخ ٿيل"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "منسوخ ٿيل"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "سڀني سان چيٽ"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "ٻولي چونڊيو"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "صاف ڪريو"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "صاف آسمان"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1036,6 +1057,11 @@ msgstr "تبصري جا عمل"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+msgid "Comments"
+msgstr "تبصرا"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
 msgid "Comments"
 msgstr "تبصرا"
 
@@ -1149,6 +1175,10 @@ msgstr "هي دستاويز لوڊ نه ٿي سگهيو. مهرباني ڪري �
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "توهان جون اڏامون لوڊ نه ٿي سگهيون"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "رڪارڊنگ هلائي نه سگهي"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1397,7 +1427,7 @@ msgstr "باهه ۾ تباهه ٿيو"
 
 #: src/components/SettingsDialog.tsx
 msgid "Detail"
-msgstr "تفصيل"
+msgstr "تفصيل جي سطح"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
@@ -1482,6 +1512,8 @@ msgstr "مڪمل"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "ڊائون لوڊ"
 
@@ -1654,6 +1686,12 @@ msgstr "ميچ مان نڪرو"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "مشن ڇڏيو"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "هلائڻ ڇڏيو"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "ٻيهر اڏام ڀريو"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "سُين سان هيٺ لهو: 3NM تي 1200'، 2NM تي 800'، 1NM تي 400'"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "5 سيڪنڊ اڳتي"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "فريم ريٽ ڪائونٽر"
@@ -2116,7 +2159,7 @@ msgstr "HUD جون سُيون: گلائيڊ سلوپ ۽ وچئين لڪير بر
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
-msgstr "آئي ڊي"
+msgstr "سڃاڻپ"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -2284,10 +2327,6 @@ msgstr "کاٻي انجڻ بند"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "کاٻو گيئر"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "لينڊنگ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "MCP سرور"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "وچولو"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "وچولو"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "نيٽ ورڪ جي خرابي"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "نئون"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "سڀ کان نوان"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "اطلاعون: {0}"
 msgid "Novice"
 msgstr "نئون سکندڙ"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "نمبر"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "نمبر"
 
@@ -2911,8 +2962,9 @@ msgstr "آف لائين"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "ٺيڪ"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "افسوس! صفحو نه مليو!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "کوليو"
+msgstr "کليل"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3039,11 +3091,17 @@ msgstr "پاسي ڪيز"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Passkeys are not available in this browser"
-msgstr "Passkeys هن برائوزر ۾ موجود ناهن"
+msgstr "پاس ڪيز هن برائوزر ۾ موجود ناهن"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Pattern (regex)"
 msgstr "نمونو (regex)"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "روڪيو"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3101,6 +3159,18 @@ msgstr "پليٽ فارم"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "پليٽ فارم: 2000 FPM، 1200' تي سڌو"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "هلايو"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "هلائڻ جي جاءِ"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "ٻيهر ڳنڍجي رهيو آهي ({retries})..."
 msgid "Record flights"
 msgstr "اڏامون رڪارڊ ڪريو"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "رڪارڊنگ"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "رڪارڊنگ ناڪام ٿي. مهرباني ڪري ٻيهر ڪوشش ڪريو."
@@ -3321,6 +3387,11 @@ msgstr "لاڳاپو {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "لاڳاپو {relevance}، دلچسپي {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "ياددهاني"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "گيم هار مڃجي؟"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "حل"
+msgstr "ريزوليوشن"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "ڳولي رهيو آهي..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "چونڊيو"
+msgstr "چونڊ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "ڍانچو"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "موضوع"
+msgstr "صارف يا گروپ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "انسان کان مٿي"
 msgid "Switch to view 1-9"
 msgstr "ڏيک 1-9 تي مٽايو"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "سسٽم"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "سسٽم"
 
@@ -3969,6 +4044,11 @@ msgstr "ٽيمون"
 msgid "Teams — red versus blue"
 msgstr "ٽيمون — ڳاڙهو مقابل نيرو"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "عارضي"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "ڪئميرا درخواست جو جواب نه مليو"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "راند لوڊ نه ٿي سگهي. ٻيهر ڪوشش لاءِ صفحو ٻيهر لوڊ ڪريو."
 
@@ -4021,7 +4102,7 @@ msgstr "مشن رڪجي ويو."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "The passkey request was not answered"
-msgstr "Passkey درخواست جو جواب نه مليو"
+msgstr "پاس ڪي درخواست جو جواب نه مليو"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "The requested content could not be found."
@@ -4033,7 +4114,7 @@ msgstr "سرور ڊيٽا جي بجاءِ ويب پيج موٽايو."
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
-msgstr "هن ايپ کي توهان جي passkey استعمال ڪرڻ جي اجازت ناهي. سيٽنگن ۾، اجازتن هيٺ ان کي اجازت ڏيو."
+msgstr "هن ايپ کي توهان جي پاس ڪي استعمال ڪرڻ جي اجازت ناهي. سيٽنگن ۾، اجازتن هيٺ ان کي اجازت ڏيو."
 
 #: src/components/MissionSetup.tsx
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
@@ -4118,7 +4199,7 @@ msgstr "تمام گهڻيون درخواستون"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "مٿي"
+msgstr "بهترين"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "وڊيو ڏسڻ وارو: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "ڏسو"
+msgstr "منظر"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "ڏيک ڪنٽرول"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "ڏيک"
+msgstr "منظر"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"

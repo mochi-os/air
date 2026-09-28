@@ -17,7 +17,7 @@ import { sanitizeWrap, minimumImage, fold } from './wrap'
 export { crossHost } from './host'
 
 const POSE_RECORD = 39 // the server's fixed pose stride (world/games/air/air.go, pose_record) — MUST equal it exactly; the protocol byte below does not distinguish strides, so a build that disagrees here misparses every pose instead of being refused at the door
-const PROTOCOL = 1 // 1: the 39-byte pose record — byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening (held at 1 on instruction), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose.
+const PROTOCOL = 1 // 1: the 39-byte pose record — byte 29 both engine fires, byte 30 his sideslip, byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening nor for the fires sharing byte 29 to make room for the sideslip (held at 1 on instruction both times), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose, and a peer on the older 39-byte layout would read a slip as a fire and a fire as a slip.
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -280,6 +280,7 @@ export interface RemotePose {
   burning: boolean
   aoa: number // degrees, whole (#164) — wire-quantised, the ownship's own channel is exact
   g: number // load factor, tenths (#164)
+  beta: number // sideslip, degrees, whole, positive with the flow from the right — against the air, which the ground track cannot give
 }
 
 interface Snapshot {
@@ -289,7 +290,7 @@ interface Snapshot {
   core: Float64Array | null // the recipient's own encoded flight state
 }
 
-// One decoded 34-byte pose record with its arrival time — the per-slot rings
+// One decoded pose record with its arrival time — the per-slot rings
 // these build replace per-snapshot player maps (#81): each slot updates at its
 // own rate (nearest players every poses datagram, the far tail round-robin),
 // so interpolation must bracket within the slot's own sample history.
@@ -708,14 +709,15 @@ export class Net {
             reheat: view.getUint8(base + 27) / 255,
             speedbrake: view.getUint8(base + 28) / 255,
             burn: [
-              view.getUint8(base + 29) / 255,
-              view.getUint8(base + 30) / 255,
+              (view.getUint8(base + 29) >> 4) / 15, // both engine fires share byte 29 in fifteenths, rounded up by the server so a small fire still reads as one
+              (view.getUint8(base + 29) & 15) / 15,
             ],
             leak: view.getUint8(base + 31) / 10,
             loss: view.getUint16(base + 32, true),
             spent: view.getUint16(base + 35, true), // cumulative rounds fired this life (#163): the steps are the bursts
             aoa: view.getInt8(base + 37), // #164: alpha in whole degrees, saturating
             g: view.getInt8(base + 38) / 10, // #164: the g meter at a tenth
+            beta: view.getInt8(base + 30), // sideslip in whole degrees
             kills: tally?.kills ?? 0,
             deaths: tally?.deaths ?? 0,
           }

@@ -77,7 +77,9 @@ interface Flight {
   gear?: number // gear position, 0 down .. 1 up (#86)
   flaps?: number // flap SELECT: 0 auto, 1 half, 2 full (#86) — the FCS configuration, not the surface
   trim?: number // pitch trim (#86)
-  lateral?: number // roll stick input, dev builds (#86)
+  hook?: number // tailhook position, 0 stowed .. 1 down: a replay of a carrier pass draws it, and it is written with the configuration
+  speedbrake?: number // the speed brake's position, 0 stowed .. 1 out: a replay draws it
+  lateral?: number // roll stick input (#86): shipped, like the pitch stick
   // The g-limit override paddle switch and its cost (#33 debrief): held, the
   // FCS commands to 10 g instead of the airframe's own 7.5 g ceiling, and the
   // exposure between those two - g·s beyond 7.5 g - accrues into `stress`
@@ -92,15 +94,16 @@ interface Flight {
   stress?: number // accumulated overstress exposure, g·s beyond the airframe's un-raised limit
   // Yaw rate, degrees/second, real-world convention (positive = nose right)
   // (#33 debrief). NOT a departure flag - it is the raw rate the cockpit's
-  // own departure/AoA tone is proxied from (engine.ts's departure_drive),
-  // and the flight model's actual departure signature is sideslip, which
-  // never reaches the client at all (investigated, not exposed by the wasm
-  // core). Elevated, sustained yaw rate not explained by a rudder/yaw input
-  // is the best signal available without a wire-format change; it will both
-  // miss genuine low-speed ballistic departures with a weaker yaw signature
-  // and fire on a deliberate hard yaw check that never departed anything.
+  // own departure/AoA tone is proxied from (engine.ts's departure_drive); it
+  // fires on a deliberate hard yaw check that never departed anything and
+  // misses a low-speed ballistic departure with a weak yaw signature. The
+  // flight model's actual departure signature is the sideslip, beside it.
   // Written every sample like AOA/G - a debrief reads its trace.
   yawrate?: number
+  // Sideslip, degrees, positive with the flow from the right: the core's own
+  // angle against the air, for every jet - a remote's off the pose wire,
+  // where the ground track would read a crab into a crosswind as a slip.
+  beta?: number
   tas?: number // true airspeed, m/s
   ias?: number // indicated/calibrated airspeed, m/s
   mach?: number
@@ -118,8 +121,8 @@ interface Flight {
   // Who ended it, when anyone is credited: the debrief keeps the mechanism in
   // Fate and gains the attribution here, the way a missile carries Parent.
   killer?: string
-  stick?: number // control-law channels: developer builds only
-  stabilator?: number // degrees
+  stick?: number // pitch stick input: shipped, for handling debriefs (it was developer-only)
+  stabilator?: number // degrees, developer builds
   // The weapons channels (#33). Missiles is the stores count, so a launch is a
   // step like a gun burst. Cue is what the HUD was telling the pilot (gun /
   // heater / radar SHOOT states, the breakaway X, or empty).
@@ -197,6 +200,29 @@ interface Flight {
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
+  // What a replay draws and a debrief reads that the recording once lacked
+  // (2026-09-26). The state channels are written when they change; radio and
+  // notice are events, written on the sample they happened on.
+  pedal?: number // rudder pedal input
+  surfaces?: number[] // radians, as the core reports them: left and right stabilator, left and right flaperon, rudder, leading-edge flaps
+  master?: string // the weapon selected: gun / 9m / 120c / nav
+  declutter?: number // the HUD reject switch: 0 NORM, 1 REJ 1, 2 REJ 2
+  stores?: string // the loadout as JSON: it changes when stores are jettisoned
+  heaters?: number // AIM-9s on the rails
+  amraams?: number // AIM-120s on the rails
+  catapult?: number // the catapult the jet is hooked to, -1 none
+  stroke?: number // metres the shot has run, -1 before it fires
+  wire?: number // the wire caught, 0 none
+  waving?: boolean // the LSO waving the pass off
+  lights?: boolean // position, strobe and formation lights
+  canopy?: number // 0 closed .. 1 open
+  fold?: number // 0 spread .. 1 folded
+  probe?: number // refuelling probe, 0 stowed .. 1 out
+  damage?: number[] // the core's per-element losses, then the three gear struts and the eight jammed channels, 0..1
+  eject?: boolean // this life ended in the seat
+  coach?: string[] // the coaching slot's rows as shown, none when it is empty
+  radio?: string[] // radio and chat lines raised on this sample, each "#colour text" or text alone
+  notice?: string[] // centre banners raised on this sample
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
@@ -209,6 +235,32 @@ export function position(
     MIDWAY.longitude +
     x / (METRES_PER_DEGREE * Math.cos((MIDWAY.latitude * Math.PI) / 180))
   return { longitude, latitude }
+}
+
+// metres is position's inverse: a recording's degrees back to the flat
+// world's metres, for a replay.
+export function metres(
+  longitude: number,
+  latitude: number
+): { x: number; z: number } {
+  const z = (MIDWAY.latitude - latitude) * METRES_PER_DEGREE
+  const x =
+    (longitude - MIDWAY.longitude) *
+    METRES_PER_DEGREE *
+    Math.cos((MIDWAY.latitude * Math.PI) / 180)
+  return { x, z }
+}
+
+// airspeed is the true airspeed, m/s, that the flight core flew at Mach
+// number mach and altitude metres: its own standard atmosphere
+// (world/games/air/flight/atmosphere.go, which a match flies with no
+// temperature offset), so it gives back the core's speed through the air,
+// wind and gusts removed. A jet's speed over the ground is not it: in single
+// player the trades blow 21 kt at the surface and over 60 kt at 15,000 ft.
+export function airspeed(mach: number, altitude: number): number {
+  const h = Math.max(0, altitude)
+  const temperature = 288.15 - 0.0065 * Math.min(h, 11000)
+  return mach * Math.sqrt(1.4 * 287.053 * temperature)
 }
 
 const round = (v: number, places: number) => {
@@ -226,6 +278,18 @@ const round = (v: number, places: number) => {
 // from the network today - "escape the untrusted ones" is the rule that let
 // nine of eleven sites go unescaped.
 const field = (v: string) => v.replace(/[,\n\r]/g, ' ')
+
+// text keeps free text's commas, where field drops them: a backslash escapes a
+// comma, a semicolon and itself, as TacView escapes a comma, and a line break
+// becomes a space. list joins several texts with semicolons. The replay reads
+// both back (playback.ts items).
+export const text = (v: string) =>
+  v
+    .replace(/\\/g, '\\\\')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;')
+    .replace(/[\n\r]/g, ' ')
+const list = (values: readonly string[]) => values.map(text).join(';')
 
 // acmi renders samples as an ACMI 2.2 recording; `started` stamps the reference
 // time. Match describes the fight's rules in the header (mode, duel, weapons
@@ -258,9 +322,11 @@ export function channels(
     leak?: number
     reheat?: number
     gear?: number
+    speedbrake?: number // the board's commanded position, off the pose wire
     missiles?: number
     aoa?: number // degrees, off the pose wire (#164)
     g?: number // load factor (#164)
+    beta?: number // sideslip, degrees, off the pose wire
   },
   emitter?: { mode: number; target: number },
   mine?: number
@@ -275,12 +341,15 @@ export function channels(
     leak: remote.leak ?? 0,
     burner: remote.reheat ?? 0,
     gear: remote.gear ?? 1,
+    speedbrake: remote.speedbrake ?? 0,
     missiles: Math.max(0, Math.trunc(remote.missiles ?? 0)),
-    // The two a debrief cannot reconstruct from the pose stream: #44 measured a
-    // derived nose disagreeing with recorded AOA by up to 80 degrees, so these
-    // are recorded or they are guessed.
+    // What a debrief cannot reconstruct from the pose stream: #44 measured a
+    // derived nose disagreeing with recorded AOA by up to 80 degrees, and the
+    // ground track reads a crab into a crosswind as a slip, so these are
+    // recorded or they are guessed.
     aoa: remote.aoa ?? 0,
     g: remote.g ?? 0,
+    beta: remote.beta ?? 0,
     radar: emitter
       ? emitter.mode >= 2
         ? 'stt'
@@ -336,6 +405,7 @@ export function stamp(fight: {
   buttons: number
   unreachable: string // bound actions the device does not report, comma-separated
   passes?: string // the sortie's passes as the LSO wrote them up, '' or absent when none was flown
+  wind?: string // the day's surface wind as from/knots, e.g. 070/25
 }): { kind: string; match: Match } {
   const joust = !fight.multiplayer && fight.mode === 'joust'
   // The kind names the fight for the title, the history row and the file: a
@@ -381,6 +451,7 @@ export function stamp(fight: {
       unreachable: fight.unreachable,
       // The landings, last of all: "OK (H) X 3 wire | BOLTER LO IC | ...".
       passes: fight.passes ?? '',
+      wind: fight.wind ?? '',
     },
   }
 }
@@ -414,6 +485,8 @@ export function acmi(
   const battled = new Map<number, string>() // last written battle channels, per object
   const armed = new Map<number, number>() // last written missiles count, per object
   const landed = new Map<number, string>() // last written gear|flaps|trim, per object (#86)
+  const braked = new Map<number, number>() // last written speed brake position, per object
+  const held = new Map<string, string>() // last written value of each replay state channel, per object and channel
   const cued = new Map<number, string>() // last written cue, per object
   const overridden = new Map<number, boolean>() // last written g-limit override state, per object (#33)
   const grazed = new Map<number, number>() // last written burst miss, per object
@@ -440,6 +513,7 @@ export function acmi(
       const d = o.data
       if (d) {
         if (d.aoa !== undefined) line += `,AOA=${round(d.aoa, 2)}`
+        if (d.beta !== undefined) line += `,Beta=${round(d.beta, 2)}`
         if (d.g !== undefined) line += `,G=${round(d.g, 2)}`
         if (d.tas !== undefined) line += `,TAS=${round(d.tas, 1)}`
         if (d.ias !== undefined) line += `,IAS=${round(d.ias, 1)}`
@@ -492,12 +566,70 @@ export function acmi(
         if (
           d.gear !== undefined ||
           d.flaps !== undefined ||
-          d.trim !== undefined
+          d.trim !== undefined ||
+          d.hook !== undefined
         ) {
-          const state = `${round(d.gear ?? 1, 2)}|${d.flaps ?? 0}|${round(d.trim ?? 0, 3)}`
+          const state = `${round(d.gear ?? 1, 2)}|${d.flaps ?? 0}|${round(d.trim ?? 0, 3)}|${d.hook === undefined ? '' : round(d.hook, 2)}`
           if (landed.get(o.id) !== state) {
             landed.set(o.id, state)
             line += `,Gear=${round(d.gear ?? 1, 2)},Flaps=${d.flaps ?? 0},Trim=${round(d.trim ?? 0, 3)}`
+            if (d.hook !== undefined) line += `,Hook=${round(d.hook, 2)}`
+          }
+        }
+        // The replay's channels: states written when they change, events on
+        // the sample they happened on.
+        const changed = (channel: string, value: string) => {
+          const key = `${o.id}:${channel}`
+          if (held.get(key) === value) return false
+          held.set(key, value)
+          return true
+        }
+        if (d.pedal !== undefined) line += `,Pedal=${round(d.pedal, 3)}`
+        if (d.surfaces) {
+          const value = d.surfaces
+            .map((r) => Math.round((r * 180) / Math.PI))
+            .join('|')
+          if (changed('Surfaces', value)) line += `,Surfaces=${value}`
+        }
+        const flag = (v: boolean | undefined) =>
+          v === undefined ? undefined : v ? 1 : 0
+        for (const [channel, value] of [
+          ['Master', d.master],
+          ['Declutter', d.declutter],
+          ['Heaters', d.heaters],
+          ['Amraams', d.amraams],
+          ['Catapult', d.catapult],
+          ['Stroke', d.stroke === undefined ? undefined : round(d.stroke, 1)],
+          ['Wire', d.wire],
+          ['Waving', flag(d.waving)],
+          ['Lights', flag(d.lights)],
+          ['Canopy', d.canopy === undefined ? undefined : round(d.canopy, 2)],
+          ['Fold', d.fold === undefined ? undefined : round(d.fold, 2)],
+          ['Probe', d.probe === undefined ? undefined : round(d.probe, 2)],
+        ] as const) {
+          if (value === undefined) continue
+          const v = String(value)
+          if (changed(channel, v)) line += `,${channel}=${field(v)}`
+        }
+        if (d.stores !== undefined && changed('Stores', d.stores))
+          line += `,Stores=${text(d.stores)}`
+        if (d.damage) {
+          const value = d.damage.map((v) => round(v, 2)).join('|')
+          if (changed('Damage', value)) line += `,Damage=${value}`
+        }
+        if (d.eject && changed('Eject', '1')) line += ',Eject=1'
+        if (d.coach !== undefined) {
+          const value = list(d.coach)
+          if (changed('Coach', value)) line += `,Coach=${value}`
+        }
+        if (d.radio && d.radio.length) line += `,Radio=${list(d.radio)}`
+        if (d.notice && d.notice.length) line += `,Notice=${list(d.notice)}`
+        // Written as it moves and not while it rests, like the configuration.
+        if (d.speedbrake !== undefined) {
+          const out = round(d.speedbrake, 2)
+          if (braked.get(o.id) !== out) {
+            braked.set(o.id, out)
+            line += `,SpeedBrake=${out}`
           }
         }
         // The g-limit override switch (#33 debrief): held rarely and briefly,

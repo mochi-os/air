@@ -26,6 +26,11 @@ msgstr "(gulaalame)"
 msgid "(expand)"
 msgstr "(babal'isi)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Mata duree hin qabu)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(ati)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Maqaa {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hanga {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# dabalataa} other {+# dabalataa}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -557,6 +559,11 @@ msgstr "Kaalibreeshinii fi ramaddii siiqqee"
 msgid "Back"
 msgstr "Duuba"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Sekondii 5 duubatti"
+
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Back to home"
@@ -769,10 +776,14 @@ msgstr "Kaameraan hin argamu"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cancel"
 msgstr "Haquu"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
+msgid "Cancel"
+msgstr "Addaan kuti"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Cancel comment"
@@ -785,6 +796,11 @@ msgstr "Deebii haquu"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Haqame"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Haqame"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Hunda waliin chaatii"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Afaan filadhu"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Cilliisi"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Ifaa"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Gocha yaadaa"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Yaadawwan"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Yaadannoo"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Galmee kana fe'uu hin dandeenye. Booda yaali."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Balali'uuwwan kee fe'uun hin danda'amne"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Galmeen taphachiifamuu hin dandeenye"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Xumurame"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Buufadhu"
 
@@ -1571,7 +1603,7 @@ msgstr "Bal'ina taatewwanii"
 
 #: src/components/SettingsDialog.tsx
 msgid "Eject"
-msgstr "Eject"
+msgstr "Keessaa utaali"
 
 #: src/components/GameCanvas.tsx
 msgid "EJECTED"
@@ -1654,6 +1686,12 @@ msgstr "Taphicha keessaa bahi"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Ergama irraa ba’i"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Taphachiisuu irraa ba’i"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1856,7 +1894,7 @@ msgstr "flaapii"
 
 #: src/components/GameCanvas.tsx
 msgid "flares"
-msgstr "flares"
+msgstr "ibsaa"
 
 #: src/components/GameCanvas.tsx
 msgid "FLARES"
@@ -1906,6 +1944,11 @@ msgstr "Ammas balali'i"
 #: src/components/GameCanvas.tsx
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Lilmoolee hordofii gad bu'i: 3NM irratti 1200', 2NM irratti 800', 1NM irratti 400'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Sekondii 5 fuulduratti"
 
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
@@ -2285,10 +2328,6 @@ msgstr "INJINII BITAA DHAAMSAMEERA"
 msgid "L GEAR"
 msgstr "GOMMAA BITAA"
 
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Qubannaa"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Landing gear"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Sarvara MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Giddu-galeessa"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Giddu-galeessa"
 
@@ -2540,7 +2583,7 @@ msgstr "menuu"
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
-msgstr "Menyuu"
+msgstr "Liisticha"
 
 #: src/components/Multiplayer.tsx
 msgid "Merge — fight on at the pass"
@@ -2607,7 +2650,7 @@ msgstr "Ergamni xumurame"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
-msgstr "Mochi web"
+msgstr "Mochi marsariitii"
 
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
@@ -2616,7 +2659,7 @@ msgstr "Moodii"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Moderation"
-msgstr "Too'annoo"
+msgstr "To'annoo"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Monday"
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Dogoggora networkii"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Haaraa"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Haaraa dura"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Beeksisawwan: {0}"
 msgid "Novice"
 msgstr "Jalqabaa"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Lakkoofsa"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Lakkoofsa"
 
@@ -2911,8 +2962,9 @@ msgstr "toora alaa"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Tole"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Hoo! Fuulli hin argamne!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Bani"
+msgstr "Banaa"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Bocaa (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Dhaabi"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Dhaabbate"
 
@@ -3101,6 +3159,18 @@ msgstr "WALTAJJII"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Pilaatfoormii: 2000 FPM, 1200' irratti wal qixxee"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Taphachiisi"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Iddoo taphachiisuu"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Irra deebi'ee walqunnamsiisaa jira ({retries})..."
 msgid "Record flights"
 msgstr "Balali'uuwwan galmeessuu"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Galmeessa"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Waraabuun hin milkoofne. Maaloo irra deebiʼii yaali."
@@ -3321,6 +3387,11 @@ msgstr "Wal-simannaa {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Wal-simannaa {relevance}, fedhii {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Yaadachiisa"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Taphaa keessaa ba'uuf?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Furmaata"
+msgstr "Rezoluushinii"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3622,7 +3693,7 @@ msgstr "Barbaadaa jira..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Fili"
+msgstr "Filannoo"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "CAASAA"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Mata duree"
+msgstr "Fayyadamaa ykn garee"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Nama caalu"
 msgid "Switch to view 1-9"
 msgstr "Gara argaa 1-9 jijjiiri"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Sirna"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Sirna"
 
@@ -3969,6 +4044,11 @@ msgstr "Gareewwan"
 msgid "Teams — red versus blue"
 msgstr "Gareewwan — diimaa vs cuquliisa"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Hin mirkanoofne"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Gaaffiin kaameraa deebii hin arganne"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Taphichi fe'uu hin dandeenye. Irra deebi'anii yaaluuf fuula irra deebi'ii fe'i."
 
@@ -4118,7 +4199,7 @@ msgstr "Gaaffiiwwan baay'ee garmalee"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Ol"
+msgstr "Kan caalan"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4126,7 +4207,7 @@ msgstr "Lafa tuquu: torotilii idil; 10° funyaan ol qabuudhaan birekii qilleensa
 
 #: src/components/SettingsDialog.tsx
 msgid "Tracers"
-msgstr "Tracers"
+msgstr "Rasaasa ibsaa"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "Travelling"
@@ -4204,7 +4285,7 @@ msgstr "Barbaaduuf barreessi..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"
-msgstr "Ultra"
+msgstr "Baay'ee ol'aanaa"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Unable to connect to remote server"
@@ -4344,7 +4425,7 @@ msgstr "Ilaaltuu viidiyoo: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Daawwadhu"
+msgstr "Mul'ata"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4532,7 +4613,7 @@ msgstr "Barreeffamni kee ni bada."
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom"
-msgstr "Zoom"
+msgstr "Guddisuu"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom in"

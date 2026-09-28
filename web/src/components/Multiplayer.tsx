@@ -605,7 +605,7 @@ export function Multiplayer({
                           void refresh()
                         }}
                       >
-                        <Trans>Cancel</Trans>
+                        <Trans context='withdraw'>Cancel</Trans>
                       </Button>
                     )}
                   {s.mode === 'teams' && (
@@ -721,7 +721,7 @@ export function Multiplayer({
                   group={group + 'clouds'}
                   value='none'
                   icon={CLOUD_ICONS.none}
-                  label={<Trans>Clear</Trans>}
+                  label={<Trans context='weather'>Clear</Trans>}
                 />
                 <Option
                   group={group + 'clouds'}

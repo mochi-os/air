@@ -26,6 +26,11 @@ msgstr "(imehaririwa)"
 msgid "(expand)"
 msgstr "(panua)"
 
+#: ../../../lib/web/src/components/calendar/event-title.tsx
+#: ../../../lib/web/src/components/calendar/tooltip.ts
+msgid "(No title)"
+msgstr "(Bila kichwa)"
+
 #: ../../../lib/web/src/components/member-list.tsx
 msgid "(you)"
 msgstr "(wewe)"
@@ -143,13 +148,10 @@ msgid "{entityLabel} name"
 msgstr "Jina la {entityLabel}"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hadi {to}"
-
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{hidden, plural, one {+# more} other {+# more}}"
-msgstr "{hidden, plural, one {+# zaidi} other {+# zaidi}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -381,7 +383,7 @@ msgstr "Ongeza mwonekano"
 
 #: src/components/SettingsDialog.tsx
 msgid "Afterburner"
-msgstr "Afterburner"
+msgstr "Mchomeo wa nyongeza"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "AI"
@@ -537,7 +539,7 @@ msgstr "Njia za mkato za kibodi zinazopatikana"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar"
-msgstr "Avatar"
+msgstr "Picha ya wasifu"
 
 #: ../../../lib/web/src/components/entity-avatar.tsx
 msgid "Avatar for {name}"
@@ -556,6 +558,11 @@ msgstr "Urekebishaji na upangaji wa mihimili"
 #: src/routes/log.tsx
 msgid "Back"
 msgstr "Rudi"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Back 5 seconds"
+msgstr "Rudi nyuma sekunde 5"
 
 #: ../../../lib/web/src/features/errors/access-denied-error.tsx
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
@@ -769,8 +776,12 @@ msgstr "Kamera haipatikani"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
+msgid "Cancel"
+msgstr "Ghairi"
+
+#: src/components/Multiplayer.tsx
+msgctxt "withdraw"
 msgid "Cancel"
 msgstr "Ghairi"
 
@@ -785,6 +796,11 @@ msgstr "Ghairi jibu"
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
 #: ../../../lib/web/src/lib/shell-errors.ts
+msgid "Cancelled"
+msgstr "Imeghairiwa"
+
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
 msgid "Cancelled"
 msgstr "Imeghairiwa"
 
@@ -893,6 +909,7 @@ msgid "Chat to everyone"
 msgstr "Gumzo na wote"
 
 #: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Cheats"
@@ -929,10 +946,14 @@ msgstr "Chagua lugha"
 #: ../../../lib/web/src/components/travelling-picker.tsx
 #: src/components/MatchLog.tsx
 #: src/components/MatchLog.tsx
-#: src/components/Multiplayer.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Clear"
 msgstr "Futa"
+
+#: src/components/Multiplayer.tsx
+msgctxt "weather"
+msgid "Clear"
+msgstr "Anga safi"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Clear all"
@@ -1038,6 +1059,11 @@ msgstr "Vitendo vya maoni"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 msgid "Comments"
 msgstr "Maoni"
+
+#: src/components/MatchLog.tsx
+msgctxt "flight log"
+msgid "Comments"
+msgstr "Maelezo"
 
 #. placeholder {0}: data.comments.count || 0
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -1149,6 +1175,10 @@ msgstr "Haikuweza kupakia hati hii. Tafadhali jaribu tena baadaye."
 #: src/components/MatchLog.tsx
 msgid "Could not load your flights"
 msgstr "Imeshindwa kupakia safari zako za ndege"
+
+#: src/components/MatchLog.tsx
+msgid "Could not play the recording"
+msgstr "Imeshindikana kucheza rekodi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Could not save the profile"
@@ -1482,6 +1512,8 @@ msgstr "Imekamilika"
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
 msgid "Download"
 msgstr "Pakua"
 
@@ -1654,6 +1686,12 @@ msgstr "Toka kwenye mechi"
 #: src/components/GameCanvas.tsx
 msgid "Exit mission"
 msgstr "Ondoka kwenye misheni"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Exit play"
+msgstr "Ondoka kwenye kucheza"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
@@ -1907,6 +1945,11 @@ msgstr "Ruka tena"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Shuka kwa sindano: 1200' kwenye 3NM, 800' kwenye 2NM, 400' kwenye 1NM"
 
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgid "Forward 5 seconds"
+msgstr "Songa mbele sekunde 5"
+
 #: src/components/SettingsDialog.tsx
 msgid "Framerate counter"
 msgstr "Kihesabu cha kasi ya fremu"
@@ -2125,7 +2168,7 @@ msgstr "Kitazamaji picha: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Imperial"
-msgstr "Imperial"
+msgstr "Kiimperia"
 
 #: src/components/SettingsDialog.tsx
 msgid "Import"
@@ -2226,7 +2269,7 @@ msgstr "AMEJIUNGA"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
-msgstr "Joust"
+msgstr "Pambano"
 
 #: src/components/Multiplayer.tsx
 msgid "Joust — 1v1, first kill wins"
@@ -2238,7 +2281,7 @@ msgstr "Pambano dhidi ya boti"
 
 #: src/components/SettingsDialog.tsx
 msgid "Joystick"
-msgstr "Joystick"
+msgstr "Fimbo ya mchezo"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "Just now"
@@ -2284,10 +2327,6 @@ msgstr "INJINI KUSHOTO IMEZIMWA"
 #: src/components/GameCanvas.tsx
 msgid "L GEAR"
 msgstr "GURUDUMU KUSHOTO"
-
-#: src/components/MatchLog.tsx
-msgid "Landing"
-msgstr "Kutua"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -2483,7 +2522,7 @@ msgstr "Dhibiti kategoria"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Manual"
-msgstr "Mwongozo"
+msgstr "Kwa mkono"
 
 #: src/components/GameCanvas.tsx
 msgid "map"
@@ -2524,7 +2563,11 @@ msgid "MCP server"
 msgstr "Seva ya MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
+msgid "Medium"
+msgstr "Wastani"
+
 #: src/components/SettingsDialog.tsx
+msgctxt "quality level"
 msgid "Medium"
 msgstr "Wastani"
 
@@ -2679,9 +2722,13 @@ msgid "Network error"
 msgstr "Hitilafu ya mtandao"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
-#: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "New"
 msgstr "Mpya"
+
+#: ../../../lib/web/src/components/ui/sort-selector.tsx
+msgctxt "sort order"
+msgid "New"
+msgstr "Mpya zaidi"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
@@ -2891,9 +2938,13 @@ msgstr "Arifa: {0}"
 msgid "Novice"
 msgstr "Mwanafunzi"
 
+#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgid "Number"
+msgstr "Nambari"
+
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-#: ../../../lib/web/src/hooks/use-field-type-labels.ts
+msgctxt "item number"
 msgid "Number"
 msgstr "Nambari"
 
@@ -2911,8 +2962,9 @@ msgstr "nje ya mtandao"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
+msgctxt "landing grade"
 msgid "OK"
-msgstr "Sawa"
+msgstr "OK"
 
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "On"
@@ -2938,7 +2990,7 @@ msgstr "Lo! Ukurasa Haukupatikana!"
 
 #: src/components/Multiplayer.tsx
 msgid "Open"
-msgstr "Fungua"
+msgstr "Wazi"
 
 #: src/components/Multiplayer.tsx
 msgid "Open — anyone may join or leave"
@@ -3046,6 +3098,12 @@ msgid "Pattern (regex)"
 msgstr "Muundo (regex)"
 
 #: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+msgctxt "recording"
+msgid "Pause"
+msgstr "Sitisha"
+
+#: src/components/GameCanvas.tsx
 msgid "Paused"
 msgstr "Imesimamishwa"
 
@@ -3084,7 +3142,7 @@ msgstr "mwinamo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "Mwinamo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Pitch down"
@@ -3101,6 +3159,18 @@ msgstr "JUKWAA"
 #: src/components/GameCanvas.tsx
 msgid "Platform: 2000 FPM, level at 1200'"
 msgstr "Jukwaa: 2000 FPM, sawa kwenye 1200'"
+
+#: src/components/GameCanvas.tsx
+#: src/components/GameCanvas.tsx
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgctxt "recording"
+msgid "Play"
+msgstr "Cheza"
+
+#: src/components/GameCanvas.tsx
+msgid "Playback position"
+msgstr "Mahali pa kucheza"
 
 #: src/components/MatchLog.tsx
 msgid "Players"
@@ -3257,10 +3327,6 @@ msgstr "Inaunganisha upya ({retries})..."
 msgid "Record flights"
 msgstr "Rekodi safari za ndege"
 
-#: src/components/MatchLog.tsx
-msgid "Recording"
-msgstr "Kurekodi"
-
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Recording failed. Please try again."
 msgstr "Kurekodi kumeshindikana. Tafadhali jaribu tena."
@@ -3321,6 +3387,11 @@ msgstr "Umuhimu {relevance}"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Relevance {relevance}, interest {weight}"
 msgstr "Umuhimu {relevance}, shauku {weight}"
+
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
+msgid "Reminder"
+msgstr "Kikumbusho"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/attachment-composer.tsx
@@ -3444,7 +3515,7 @@ msgstr "Jiuzulu mchezo?"
 
 #: src/components/SettingsDialog.tsx
 msgid "Resolution"
-msgstr "Utatuzi"
+msgstr "Resolusheni"
 
 #: src/components/MatchLog.tsx
 msgid "Result"
@@ -3498,7 +3569,7 @@ msgstr "mzunguko"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll"
-msgstr "Roll"
+msgstr "Mzunguko"
 
 #: src/components/SettingsDialog.tsx
 msgid "Roll left"
@@ -3622,7 +3693,7 @@ msgstr "Inatafuta..."
 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
-msgstr "Chagua"
+msgstr "Chaguo"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Select a field"
@@ -3891,7 +3962,7 @@ msgstr "MUUNDO"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Subject"
-msgstr "Mada"
+msgstr "Mtumiaji au kikundi"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 msgid "Submit comment"
@@ -3921,9 +3992,13 @@ msgstr "Zaidi ya binadamu"
 msgid "Switch to view 1-9"
 msgstr "Badilisha kwa mwonekano 1-9"
 
+#: ../../../lib/web/src/lib/preference-utils.ts
+#: ../../../lib/web/src/lib/preference-utils.ts
+msgid "System"
+msgstr "Mfumo"
+
 #: ../../../lib/web/src/components/audit-timeline.tsx
-#: ../../../lib/web/src/lib/preference-utils.ts
-#: ../../../lib/web/src/lib/preference-utils.ts
+msgctxt "actor"
 msgid "System"
 msgstr "Mfumo"
 
@@ -3969,6 +4044,11 @@ msgstr "Timu"
 msgid "Teams — red versus blue"
 msgstr "Timu — nyekundu dhidi ya bluu"
 
+#: ../../../lib/web/src/components/calendar/status.ts
+msgctxt "event status"
+msgid "Tentative"
+msgstr "Ya muda"
+
 #: ../../../lib/web/src/components/server-documents-footer.tsx
 #: ../../../lib/web/src/features/document/document-page.tsx
 msgid "Terms and conditions"
@@ -4008,6 +4088,7 @@ msgid "The camera request was not answered"
 msgstr "Ombi la kamera halikujibiwa"
 
 #: src/routes/index.tsx
+#: src/routes/log.tsx
 msgid "The game could not be loaded. Reload the page to try again."
 msgstr "Mchezo haukuweza kupakiwa. Pakia upya ukurasa ili kujaribu tena."
 
@@ -4057,7 +4138,7 @@ msgstr "kasi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Throttle"
-msgstr "Throttle"
+msgstr "Kasi"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -4118,7 +4199,7 @@ msgstr "Maombi mengi mno"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
-msgstr "Juu"
+msgstr "Bora zaidi"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4344,7 +4425,7 @@ msgstr "Kitazamaji video: {0}"
 
 #: src/components/SettingsDialog.tsx
 msgid "View"
-msgstr "Tazama"
+msgstr "Mwonekano"
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
@@ -4361,7 +4442,7 @@ msgstr "Tazama udhibiti"
 
 #: src/components/SettingsDialog.tsx
 msgid "Views"
-msgstr "Mwonekano"
+msgstr "Mionekano"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4482,7 +4563,7 @@ msgstr "mgeuko"
 
 #: src/components/SettingsDialog.tsx
 msgid "Yaw"
-msgstr "Yaw"
+msgstr "Mgeuko"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
