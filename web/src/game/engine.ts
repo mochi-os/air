@@ -1193,8 +1193,8 @@ const AIRCRAFT_MODELS={
 	      { name:"adiPitch",  node:"INSTRUMENT_AttitudeIndicator_Pitch_AN_Pitch_503",        axis:"x", gauge:"pitch" },
 	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", gauge:"bank" },
 	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
-	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttle" },
-	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttle" },
+	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttleL" },   // 0.698 rad, 40°: the clip's whole travel, IDLE to MAX
+	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttleR" },
 	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.35, gauge:"stickPitch" },
 	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
 	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the modeled glideslope and localizer carriages beside it stay hidden (spec.hide): the C's standby indicator has no ILS bars
@@ -4481,7 +4481,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
 		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds(),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
-		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool
+		throttleL:throttle_travel(), throttleR:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
 		asi:dial(ASI_DIAL,cas), altitude,
 		vsi:dial(VSI_DIAL,fpm),
@@ -5242,6 +5242,10 @@ let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
 const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between fire and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
 const pad_levers={};   // per-purpose lever state: armed on the first deliberate sweep
+// throttle_travel is where the throttle levers stand, 0 at IDLE to 1 at MAX: the dry
+// range to the MIL detent over the first three quarters of their travel and the
+// afterburner zones over the last (NATOPS 2.1.1.7.2), the split a physical lever maps.
+function throttle_travel(){ return (ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75; }
 function throttle_from_lever(){   // mission start: seed the throttle from the physical lever when one is bound, and arm it so it tracks from the first frame
 	const pad=read_gamepad(); if(!pad) return;
 	const text=String(pad_bindings(pad).axes.throttle??""); if(text==="") return;
@@ -5335,7 +5339,7 @@ function read_input(dt){
 		pp=ax("pitch");   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
-		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75));   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
+		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-throttle_travel());   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0);   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
