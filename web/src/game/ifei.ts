@@ -384,3 +384,29 @@ export function face(reading: Reading, state: State, now: Date, at: number): Fac
     elapsed: elapsed(running(state, at)),
   }
 }
+
+// test is the face the lights test shows (NATOPS 2.6.2.11): the leading 1s for
+// RPM, TEMP, FF and OIL, and 0s in every other position of each field (RPM to
+// 199, TEMP to 1999, FF to 199,900 pph, NOZ to 100, OIL to 195, the fuel
+// counters to 99,990 lb), under the normal display's legends.
+export function test(): Face {
+  const level = LEVELS[0]
+  const zeros = { value: '00000' }
+  return {
+    engine: [
+      { label: 'RPM', left: '100', right: '100' },
+      { label: 'TEMP', left: '1000', right: '1000' },
+      { label: 'FF', left: '100000', right: '100000' },
+      { label: 'NOZ', left: '000', right: '000' },
+      { label: 'OIL', left: '100', right: '100' },
+    ],
+    fuel: {
+      upper: { legend: level.upper, ...zeros },
+      middle: { legend: level.middle, ...zeros },
+      lower: { legend: 'BINGO', ...zeros },
+    },
+    clock: '00:00:00',
+    zulu: false,
+    elapsed: '0:00:00',
+  }
+}

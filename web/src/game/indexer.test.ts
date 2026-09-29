@@ -34,6 +34,26 @@ function indexer(moments: Moment[]): Result[] {
 const on = (t: number) => Math.floor(t * 3) % 2 === 1 // the flash's lit half
 const dark = (t: number) => Math.floor(t * 3) % 2 === 0
 
+// The lights test lights all three symbols whatever the jet is doing (NATOPS
+// 2.6.2.11): the if that precedes the block, run with the gear up on deck.
+const tested = /\n\tif\(ind&&\(INDEXER_TEST\|\|lamps_testing\)\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+function testing(on: boolean): number[] {
+  if (!block || !tested) throw new Error('indexer block not found in engine.ts')
+  return new Function('on', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, INDEXER_TEST="", lamps_testing=on;
+    const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:true};
+    let sim_time=0, hook_bypass="carrier";
+    const out=[8.1*D2R, 0];
+    ${tested}${block}
+    return [ind.slow.opacity, ind.donut.opacity, ind.fast.opacity];`)(on) as number[]
+}
+
+describe('the AOA indexer under the lights test', () => {
+  it('lights all three symbols while the test is on, and none on deck with the gear up otherwise', () => {
+    expect(testing(true)).toEqual([1, 1, 1])
+    expect(testing(false)).toEqual([0, 0, 0])
+  })
+})
+
 describe('the AOA indexer flash', () => {
   it('flashes with the hook up in CARRIER', () => {
     const t1 = [0.1, 0.4].find(on) as number, t0 = [0.1, 0.4].find(dark) as number

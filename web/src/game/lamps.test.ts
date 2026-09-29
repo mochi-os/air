@@ -464,7 +464,7 @@ describe('the gear handle light and tone', () => {
   })
 
   it('drives the horn from the tone, resets on a spawn and offers the button to the dev hook', () => {
-    expect(source).toMatch(/\n\t\taudio_horn\(gear_tone\(\)\);\n/)
+    expect(source).toMatch(/\n\t\taudio_horn\(gear_tone\(\)\|\|lamps_testing\);/)
     expect(source).toMatch(/\n\thandle_lit=-1; tone_silenced=false;/)
     expect(source).toMatch(/dev_silence=function\(\)\{ tone_silence\(\); return tone_silenced; \};/)
   })
@@ -553,5 +553,78 @@ describe('the interior lights panel', () => {
     expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
     expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
     expect(source).toMatch(/cockpit_flood\.intensity=pit\?0\.12\*lighting\.flood:0;/)
+  })
+})
+
+// The lights test (NATOPS 2.6.2.11): the LT TEST switch, spring-loaded off,
+// lights every warning, caution and advisory light while it is held, and only
+// with AC power on the aircraft. lamps_update is run whole against stand-ins,
+// one frame per call, with the real lamp_set and lights_test.
+describe('the lights test', () => {
+  const update = /\nfunction lamps_update\(out\)\{[\s\S]*?\n(?=\/\/ Radar altimeter)/.exec(source)?.[0] ?? ''
+  const test = /\nfunction lights_test\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const set = /\nfunction lamp_set\(m,on\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  interface Light { on: boolean; swaps: number }
+  interface Rig { frame(held: boolean): Record<string, Light> }
+  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean } = {}): Rig => {
+    for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
+    return new Function('c', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1; const playback=c.playback?{}:null;
+      const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
+      ${test}${set}
+      const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
+      const plain=()=>({ userData:{ lit:0x2fd24a }, material:{ opacity:0 }, swaps:0 });
+      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot"]) l[n]=lens();
+      for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
+      const blank=lens(), tested=[...Object.values(l),blank];
+      const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, jammer_armed=false, jammer_loud=()=>false;
+      const RWR={contacts:[]}, fuel_low=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
+      const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
+      const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd:3000 } };
+      ${update}
+      return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);
+        const seen={ blank }; Object.assign(seen,l); const r={};
+        for(const [n,m] of Object.entries(seen)) r[n]={ on:m.userData.lens?m.userData.on:m.material.opacity>0.5, swaps:m.swaps };
+        return r; } };`)(c) as Rig
+  }
+  const lit = (r: Record<string, Light>) => Object.keys(r).filter((n) => r[n].on).sort()
+
+  it('lights every light while held, those no condition drives and the lens with no legend too', () => {
+    const r = rig().frame(true)
+    expect(lit(r)).toEqual(Object.keys(r).sort())
+    expect(Object.keys(r).length).toBe(26)
+  })
+
+  it('holds a driven light on through the test rather than putting it out and back each frame', () => {
+    const r = rig()
+    r.frame(true)
+    r.frame(true)
+    expect(r.frame(true).fuello.swaps).toBe(1)
+  })
+
+  it('puts out what no condition drives on release, and leaves the rest to their conditions', () => {
+    const r = rig({ caution: true })
+    r.frame(true)
+    expect(lit(r.frame(false))).toEqual(['caution'])
+  })
+
+  it('does nothing without AC power, or in a replay', () => {
+    expect(lit(rig({ unpowered: true }).frame(true))).toEqual([])
+    expect(lit(rig({ playback: true }).frame(true))).toEqual([])
+    expect(lit(rig().frame(false))).toEqual([])
+  })
+
+  it('tests each lens on the glareshield and the caution panel, those with no legend too, and every other lamp once', () => {
+    const line = /\n\tg\.userData\.tested=[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const [a, b, c, d] = ['a', 'b', 'c', 'd'].map((name) => ({ name }))
+    const tested = new Function('a', 'b', 'c', 'd', `const g={ userData:{} }, brow={ children:[a,b] }, cautions={ children:[c] }, lamps={ one:a, two:d }; ${line} return g.userData.tested;`)(a, b, c, d) as { name: string }[]
+    expect(tested.map((m) => m.name)).toEqual(['a', 'b', 'c', 'd'])
+  })
+
+  it('is held on Shift+L, beside the lights key, and offered in the Keys and Buttons tabs', () => {
+    const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
+    expect(keys).toMatch(/'lights\.test': 'Shift\+KeyL'/)
+    const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
+    expect(settings.match(/id: 'lights\.test', label: msg`Lights test`, group: 'aircraft'/g)?.length).toBe(2)
   })
 })

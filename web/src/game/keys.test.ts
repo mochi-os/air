@@ -18,9 +18,13 @@ describe('key bindings', () => {
   it('binds every action the engine dispatches', () => {
     const engine = read('./engine.ts')
     const used = new Set(
-      Array.from(engine.matchAll(/key_of\("([\w.]+)"\)/g), (m) => m[1])
+      Array.from(
+        engine.matchAll(/(?:key_of|held)\("([\w.]+)"\)/g),
+        (m) => m[1]
+      )
     )
     expect(used.size).toBeGreaterThan(20) // the scan found the call sites at all
+    expect(used.has('lights.test')).toBe(true) // held actions count
     const unbound = [...used]
       .filter((action) => !(action in KEY_DEFAULTS))
       .sort()
@@ -82,6 +86,18 @@ describe('key bindings', () => {
       for (const id of ['antenna.up', 'antenna.down'])
         expect(block, `${table} lacks ${id}`).toContain(`id: '${id}'`)
     }
+  })
+
+  it('reads a held action by its key, a live shift-chord owning its bare key', () => {
+    const engine = read('./engine.ts')
+    const fn = /\nfunction held\(action\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(engine)?.[0] ?? ''
+    expect(fn).not.toBe('')
+    const held = (action: string, down: string[]) => new Function('action', 'down', `const keys=new Set(down), bind={ "trim.down":"Comma", "trim.left":"Shift+Comma", reject:"None" }, key_of=(a)=>bind[a]; ${fn} return held(action);`)(action, down) as boolean
+    expect(held('trim.down', ['Comma'])).toBe(true)
+    expect(held('trim.down', ['Comma', 'Shift+Comma'])).toBe(false) // Shift+, is roll trim
+    expect(held('trim.left', ['Comma', 'Shift+Comma'])).toBe(true)
+    expect(held('trim.left', ['Comma'])).toBe(false)
+    expect(held('reject', ['None'])).toBe(false) // an unbound action is never held
   })
 
   it('gives each chord to one action, so a keypress is never ambiguous', () => {
