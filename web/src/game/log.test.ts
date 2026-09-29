@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -56,3 +56,27 @@ describe('the Log page', () => {
     expect(page).not.toMatch(/\bPin\b|recording_pin|pinned/)
   })
 })
+
+// Each result a flight can end with reads differently in every language: ru,
+// uk and sk once gave "Flown" and "Finished" the same word, so a sortie flown
+// and a match ended looked alike. The labels are read from the Log's own table.
+describe('the Log\'s results', () => {
+  const page = readFileSync(fileURLToPath(new URL('../components/MatchLog.tsx', import.meta.url)), 'utf8')
+  const table = /const reasonLabel = [\s\S]*?\n {4}\}/.exec(page)![0]
+  const labels = Array.from(table.matchAll(/t`([^`]+)`/g), (m) => m[1])
+  const locales = fileURLToPath(new URL('../locales/', import.meta.url))
+  it('reads each result differently in every language', () => {
+    expect(labels.length).toBeGreaterThan(5) // the table was found
+    for (const locale of readdirSync(locales)) {
+      const catalogue = readFileSync(`${locales}${locale}/messages.po`, 'utf8')
+      const seen = new Map<string, string>()
+      for (const label of labels) {
+        const text = new RegExp(`\\nmsgid "${label}"\\nmsgstr "((?:[^"\\\\]|\\\\.)*)"`).exec(catalogue)?.[1]
+        if (!text) continue // an overlay falls back to its parent
+        expect(seen.get(text), `${locale}: "${label}" and "${seen.get(text)}" both read "${text}"`).toBeUndefined()
+        seen.set(text, label)
+      }
+    }
+  })
+})
+
