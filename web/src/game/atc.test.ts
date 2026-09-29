@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { atc_step, ATC_ONSPEED, ATC_LEAST, ATC_MOST } from './atc'
 
@@ -68,3 +70,68 @@ describe('atc_step', () => {
     expect(spike).toBe(calm)
   })
 })
+
+// The HUD's ATC advisory (NATOPS 2.1.2, 2.13.4.8.15, figure 2-26): green, above
+// the distance display, while ATC is engaged; flashing for 10 seconds when ATC
+// drops out by any means but its switch, or when an engage is refused. engine.ts
+// cannot be imported (WebGL at module scope), so its lines are read as text.
+describe('the ATC advisory', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const press = /\n\tcase "atc":[^\n]*\n[^\n]*break;[^\n]*\n/.exec(source)?.[0] ?? ''
+  const drop = /\n\tif\(atc_on\)\{\n[\s\S]*?\n\t\}\n/.exec(source)?.[0] ?? ''
+  const draw = /\n\thctx\.font="13px 'Hornet Display', monospace"; hctx\.textAlign="left"; hctx\.fillStyle=GR;\n\tif\(atc_on[^\n]*\n/.exec(source)?.[0] ?? ''
+
+  const switched = (on: boolean, gearTarget: number, grounded: boolean) =>
+    new Function('on', 'gearTarget', 'grounded', `let atc_on=on, atc_flash=5, atc_alpha=0; const sim_time=50, ownship={ gearTarget, aoa:8 }, on_ground=()=>grounded, pad_levers={};
+      switch("atc"){ ${press} } return { on:atc_on, flash:atc_flash };`)(on, gearTarget, grounded) as { on: boolean; flash: number }
+
+  it('is silent when the switch disengages it, and clears on engage', () => {
+    expect(press).not.toBe('')
+    expect(switched(true, 0, false)).toEqual({ on: false, flash: -Infinity })
+    expect(switched(false, 0, false)).toEqual({ on: true, flash: -Infinity })
+  })
+
+  it('flashes when an engage is refused', () => {
+    expect(switched(false, 1, false)).toEqual({ on: false, flash: 50 })   // gear up
+    expect(switched(false, 0, true)).toEqual({ on: false, flash: 50 })    // on the deck
+  })
+
+  it('flashes when ATC drops out on its own', () => {
+    expect(drop).not.toBe('')
+    const run = (gearTarget: number, throttling: boolean) =>
+      new Function('gearTarget', 'throttling', `let atc_on=true, atc_flash=-Infinity, atc_alpha=8; const sim_time=70, dt=1/60, ownship={ gearTarget, aoa:8, throttle:0.5 };
+        const on_ground=()=>false, pad_levers={}, atc_step=(t)=>t; ${drop} return { on:atc_on, flash:atc_flash };`)(gearTarget, throttling) as { on: boolean; flash: number }
+    expect(run(1, false)).toEqual({ on: false, flash: 70 })   // gear up
+    expect(run(0, true)).toEqual({ on: false, flash: 70 })    // the throttle moved
+    expect(run(0, false)).toEqual({ on: true, flash: -Infinity })
+  })
+
+  const shown = (on: boolean, flash: number, time: number) => {
+    const drawn: { text: string; x: number; y: number; style: string }[] = []
+    let style = ''
+    const hctx = new Proxy({}, { get: (_, k) => k === 'fillText' ? (text: string, x: number, y: number) => drawn.push({ text, x, y, style }) : () => {},
+      set: (_, k, v) => { if (k === 'fillStyle') style = v; return true } })
+    new Function('hctx', 'atc_on', 'atc_flash', 'sim_time', 'GR', 'lx', 'cy', 'ppdv', draw)(hctx, on, flash, time, 'green', 700, 400, 16)
+    return drawn
+  }
+
+  it('is green, one line above the distance display', () => {
+    expect(draw).not.toBe('')
+    expect(shown(true, -Infinity, 3)).toEqual([{ text: 'ATC', x: 700, y: 400 + 7.2 * 16 - 17, style: 'green' }])
+    expect(source).not.toMatch(/hctx\.fillStyle=AM; hctx\.fillText\("ATC"/)
+  })
+
+  it('flashes twice a second for 10 seconds, then goes', () => {
+    let on = 0, frames = 0
+    for (let time = 100; time < 110; time += 0.05) { frames++; if (shown(false, 100, time).length) on++ }
+    expect(on / frames).toBeGreaterThan(0.4)
+    expect(on / frames).toBeLessThan(0.6)
+    for (const time of [110.1, 112, 130]) expect(shown(false, 100, time), `${time}`).toEqual([])
+    expect(shown(false, -Infinity, 3)).toEqual([])
+  })
+
+  it('starts a fresh jet with no flash pending', () => {
+    expect(source).toMatch(/ownship\.wire=0; atc_on=false; atc_flash=-Infinity;/)
+  })
+})
+

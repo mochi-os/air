@@ -116,6 +116,8 @@ interface Core {
   ): string
   stores(mask: number): string
   catalog(aircraft: string): string
+  wake_shed?(count: number, poses: Uint8Array): string
+  wake_state?(): string
   approach(
     x: number,
     y: number,
@@ -135,6 +137,7 @@ interface Core {
   round_step(input: Uint8Array, output: Uint8Array): string | null
   round_ladder(input: Uint8Array, output: Uint8Array): string | null
   heater_ladder?(input: Uint8Array, output: Uint8Array): string | null
+  joust_opening?(input: Uint8Array, output: Uint8Array): string | null
   round_distract(input: Uint8Array): boolean | string
   round_drop(input: Uint8Array): string | null
   bandit_init?(config: string): string
@@ -869,6 +872,27 @@ export function round_ladder(
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
 }
 
+// joust_opening is a BVR joust's start (#46), drawn from a seed by the same Go
+// the world server draws a match's with: each end's block (the first the
+// player's), the block speed, the flank both hold off the line between them,
+// and the separation. null before the core has booted.
+export function joust_opening(
+  seed: number,
+  wrap: number
+): {
+  altitude: [number, number]
+  speed: number
+  flank: number
+  apart: number
+} | null {
+  if (!core || !core.joust_opening) return null
+  round_input[0] = seed
+  round_input[1] = wrap
+  core.joust_opening(round_input_bytes, round_output_bytes)
+  const o = round_output
+  return { altitude: [o[0], o[1]], speed: o[2], flank: o[3], apart: o[4] }
+}
+
 // heater_ladder is the AIM-9M's launch zone in the AMRAAM's shape (#47): Rmax
 // the outermost arrival range against the target flying on as now, capped by
 // seeker lock at this aspect; escape the no-escape rung; minimum the arming
@@ -937,6 +961,61 @@ export function round_drop(slot: number): void {
   if (!core) return
   round_input[0] = slot
   core.round_drop(round_input_bytes)
+}
+
+// A remote's pose, as the pilot's core lays its wake: its slot, where it is,
+// its attitude (w, x, y, z), its velocity over the ground and its load factor.
+export interface WakePose {
+  slot: number
+  position: readonly [number, number, number]
+  attitude: readonly [number, number, number, number]
+  velocity: readonly [number, number, number]
+  g: number
+}
+const WAKE_POSE = 12 // words per pose, the order the core reads them in
+let wake_poses = new Float64Array(WAKE_POSE * 8)
+
+// flight_wake_shed lays a match's remote jets' wakes in the pilot's core from
+// their poses, so the pilot flies through them as the server's own model of
+// his jet does. The core lays a mark no more often than five times a second
+// however often it is called.
+export function flight_wake_shed(poses: readonly WakePose[]): void {
+  if (!core?.wake_shed || poses.length === 0) return
+  if (wake_poses.length < poses.length * WAKE_POSE)
+    wake_poses = new Float64Array(poses.length * WAKE_POSE)
+  poses.forEach((p, k) => {
+    wake_poses.set(
+      [p.slot, ...p.position, ...p.attitude, ...p.velocity, p.g],
+      k * WAKE_POSE
+    )
+  })
+  const error = core.wake_shed(
+    poses.length,
+    new Uint8Array(wake_poses.buffer, 0, poses.length * WAKE_POSE * 8)
+  )
+  if (error) console.error('flight wake:', error)
+}
+
+// flight_wake reports what the pilot's core was handed on its last frame - how
+// many pieces of wake, and the air they induce at the jet's CG, m/s - and how
+// many jets have a wake laid in it. Null before the core is up.
+export function flight_wake(): {
+  pieces: number
+  swirl: [number, number, number]
+  trails: number
+} | null {
+  const raw = core?.wake_state?.()
+  if (!raw) return null
+  const parsed = JSON.parse(raw) as {
+    Pieces: number
+    Swirl: number[]
+    Trails: number
+  }
+  return {
+    pieces: parsed.Pieces,
+    swirl: [parsed.Swirl[0], parsed.Swirl[1], parsed.Swirl[2]],
+    trails: parsed.Trails,
+  }
 }
 
 // flight_stores sets the attached-store bitmask over the airframe's fitment

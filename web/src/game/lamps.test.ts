@@ -94,6 +94,16 @@ describe('the glareshield panels', () => {
     expect(panel({ armed: true, loud: true })).toEqual(['aspj', 'xmit'])
   })
 
+  // The lights are the jammer's cockpit indication: the radar attack format
+  // carries no JAM ARM or XMIT text, and a monochrome DDI no amber.
+  it('are the jammer\'s indication, with nothing about it on the radar page', () => {
+    const start = source.indexOf('function ddi_rdr('), end = source.indexOf('\nfunction ', start + 1)
+    expect(start).toBeGreaterThan(0)
+    const page = source.slice(start, end)
+    expect(page).not.toMatch(/JAM ARM|"XMIT"|jammer_/)
+    expect(page).not.toMatch(/#ffc14d/)
+  })
+
   it('light AI for any radar the RWR hears', () => {
     expect(panel({ contacts: 2 })).toEqual(['ai'])
   })
@@ -150,19 +160,24 @@ describe('the HOOK light', () => {
 // The caution lights panel (FO-5 item 46): FUEL LO on the feed-tank hardware
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
-interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number }
+interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number; flbit?: boolean }
 function cautionlit(c: Cautions): string[] {
   const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,jammed\); \}\n/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
     const ownship={fuel:c.fuel??3000, group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
-    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, flbit_lit=()=>!!c.flbit; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
 }
 
 describe('the caution lights panel', () => {
+  it('lights FUEL LO for a fuel low BIT with the fuel above it', () => {
+    expect(cautionlit({ fuel: 3000, flbit: true })).toContain('fuello')
+    expect(cautionlit({ fuel: 3000 })).not.toContain('fuello')
+  })
+
   it('is dark with fuel above the hardware caution, both engines turning and no jam', () => {
     expect(cautionlit({})).toEqual([])
   })
@@ -215,7 +230,7 @@ describe('the LOCK and SHOOT lights', () => {
     expect(source).toMatch(/hud_cue=""; hud_shoot=false;/)
     expect(source.match(/hud_shoot=true/g)?.length).toBe(3) // the AMRAAM cue, the gun director and the Sidewinder cue
     expect(source).toMatch(/hctx\.fillText\("SHOOT",cx,cy-2\.2\*ppdv\); hud_shoot=true; \}/)
-    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-seeker-16\); hud_shoot=true; \}/)
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-seeker-16\*hs\); hud_shoot=true; \}/)
   })
 
   it('sit on the arch pendant, LOCK over SHOOT', () => {

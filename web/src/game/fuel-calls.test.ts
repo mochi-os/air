@@ -41,9 +41,10 @@ describe('the fuel calls', () => {
     expect(feed([2450, 0], [1300, 0], [900, 0], [700, 0])).toEqual(['BINGO FUEL', 'FUEL LO'])
   })
 
-  it('count the externals for bingo, and only the internal tank for FUEL LO', () => {
+  it('judge BINGO FUEL and FUEL LO on the internal tanks alone (NATOPS 2.2.10.4)', () => {
     const { feed } = tank()
-    expect(feed([1000, 500], [1000, 300])).toEqual(['BINGO FUEL'])
+    expect(feed([1500, 800], [1300, 800])).toEqual(['BINGO FUEL']) // internal crosses the setting with the external tanks still holding fuel
+    expect(feed([1000, 500], [1000, 300])).toEqual([]) // the external tanks drain past the setting while internal holds
     expect(feed([1000, 300], [700, 300])).toEqual(['FUEL LO'])
   })
 
@@ -59,3 +60,50 @@ describe('the fuel calls', () => {
     expect(source).toMatch(/mission_zero=sim_time; fuel_read=false;/)
   })
 })
+
+// NATOPS 2.2.10.4: the BINGO caution appears when the INTERNAL fuel quantity
+// reaches the pilot's setting; the voice, the dump cut-off and the HUD legend
+// follow the caution. Each judgement is lifted from engine.ts and run with the
+// external tanks holding fuel and internal below the setting, and the reverse.
+describe('the BINGO judgements', () => {
+  const lb = 2.20462
+  const lift = (pattern: RegExp) => pattern.exec(source)?.[0] ?? ''
+  const low = lift(/\nfunction bingo_low\(\)\{[^\n]*\n[^\n]*\n/)
+  const caution = lift(/\n\tlet low=false, below=false;[\s\S]*?else if\(below\) push\("BINGO"\); \}/)
+  const colour = lift(/\n\t\tif\(\(ownship\.fuel\?\?1e9\)<FUELLO\) hctx\.fillStyle=[^\n]*\n[^\n]*<BINGO\) hctx\.fillStyle="#ffb050";/)
+  const tanks = { below: { fuel: 1200, external: 2000 }, above: { fuel: 1500, external: 0 } } // kg, the setting 3,000 lb (1,361 kg)
+
+  it('drives the FUEL page, the DUMP cut-off and the HUD legend from internal fuel', () => {
+    expect(low).not.toBe('')
+    const run = (ownship: object) => new Function('ownship', `const fuel_state={ bingo:3000 }, cheat=()=>false, flight_active=true; ${low} return bingo_low();`)(ownship) as boolean
+    expect(run(tanks.below)).toBe(true)
+    expect(run(tanks.above)).toBe(false)
+    expect(3000 / lb).toBeGreaterThan(tanks.below.fuel) // the setting sits between the two internal loads
+  })
+
+  it('raises the BINGO caution on internal fuel', () => {
+    expect(caution).not.toBe('')
+    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, cheat=()=>false, flbit_lit=()=>false, rows=[], push=(k)=>rows.push(k); ${caution} return rows;`)(ownship) as string[]
+    expect(run(tanks.below)).toEqual(['BINGO'])
+    expect(run(tanks.above)).toEqual([])
+  })
+
+  it('colours the fuel readout for BINGO on internal fuel', () => {
+    expect(colour).not.toBe('')
+    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, sim_time=0, hctx={ fillStyle:"g" }; ${colour} return hctx.fillStyle;`)(ownship) as string
+    expect(run(tanks.below)).toBe('#ffb050')
+    expect(run(tanks.above)).toBe('g')
+  })
+})
+
+// NATOPS 2.2.10.4: BINGO is a DDI caution with a voice alert; the HUD draws no
+// BINGO legend in either first-person view.
+describe('the BINGO annunciation', () => {
+  it('stays off the HUD', () => {
+    const start = source.indexOf('if(flight_symbols){'), end = source.indexOf('// end of the instrument cluster', start)
+    expect(start).toBeGreaterThan(0)
+    expect(end).toBeGreaterThan(start)
+    expect(source.slice(start, end)).not.toMatch(/fillText\("BINGO"/)
+  })
+})
+

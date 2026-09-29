@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { ONSPEED, pass_grade, pass_sample, pass_start, pass_wire, remarks, segment_of, type Pass } from './lso'
 
@@ -116,3 +118,48 @@ describe('the grade', () => {
     expect(pass_grade(flown({ IC: [-1.2, 0, ONSPEED] }), null, 0, true, 'waveoff')).toEqual({ grade: 'WAVE OFF', remarks: 'LO IC' })
   })
 })
+
+// The waveoff in the cockpit (#123): the lens's waveoff lights are the LSO's, lit
+// for every waveoff he calls, flashing in phase with the call; PADDLES says it on
+// the radio once as the call begins; the flashing WAVE OFF banner is HUD-view
+// furniture only. engine.ts cannot be imported (WebGL at module scope), so its
+// lines are read as text.
+describe('the waveoff', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lights = /\n\to\.wavePts\.visible = [^\n]*\n/.exec(source)?.[0] ?? ''
+  const call = /\n\t\t\tif\(wave\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const banner = /\n\tif\(crash_t<=0 && ownship\.waving[^\n]*\n/.exec(source)?.[0] ?? ''
+
+  it('lights the lens\'s waveoff lights for every waveoff the LSO calls, flashing in phase with it', () => {
+    expect(lights).not.toBe('')
+    const shown = (waving: boolean, since: number) => new Function('waving', 'since', `const o={ wavePts:{ visible:false } }, low=false;
+      const ownship={ waving, wavet:1000, groove:true }, performance={ now:()=>1000+since };
+      ${lights} return o.wavePts.visible;`)(waving, since) as boolean
+    expect(shown(true, 100)).toBe(true)    // a waveoff on lineup, on glideslope: the lens is not low
+    expect(shown(true, 300)).toBe(false)   // the dark half of the flash
+    expect(shown(true, 500)).toBe(true)
+    expect(shown(false, 100)).toBe(false)
+  })
+
+  it('has PADDLES call it on the radio once, as the call begins', () => {
+    expect(call).not.toBe('')
+    const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, HINT={ abort:'a', wave:'w' };
+      const performance={ now:()=>1000 }, comm=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
+      for(let i=0;i<frames;i++){ ${call}
+      }
+      return comms;`)(frames) as string[]
+    expect(run(1)).toEqual(['PADDLES: WAVE OFF'])
+    expect(run(5)).toEqual(['PADDLES: WAVE OFF'])
+  })
+
+  it('flashes the WAVE OFF banner in the HUD view only', () => {
+    expect(banner).not.toBe('')
+    const drawn = (view: string) => new Function('view', `const shown=[], crash_t=0, net_notice_t=0, cfg={ view }, ownship={ waving:true, wavet:1000 };
+      const performance={ now:()=>1100 }, translate=(t)=>t, hud_message=(t)=>shown.push(t);
+      ${banner}
+      return shown;`)(view) as string[]
+    expect(drawn('hud')).toEqual(['WAVE OFF'])
+    expect(drawn('cockpit')).toEqual([])
+  })
+})
+

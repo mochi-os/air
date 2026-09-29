@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as THREE from 'three'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 // The gun's signature: a strobing tongue of flame at the port on frames a
@@ -285,6 +286,107 @@ describe('the trigger the core sees', () => {
   })
 })
 
+describe('the BVR joust start', () => {
+  // bvr_opening, joust_heading, joust_place and joust_drawn lifted with the
+  // core's draw stubbed: the draw itself is Go (air.Draw), tested beside the
+  // world server's spawn.
+  type Opening = { altitude: [number, number]; speed: number; flank: number; apart: number; pending?: boolean }
+  type Vec = { x: number; y: number; z: number }
+  type Jet = { pos: Vec; fwd: Vec; speed: number }
+  type Joust = {
+    asked: [number, number][]
+    bvr_opening(): Opening
+    joust_heading(side: number): Vec
+    joust_place(): void
+    joust_drawn(): void
+    set(o: Opening | null, side?: number): void
+    draw(o: Opening | null): void
+    start(): Opening | null
+    ownship: Jet
+    bandit: Jet
+  }
+  function start(search: string, drawn: Opening | null, multiplayer = false) {
+    return new Function(
+      'THREE',
+      'drawn',
+      'MULTIPLAYER',
+      `const DEV_MODE=true, WORLD_WRAP=250000, NM=1852, location={ search:${JSON.stringify(search)} }, world_up=new THREE.Vector3(0,1,0);
+       const asked=[]; const joust_opening=(seed,wrap)=>{ asked.push([seed,wrap]); return drawn; };
+       const bvr_separation=()=>111000; let joust_start=null, joust_side=1;
+       const jet=()=>({ pos:new THREE.Vector3(), fwd:new THREE.Vector3(), q:new THREE.Quaternion(), vel_dir:new THREE.Vector3(), speed:0 });
+       const ownship=jet(), bandit=jet();
+       ${lift('bvr_opening')} ${lift('joust_heading')} ${lift('joust_place')} ${lift('joust_drawn')}
+       return { asked, bvr_opening, joust_heading, joust_place, joust_drawn, ownship, bandit,
+         set:(o,side=1)=>{ joust_start=o; joust_side=side; }, draw:(o)=>{ drawn=o; }, start:()=>joust_start };`
+    )(THREE, drawn, multiplayer) as Joust
+  }
+  const drawn: Opening = { altitude: [9000, 5000], speed: 250, flank: Math.PI / 6, apart: 120000 }
+  const head: Opening = { altitude: [6096, 6096], speed: 272, flank: 0, apart: 111000 }
+
+  it('draws each joust from a fresh seed in the world\'s wrap', () => {
+    const s = start('', drawn)
+    expect(s.bvr_opening()).toEqual(drawn)
+    expect(s.bvr_opening()).toEqual(drawn)
+    expect(s.asked.map((a) => a[1])).toEqual([250000, 250000])
+    expect(s.asked[0][0]).not.toBe(s.asked[1][0])
+  })
+  it('pins the classic head-on start with &opening=head, and falls back to it pending before the core boots', () => {
+    expect(start('?developer=1&opening=head', drawn).bvr_opening()).toEqual(head)
+    expect(start('', null).bvr_opening()).toEqual({ ...head, pending: true })
+  })
+  it('turns both ends the flank the same way, so each sees the other the same angle off its nose', () => {
+    const s = start('', drawn)
+    s.set(drawn)
+    const east = s.joust_heading(1), west = s.joust_heading(-1)
+    expect(east.x).toBeCloseTo(Math.cos(Math.PI / 6), 9)
+    expect(east.z).toBeCloseTo(Math.sin(Math.PI / 6), 9)
+    expect(west.x).toBeCloseTo(-east.x, 9) // antiparallel: the line between them is the flank off both noses
+    expect(west.z).toBeCloseTo(-east.z, 9)
+    s.set(null)
+    const merge = s.joust_heading(-1) // the merge: nose to nose along the line
+    expect([merge.x, merge.y, merge.z + 0]).toEqual([-1, 0, 0])
+  })
+  it('places the pilot on the first block and the bandit on the second, apart and turned by the draw', () => {
+    const s = start('', drawn)
+    s.set(drawn, -1)
+    s.joust_place()
+    expect([s.ownship.pos.x, s.ownship.pos.y, s.ownship.pos.z]).toEqual([60000, 9000, 0])
+    expect([s.bandit.pos.x, s.bandit.pos.y, s.bandit.pos.z]).toEqual([-60000, 5000, 0])
+    expect(s.ownship.fwd.x).toBeCloseTo(-Math.cos(Math.PI / 6), 9)
+    expect(s.ownship.fwd.z).toBeCloseTo(-Math.sin(Math.PI / 6), 9)
+    expect(s.bandit.fwd.x).toBeCloseTo(Math.cos(Math.PI / 6), 9)
+    expect(s.bandit.fwd.z).toBeCloseTo(Math.sin(Math.PI / 6), 9)
+    expect([s.ownship.speed, s.bandit.speed]).toEqual([250, 250])
+    s.set(null)
+    s.joust_place() // the merge ring: 1.5 nm either side at 15,000 ft
+    expect([s.ownship.pos.x, s.ownship.pos.y, s.bandit.pos.x, s.bandit.pos.y, s.ownship.speed]).toEqual([-2778, 4572, 2778, 4572, 220])
+  })
+  it('draws the start the spawn could not once the core binds, and places both ends on it', () => {
+    const s = start('', null)
+    s.set(s.bvr_opening())
+    s.joust_place()
+    s.draw(drawn) // the core is up
+    s.joust_drawn()
+    expect(s.start()).toEqual(drawn)
+    expect([s.ownship.pos.x, s.ownship.pos.y, s.bandit.pos.x, s.bandit.pos.y]).toEqual([-60000, 9000, 60000, 5000])
+    const asked = s.asked.length
+    s.joust_drawn() // drawn once: a start the core drew stands
+    expect(s.asked.length).toBe(asked)
+    const pinned = start('?developer=1&opening=head', drawn)
+    pinned.set(pinned.bvr_opening())
+    pinned.joust_drawn()
+    expect(pinned.start()).toEqual(head)
+    const match = start('', drawn, true) // multiplayer: the world server placed the pair
+    match.set({ ...head, pending: true })
+    match.joust_drawn()
+    expect(match.asked).toEqual([])
+  })
+  it('spawns a joust on joust_place, and draws a pending start before the core flies the spawn', () => {
+    expect(lift('reset_ownship')).toContain('joust_start=bvr?bvr_opening():null; joust_place();')
+    expect(lift('fly_player')).toContain('joust_drawn(); flight_active=true; flight_push();')
+  })
+})
+
 describe('the joust hold in single player', () => {
   const merge = (start: boolean, calls = 1) =>
     new Function(
@@ -309,7 +411,7 @@ describe('the joust hold in single player', () => {
 
   it("binds the bandit's brain by the same rule, and opens on its report before its rounds fly", () => {
     // The brain is told the hold when it is armed...
-    expect(source).toMatch(/omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
+    expect(source).toMatch(/omit: BANDIT_OMIT, hold: weapons_hold, air: weather\(\) \}\);/)
     expect(bridge).toMatch(/\n {2}hold\?: boolean/)
     // ...the bridge reads the brain's report of the merge...
     expect(bridge).toMatch(/\n {4}free: \(flags & 256\) !== 0,/)

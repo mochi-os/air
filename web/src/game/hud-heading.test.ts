@@ -41,3 +41,113 @@ describe('the heading scale', () => {
     expect(source).not.toMatch(/relocated heading scale/)
   })
 })
+
+// NATOPS 2.13.4.8.11 item 1 and figure 2-26: three-digit labels over the 10°
+// ticks (350 000 010), no line under the ticks, and a T under the current
+// heading for true heading - every heading the game draws is true, as the HSI's
+// T says; a caret there would claim magnetic. The section is run against a
+// canvas that records its text and line segments.
+describe('the heading scale face', () => {
+  const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
+  const section = source.slice(start, end)
+  const cx = 640, hty = 46
+  const draw = (heading: number) => {
+    const text: string[] = [], segments: number[][] = []
+    let at = [0, 0], fills = 0
+    const hctx = new Proxy({}, { get: (_, k) => {
+      if (k === 'fillText') return (s: string) => text.push(String(s))
+      if (k === 'moveTo') return (x: number, y: number) => { at = [x, y] }
+      if (k === 'lineTo') return (x: number, y: number) => { segments.push([...at, x, y]); at = [x, y] }
+      if (k === 'fill') return () => { fills++ }
+      return () => {}
+    }, set: () => true })
+    const radians = heading * Math.PI / 180
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', `${section}`)(
+      hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: Math.sin(radians), z: -Math.cos(radians) } }, false, 'nav')
+    return { text, segments, fills }
+  }
+
+  it('labels the 10° ticks with three digits', () => {
+    expect(start).toBeGreaterThan(0)
+    expect(draw(0).text).toEqual(['350', '000', '010'])
+    expect(draw(355).text).toEqual(['340', '350', '000', '010'])
+    expect(draw(92).text).toEqual(['080', '090', '100'])
+  })
+
+  it('draws no line under the ticks', () => {
+    for (const [x1, y1, x2, y2] of draw(0).segments) expect(y1 === hty && y2 === hty && Math.abs(x2 - x1) > 10, `${x1},${y1} to ${x2},${y2}`).toBe(false)
+  })
+
+  it('marks the current heading with a T, not a caret', () => {
+    const { segments, fills } = draw(0)
+    expect(segments).toContainEqual([cx - 5, hty + 5, cx + 5, hty + 5])
+    expect(segments).toContainEqual([cx, hty + 5, cx, hty + 13])
+    expect(fills).toBe(0)
+  })
+})
+
+// Figure 2-26: the command heading marker (NATOPS item 18) is a short heavy bar
+// just under the scale's ticks; the bank pointer is an open triangle pointing
+// down onto the scale, above the tick at the bank angle, and the 15° ticks are
+// long like the centre, 30° and 45°, with only the 5° ticks short.
+describe('the heading marker and bank scale as figure 2-26 draws them', () => {
+  const record = () => {
+    const paths: { points: number[][]; end: string; width: number; dash: number }[] = []
+    let points: number[][] = [], width = 1, dash = 0
+    const arcs: number[][] = []
+    const hctx = new Proxy({}, { get: (_, k) => {
+      if (k === 'beginPath') return () => { points = [] }
+      if (k === 'moveTo' || k === 'lineTo') return (x: number, y: number) => points.push([k === 'moveTo' ? 0 : 1, x, y])
+      if (k === 'arc') return (x: number, y: number, r: number) => arcs.push([x, y, r])
+      if (k === 'setLineDash') return (d: number[]) => { dash = d.length }
+      if (k === 'stroke' || k === 'fill') return () => paths.push({ points, end: String(k), width, dash })
+      return () => {}
+    }, set: (_, k, v) => { if (k === 'lineWidth') width = v; return true } })
+    return { hctx, paths, arcs }
+  }
+  const THREE = { MathUtils: { clamp: (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v)) } }
+  const cx = 640, hty = 46, D2R = Math.PI / 180
+
+  it('marks the command heading with a short heavy bar under the ticks', () => {
+    const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
+    const c = record()
+    const bearing = 12 * D2R   // between the 10° and 15° ticks
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'CARRIER', 'wrap_axis', 'THREE', source.slice(start, end))(
+      c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 } }, true, 'nav', { x: 1000 * Math.sin(bearing), z: -1000 * Math.cos(bearing) }, (v: number) => v, THREE)
+    const mx = cx + 12 * 7
+    const marker = c.paths.filter(path => path.points.some(([, x]) => Math.abs(x - mx) < 1e-6))
+    expect(marker.length).toBe(1)
+    expect(marker[0].points.map(([, x, y]) => [Math.round(x), y])).toEqual([[mx, hty + 1], [mx, hty + 6]])
+    expect(marker[0].width).toBe(3)
+  })
+
+  const bank = (degrees: number) => {
+    const start = source.indexOf('\t// ---- bank angle scale (bottom)'), end = source.indexOf('\t// ---- data blocks', start)
+    const c = record(), radians = degrees * D2R
+    new Function('hctx', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'sim_time', 'THREE', 'D2R', source.slice(start, end))(
+      c.hctx, 0, false, cx, 360, 16, 'g', { right: { y: -Math.sin(radians) }, up: { y: Math.cos(radians) } }, 0, THREE, D2R)
+    return c
+  }
+
+  it('draws the 5° ticks short and the centre, 15°, 30° and 45° ticks long', () => {
+    const ticks = bank(0).paths.filter(path => path.points.length === 2)
+    const lengths = ticks.map(({ points: [[, x0, y0], [, x1, y1]] }) => Math.round(Math.hypot(x1 - x0, y1 - y0)))
+    expect(lengths).toEqual([9, 9, 9, 5, 9, 5, 9, 9, 9])
+  })
+
+  it('points an open triangle down onto the tick at the bank angle', () => {
+    for (const degrees of [0, 20, -30]) {
+      const c = bank(degrees)
+      const pointer = c.paths.filter(path => path.points.length === 3)
+      expect(pointer.length, `${degrees}°`).toBe(1)
+      expect(pointer[0].end).toBe('stroke')
+      const pivotY = 360 + 4.2 * 16, br = 3.2 * 16, a = degrees * D2R
+      const [[, ax, ay], [, bx, by], [, ex, ey]] = pointer[0].points
+      expect(ax).toBeCloseTo(cx + Math.sin(a) * br)   // the apex on the scale's arc
+      expect(ay).toBeCloseTo(pivotY + Math.cos(a) * br)
+      expect(Math.hypot((bx + ex) / 2 - cx, (by + ey) / 2 - pivotY)).toBeCloseTo(br - 9)   // the base inside it
+    }
+    expect(bank(0).paths.some(path => path.end === 'fill')).toBe(false)
+  })
+})
+
