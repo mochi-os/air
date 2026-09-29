@@ -417,6 +417,23 @@ describe('emission', () => {
     swept(radar, [beam], 2)
     expect(radar.bricks.length).toBe(bricks) // frozen: nothing new
   })
+  it('EMCON silences it whatever SIL says: no lock, no paint, silent on the wire', () => {
+    const radar = new Radar()
+    radar.designate(7)
+    radar.emcon = true
+    expect(radar.silent()).toBe(true)
+    expect(radar.emitter()).toBe(0)
+    radar.step(1 / 60, own, [beam], wrap, always)
+    expect(radar.stt).toBe(null)
+    expect(radar.designate(7)).toBe(false)
+    expect(radar.lock(7)).toBe(false)
+    const bricks = radar.bricks.length
+    swept(radar, [beam], 2)
+    expect(radar.bricks.length).toBe(bricks)
+    radar.emcon = false
+    expect(radar.silent()).toBe(false)
+    expect(radar.lock(7)).toBe(true)
+  })
   it('a silent radar refuses to designate', () => {
     const radar = new Radar()
     radar.sil = true

@@ -160,7 +160,7 @@ function primary(frames: Frame[]): boolean[] {
   return warned(frames).map((h) => h.whoop)
 }
 
-describe('the radar altimeter under radar silence', () => {
+describe('the radar altimeter under EMCON', () => {
   it('shows OFF with the red light out while silent, and reads again once the set is back', () => {
     expect(radalt_face(100, 200, false)).toEqual({ off: false, lamp: true })
     expect(radalt_face(100, 200, true)).toEqual({ off: true, lamp: false })
@@ -600,13 +600,14 @@ describe('the radar altimeter height indicator', () => {
     expect(face(100, false, false).lights.map(([lx, ly]) => [lx, ly])).toEqual([[80 + 27, 80 - 9], [80 - 27, 80 - 9]]) // red right of the hub, green left, level with it
   })
 
-  it('shows OFF with the set off, as under radar silence', () => {
+  it('shows OFF with the set off, as under EMCON, and not for the radar\'s own silence (NATOPS 2.12.5, 2.13.5.2)', () => {
     const inhibited = /\nfunction radalt_inhibited\(\)[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(inhibited).not.toBe('')
-    const run = (sil: boolean, on: boolean) => new Function('sil', 'on', `const RADAR={ sil }, radalt_on=on; ${inhibited} return radalt_inhibited();`)(sil, on) as boolean
+    const run = (emcon: boolean, on: boolean, sil = false) => new Function('emcon', 'on', 'sil', `const RADAR={ sil, silent:()=>sil||emcon }, radalt_on=on; ${inhibited} return radalt_inhibited();`)(emcon, on, sil) as boolean
     expect(run(false, true)).toBe(false)
     expect(run(true, true)).toBe(true)
     expect(run(false, false)).toBe(true)
+    expect(run(false, true, true)).toBe(false)
     expect(face(100, run(false, false), false).off).toBe(true)
     // the gates the power joins: the primary warning, the secondary warning's reading and the HUD's radar altitude
     expect(source).toMatch(/const below=flying&&\(ownship\.gear\?\?1\)>0\.98&&!radalt_inhibited\(\)&&agl<law_index;/)

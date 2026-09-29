@@ -163,6 +163,7 @@ const CARRIER_MODELS={
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:12.5,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:1.92, bfa:-92.2, blat:-1.63 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ident:"NIM",                                      // the ship's TACAN ident, shown beside the HUD's slant range
+		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		ols:{ fa:-21.0, lat:-37.06, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
 		outline:[ [-167.0,8.11],[-164.0,16.72],[-161.0,23.5],[-158.0,24.35],[-155.0,23.36],[-152.0,24.56],[-149.0,25.74],[-146.0,26.68],[-143.0,27.34],[-140.0,28.56],[-137.0,28.88],[-134.0,29.37],[-131.0,29.85],[-128.0,30.25],[-125.0,30.36],[-122.0,30.46],[-119.0,31.88],[-116.0,33.41],[-113.0,34.89],[-110.0,35.02],[-107.0,35.11],[-104.0,35.19],[-101.0,35.28],[-98.0,35.36],[-95.0,35.44],[-92.0,35.52],[-89.0,35.6],[-86.0,36.4],[-83.0,37.35],[-80.0,38.27],[-77.0,38.45],[-74.0,38.45],[-71.0,38.27],[-68.0,38.08],[-65.0,34.5],[-62.0,31.1],[-59.0,27.37],[-56.0,27.03],[-53.0,26.7],[-50.0,26.7],[-47.0,26.7],[-44.0,30.62],[-41.0,34.53],[-38.0,38.27],[-35.0,37.35],[-32.0,36.43],[-29.0,35.69],[-26.0,35.69],[-23.0,35.69],[-20.0,35.69],[-17.0,35.69],[-14.0,35.69],[-11.0,35.69],[-8.0,36.43],[-5.0,37.16],[-2.0,37.9],[1.0,37.9],[4.0,37.9],[7.0,37.9],[10.0,37.9],[13.0,37.16],[16.0,36.43],[19.0,35.69],[22.0,35.69],[25.0,35.69],[28.0,35.69],[31.0,35.69],[34.0,35.69],[37.0,35.69],[40.0,36.43],[43.0,37.16],[46.0,37.9],[49.0,37.9],[52.0,37.9],[55.0,37.9],[58.0,37.9],[61.0,37.9],[64.0,37.85],[67.0,37.33],[70.0,36.04],[73.0,33.99],[76.0,31.65],[79.0,29.27],[82.0,26.93],[85.0,24.55],[88.0,22.43],[91.0,21.04],[94.0,20.41],[97.0,19.46],[100.0,18.47],[103.0,17.44],[106.0,17.22],[109.0,17.0],[112.0,16.76],[115.0,16.52],[118.0,16.32],[121.0,16.13],[124.0,15.95],[127.0,15.68],[130.0,15.43],[133.0,15.17],[136.0,15.0],[139.0,14.78],[142.0,14.61],[145.0,14.38],[148.0,14.16],[151.0,13.99],[154.0,13.74],[157.0,13.54],[160.0,13.23],[163.0,13.02],[164.0,12.84],[165.0,12.77],[165.0,-10.34],[164.0,-10.51],[163.0,-10.76],[160.0,-10.9],[157.0,-11.1],[154.0,-11.29],[151.0,-11.44],[148.0,-11.61],[145.0,-11.78],[142.0,-12.1],[139.0,-12.33],[136.0,-12.62],[133.0,-12.76],[130.0,-12.93],[127.0,-13.03],[124.0,-13.31],[121.0,-13.58],[118.0,-13.91],[115.0,-14.06],[112.0,-14.25],[109.0,-14.39],[106.0,-14.6],[103.0,-14.86],[100.0,-15.13],[97.0,-15.37],[94.0,-15.53],[91.0,-15.77],[88.0,-16.75],[85.0,-18.5],[82.0,-20.84],[79.0,-23.16],[76.0,-25.49],[73.0,-27.81],[70.0,-30.12],[67.0,-32.44],[64.0,-34.66],[61.0,-36.46],[58.0,-37.48],[55.0,-37.83],[52.0,-37.83],[49.0,-37.83],[46.0,-37.83],[43.0,-37.83],[40.0,-37.83],[37.0,-37.83],[34.0,-37.83],[31.0,-37.36],[28.0,-36.6],[25.0,-35.65],[22.0,-34.99],[19.0,-34.45],[16.0,-33.92],[13.0,-33.48],[10.0,-33.57],[7.0,-33.83],[4.0,-34.19],[1.0,-34.19],[-2.0,-34.32],[-5.0,-33.56],[-8.0,-33.56],[-11.0,-33.43],[-14.0,-34.2],[-17.0,-35.95],[-20.0,-35.45],[-23.0,-34.7],[-26.0,-33.0],[-29.0,-33.55],[-32.0,-34.35],[-35.0,-34.35],[-38.0,-34.35],[-41.0,-34.35],[-44.0,-34.67],[-47.0,-34.98],[-50.0,-35.3],[-53.0,-34.98],[-56.0,-34.66],[-59.0,-34.34],[-62.0,-34.34],[-65.0,-34.34],[-68.0,-35.16],[-71.0,-35.97],[-74.0,-36.79],[-77.0,-36.79],[-80.0,-36.79],[-83.0,-35.97],[-86.0,-35.16],[-89.0,-33.81],[-92.0,-33.29],[-95.0,-32.76],[-98.0,-32.76],[-101.0,-32.76],[-104.0,-32.76],[-107.0,-32.76],[-110.0,-32.76],[-113.0,-32.76],[-116.0,-32.81],[-119.0,-32.64],[-122.0,-28.11],[-125.0,-22.52],[-128.0,-17.05],[-131.0,-15.77],[-134.0,-15.39],[-137.0,-15.0],[-140.0,-14.69],[-143.0,-14.37],[-146.0,-14.06],[-149.0,-13.6],[-152.0,-13.18],[-155.0,-12.77],[-158.0,-12.42],[-161.0,-11.97],[-164.0,-9.43],[-167.0,-7.09] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
@@ -2149,7 +2150,7 @@ function ddi_rdr(x){
 			x.fillRect(px-3,py-3,6,6);
 			rdr_stick(x,px,py,t,own);
 			rdr_block(x,t,own,g); } }
-	else if(!RADAR.sil){ const sx=rdr_x(RADAR.sweep,half);   // the animated sweep
+	else if(!RADAR.silent()){ const sx=rdr_x(RADAR.sweep,half);   // the animated sweep
 		x.strokeStyle="rgba(57,224,122,0.6)"; x.lineWidth=2;
 		x.beginPath(); x.moveTo(sx,70); x.lineTo(sx,430); x.stroke(); }
 	if(RADAR.sil){ x.font="22px monospace"; x.textAlign="center"; x.fillText("SIL",256,108); }
@@ -2264,10 +2265,15 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 		if(reading.radar) x.fillText("R",470,59);
 		else if(reading.fallback&&(sim_time*3)%2<1) x.fillText("B",470,59); }
 	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,16,"STBY",true,adi_source==="stby"); }
-// tacan: the ship's TACAN as the jet reads it - true bearing (the heading
+// tacan: the ship's TACAN as the set receives it - true bearing (the heading
 // convention), horizontal range and slant range, in metres, across the world wrap.
-function tacan(){ const dx=wrap_axis(CARRIER.x-ownship.pos.x), dz=wrap_axis(CARRIER.z-ownship.pos.z);
-	return { bearing:Math.atan2(dx,-dz), range:Math.hypot(dx,dz), slant:Math.hypot(dx,ownship.pos.y,dz) }; }
+// Null with the set off, tuned off the ship's channel or band, or in A/A, which only
+// another aircraft answers; bearing without range in RCV or under EMCON, where the set
+// sends no interrogation to range with (24.4.2, 2.13.5.2).
+function tacan(){ const t=radios.tacan;
+	if(!t.on||t.air||t.channel!==SHIP.tacan.channel||t.band!==SHIP.tacan.band) return null;
+	const dx=wrap_axis(CARRIER.x-ownship.pos.x), dz=wrap_axis(CARRIER.z-ownship.pos.z), ranging=t.mode==="tr"&&!emcon;
+	return { bearing:Math.atan2(dx,-dz), range:ranging?Math.hypot(dx,dz):null, slant:ranging?Math.hypot(dx,ownship.pos.y,dz):null }; }
 // time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
 function time_to_go(seconds){ const s=Math.min(Math.round(seconds),8*3600+59*60+59), two=(v)=>String(v).padStart(2,"0");
 	return s>=3600?Math.floor(s/3600)+":"+two(Math.floor(s/60)%60)+":"+two(s%60):Math.floor(s/60)+":"+two(s%60); }
@@ -2310,14 +2316,14 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 		x.font="16px monospace"; x.fillText("T",tx,ty); }
 	if(gz.track!=null){ const a=gz.track-rot, c=Math.cos(a), s=Math.sin(a), [px,py]=polar(rose-2,a), [mx,my]=polar(rose-10,a), [bx,by]=polar(rose-18,a), [ex,ey]=polar(rose-28,a);   // the ground track pointer, a diamond on a stem: at the top in T UP
 		x.beginPath(); x.moveTo(px,py); x.lineTo(mx+5*c,my+5*s); x.lineTo(bx,by); x.lineTo(mx-5*c,my-5*s); x.closePath(); x.moveTo(bx,by); x.lineTo(ex,ey); x.stroke(); }
-	{ const a=station.bearing-rot, c=Math.cos(a), s=Math.sin(a);   // the TACAN bearing pointer outside the rose, its tail outside the far side, and the station where it lies (item 4)
+	if(station){ const a=station.bearing-rot, c=Math.cos(a), s=Math.sin(a);   // the TACAN bearing pointer outside the rose, its tail outside the far side, and the station where it lies (item 4), with a range to place it by
 		x.strokeStyle=ink; x.fillStyle=ink;
 		const [hx,hy]=polar(rose+T+3,a), [kx,ky]=polar(rose+T+17,a);
 		x.beginPath(); x.moveTo(hx,hy); x.lineTo(kx+7*c,ky+7*s); x.lineTo(kx-7*c,ky-7*s); x.closePath(); x.fill();
 		const [ax,ay]=polar(rose+T+3,a+Math.PI), [zx,zy]=polar(rose+T+17,a+Math.PI);
 		x.lineWidth=4; x.beginPath(); x.moveTo(ax,ay); x.lineTo(zx,zy); x.stroke(); x.lineWidth=2;
-		const [sx,sy]=polar(Math.min(station.range*ppm,rose),a);   // held at the inside of the rose beyond the scale
-		x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke(); }
+		if(station.range!=null){ const [sx,sy]=polar(Math.min(station.range*ppm,rose),a);   // held at the inside of the rose beyond the scale
+			x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke(); } }
 	x.restore();
 	{ const a=hdg-rot, c=Math.cos(a), s=Math.sin(a), f=([px,py])=>[256+c*px-s*py,cy+s*px+c*py];   // the aircraft symbol at the heading: fuselage, wings and tail bar
 		x.strokeStyle="#39e07a"; x.lineWidth=2;
@@ -2326,9 +2332,9 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	x.textAlign="right"; x.fillText(Math.round(ownship.speed*1.94384)+"T",240,cy+22);   // true airspeed left of the symbol, groundspeed right
 	x.textAlign="left"; x.fillText(Math.round(gz.ground||0)+"G",272,cy+22);
 	x.font="20px monospace";
-	{ const nm=station.slant/NM, line=String(Math.round(station.bearing/D2R+360)%360).padStart(3,"0")+"°/ "+nm.toFixed(1), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	if(station){ const nm=station.slant==null?null:station.slant/NM, line=String(Math.round(station.bearing/D2R+360)%360).padStart(3,"0")+"°"+(nm==null?"":"/ "+nm.toFixed(1)), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2); bearing alone without a range   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		x.fillText(line,20,66);
-		if((gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),20+w,90); }
+		if(nm!=null&&(gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),20+w,90); }
 		x.textAlign="left"; x.fillText(SHIP.ident,36,114); }
 	const z=gz.zulu||0, two=(v)=>String(Math.floor(v)).padStart(2,"0");
 	x.fillText(two(z/3600)+":"+two(z/60%60)+":"+two(z%60),20,458);   // ZTOD at the lower left (item 10)
@@ -2422,13 +2428,13 @@ function ddi_hud(x){
 	hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,boxed,vc,ranged?rng:null,{ fwd, right, up });
 	x.restore();
 	x.restore(); }
-// fpas_home (#54): distance and time to the carrier at present groundspeed, and
-// the fuel state on arrival at the present burn. Null on deck, hovering, or
-// with the engines not burning.
+// fpas_home (#54): distance and time to the carrier's TACAN at present groundspeed,
+// and the fuel state on arrival at the present burn. Null on deck, hovering, with
+// the engines not burning, or without a TACAN range.
 function fpas_home(){ const gz=ownship.gauges||{};
-	const gs=gz.ground||0, pph=flow_state.pph;
-	if(ownship.grounded||gs<60||pph<200||cheat("fuel")) return null;
-	const dist=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z))/1852;
+	const gs=gz.ground||0, pph=flow_state.pph, station=tacan();
+	if(ownship.grounded||gs<60||pph<200||cheat("fuel")||!station||station.range==null) return null;
+	const dist=station.range/1852;
 	const hours=dist/gs;
 	const arrive=(gz.fuelRaw||0)+(gz.externalRaw||0)-pph*hours;
 	return { dist, hours, arrive };
@@ -2565,24 +2571,31 @@ function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return
 // windows. A transparent canvas quad over the measured face draws its displays and
 // leaves the painted keypad and legends showing through; the pushbuttons are panel
 // points matched to the nearest button under a click. What it works is what the
-// game has: EMCON is the one radar silence, ILS reads ON while the ICLS needles are
-// live, TCN is the carrier, A/P engages the approach power compensator, and the
-// RALT option takes the radar altimeter's low-altitude index from the keypad.
+// game has: EMCON, the TACAN and the ILS with their channels and ON/OFF, the timers,
+// and the autopilot's options with no autopilot behind them.
 const UFC_FACE={ y:[0.370,0.497], z:[-0.094,0.089] };   // the upper face, group frame, measured by panel click (&panelpoint=1); the function row steps 1.4 cm proud below it
 const UFC_W=512, UFC_H=356;   // the face's own aspect
 const UFC_SCRATCH={ y:[0.475,0.486], z:[-0.076,-0.001] };   // the nine-character scratchpad window
 const UFC_OPTIONS={ z:[0.018,0.071], rows:[0.477,0.456,0.434,0.412,0.389], h:0.012 };   // the five option display windows
-const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the option selects, EMCON, I/P and the function selectors
+const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the option selects, EMCON, I/P, the function selectors and ON/OFF, one key pitch right of BCN as the row is painted
 	{ name:"1", y:0.453, z:-0.061 }, { name:"2", y:0.453, z:-0.039 }, { name:"3", y:0.453, z:-0.018 },
 	{ name:"4", y:0.432, z:-0.062 }, { name:"5", y:0.432, z:-0.039 }, { name:"6", y:0.432, z:-0.018 },
 	{ name:"7", y:0.409, z:-0.063 }, { name:"8", y:0.409, z:-0.040 }, { name:"9", y:0.409, z:-0.018 },
 	{ name:"clr", y:0.386, z:-0.063 }, { name:"0", y:0.386, z:-0.041 }, { name:"ent", y:0.386, z:-0.018 },
 	{ name:"opt0", y:0.477, z:0.006 }, { name:"opt1", y:0.456, z:0.006 }, { name:"opt2", y:0.434, z:0.006 }, { name:"opt3", y:0.412, z:0.006 }, { name:"opt4", y:0.389, z:0.006 },
 	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.450, z:-0.085 },
-	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 } ];
+	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 }, { name:"onoff", y:0.351, z:0.062 } ];
 const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
 const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""], time:["","ET","CD","ZTOD",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows; time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
-const UFC_CUES={ tcn:[0,3], ils:[0] };   // the colons the game's fixed equipment states show: TACAN in T/R on the X band, ILS on its channel
+// The radios the UFC works (24.4.2, 24.5.4): the TACAN on or off, its channel (1-126)
+// and band (X or Y), T/R or RCV, and A/A for air-to-air; the ILS on or off and its
+// channel (1-20). A spawn finds them as the pre-flight left them, on and tuned to the
+// ship. emcon is the UFC's EMCON: the TACAN, the radar and the radar altimeter stop
+// transmitting (2.13.5.2), and the radar holds its own copy of the discrete.
+const radios_tuned=()=>({ tacan:{ on:true, channel:SHIP.tacan.channel, band:SHIP.tacan.band, mode:"tr", air:false }, ils:{ on:true, channel:SHIP.icls } });
+const radios=radios_tuned();
+let emcon=false;
+function emcon_set(on){ emcon=on; RADAR.emcon=on; }
 // The mission computer's timers (NATOPS 2.13.4.8.11 item 17, 24.2.5.7.4-6): ZTOD,
 // ET and CD share the HUD's lower-left corner one at a time, each shown and blanked
 // from the TIMEUFC page's options. ET counts 00:00 to 59:59 and wraps; CD counts down
@@ -2613,45 +2626,55 @@ function timer_enter(entry){
 		return true; }
 	if(timer.shown!=="et"&&timer.shown!=="cd") return false;
 	timer_run(timer.shown,timer[timer.shown].since===null); return true; }
-const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 };   // the selected function, the :RALT cue, the keypad entry, the ERROR flash, the blink-once deadline
+const ufc={ func:"", entry:"", error:false, blink:0 };   // the selected function, the keypad entry, the ERROR flash, the blink-once deadline
 let ufc_dirty=true, ufc_last="";
 // ufc_face: what the windows show, from the panel's state and the equipment it
-// reads (silent: EMCON/radar silence; atc; ils: the ICLS needles live; index: the
-// low-altitude index). The scratchpad is nine characters: two alphanumeric (ON for
-// equipment that is on) and seven numeric, right-aligned. ERROR flashes at 2 Hz
-// until cleared (2.13.5.9); a valid entry blanks the window once.
-function ufc_face(state,live,now){
-	const options=live.silent?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>{ if(!o) return "";
-		const cue=state.func==="ap"?(i===3&&state.ralt):state.func==="time"?o.toLowerCase()===live.timer:(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
+// reads (emcon; radios; timer: the timer on the HUD). A colon cues each option
+// selected (2.13.5.6): the TACAN's mode, A/A and band, the ILS channel, the timer
+// shown; the autopilot's none, with no autopilot to engage. The scratchpad is nine
+// characters: two alphanumeric (ON for equipment that is on) and seven numeric,
+// right-aligned - a keyed entry, or the selected radio's channel. ERROR flashes at
+// 2 Hz until cleared (2.13.5.9); a valid entry blanks the window once.
+function ufc_face(state,live,now){ const t=live.radios.tacan, radio=state.func==="tcn"?t:state.func==="ils"?live.radios.ils:null;
+	const cues={ tcn:[t.mode==="tr",t.mode==="rcv",t.air,t.band==="X",t.band==="Y"], ils:[true], time:UFC_PAGES.time.map(o=>!!o&&o.toLowerCase()===live.timer) }[state.func]||[];
+	const options=live.emcon?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>o?(cues[i]?":":" ")+o:"");
 	let scratch;
 	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
 	else if(now<state.blink) scratch="         ";
-	else { const on=state.func==="ap"?live.atc:state.func==="tcn"?true:state.func==="ils"?live.ils:false;
-		const seven=state.entry;
-		scratch=(on?"ON":"  ")+seven.padStart(7); }
+	else scratch=(radio&&radio.on?"ON":"  ")+(state.entry!==""?state.entry:radio?String(radio.channel):"").padStart(7);
 	return { scratch, options }; }
-function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), timer:timer.shown }; }
+function ufc_live(){ return { emcon, radios, timer:timer.shown }; }
 function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
 	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
 	return best; }
+// ufc_enter works ENT: a keyed channel tunes the TACAN (1-126) or the ILS (1-20)
+// (24.4.2, 24.5.4), and on the TIMEUFC page ENT works the timers (timer_enter).
+// false: nothing the page can take.
+function ufc_enter(func,entry){
+	if(func==="time") return timer_enter(entry);
+	const limit=func==="tcn"?126:func==="ils"?20:0, channel=+entry;
+	if(!limit||channel<1||channel>limit) return false;
+	radios[func==="tcn"?"tacan":"ils"].channel=channel; return true; }
 // ufc_press works one pushbutton. Digits fill the entry; CLR clears the entry or
-// the ERROR first and the option windows second (2.13.5.9); ENT has no entry the
-// game keys, so it flags ERROR. A function selector shows its page, or clears the
-// display when pressed again; A/P engages the approach power compensator as the
-// autopilot switch engages the autopilot (2.13.5.10). Pressing :RALT, or commanding
-// the UFC to another mode, disables a sounding primary low-altitude warning until
-// it is reset (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2). On the
-// TIMEUFC page an option shows or blanks its timer on the HUD, and ENT works the
-// timers (timer_enter).
+// the ERROR first and the option windows second (2.13.5.9); ENT sends the entry
+// (ufc_enter). A function selector shows its page, or clears the display when
+// pressed again; ON/OFF turns the selected radio on and off, and A/P has no
+// autopilot behind it (2.13.5.10). Pressing :RALT, or commanding the UFC to another
+// mode, disables a sounding primary low-altitude warning until it is reset
+// (2.12.5.1). EMCON toggles the emission control (2.13.5.2). On the TCN page the
+// options select T/R or RCV, A/A, and the X or Y band; on the TIMEUFC page an option
+// shows or blanks its timer on the HUD.
 function ufc_press(name){ const now=performance.now()/1000;
 	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
-	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else { ufc.func=""; ufc.ralt=false; } }
-	else if(name==="ent"){ if(ufc.func==="time"&&timer_enter(ufc.entry)){ ufc.entry=""; ufc.blink=now+0.3; } else ufc.error=true; }
-	else if(name==="emcon") pit_press("radar",0);   // one silence: the radar, and the radar altimeter with it (#29)
-	else if(name.startsWith("opt")){ const i=+name.slice(3);
-		if(ufc.func==="ap"&&i===3){ ufc.ralt=!ufc.ralt; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
+	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else ufc.func=""; }
+	else if(name==="ent"){ if(ufc_enter(ufc.func,ufc.entry)){ ufc.entry=""; ufc.blink=now+0.3; } else ufc.error=true; }
+	else if(name==="emcon") emcon_set(!emcon);
+	else if(name==="onoff"){ const radio=ufc.func==="tcn"?radios.tacan:ufc.func==="ils"?radios.ils:null; if(radio) radio.on=!radio.on; }
+	else if(name.startsWith("opt")){ const i=+name.slice(3), t=radios.tacan;
+		if(ufc.func==="ap"&&i===3) law_disabled=law_disabled||law_primary;
+		else if(ufc.func==="tcn"){ if(i<2) t.mode=i?"rcv":"tr"; else if(i===2) t.air=!t.air; else t.band=i===3?"X":"Y"; }
 		else if(ufc.func==="time"&&UFC_PAGES.time[i]){ const kind=UFC_PAGES.time[i].toLowerCase(); timer.shown=timer.shown===kind?"":kind; ufc.entry=""; ufc.error=false; } }
-	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
+	else if(name in UFC_PAGES){ ufc.func=ufc.func===name?"":name; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
 	ufc_dirty=true; ufc_update(true); }
 function build_ufc(g){
 	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
@@ -2679,7 +2702,7 @@ function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 	window_(UFC_SCRATCH.y[0],UFC_SCRATCH.y[1],UFC_SCRATCH.z[0],UFC_SCRATCH.z[1],face.scratch,"right");
 	UFC_OPTIONS.rows.forEach((r,i)=>window_(r-UFC_OPTIONS.h/2,r+UFC_OPTIONS.h/2,UFC_OPTIONS.z[0],UFC_OPTIONS.z[1],face.options[i],"left"));
 	u.tex.needsUpdate=true; }
-if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, primary:law_primary, disabled:law_disabled }; };   // dev: press a UFC pushbutton headless and read the windows
+if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, radios:structuredClone(radios), emcon, index:law_index, primary:law_primary, disabled:law_disabled }; };   // dev: press a UFC pushbutton headless and read the windows
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
 if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
@@ -4078,7 +4101,7 @@ function step_amraam(m,dt){
 	else{
 	truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
-	supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
+	supported=truth&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
 	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.bloom,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
 	const state=round_step(m.slot,dt,supported?truth:null,truth);
@@ -5010,7 +5033,7 @@ function update_aircraft_lights(){
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
 function approach_deviation(){   // shared by the HUD ICLS needles and the ADI page's bars: one computation, one truth
-	if(!carrier_ols) return null; const o=carrier_ols, p=ownship.pos, s=ols_dev(p,o);
+	if(!carrier_ols||!radios.ils.on||radios.ils.channel!==SHIP.icls) return null; const o=carrier_ols, p=ownship.pos, s=ols_dev(p,o);   // the ILS on, and on the ship's channel (24.5.4)
 	if((ownship.gearTarget??0)>0.5) return null;   // the ICLS boxes with the landing checklist (gear down) — the auto-display stands in for the pilot selecting ILS, and a clean pass up the wake is not an approach
 	const toward=(o.tdx-p.x)*ownship.fwd.x+(o.tdz-p.z)*ownship.fwd.z;   // >0 = nose pointing at the touchdown
 	if(!(s.along>60 && s.dist<15000 && toward>0 && p.y>o.dy)) return null;   // on the approach: aft, within ~8 nm, heading at the boat
@@ -6064,7 +6087,7 @@ function recording_sample(){
 		flares:ownship.flares|0, chaff:ownship.chaff|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
 		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0, hook:ownship.hook??0, speedbrake:ownship.speedbrake??0,   // configuration (#86): which pitch law the FCS was flying, and the hook a replay draws
 		override:!!(last_controls&&last_controls.override),   // (#33 debrief): the g-limit paddle switch - raises the commanded ceiling from 7.5 to 10 g and is what lets Stress accrue in that band at all
-		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
+		radar:RADAR.silent()?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
 		antenna:Math.round(RADAR.centre.elevation/D2R), bars:RADAR.count(),   // where the scan pointed and how many bars it swept: a target the bars never covered was never there to find
 		// Acquire/undesignate presses that actually landed (#33 debrief): drained
 		// exactly where the bandit's own decision journal is, on a frame the
@@ -6300,11 +6323,11 @@ let law_primary=false;   // the primary radar low-altitude warning is sounding (
 let law_disabled=false;   // the primary warning was disabled from the UFC (:RALT, or another UFC mode) and stays quiet until it is reset
 // The radar altimeter set's knob (2.12.5.4.1): turning it clockwise applies power and
 // then raises the index; fully anticlockwise the set is off, with its OFF flag, no radar
-// altitude and neither radar warning, as under radar silence. Pushing it runs the BIT,
+// altitude and neither radar warning, as under EMCON (2.12.5). Pushing it runs the BIT,
 // the green light GO for its 5 s. At ground power-up the set sounds the whoop once to
 // familiarise the pilot (2.12.5.1): greet is that whoop, owed.
 let radalt_on=true, radalt_test=-Infinity, radalt_greet=false;
-function radalt_inhibited(){ return RADAR.sil||!radalt_on; }
+function radalt_inhibited(){ return emcon||!radalt_on; }
 let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
 const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
 const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
@@ -6788,7 +6811,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 	apart:(!MULTIPLAYER&&has_enemy)?Math.round(Math.hypot(wrap_axis(bandit.pos.x-ownship.pos.x),bandit.pos.y-ownship.pos.y,wrap_axis(bandit.pos.z-ownship.pos.z))):-1,   // #32: the SP pair's separation, for the BVR joust checks
 	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0, enemy:!!m.enemy })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.flares, chaff:ownship.chaff, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2), struck:ownship.struck||0, thrust:+((((last_out||[])[STATE.engine_harm]||0)+(((last_out||[])[STATE.engine_harm+1])||0))/2).toFixed(3) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, search:RADAR.mode, acm:RADAR.auto?RADAR.acm:null, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, banditlock:bandit_locked,el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.flares, chaff:ownship.chaff, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2), struck:ownship.struck||0, thrust:+((((last_out||[])[STATE.engine_harm]||0)+(((last_out||[])[STATE.engine_harm+1])||0))/2).toFixed(3) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.silent()?"sil":RADAR.stt!=null?"stt":RADAR.mode, search:RADAR.mode, acm:RADAR.auto?RADAR.acm:null, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, banditlock:bandit_locked,el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -7921,7 +7944,7 @@ function reset_ownship(){
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
-	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true;   // the UFC powers up clear (#15)
+	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
@@ -8286,7 +8309,7 @@ function radar_target(track){
 // trackfile, and the HUD then has no ranging to show - the radar is the only
 // ranging the game has.
 function ranging(){
-	const track=RADAR.stt??RADAR.ls, t=RADAR.sil||track==null?null:radar_target(track); if(!t) return null;
+	const track=RADAR.stt??RADAR.ls, t=RADAR.silent()||track==null?null:radar_target(track); if(!t) return null;
 	const p=t.position, v=t.velocity, to=new THREE.Vector3(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z)), range=to.length();
 	if(range<1e-3) return { range, closure:0 };
 	to.multiplyScalar(1/range);
@@ -8985,8 +9008,9 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
 	hctx.restore();
 	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
-	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
-		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
+	const station=carrier_ols&&master==="nav"?tacan():null;
+	if(station){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
+		const brg=(station.bearing*180/Math.PI+360)%360;
 		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
 		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
@@ -9065,8 +9089,8 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
-	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=tacan().slant/1852;
-		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
+	if(carrier_ols&&master==="nav"&&declutter<2){ const station=tacan(), slant=station&&station.slant!=null?station.slant/1852:null;
+		if(slant!=null) hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
 		// count beside it. NAV has no weapon block on the real HUD, so nothing is
@@ -9217,7 +9241,7 @@ function radar_undesignate(){ const held=RADAR.stt!=null||RADAR.ls!=null; RADAR.
 // the box stands for what the radar has, so a lock it breaks, or a trackfile
 // it lets go, takes the designation with it. A silent radar holds nothing,
 // and its visual designation stands.
-function radar_held(){ if(!RADAR.sil&&designated!==-1&&designated!==RADAR.stt&&designated!==RADAR.ls) designated=-1; }
+function radar_held(){ if(!RADAR.silent()&&designated!==-1&&designated!==RADAR.stt&&designated!==RADAR.ls) designated=-1; }
 // hud_target is the jet the HUD boxes: the pilot's designation, while it
 // flies - not whatever is out there. Designate, step and undesignate on the
 // acquire key, like the real ACM flow.
@@ -9236,7 +9260,7 @@ function radar_step(dt){ if(!running) return;
 	// A commanded ACM condition runs its own cone: with no lock held the radar
 	// takes the first target in it, at the real set's acquisition cadence, and
 	// goes back to looking the moment a lock breaks. Nothing to press.
-	if(RADAR.auto&&!RADAR.sil&&RADAR.stt==null&&!on_ground()){ acm_clock+=dt; if(acm_clock>=0.25){ acm_clock=0; acquire_acm(true); } }
+	if(RADAR.auto&&!RADAR.silent()&&RADAR.stt==null&&!on_ground()){ acm_clock+=dt; if(acm_clock>=0.25){ acm_clock=0; acquire_acm(true); } }
 	else acm_clock=0;
 	if(MULTIPLAYER&&net){   // emitter uplink: the wire hears state changes only — mode flips and lock/break
 		const mode=RADAR.emitter(), target=typeof RADAR.stt==="number"?RADAR.stt:-1;
@@ -9289,7 +9313,7 @@ let rwr_called=-9;
 // radar is silent. Stepping between trackfiles is Backspace's, so Enter can
 // never cost a supported round its datalink.
 function acquire_press(){
-	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.sil&&RADAR.tracks.length){
+	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.silent()&&RADAR.tracks.length){
 		if(RADAR.ls!=null){ if(radar_designate(RADAR.ls)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); return; }   // the L&S hardens into the lock — i18n-format-ok: ACMI event timestamp, not display text
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
@@ -9302,7 +9326,7 @@ function acquire_press(){
 // dropping nothing: every trackfile lives on and every launched round keeps
 // its support), otherwise it releases the lock or the L&S outright.
 function undesignate_press(){
-	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.sil&&RADAR.tracks.length>1&&RADAR.ls!=null){
+	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.silent()&&RADAR.tracks.length>1&&RADAR.ls!=null){
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		const at=order.findIndex(t=>t.id===RADAR.ls);

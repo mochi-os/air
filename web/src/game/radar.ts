@@ -172,7 +172,8 @@ export function pick(
 
 export class Radar {
   mode: 'rws' | 'tws' = 'rws'
-  sil = false
+  sil = false // the radar's own silence: SIL on its page, or the knob at STBY
+  emcon = false // the UFC's EMCON, which silences it whatever SIL says (NATOPS 2.13.5.2)
   width = 0 // index into WIDTHS
   bars = 2 // index into BARS: four
   bar = 0 // the bar this sweep scans, 0 the top
@@ -256,10 +257,15 @@ export class Radar {
     }
   }
 
+  // silent: the radar is not transmitting, from its own silence or from EMCON.
+  silent(): boolean {
+    return this.sil || this.emcon
+  }
+
   // emitter: the wire truth of what this radar is doing — 0 silent, 1 search,
   // 2 STT. What the other side's RWR reacts to (#28).
   emitter(): 0 | 1 | 2 {
-    return this.sil ? 0 : this.stt != null ? 2 : 1
+    return this.silent() ? 0 : this.stt != null ? 2 : 1
   }
 
   step(
@@ -281,7 +287,7 @@ export class Radar {
       !this.tracks.some((t) => t.id === this.ls)
     )
       this.ls = null
-    if (this.sil) {
+    if (this.silent()) {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
     }
@@ -436,7 +442,7 @@ export class Radar {
   // makes it the L&S, designating the L&S again commands STT; RWS (no
   // trackfiles) goes straight to STT. A silent radar cannot lock.
   designate(id: number | string): boolean {
-    if (this.sil) return false
+    if (this.silent()) return false
     if (this.mode === 'tws' && this.stt == null && this.ls !== id) {
       this.ls = id
       return true
@@ -450,7 +456,7 @@ export class Radar {
   // the cone found him, so there is no trackfile ladder to climb. A silent
   // radar cannot lock.
   lock(id: number | string): boolean {
-    if (this.sil) return false
+    if (this.silent()) return false
     this.ls = id
     this.stt = id
     return true

@@ -107,25 +107,32 @@ describe('the HUD timer', () => {
 
   it('puts the Case III push time on the CD timer, running, where the push clock was', () => {
     expect(source).toMatch(/marshal=\{ push:sim_time\+MARSHAL_PUSH,[^\n]*\n\t\ttimer\.cd\.seconds=MARSHAL_PUSH; timer_run\("cd",true\); timer\.shown="cd";/)
-    expect(source).toMatch(/\n\tufc\.func=""; ufc\.ralt=false;[^\n]*\n\ttimer_reset\(\);/)
+    expect(source).toMatch(/\n\tufc\.func="";[^\n]*\n\ttimer_reset\(\);/)
     expect(source).toMatch(/hints_watch\(\); timer_update\(\);/)
   })
 })
 
 // The lower-right data block (NATOPS item 14, figure 2-26): TACAN slant range and
-// the station's ident, "21.1 STL", with no invented push clock beside it.
+// the station's ident, "21.1 STL", with no invented push clock beside it; nothing
+// without a TACAN range - the set off, or in RCV or under EMCON (24.4.2, 2.13.5.2).
 describe('the lower-right data block', () => {
   const data = /\n\t\/\/ ---- data blocks: TCN slant range[\s\S]*?(?=\n\t\{ \/\/ The selected weapon and its count)/.exec(source)?.[0] ?? ''
-  it('reads the TACAN block as slant range and ident, and draws no push clock', () => {
-    expect(data).not.toBe('')
-    const text = new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
+  const block = (tacan = '{}', emcon = false) => new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
       const atc_on=false, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0;
-      const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 } }, SHIP={ ident:'NIM' }, wrap_axis=(v)=>v;
+      const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 } }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
+      const radios={ tacan:{ on:true, channel:74, band:'X', mode:'tr', air:false, ...${tacan} } }, emcon=${emcon};
       ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
       const marshal={ push:400, commenced:false }, clock_text=(s)=>String(s);
       ${data}
       return text;`)() as string[]
-    expect(text).toEqual(['10.0 NIM'])
-    expect(data).toMatch(/const slant=tacan\(\)\.slant\/1852;/) // the HSI's TACAN fix
+  it('reads the TACAN block as slant range and ident, and draws no push clock', () => {
+    expect(data).not.toBe('')
+    expect(block()).toEqual(['10.0 NIM'])
+    expect(data).toMatch(/const station=tacan\(\), slant=station&&station\.slant!=null\?station\.slant\/1852:null;/) // the HSI's TACAN fix
+  })
+
+  it('reads nothing without a TACAN range', () => {
+    for (const tacan of ['{ on:false }', '{ channel:73 }', '{ mode:"rcv" }']) expect(block(tacan), tacan).toEqual([])
+    expect(block('{}', true)).toEqual([])
   })
 })
