@@ -317,6 +317,10 @@ msgstr "Gweithgaredd"
 msgid "Add"
 msgstr "Ychwanegu"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Ychwanegwch ychydig mwy o fanylion."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Ychwanegu sylw..."
@@ -772,6 +776,7 @@ msgstr "Camera ddim ar gael"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Dewiswch ddyddiad"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Dewiswch gêm o'r bar ochr neu dechreuwch un newydd."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Dewiswch amser"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Esgyn: cyfeiriad y rhedfa {heading}, 350 not"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Cau"
@@ -1193,6 +1203,10 @@ msgstr "Methwyd anfon y neges"
 msgid "Couldn't load notifications"
 msgstr "Methwyd llwytho hysbysiadau"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Methu cyrraedd y cyrchfan eto"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Methwyd anfon y cod. Rhowch gynnig arall arni."
@@ -1200,6 +1214,10 @@ msgstr "Methwyd anfon y cod. Rhowch gynnig arall arni."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Methwyd dechrau ailddilysu. Rhowch gynnig arall arni."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Methu cyflwyno"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Dinistriwyd gan dân"
 msgid "Detail"
 msgstr "Manylder"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Manylion"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panel manylion"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "GOSTWNG YR OLWYNION"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Hepgor"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Hepgor y drafft?"
 
@@ -1667,6 +1691,10 @@ msgstr "Rhowch god eich ap dilysu"
 msgid "Error"
 msgstr "Gwall"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Pob munud"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Pawb"
@@ -1840,6 +1868,11 @@ msgstr "GWEDDOL"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Adborth"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Ail-gylchu: pŵer llawn, brêcs awyr i mewn, adenydd yn wastad, dringa a
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Yn ôl"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Mynd i'r fforwm"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Nawr"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Parhau i olygu"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Llwybrau byr bysellfwrdd"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Yn llwytho manylion yr eitem"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Yn llwytho..."
 
@@ -2653,6 +2695,10 @@ msgstr "Model taflegryn <0>“AIM-120C AMRAAM”</0> gan <1>Pippa</1> (Sketchfab
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Cenhadaeth drosodd"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Adborth am Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Gwiriwch eich cysylltiad rhyngrwyd a rhowch gynnig arall arni."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Rhowch gynnig arall arni."
 
@@ -3198,6 +3247,10 @@ msgstr "Esgyniad positif: offer glanio i fyny; fflapiau'n awtomatig wrth basio 2
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Esgyniad positif: cymera'r ffon, offer glanio i fyny, fflapiau'n awtomatig"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Postio adborth"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Cyflwyno sylw"
 msgid "Submit reply"
 msgstr "Cyflwyno ateb"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Wedi'i gyflwyno'n llwyddiannus"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Amser"
 msgid "Time of day"
 msgstr "Amser y dydd"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Teitl"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "I"
@@ -4266,6 +4327,7 @@ msgstr "Ceisiwch addasu eich termau chwilio"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Rhoi cynnig arall"
 
@@ -4610,6 +4672,10 @@ msgstr "Symudwyd eich cyfrif yma o {source}. Hyd nes y byddwch yn ei ddileu yno,
 msgid "Your attachments will be lost."
 msgstr "Bydd eich atodiadau'n cael eu colli."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Mae eich adborth wedi'i anfon a bydd yn ymddangos ar ôl cymedroli."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Bydd eich hediadau yn ymddangos yma ar ôl i chi hedfan un."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Bydd eich testun a'ch atodiadau'n cael eu colli."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Bydd eich testun yn cael ei golli."
 

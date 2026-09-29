@@ -317,6 +317,10 @@ msgstr "Tevékenység"
 msgid "Add"
 msgstr "Hozzáadás"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Adj hozzá még egy kis részletet."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Megjegyzés hozzáadása..."
@@ -772,6 +776,7 @@ msgstr "A kamera nem érhető el"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Válasszon dátumot"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Válasszon egy játékot az oldalsávból, vagy kezdjen újat."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Válasszon időpontot"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Emelkedés: futópálya iránya {heading}, 350 csomó"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Bezárás"
@@ -1193,6 +1203,10 @@ msgstr "Az üzenetet nem sikerült elküldeni"
 msgid "Couldn't load notifications"
 msgstr "Nem sikerült betölteni az értesítéseket"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "A célt még nem sikerült elérni"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "A kódot nem sikerült elküldeni. Próbálja újra."
@@ -1200,6 +1214,10 @@ msgstr "A kódot nem sikerült elküldeni. Próbálja újra."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Az újrahitelesítést nem sikerült elindítani. Próbálja újra."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Nem sikerült beküldeni"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Tűzben megsemmisült"
 msgid "Detail"
 msgstr "Részletesség"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Részletek"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Részletek panel"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "FUTÓMŰ KI"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Elvetés"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Elveted a piszkozatot?"
 
@@ -1667,6 +1691,10 @@ msgstr "Adja meg a hitelesítő kódját"
 msgid "Error"
 msgstr "Hiba"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Minden perc"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Mindenki"
@@ -1840,6 +1868,11 @@ msgstr "KÖZEPES"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Visszajelzés"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Átstartolás: teljes gáz, féklapok be, szárnyak vízszintbe, emelked
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Vissza"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Ugrás a fórumra"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Épp most"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Szerkesztés folytatása"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Billentyűparancsok"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Elem részleteinek betöltése"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Betöltés..."
 
@@ -2653,6 +2695,10 @@ msgstr "Rakétamodell <0>“AIM-120C AMRAAM”</0> repülőgép-hordozó, kész�
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Küldetés vége"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air visszajelzés"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Próbálja újra."
 
@@ -3198,6 +3247,10 @@ msgstr "Pozitív emelkedés: futómű be; fékszárny AUTO 250 csomónál"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Pozitív emelkedés: fogd a botkormányt, futómű be, fékszárny AUTO"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Visszajelzés közzététele"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Hozzászólás beküldése"
 msgid "Submit reply"
 msgstr "Válasz beküldése"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Sikeresen elküldve"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Idő"
 msgid "Time of day"
 msgstr "Napszak"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Cím"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Ide"
@@ -4266,6 +4327,7 @@ msgstr "Próbálja módosítani a keresési kifejezéseket"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Próbálja újra"
 
@@ -4610,6 +4672,10 @@ msgstr "Fiókja ide lett áthelyezve innen: {source}. Amíg nem törli onnan, az
 msgid "Your attachments will be lost."
 msgstr "A mellékletei elvesznek."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "A visszajelzésedet elküldtük, és moderálás után jelenik meg."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "A repüléseid itt jelennek meg, ha teljesítettél egyet."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "A szövege és a mellékletei elvesznek."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "A szöveged elvész."
 

@@ -317,6 +317,10 @@ msgstr "પ્રવૃત્તિ"
 msgid "Add"
 msgstr "ઉમેરો"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "થોડી વધુ વિગતો ઉમેરો."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "ટિપ્પણી ઉમેરો..."
@@ -772,6 +776,7 @@ msgstr "કૅમેરો ઉપલબ્ધ નથી"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "તારીખ પસંદ કરો"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "સાઇડબારમાંથી રમત પસંદ કરો અથવા નવી શરૂ કરો."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "સમય પસંદ કરો"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "ચઢાણ: રનવે હેડિંગ {heading}, 350 નોટ"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "બંધ કરો"
@@ -1193,6 +1203,10 @@ msgstr "સંદેશ મોકલી શકાયો નથી"
 msgid "Couldn't load notifications"
 msgstr "સૂચનાઓ લોડ કરી શકાઈ નથી"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "હજુ સુધી ગંતવ્ય સ્થાન સુધી પહોંચી શક્યા નથી"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "કોડ મોકલી શકાયો નહીં. કૃપા કરીને ફરી પ્રયાસ કરો."
@@ -1200,6 +1214,10 @@ msgstr "કોડ મોકલી શકાયો નહીં. કૃપા ક
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "પુનઃપ્રમાણીકરણ શરૂ કરી શકાયું નહીં. કૃપા કરીને ફરી પ્રયાસ કરો."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "સબમિટ કરી શક્યા નથી"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "આગથી નાશ પામ્યું"
 msgid "Detail"
 msgstr "વિગતનું સ્તર"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "વિગતો"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "વિગતો પૅનલ"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ગિયર નીચે"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "રદ કરો"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "ડ્રાફ્ટ રદ કરવો?"
 
@@ -1667,6 +1691,10 @@ msgstr "તમારો ઑથેન્ટિકેટર કોડ દાખલ
 msgid "Error"
 msgstr "ભૂલ"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "દર મિનિટે"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "બધા"
@@ -1840,6 +1868,11 @@ msgstr "મધ્યમ"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "પ્રતિસાદ"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "ફરી ચક્કર: પૂર્ણ પાવર, એર બ્�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "પાછા જાઓ"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "ફોરમ પર જાઓ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "હમણાં જ"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "સંપાદન ચાલુ રાખો"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "કીબોર્ડ શૉર્ટકટ્સ"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "આઇટમ વિગતો લોડ થઈ રહી છે"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "લોડ થઈ રહ્યું છે..."
 
@@ -2653,6 +2695,10 @@ msgstr "મિસાઇલ મોડેલ <0>“AIM-120C AMRAAM”</0>, <1>Pipp
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "મિશન પૂરું"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air વિશે પ્રતિસાદ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "કૃપા કરી તમારું ઇન્ટરનેટ કનેક્શન તપાસો અને ફરી પ્રયાસ કરો."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "કૃપા કરીને ફરી પ્રયાસ કરો."
 
@@ -3198,6 +3247,10 @@ msgstr "પોઝિટિવ રેટ: ગિયર ઉપર; 250 નોટ �
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "પોઝિટિવ રેટ: સ્ટિક પકડો, ગિયર ઉપર, ફ્લેપ ઓટો"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "પ્રતિસાદ પોસ્ટ કરો"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "ટિપ્પણી સબમિટ કરો"
 msgid "Submit reply"
 msgstr "જવાબ સબમિટ કરો"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "સફળતાપૂર્વક સબમિટ થયું"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "સમય"
 msgid "Time of day"
 msgstr "દિવસનો સમય"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "શીર્ષક"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "પ્રતિ"
@@ -4266,6 +4327,7 @@ msgstr "તમારી શોધ શરતોને સમાયોજિત �
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "ફરી પ્રયાસ કરો"
 
@@ -4610,6 +4672,10 @@ msgstr "તમારું ખાતું {source} પરથી અહીં �
 msgid "Your attachments will be lost."
 msgstr "તમારા જોડાણો ખોવાઈ જશે."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "તમારો પ્રતિસાદ સબમિટ થયો છે અને મધ્યસ્થી પછી દેખાશે."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "તમે એક ઉડાન ભરો પછી તમારી ઉડાનો અહીં દેખાશે."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "તમારું લખાણ અને જોડાણો ખોવાઈ જશે."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "તમારું લખાણ ખોવાઈ જશે."
 

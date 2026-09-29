@@ -317,6 +317,10 @@ msgstr "Aktivitet"
 msgid "Add"
 msgstr "Legg til"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Legg til litt fleire detaljar."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Legg til ein kommentar..."
@@ -772,6 +776,7 @@ msgstr "Kamera ikkje tilgjengeleg"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Vel ein dato"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Vel eit spel frå sidestolpen eller start eit nytt."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Vel eit klokkeslett"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Utstiging: banekurs {heading}, 350 knop"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Lat att"
@@ -1193,6 +1203,10 @@ msgstr "Klarte ikkje å sende meldinga"
 msgid "Couldn't load notifications"
 msgstr "Klarte ikkje lasta varsla"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Nådde ikkje målet enno"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Klarte ikkje å sende koden. Prøv igjen."
@@ -1200,6 +1214,10 @@ msgstr "Klarte ikkje å sende koden. Prøv igjen."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Klarte ikkje å starte ny autentisering. Prøv igjen."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Klarte ikkje å sende inn"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Øydelagd av brann"
 msgid "Detail"
 msgstr "Detaljnivå"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Detaljar"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Detaljpanel"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "UNDERSTELL NED"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Forkast"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Vil du forkaste utkastet?"
 
@@ -1667,6 +1691,10 @@ msgstr "Skriv inn autentiseringskoden din"
 msgid "Error"
 msgstr "Feil"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Kvart minutt"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Alle"
@@ -1840,6 +1868,11 @@ msgstr "MIDDELS"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Tilbakemelding"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Avbroten landing: full gass, luftbremsar inn, vengjene flate, stig på k
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Gå tilbake"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Gå til forumet"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Nettopp no"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Hald fram med å redigere"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Snøggtastar"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Lastar elementdetaljar"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Lastar..."
 
@@ -2653,6 +2695,10 @@ msgstr "Missilmodell <0>“AIM-120C AMRAAM”</0> av <1>Pippa</1> (Sketchfab), l
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Oppdrag over"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Tilbakemelding om Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Sjekk internettsambandet ditt og prøv igjen."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Prøv igjen."
 
@@ -3198,6 +3247,10 @@ msgstr "Positiv stiging: understell inn; flaps auto når du passerer 250 knop"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Positiv stiging: ta stikka, understell inn, flaps auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Publiser tilbakemeldinga"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Send inn kommentar"
 msgid "Submit reply"
 msgstr "Send inn svar"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Sendt inn"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Tid"
 msgid "Time of day"
 msgstr "Tid på døgnet"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Tittel"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Til"
@@ -4266,6 +4327,7 @@ msgstr "Prøv å justere søkjeorda"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Prøv igjen"
 
@@ -4610,6 +4672,10 @@ msgstr "Kontoen din vart flytta hit frå {source}. Inntil du slettar han der, ka
 msgid "Your attachments will be lost."
 msgstr "Vedlegga dine går tapt."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Tilbakemeldinga di er sendt inn og blir synleg etter moderering."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Flygingane dine dukkar opp her når du har floge ein."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Teksten og vedlegga dine går tapt."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Teksten din går tapt."
 

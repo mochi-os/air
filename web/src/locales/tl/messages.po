@@ -317,6 +317,10 @@ msgstr "Aktibidad"
 msgid "Add"
 msgstr "Idagdag"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Magdagdag ng kaunti pang detalye."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Magdagdag ng komento..."
@@ -772,6 +776,7 @@ msgstr "Hindi available ang camera"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Pumili ng petsa"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Pumili ng laro mula sa sidebar o magsimula ng bago."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Pumili ng oras"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Pag-akyat: heading ng runway {heading}, 350 knots"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Isara"
@@ -1193,6 +1203,10 @@ msgstr "Hindi naipadala ang mensahe"
 msgid "Couldn't load notifications"
 msgstr "Hindi ma-load ang mga notification"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Hindi pa naaabot ang destinasyon"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Hindi naipadala ang code. Pakisubukang muli."
@@ -1200,6 +1214,10 @@ msgstr "Hindi naipadala ang code. Pakisubukang muli."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Hindi masimulan ang muling pagpapatunay. Pakisubukang muli."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Hindi maipasa"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Winasak ng apoy"
 msgid "Detail"
 msgstr "Detalye"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Mga detalye"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panel ng mga detalye"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "IBABA ANG GEAR"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Itapon"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Itapon ang draft?"
 
@@ -1667,6 +1691,10 @@ msgstr "Ilagay ang iyong authenticator code"
 msgid "Error"
 msgstr "Error"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Bawat minuto"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Lahat"
@@ -1840,6 +1868,11 @@ msgstr "KATAMTAMAN"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Puna"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Go around: buong lakas, boards pasok, patag ang mga pakpak, umakyat sa h
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Bumalik"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Pumunta sa forum"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Ngayon lang"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Magpatuloy sa pag-edit"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Mga keyboard shortcut"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Nilo-load ang detalye ng item"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Nilo-load..."
 
@@ -2653,6 +2695,10 @@ msgstr "Modelo ng missile <0>“AIM-120C AMRAAM”</0> ni <1>Pippa</1> (Sketchfa
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Tapos na ang misyon"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Puna tungkol sa Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Pakitingnan ang iyong koneksyon sa internet at subukang muli."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Pakisubukan muli."
 
@@ -3198,6 +3247,10 @@ msgstr "Tumataas na: itaas ang gear; flaps auto paglampas ng 250 knots"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Tumataas na: hawakan ang stick, itaas ang gear, flaps auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "I-post ang puna"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Ipasa ang komento"
 msgid "Submit reply"
 msgstr "Ipasa ang sagot"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Matagumpay na naisumite"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Oras"
 msgid "Time of day"
 msgstr "Oras ng araw"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Pamagat"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Papunta"
@@ -4266,6 +4327,7 @@ msgstr "Subukang ayusin ang iyong mga search term"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Subukang muli"
 
@@ -4610,6 +4672,10 @@ msgstr "Ang iyong account ay inilipat dito mula sa {source}. Hanggang hindi mo i
 msgid "Your attachments will be lost."
 msgstr "Mawawala ang iyong mga attachment."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Naisumite na ang iyong puna at lilitaw ito pagkatapos ng pagsusuri."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Lilitaw dito ang iyong mga paglipad kapag nakalipad ka na ng isa."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Mawawala ang iyong teksto at mga attachment."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Mawawala ang iyong teksto."
 

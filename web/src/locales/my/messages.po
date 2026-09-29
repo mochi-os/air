@@ -317,6 +317,10 @@ msgstr "လှုပ်ရှားမှု"
 msgid "Add"
 msgstr "ထည့်မည်"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "အသေးစိတ်အချက်အလက် နည်းနည်းထပ်ထည့်ပါ။"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "မှတ်ချက်ထည့်ရန်..."
@@ -772,6 +776,7 @@ msgstr "ကင်မရာ မရနိုင်ပါ"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "ရက်စွဲ ရွေးပါ"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "ဘေးဘားမှ ဂိမ်းတစ်ခုကို ရွေးချယ်ပါ သို့မဟုတ် အသစ်တစ်ခု စတင်ပါ။"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "အချိန် ရွေးပါ"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "အတက်: ပြေးလမ်းဦးတည်ရာ {heading}, 3
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "ပိတ်မည်"
@@ -1193,6 +1203,10 @@ msgstr "မက်ဆေ့ချ်ကို ပို့၍မရပါ"
 msgid "Couldn't load notifications"
 msgstr "အကြောင်းကြားချက်များ ဖွင့်၍မရပါ"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "ဦးတည်ရာသို့ မရောက်သေးပါ"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "ကုဒ်ကို ပို့၍မရပါ။ ကျေးဇူးပြု၍ ထပ်စမ်းကြည့်ပါ။"
@@ -1200,6 +1214,10 @@ msgstr "ကုဒ်ကို ပို့၍မရပါ။ ကျေးဇူ�
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "ပြန်လည်အတည်ပြုခြင်းကို စတင်၍မရပါ။ ကျေးဇူးပြု၍ ထပ်စမ်းကြည့်ပါ။"
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "တင်သွင်း၍ မရပါ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "မီးလောင်၍ ပျက်စီးသည်"
 msgid "Detail"
 msgstr "အသေးစိတ်"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "အသေးစိတ်များ"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "အသေးစိတ် ပန်နယ်"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ဂီယာချပါ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "ဖျက်ပစ်ရန်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "မူကြမ်းကို ဖျက်ပစ်မလား။"
 
@@ -1667,6 +1691,10 @@ msgstr "သင့်အထောက်အထားစိစစ်ရေးကု
 msgid "Error"
 msgstr "အမှား"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "မိနစ်တိုင်း"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "အားလုံး"
@@ -1840,6 +1868,11 @@ msgstr "အလယ်အလတ်"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "အကြံပြုချက်"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "ပြန်ဝိုက်ပါ: ပါဝါအပြည့်, လ�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "ပြန်သွားပါ"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "ဖိုရမ်သို့ သွားရန်"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "အခုပဲ"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "တည်းဖြတ်မှု ဆက်လုပ်ရန်"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "ကီးဘုတ် ဖြတ်လမ်းများ"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "ပစ္စည်း အသေးစိတ် တင်နေသည်"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "တင်နေသည်..."
 
@@ -2653,6 +2695,10 @@ msgstr "ဒုံးကျည်မော်ဒယ် <0>“AIM-120C AMRAAM”</
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "တာဝန်ပြီးဆုံး"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air အတွက် အကြံပြုချက်"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "သင့်အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။"
 
@@ -3198,6 +3247,10 @@ msgstr "အတက်နှုန်းရှိ: ဂီယာတင်; 250 န�
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "အတက်နှုန်းရှိ: စတစ်ကိုင်ပါ, ဂီယာတင်, ဖလက် အလိုအလျောက်"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "အကြံပြုချက် ပို့စ်တင်ပါ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "မှတ်ချက် တင်ပြမည်"
 msgid "Submit reply"
 msgstr "ပြန်ဖြေချက် တင်ပြမည်"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "အောင်မြင်စွာ တင်သွင်းပြီးပါပြီ"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "အချိန်"
 msgid "Time of day"
 msgstr "နေ့အချိန်"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "ခေါင်းစဉ်"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "သို့"
@@ -4266,6 +4327,7 @@ msgstr "သင်၏ ရှာဖွေစကားလုံးများက�
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "ပြန်ကြိုးစားပါ"
 
@@ -4610,6 +4672,10 @@ msgstr "သင်၏အကောင့်ကို {source} မှ ဤနေရ�
 msgid "Your attachments will be lost."
 msgstr "သင့်ပူးတွဲဖိုင်များ ပျောက်ဆုံးသွားပါမည်။"
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "သင့်အကြံပြုချက်ကို တင်သွင်းပြီးဖြစ်ပြီး စိစစ်ပြီးနောက် ပေါ်လာပါမည်။"
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "တစ်ကြိမ်ပျံသန်းပြီးသည်နှင့် သင့်ပျံသန်းမှုများ ဤနေရာတွင် ပေါ်လာမည်။"
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "သင့်စာသားနှင့် ပူးတွဲဖိုင်များ ပျောက်ဆုံးသွားပါမည်။"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "သင်၏ စာသား ပျောက်ဆုံးသွားပါမည်။"
 

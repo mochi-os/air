@@ -317,6 +317,10 @@ msgstr "چالاکی"
 msgid "Add"
 msgstr "زیادکردن"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "کەمێک ووردەکاری زیاتر زیاد بکە."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "لێدوانێک زیاد بکە..."
@@ -772,6 +776,7 @@ msgstr "کامێرا بەردەست نییە"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "بەروارێک هەڵبژێرە"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "یارییەک هەڵبژێرە لە لاتەنیشت یان نوێیەک دەست پێ بکە."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "کاتێک هەڵبژێرە"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "بەرزبوونەوە: ئاراستەی ڕێڕەو {heading}، 350 گر
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "داخستن"
@@ -1193,6 +1203,10 @@ msgstr "نەتوانرا نامەکە بنێردرێت"
 msgid "Couldn't load notifications"
 msgstr "نەتوانرا ئاگادارکردنەوەکان باربکرێن"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "هێشتا نەگەیشتووینەتە مەبەست"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "نەکرا کۆدەکە بنێردرێت. تکایە دووبارە هەوڵ بدەرەوە."
@@ -1200,6 +1214,10 @@ msgstr "نەکرا کۆدەکە بنێردرێت. تکایە دووبارە هە
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "نەکرا ڕاستاندنەوە دەست پێ بکات. تکایە دووبارە هەوڵ بدەرەوە."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "ناردن سەرکەوتوو نەبوو"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "بە ئاگر لەناوچوو"
 msgid "Detail"
 msgstr "وردەکاری"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "وردەکارییەکان"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "پانێلی وردەکاری"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "چەرخ دابەزێنە"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "فڕێدان"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "ڕەشنووسەکە فڕێبدرێت؟"
 
@@ -1667,6 +1691,10 @@ msgstr "کۆدی ڕاستاندنەکەت بنووسە"
 msgid "Error"
 msgstr "هەڵە"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "هەموو خولەکێک"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "هەمووان"
@@ -1840,6 +1868,11 @@ msgstr "مامناوەند"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "ڕاوبۆچوون"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "خولانەوەی دووبارە: هێزی تەواو، بڕێکەکا�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "گەڕانەوە"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "بڕۆ بۆ فۆڕەم"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "هەر ئێستا"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "بەردەوامبە لە دەستکاریکردن"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "کورتە کلیلەکان"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "وردەکارییەکانی بڕگە بار دەکرێن"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "بار دەکرێت..."
 
@@ -2653,6 +2695,10 @@ msgstr "مۆدێلی مووشەک <0>“AIM-120C AMRAAM”</0> لەلایەن <1
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "ئەرکەکە تەواو بوو"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "ڕاوبۆچوون دەربارەی Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "تکایە پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "تکایە دووبارە هەوڵ بدەرەوە."
 
@@ -3198,6 +3247,10 @@ msgstr "بەرزبوونەوەی ئەرێنی: گیڕ سەرەوە; لە تێپ�
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "بەرزبوونەوەی ئەرێنی: دەسکەکە بگرە، گیڕ سەرەوە، فلاپ ئۆتۆ"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "بڵاوکردنەوەی ڕاوبۆچوون"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "لێدوان بنێرە"
 msgid "Submit reply"
 msgstr "وەڵام بنێرە"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "بە سەرکەوتوویی نێردرا"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "کات"
 msgid "Time of day"
 msgstr "کاتی ڕۆژ"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "ناونیشان"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "بۆ"
@@ -4266,6 +4327,7 @@ msgstr "هەوڵبدە وشەکانی گەڕانت ڕێکبخەیت"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "دیسان هەوڵبدە"
 
@@ -4610,6 +4672,10 @@ msgstr "هەژمارەکەت لە {source} بۆ ئێرە گواستراوەتە�
 msgid "Your attachments will be lost."
 msgstr "هاوپێچەکانت لەدەست دەچن."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "ڕاوبۆچوونەکەت نێردرا و دوای پێداچوونەوە دەردەکەوێت."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "دوای ئەوەی یەکێک دەفڕیت، فڕینەکانت لێرە دەردەکەون."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "دەق و هاوپێچەکانت لەدەست دەچن."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "دەقەکەت لەدەست دەچێت."
 

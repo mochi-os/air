@@ -317,6 +317,10 @@ msgstr "აქტივობა"
 msgid "Add"
 msgstr "დამატება"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "დაამატე ცოტა მეტი დეტალი."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "კომენტარის დამატება..."
@@ -772,6 +776,7 @@ msgstr "კამერა მიუწვდომელია"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "აირჩიეთ თარიღი"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "აირჩიეთ თამაში გვერდითა პანელიდან ან დაიწყეთ ახალი."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "აირჩიეთ დრო"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "აწევა: ზოლის კურსი {heading}, 350 კვ�
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "დახურვა"
@@ -1193,6 +1203,10 @@ msgstr "შეტყობინების გაგზავნა ვერ 
 msgid "Couldn't load notifications"
 msgstr "შეტყობინებების ჩატვირთვა ვერ მოხერხდა"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "ჯერ ვერ მივაღწიეთ დანიშნულების ადგილს"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "კოდის გაგზავნა ვერ მოხერხდა. გთხოვთ, სცადოთ ხელახლა."
@@ -1200,6 +1214,10 @@ msgstr "კოდის გაგზავნა ვერ მოხერხდ
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "ხელახალი ავთენტიფიკაციის დაწყება ვერ მოხერხდა. გთხოვთ, სცადოთ ხელახლა."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "ვერ გაიგზავნა"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "ხანძარმა გაანადგურა"
 msgid "Detail"
 msgstr "დეტალიზაცია"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "დეტალები"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "დეტალების პანელი"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "შასი ჩამოუშვი"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "გაუქმება"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "გავაუქმოთ მონახაზი?"
 
@@ -1667,6 +1691,10 @@ msgstr "შეიყვანეთ თქვენი ავთენტიფ�
 msgid "Error"
 msgstr "შეცდომა"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "ყოველი წუთი"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "ყველა"
@@ -1840,6 +1868,11 @@ msgstr "საშუალო"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "უკუკავშირი"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "მეორე წრე: სრული სიმძლავრე, 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "უკან"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "ფორუმზე გადასვლა"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "ახლახან"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "რედაქტირების გაგრძელება"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "კლავიატურის მალსახმობები"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "ელემენტის დეტალების ჩატვირთვა"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "იტვირთება..."
 
@@ -2653,6 +2695,10 @@ msgstr "რაკეტის მოდელი <0>“AIM-120C AMRAAM”</0>, �
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "მისია დასრულდა"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "უკუკავშირი Mochi Air-ის შესახებ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "გთხოვთ, შეამოწმოთ ინტერნეტთან კავშირი და სცადოთ ხელახლა."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "გთხოვთ, კიდევ სცადეთ."
 
@@ -3198,6 +3247,10 @@ msgstr "დადებითი აწევა: შასი ზევით; 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "დადებითი აწევა: აიღე სახელური, შასი ზევით, ფლაპები ავტომატზე"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "უკუკავშირის გამოქვეყნება"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "კომენტარის გაგზავნა"
 msgid "Submit reply"
 msgstr "პასუხის გაგზავნა"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "წარმატებით გაიგზავნა"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "დრო"
 msgid "Time of day"
 msgstr "დღის დრო"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "სათაური"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "სად"
@@ -4266,6 +4327,7 @@ msgstr "სცადეთ ძიების კრიტერიუმებ�
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "სცადეთ ხელახლა"
 
@@ -4610,6 +4672,10 @@ msgstr "თქვენი ანგარიში გადმოტანი�
 msgid "Your attachments will be lost."
 msgstr "თქვენი დანართები დაიკარგება."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "თქვენი უკუკავშირი გაიგზავნა და გამოჩნდება მოდერაციის შემდეგ."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "თქვენი ფრენები აქ გამოჩნდება, როცა ერთს შეასრულებთ."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "თქვენი ტექსტი და დანართები დაიკარგება."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "შენი ტექსტი დაიკარგება."
 

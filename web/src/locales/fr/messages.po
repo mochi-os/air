@@ -317,6 +317,10 @@ msgstr "Activité"
 msgid "Add"
 msgstr "Ajouter"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Ajoutez un peu plus de détails."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Ajouter un commentaire…"
@@ -772,6 +776,7 @@ msgstr "Caméra indisponible"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Choisir une date"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Choisissez une partie dans la barre latérale ou commencez-en une nouvelle."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Choisir une heure"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Montée initiale : cap de piste {heading}, 350 nœuds"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Fermer"
@@ -1193,6 +1203,10 @@ msgstr "Impossible d’envoyer le message"
 msgid "Couldn't load notifications"
 msgstr "Impossible de charger les notifications"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Impossible de joindre la destination pour le moment"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Impossible d'envoyer le code. Veuillez réessayer."
@@ -1200,6 +1214,10 @@ msgstr "Impossible d'envoyer le code. Veuillez réessayer."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Impossible de démarrer la réauthentification. Veuillez réessayer."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Échec de l'envoi"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Détruit par un incendie"
 msgid "Detail"
 msgstr "Détail"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Détails"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panneau des détails"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "TRAIN SORTI"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Abandonner"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Abandonner le brouillon ?"
 
@@ -1667,6 +1691,10 @@ msgstr "Saisissez le code de votre application d'authentification"
 msgid "Error"
 msgstr "Erreur"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Chaque minute"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Tous"
@@ -1840,6 +1868,11 @@ msgstr "PASSABLE"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "CDVE"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Commentaires"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Remise de gaz : pleine puissance, aérofreins rentrés, ailes à plat, m
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Retour"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Aller au forum"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "À l'instant"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Continuer à modifier"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Chargement des détails de l'élément"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -2653,6 +2695,10 @@ msgstr "Modèle de missile <0>“AIM-120C AMRAAM”</0> par <1>Pippa</1> (Sketch
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Mission terminée"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Commentaires sur Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Veuillez vérifier votre connexion Internet et réessayer."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Veuillez réessayer."
 
@@ -3198,6 +3247,10 @@ msgstr "Taux positif : train rentré ; volets auto en passant 250 nœuds"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Taux positif : reprendre le manche, train rentré, volets auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Publier les commentaires"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Envoyer le commentaire"
 msgid "Submit reply"
 msgstr "Envoyer la réponse"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Envoyé avec succès"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Temps"
 msgid "Time of day"
 msgstr "Heure du jour"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Titre"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Vers"
@@ -4266,6 +4327,7 @@ msgstr "Essayez d'ajuster vos termes de recherche"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -4610,6 +4672,10 @@ msgstr "Votre compte a été déplacé ici depuis {source}. Tant que vous ne le 
 msgid "Your attachments will be lost."
 msgstr "Vos pièces jointes seront perdues."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Vos commentaires ont été envoyés et apparaîtront après modération."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Vos vols apparaîtront ici une fois que vous en aurez effectué un."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Votre texte et vos pièces jointes seront perdus."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Votre texte sera perdu."
 

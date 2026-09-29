@@ -317,6 +317,10 @@ msgstr "សកម្មភាព"
 msgid "Add"
 msgstr "បន្ថែម"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "បន្ថែមព័ត៌មានលម្អិតបន្តិចទៀត។"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "បន្ថែមមតិយោបល់..."
@@ -772,6 +776,7 @@ msgstr "កាមេរ៉ាមិនអាចប្រើបាន"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "ជ្រើសរើសកាលបរិច្ឆេទ"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "ជ្រើសរើសហ្គេមពីរបារចំហៀង ឬចាប់ផ្តើមថ្មី។"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "ជ្រើសរើសម៉ោង"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "ឡើង: ទិសផ្លូវរត់ {heading}, 350 ណត់"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "បិទ"
@@ -1193,6 +1203,10 @@ msgstr "មិនអាចផ្ញើសារបានទេ"
 msgid "Couldn't load notifications"
 msgstr "មិនអាចផ្ទុកការជូនដំណឹងបានទេ"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "មិនទាន់អាចទៅដល់ទិសដៅបានទេ"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "មិនអាចផ្ញើកូដបានទេ។ សូមព្យាយាមម្ដងទៀត។"
@@ -1200,6 +1214,10 @@ msgstr "មិនអាចផ្ញើកូដបានទេ។ សូមព�
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "មិនអាចចាប់ផ្ដើមការផ្ទៀងផ្ទាត់ឡើងវិញបានទេ។ សូមព្យាយាមម្ដងទៀត។"
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "មិនអាចដាក់ស្នើបានទេ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "ត្រូវភ្លើងឆេះ"
 msgid "Detail"
 msgstr "កម្រិតលម្អិត"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "ព័ត៌មានលម្អិត"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "ផ្ទាំងព័ត៌មានលម្អិត"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "បញ្ចុះកង់"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "បោះបង់"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "បោះបង់សេចក្ដីព្រាងឬ?"
 
@@ -1667,6 +1691,10 @@ msgstr "បញ្ចូលកូដកម្មវិធីផ្ទៀងផ្
 msgid "Error"
 msgstr "កំហុស"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "រៀងរាល់នាទី"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "គ្រប់គ្នា"
@@ -1840,6 +1868,11 @@ msgstr "មធ្យម"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "មតិកែលម្អ"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "ហោះជុំវិញម្តងទៀត: កម្លាំង�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "ត្រឡប់ក្រោយ"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "ទៅកាន់វេទិកា"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "អម្បាញ់មិញ"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "បន្តកែសម្រួល"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "ផ្លូវកាត់ក្ដារចុច"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "កំពុងផ្ទុកព័ត៌មានលម្អិតធាតុ"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "កំពុងផ្ទុក..."
 
@@ -2653,6 +2695,10 @@ msgstr "ម៉ូដែលកាំជ្រួច <0>“AIM-120C AMRAAM”</0> 
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "បេសកកម្មបានបញ្ចប់"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "មតិកែលម្អអំពី Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "សូមព្យាយាមម្តងទៀត។"
 
@@ -3198,6 +3247,10 @@ msgstr "អត្រាឡើងវិជ្ជមាន: កង់ឡើង; �
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "អត្រាឡើងវិជ្ជមាន: កាន់ដងបញ្ជា, កង់ឡើង, ផ្លាបស្វ័យប្រវត្តិ"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "បង្ហោះមតិកែលម្អ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "ដាក់ស្នើមតិយោបល់"
 msgid "Submit reply"
 msgstr "ដាក់ស្នើការឆ្លើយតប"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "បានដាក់ស្នើដោយជោគជ័យ"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "ពេលវេលា"
 msgid "Time of day"
 msgstr "ពេលវេលានៃថ្ងៃ"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "ចំណងជើង"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "ទៅ"
@@ -4266,6 +4327,7 @@ msgstr "សាកល្បងកែតម្រូវពាក្យស្វែ
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "សាកល្បងម្តងទៀត"
 
@@ -4610,6 +4672,10 @@ msgstr "គណនីរបស់អ្នកត្រូវបានផ្លា
 msgid "Your attachments will be lost."
 msgstr "ឯកសារភ្ជាប់របស់អ្នកនឹងបាត់បង់។"
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "មតិកែលម្អរបស់អ្នកត្រូវបានដាក់ស្នើ ហើយនឹងបង្ហាញបន្ទាប់ពីការត្រួតពិនិត្យ។"
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "ការហោះហើររបស់អ្នកនឹងបង្ហាញនៅទីនេះ បន្ទាប់ពីអ្នកបានហោះម្តង។"
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "អត្ថបទ និងឯកសារភ្ជាប់របស់អ្នកនឹងបាត់បង់។"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "អត្ថបទរបស់អ្នកនឹងបាត់បង់។"
 

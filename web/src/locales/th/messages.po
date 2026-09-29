@@ -317,6 +317,10 @@ msgstr "กิจกรรม"
 msgid "Add"
 msgstr "เพิ่ม"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "เพิ่มรายละเอียดอีกสักหน่อย"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "เพิ่มความคิดเห็น..."
@@ -772,6 +776,7 @@ msgstr "กล้องไม่พร้อมใช้งาน"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "เลือกวันที่"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "เลือกเกมจากแถบด้านข้างหรือเริ่มเกมใหม่"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "เลือกเวลา"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "ไต่ออก: ทิศทางวิ่ง {heading}, 350 นอ
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "ปิด"
@@ -1193,6 +1203,10 @@ msgstr "ไม่สามารถส่งข้อความได้"
 msgid "Couldn't load notifications"
 msgstr "ไม่สามารถโหลดการแจ้งเตือนได้"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "ยังไม่สามารถส่งถึงปลายทางได้"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "ส่งรหัสไม่สำเร็จ โปรดลองอีกครั้ง"
@@ -1200,6 +1214,10 @@ msgstr "ส่งรหัสไม่สำเร็จ โปรดลอง�
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "เริ่มการยืนยันตัวตนอีกครั้งไม่สำเร็จ โปรดลองอีกครั้ง"
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "ส่งไม่สำเร็จ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "ถูกไฟเผาทำลาย"
 msgid "Detail"
 msgstr "ระดับรายละเอียด"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "รายละเอียด"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "แผงรายละเอียด"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ลดฐานล้อ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "ยกเลิก"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "ยกเลิกฉบับร่างใช่ไหม?"
 
@@ -1667,6 +1691,10 @@ msgstr "ป้อนรหัสจากแอปยืนยันตัวต
 msgid "Error"
 msgstr "ข้อผิดพลาด"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "ทุกนาที"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "ทุกคน"
@@ -1840,6 +1868,11 @@ msgstr "พอใช้"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "ความคิดเห็น"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "วนกลับ: กำลังเต็ม, เบรกอาก�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "กลับ"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "ไปที่ฟอรัม"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "เมื่อสักครู่"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "แก้ไขต่อ"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "ทางลัดแป้นพิมพ์"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "กำลังโหลดรายละเอียดรายการ"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
@@ -2653,6 +2695,10 @@ msgstr "โมเดลขีปนาวุธ <0>“AIM-120C AMRAAM”</0> โ
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "ภารกิจสิ้นสุด"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "ความคิดเห็นเกี่ยวกับ Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณแล้วลองอีกครั้ง"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "โปรดลองอีกครั้ง"
 
@@ -3198,6 +3247,10 @@ msgstr "อัตราไต่เป็นบวก: เก็บฐานล�
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "อัตราไต่เป็นบวก: จับคันบังคับ, เก็บฐานล้อ, แฟลปอัตโนมัติ"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "โพสต์ความคิดเห็น"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "ส่งความคิดเห็น"
 msgid "Submit reply"
 msgstr "ส่งการตอบกลับ"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "ส่งสำเร็จแล้ว"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "เวลา"
 msgid "Time of day"
 msgstr "ช่วงเวลาของวัน"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "ชื่อ"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "ไปยัง"
@@ -4266,6 +4327,7 @@ msgstr "ลองปรับคำค้นหาของคุณ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "ลองอีกครั้ง"
 
@@ -4610,6 +4672,10 @@ msgstr "บัญชีของคุณถูกย้ายมาที่น
 msgid "Your attachments will be lost."
 msgstr "ไฟล์แนบของคุณจะหายไป"
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "ส่งความคิดเห็นของคุณแล้ว และจะปรากฏหลังการตรวจสอบ"
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "เที่ยวบินของคุณจะแสดงที่นี่เมื่อคุณบินครั้งแรกแล้ว"
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "ข้อความและไฟล์แนบของคุณจะหายไป"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "ข้อความของคุณจะหายไป"
 

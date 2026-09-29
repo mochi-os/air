@@ -317,6 +317,10 @@ msgstr "Активност"
 msgid "Add"
 msgstr "Додај"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Додај малку повеќе детали."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Додај коментар..."
@@ -772,6 +776,7 @@ msgstr "Камерата не е достапна"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Изберете датум"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Избери игра од страничната лента или започни нова."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Изберете време"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Качување: правец на пистата {heading}, 350 јаз
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Затвори"
@@ -1193,6 +1203,10 @@ msgstr "Пораката не можеше да се испрати"
 msgid "Couldn't load notifications"
 msgstr "Не може да се вчитаат известувањата"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Сè уште не може да се достигне дестинацијата"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Кодот не можеше да се испрати. Обидете се повторно."
@@ -1200,6 +1214,10 @@ msgstr "Кодот не можеше да се испрати. Обидете с
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Не може да се започне повторна автентикација. Обидете се повторно."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Не може да се испрати"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Уништен од пожар"
 msgid "Detail"
 msgstr "Детали"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Детали"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Панел со детали"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "СПУШТИ СТАП"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Отфрли"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Да се отфрли нацртот?"
 
@@ -1667,6 +1691,10 @@ msgstr "Внесете го кодот од автентикаторот"
 msgid "Error"
 msgstr "Грешка"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Секоја минута"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Сите"
@@ -1840,6 +1868,11 @@ msgstr "ЗАДОВОЛИТЕЛНО"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Повратни информации"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Повторен круг: полн гас, сопирачки внат�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Назад"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Оди на форумот"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Штотуку"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Продолжи со уредување"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Кратенки на тастатура"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Се вчитуваат детали за ставката"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Се вчитува..."
 
@@ -2653,6 +2695,10 @@ msgstr "Модел на ракета <0>“AIM-120C AMRAAM”</0> од <1>Pippa<
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Мисијата заврши"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Повратни информации за Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Проверете ја вашата интернет-врска и обидете се повторно."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Обидете се повторно."
 
@@ -3198,6 +3247,10 @@ msgstr "Позитивно качување: трап горе; закрилца
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Позитивно качување: земи ја палката, трап горе, закрилца на авто"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Објави повратни информации"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Поднеси коментар"
 msgid "Submit reply"
 msgstr "Поднеси одговор"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Успешно поднесено"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Време"
 msgid "Time of day"
 msgstr "Време од денот"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Наслов"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "До"
@@ -4266,6 +4327,7 @@ msgstr "Обидете се да ги прилагодите термините 
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Обидете се повторно"
 
@@ -4610,6 +4672,10 @@ msgstr "Вашиот профил беше преместен овде од {sou
 msgid "Your attachments will be lost."
 msgstr "Вашите прилози ќе бидат изгубени."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Вашите повратни информации се поднесени и ќе се појават по модерацијата."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Вашите летови ќе се појават овде штом ќе одлетате еден."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Вашиот текст и прилозите ќе бидат изгубени."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Твојот текст ќе биде изгубен."
 

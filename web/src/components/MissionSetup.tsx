@@ -16,6 +16,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
+  cn,
   getErrorMessage,
   LazyBoundary,
   useFormat,
@@ -109,6 +110,7 @@ import { ServerList, ServerRow } from './ServerList'
 import { SettingsDialog } from './SettingsDialog'
 import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
 import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
+import { FeedbackDialog } from './Feedback'
 
 const LoadoutPreview = lazy(() =>
   import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
@@ -190,10 +192,12 @@ function Tile({
   icon,
   title,
   onOpen,
+  className,
 }: {
   icon: LucideIcon
   title: ReactNode
   onOpen: () => void
+  className?: string
 }) {
   return (
     <Card
@@ -205,7 +209,11 @@ function Tile({
         e.preventDefault() // Space scrolls the page otherwise
         onOpen()
       }}
-      className={`${TILE} focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
+      className={cn(
+        TILE,
+        'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+        className
+      )}
     >
       <TileFace icon={icon} title={title} />
     </Card>
@@ -1758,6 +1766,14 @@ export function MissionSetup({
                 <TileFace icon={History} title={<Trans>Flight log</Trans>} />
               </Card>
             </Link>
+            {/* Across both columns and shallow: the way out of the game to the
+                people who make it, a step down from the four above. */}
+            <Tile
+              icon={MessageSquare}
+              title={<Trans>Feedback</Trans>}
+              onOpen={() => setDialog('feedback')}
+              className='col-span-2 py-1'
+            />
           </div>
 
           <div className='text-muted-foreground border-border flex items-center justify-center gap-2 border-t pt-4 text-xs'>
@@ -1796,6 +1812,8 @@ export function MissionSetup({
           onChange={onChange}
         />
       </MenuDialog>
+
+      <FeedbackDialog open={dialog === 'feedback'} onClose={close} />
 
       <SettingsDialog
         open={dialog === 'settings'}

@@ -317,6 +317,10 @@ msgstr "アクティビティ"
 msgid "Add"
 msgstr "追加"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "もう少し詳しく書いてください。"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "コメントを追加…"
@@ -772,6 +776,7 @@ msgstr "カメラを利用できません"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "日付を選択"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "サイドバーからゲームを選ぶか、新しいゲームを始めてください。"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "時刻を選択"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "上昇: 滑走路方位 {heading}、350ノット"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "閉じる"
@@ -1193,6 +1203,10 @@ msgstr "メッセージを送信できませんでした"
 msgid "Couldn't load notifications"
 msgstr "通知を読み込めませんでした"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "まだ送信先に到達できていません"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "コードを送信できませんでした。もう一度お試しください。"
@@ -1200,6 +1214,10 @@ msgstr "コードを送信できませんでした。もう一度お試しくだ
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "再認証を開始できませんでした。もう一度お試しください。"
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "送信できませんでした"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "焼失"
 msgid "Detail"
 msgstr "ディテール"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "詳細"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "詳細パネル"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ギアダウン"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "破棄"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "下書きを破棄しますか？"
 
@@ -1667,6 +1691,10 @@ msgstr "認証アプリのコードを入力"
 msgid "Error"
 msgstr "エラー"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "1分ごと"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "全員"
@@ -1840,6 +1868,11 @@ msgstr "可"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "フィードバック"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "ゴーアラウンド: フルパワー、スピードブレーキ収納�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "戻る"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "フォーラムへ移動"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "たった今"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "編集を続ける"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "キーボードショートカット"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "項目の詳細を読み込み中"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "読み込み中..."
 
@@ -2653,6 +2695,10 @@ msgstr "ミサイルモデル <0>“AIM-120C AMRAAM”</0>（作者 <1>Pippa</1>
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "ミッション終了"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air へのフィードバック"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "インターネット接続を確認して、もう一度お試しください。"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "もう一度お試しください。"
 
@@ -3198,6 +3247,10 @@ msgstr "正の上昇率: ギアアップ; 250ノット通過でフラップAUTO"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "正の上昇率: スティックを握る、ギアアップ、フラップAUTO"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "フィードバックを投稿"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "コメントを送信"
 msgid "Submit reply"
 msgstr "返信を送信"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "送信しました"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "時間"
 msgid "Time of day"
 msgstr "時刻"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "タイトル"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "到着地"
@@ -4266,6 +4327,7 @@ msgstr "検索語を変えてみてください"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "再試行"
 
@@ -4610,6 +4672,10 @@ msgstr "アカウントが{source}からここに移行されました。そち�
 msgid "Your attachments will be lost."
 msgstr "添付ファイルは失われます。"
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "フィードバックを送信しました。モデレーション後に表示されます。"
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "フライトを1回行うと、ここに表示されます。"
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "入力したテキストと添付ファイルは失われます。"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "入力したテキストは失われます。"
 

@@ -317,6 +317,10 @@ msgstr "Активность"
 msgid "Add"
 msgstr "Добавить"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Добавьте немного подробностей."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Добавить комментарий..."
@@ -772,6 +776,7 @@ msgstr "Камера недоступна"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Выберите дату"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Выберите игру в боковой панели или начните новую."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Выберите время"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Набор: курс ВПП {heading}, 350 узлов"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Закрыть"
@@ -1193,6 +1203,10 @@ msgstr "Не удалось отправить сообщение"
 msgid "Couldn't load notifications"
 msgstr "Не удалось загрузить уведомления"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Пока не удалось доставить"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Не удалось отправить код. Попробуйте ещё раз."
@@ -1200,6 +1214,10 @@ msgstr "Не удалось отправить код. Попробуйте ещ
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Не удалось начать повторную аутентификацию. Попробуйте ещё раз."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Не удалось отправить"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Уничтожен пожаром"
 msgid "Detail"
 msgstr "Детализация"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Подробности"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Панель подробностей"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ВЫПУСТИТЬ ШАССИ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Отменить"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Отменить черновик?"
 
@@ -1667,6 +1691,10 @@ msgstr "Введите код из приложения-аутентификат
 msgid "Error"
 msgstr "Ошибка"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Каждая минута"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Все"
@@ -1840,6 +1868,11 @@ msgstr "УДОВЛЕТВОРИТЕЛЬНО"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "ЭДСУ"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Отзыв"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Уход на второй круг: полная тяга, щитки �
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Назад"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Перейти на форум"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Только что"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Продолжить редактирование"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Сочетания клавиш"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Загрузка сведений об элементе"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Загрузка..."
 
@@ -2653,6 +2695,10 @@ msgstr "Модель ракеты <0>“AIM-120C AMRAAM”</0> от <1>Pippa</1>
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Задание завершено"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Отзыв о Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Проверьте подключение к интернету и попробуйте снова."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Попробуйте ещё раз."
 
@@ -3198,6 +3247,10 @@ msgstr "Вертикальная положительная: шасси убра
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Вертикальная положительная: взять ручку, шасси убрать, закрылки авто"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Опубликовать отзыв"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Отправить комментарий"
 msgid "Submit reply"
 msgstr "Отправить ответ"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Успешно отправлено"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Время"
 msgid "Time of day"
 msgstr "Время суток"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Заголовок"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Куда"
@@ -4266,6 +4327,7 @@ msgstr "Попробуйте изменить условия поиска"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Попробовать снова"
 
@@ -4610,6 +4672,10 @@ msgstr "Ваш аккаунт был перенесён сюда с {source}. П
 msgid "Your attachments will be lost."
 msgstr "Ваши вложения будут потеряны."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Ваш отзыв отправлен и появится после модерации."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Ваши полёты появятся здесь после первого вылета."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Ваш текст и вложения будут потеряны."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Ваш текст будет потерян."
 

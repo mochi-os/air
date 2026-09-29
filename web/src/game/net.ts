@@ -1168,6 +1168,30 @@ export async function recording_load(id: string): Promise<string | null> {
   }
 }
 
+// feedback_check asks whether the Mochi users forum can take a post, before
+// the player writes one: available, or the reason it cannot, worded.
+export async function feedback_check(): Promise<{
+  available: boolean
+  message?: string
+}> {
+  await authenticated()
+  const res = (await client.post('-/feedback/check', {})) as {
+    data?: { available?: boolean; message?: string }
+  }
+  const body = res?.data ?? {}
+  return { available: !!body.available, message: body.message }
+}
+
+// feedback_post posts the player's feedback to the forum and answers where the
+// forum is, for "Go to forum". It throws with the server's own worded refusal.
+export async function feedback_post(title: string, body: string): Promise<string> {
+  await authenticated()
+  const res = (await client.post('-/feedback/post', { title, body })) as {
+    data?: { redirect?: string }
+  }
+  return res?.data?.redirect ?? ''
+}
+
 export interface MatchTotals {
   flights: number
   seconds: number

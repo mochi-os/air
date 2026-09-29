@@ -317,6 +317,10 @@ msgstr "Tegevus"
 msgid "Add"
 msgstr "Lisa"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Lisa veidi rohkem üksikasju."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Lisa kommentaar..."
@@ -772,6 +776,7 @@ msgstr "Kaamera pole saadaval"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Vali kuupäev"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Vali külgribalt mäng või alusta uut."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Vali kellaaeg"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Tõus: raja kurss {heading}, 350 sõlme"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Sulge"
@@ -1193,6 +1203,10 @@ msgstr "Sõnumit ei õnnestunud saata"
 msgid "Couldn't load notifications"
 msgstr "Teatiste laadimine ebaõnnestus"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Sihtkohta veel ei jõutud"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Koodi ei õnnestunud saata. Proovige uuesti."
@@ -1200,6 +1214,10 @@ msgstr "Koodi ei õnnestunud saata. Proovige uuesti."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Taasautentimist ei õnnestunud alustada. Proovige uuesti."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Saatmine ebaõnnestus"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Hävis tulekahjus"
 msgid "Detail"
 msgstr "Detailsus"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Üksikasjad"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Üksikasjade paneel"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "TELIK VÄLJA"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Loobu"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Kas loobuda mustandist?"
 
@@ -1667,6 +1691,10 @@ msgstr "Sisestage oma autentimisrakenduse kood"
 msgid "Error"
 msgstr "Viga"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Iga minut"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Kõik"
@@ -1840,6 +1868,11 @@ msgstr "RAHULDAV"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Tagasiside"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Kordusring: täisvõimsus, õhupidurid sisse, tiivad tasa, tõus kursil 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Tagasi"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Mine foorumisse"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Just praegu"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Jätka muutmist"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Klahvikombinatsioonid"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Elemendi üksikasjade laadimine"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Laadimine…"
 
@@ -2653,6 +2695,10 @@ msgstr "Raketimudel <0>“AIM-120C AMRAAM”</0> autor <1>Pippa</1> (Sketchfab),
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Missioon läbi"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air tagasiside"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Kontrolli internetiühendust ja proovi uuesti."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Proovi uuesti."
 
@@ -3198,6 +3247,10 @@ msgstr "Positiivne tõus: telik üles; klapid auto 250 sõlme juures"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Positiivne tõus: võta kang, telik üles, klapid auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Postita tagasiside"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Esita kommentaar"
 msgid "Submit reply"
 msgstr "Esita vastus"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Edukalt saadetud"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Aeg"
 msgid "Time of day"
 msgstr "Kellaaeg"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Pealkiri"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Kuhu"
@@ -4266,6 +4327,7 @@ msgstr "Proovi otsingusõnu kohandada"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Proovi uuesti"
 
@@ -4610,6 +4672,10 @@ msgstr "Sinu konto liideti siia asukohast {source}. Kuni sa selle sealt ei kustu
 msgid "Your attachments will be lost."
 msgstr "Teie manused lähevad kaotsi."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Sinu tagasiside on saadetud ja ilmub pärast modereerimist."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Sinu lennud ilmuvad siia, kui oled ühe lennanud."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Teie tekst ja manused lähevad kaotsi."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Sinu tekst läheb kaotsi."
 
