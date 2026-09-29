@@ -1175,6 +1175,16 @@ describe('true airspeed', () => {
     expect(airspeed(1, -40)).toBeCloseTo(airspeed(1, 0), 9) // the core clamps a jet below the sea to it
   })
 
+  it('records whether each round killed in every build, not only a developer\'s', () => {
+    // The warhead's verdict is what Killed says. Copied only under DEV_MODE,
+    // every shipped recording read Killed=0 whatever the round did.
+    for (const name of ['step_amraam', 'step_missiles']) {
+      const body = lift(name)
+      expect(body.match(/m\.killed=(?:own|verdict)\.kill/g), name).toHaveLength(2)
+      expect(body, name).not.toMatch(/if\(DEV_MODE\)\{[^}]*m\.killed=(?:own|verdict)\.kill/)
+    }
+  })
+
   it('is what the engine records for the pilot and the bandit, not their speed over the ground', () => {
     const sample = lift('recording_sample')
     expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)

@@ -69,7 +69,7 @@ describe('the BINGO judgements', () => {
   const lb = 2.20462
   const lift = (pattern: RegExp) => pattern.exec(source)?.[0] ?? ''
   const low = lift(/\nfunction bingo_low\(\)\{[^\n]*\n[^\n]*\n/)
-  const caution = lift(/\n\tlet low=false, below=false;[\s\S]*?else if\(below\) push\("BINGO"\); \}/)
+  const caution = lift(/\n\tlet low=false, below=false;[\s\S]*?\n\t\tif\(below\) push\("BINGO"\); \}/)
   const colour = lift(/\n\t\tif\(\(ownship\.fuel\?\?1e9\)<FUELLO\) hctx\.fillStyle=[^\n]*\n[^\n]*<BINGO\) hctx\.fillStyle="#ffb050";/)
   const tanks = { below: { fuel: 1200, external: 2000 }, above: { fuel: 1500, external: 0 } } // kg, the setting 3,000 lb (1,361 kg)
 

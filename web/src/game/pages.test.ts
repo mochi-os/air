@@ -473,12 +473,12 @@ describe('the fuel low BIT', () => {
   })
 
   it('carries its FUEL LO through the caution, the light and the voice, and clears at a spawn', () => {
-    const section = /\n\tlet low=false, below=false;[\s\S]*?else if\(below\) push\("BINGO"\); \}/.exec(source)?.[0] ?? ''
+    const section = /\n\tlet low=false, below=false;[\s\S]*?\n\t\tif\(below\) push\("BINGO"\); \}/.exec(source)?.[0] ?? ''
     expect(section).not.toBe('')
     const rows = (fuel: number, lit: boolean) => new Function(`const rows=[], push=(k)=>rows.push(k), cheat=()=>false, FUELLO=726, BINGO=1361, ownship={ fuel:${fuel} }, flbit_lit=()=>${lit}; ${section} return [rows, low, below];`)() as [string[], boolean, boolean]
     expect(rows(3000, true)).toEqual([['FUEL LO'], false, false]) // the test's FUEL LO, the fuel itself above both
     expect(rows(3000, false)).toEqual([[], false, false])
-    expect(rows(500, false)).toEqual([['FUEL LO'], true, true])
+    expect(rows(500, false)).toEqual([['FUEL LO', 'BINGO'], true, true]) // both, as their own conditions
     expect(source).toMatch(/lamp_set\(l\.fuello,\(ownship\.fuel\?\?1e9\)<FUELLO\|\|flbit_lit\(\)\);/)
     expect(source).toMatch(/\n\tflbit=-Infinity;[^\n]*\n\tbaro_armed=false;/)
   })
