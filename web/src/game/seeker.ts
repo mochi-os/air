@@ -45,12 +45,11 @@ export interface Sight {
 
 export type Reason = '' | 'gimbal' | 'rate'
 
-// The two seekers that share the pool. The heater's ±40° gimbal and 20°/s track
-// ceiling mirror the server (world/games/air/air.go: missile_gimbal,
-// missile_track); the radar round's own seeker gimbals wider and tracks harder.
+// The heater's seeker. Its ±40° gimbal and 20°/s track ceiling mirror the
+// server (world/games/air/air.go: missile_gimbal, missile_track). The radar
+// round flies in the flight core (flight.ts round_step), not on these.
 export const SEEKERS = {
   heater: { gimbal: 0.766, ceiling: 0.35 },
-  radar: { gimbal: 0.5, ceiling: 0.7 },
 } as const
 
 // seeker_sight measures the sight line from the round to its aim point. drift
