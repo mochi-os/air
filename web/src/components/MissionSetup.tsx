@@ -28,15 +28,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@mochi/web/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@mochi/web/components/ui/dialog'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from '@mochi/web/components/ui/responsive-dialog'
 import {
   Select,
   SelectContent,
@@ -563,8 +563,8 @@ const REFERENCE_ROWS: {
 
 function ReferenceDialog() {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <ResponsiveDialog>
+      <ResponsiveDialogTrigger asChild>
         <Button
           type='button'
           variant='ghost'
@@ -574,13 +574,16 @@ function ReferenceDialog() {
           <Compass className='size-3.5' />
           <Trans>Reference</Trans>
         </Button>
-      </DialogTrigger>
-      <DialogContent className='sm:max-w-2xl' aria-describedby={undefined}>
-        <DialogHeader>
-          <DialogTitle>
+      </ResponsiveDialogTrigger>
+      <ResponsiveDialogContent
+        className='sm:max-w-2xl'
+        aria-describedby={undefined}
+      >
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>
             <Trans>F/A-18C reference</Trans>
-          </DialogTitle>
-        </DialogHeader>
+          </ResponsiveDialogTitle>
+        </ResponsiveDialogHeader>
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead>
@@ -627,15 +630,15 @@ function ReferenceDialog() {
             </Trans>
           </p>
         </div>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   )
 }
 
 function CreditsDialog() {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <ResponsiveDialog>
+      <ResponsiveDialogTrigger asChild>
         <Button
           type='button'
           variant='ghost'
@@ -645,13 +648,13 @@ function CreditsDialog() {
           <Info className='size-3.5' />
           <Trans>Credits</Trans>
         </Button>
-      </DialogTrigger>
-      <DialogContent aria-describedby={undefined}>
-        <DialogHeader>
-          <DialogTitle>
+      </ResponsiveDialogTrigger>
+      <ResponsiveDialogContent aria-describedby={undefined}>
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>
             <Trans>Credits</Trans>
-          </DialogTitle>
-        </DialogHeader>
+          </ResponsiveDialogTitle>
+        </ResponsiveDialogHeader>
         <div className='text-muted-foreground space-y-3 text-sm'>
           <p className='leading-relaxed'>
             <Trans>
@@ -812,8 +815,8 @@ function CreditsDialog() {
             </a>
           </p>
         </div>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   )
 }
 
