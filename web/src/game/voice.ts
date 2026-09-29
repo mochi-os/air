@@ -38,8 +38,8 @@ export type Message = (typeof MESSAGES)[number]
 // The caution and warning rows that raise each message. FLAMEOUT is both
 // engines flamed out, so both ENGINE calls. The FCS row is a jammed control
 // surface, which the jet shows as AIL OFF, RUD OFF or FLAPS OFF, all voiced
-// FLIGHT CONTROLS (2.8.4.6). The fuel stays below bingo through FUEL LO, so
-// BINGO keeps repeating there.
+// FLIGHT CONTROLS (2.8.4.6). FUEL LO says FUEL LOW alone: BINGO keeps its own
+// row beside it, so its voice and repeat come from there.
 export const SPOKEN: Record<string, readonly Message[]> = {
   'L ENG FIRE': ['ENGINE FIRE LEFT'],
   'R ENG FIRE': ['ENGINE FIRE RIGHT'],
@@ -47,7 +47,7 @@ export const SPOKEN: Record<string, readonly Message[]> = {
   'L ENG': ['ENGINE LEFT'],
   'R ENG': ['ENGINE RIGHT'],
   FLAMEOUT: ['ENGINE LEFT', 'ENGINE RIGHT'],
-  'FUEL LO': ['FUEL LOW', 'BINGO'],
+  'FUEL LO': ['FUEL LOW'],
   BINGO: ['BINGO'],
 }
 

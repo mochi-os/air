@@ -73,7 +73,7 @@ describe('the messages', () => {
   it('are raised by cautions and warnings the engine shows', () => {
     for (const key of Object.keys(SPOKEN)) expect(source, key).toMatch(new RegExp(`push\\("${key}"[,)]`))
     expect(SPOKEN.FLAMEOUT).toEqual(['ENGINE LEFT', 'ENGINE RIGHT'])
-    expect(SPOKEN['FUEL LO']).toEqual(['FUEL LOW', 'BINGO']) // the fuel is below bingo too
+    expect(SPOKEN['FUEL LO']).toEqual(['FUEL LOW']) // BINGO speaks from its own row, beside FUEL LO
   })
 
   it('put the GPWS recovery calls ahead of every other cue (NATOPS 2.17.4.3.1, 2.17.5.4)', () => {
@@ -123,7 +123,7 @@ const row = (key: string, red = false): Row => [key, key, red]
 
 describe('the voice takes over from the caution tone', () => {
   it('announces a voiced caution in place of the master caution tone, and still lights the lamp', () => {
-    const [voiced] = cautions([{ rows: [row('FUEL LO')], ready: true }])
+    const [voiced] = cautions([{ rows: [row('FUEL LO'), row('BINGO')], ready: true }])
     expect(voiced.tones).toEqual([])
     expect(voiced.lamp).toBe(true)
     expect(voiced.active.sort()).toEqual(['BINGO', 'FUEL LOW'])
@@ -184,7 +184,7 @@ describe('the voice takes over from the caution tone', () => {
     expect(tested.lamp).toBe(true)
     const minute = cautions(Array.from({ length: 3700 }, () => ({ rows: [row('FUEL LO')], ready: false, test: true })))
     expect(minute.flatMap((m) => m.tones)).toEqual(['caution']) // the new caution's tone, and no BINGO repeat
-    const [real] = cautions([{ rows: [row('FUEL LO')], ready: true }])
+    const [real] = cautions([{ rows: [row('FUEL LO'), row('BINGO')], ready: true }])
     expect(real.active).toEqual(['FUEL LOW', 'BINGO'])
   })
 

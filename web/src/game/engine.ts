@@ -1964,14 +1964,16 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 // The left DDI's caution area (#5, NATOPS 2.20.3.2.1): the slots cautions.ts
 // keeps, drawn over whatever the display shows, from the lower left, three
 // across, a line up per three, above the bottom pushbutton legends, at 150 %
-// of the page text. Red-tier rows keep their red; the rest are the display's
-// green. No ADV line: the game raises no advisories, and an empty one would be
-// invention. Cautions and advisories are English by the annunciator policy.
+// of the pages' 18 px text: 27 px, three ten-letter captions to the width.
+// Red-tier rows keep their red; the rest are the display's green. No ADV line:
+// the game raises no advisories, and an empty one would be invention. Cautions
+// and advisories are English by the annunciator policy: the slots carry the
+// index captions themselves (DDI_CAPTIONS).
 function cautions_draw(x){
-	x.save(); x.font="22px monospace"; x.textAlign="left"; x.textBaseline="middle";
-	cautions_lines(caution_slots).forEach((line,li)=>{ const y=452-li*26;
-		line.forEach((slot,ci)=>{ if(!slot) return; const tx=40+ci*150, w=x.measureText(slot.label).width;
-			x.fillStyle="#050b06"; x.fillRect(tx-4,y-13,w+8,26);   // a backing so the caution reads over the page beneath, as the real overprint does
+	x.save(); x.font="27px monospace"; x.textAlign="left"; x.textBaseline="middle";
+	cautions_lines(caution_slots).forEach((line,li)=>{ const y=452-li*32;
+		line.forEach((slot,ci)=>{ if(!slot) return; const tx=20+ci*162, w=x.measureText(slot.label).width;
+			x.fillStyle="#050b06"; x.fillRect(tx-4,y-16,w+8,32);   // a backing so the caution reads over the page beneath, as the real overprint does
 			x.fillStyle=slot.red?"#ff5050":"#39e07a"; x.fillText(slot.label,tx,y); }); });
 	x.restore(); }
 function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canvas.width,sc.display); sc.tex.needsUpdate=true; }
@@ -6234,6 +6236,9 @@ let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new 
 let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on), as a tone while the voice cannot say it
 let caution_toned=-1e9;     // sim time the MASTER CAUTION tone last sounded: the 5 s spacing of NATOPS 2.17.2.1
 const voice=voice_queue();  // the voice alerts (voice.ts)
+// DDI_CAPTIONS: the game's caution rows that are cautions in the jet, each to its caption in
+// the NATOPS caution index (chapter 12): PARK BRK is the index's PARK BRAKE.
+const DDI_CAPTIONS={ "FUEL LO":"FUEL LO", BINGO:"BINGO", "HOME FUEL":"HOME FUEL", "WING UNLK":"WING UNLK", "PARK BRK":"PARK BRAKE", CANOPY:"CANOPY", "PROBE UNLK":"PROBE UNLK", FCS:"FCS" };
 function cautions_update(){
 	const rows=[]; const core=last_out;
 	const push=(key,red)=>rows.push([key,translate(key),!!red]);
@@ -6246,7 +6251,7 @@ function cautions_update(){
 	if(!cheat("fuel")){ const internal=ownship.fuel??0;   // BINGO appears when the INTERNAL fuel reaches the setting (NATOPS 2.2.10.4)
 		low=ownship.fuel!==undefined&&ownship.fuel<FUELLO; below=internal>0&&internal<BINGO;
 		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
-		else if(below) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+		if(below) push("BINGO"); }   // with FUEL LO when both hold: two conditions, neither hiding the other (2.2.8, 2.2.10.4)
 	{ const home=fpas_home(); if(home&&home.arrive<=2000&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out (2.3.1.2); fpas_home is null with weight on wheels
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
@@ -6261,7 +6266,16 @@ function cautions_update(){
 	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
 		if(torn||core[STATE.stress]>2) push("STRUCTURE"); }
-	{ const next=cautions_reconcile(caution_slots,rows); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots (NATOPS 2.20.3.2.1) follow the rows; a change redraws the display now
+	// The left DDI shows the jet's cautions only (2.20.3.2.1): those in the chapter 12 index, under
+	// their index captions (DDI_CAPTIONS). FLAMEOUT is per engine - "designated engine failed": dry
+	// tanks, or a core the damage has left no output (the windmilling core the N2 gauge shows) - and
+	// never for an engine whose fuel is shut off, below IDLE. The fires are warnings (their lights
+	// and voice), and the damage cues - a leak, the gear, the structure, a hurt engine - have no
+	// caution in the jet: they stay on the HUD view's game stack.
+	const captions=[];
+	for(let e=0;e<2;e++) if(!secured[e]&&((ownship.fuel??1)<=0||(core&&(core[STATE.engine_harm+e]||0)>=0.99))) captions.push(["L FLAMEOUT","R FLAMEOUT"][e]);
+	for(const [key] of rows){ const caption=DDI_CAPTIONS[key]; if(caption) captions.push(caption); }
+	{ const next=cautions_reconcile(caution_slots,captions.map(c=>[c,c,false])); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots follow the captions; a change redraws the display now
 	caution_list=rows;
 	let fresh=false, freshCaution=false, freshWarning=false;
 	for(const [key,,red] of rows) if(!caution_keys.has(key)){ fresh=true;
@@ -6275,7 +6289,7 @@ function cautions_update(){
 	const bingo=low||below;
 	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
 	const active=new Set();
-	for(const [key] of rows) for(const message of SPOKEN[key]??[]) if(message!=="BINGO"||below) active.add(message);   // FUEL LO's BINGO only with the fuel under it: a FLBIT above bingo says FUEL LOW alone
+	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
 	if(gpws.gear) active.add("CHECK GEAR");
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call

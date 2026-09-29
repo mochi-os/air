@@ -8,12 +8,17 @@
 // line above the last when a line fills, up to seven lines. A caution that
 // clears leaves its slot blank; a new one takes the next slot past the end,
 // never a blank, until MASTER CAUTION is pressed while out, which packs the
-// rest left and down. With every slot taken the oldest gives way. Pure, so the
-// engine feeds it rows and draws what comes back.
+// rest left and down. With every slot taken a new caution waits for space at the
+// end, unless it is a priority caution, for which the oldest non-priority one
+// gives way. Pure, so the engine feeds it rows and draws what comes back.
 
 export const ACROSS = 3
 const LINES = 7
 export const SLOTS = ACROSS * LINES
+// PRIORITY: the cautions that may displace the oldest non-priority caution when
+// all 21 slots are taken (2.20.3.2.1); with every slot a priority caution,
+// nothing new shows until one clears.
+export const PRIORITY: ReadonlySet<string> = new Set(['AIL ON', 'CAUT DEGD', 'DEL ON', 'FLAPS OFF', 'FLAPS SCHED', 'INS ATT', 'L AMAD', 'R AMAD', 'L AMAD PR', 'R AMAD PR', 'MECH ON', 'RUD OFF'])
 
 interface Slot {
   key: string
@@ -33,9 +38,10 @@ export function reconcile(slots: Slots, rows: readonly Row[]): Slots {
   for (const [key, slot] of want) {
     if (held.has(key)) continue
     if (next.length >= SLOTS) {
-      const oldest = next.findIndex((slot) => slot !== null)
-      if (oldest < 0) break
-      next.splice(oldest, 1) // full: the oldest gives way and the rest close up behind it
+      if (!PRIORITY.has(key)) continue // full: it waits until an open space comes at the end
+      const oldest = next.findIndex((slot) => slot !== null && !PRIORITY.has(slot.key))
+      if (oldest < 0) continue // all priority: it waits too
+      next.splice(oldest, 1) // the oldest non-priority caution gives way and the rest close up behind it
     }
     next.push(slot)
   }
