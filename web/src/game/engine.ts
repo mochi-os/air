@@ -33,13 +33,13 @@ import * as THREE from 'three'
 import {
   connect as net_dial,
   record as net_record,
-  recording_store,
   world_chat,
   world_say,
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
+import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
 import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
@@ -8966,21 +8966,33 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	if(playback){ if(onExit) onExit(); return; }   // a replay is watched, not flown: it leaves no history row and uploads nothing
 	// A flight under five seconds is an aborted start, not a sortie (#51 ruling 2026-08-21): it leaves NOTHING —
 	// no history row, no recording. The sub-5s carve-out is the one exception to #212's every-flight-is-history.
-	const sortie=sim_time-mission_zero>=5;
+	const sortie=sim_time-mission_zero>=CHECKPOINT_SORTIE;
 	if(MULTIPLAYER) net_finish("left");
-	else if(sortie) net_record({   // EVERY completed sortie is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
-		world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
-		started:mission_began, ended:Date.now(),
-		reason:own_kills>0?"victory":(own_deaths>0?"killed":"flown"),
-		players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
-		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0,
-		...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() });   // the last pass is the landing the row shows
+	else if(sortie) net_record(sortie_row(own_kills>0?"victory":(own_deaths>0?"killed":"flown")));   // EVERY completed sortie is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
 	// Upload the recording against that row (#213), after net_record and
 	// unawaited: the row must exist for the save to bind to, and the menu never
-	// waits on an upload.
+	// waits on an upload. It queues behind any checkpoint still uploading (#16),
+	// so an older recording can never land after it.
 	if(sortie){ const replay=recording_file();   // multiplayer included (#118): the row above is what it binds to
-		if(replay&&replay.session) setTimeout(()=>void recording_store(replay.session,replay.started,replay.text),600); }
+		setTimeout(()=>void checkpoint_save(null,replay),600); }
 	if(onExit) onExit(); }
+// sortie_row is this single-player flight's history row, ended now for reason.
+function sortie_row(reason){ return {
+	world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
+	started:mission_began, ended:Date.now(), reason,
+	players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
+	cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0,
+	...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }; }   // the last pass is the landing the row shows
+// recording_checkpoint saves the flight as it flies (#16, checkpoint.ts): its
+// history row marked flying, then its recording, from the moment it is a
+// sortie and every minute after, so a frozen or closed tab keeps all but the
+// last minute. The finish replaces the flying row.
+let checkpoint_at=-Infinity;   // the flight clock at the last save
+function recording_checkpoint(){ if(!running||playback) return;
+	const flown=sim_time-mission_zero; if(!checkpoint_due(flown,checkpoint_at)) return;
+	const row=MULTIPLAYER?((net&&match_started&&!session_over)?match_row(CHECKPOINT_FLYING):null):sortie_row(CHECKPOINT_FLYING);
+	if(!row) return;
+	checkpoint_at=flown; void checkpoint_save(row,recording_file()); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
@@ -9513,13 +9525,15 @@ function net_event(e){ const slot=Number(e.slot);
 		break; }
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true; lounge_stop();
-	if(net&&match_started){ net_record({ world:join.server, title:join.title||"", session:join.session,
-		mode:String(net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode||"furball"),   // the session's real mode (this recorded every match as a joust before)
-		team:net.teams.get(net.slot)||"",
-		started:match_started, ended:Date.now(), reason,
-		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
-		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0, ...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }); }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
+	if(net&&match_started) net_record(match_row(reason));
 	if(net){ net.leave(); net=null; } }
+// match_row is this player's history row for the match, ended now for reason.
+function match_row(reason){ return { world:join.server, title:join.title||"", session:join.session,
+	mode:String(net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode||"furball"),   // the session's real mode (this recorded every match as a joust before)
+	team:net.teams.get(net.slot)||"",
+	started:match_started, ended:Date.now(), reason,
+	players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
+	cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0, ...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }; }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
 function net_end(reason,results){ if(session_over) return;
 	net_finish(reason);
 	if(results&&results.name){ notice(results.name+" "+translate("WINS")); }   // joust outcome
@@ -9738,7 +9752,7 @@ function start_mission(){
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
-	mission_done=false; mission_zero=sim_time; fuel_read=false;   // a fresh mission may follow an ended one without a page reload (#240)
+	mission_done=false; mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	if(!playback){ recorder.clear(); record_started=new Date(); publish_recording(recording_file); } passes=[];   // a fresh recording per mission, and a fresh LSO book (#212) - but a replay records nothing, and publishing would hand the log page's buffer of the last flight over to an empty one
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
@@ -9801,7 +9815,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			else { draw_loading(); __raf=requestAnimationFrame(frame); return; } }
 	}
 	if(running){
-		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; if(playback) playback_step(dt); else { step_world(dt); radar_step(dt); rwr_step(dt); } }   // frozen world stops advancing (the radar and RWR freeze with it)
+		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; if(playback) playback_step(dt); else { step_world(dt); radar_step(dt); rwr_step(dt); recording_checkpoint(); } }   // frozen world stops advancing (the radar and RWR freeze with it)
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
