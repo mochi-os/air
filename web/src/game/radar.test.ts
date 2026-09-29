@@ -14,6 +14,7 @@ import {
   paint_probability,
   pick,
   WIDTHS,
+  BARS,
   type RadarTarget,
 } from './radar'
 
@@ -26,7 +27,7 @@ const never = () => 1
 const own = { x: 0, y: 3000, z: 0, heading: 0 }
 const beam = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 250, vy: 0, vz: 0 }
 
-function swept(radar: Radar, targets = [beam], seconds = 4, random = always) {
+function swept(radar: Radar, targets: RadarTarget[] = [beam], seconds = 4, random = always) {
   for (let i = 0; i < seconds * 60; i++)
     radar.step(1 / 60, own, targets, wrap, random)
 }
@@ -134,7 +135,7 @@ describe('search', () => {
     expect(radar.bricks.length).toBe(0) // invisible to the level band
     for (let i = 0; i < 4; i++) radar.slew(1) // +20°
     expect(radar.elevation).toBeCloseTo(0.349, 2)
-    swept(radar, [high])
+    swept(radar, [high], radar.frame() + 1) // a frame: the bar holding it is swept once
     expect(radar.bricks.length).toBeGreaterThan(0)
   })
   it('the slew respects the antenna gimbal', () => {
@@ -154,6 +155,7 @@ describe('search', () => {
     // s, the next up pass at 1.07 s. One crossing, one brick.
     const radar = new Radar()
     radar.width = 2
+    radar.bars = 0 // one bar: every sweep looks at the target's elevation
     swept(radar, [beam], 0.9)
     expect(radar.bricks.length).toBe(1)
     swept(radar, [beam], 0.3)
@@ -162,16 +164,64 @@ describe('search', () => {
   it('a target never shows more than two paints — motion, not a formation', () => {
     const radar = new Radar()
     radar.width = 2 // fast passes: many crossings in the window
+    radar.bars = 0
     swept(radar, [beam], 6)
     expect(radar.bricks.filter((b) => b.id === 7).length).toBe(2)
   })
   it('bricks age off the format', () => {
     const radar = new Radar()
+    radar.bars = 0
     swept(radar, [beam], 2)
     const painted = radar.bricks.length
     expect(painted).toBeGreaterThan(0)
     swept(radar, [], 13)
     expect(radar.bricks.length).toBe(0)
+  })
+})
+
+describe('bars', () => {
+  // looks counts the detection rolls a scan makes: one per look at a target
+  // inside the volume and its detection range.
+  function looks(radar: Radar, target: RadarTarget, seconds: number) {
+    let n = 0
+    swept(radar, [target], seconds, () => {
+      n++
+      return 0
+    })
+    return n
+  }
+  it('sweeps each bar once a frame, so more bars look less often', () => {
+    const one = new Radar()
+    one.bars = 0
+    const four = new Radar()
+    expect(BARS[four.bars]).toBe(4) // the default
+    expect(four.frame()).toBeCloseTo((4 * 2 * WIDTHS[0]) / 1.31, 6)
+    expect(looks(one, beam, 60)).toBe(32) // a crossing every sweep, two a frame
+    expect(looks(four, beam, 60)).toBe(8) // one a frame
+  })
+  it('covers a beam per bar, stacked about the antenna', () => {
+    const up = (degrees: number) => ({
+      ...beam,
+      y: 3000 + 15 * NM * Math.tan((degrees * Math.PI) / 180),
+    })
+    const one = new Radar()
+    one.bars = 0
+    const four = new Radar()
+    expect(four.coverage()).toBeCloseTo((4 * 3.3 * Math.PI) / 180 / 2, 3)
+    expect(looks(one, up(1.5), 20)).toBeGreaterThan(0)
+    expect(looks(one, up(2), 20)).toBe(0) // past half a beam
+    expect(looks(four, up(6.4), 20)).toBeGreaterThan(0)
+    expect(looks(four, up(7), 20)).toBe(0) // past two beams
+    expect(looks(four, up(-6.4), 20)).toBeGreaterThan(0)
+  })
+  it('keeps an RWS brick on the format through the longest frame', () => {
+    const radar = new Radar()
+    radar.bars = 3 // six bars at ±70°
+    swept(radar, [beam], radar.frame() + 1)
+    for (let i = 0; i < 40 * 60; i++) {
+      radar.step(1 / 60, own, [beam], wrap, always)
+      expect(radar.bricks.length).toBeGreaterThan(0)
+    }
   })
 })
 
@@ -189,6 +239,66 @@ describe('TWS', () => {
     radar.mode = 'tws'
     radar.width = 0 // asks ±70°
     expect(radar.half()).toBe(WIDTHS[1]) // gets ±45°
+  })
+  it('drops bars until a frame fits, so every trackfile updates', () => {
+    const radar = new Radar()
+    radar.mode = 'tws'
+    radar.bars = 3 // asks six
+    expect(radar.count()).toBe(2) // ±45°: two bars, 2.4 s
+    radar.width = 2
+    expect(radar.count()).toBe(4) // ±20°: four bars, 2.1 s
+    for (const width of [0, 1, 2])
+      for (const bars of [0, 1, 2, 3]) {
+        radar.width = width
+        radar.bars = bars
+        expect(radar.frame()).toBeLessThanOrEqual(2.5)
+      }
+    radar.mode = 'rws'
+    radar.width = 0
+    expect(radar.count()).toBe(6) // RWS scans what it is asked
+  })
+  it('centres the scan on the L&S, so a trackfile off the nose keeps updating', () => {
+    // 5 nm ahead, crossing right and climbing: 34° off the nose and 11° up
+    // after 25 s, past a ±20° four-bar scan on the nose at the antenna's level.
+    const flown = (radar: Radar, designate: boolean) => {
+      radar.mode = 'tws'
+      radar.width = 2
+      const at = (t: number) => ({ ...beam, x: 250 * t, y: 3000 + 85 * t, z: -5 * NM, vx: 250, vy: 85, vz: 0 })
+      for (let i = 0; i < 25 * 60; i++) {
+        radar.step(1 / 60, own, [at(i / 60)], wrap, always)
+        if (designate && i === 3 * 60) radar.designate(7)
+      }
+      return radar
+    }
+    const radar = flown(new Radar(), true)
+    expect(radar.ls).toBe(7)
+    expect(radar.time - radar.tracks[0].at).toBeLessThan(2.5) // looked at within a frame
+    expect(radar.centre.azimuth).toBeCloseTo(Math.atan2(250 * 25, 5 * NM), 1)
+    expect(radar.centre.elevation).toBeCloseTo(Math.atan2(85 * 25, Math.hypot(250 * 25, 5 * NM)), 1)
+    const free = flown(new Radar(), false) // no L&S: the scan stays on the nose, and the trackfile ages out
+    expect(free.tracks.length).toBe(0)
+  })
+  it('carries the L&S on from its last fix while no paint refreshes it', () => {
+    const radar = new Radar()
+    radar.mode = 'tws'
+    radar.width = 2
+    radar.tracks.push({ id: 7, x: 0, y: 3000, z: -5 * NM, vx: 250, vy: 0, vz: 0, at: 0, hits: 1 })
+    radar.designate(7)
+    swept(radar, [], 4, never) // four seconds without a look: the fix is 1,000 m behind the target now
+    expect(radar.centre.azimuth).toBeCloseTo(Math.atan2(1000, 5 * NM), 3)
+  })
+  it('holds the scan inside the gimbal, and RWS on the nose', () => {
+    const wide = { ...beam, x: 15 * NM * Math.sin(1.0), z: -15 * NM * Math.cos(1.0), vx: 0, vz: 250 } // 57° right
+    const radar = new Radar()
+    radar.mode = 'tws'
+    radar.width = 1 // ±45°: the centre can reach 25°
+    radar.tracks.push({ ...wide, vy: 0, at: 0, hits: 1 })
+    radar.designate(7)
+    swept(radar, [wide], 0.1)
+    expect(radar.centre.azimuth).toBeCloseTo(WIDTHS[0] - WIDTHS[1], 6)
+    radar.mode = 'rws'
+    swept(radar, [wide], 0.1)
+    expect(radar.centre).toEqual({ azimuth: 0, elevation: 0 })
   })
   it('stales a trackfile that stops painting, and the L&S dies with it', () => {
     const radar = new Radar()

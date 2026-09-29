@@ -164,6 +164,8 @@ interface Flight {
   // the jammer's standing state, and the pilot's designated/boxed target —
   // "no shot" and "shooting at the wrong thing" are different findings.
   radar?: string
+  antenna?: number // the scan's centre, whole degrees off the horizontal
+  bars?: number // the bars the scan swept
   lock?: number // recorded id of the STT / L&S target, if any
   rwrlock?: boolean
   rwrmissile?: boolean
@@ -700,6 +702,8 @@ export function acmi(
         {
           let sensed = ''
           if (d.radar !== undefined) sensed += `,Radar=${field(d.radar)}`
+          if (d.antenna !== undefined) sensed += `,Antenna=${d.antenna}`
+          if (d.bars !== undefined) sensed += `,Bars=${d.bars}`
           if (d.lock !== undefined) sensed += `,Lock=${d.lock.toString(16)}`
           if (d.rwrlock !== undefined) sensed += `,RwrLock=${d.rwrlock ? 1 : 0}`
           if (d.rwrmissile !== undefined)

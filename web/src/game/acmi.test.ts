@@ -821,6 +821,43 @@ it('records flares, throttle, the sensor picture, and the match rules', () => {
   expect(mine[3]).not.toContain('Radar=')
 })
 
+// The scan's volume (#47): where the antenna pointed and how many bars it
+// swept, in the sensor group, so a target the bars never covered reads as
+// that and not as a radar that failed to see it.
+it('records the antenna elevation and bars with the sensor picture', () => {
+  const jet = (antenna: number, bars: number): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { radar: 'tws', antenna, bars },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(0, 2)] },
+      { time: 0.1, objects: [jet(0, 2)] },
+      { time: 0.2, objects: [jet(-4, 2)] },
+      { time: 0.3, objects: [jet(-4, 4)] },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Antenna=0')
+  expect(mine[0]).toContain('Bars=2')
+  expect(mine[1]).not.toContain('Antenna=') // unchanged: suppressed with the group
+  expect(mine[2]).toContain('Antenna=-4') // the antenna alone moving writes the group
+  expect(mine[3]).toContain('Bars=4')
+  expect(lift('recording_sample')).toContain('antenna:Math.round(RADAR.centre.elevation/D2R), bars:RADAR.count()') // the engine records the scan it flew
+})
+
 // Afterburner is the name the format defines; a Mochi-only Reheat reads as
 // stone cold to every other ACMI tool.
 it('records the burner as the standard Afterburner property, never Reheat', () => {

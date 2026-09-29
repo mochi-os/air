@@ -44,13 +44,15 @@ export type Track = {
 export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
+const BEAM = 0.0576 // one bar's height, rad (3.3°): the APG-65/73's beam
+const TILT = 1.047 // antenna elevation gimbal, rad (±60°)
+const FRAME = 2.5 // s: the longest frame TWS scans, so each trackfile is looked at least this often
 // The EW pieces (#31): a jammer outside burnthrough or a target inside the
 // clutter notch starves the tracker, so the STT goes to MEMORY and breaks if
 // the condition outlasts the window.
 const BURNTHROUGH = 9000 // m — inside this the skin echo beats the jammer
 const NOTCH = 60 // m/s — radial speed under this sits in the clutter gate
 const MEMORY = 4 // s — how long a track survives on memory before the lock drops
-const ELEVATION = 0.175 // search coverage half-height, rad (~10°) — one generous band in place of bar bookkeeping
 const BASE = 55 * NM // beam-aspect detection range against the game's one fighter: 44 nm nose-on, so a head-on bandit paints before the AIM-120's ~38 nm head-on reach, within the APG-65/73's published 40-50 nm against a fighter
 const BRICK_AGE = 12 // seconds an RWS paint stays on the format
 const TRACK_AGE = 8 // seconds a TWS trackfile survives without a fresh paint
@@ -58,6 +60,7 @@ const GIMBAL = 1.222 // STT gimbal limit off the nose, rad (±70°)
 const HOLD = 1.15 // STT holds a lock out to this multiple of detection range
 
 export const WIDTHS = [1.222, 0.785, 0.349] // selectable azimuth half-widths: ±70°, ±45°, ±20°
+export const BARS = [1, 2, 4, 6] // selectable bar counts, each bar one beam high
 export const SCALES = [5, 10, 20, 40, 80, 160] // display range scales, nmi: the F/A-18C's APG-65/73 air-to-air scales, the HSI's too
 
 // geometry resolves a target into the radar's frame: azimuth relative to own
@@ -171,9 +174,12 @@ export class Radar {
   mode: 'rws' | 'tws' = 'rws'
   sil = false
   width = 0 // index into WIDTHS
+  bars = 2 // index into BARS: four
+  bar = 0 // the bar this sweep scans, 0 the top
   scale = 40 // display range, nmi
   sweep = 0 // antenna azimuth, rad relative to heading
-  elevation = 0 // scan band centre off the horizontal, rad — the pilot slews it to sanitise high or low (±60° gimbal)
+  elevation = 0 // the antenna's elevation off the horizontal, rad — the pilot slews it to sanitise high or low (±60° gimbal)
+  centre = { azimuth: 0, elevation: 0 } // where the scan volume points this step: the nose at the antenna's elevation, or in TWS the L&S
   direction = 1
   bricks: Brick[] = []
   tracks: Track[] = []
@@ -196,6 +202,58 @@ export class Radar {
   half(): number {
     const w = WIDTHS[this.width]
     return this.mode === 'tws' ? Math.min(w, WIDTHS[1]) : w
+  }
+
+  // count: the bars actually scanned — TWS drops bars until a frame fits
+  // FRAME, as it caps the width, so its trackfiles keep updating.
+  count(): number {
+    const asked = BARS[this.bars]
+    if (this.mode !== 'tws') return asked
+    const sweep = (2 * this.half()) / SWEEP
+    let n = 1
+    for (const b of BARS) if (b <= asked && b * sweep <= FRAME) n = b
+    return n
+  }
+
+  // frame: seconds to scan the volume once, each bar swept once — how often
+  // any one target can be looked at.
+  frame(): number {
+    return (this.count() * 2 * this.half()) / SWEEP
+  }
+
+  // coverage: the scan's half-height, rad — the bars stacked a beam apart
+  // either side of the centre.
+  coverage(): number {
+    return (this.count() * BEAM) / 2
+  }
+
+  // aim points the scan: TWS centres it on the L&S trackfile, carried on from
+  // its last fix, in azimuth and elevation, so the target stays in a volume
+  // narrow enough to update it; otherwise the nose at the antenna's elevation.
+  private aim(own: RadarOwn, wrap: Wrap): void {
+    const track =
+      this.mode === 'tws' && this.ls != null
+        ? this.tracks.find((t) => t.id === this.ls)
+        : undefined
+    if (!track) {
+      this.centre = { azimuth: 0, elevation: this.elevation }
+      return
+    }
+    const age = this.time - track.at
+    const g = geometry(
+      own,
+      {
+        x: track.x + track.vx * age,
+        y: track.y + track.vy * age,
+        z: track.z + track.vz * age,
+      },
+      wrap
+    )
+    const reach = GIMBAL - this.half() // the scan's edge stays inside the gimbal
+    this.centre = {
+      azimuth: Math.max(-reach, Math.min(reach, g.azimuth)),
+      elevation: Math.max(-TILT, Math.min(TILT, g.elevation)),
+    }
   }
 
   // emitter: the wire truth of what this radar is doing — 0 silent, 1 search,
@@ -227,6 +285,7 @@ export class Radar {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
     }
+    this.aim(own, wrap)
     // Jamming strobes (#31): a radiating emitter shows as a bearing-only
     // spoke whatever the radar is doing — the jam arrives whether or not
     // the sweep is pointed at it.
@@ -287,19 +346,28 @@ export class Radar {
     }
     this.memory = 0
     const half = this.half()
+    const count = this.count()
+    if (this.bar >= count) this.bar = 0
+    // Each sweep scans one bar, top to bottom, and the antenna steps a bar at
+    // every turn: one frame sweeps every bar once.
+    const level = this.centre.elevation + ((count - 1) / 2 - this.bar) * BEAM
     let az = this.sweep + this.direction * SWEEP * dt
-    if (az > half) {
-      az = half
+    let turned = false
+    if (az > this.centre.azimuth + half) {
+      az = this.centre.azimuth + half
       this.direction = -1
+      turned = true
     }
-    if (az < -half) {
-      az = -half
+    if (az < this.centre.azimuth - half) {
+      az = this.centre.azimuth - half
       this.direction = 1
+      turned = true
     }
     for (const target of targets) {
       const g = geometry(own, target, wrap)
-      if (Math.abs(g.elevation - this.elevation) > ELEVATION) continue
-      if (Math.abs(g.azimuth) > half) continue
+      const off = g.elevation - level
+      if (off <= -BEAM / 2 || off > BEAM / 2) continue // this bar's slice, half-open so a target on a seam is in one bar
+      if (Math.abs(g.azimuth - this.centre.azimuth) > half) continue
       // Half-open interval (previous, current]: consecutive frames partition
       // the sweep exactly, so one crossing is one detection roll and never a
       // cluster of duplicates.
@@ -323,6 +391,7 @@ export class Radar {
       else this.fix(target)
     }
     this.sweep = az
+    if (turned) this.bar = (this.bar + 1) % count
   }
 
   // paint records an RWS brick, keeping at most TWO per target — the current
@@ -393,13 +462,13 @@ export class Radar {
     else this.ls = null
   }
 
-  // slew moves the elevation band centre by steps of 5°, held inside the
+  // slew moves the antenna's elevation by steps of 5°, held inside the
   // ±60° antenna gimbal.
   slew(direction: number): void {
     this.elevation = Math.max(
-      -1.047,
+      -TILT,
       Math.min(
-        1.047,
+        TILT,
         this.elevation + Math.sign(direction) * ((5 * Math.PI) / 180)
       )
     )

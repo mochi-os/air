@@ -27,6 +27,20 @@ describe('key bindings', () => {
     expect(unbound).toEqual([])
   })
 
+  it('dispatches every bound action, so no Settings row is a dead key', () => {
+    const engine = read('./engine.ts')
+    const used = new Set(
+      Array.from(
+        engine.matchAll(/(?:key_of|held)\("([\w.]+)"\)/g),
+        (m) => m[1]
+      )
+    )
+    const dead = Object.keys(KEY_DEFAULTS)
+      .filter((action) => !used.has(action))
+      .sort()
+    expect(dead).toEqual([])
+  })
+
   it('offers every bindable action in the Keys and Buttons tabs', () => {
     const settings = read('../components/SettingsDialog.tsx')
     // The row tables are `const KEY_ROWS: Row[] = [...]` / `BUTTON_ROWS`; take
@@ -56,6 +70,17 @@ describe('key bindings', () => {
         .filter((id) => !keyless.has(id) && !(id in KEY_DEFAULTS))
         .sort()
       expect(missing, `${table} rows with no default binding`).toEqual([])
+    }
+  })
+
+  it('offers the antenna elevation in the Keys and Buttons tabs', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    for (const table of ['KEY_ROWS', 'BUTTON_ROWS']) {
+      const block = new RegExp(
+        `const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`
+      ).exec(settings)![1]
+      for (const id of ['antenna.up', 'antenna.down'])
+        expect(block, `${table} lacks ${id}`).toContain(`id: '${id}'`)
     }
   })
 
