@@ -1413,38 +1413,43 @@ export function SettingsDialog({
         onValueChange={onTabChange}
         className='flex min-h-0 flex-1 flex-col space-y-4'
       >
-        <TabsList aria-label={t`Settings`}>
-          <TabsTrigger value='general' className='gap-2'>
-            <User className='size-4' />
-            <span>
-              <Trans>General</Trans>
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='graphics' className='gap-2'>
-            <Monitor className='size-4' />
-            <span>
-              <Trans>Graphics</Trans>
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='sound' className='gap-2'>
-            <Volume2 className='size-4' />
-            <span>
-              <Trans>Sound</Trans>
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='controls' className='gap-2'>
-            <Gamepad2 className='size-4' />
-            <span>
-              <Trans>Joystick</Trans>
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='keys' className='gap-2'>
-            <Keyboard className='size-4' />
-            <span>
-              <Trans>Keys</Trans>
-            </span>
-          </TabsTrigger>
-        </TabsList>
+        {/* Five tabs are wider than a phone. The strip scrolls on its own so
+            the panel below does not slide sideways with it; the wrapper, not
+            the list, scrolls so the active tab's underline is not clipped. */}
+        <div className='[scrollbar-width:none] overflow-x-auto'>
+          <TabsList aria-label={t`Settings`} className='w-max min-w-full'>
+            <TabsTrigger value='general' className='gap-2'>
+              <User className='size-4' />
+              <span>
+                <Trans>General</Trans>
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='graphics' className='gap-2'>
+              <Monitor className='size-4' />
+              <span>
+                <Trans>Graphics</Trans>
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='sound' className='gap-2'>
+              <Volume2 className='size-4' />
+              <span>
+                <Trans>Sound</Trans>
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='controls' className='gap-2'>
+              <Gamepad2 className='size-4' />
+              <span>
+                <Trans>Joystick</Trans>
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='keys' className='gap-2'>
+              <Keyboard className='size-4' />
+              <span>
+                <Trans>Keys</Trans>
+              </span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
         <div className='min-h-0 flex-1 overflow-y-auto pr-1'>
           <TabsContent value='general'>
             <GeneralPanel config={config} set={set} />
