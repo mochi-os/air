@@ -1006,6 +1006,14 @@ describe('stamp', () => {
     expect(match.world).toBe('') // a single-player flight has no server, whatever the menu last held
   })
 
+  it("records a single-player BVR joust's drawn start, and no other fight's", () => {
+    expect(stamp({ ...fight, opening: '9000|5000|250|30|120000' }).match.opening).toBe('9000|5000|250|30|120000')
+    expect(stamp({ ...fight, multiplayer: true, mode: 'joust', opening: '9000|5000|250|30|120000' }).match.opening).toBe('')
+    expect(stamp({ ...fight, mode: 'free', opening: '9000|5000|250|30|120000' }).match.opening).toBe('')
+    expect(stamp(fight).match.opening).toBe('') // a merge, or a BVR joust flown before the draw: acmi() drops it
+    expect(source).toMatch(/opening:\(cfg\.duel==="bvr"&&joust_start\)\?\[joust_start\.altitude\[0\],joust_start\.altitude\[1\],joust_start\.speed,joust_start\.flank\/D2R,joust_start\.apart\]/)
+  })
+
   it('names the brain the bandit flew: its stage always, the omitted stages only when there are any', () => {
     expect(stamp(fight).match.stage).toBe('6')
     expect(stamp(fight).match.omit).toBe('') // acmi() drops an empty field

@@ -137,6 +137,7 @@ interface Core {
   round_step(input: Uint8Array, output: Uint8Array): string | null
   round_ladder(input: Uint8Array, output: Uint8Array): string | null
   heater_ladder?(input: Uint8Array, output: Uint8Array): string | null
+  joust_opening?(input: Uint8Array, output: Uint8Array): string | null
   round_distract(input: Uint8Array): boolean | string
   round_drop(input: Uint8Array): string | null
   bandit_init?(config: string): string
@@ -869,6 +870,27 @@ export function round_ladder(
   core.round_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
+}
+
+// joust_opening is a BVR joust's start (#46), drawn from a seed by the same Go
+// the world server draws a match's with: each end's block (the first the
+// player's), the block speed, the flank both hold off the line between them,
+// and the separation. null before the core has booted.
+export function joust_opening(
+  seed: number,
+  wrap: number
+): {
+  altitude: [number, number]
+  speed: number
+  flank: number
+  apart: number
+} | null {
+  if (!core || !core.joust_opening) return null
+  round_input[0] = seed
+  round_input[1] = wrap
+  core.joust_opening(round_input_bytes, round_output_bytes)
+  const o = round_output
+  return { altitude: [o[0], o[1]], speed: o[2], flank: o[3], apart: o[4] }
 }
 
 // heater_ladder is the AIM-9M's launch zone in the AMRAAM's shape (#47): Rmax

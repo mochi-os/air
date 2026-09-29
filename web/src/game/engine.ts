@@ -38,7 +38,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
@@ -225,6 +225,7 @@ let menu_hold=false, game_paused=false;   // menu_hold = the Esc popup freeze; t
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
+let joust_start=null;   // the BVR joust's drawn start (#46): each end's block (the player's first), the block speed, the flank and the separation; null for the merge
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:SHIP.deck };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
@@ -6154,6 +6155,7 @@ function recording_file(){
 	const {kind,match}=stamp({ multiplayer:MULTIPLAYER,
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
 		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
+		opening:(cfg.duel==="bvr"&&joust_start)?[joust_start.altitude[0],joust_start.altitude[1],joust_start.speed,joust_start.flank/D2R,joust_start.apart].map(v=>Math.round(v)).join("|"):"",   // the BVR start drawn (#46): the player's block|the bandit's (m)|speed (m/s)|flank (deg)|separation (m) — i18n-format-ok: recording header data, not display text
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
 		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(), passes:passes_text(),
 		wind:(()=>{ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed<0.1) return "calm";   // the vector points where the air goes: it comes from the reciprocal
@@ -7339,7 +7341,7 @@ function fly_player(dt){
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
 		const world=flight_world();
 		if(!flight_init(world)){ notice(translate("FLIGHT CORE FAILED")); return; }
-		flight_active=true; flight_push();
+		joust_drawn(); flight_active=true; flight_push();
 		vapour_air=world.environment.wind||{ x:0, z:0 };   // a match's core flies still air
 		if(MULTIPLAYER&&net&&net.welcome.spawn&&net.welcome.spawn.map&&airports.length&&carrier_model){ const chart=net.welcome.spawn.map;   // the served geometry is what the core flies; this build's own is what the scene draws — say so when they differ
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
@@ -7944,10 +7946,7 @@ function reset_ownship(){
 		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
 		joust_side=Math.random()<0.5?1:-1;
-		const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
-		ownship.pos.set(-joust_side*reach, block, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=pace; ownship.throttle=0.85;
-		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		joust_start=bvr?bvr_opening():null; joust_place(); ownship.throttle=0.85;
 		if(bvr){ notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|start`); } }   // the rule difference announced at the calmest moment: this joust has no hold — i18n-format-ok: ACMI event timestamp, not display text
 	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
@@ -7963,8 +7962,8 @@ function reset_ownship(){
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-	if(st==="joust"){ const bvr=cfg.duel==="bvr"; const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
-		bandit.pos.set(joust_side*reach,block,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=pace; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+	if(st==="joust"){   // joust_place put the bandit at its end
+		bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
 		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
 	}
 	else { bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.speed=195; bandit.merging=false; }   // ground/deck starts: the bandit orbits near Midway as before
@@ -8224,6 +8223,29 @@ function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
 	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
 	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
 	return bvr_apart; }
+// bvr_opening draws this BVR joust's start (#46) from a fresh seed, through the
+// core's Go the world server draws a match's with. &opening=head (developer)
+// pins the classic head-on block the probes fly. A core not yet booted falls
+// back to it, marked pending for joust_drawn to draw once the core binds.
+function bvr_opening(){ const head={ altitude:[6096,6096], speed:272, flank:0, apart:bvr_separation() };
+	if(DEV_MODE&&new URLSearchParams(location.search).get("opening")==="head") return head;
+	return joust_opening(Math.floor(Math.random()*2147483647),WORLD_WRAP)||{ ...head, pending:true }; }
+// joust_heading is the heading an end of the joust starts on: along the line
+// toward the other end (side +1 east), turned the flank off it - the same way
+// for both ends, so each sees the other the same angle off its nose.
+function joust_heading(side){ const f=joust_start?joust_start.flank:0; return new THREE.Vector3(side*Math.cos(f),0,side*Math.sin(f)); }
+// joust_place puts both ends of the joust on joust_start - the pilot on the
+// first block, the bandit on the second - or on the merge ring when it is null.
+function joust_place(){ const bvr=!!joust_start; const reach=bvr?joust_start.apart/2:1.5*NM, pace=bvr?joust_start.speed:220;
+	ownship.pos.set(-joust_side*reach, bvr?joust_start.altitude[0]:4572, 0); ownship.fwd.copy(joust_heading(joust_side)); ownship.speed=pace;
+	const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+	bandit.pos.set(joust_side*reach, bvr?joust_start.altitude[1]:4572, 0); bandit.fwd.copy(joust_heading(-joust_side)); bandit.speed=pace; }
+// joust_drawn draws a single-player BVR joust's start that its spawn could not,
+// the core not having booted yet - a page's first mission - and puts both ends
+// on it, on the frame the core binds and before either jet has flown.
+function joust_drawn(){ if(MULTIPLAYER||!joust_start||!joust_start.pending) return;
+	joust_start=bvr_opening(); joust_place(); }
 // radar_target is what the radar holds of the locked or L&S contact, which the
 // launch zones fly against: its trackfile's last fix carried on by that fix's
 // velocity for the track's age. A tracking STT refreshes it every frame, a TWS
