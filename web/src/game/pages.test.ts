@@ -670,6 +670,14 @@ describe('the FPAS display', () => {
     expect(d_at(fpas({ pph: 0, home: 'null' }), 408, 96)).toBe('XXXX')
   })
 
+  it('steers on the TACAN range, and has no steering without one', () => {
+    const home = (station: string) => new Function(`const ownship={ grounded:false, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }, flow_state={ pph:6000 }, cheat=()=>false, tacan=()=>(${station});
+      ${lift('fpas_home')}\n} return fpas_home();`)()
+    expect(home('{ bearing:0, range:185200, slant:185300 }')).toEqual({ dist: 100, hours: 0.25, arrive: 4500 })
+    expect(home('null')).toBe(null)
+    expect(home('{ bearing:0, range:null, slant:null }')).toBe(null)
+  })
+
   it('holds the HOME FUEL caution off with the refuelling probe out', () => {
     const section = /\n\t\{ const home=fpas_home\(\); if\(home&&home\.arrive<=2000[^\n]*push\("HOME FUEL"\); \}/.exec(source)?.[0] ?? ''
     expect(section).not.toBe('')
@@ -684,12 +692,13 @@ const d_at = (d: Drawn, x: number, y: number) => d.text.find(([, px, py]) => px 
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.
-interface Hsi { altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string }
+interface Hsi { altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string; tacan?: string; emcon?: boolean }
 function hsi(o: Hsi = {}, display = 'left'): Drawn {
   const deg = (v: number | null | undefined, d: number) => v === null ? 'null' : `${(v ?? d)}*D2R`
   return page('ddi_hsi', `const ownship={ pos:{x:0,y:${o.altitude ?? 1000},z:0}, speed:${o.speed ?? 100}, gauges:{ heading:${deg(o.heading, 0)}, ground:${o.ground ?? 200}, track:${deg(o.track, 0)}, zulu:45296 } };
     const hsi_state={ scale:${o.scale ?? 40}, dctr:${o.dctr ?? false}, map:${o.map ?? false}, north:${o.north ?? false}, mode:${o.mode ?? false} }, ufc={ func:"" }, CARRIER={ x:${o.east ?? 18520}, z:${-(o.north_m ?? 0)} };
-    const island_polygons=[], airports=[], wrap_axis=${o.wrap ?? '(v)=>v'}, SHIP={ ident:"NIM" }, timer={ shown:${JSON.stringify(o.timer ?? '')} }, timer_text=()=>"01:30";
+    const island_polygons=[], airports=[], wrap_axis=${o.wrap ?? '(v)=>v'}, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, timer={ shown:${JSON.stringify(o.timer ?? '')} }, timer_text=()=>"01:30";
+    const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...${o.tacan ?? '{}'} } }, emcon=${o.emcon ?? false};
     ${lift('tacan')} ${lift('time_to_go')}`, display)
 }
 const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-6)
@@ -772,6 +781,24 @@ describe('the HSI page', () => {
     expect(run).toEqual(['5:46', '1:03:47', '8:59:59'])
   })
 
+  it('draws the TACAN as the set receives it: nothing off, mistuned or in A/A, the bearing alone in RCV or under EMCON (24.4.2, 2.13.5.2)', () => {
+    const pointer = (d: Drawn) => d.styled.some(([, mx, my]) => near([mx, my], polar(R + T + 3, 90)))
+    expect(pointer(hsi())).toBe(true)
+    for (const tacan of ['{ on:false }', '{ channel:75 }', '{ band:"Y" }', '{ air:true }']) {
+      const d = hsi({ tacan })
+      expect(pointer(d), tacan).toBe(false)
+      expect(texts(d).filter((s) => s.includes('°') || s === 'NIM'), tacan).toEqual([])
+    }
+    for (const o of [{ tacan: '{ mode:"rcv" }' }, { emcon: true }]) {
+      const d = hsi(o)
+      expect(pointer(d)).toBe(true)
+      expect(at(d, '090°')).toEqual([20, 66])
+      expect(at(d, 'NIM')).toEqual([36, 114])
+      expect(d.moves.some((m) => near(m, [R / 4, -9]) || near(m, [0, -9]))).toBe(false) // no station without a range, where it lies or at the centre
+      expect(texts(d).filter((s) => /^\d+:\d\d$/.test(s))).toEqual([]) // no TTG
+    }
+  })
+
   it('shows ZTOD at the lower left and the timer shown, ET or CD, at the lower right', () => {
     const d = hsi()
     expect(at(d, '12:34:56')).toEqual([20, 458])
@@ -828,32 +855,38 @@ describe('the gauges the pages read', () => {
 })
 
 // The UFC (#15, NATOPS 2.13.5): ufc_face is what the windows show for a state and
-// the equipment it reads; ufc_press is one pushbutton against stand-ins for the
-// index, the warning latch and the actions it fires; ufc_button_at maps a panel
-// point to the painted button under it.
-const ufcdefs = ['UFC_PAGES', 'UFC_CUES', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
+// the equipment it reads; ufc_press is one pushbutton against the radios, EMCON and
+// stand-ins for the index, the warning latch and the actions it fires;
+// ufc_button_at maps a panel point to the painted button under it.
+const ufcdefs = ['UFC_PAGES', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
   const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;`).exec(source)?.[0]
   if (!m) throw new Error(`${n} not found in engine.ts`)
   return m
 }).join('\n')
+const radiodefs = /\n\/\/ The radios the UFC works[\s\S]*?\nfunction emcon_set[^\n]*\n/.exec(source)?.[0] ?? ''
+const shipdefs = 'const SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" }, icls:11 };'
 interface Face { scratch: string; options: string[] }
-interface Ufc { func: string; ralt: boolean; entry: string; error: boolean; blink: number }
-interface Live { silent?: boolean; atc?: boolean; ils?: boolean; index?: number }
-interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; silent: boolean; atc: boolean }
-const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', ralt: false, entry: '', error: false, blink: 0, ...over })
-function ufcface(state: Ufc, live: Live, now = 0): Face {
-  const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')} return ufc_face(state, { silent:false, atc:false, ils:false, index:200, ...live }, now);`)
+interface Ufc { func: string; entry: string; error: boolean; blink: number }
+interface Tacan { on: boolean; channel: number; band: string; mode: string; air: boolean }
+interface Radios { tacan: Tacan; ils: { on: boolean; channel: number } }
+interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string }
+interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios; face: Face }
+const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', entry: '', error: false, blink: 0, ...over })
+function ufcface(state: Ufc, live: Live = {}, now = 0): Face {
+  const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')}
+    const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...live.tacan }, ils:{ on:true, channel:11, ...live.ils } };
+    return ufc_face(state, { emcon:!!live.emcon, radios, timer:live.timer ?? "" }, now);`)
   return run(state, live, now) as Face
 }
 function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false): Pressed {
-  const run = new Function('buttons', 'start', 'index', 'sounding', `${ufcdefs}
-    let law_index=index, law_primary=sounding, law_disabled=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pressed=[];
-    const pit_press=(a)=>{ pressed.push(a); if(a==="radar") RADAR.sil=!RADAR.sil; if(a==="atc") atc_on=!atc_on; };
+  const run = new Function('buttons', 'start', 'index', 'sounding', `${ufcdefs} ${shipdefs}
+    let law_index=index, law_primary=sounding, law_disabled=false, ufc_dirty=false; const RADAR={ emcon:false }, pressed=[];
+    const pit_press=(a)=>pressed.push(a), timer_enter=()=>false, timer={ shown:"" };
     const ufc_update=()=>{}; const performance={ now:()=>1000 };
-    const ufc={ func:"", ralt:false, entry:"", error:false, blink:0, ...start };
-    ${lift('ufc_press')}
+    const ufc={ func:"", entry:"", error:false, blink:0, ...start };
+    ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('ufc_face')}
     for(const b of buttons) ufc_press(b);
-    return { ufc, index:law_index, disabled:law_disabled, pressed, silent:RADAR.sil, atc:atc_on };`)
+    return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, { emcon, radios, timer:"" }, 2000) };`)
   return run(buttons, start, index, sounding) as Pressed
 }
 function ufcbutton(y: number, z: number): string | null {
@@ -864,34 +897,29 @@ const blank = ' '.repeat(9)
 
 describe('the UFC windows', () => {
   it('power up clear', () => {
-    expect(ufcface(fresh(), {})).toEqual({ scratch: blank, options: ['', '', '', '', ''] })
+    expect(ufcface(fresh())).toEqual({ scratch: blank, options: ['', '', '', '', ''] })
   })
 
-  it('show the autopilot page with ON while the approach power compensator is engaged', () => {
-    expect(ufcface(fresh({ func: 'ap' }), {}).options).toEqual([' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'])
-    expect(ufcface(fresh({ func: 'ap' }), {}).scratch).toBe(blank)
-    expect(ufcface(fresh({ func: 'ap' }), { atc: true }).scratch).toBe('ON       ')
+  it('show the autopilot page uncued, the scratchpad holding only a keyed entry: no autopilot stands behind it', () => {
+    expect(ufcface(fresh({ func: 'ap' }))).toEqual({ scratch: blank, options: [' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'] })
+    expect(ufcface(fresh({ func: 'ap', entry: '500' })).scratch).toBe('      500')
   })
 
-  it('cue :RALT, with only a keyed entry in the scratchpad: the index is the knob\'s (NATOPS 2.12.5.4.1)', () => {
-    const f = ufcface(fresh({ func: 'ap', ralt: true }), {})
-    expect(f.options[3]).toBe(':RALT')
-    expect(f.scratch).toBe(blank)
-    expect(ufcface(fresh({ func: 'ap', ralt: true, entry: '500' }), {}).scratch).toBe('      500')
+  it('show the TACAN ON with its channel, cueing its mode, A/A and band (NATOPS 24.4.2, 2.13.5.6)', () => {
+    expect(ufcface(fresh({ func: 'tcn' }))).toEqual({ scratch: 'ON     74', options: [':T/R', ' RCV', ' A/A', ':X', ' Y'] })
+    expect(ufcface(fresh({ func: 'tcn' }), { tacan: { mode: 'rcv', air: true, band: 'Y' } }).options).toEqual([' T/R', ':RCV', ':A/A', ' X', ':Y'])
+    expect(ufcface(fresh({ func: 'tcn' }), { tacan: { on: false, channel: 109 } }).scratch).toBe('      109')
+    expect(ufcface(fresh({ func: 'tcn', entry: '12' })).scratch).toBe('ON     12')
   })
 
-  it('show TACAN on in T/R on the X band, and ILS on only while the needles are live', () => {
-    const t = ufcface(fresh({ func: 'tcn' }), {})
-    expect(t.options).toEqual([':T/R', ' RCV', ' A/A', ':X', ' Y'])
-    expect(t.scratch.slice(0, 2)).toBe('ON')
-    expect(ufcface(fresh({ func: 'ils' }), { ils: true }).scratch.slice(0, 2)).toBe('ON')
-    expect(ufcface(fresh({ func: 'ils' }), { ils: false }).scratch.slice(0, 2)).toBe('  ')
-    expect(ufcface(fresh({ func: 'ils' }), {}).options[0]).toBe(':CHNL')
+  it('show the ILS ON with its channel under CHNL (24.5.4)', () => {
+    expect(ufcface(fresh({ func: 'ils' }))).toEqual({ scratch: 'ON     11', options: [':CHNL', '', '', '', ''] })
+    expect(ufcface(fresh({ func: 'ils' }), { ils: { on: false, channel: 3 } }).scratch).toBe('        3')
   })
 
-  it('run E M C O N down the option windows under radar silence, whatever the page', () => {
-    expect(ufcface(fresh({ func: 'tcn' }), { silent: true }).options).toEqual(['E', 'M', 'C', 'O', 'N'])
-    expect(ufcface(fresh(), { silent: true }).options).toEqual(['E', 'M', 'C', 'O', 'N'])
+  it('run E M C O N down the option windows under EMCON, whatever the page (2.13.5.2)', () => {
+    for (const func of ['', 'tcn', 'ap', 'time']) expect(ufcface(fresh({ func }), { emcon: true }).options).toEqual(['E', 'M', 'C', 'O', 'N'])
+    expect(ufcface(fresh({ func: 'tcn' }), { emcon: true }).scratch).toBe('ON     74')
   })
 
   it('flash ERROR at 2 Hz and blank the scratchpad once after a valid entry', () => {
@@ -899,7 +927,7 @@ describe('the UFC windows', () => {
     expect(ufcface(fresh({ error: true }), {}, 0.5).scratch).toBe(blank)
     expect(ufcface(fresh({ error: true }), {}, 1.0).scratch).toBe('ERROR    ')
     expect(ufcface(fresh({ func: 'tcn', blink: 2 }), {}, 1.9).scratch).toBe(blank)
-    expect(ufcface(fresh({ func: 'tcn', blink: 2 }), {}, 2.1).scratch.slice(0, 2)).toBe('ON')
+    expect(ufcface(fresh({ func: 'tcn', blink: 2 }), {}, 2.1).scratch).toBe('ON     74')
   })
 })
 
@@ -936,7 +964,21 @@ describe('the UFC pushbuttons', () => {
     expect(ufcpress(['1', '2', 'clr', 'clr'], { func: 'ap' }).ufc.func).toBe('')
   })
 
-  it('key nothing with ENT: the low-altitude index is the knob\'s, not the UFC\'s, so an entry flags ERROR', () => {
+  it('tune the TACAN (1-126) and the ILS (1-20) with ENT, blinking once, and flag ERROR out of range (24.4.2, 24.5.4)', () => {
+    const tuned = ufcpress(['tcn', '1', '0', '9', 'ent'])
+    expect(tuned.radios.tacan.channel).toBe(109)
+    expect(tuned.ufc).toMatchObject({ entry: '', error: false, blink: 1.3 })
+    expect(ufcpress(['ils', '3', 'ent']).radios.ils.channel).toBe(3)
+    expect(ufcpress(['ils', '3', 'ent']).radios.tacan.channel).toBe(74)
+    const untouched = ufcpress([]).radios
+    for (const keys of [['tcn', '1', '2', '7'], ['tcn', '0'], ['ils', '2', '1'], ['ils', '0'], ['tcn'], ['ils']]) {
+      const refused = ufcpress([...keys, 'ent'])
+      expect(refused.ufc.error, keys.join()).toBe(true)
+      expect(refused.radios, keys.join()).toEqual(untouched)
+    }
+  })
+
+  it('key nothing with ENT from the autopilot page: the low-altitude index is the knob\'s, not the UFC\'s, so an entry flags ERROR', () => {
     const keyed = ufcpress(['ap', 'opt3', '5', '0', '0', 'ent'])
     expect(keyed.index).toBe(200)
     expect(keyed.ufc.error).toBe(true)
@@ -946,34 +988,50 @@ describe('the UFC pushbuttons', () => {
     expect(ufcpress(['ap', 'opt3', '5', '0', '0', 'ent', 'clr']).ufc.error).toBe(false)
   })
 
-  it('select :RALT on the autopilot page only, and disable a sounding primary warning with it or with another UFC mode (NATOPS 2.12.5.1)', () => {
-    expect(ufcpress(['ap', 'opt3']).ufc.ralt).toBe(true)
-    expect(ufcpress(['ap', 'opt3', 'opt3']).ufc.ralt).toBe(false)
+  it('disable a sounding primary warning with :RALT or another UFC mode, and cue no autopilot mode (NATOPS 2.12.5.1)', () => {
     expect(ufcpress(['opt3'], { func: 'ap' }, 200, true).disabled).toBe(true)
     expect(ufcpress(['tcn'], {}, 200, true).disabled).toBe(true)
     expect(ufcpress(['opt3'], { func: 'ap' }, 200, false).disabled).toBe(false) // nothing sounding, nothing to disable
     expect(ufcpress(['1', 'clr'], { func: 'ap' }, 200, true).disabled).toBe(false) // the keypad is not a mode change
-    expect(ufcpress(['tcn', 'opt3']).ufc.ralt).toBe(false)
-    expect(ufcpress(['ap', 'opt2']).ufc.ralt).toBe(false)
+    expect(ufcpress(['opt2'], { func: 'ap' }, 200, true).disabled).toBe(false) // BALT is not :RALT
+    expect(ufcpress(['opt3'], { func: 'tcn' }, 200, true).disabled).toBe(false) // nor is the TACAN's X
+    expect(ufcpress(['ap', 'opt3']).face.options).toEqual([' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'])
   })
 
-  it('engage the approach power compensator from the A/P selector once, and clear the display on the second press', () => {
+  it('show the autopilot page from A/P without engaging ATC, which is the throttle\'s, and clear it on a second press', () => {
     const on = ufcpress(['ap'])
     expect(on.ufc.func).toBe('ap')
-    expect(on.pressed).toEqual(['atc'])
-    const twice = ufcpress(['ap', 'ap'])
-    expect(twice.ufc.func).toBe('')
-    expect(twice.pressed).toEqual(['atc'])
-    expect(ufcpress(['tcn']).pressed).toEqual([])
+    expect(on.pressed).toEqual([])
+    expect(ufcpress(['ap', 'ap']).ufc.func).toBe('')
   })
 
-  it('toggle the radar silence from EMCON and drop the entry on a page change', () => {
+  it('turn the selected radio on and off with ON/OFF, and nothing on the other pages (2.13.5.10)', () => {
+    expect(ufcpress(['tcn', 'onoff']).radios.tacan.on).toBe(false)
+    expect(ufcpress(['tcn', 'onoff']).face.scratch).toBe('       74')
+    expect(ufcpress(['tcn', 'onoff', 'onoff']).radios.tacan.on).toBe(true)
+    expect(ufcpress(['ils', 'onoff']).radios).toEqual({ ...ufcpress([]).radios, ils: { on: false, channel: 11 } })
+    for (const func of ['', 'ap', 'iff', 'dl', 'bcn', 'time']) expect(ufcpress(['onoff'], { func }).radios, func).toEqual(ufcpress([]).radios)
+  })
+
+  it('select T/R or RCV, A/A and the X or Y band from the TCN options (24.4.2)', () => {
+    const t = (keys: string[]) => ufcpress(['tcn', ...keys]).radios.tacan
+    expect(t(['opt1'])).toMatchObject({ mode: 'rcv', air: false, band: 'X' })
+    expect(t(['opt1', 'opt0']).mode).toBe('tr')
+    expect(t(['opt2']).air).toBe(true)
+    expect(t(['opt2', 'opt2']).air).toBe(false)
+    expect(t(['opt4']).band).toBe('Y')
+    expect(t(['opt4', 'opt3']).band).toBe('X')
+    expect(ufcpress(['ils', 'opt1', 'opt2', 'opt4']).radios).toEqual(ufcpress([]).radios) // the TACAN's options only on its page
+  })
+
+  it('toggle EMCON, the radar\'s copy of the discrete with it, and drop the entry on a page change', () => {
     const e = ufcpress(['emcon'])
-    expect(e.pressed).toEqual(['radar'])
-    expect(e.silent).toBe(true)
-    expect(ufcpress(['emcon', 'emcon']).silent).toBe(false)
+    expect([e.emcon, e.radar]).toEqual([true, true])
+    expect(e.pressed).toEqual([]) // not the radar knob
+    const twice = ufcpress(['emcon', 'emcon'])
+    expect([twice.emcon, twice.radar]).toEqual([false, false])
     const moved = ufcpress(['ap', 'opt3', '5', 'tcn'])
-    expect(moved.ufc).toMatchObject({ func: 'tcn', ralt: false, entry: '' })
+    expect(moved.ufc).toMatchObject({ func: 'tcn', entry: '' })
   })
 
   it('map a panel point to the painted button under it, within the key pitch', () => {
@@ -982,12 +1040,14 @@ describe('the UFC pushbuttons', () => {
     expect(ufcbutton(0.351, -0.065)).toBe('ap')
     expect(ufcbutton(0.412, 0.006)).toBe('opt3')
     expect(ufcbutton(0.450, -0.085)).toBe('emcon')
+    expect(ufcbutton(0.351, 0.041)).toBe('bcn')
+    expect(ufcbutton(0.351, 0.062)).toBe('onoff')
     expect(ufcbutton(0.453 + 0.008, -0.061)).toBe('1')
     expect(ufcbutton(0.470, -0.050)).toBe(null)
     expect(ufcbutton(0.300, 0)).toBe(null)
   })
 
-  it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC and the index shared', () => {
+  it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
     expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); \}/)
     expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
@@ -995,8 +1055,40 @@ describe('the UFC pushbuttons', () => {
     expect(source).toMatch(/if\(ch===key_of\("atc"\)\) pit_press\("atc",0\);/)
     expect(source).toMatch(/case "atc": if\(atc_on\)\{ atc_on=false; atc_flash=-Infinity; \} else if\(ownship\.gearTarget<0\.5 && !on_ground\(\)\)\{ atc_on=true;/)
     expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
-    expect(source).toMatch(/ufc\.func=""; ufc\.ralt=false; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true;/)
+    expect(source).toMatch(/ufc\.func=""; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true; Object\.assign\(radios,radios_tuned\(\)\); emcon_set\(false\);/)
     expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\);   \/\/ transparent: the painted keypad/)
+  })
+})
+
+// The ICLS needles and bars live only with the ILS on and tuned to the ship (24.5.4),
+// on an approach the stand-in geometry puts the jet on.
+describe('the ILS needles', () => {
+  const needles = (ils: string) => new Function(`const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } }, SHIP={ icls:11 }, radios={ ils:${ils} };
+    const carrier_ols={ tdx:0, tdz:0, dy:0 }, ownship={ pos:{ x:0, y:100, z:1000 }, fwd:{ x:0, z:-1 }, gearTarget:0 }, ols_dev=()=>({ along:1000, dist:1000, lat:0, dev:0.4 });
+    ${lift('approach_deviation')} return approach_deviation();`)()
+  it('live only with the ILS on and on the ship\'s channel', () => {
+    expect(needles('{ on:true, channel:11 }')).toEqual({ az: 0, gs: 0.5 })
+    expect(needles('{ on:false, channel:11 }')).toBe(null)
+    expect(needles('{ on:true, channel:12 }')).toBe(null)
+  })
+})
+
+// EMCON silences the radar (2.13.5.2) wherever the game asks whether it transmits:
+// those reads go through RADAR.silent(), and RADAR.sil, the radar's own silence, is
+// read only for SIL's legends and the knob that sets it.
+describe('the radar silence the game reads', () => {
+  it('asks RADAR.silent(), leaving RADAR.sil to the SIL legends and the knob', () => {
+    const reads = source.split('\n').filter((l) => /RADAR\.sil\b/.test(l)).map((l) => l.replace(/\s*\/\/.*$/, '').trim())
+    expect(reads).toEqual([
+      'if(pb===8){ RADAR.sil=!RADAR.sil; return true; }',
+      'ddi_legend(x,8,"SIL",true,RADAR.sil);',
+      'if(RADAR.sil){ x.font="22px monospace"; x.textAlign="center"; x.fillText("SIL",256,108); }',
+      'case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;',
+      'case "radaropr": f=(st===ownship&&RADAR.sil)?1/3:2/3; break;',
+      'if(RADAR.sil) rows.push([GR,"SIL"]);',
+      'RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";',
+    ])
+    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(9)
   })
 })
 
@@ -1008,13 +1100,13 @@ describe('the UFC pushbuttons', () => {
 describe('the TIMEUFC page', () => {
   const timers = /\n\/\/ The mission computer's timers[\s\S]*?\n(?=const ufc=\{)/.exec(source)?.[0] ?? ''
   interface Timed { ufc: Ufc; shown: string; et: number; cd: number; running: { et: boolean; cd: boolean }; face: Face }
-  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', `${ufcdefs} let sim_time=0; ${timers}
-    let law_primary=false, law_disabled=false, atc_on=false, ufc_dirty=false; const RADAR={ sil:false }, pit_press=()=>{}, ufc_update=()=>{}, performance={ now:()=>1000 };
-    const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 }, hsi_state={ dctr:false, map:false }, hsi_range=()=>{};
-    ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
+  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', `${ufcdefs} ${shipdefs} let sim_time=0; ${timers}
+    let law_primary=false, law_disabled=false, ufc_dirty=false; const RADAR={ emcon:false }, ufc_update=()=>{}, performance={ now:()=>1000 };
+    const ufc={ func:"", entry:"", error:false, blink:0 }, hsi_state={ dctr:false, map:false }, hsi_range=()=>{};
+    ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
     for(const b of buttons){ if(typeof b==="number") sim_time=b; else if(b==="timeufc") hsi_press(17,"left"); else ufc_press(b); }
     return { ufc, shown:timer.shown, et:timer_seconds("et"), cd:timer_seconds("cd"), running:{ et:timer.et.since!==null, cd:timer.cd.since!==null },
-      face:ufc_face(ufc, { silent:false, atc:false, ils:false, timer:timer.shown }, 0) };`)(buttons) as Timed
+      face:ufc_face(ufc, { emcon, radios, timer:timer.shown }, 0) };`)(buttons) as Timed
 
   it('is loaded by TIMEUFC, boxed while it holds the UFC, and cleared by a second press', () => {
     expect(timers).not.toBe('')

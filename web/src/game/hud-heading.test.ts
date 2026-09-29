@@ -108,17 +108,26 @@ describe('the heading marker and bank scale as figure 2-26 draws them', () => {
   const THREE = { MathUtils: { clamp: (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v)) } }
   const cx = 640, hty = 46, D2R = Math.PI / 180
 
-  it('marks the command heading with a short heavy bar under the ticks', () => {
+  // the section against a TACAN stand-in: the station's bearing, or null with none received
+  const scale = (station: { bearing: number } | null) => {
     const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
     const c = record()
-    const bearing = 12 * D2R   // between the 10° and 15° ticks
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'CARRIER', 'wrap_axis', 'THREE', source.slice(start, end))(
-      c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 } }, true, 'nav', { x: 1000 * Math.sin(bearing), z: -1000 * Math.cos(bearing) }, (v: number) => v, THREE)
-    const mx = cx + 12 * 7
-    const marker = c.paths.filter(path => path.points.some(([, x]) => Math.abs(x - mx) < 1e-6))
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'tacan', 'THREE', source.slice(start, end))(
+      c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 } }, true, 'nav', () => station, THREE)
+    return c
+  }
+
+  it('marks the command heading with a short heavy bar under the ticks, on the TACAN bearing', () => {
+    const mx = cx + 12 * 7   // 12°: between the 10° and 15° ticks
+    const marker = scale({ bearing: 12 * D2R }).paths.filter(path => path.points.some(([, x]) => Math.abs(x - mx) < 1e-6))
     expect(marker.length).toBe(1)
     expect(marker[0].points.map(([, x, y]) => [Math.round(x), y])).toEqual([[mx, hty + 1], [mx, hty + 6]])
     expect(marker[0].width).toBe(3)
+  })
+
+  it('draws no command heading without a TACAN bearing', () => {
+    expect(scale(null).paths.filter(path => path.width === 3)).toEqual([])
+    expect(scale({ bearing: 12 * D2R }).paths.filter(path => path.width === 3).length).toBe(1)
   })
 
   const bank = (degrees: number) => {
