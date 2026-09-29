@@ -171,7 +171,7 @@ describe('the HOOK light', () => {
     const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
     expect(build).toMatch(/const hook=g\.getObjectByName\("LANDING_Gear_Lever_Hook_AN_Hook_569"\), knob=hook&&hook\.getObjectByName\("Object_986"\);/) // the clip moves this node, not its parent; the knob is its second mesh
     expect(build).toMatch(/const b=node_box\(g,knob\);/)
-    expect(build).toMatch(/lamps\.hook=legend\("HOOK","#ffc23a",0\.020,0\.012\);/)
+    expect(build).toMatch(/lamps\.hook=legend\("HOOK","#e23b2e",0\.020,0\.012\);/)
     expect(build).toMatch(/hook\.attach\(lamps\.hook\);/)
     expect(source).toMatch(/case "hooklever": f=\(st\.hookTarget\?\?0\)>0\.5\?1:0; break;/)
   })
@@ -228,7 +228,7 @@ describe('the caution lights panel', () => {
   ]
   it('lays the twelve lights four by three as FO-5 item 46 does, each on its painted lens', () => {
     const { lamps, cautions } = built()
-    const names = [['ckseat', 'apuacc', 'battsw'], [null, 'gentie', null], [null, 'fces', 'fcshot'], ['fuello', 'genL', 'genR']]
+    const names = [['ckseat', 'apuacc', 'battsw'], ['fcshot', 'gentie', null], ['fuello', 'fces', null], ['genL', 'genR', null]]
     expect(cautions.children.length).toBe(12)
     names.forEach((row, r) => row.forEach((name, c) => {
       const m = cautions.children[r * 3 + c]
@@ -365,14 +365,16 @@ describe('the emergency instrument light', () => {
 // light in the handle is on in transit; on for 15 s it brings the tone; under
 // the wheels warning it flashes with the beep; and the warning tone silence
 // button latches the tone off until its condition clears.
-interface Handle { ext: number; t: number; lit?: number; wheels?: boolean }
-function handle(c: Handle): { opacity: number; lit: number } {
-  const block = /\n\tif\(l\.transit\)\{ const moving=[\s\S]*?l\.right\.material\.opacity=green; \}\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('gear handle light block not found in engine.ts')
-  const run = new Function('c', `const ext=c.ext, sim_time=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1;
+interface Handle { ext: number; t: number; lit?: number; wheels?: boolean; up?: boolean; harm?: number[] }
+function handle(c: Handle): { opacity: number; lit: number; greens: number[] } {
+  const block = /\n\tif\(l\.transit\)\{ const locked=[\s\S]*?l\.right\.material\.opacity=locked\[2\]\?1:0; \}\n/.exec(source)?.[0] ?? ''
+  const collapse = /\nconst GEAR_COLLAPSE=[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block || !collapse) throw new Error('gear handle light block not found in engine.ts')
+  const run = new Function('c', `const ext=c.ext, sim_time=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse}
+    const STATE={ gear_harm:0 }, out=c.harm??[0,0,0], ownship={ gearTarget:c.up?1:0 };
     const l={transit:{material:{opacity:0}},nose:{material:{}},left:{material:{}},right:{material:{}}}; ${block}
-    return { opacity:l.transit.material.opacity, lit:handle_lit };`)
-  return run(c) as { opacity: number; lit: number }
+    return { opacity:l.transit.material.opacity, lit:handle_lit, greens:[l.nose.material.opacity,l.left.material.opacity,l.right.material.opacity] };`)
+  return run(c) as { opacity: number; lit: number; greens: number[] }
 }
 function tone(lit: number, t: number, wheels: boolean, silenced: boolean): { tone: boolean; silenced: boolean } {
   const fn = /\nfunction gear_tone\(\)\{[\s\S]*?return due&&!tone_silenced; \}\n/.exec(source)?.[0] ?? ''
@@ -384,15 +386,43 @@ function tone(lit: number, t: number, wheels: boolean, silenced: boolean): { ton
 
 describe('the gear handle light and tone', () => {
   it('lights the handle in transit and remembers when it came on', () => {
-    expect(handle({ ext: 0.5, t: 10 })).toEqual({ opacity: 1, lit: 10 })
-    expect(handle({ ext: 0.5, t: 12, lit: 10 })).toEqual({ opacity: 1, lit: 10 })
-    expect(handle({ ext: 1, t: 15, lit: 10 })).toEqual({ opacity: 0, lit: -1 })
+    expect(handle({ ext: 0.5, t: 10 })).toMatchObject({ opacity: 1, lit: 10 })
+    expect(handle({ ext: 0.5, t: 12, lit: 10 })).toMatchObject({ opacity: 1, lit: 10 })
+    expect(handle({ ext: 1, t: 15, lit: 10 })).toMatchObject({ opacity: 0, lit: -1, greens: [1, 1, 1] })
+  })
+
+  it('keeps it on with UP selected until the gear is up', () => {
+    expect(handle({ ext: 0.5, t: 10, up: true })).toMatchObject({ opacity: 1, greens: [0, 0, 0] })
+    expect(handle({ ext: 0.01, t: 20, up: true, lit: 10 })).toMatchObject({ opacity: 0, lit: -1 })
+  })
+
+  it('gives each leg its own green, and keeps the handle light on while a folded strut is not down and locked (2.10.1.4, 2.10.1.5)', () => {
+    expect(handle({ ext: 1, t: 10, harm: [0, 0.8, 0] })).toEqual({ opacity: 1, lit: 10, greens: [1, 0, 1] })
+    expect(handle({ ext: 1, t: 10, harm: [0.75, 0, 0] }).greens).toEqual([0, 1, 1])
+    expect(handle({ ext: 1, t: 10, harm: [0, 0, 0.71] }).greens).toEqual([1, 1, 0])
+    expect(handle({ ext: 1, t: 10, harm: [0.69, 0.69, 0.69] })).toEqual({ opacity: 0, lit: -1, greens: [1, 1, 1] }) // damaged, still standing
+  })
+
+  it('carries the handle light on the handle as it moves', () => {
+    const cut = (from: string, to: string) => { const a = source.indexOf(from), b = source.indexOf(to, a); if (a < 0 || b < 0) throw new Error(`${from} not found`); return source.slice(a, b) }
+    const lamp = /\n\tconst lamp=\(c,w,h\)=>[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+    const gear = cut('\tconst handle=g.getObjectByName("Gear_handle_483");', '\t// The HOOK light')
+    const built = new Function('THREE', `const LAYER_OWN=1, lamps={}, g=new THREE.Group(), node=new THREE.Group(), lever=new THREE.Group();
+      node.name="Gear_handle_483"; lever.name="Gear_handle_AN_handle_482"; node.position.set(6.25,0.076,-0.338); node.add(lever); g.add(node); ${lamp} ${gear}
+      g.updateMatrixWorld(true); const rest=lamps.transit.getWorldPosition(new THREE.Vector3());
+      lever.rotation.z=0.6; g.updateMatrixWorld(true); const up=lamps.transit.getWorldPosition(new THREE.Vector3());
+      return { parent:lamps.transit.parent===lever, name:lamps.transit.name, rest, up, silence:g.userData.silence.parent!==lever };`)(THREE) as { parent: boolean; name: string; rest: THREE.Vector3; up: THREE.Vector3; silence: boolean }
+    expect(built.parent).toBe(true)
+    expect(built.name).toBe('transitlamp')
+    expect(built.rest.toArray().map((v) => Math.round(v * 1000) / 1000)).toEqual([6.23, 0.121, -0.318]) // on the knob at rest, where it was
+    expect(built.rest.distanceTo(built.up)).toBeGreaterThan(0.01) // and it travels with the handle
+    expect(built.silence).toBe(true) // the rest of the unit stays on the panel
   })
 
   it('flashes the handle with the beep under the wheels warning', () => {
-    expect(handle({ ext: 0, t: 0.2, wheels: true }).opacity).toBe(1)
-    expect(handle({ ext: 0, t: 0.8, wheels: true }).opacity).toBe(0)
-    expect(handle({ ext: 0, t: 0.2 }).opacity).toBe(0)
+    expect(handle({ ext: 0, t: 0.2, wheels: true, up: true }).opacity).toBe(1)
+    expect(handle({ ext: 0, t: 0.8, wheels: true, up: true }).opacity).toBe(0)
+    expect(handle({ ext: 0, t: 0.2, up: true }).opacity).toBe(0)
   })
 
   it('sounds the tone once the light has been on 15 s, or under the wheels warning', () => {
