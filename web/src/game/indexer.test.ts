@@ -131,14 +131,18 @@ describe('the hook bypass wiring', () => {
 // stand-ins for the state they read.
 const cases = /\/\/ switches from state \(#18\) ---\n([\s\S]*?)\t\t\/\/ --- end switches/.exec(source)?.[1] ?? ''
 interface Craft { canopyTarget?: number; canopy?: number; foldTarget?: number; barTarget?: number; probeTarget?: number; lights?: boolean }
-interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean }
+interface Panel { position: number; formation: number; strobe: string; landing: boolean }
+interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel> }
+// The exterior lights panel's state and the STROBE switch's positions, aft to forward, as engine.ts declares them.
+const strobe = JSON.parse(/\nconst STROBE=(\[[^\n]*\]);/.exec(source)?.[1] ?? 'null') as string[] | null
+const panel = new Function(`return ${/\nconst exterior=(\{[^\n]*\});/.exec(source)?.[1] ?? 'null'};`)() as Panel | null
 // Runs one drive case for the aircraft st, which is the ownship unless foreign is set.
 function drive(name: string, st: Craft, own: Own = {}, foreign = false): number | undefined {
   if (!cases) throw new Error('switch drive cases not found in engine.ts')
-  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR',
+  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE',
     `let f; switch(name){ ${cases} } return f;`)
   const ownship = foreign ? {} : st
-  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }) as number | undefined
+  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe) as number | undefined
 }
 
 describe('the state-driven switches', () => {
@@ -148,8 +152,9 @@ describe('the state-driven switches', () => {
       ['parkbrake', 'LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake', 'parkbrake'], ['parkpull', 'LANDING_GEAR_Switch_ParkingBrake_AN_287', 'parkbrake'],
       ['probeswitch', 'Refuel_Switch_Action_AN', 'probeswitch'],
       ['altswitch', 'Switch_ALT_HudPanel_AN', 'altswitch'], ['rejswitch', 'Switch_REJ2_HudPanel_AN', 'rejswitch'],
-      ['ldglight', 'Switch_LDG_Light_LeftPanel_AN', 'lightswitch'], ['strobe', 'Switch_Strobe_LeftPanel_AN', 'lightswitch'],
-      ['formation', 'FormationLightsAction_AN', 'lightswitch'], ['dumpswitch', 'Fuel_Dump_AN', 'dumpswitch'], ['radaropr', 'RADAR_OPR_AN', 'radaropr'],
+      ['ldglight', 'Switch_LDG_Light_LeftPanel_AN', 'ldglight'], ['strobe', 'Switch_Strobe_LeftPanel_AN', 'strobe'],
+      ['formation', 'FormationLightsAction_AN', 'formation'], ['position', 'Knob_POS_LeftPanel_AN', 'position'],
+      ['dumpswitch', 'Fuel_Dump_AN', 'dumpswitch'], ['radaropr', 'RADAR_OPR_AN', 'radaropr'],
     ]
     for (const [name, node, drive] of entries)
       expect(source, name).toMatch(new RegExp(`\\{ name:"${name}",\\s+track:/\\^${node}/i,\\s+drive:"${drive}" \\}`))
@@ -170,9 +175,19 @@ describe('the state-driven switches', () => {
     expect(drive('probeswitch', { probeTarget: 0 })).toBe(0)
   })
 
-  it('read the light switches from the aircraft lights', () => {
-    expect(drive('lightswitch', { lights: true })).toBe(1)
-    expect(drive('lightswitch', { lights: false })).toBe(0)
+  it('read the exterior lights panel, each control from its own setting, and leave another jet\'s at rest', () => {
+    expect(drive('ldglight', {}, { exterior: { landing: true } })).toBe(1)
+    expect(drive('ldglight', {}, { exterior: { landing: false } })).toBe(0)
+    expect(drive('ldglight', {}, { exterior: { landing: true } }, true)).toBe(0)
+    // the STROBE clip runs aft to forward: DIM, OFF in the middle, BRT (2.6.1.4)
+    expect(['dim', 'off', 'bright'].map((strobe) => drive('strobe', {}, { exterior: { strobe } }))).toEqual([0, 0.5, 1])
+    expect(drive('strobe', {}, { exterior: { strobe: 'bright' } }, true)).toBe(0.5)
+    expect(drive('formation', {}, { exterior: { formation: 0.75 } })).toBe(0.75)
+    expect(drive('position', {}, { exterior: { position: 0.25 } })).toBe(0.25)
+    expect(drive('formation', {}, { exterior: { formation: 0.75 } }, true)).toBe(0)
+    expect(drive('position', {}, { exterior: { position: 0.25 } }, true)).toBe(0)
+    // the master switch moves none of the panel's controls
+    expect(drive('ldglight', { lights: true }, { exterior: { landing: false } })).toBe(0)
   })
 
   it('read the ownship-only switches from their state, and leave them at rest on other aircraft', () => {
@@ -243,21 +258,23 @@ interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
   hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean; bingo?: boolean; fuellow?: boolean
+  exterior?: Partial<Panel>
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
   parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
+  exterior: Panel
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
-  const run = new Function('action', 'direction', 'state', `
-    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
+  const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
+    const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test };`)
-  return run(action, direction, state) as Pressed
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior };`)
+  return run(action, direction, state, panel, strobe) as Pressed
 }
 
 describe('the clickable switches', () => {
@@ -265,7 +282,7 @@ describe('the clickable switches', () => {
     const table = /const PIT_SWITCHES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? ''
     const expected: [string, string | null][] = [
       ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', null],
-      ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'lights'], ['strobe', 'lights'], ['formation', 'lights'],
+      ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'landing'], ['strobe', 'strobe'], ['formation', 'formation'], ['position', 'position'],
       ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
@@ -381,10 +398,30 @@ describe('the clickable switches', () => {
       expect(press('probe', d).ownship.probeTarget).toBe(1)
       expect(press('altitude', d).alt_radar).toBe(true)
       expect(press('lights', d).ownship.lights).toBe(true)
+      expect(press('landing', d, { exterior: { landing: false } }).exterior.landing).toBe(true)
       expect(press('dump', d).fuel_dump).toBe(true)
       expect(press('hook.bypass', d).hook_bypass).toBe('field')
       expect(press('hook', d).ownship.hookTarget).toBe(1)
     }
+  })
+
+  it('set the exterior lights panel apart from the master switch (NATOPS 2.6.1)', () => {
+    // STROBE: the right button forward toward BRT, the left aft toward DIM, stopping at each end
+    const step = (from: string, d: number) => press('strobe', d, { exterior: { strobe: from } }).exterior.strobe
+    expect([step('bright', -1), step('off', -1), step('dim', -1)]).toEqual(['off', 'dim', 'dim'])
+    expect([step('dim', 1), step('off', 1), step('bright', 1)]).toEqual(['off', 'bright', 'bright'])
+    // the knobs: a quarter of the way a click, clockwise brighter, between OFF and BRT
+    for (const knob of ['position', 'formation'] as const) {
+      const turn = (from: number, d: number) => press(knob, d, { exterior: { [knob]: from } }).exterior[knob]
+      expect([turn(1, -1), turn(0.25, -1), turn(0, -1), turn(0.75, 1), turn(1, 1)], knob).toEqual([0.75, 0, 0, 1, 1])
+    }
+    // none of the panel's controls moves the master switch, nor the master the panel
+    expect(press('landing', -1, { exterior: { landing: true } }).exterior.landing).toBe(false)
+    const on = press('landing', 1, { lights: true, exterior: { landing: false } })
+    expect([on.ownship.lights, on.exterior.landing]).toEqual([true, true])
+    expect(press('lights', 1, { exterior: { landing: false, strobe: 'dim' } }).exterior).toEqual({ ...panel, landing: false, strobe: 'dim' })
+    expect(panel).toEqual({ position: 1, formation: 1, strobe: 'bright', landing: false }) // BRT on both knobs and the strobes as the jet comes
+    expect(strobe).toEqual(['dim', 'off', 'bright'])
   })
 
   it('hold the DUMP switch ON only with BINGO and FUEL LO off, and let it go OFF any time (NATOPS 2.2.7)', () => {
