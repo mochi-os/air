@@ -4182,10 +4182,9 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	// turn in drag; a fuse that arms after separation; flares that SEDUCE.
 	let spd=Math.hypot(m.vx,m.vy,m.vz)||1;
 	const t=m.target;
-	const fox3=m.kind==="120c";   // #27 phase 1: the radar round shares the pool with different constants and no IR frailties
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
-	// Flares: one seduction roll per flare window (SP only — MP damage is the server's). Flares mean nothing to a radar seeker (chaff is #29).
-	if(tracking && !fox3 && t && sim_time-(t.flared_at??-9)<0.8){   // the TARGET's dispense, whoever the target is: the bandit's flares seduce our heaters, ours seduce its
+	// Flares: one seduction roll per flare window (SP only — MP damage is the server's).
+	if(tracking && t && sim_time-(t.flared_at??-9)<0.8){   // the TARGET's dispense, whoever the target is: the bandit's flares seduce our heaters, ours seduce its
 		if(!m.window){ m.window=true;
 			// The TARGET's aspect and burner, not the bandit's: the bandit's
 			// heaters chase the pilot, whose flare is judged on his own tail
@@ -4208,7 +4207,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		const ts=squared>1e-9?THREE.MathUtils.clamp(-(rx*cvx+ry*cvy+rz*cvz)/squared,0,dt):0;
 		const nx=rx+cvx*ts, ny=ry+cvy*ts, nz=rz+cvz*ts;
 		const near=Math.hypot(nx,ny,nz);
-		if(near<(fox3?20:12)){ m.active=false; m.mesh.visible=false;
+		if(near<12){ m.active=false; m.mesh.visible=false;
 			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target
 			m.burst=near; m.closure=Math.sqrt(squared);   // the CONTINUOUS miss and closing speed, recorded (#58): the sampled Least could not tell a 4 m near-kill from an 11.9 m fringe graze, which is what forced #53 to be answered synthetically
 			m.off=(t.fwd&&t.up&&t.right)?{ ahead:-(nx*t.fwd.x+ny*t.fwd.y+nz*t.fwd.z), above:-(nx*t.up.x+ny*t.up.y+nz*t.up.z), right:-(nx*t.right.x+ny*t.right.y+nz*t.right.z) }:undefined;   // target -> burst in the TARGET's body frame: distance and bearing in one field
@@ -4229,18 +4228,16 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 					if(own.kill) crash_ownship("missile",BANDIT); }
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
-				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
-					explosion_at(bx,by,bz); own_kills++; bandit_destroy("verdict"); }
-				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick,WARHEAD.heater,m.closure??0);
-					m.judged=verdict.judged; m.spot=verdict.spot;   // #85
-					m.mask=verdict.mask; m.killed=verdict.kill;
-					explosion_at(bx,by,bz);
-					// The evidence a real pilot reads (#62): fragments CONNECTING with the airframe —
-					// sparks and marks at the traced hit points, carried on the jet. A burst he flies
-					// through unmarked looks exactly like the miss that it is.
-					for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
-						hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
-					if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } } }
+				const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick,WARHEAD.heater,m.closure??0);
+				m.judged=verdict.judged; m.spot=verdict.spot;   // #85
+				m.mask=verdict.mask; m.killed=verdict.kill;
+				explosion_at(bx,by,bz);
+				// The evidence a real pilot reads (#62): fragments CONNECTING with the airframe —
+				// sparks and marks at the traced hit points, carried on the jet. A burst he flies
+				// through unmarked looks exactly like the miss that it is.
+				for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
+					hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
+				if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false;
@@ -4266,7 +4263,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		// never broke (recording 01a0b090: five of five, at 0.16-0.24 rad/s against 0.35).
 		const drift=tracking?{x:t.velx??t.fwd.x*t.speed, y:t.vely??t.fwd.y*t.speed, z:t.velz??t.fwd.z*t.speed}:{x:0,y:-45,z:0};   // the aim point's own motion: the target's, or a swallowed flare's fall
 		const sight=seeker_sight({x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},{x:ax,y:ay,z:az},drift);
-		const broke=seeker_break(sight,fox3?SEEKERS.radar:SEEKERS.heater);   // ±40° gimbal and a 20°/s track ceiling for the heater — beaming saturates it; the radar round gimbals wider and tracks harder
+		const broke=seeker_break(sight,SEEKERS.heater);   // ±40° gimbal and a 20°/s track ceiling — beaming saturates it
 		if(broke){ if(!m.loose){ m.why=broke; m.at=Math.round(sight.distance); m.rate=sight.rate; } m.loose=true; }   // recorded, not just logged: a debrief must be able to say WHY a lock went
 		if(!m.loose){
 			// PROPORTIONAL NAVIGATION: a = N·Vc·λ̇ — fly the collision course.
@@ -4280,7 +4277,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 				if(spd<ts+60 && sight.closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
 		}
 	}
-	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; const thrust=fox3?150:260;   // the 120's motor burns longer and gentler: ~1,200 m/s over 8 s against the 9M's ~780 over 3
+	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; const thrust=260;   // the 9M's motor: ~780 m/s over 3 s
 		m.vx+=m.vx/spd*thrust*dt; m.vy+=m.vy/spd*thrust*dt; m.vz+=m.vz/spd*thrust*dt; }
 	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
 	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());

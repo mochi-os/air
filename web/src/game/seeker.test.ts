@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   SEEKERS,
@@ -109,7 +111,6 @@ describe('what breaks a lock', () => {
     const wide: Vector = { x: 600, y: 0, z: 800 } // 53 degrees off the flight path
     const sight = seeker_sight({ x: 0, y: 0, z: 0 }, fast, wide, { x: 0, y: 0, z: 900 })
     expect(seeker_break(sight, SEEKERS.heater)).toBe('gimbal')
-    expect(seeker_break(sight, SEEKERS.radar)).not.toBe('gimbal') // the radar round's own seeker gimbals to sixty
   })
 
   it('breaks on the rate when the target beams it', () => {
@@ -117,7 +118,6 @@ describe('what breaks a lock', () => {
     const sight = seeker_sight({ x: 0, y: 0, z: 0 }, fast, near, { x: 0, y: 0, z: 200 })
     expect(sight.rate).toBeCloseTo(0.5, 6)
     expect(seeker_break(sight, SEEKERS.heater)).toBe('rate')
-    expect(seeker_break(sight, SEEKERS.radar)).toBe('') // which tracks harder
   })
 
   it('does not spike when the aim point swaps to a flare', () => {
@@ -227,5 +227,26 @@ describe('the recorded head-on shot', () => {
   it('arrives at either frame rate, measured from the relative velocity', () => {
     expect(fly('analytic', 30).fused).toBe(true)
     expect(fly('analytic', 60).fused).toBe(true)
+  })
+})
+
+describe('the heater path in the engine', () => {
+  // engine.ts cannot be imported (WebGL at module scope): step_missiles is
+  // lifted out of its source, from its head to the next line at column 0.
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const start = source.indexOf('function step_missiles(')
+  const rest = source.slice(start)
+  const body = rest.slice(0, /\n(?=\S)/.exec(rest.slice(1))!.index + 1)
+
+  it('hands every radar round to step_amraam first, and flies only heaters after', () => {
+    expect(start).toBeGreaterThan(0)
+    expect(body).toMatch(/^function step_missiles\(dt\)\{ for\(const m of missiles\)\{ if\(!m\.active\)\{ continue; \}\n\tif\(m\.kind==="120c"\)\{ step_amraam\(m,dt\); continue; \}\n/)
+    expect(body.match(/120c/g)).toHaveLength(1) // nothing after the hand-off asks what kind of round it is
+    expect(body).not.toMatch(/fox3/)
+    expect(body).toContain('seeker_break(sight,SEEKERS.heater)')
+  })
+
+  it('has the one seeker it flies', () => {
+    expect(Object.keys(SEEKERS)).toEqual(['heater'])
   })
 })
