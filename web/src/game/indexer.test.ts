@@ -197,13 +197,14 @@ describe('the state-driven switches', () => {
     expect(other(0, false)).toBe(1)
   })
 
-  it('spring the DUMP switch back to OFF when BINGO comes on', () => {
-    const line = /\n\tif\(fuel_dump&&bingo_low\(\)\) fuel_dump=false;/.exec(source)?.[0] ?? ''
+  it('spring the DUMP switch back to OFF when BINGO comes on, and end the dump at FUEL LO (NATOPS 2.2.7)', () => {
+    const line = /\n\tif\(fuel_dump&&\(bingo_low\(\)\|\|fuel_low\(\)\)\) fuel_dump=false;/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
-    const run = new Function('fuel_dump', 'bingo_low', `${line} return fuel_dump;`)
-    expect(run(true, () => false)).toBe(true)
-    expect(run(true, () => true)).toBe(false)
-    expect(run(false, () => false)).toBe(false)
+    const run = new Function('fuel_dump', 'bingo_low', 'fuel_low', `${line} return fuel_dump;`)
+    expect(run(true, () => false, () => false)).toBe(true)
+    expect(run(true, () => true, () => false)).toBe(false)
+    expect(run(true, () => false, () => true)).toBe(false)
+    expect(run(false, () => false, () => false)).toBe(false)
   })
 
   it('store the scrubbed fraction on the entry and report it from the probe', () => {
@@ -221,7 +222,7 @@ const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exe
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
-  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean
+  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean; bingo?: boolean; fuellow?: boolean
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
@@ -232,7 +233,7 @@ function press(action: string, direction: number, state: Pit = {}): Pressed {
   const run = new Function('action', 'direction', 'state', `
     const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false;
-    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
+    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn}
     pit_press(action, direction);
     return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test };`)
@@ -364,5 +365,12 @@ describe('the clickable switches', () => {
       expect(press('hook.bypass', d).hook_bypass).toBe('field')
       expect(press('hook', d).ownship.hookTarget).toBe(1)
     }
+  })
+
+  it('hold the DUMP switch ON only with BINGO and FUEL LO off, and let it go OFF any time (NATOPS 2.2.7)', () => {
+    expect(press('dump', 1, { bingo: true }).fuel_dump).toBe(false)
+    expect(press('dump', 1, { fuellow: true }).fuel_dump).toBe(false)
+    expect(press('dump', 1, { fuel_dump: true, fuellow: true }).fuel_dump).toBe(false)
+    expect(press('dump', 1, { fuel_dump: true }).fuel_dump).toBe(false)
   })
 })

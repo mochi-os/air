@@ -201,7 +201,7 @@ describe('the voice takes over from the caution tone', () => {
     expect(airborne.slice(2).some((m) => m.lamp)).toBe(false)
     const clean = cautions([{ rows: [], ready: true, grounded: true, rpm: 70 }, { rows: [], ready: true, grounded: true, rpm: 85 }])
     expect(clean[1]).toMatchObject({ lamp: false, tones: [] }) // no caution, nothing to re-light or tone
-    expect(source).toMatch(/\n\tflbit=-Infinity; relight\.low=sim_time; relight\.high=false; relight\.sat=false;/) // a fresh jet starts its idle minute afresh
+    expect(source).toMatch(/\n\tflbit=-Infinity;[^\n]*relight\.low=sim_time; relight\.high=false; relight\.sat=false;/) // a fresh jet starts its idle minute afresh
   })
 
   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have

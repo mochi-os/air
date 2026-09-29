@@ -459,7 +459,7 @@ describe('the FUEL display', () => {
 
 describe('the fuel low BIT', () => {
   const flbits = (/\nlet flbit=-Infinity;\nconst FLBIT_RESULT=[^\n]*\n/.exec(source)?.[0] ?? '') + lift('flbit_running') + lift('flbit_lit') + lift('fuel_press')
-  const run = (steps: string) => new Function(`let sim_time=0; const FUELLO=726, ownship={ fuel:2000 }; ${flbits} ${steps}`)() as unknown[]
+  const run = (steps: string) => new Function(`let sim_time=0; const fuel_lo={ on:false }; ${flbits} ${steps}`)() as unknown[]
   it('raises FUEL LO within 13 s of the press and holds it the minute any FUEL LO holds', () => {
     expect(flbits).toMatch(/^\nlet flbit=/)
     expect(run('const r=[fuel_press(20)]; for(const t of [5,9.9,10,69.9,70]){ sim_time=t; r.push(flbit_running(), flbit_lit()); } return r;'))
@@ -467,7 +467,7 @@ describe('the fuel low BIT', () => {
   })
 
   it('is inoperative while FUEL LO is up, or while it runs, and the page has no BINGO arrows', () => {
-    expect(run('ownship.fuel=500; return [fuel_press(20)];')).toEqual([false])
+    expect(run('fuel_lo.on=true; return [fuel_press(20)];')).toEqual([false])
     expect(run('fuel_press(20); sim_time=5; const again=fuel_press(20); sim_time=30; return [again, fuel_press(20)];')).toEqual([false, false])
     expect(run('return [fuel_press(3), fuel_press(4)];')).toEqual([false, false])
   })
@@ -475,12 +475,13 @@ describe('the fuel low BIT', () => {
   it('carries its FUEL LO through the caution, the light and the voice, and clears at a spawn', () => {
     const section = /\n\tlet low=false, below=false;[\s\S]*?\n\t\tif\(below\) push\("BINGO"\); \}/.exec(source)?.[0] ?? ''
     expect(section).not.toBe('')
-    const rows = (fuel: number, lit: boolean) => new Function(`const rows=[], push=(k)=>rows.push(k), cheat=()=>false, FUELLO=726, BINGO=1361, ownship={ fuel:${fuel} }, flbit_lit=()=>${lit}; ${section} return [rows, low, below];`)() as [string[], boolean, boolean]
-    expect(rows(3000, true)).toEqual([['FUEL LO'], false, false]) // the test's FUEL LO, the fuel itself above both
-    expect(rows(3000, false)).toEqual([[], false, false])
-    expect(rows(500, false)).toEqual([['FUEL LO', 'BINGO'], true, true]) // both, as their own conditions
-    expect(source).toMatch(/lamp_set\(l\.fuello,\(ownship\.fuel\?\?1e9\)<FUELLO\|\|flbit_lit\(\)\);/)
-    expect(source).toMatch(/\n\tflbit=-Infinity;[^\n]*\n\tbaro_armed=false;/)
+    const rows = (fuel: number, low: boolean, lit: boolean) => new Function(`const rows=[], push=(k)=>rows.push(k), cheat=()=>false, fuel_lo={ on:${low} }, BINGO=1361, ownship={ fuel:${fuel} }, flbit_lit=()=>${lit}; ${section} return [rows, low, below];`)() as [string[], boolean, boolean]
+    expect(rows(3000, false, true)).toEqual([['FUEL LO'], false, false]) // the test's FUEL LO, the fuel itself above both
+    expect(rows(3000, false, false)).toEqual([[], false, false])
+    expect(rows(500, true, false)).toEqual([['FUEL LO', 'BINGO'], true, true]) // both, as their own conditions
+    expect(source).toMatch(/lamp_set\(l\.fuello,fuel_low\(\)\);/)
+    expect(source).toMatch(/function fuel_low\(\)\{ return fuel_lo\.on\|\|flbit_lit\(\); \}/)
+    expect(source).toMatch(/\n\tflbit=-Infinity; fuel_lo\.on=false; fuel_lo\.at=-Infinity;[^\n]*\n\tbaro_armed=false;/)
   })
 })
 

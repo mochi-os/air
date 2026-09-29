@@ -14,12 +14,15 @@ import { describe, expect, it } from 'vitest'
 // stepped against a stand-in jet, as trim-law.test.ts does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const block = /\n\t\{ const read=fuel_read, beforeInternal=[\s\S]*?notice\(translate\("FUEL LO"\)\); \} \}/.exec(source)?.[0] ?? ''
+// FUEL LO's condition, either feed tank down to 800 lb in the tanks' apportionment (NATOPS 2.2.8), with what it reads.
+const feeds = [/\nconst FUEL_TANKS=[^\n]*\n/, /\nfunction fuel_tanks\(internal,external,aboard\)\{[\s\S]*?\n(?=\S)/, /\nconst FEED_LOW=[^\n]*\n/, /\nfunction feed_low\(kg\)\{[^\n]*\n/]
+  .map((pattern) => pattern.exec(source)?.[0] ?? '').join('') + 'const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } };'
 
 // Feeds the core's tank readings [internal, external] in kg frame by frame and
 // returns the calls made; reset() starts a fresh mission on the same jet.
 function tank() {
-  if (!block) throw new Error('fuel block not found in engine.ts')
-  const run = new Function('readings', 'reset', `const ownship={}, STATE={fuel:0, external:1}, BINGO=1361, FUELLO=726, calls=[];
+  if (!block || !feeds.includes('feed_low')) throw new Error('fuel block not found in engine.ts')
+  const run = new Function('readings', 'reset', `const ownship={}, STATE={fuel:0, external:1}, BINGO=1361, calls=[]; ${feeds}
     const cheat=()=>false, translate=(t)=>t, notice=(t)=>calls.push(t);
     let fuel_read=false;
     return readings.map((out)=>{ if(out===reset){ fuel_read=false; return null; } ${block} return calls.splice(0); });`)
@@ -39,6 +42,7 @@ describe('the fuel calls', () => {
   it('call BINGO FUEL and FUEL LO on the way down through each level', () => {
     const { feed } = tank()
     expect(feed([2450, 0], [1300, 0], [900, 0], [700, 0])).toEqual(['BINGO FUEL', 'FUEL LO'])
+    expect(tank().feed([1300, 0], [900, 0])).toEqual(['FUEL LO']) // 900 kg is 1,984 lb: the right feed tank is down to 800 lb
   })
 
   it('judge BINGO FUEL and FUEL LO on the internal tanks alone (NATOPS 2.2.10.4)', () => {
@@ -70,7 +74,7 @@ describe('the BINGO judgements', () => {
   const lift = (pattern: RegExp) => pattern.exec(source)?.[0] ?? ''
   const low = lift(/\nfunction bingo_low\(\)\{[^\n]*\n[^\n]*\n/)
   const caution = lift(/\n\tlet low=false, below=false;[\s\S]*?\n\t\tif\(below\) push\("BINGO"\); \}/)
-  const colour = lift(/\n\t\tif\(\(ownship\.fuel\?\?1e9\)<FUELLO\) hctx\.fillStyle=[^\n]*\n[^\n]*<BINGO\) hctx\.fillStyle="#ffb050";/)
+  const colour = lift(/\n\t\tif\(fuel_lo\.on\) hctx\.fillStyle=[^\n]*\n[^\n]*<BINGO\) hctx\.fillStyle="#ffb050";/)
   const tanks = { below: { fuel: 1200, external: 2000 }, above: { fuel: 1500, external: 0 } } // kg, the setting 3,000 lb (1,361 kg)
 
   it('drives the FUEL page, the DUMP cut-off and the HUD legend from internal fuel', () => {
@@ -83,16 +87,17 @@ describe('the BINGO judgements', () => {
 
   it('raises the BINGO caution on internal fuel', () => {
     expect(caution).not.toBe('')
-    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, cheat=()=>false, flbit_lit=()=>false, rows=[], push=(k)=>rows.push(k); ${caution} return rows;`)(ownship) as string[]
+    const run = (ownship: object) => new Function('ownship', `const fuel_lo={ on:false }, BINGO=1361, cheat=()=>false, flbit_lit=()=>false, rows=[], push=(k)=>rows.push(k); ${caution} return rows;`)(ownship) as string[]
     expect(run(tanks.below)).toEqual(['BINGO'])
     expect(run(tanks.above)).toEqual([])
   })
 
   it('colours the fuel readout for BINGO on internal fuel', () => {
     expect(colour).not.toBe('')
-    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, sim_time=0, hctx={ fillStyle:"g" }; ${colour} return hctx.fillStyle;`)(ownship) as string
+    const run = (ownship: object, low = false) => new Function('ownship', `const fuel_lo={ on:${low} }, BINGO=1361, sim_time=0, hctx={ fillStyle:"g" }; ${colour} return hctx.fillStyle;`)(ownship) as string
     expect(run(tanks.below)).toBe('#ffb050')
     expect(run(tanks.above)).toBe('g')
+    expect(run(tanks.above, true)).toBe('#ff5050') // FUEL LO flashes it, from the feed tanks
   })
 })
 
@@ -107,3 +112,31 @@ describe('the BINGO annunciation', () => {
   })
 })
 
+
+// NATOPS 2.2.8: FUEL LO is the feed tanks' low-level sensors - on when either
+// feed tank is down to 800 lb (the right feed, the smaller, at about 1,990 lb of
+// internal fuel in the apportionment), and on for at least a minute from coming
+// on however brief the cause. fuel_low_step is stepped against a stand-in jet.
+describe('the FUEL LO condition', () => {
+  const state = /\nconst FEED_LOW=[\s\S]*?\nfunction fuel_low\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const lb = 2.20462
+  // steps: [sim time, internal pounds, cheat?, flbit?]; returns FUEL LO at each
+  const run = (steps: [number, number, boolean?, boolean?][]) => new Function('steps', `${feeds.replace(/\nconst FEED_LOW=[^\n]*\n|\nfunction feed_low\(kg\)\{[^\n]*\n/g, '')} let sim_time=0, cheating=false, testing=false; const ownship={}, cheat=()=>cheating, flbit_lit=()=>testing; ${state}
+    return steps.map(([t,pounds,c,f])=>{ sim_time=t; ownship.fuel=pounds/${lb}; cheating=!!c; testing=!!f; fuel_low_step(); return fuel_low(); });`)(steps) as boolean[]
+
+  it('comes on with a feed tank at 800 lb, stepped with the cautions', () => {
+    expect(state).not.toBe('')
+    expect(source).toMatch(/\nfunction cautions_update\(\)\{\n\tfuel_low_step\(\);/)
+    expect(run([[0, 1995], [1, 1985]])).toEqual([false, true])
+  })
+
+  it('holds a minute from coming on, however brief the cause, and as long as the cause lasts', () => {
+    expect(run([[0, 1985], [10, 3000], [59, 3000], [61, 3000]])).toEqual([true, true, true, false])
+    expect(run([[0, 1985], [120, 1900], [121, 3000]])).toEqual([true, true, false])
+  })
+
+  it('stays off with the tank frozen, and adds a fuel low BIT\'s', () => {
+    expect(run([[0, 1500, true]])).toEqual([false])
+    expect(run([[0, 3000, false, true]])).toEqual([true])
+  })
+})
