@@ -16,7 +16,7 @@
 
 	"database": {
 		"file": "air.db",
-		"schema": 13,
+		"schema": 14,
 		"create": {"function": "database_create"},
 		"upgrade": {"function": "database_upgrade"},
 	},
@@ -42,7 +42,6 @@
 		"-/match/list": {"function": "match_list"},
 		"-/servers": {"function": "servers"},
 		"-/recording/save": {"function": "recording_save"},
-		"-/recording/pin": {"function": "recording_pin"},
 		"-/recording/fetch": {"function": "recording_fetch"}
 	}
 }

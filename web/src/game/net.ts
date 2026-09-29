@@ -1098,12 +1098,12 @@ export async function record(match: {
 // MatchRow is one recorded match as match_list returns it (players is the
 // participant count as a string; cheated is 0/1).
 export interface MatchRow {
+  id: string // the row's own id: with started, where the next page begins
   world: string
   title: string // the server's name when the flight was flown, '' before it was recorded
   session: string
   recording: string // attachment id, '' when nothing is stored
   size: number
-  pinned: number // 1 = exempt from pruning
   mode: string
   team: string
   started: number
@@ -1168,25 +1168,6 @@ export async function recording_load(id: string): Promise<string | null> {
   }
 }
 
-// Returns what the server stored, or null if the call failed - the caller
-// toggles optimistically and needs to know whether to keep the new state.
-export async function recording_pin(
-  session: string,
-  started: number,
-  pinned: boolean
-): Promise<boolean | null> {
-  try {
-    const res = (await client.post('-/recording/pin', {
-      session,
-      started: String(started),
-      pinned: String(pinned),
-    })) as { data?: { pinned?: boolean } }
-    return res?.data?.pinned ?? null
-  } catch {
-    return null
-  }
-}
-
 export interface MatchTotals {
   flights: number
   seconds: number
@@ -1195,18 +1176,28 @@ export interface MatchTotals {
   cheated: number
 }
 
-// log throws on failure: swallowing it here rendered a 401 as the
-// legitimate "No flights yet" empty state.
-export async function log(): Promise<{
+// log reads one page of this player's flights, newest first: the first page,
+// or the one after `after`, the last row already shown (#57). more says
+// whether older flights remain. It throws on failure: swallowing it here
+// rendered a 401 as the legitimate "No flights yet" empty state.
+export async function log(after?: MatchRow): Promise<{
   matches: MatchRow[]
+  more: boolean
   totals: MatchTotals | null
 }> {
   await authenticated()
-  const res = (await client.get('-/match/list')) as {
-    data?: { matches?: MatchRow[]; totals?: MatchTotals }
+  const res = (await client.get('-/match/list', {
+    params: after ? { before: String(after.started), id: after.id } : {},
+  })) as {
+    data?: { matches?: MatchRow[]; more?: boolean; totals?: MatchTotals }
     matches?: MatchRow[]
+    more?: boolean
     totals?: MatchTotals
   }
   const body = res?.data ?? res
-  return { matches: body?.matches ?? [], totals: body?.totals ?? null }
+  return {
+    matches: body?.matches ?? [],
+    more: !!body?.more,
+    totals: body?.totals ?? null,
+  }
 }

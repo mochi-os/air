@@ -20,25 +20,30 @@ def database_create():
 	# already per-user, so no account column is needed. `updated` versions each
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, pinned integer not null default 0, title text not null default '')")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '')")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
-	# The read paths. matches_replay leads on world, which none of them
-	# constrain, so without these SQLite scans the whole table: match_list on
-	# every log open (scan plus a sort), and the (session, started) lookup on
-	# every save and every pin. A database with statistics can skip-scan the
-	# lookup off matches_replay, but no app database is ever analyzed, so the
-	# plan they actually get is the scan. matches_stored is partial because
-	# pruning only ever reads rows that hold a recording - a few dozen of them.
+	# The read paths. matches_replay leads on world, which neither of them
+	# constrains, so without these SQLite scans the whole table: match_list on
+	# every page of the log (scan plus a sort), and the (session, started)
+	# lookup on every save. A database with statistics can skip-scan the lookup
+	# off matches_replay, but no app database is ever analyzed, so the plan
+	# they actually get is the scan.
 	mochi.db.execute("create index if not exists matches_started on matches(started)")
 	mochi.db.execute("create index if not exists matches_session on matches(session, started)")
-	mochi.db.execute("create index if not exists matches_stored on matches(created) where recording != ''")
 
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 14:
+		# Recordings are kept forever (#57): nothing prunes, so the pin that
+		# exempted a recording from pruning and the index the prune read go.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "pinned" in columns:
+			mochi.db.execute("alter table matches drop column pinned")
+		mochi.db.execute("drop index if exists matches_stored")
 	if version == 13:
 		# The last pass's LSO grade, its write-up and the wire, so the log shows
 		# how a sortie ended on the deck; older rows keep ''.
@@ -208,20 +213,26 @@ def match_record(a):
 	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
 	return {"data": {"stored": stored}}
 
-# match_list() -> {"data": {"matches": [...]}}: this player's recorded multiplayer
-# matches, most recent first (capped). The reader the history view was missing.
-# Ordered by `started` (an intrinsic integer, so the SQL sort is fine); the
-# client formats dates and maps mode/reason to labels.
+# match_list() -> {"data": {"matches": [...], "more": bool, "totals": {...}}}:
+# this player's flights, most recent first, a page at a time (#57: every
+# recording is kept, so the log must reach every flight). `before` and `id`
+# are the last row of the page shown, 0 and '' for the first page; ordered by
+# `started` (an intrinsic integer, so the SQL sort is fine) and the id where two
+# flights share a start. The client formats dates and maps mode/reason to labels.
+PAGE = 50
 def match_list(a):
 	if not a.user:
 		a.error.label(401, "errors.not_logged_in")
 		return
-	matches = mochi.db.rows("select world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, recording, size, pinned from matches order by started desc limit 50")
-	# Totals span every row, not the fifty listed, and include cheated flights (a
+	before = whole(a, "before")
+	id = a.input("id", "")[:64]
+	matches = mochi.db.rows("select id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, recording, size from matches where ?=0 or started<? or (started=? and id<?) order by started desc, id desc limit ?", before, before, before, id, PAGE + 1) or []
+	more = len(matches) > PAGE
+	# Totals span every row, not the page listed, and include cheated flights (a
 	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
 	# 1000.
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
-	return {"data": {"matches": matches, "totals": totals}}
+	return {"data": {"matches": matches[:PAGE], "more": more, "totals": totals}}
 
 # servers() -> {"data": {"servers": [...]}}: the public world servers hosting
 # air, straight from core's world listing. The client sorts and filters - only
@@ -233,11 +244,7 @@ def servers(a):
 # storage at "recordings/<match id>" via multipart upload; the client inflates
 # on download so the player gets a plain .acmi.
 
-# How many recordings a player keeps, and the byte budget, whichever binds
-# first. Age-based expiry was rejected: someone who flies twice a month would
-# lose their best fight to a 30-day rule. A pinned recording is exempt.
-RECORDINGS_KEPT = 25
-RECORDINGS_BYTES = 50 * 1024 * 1024
+# Every recording is kept (#57): nothing prunes them.
 
 # recording_save() -> {"data": {"saved": bool}}: store the gzipped ACMI for one
 # of this player's own matches. Multipart, so the field carries megabytes.
@@ -262,48 +269,7 @@ def recording_save(a):
 	if not size:
 		return {"data": {"saved": False}}
 	mochi.db.execute("update matches set recording = ?, size = ? where id = ?", row["id"], size, row["id"])
-	recordings_prune(row["id"])
 	return {"data": {"saved": True}}
-
-# recordings_prune drops the oldest unpinned recordings once either budget is
-# exceeded; called after each save. Ordered by `created`, the server's clock -
-# started/ended are client-submitted.
-def recordings_prune(keep):
-	rows = mochi.db.rows("select id, recording, size, pinned from matches where recording != '' order by created desc")
-	total = 0
-	kept = 0
-	for row in rows:
-		if row["pinned"]:
-			continue   # pinned recordings count against nothing and are never dropped
-		kept = kept + 1
-		total = total + row["size"]
-		if row["id"] == keep:
-			continue
-		if kept > RECORDINGS_KEPT or total > RECORDINGS_BYTES:
-			mochi.file.delete("recordings/" + row["id"])
-			mochi.db.execute("update matches set recording = '', size = 0 where id = ?", row["id"])
-
-# recording_pin() -> {"data": {"pinned": bool}}: mark a recording to survive
-# pruning, or release it.
-def recording_pin(a):
-	if not a.user or not a.user.identity.id:
-		a.error.label(401, "errors.not_logged_in")
-		return
-	session = a.input("session", "")[:64]
-	started = whole(a, "started")
-	pinned = 1 if a.input("pinned", "") == "true" else 0
-	# Refuse what the update would not have matched, the way recording_save and
-	# recording_fetch do: the response reports what was stored, so answering it
-	# without knowing a row exists is a claim the handler cannot make. The
-	# client already reverts its optimistic flip on a refusal.
-	if not session:
-		a.error.label(400, "errors.missing_field")
-		return
-	if not mochi.db.exists("select 1 from matches where session = ? and started = ?", session, started):
-		a.error.label(404, "errors.not_found")
-		return
-	mochi.db.execute("update matches set pinned = ? where session = ? and started = ?", pinned, session, started)
-	return {"data": {"pinned": pinned == 1}}
 
 # recording_fetch: serve a stored recording's bytes. This action is the gate
 # (a.write.file checks nothing): authorise on a.user and require the match in
