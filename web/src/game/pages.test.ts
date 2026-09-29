@@ -848,8 +848,8 @@ describe('the HSI page', () => {
 })
 
 describe('the gauges the pages read', () => {
-  it('carry a smoothed yaw rate, vertical speed, air temperature and zulu seconds', () => {
-    expect(source).toMatch(/heading, yaw:yaw_state\.rate, vspeed:fpm, oat:15-0\.0065\*ownship\.pos\.y, zulu:now\.getUTCHours\(\)\*3600\+now\.getUTCMinutes\(\)\*60\+now\.getUTCSeconds\(\),/)
+  it('carry a smoothed yaw rate, vertical speed, air temperature and zulu seconds from the IFEI\'s clock', () => {
+    expect(source).toMatch(/heading, yaw:yaw_state\.rate, vspeed:fpm, oat:15-0\.0065\*ownship\.pos\.y, zulu:ifei_zulu\(ifei_view\(\),now\),/)
     expect(source).toMatch(/yaw_state\.rate\+=\(d\/\(t-yaw_state\.t\)-yaw_state\.rate\)\*Math\.min\(1,\(t-yaw_state\.t\)\/0\.5\);/)
   })
 })

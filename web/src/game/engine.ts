@@ -46,7 +46,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, granted as st
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
-import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, BUTTONS as ifei_buttons } from './ifei'
+import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
 import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines } from './cautions'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
@@ -2491,16 +2491,14 @@ function fuel_press(pb){   // BINGO is set on the IFEI in the C/D (2.2.10.4), no
 // windows and leaves the painted buttons and legends showing, as the UFC's does.
 // The windows are self-lit: white digits in the DAY mode, green in NITE (the
 // brightness knob works only in NITE and NVG, 2.6.2.6). fuel_state owns BINGO;
-// the rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives
-// here.
-let ifei_state=ifei_fresh(fuel_state.bingo), ifei_dirty=true;
-function ifei_view(){ return { ...ifei_state, bingo:fuel_state.bingo }; }
-function tanks_fitted(){ const lo=ownship.loadout||{};   // which external stations carry a tank: 3 and 7 the wings, 5 the centreline
-	const has=(station)=>{ const slot=lo[String(station)]; return !!slot&&stores_entries(station,slot).some(n=>n.startsWith("tank")); };
-	return { left:has(3), right:has(7), centre:has(5) }; }
-function ifei_reading(){ const gz=ownship.gauges||{};
+// the rest of the panel's state (QTY sub-level, ZONE, the elapsed timer, the
+// signal data computer's clock and its time set mode) lives here, the clock
+// starting on the host's time and zone.
+let ifei_state=ifei_fresh(fuel_state.bingo,new Date().getTimezoneOffset()/60), ifei_dirty=true;
+function ifei_view(){ ifei_state=ifei_settle(ifei_state,performance.now()/1000,new Date()); return { ...ifei_state, bingo:fuel_state.bingo }; }   // an idle time set mode lapses whenever the unit is read
+function ifei_reading(){ const gz=ownship.gauges||{}, internal=gz.fuelRaw??NaN, external=gz.externalRaw??0;
 	return { rpm:[gz.rpmL??NaN,gz.rpmR??NaN], egt:[gz.egtL??NaN,gz.egtR??NaN], flow:[gz.flowL??NaN,gz.flowR??NaN], noz:[gz.nozL??NaN,gz.nozR??NaN], oil:[gz.oilL??NaN,gz.oilR??NaN],
-		internal:gz.fuelRaw??NaN, external:gz.externalRaw??0, tanks:tanks_fitted() }; }
+		internal, external, tanks:fuel_tanks(internal,external,fuel_aboard()) }; }   // the QTY sub-levels read the FUEL page's apportionment
 function ifei_current(){ return ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }
 // The unit's face and windows in the group frame, on the panel face at x 6.211:
 // measured by thresholding captures of the bare panel, the stick hidden, and
@@ -2527,7 +2525,7 @@ function ifei_button_at(point){ const p=ownship.group.worldToLocal(point.clone()
 	for(const b of ifei_buttons){ const d=(IFEI_BUTTONS[b]-p.y)**2+(IFEI_BUTTON_Z-p.z)**2; if(d<bd){ bd=d; best=b; } }
 	return best; }
 function ifei_click(button,hold){
-	const next=ifei_press(ifei_view(),button,performance.now()/1000,hold||0);
+	const next=ifei_press(ifei_view(),button,performance.now()/1000,hold||0,new Date());
 	if(next.bingo!==fuel_state.bingo) bingo_set(next.bingo);
 	ifei_state={ ...next, bingo:fuel_state.bingo }; ifei_dirty=true; ifei_update(true); }
 function ifei_update(stale){ const u=ownship.group.userData.ifei; if(!u||!(ifei_dirty||stale)) return; ifei_dirty=false;
@@ -5076,7 +5074,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
 		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
-		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds(),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
+		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:ifei_zulu(ifei_view(),now),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
 		throttleL:throttle_travel(), throttleR:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
@@ -7946,6 +7944,7 @@ function reset_ownship(){
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
+	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
