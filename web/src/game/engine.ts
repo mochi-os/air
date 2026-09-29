@@ -1157,6 +1157,7 @@ const AIRCRAFT_MODELS={
 		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
+		lights:{ lex:[1.25,-0.21,1.45], hinge:[-0.79,-0.50,4.13] },   // the starboard LEX and wingfold hinge position lights (NATOPS 2.6.1.2), measured on the model's LEX edge forward of the wing root and under the wing at the fold pivot; the port pair mirrors them
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		swivel:{ node:"c_gear_AN_lower_134", axis:[0.0012,0.0934,0.9956] },
 		spin:[ { node:"l_tire_anim_AN_Tire_35",     axis:[-0.043,-0.991,-0.130], radius:0.375, attach:[-0.5,-2.63,-1.55], travel:0.5,  strut:9e5,   tyre:1.17e6, limit:0.048 },   // wheel spin: node-local axles measured in the DEPLOYED gear pose (the static pose stows the mains FLAT — never measure there); +rotation about each axis rolls forward. Radii match the real 30x11.5 mains / 22x6.6 nose tires
@@ -1248,9 +1249,10 @@ const AIRCRAFT_MODELS={
 	      { name:"probeswitch",  track:/^Refuel_Switch_Action_AN/i,                     drive:"probeswitch" },
 	      { name:"altswitch",    track:/^Switch_ALT_HudPanel_AN/i,                      drive:"altswitch" },      // BARO / RDR
 	      { name:"rejswitch",    track:/^Switch_REJ2_HudPanel_AN/i,                     drive:"rejswitch" },      // 2.13.4.8.1: NORM / REJ 1 / REJ 2
-	      { name:"ldglight",     track:/^Switch_LDG_Light_LeftPanel_AN/i,               drive:"lightswitch" },
-	      { name:"strobe",       track:/^Switch_Strobe_LeftPanel_AN/i,                  drive:"lightswitch" },
-	      { name:"formation",    track:/^FormationLightsAction_AN/i,                    drive:"lightswitch" },
+	      { name:"ldglight",     track:/^Switch_LDG_Light_LeftPanel_AN/i,               drive:"ldglight" },    // 2.6.1.5: the clip runs OFF (its rest) to ON, the lever up
+	      { name:"strobe",       track:/^Switch_Strobe_LeftPanel_AN/i,                  drive:"strobe" },      // 2.6.1.4: the clip runs aft to forward, DIM to BRT with OFF between
+	      { name:"formation",    track:/^FormationLightsAction_AN/i,                    drive:"formation" },   // 2.6.1.3 and 2.6.1.2: the two knobs turn with their clips OFF to BRT, as the interior panel's do
+	      { name:"position",     track:/^Knob_POS_LeftPanel_AN/i,                       drive:"position" },
 	      { name:"dumpswitch",   track:/^Fuel_Dump_AN/i,                                drive:"dumpswitch" },
 	      { name:"radaropr",     track:/^RADAR_OPR_AN/i,                                drive:"radaropr" },       // OFF / STBY / OPR / EMERG: radar silence is STBY
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
@@ -1258,7 +1260,7 @@ const AIRCRAFT_MODELS={
 // through pit_press. The launch bar switch is listed with no action - its state is
 // derived from the catapult spot every frame, so a click there changes nothing.
 const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:null, probeswitch:"probe",
-	altswitch:"altitude", rejswitch:"reject", ldglight:"lights", strobe:"lights", formation:"lights", dumpswitch:"dump", radaropr:"radar",
+	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
 	hookbypass:"hook.bypass", gearlever:"gear", hooklever:"hook", flaplever:"flaps" };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -1334,9 +1336,9 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(spec.swivel){ const sw=m.getObjectByName(spec.swivel.node); if(sw) g.userData.swivel={ object:sw, axis:new THREE.Vector3(...spec.swivel.axis).normalize() }; }
 	g.userData.spin=(spec.spin||[]).map(s=>{ const o=m.getObjectByName(s.node); return o?{ object:o, axis:new THREE.Vector3(...s.axis).normalize(), radius:s.radius, base:o.quaternion.clone(), rest:o.position.clone(), lift:0, attach:s.attach, travel:s.travel, strut:s.strut, tyre:s.tyre, limit:s.limit, sink:0, depth:0 }:null; }).filter(Boolean);   // rest/lift: the authored wheel position and the drawn oleo's live travel off it (#203). The tyre nodes are outside the gear clip (it matches [clr]_(gear|wheel)_AN_, these are [clr]_tire_anim_AN_), so the mixer never rewrites this and the offset cannot compound the way the steering swivel's did
 	g.userData.flame=(spec.flame||[]).map(n=>{ const o=m.getObjectByName(n); return o?{ object:o, base:o.quaternion.clone() }:null; }).filter(Boolean);
-	const glow=new Map(), burner=new Map();   // emissive materials cloned per aircraft: exterior/cockpit lights switch with the lights state; the afterburner can + exit-disc glow follows the achieved engine power (no external plume — the glow lives inside the nozzles)
+	const glow=new Map(), burner=new Map();   // emissive materials cloned per aircraft: the formation strips follow the FORMATION knob; the afterburner can + exit-disc glow follows the achieved engine power (no external plume — the glow lives inside the nozzles)
 	m.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
-		if(!mm.emissiveMap) return;
+		if(!mm.emissiveMap||instrument_mats.includes(mm)) return;   // the panel's placards and gauge atlases stay the model's, lit from INST PNL
 		const pool=/afterburner/i.test(mm.name||"")?burner:glow;
 		if(!pool.has(mm)){ const c=mm.clone(); c.userData.glowmax=/^(nose|fuselage|tails)$/i.test(mm.name||"")?4.0:(mm.emissiveIntensity??1); pool.set(mm,c); }   // the formation strips are pale PAINT in the baseColor — at night the off state already reflects moonlight, so the on state must overdrive well past it to read as a powered light under ACES
 		if(Array.isArray(o.material)) o.material[ix]=pool.get(mm); else o.material=pool.get(mm);
@@ -1775,7 +1777,7 @@ function lamps_update(out){
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // only spends when the pit is on screen, like the flood
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
-	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot&&!(cfg.tod==="night"&&ownship.lights));   // the strobe SHOOT light does not light with the instrument lights on (2.6.2.4): the game keeps a dim instrument wash by day, so "on" is the night setting with the lights up
+	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot&&!(lighting.mode==="nite"&&lighting.instrument>0));   // the strobe SHOOT light does not light with the instrument lights on (2.6.2.4): INST PNL is up at night, and the dim wash the game keeps by day is not the lights on
 	if(l.transit){ const locked=[0,1,2].map(leg=>ext>0.98&&(out[STATE.gear_harm+leg]||0)<GEAR_COLLAPSE), unsafe=(ownship.gearTarget??0)<0.5?!locked.every(Boolean):ext>0.02;
 		// NATOPS 2.10.1.4 (#22): the handle light is on while the gear travels and, with DN selected, until all three are
 		// down and locked, so a folded strut keeps it on; once on for 15 s it brings the aural tone (gear_tone); under the
@@ -4426,6 +4428,12 @@ function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated
 	if(bandit.fate!=="midair") feed(opponent(bandit.fate), cfg.callsign||"701", BANDIT);   // a midair kills both, and the ownship's own crash reports that one, naming both jets
 	notice(translate("KILL")); }
 let aircraft_lights=null;
+// The exterior lights panel (NATOPS 2.6.1): the POSITION and FORMATION knobs, 0 OFF to 1 BRT; the STROBE
+// switch, DIM aft, OFF and BRT forward (STROBE); and the LDG/TAXI switch. The exterior lights master switch
+// on the left throttle grip (2.6.1.1), the L key, is ownship.lights: it powers the position, formation and
+// strobe lights, and not the landing/taxi light.
+const STROBE=["dim","off","bright"];
+const exterior={ position:1, formation:1, strobe:"bright", landing:false };
 ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
 ownship.group.userData.player=true; layer_own_group(ownship.group);
 build_aircraft_lights(); layer_own_group(ownship.group);   // the nav lights/strobes/landing spot just joined the group — layer them too
@@ -4951,14 +4959,15 @@ function update_wire_drag(){   // the caught wire deforms into a V, its apex dra
 	else { hx=ownship.pos.x-ownship.fwd.x*6.5; hz=ownship.pos.z-ownship.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
 	seg_between(o.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(o.vsegs[1],hx,hz,w.bx,w.bz,hy); o.vsegs[0].visible=o.vsegs[1].visible=true;
 }
-function build_aircraft_lights(){   // nav position lights (red port / green stbd / white tail) + white anti-collision strobes + forward landing light, on the ownship
+function build_aircraft_lights(){   // the position lights (red port, green starboard, white tail), the red anti-collision strobes and the landing light, on the ownship
 	const mk=(color,x,y,z,size)=>{ const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array([x,y,z]),3));
 		const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; ownship.group.add(p); return p; };   // aircraft-local: +x nose, +y up, +z starboard
 	const spot=new THREE.SpotLight(0xfff2d8,200,500,0.34,0.5,1); spot.castShadow=false; spot.layers.enable(LAYER_OWN);   // decay 1 (not inverse-square) so the beam still reaches the deck from up the approach; tuned so it lights a pool ahead without flooding the whole transom
 	const st=new THREE.Object3D(); scene.add(spot,st); spot.target=st;   // in the SCENE, not the aircraft group (hidden in first-person) — positioned each frame to follow the nose
 	aircraft_lights={
-		pos:[ mk(0xff2020,0,0,-6,1.3), mk(0x20ff20,0,0,6,1.3), mk(0xffffff,-8.4,0.4,0,1.1) ],           // red left wing, green right wing, white tail (guesses; re-pinned to the airframe once the GLB loads)
-		strobe:[ mk(0xffffff,0,-0.15,-6,1.9), mk(0xffffff,0,-0.15,6,1.9), mk(0xffffff,-7.6,1.0,0,1.9) ], // anti-collision strobes
+		pos:[ mk(0xff2020,0,0,-6,1.3), mk(0x20ff20,0,0,6,1.3), mk(0xffffff,-4.8,2.2,1.8,1.1),           // the wingtips and the right fin's white (guesses; re-pinned to the airframe once the GLB loads)...
+			mk(0xff2020,1.25,-0.21,-1.45,1.0), mk(0x20ff20,1.25,-0.21,1.45,1.0), mk(0xff2020,-0.79,-0.5,-4.13,1.0), mk(0x20ff20,-0.79,-0.5,4.13,1.0) ],   // ...then the LEX and wingfold hinge pairs (NATOPS 2.6.1.2)
+		strobe:[ mk(0xff2020,-4.3,1.85,-1.95,1.9), mk(0xff2020,-4.3,1.85,1.95,1.9) ],   // the two red anti-collision strobes, one on each fin's outboard face (2.6.1.4)
 		landing:[ mk(0xfff4d8,4.6,-1.2,0,2.6) ], spot, spotTarget:st, nose:{x:4.6,y:-1.2} };             // forward landing light: the nose glow (in the group) + the spotlight beam (in the scene)
 	position_aircraft_lights();
 }
@@ -4978,30 +4987,47 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 	const port=mean(acc.port), stbd=mean(acc.stbd), tail=mean(acc.tail), nose=mean(acc.nose);
 	const set=(pts,x,y,z)=>{ const a=pts.geometry.getAttribute("position"); a.setXYZ(0,x,y,z); a.needsUpdate=true; };
 	const L=aircraft_lights;
-	set(L.pos[0], port.x, port.y, zmin); set(L.pos[1], stbd.x, stbd.y, zmax); set(L.pos[2], xmin+0.5, tail.y, tail.z);   // nav lights on the wingtip extremities + the stern, tucked against the tail
-	set(L.strobe[0], port.x, port.y-0.12, zmin); set(L.strobe[1], stbd.x, stbd.y-0.12, zmax); set(L.strobe[2], xmin+0.6, tail.y+0.25, tail.z);   // strobes beside them
+	set(L.pos[0], port.x, port.y, zmin); set(L.pos[1], stbd.x, stbd.y, zmax);   // the red and green on the wingtip extremities
+	const f=fins(each); if(f){ set(L.pos[2], f.stbd.aft+0.05, f.stbd.top-0.12, f.stbd.z);   // the white just below the right fin's tip, on its trailing edge (2.6.1.2)
+		set(L.strobe[0], f.port.x, f.port.top-0.45, f.port.face-0.03); set(L.strobe[1], f.stbd.x, f.stbd.top-0.45, f.stbd.face+0.03); }   // the strobes on the fins' outboard faces (2.6.1.4)
+	const lit=(AIRCRAFT_MODELS[own_aircraft()]||{}).lights;
+	if(lit){ const [lx,ly,lz]=lit.lex, [hx,hy,hz]=lit.hinge; set(L.pos[3], lx, ly, -lz); set(L.pos[4], lx, ly, lz); set(L.pos[5], hx, hy, -hz); set(L.pos[6], hx, hy, hz); }
 	let gn=null; m.traverse(o=>{ if(o.name==="gear_nose") gn=o; });   // the nose-gear strut node in the GLB (bind pose = gear down)
 	if(gn){ const p=new THREE.Vector3(); gn.getWorldPosition(p); p.applyMatrix4(inv); L.nose={x:p.x+0.15, y:p.y-1.1}; }   // partway down the strut from the hinge
 	else L.nose={x:xmax-3.5, y:-1.2};
 	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
+// fins: the vertical tails from the airframe's vertices (aircraft-local, each(f) calls f on every one), or null.
+// Each side's tip is the top 0.3 m of everything outboard of the centreline: its centre, its trailing edge
+// (aft) and its top; face is the fin's outboard surface 0.35 to 0.55 m below the tip, the fins being canted.
+function fins(each){
+	const side=p=>p.z<-0.9?"port":p.z>0.9?"stbd":null, f={ port:{ x:0, y:0, z:0, n:0, top:-1e9, aft:1e9, face:null }, stbd:{ x:0, y:0, z:0, n:0, top:-1e9, aft:1e9, face:null } };
+	each(p=>{ const s=side(p); if(s&&p.y>f[s].top) f[s].top=p.y; });
+	each(p=>{ const s=side(p); if(!s||f[s].top-p.y>=0.3) return; const t=f[s]; t.x+=p.x; t.y+=p.y; t.z+=p.z; t.n++; if(p.x<t.aft) t.aft=p.x; });
+	if(!f.port.n||!f.stbd.n) return null;
+	for(const t of [f.port,f.stbd]){ t.x/=t.n; t.y/=t.n; t.z/=t.n; }
+	each(p=>{ const s=side(p); if(!s) return; const t=f[s], below=t.top-p.y;
+		if(below<0.35||below>0.55||Math.abs(p.x-t.x)>0.3) return;
+		if(t.face===null||(s==="port"?p.z<t.face:p.z>t.face)) t.face=p.z; });
+	for(const t of [f.port,f.stbd]) if(t.face===null) t.face=t.z;
+	return f; }
 let build_error="";   // first cockpit-builder failure, surfaced via dev_probe
-const instrument_mats=[];   // the two gauge-atlas materials, per loaded model — backlight follows night + the lights switch
+const instrument_mats=[];   // the two gauge-atlas materials and the panel's emissive placards: they stay shared with the loaded model (apply_model_to), where instrument_backlight sets them from INST PNL
 let backlight_state="";
 let unpowered=false;   // both generators off the line: the emergency instrument light's only trigger (NATOPS 2.6.2.8, #17), and the integral lighting's loss
 const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity, a spot 40 cm off the standby cluster
 // The interior lights panel (NATOPS 2.6.2, #21) as the game sets it: the MODE switch DAY by day and NITE
 // at night, when it dims the warning, caution and advisory lights (2.6.2.1); INST PNL the integral
-// instrument lighting (2.6.2.4), a dim wash by day, up at night with the lights key; CONSOLES the console
-// lighting (2.6.2.3); FLOOD the white floods (2.6.2.5), on at night with the lights key; CHART off; and
+// instrument lighting (2.6.2.4), a dim wash by day and up at night; CONSOLES the console lighting
+// (2.6.2.3) and FLOOD the white floods (2.6.2.5), on at night; CHART off; and
 // WARN/CAUT the lens brightness, held in the low range under NITE. Both generators gone (2.6.2.8)
 // takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles.
 const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, chart:0, warn:1 };
-function lighting_set(){ const night=cfg.tod==="night", on=!!ownship.lights;
+function lighting_set(){ const night=cfg.tod==="night";   // none of it on the L key, the exterior lights master switch
 	lighting.mode=night?"nite":"day";
-	lighting.instrument=unpowered?0:night?(on?0.62:0.30):0.22;
-	lighting.consoles=unpowered?0:night?(on?1:0.5):0;
-	lighting.flood=unpowered?0:night&&on?1:0;
+	lighting.instrument=unpowered?0:night?0.62:0.22;
+	lighting.consoles=unpowered?0:night?1:0;
+	lighting.flood=unpowered?0:night?1:0;
 	lighting.chart=0;
 	lighting.warn=night?0.55:1; }
 function instrument_backlight(){
@@ -5050,9 +5076,10 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 // one with every exterior light on EXCEPT the taxi/landing light (NATOPS A1-F18AC-NFM-000
 // 8.3.9): the pilot lands on the lens and the deck lights. With it lit the beam flooded the
 // whole ship from 0.2 NM, so the landing picture was the jet's own light, not the ship's.
+// A recovery therefore spawns with the LDG/TAXI switch OFF.
 function recovery_start(){ const st=mission_start(); return st==="case1"||st==="case2"||st==="case3"; }
 function update_aircraft_lights(){
-	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
+	if(!aircraft_lights) return; const position=ownship.lights?exterior.position:0, strobe=!!ownship.lights&&exterior.strobe!=="off"&&(performance.now()%1100)<70;   // under the master switch (2.6.1.1); the strobes flash about once a second
 	instrument_backlight();
 	if(!cockpit_flood){ cockpit_flood=new THREE.PointLight(0xffd9a8,0,2.2,2); cockpit_flood.layers.set(LAYER_OWN);   // panel flood (#99): the night pit is otherwise unlit; layer-own so the world pass never pays for it
 		ownship.group.add(cockpit_flood); }
@@ -5061,8 +5088,10 @@ function update_aircraft_lights(){
 	const pit=cfg.view==="cockpit";   // only spends when the pit is on screen
 	cockpit_flood.intensity=pit?0.12*lighting.flood:0;   // the instrument panel floods (2.6.2.5) on the FLOOD level
 	for(const l of console_lights) l.intensity=pit?0.06*Math.max(lighting.consoles,lighting.flood):0;
-	const geardown=(ownship.gear??0)<0.02, land=on && geardown && !recovery_start();   // the landing light rides the nose gear strut: on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
-	for(const p of aircraft_lights.pos) p.visible=on; for(const p of aircraft_lights.landing) p.visible=land; for(const p of aircraft_lights.strobe) p.visible=strobe;
+	const geardown=(ownship.gear??0)<0.02, land=exterior.landing && (ownship.gearTarget??1)<0.5 && geardown;   // LDG/TAXI ON, the handle DN and the gear down (2.6.1.5): the light rides the nose gear strut, on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
+	for(const p of aircraft_lights.pos){ p.visible=position>0; p.material.opacity=position; }   // the POSITION knob's level
+	for(const p of aircraft_lights.landing) p.visible=land;
+	for(const p of aircraft_lights.strobe){ p.visible=strobe; p.material.opacity=exterior.strobe==="dim"?0.35:1; }
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
 	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
@@ -5818,7 +5847,11 @@ function pit_press(action,direction){ const d=direction||0;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
 	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
-	case "lights": ownship.lights=!ownship.lights; break;
+	case "lights": ownship.lights=!ownship.lights; break;   // the exterior lights master switch on the left throttle grip (2.6.1.1)
+	case "landing": exterior.landing=!exterior.landing; break;   // the LDG/TAXI switch (2.6.1.5)
+	case "strobe": exterior.strobe=STROBE[THREE.MathUtils.clamp(STROBE.indexOf(exterior.strobe)+(d<0?-1:1),0,2)]; break;   // forward toward BRT, aft toward DIM (2.6.1.4)
+	case "position": exterior.position=THREE.MathUtils.clamp(exterior.position+(d<0?-0.25:0.25),0,1); break;   // the knobs (2.6.1.2, 2.6.1.3): clockwise brighter, a quarter of the way a click
+	case "formation": exterior.formation=THREE.MathUtils.clamp(exterior.formation+(d<0?-0.25:0.25),0,1); break;
 	case "dump": fuel_dump=!fuel_dump&&!bingo_low()&&!fuel_low(); break;   // held ON only with BINGO and FUEL LO off (NATOPS 2.2.7)
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
@@ -6910,7 +6943,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
-		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
+		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting }, lights:!!ownship.lights, exterior:{ ...exterior },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
 		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
 		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
 		lit:Object.entries(u.lamps||{}).filter(([,m])=>{ const mesh=m as THREE.Mesh&{material:THREE.MeshBasicMaterial}; return mesh.userData.lens?!!mesh.userData.on:mesh.material.opacity>0.5; }).map(([k])=>k),   // the pit lamps on right now, by name (a lens by its painted state, a plain quad by its opacity)
@@ -7152,7 +7185,7 @@ function playback_own(pose,dt){
 	ownship.flown=false; ownship.turned=true; ownship.taxied=true;   // the deck crew's rearm and its REARMED banner are the recording's too
 	const wire=n("Wire",0); ownship.trapped=wire>0; ownship.wire=wire;
 	ownship.waving=n("Waving",0)>0;
-	const lights=n("Lights",-1); if(lights>=0&&!!ownship.lights!==(lights>0)){ ownship.lights=lights>0; lighting_set(); }
+	const lights=n("Lights",-1); if(lights>=0) ownship.lights=lights>0;   // the master switch; the panel's knobs are not recorded
 	ownship.canopyTarget=n("Canopy",ownship.canopyTarget??0); ownship.foldTarget=n("Fold",ownship.foldTarget??0); ownship.probeTarget=n("Probe",ownship.probeTarget??0);
 	if(p.Master&&p.Master!==master) set_master(p.Master);
 	declutter=n("Declutter",declutter)|0;
@@ -7796,7 +7829,10 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0; break;
 		case "altswitch": f=(st===ownship&&alt_radar)?1:0; break;
 		case "rejswitch": f=st===ownship?declutter/2:0; break;
-		case "lightswitch": f=st.lights?1:0; break;
+		case "ldglight": f=(st===ownship&&exterior.landing)?1:0; break;
+		case "strobe": f=st===ownship?STROBE.indexOf(exterior.strobe)/2:0.5; break;
+		case "formation": f=st===ownship?exterior.formation:0; break;
+		case "position": f=st===ownship?exterior.position:0; break;
 		case "dumpswitch": f=(st===ownship&&fuel_dump)?1:0; break;
 		case "radaropr": f=(st===ownship&&RADAR.sil)?1/3:2/3; break;
 		// --- end switches
@@ -7813,8 +7849,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		r.action.time=r.t0+f*(r.t1-r.t0);
 	}
 	g.userData.gearMixer.update(0);
-	if(g.userData.glow&&g.userData.glow.length){ const on=(st===ownship)?!!ownship.lights:(cfg.tod!=="day");   // formation strips + cockpit glow follow the aircraft lights (L toggles the ownship's; others follow day/night)
-		for(const mm of g.userData.glow){ const want=on?mm.userData.glowmax:0; if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
+	if(g.userData.glow&&g.userData.glow.length){ const level=(st===ownship)?(ownship.lights?exterior.formation:0):(cfg.tod!=="day"?1:0);   // the formation strips: the ownship's on the FORMATION knob under the master switch (2.6.1.3); other jets' follow day and night
+		for(const mm of g.userData.glow){ const want=level*mm.userData.glowmax; if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
 	if(g.userData.burner&&g.userData.burner.length){   // nozzle glow: dark at idle, a dull ember approaching military power, alight with the ACHIEVED reheat stage (the core's ~0.5 s light/quench lag comes free) — no external plume by design
 		let want=1.1;   // non-ownship aircraft have no engine core: keep the constant glow as a spotting cue
 		if(st===ownship){ const stage=ownship.stage??0, spool=ownship.spool??0;
@@ -8000,6 +8036,7 @@ function reset_ownship(){
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
 	flbit=-Infinity; fuel_lo.on=false; fuel_lo.at=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
+	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)

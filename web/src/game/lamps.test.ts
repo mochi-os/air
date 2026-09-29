@@ -298,20 +298,20 @@ function built(): { lamps: Record<string, THREE.Mesh>; brow: THREE.Object3D; cau
 // The canopy bow lights (FO-5 item 1): LOCK while the radar holds a single
 // target track, SHOOT whenever the HUD draws its SHOOT cue, so the bow light
 // flashes exactly as the cue does.
-function bowlit(stt: number | null, shoot: boolean, tod = 'day', lights = false): string[] {
+function bowlit(stt: number | null, shoot: boolean, mode = 'day', instrument = 0.22): string[] {
   const line = /\n\tlamp_set\(l\.lock,[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!line) throw new Error('bow light line not found in engine.ts')
-  const run = new Function('stt', 'shoot', 'tod', 'lights', `const RADAR={stt}, hud_shoot=shoot, cfg={tod}, ownship={lights};
+  const run = new Function('stt', 'shoot', 'mode', 'instrument', `const RADAR={stt}, hud_shoot=shoot, lighting={ mode, instrument };
     const l={lock:{},shoot:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${line}
     return Object.keys(l).filter((k)=>l[k].on);`)
-  return run(stt, shoot, tod, lights) as string[]
+  return run(stt, shoot, mode, instrument) as string[]
 }
 
 describe('the LOCK and SHOOT lights', () => {
   it('keep the strobe SHOOT light dark with the instrument lights up at night (2.6.2.4)', () => {
-    expect(bowlit(7, true, 'night', true)).toEqual(['lock'])
-    expect(bowlit(7, true, 'night', false)).toEqual(['lock', 'shoot'])
-    expect(bowlit(7, true, 'day', true)).toEqual(['lock', 'shoot'])
+    expect(bowlit(7, true, 'nite', 0.62)).toEqual(['lock'])
+    expect(bowlit(7, true, 'nite', 0)).toEqual(['lock', 'shoot']) // INST PNL off
+    expect(bowlit(7, true, 'day', 0.22)).toEqual(['lock', 'shoot']) // the day wash is not the lights on
   })
 
   it('follow the single target track and the drawn SHOOT cue', () => {
@@ -515,9 +515,15 @@ describe('the interior lights panel', () => {
     expect(lights('day', true, false).flood).toBe(0)
   })
 
-  it('sets NITE at night, dims the lenses, and brings the panel, consoles and floods up with the lights key', () => {
-    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.3, consoles: 0.5, flood: 0, chart: 0, warn: 0.55 })
-    expect(lights('night', true, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, chart: 0, warn: 0.55 })
+  it('sets NITE at night, dims the lenses, and brings the panel, consoles and floods up, whatever the exterior lights master', () => {
+    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, chart: 0, warn: 0.55 })
+    expect(lights('night', true, false)).toEqual(lights('night', false, false))
+    expect(lights('day', true, false)).toEqual(lights('day', false, false))
+  })
+
+  it('lights the panel\'s placards and gauge atlases from INST PNL, keeping them out of the formation strips\' glow', () => {
+    expect(source).toMatch(/if\(!mm\.emissiveMap\|\|instrument_mats\.includes\(mm\)\) return;/)
+    expect(source).toMatch(/for\(const mm of instrument_mats\) mm\.emissiveIntensity=level;/)
   })
 
   it('loses the integral lighting, the consoles and the floods with both generators', () => {
