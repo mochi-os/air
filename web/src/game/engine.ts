@@ -1635,10 +1635,12 @@ const GLARESHIELD={
 		[["lbar","L BAR","#2fd24a"],["rec","REC","#2fd24a"]],[["lbarfault","L BAR","#e23b2e"],["xmit","XMIT","#2fd24a"]],[null,["aspj","ASPJ ON","#2fd24a"]]],
 	right:[[["rcdr","RCDR ON","#2fd24a"],["disp","DISP","#2fd24a"]],[[null,""],[null,""]],[[null,""],[null,""]],[[null,""],["sam","SAM","#ffc23a"]],
 		[["ai","AI","#ffc23a"],["aaa","AAA","#ffc23a"]],[["cw","CW","#ffc23a"],null]] };
-// The caution lights panel (FO-5 item 46), four rows by three, top down and left to
-// right; a null name is a lens with no legend.
-const CAUTION_LIGHTS=[[["ckseat","CK SEAT"],["apuacc","APU ACC"],["battsw","BATT SW"]],[[null,""],["gentie","GEN TIE"],[null,""]],
-	[[null,""],["fces","FCES"],["fcshot","FCS HOT"]],[["fuello","FUEL LO"],["genL","L GEN"],["genR","R GEN"]]];
+// The caution lights panel (FO-5 item 46, aircraft 163985 and up), four rows by
+// three, top down and left to right; a null name is a lens with no legend. The
+// model paints the earlier aircraft's order (FO-3) on its lenses, which the
+// quads cover.
+const CAUTION_LIGHTS=[[["ckseat","CK SEAT"],["apuacc","APU ACC"],["battsw","BATT SW"]],[["fcshot","FCS HOT"],["gentie","GEN TIE"],[null,""]],
+	[["fuello","FUEL LO"],["fces","FCES"],[null,""]],[["genL","L GEN"],["genR","R GEN"],[null,""]]];
 // CAUTION_GRID is the model's painted lens grid for that panel in the group frame:
 // the top-left lens's centre and the step to the next column and to the next row,
 // fitted to the twelve lens centres the model's texture places on the panel (the
@@ -1680,7 +1682,7 @@ function build_lamps(g){
 	g.add(brow);
 	const handle=g.getObjectByName("Gear_handle_483"); const gear=new THREE.Group();
 	if(handle){ const p=new THREE.Vector3(); handle.getWorldPosition(p); g.worldToLocal(p);
-		lamps.transit=lamp(0xe23b2e,0.011,0.011); lamps.transit.position.set(0,0.045,0);   // the lollipop: red while the gear travels
+		lamps.transit=lamp(0xe23b2e,0.011,0.011); lamps.transit.position.set(0,0.045,0); lamps.transit.name="transitlamp";   // the lollipop: red while the gear travels
 		lamps.nose=lamp(0x2fd24a,0.010,0.008); lamps.nose.position.set(0,0.022,0);
 		lamps.left=lamp(0x2fd24a,0.010,0.008); lamps.left.position.set(0,0.008,-0.009);
 		lamps.right=lamp(0x2fd24a,0.010,0.008); lamps.right.position.set(0,0.008,0.009);
@@ -1694,14 +1696,19 @@ function build_lamps(g){
 		const silence=new THREE.Mesh(new THREE.PlaneGeometry(0.012,0.012), new THREE.MeshBasicMaterial({ color:0x1a1a1a, side:THREE.DoubleSide }));
 		silence.position.set(0,-0.036,0); silence.name="silencebutton"; gear.add(silence); g.userData.silence=silence;
 		gear.position.copy(p); gear.position.x-=0.02; gear.position.z+=0.02;   // just inboard of the handle, proud of its panel
-		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear); }
-	// The HOOK light (NATOPS 2.10.5.1, #10) is the lighted knob of the arresting hook handle on the
-	// lower right panel. The lens is seated on the knob's aft face (Object_986, the handle's second
-	// mesh; the first is the lever) in the group frame, then handed to the animated handle node (the
-	// clip moves the _AN_ child, not its parent) so it drops with the lever.
+		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear);
+		// The handle light is in the handle (NATOPS 2.10.1.4): seated on its knob at rest, then handed to
+		// the handle's animated node (the clip moves the _AN_ child) so it travels with the handle.
+		const lever=handle.children.find(o=>/^Gear_handle_AN/.test(o.name)); if(lever){ g.updateMatrixWorld(true); lever.attach(lamps.transit); } }
+	// The HOOK light (NATOPS 2.10.5.1, #10), a red warning light (figure 12-1, 2.17.2.2). FO-5 item 43
+	// draws it above the arresting hook handle; this model seats the handle in front of the standby
+	// climb dial with the azimuth indicator above it, leaving no panel face there, so the lens is
+	// seated on the knob's aft face (Object_986, the handle's second mesh; the first is the lever) in
+	// the group frame, then handed to the animated handle node (the clip moves the _AN_ child, not
+	// its parent) so it drops with the lever.
 	const hook=g.getObjectByName("LANDING_Gear_Lever_Hook_AN_Hook_569"), knob=hook&&hook.getObjectByName("Object_986");
 	if(knob){ g.updateMatrixWorld(true); const b=node_box(g,knob);
-		if(b){ lamps.hook=legend("HOOK","#ffc23a",0.020,0.012); lamps.hook.name="hooklamp";
+		if(b){ lamps.hook=legend("HOOK","#e23b2e",0.020,0.012); lamps.hook.name="hooklamp";
 			lamps.hook.position.set(b.lo.x-0.003,(b.lo.y+b.hi.y)/2,(b.lo.z+b.hi.z)/2); lamps.hook.rotateY(-Math.PI/2); lamps.hook.layers.set(LAYER_OWN);
 			g.add(lamps.hook); g.updateMatrixWorld(true); hook.attach(lamps.hook); } }
 	// The caution lights panel (FO-5 item 46, NATOPS 2.17.2, #13): twelve yellow lights four by three at
@@ -1759,12 +1766,13 @@ function lamps_update(out){
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
 	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot);
-	if(l.transit){ const moving=ext>0.02&&ext<0.98;
-		// NATOPS 2.10.1.4 (#22): the handle light is on in transit, and once on for 15 s it brings the aural tone (gear_tone);
-		// under the wheels warning it flashes with the beep, at the horn's 1.1 s repeat
-		handle_lit=moving?(handle_lit<0?sim_time:handle_lit):-1;
-		l.transit.material.opacity=wheels_warning()?((sim_time%1.1)<0.55?1:0):(moving?1:0);
-		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
+	if(l.transit){ const locked=[0,1,2].map(leg=>ext>0.98&&(out[STATE.gear_harm+leg]||0)<GEAR_COLLAPSE), unsafe=(ownship.gearTarget??0)<0.5?!locked.every(Boolean):ext>0.02;
+		// NATOPS 2.10.1.4 (#22): the handle light is on while the gear travels and, with DN selected, until all three are
+		// down and locked, so a folded strut keeps it on; once on for 15 s it brings the aural tone (gear_tone); under the
+		// wheels warning it flashes with the beep, at the horn's 1.1 s repeat. Each green is its own leg down and locked (2.10.1.5).
+		handle_lit=unsafe?(handle_lit<0?sim_time:handle_lit):-1;
+		l.transit.material.opacity=wheels_warning()?((sim_time%1.1)<0.55?1:0):(unsafe?1:0);
+		l.nose.material.opacity=locked[0]?1:0; l.left.material.opacity=locked[1]?1:0; l.right.material.opacity=locked[2]?1:0; }
 	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5;   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs)
 		l.half.material.opacity=(flap_select===1&&slow)?1:0;
 		l.full.material.opacity=(flap_select===2&&slow)?1:0;
@@ -6250,6 +6258,7 @@ let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 // keeps a climb-out quiet: off the catapult the jet is slow, low and cleaning up,
 // and none of that is a wheels-up landing.
 let handle_lit=-1;   // when the gear handle light came on this cycle (sim_time), -1 while it is out (#22)
+const GEAR_COLLAPSE=0.7;   // a strut's harm past which it folds (the flight core's GearCollapse)
 let tone_silenced=false;   // the warning tone silence button's latch: holds the gear tone off until its condition clears (NATOPS 2.10.1.4)
 function gear_tone(){   // the landing gear aural (2.10.1.4, #22): the wheels warning, or the handle light on for 15 s, unless silenced
 	const due=wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15);
