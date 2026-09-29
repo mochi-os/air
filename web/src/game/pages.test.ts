@@ -320,17 +320,39 @@ describe('the HUD format on a DDI', () => {
 })
 
 describe('the engine monitor display', () => {
-  it('lists the thirteen EMD rows with the -402 EPE line and derives the rest from the spool', () => {
-    const d = page('ddi_eng', `const ownship={ gauges:{ rpmL:99, rpmR:65, egtL:810, egtR:450, flowL:5000, flowR:1000, nozL:0, nozR:100, oilL:100, oilR:55, oat:-5 } };`)
-    const shown = texts(d)
-    for (const label of ['INLET °C', 'N1 %', 'N2 %', 'EGT °C', 'FF PPH', 'NOZ %', 'OIL PSI', 'THRUST %', 'VIB', 'FUEL °C', 'EPR', 'CDP PSI', 'TDP PSI', 'LEFT EPE', 'RIGHT EPE'])
-      expect(shown, label).toContain(label)
-    const row = (label: string) => { const y = at(d, label)![1]; return d.text.filter((t) => t[2] === y && t[0] !== label).map((t) => t[0]) }
-    expect(row('N1 %')).toEqual(['100', '30']) // MIL on the left, idle on the right
-    expect(row('THRUST %')).toEqual(['100', '0'])
-    expect(row('EPR')).toEqual(['1.7', '1.0'])
-    expect(row('INLET °C')).toEqual(['-5', '-5'])
-    expect(row('CDP PSI')).toEqual(['300', '60'])
+  const eng = (grounded: boolean) => page('ddi_eng', `const ownship={ grounded:${grounded}, gauges:{ rpmL:99, rpmR:65, egtL:810, egtR:450, flowL:5004, flowR:1000, nozL:0, nozR:100, oilL:100, oilR:55, oat:-5 } };`)
+  const row = (d: Drawn, label: string) => { const y = at(d, label)![1]; return d.text.filter((t) => t[2] === y && t[0] !== label).map((t) => t[0]) }
+  it('lists the thirteen EMD rows by figure 2-3\'s names under the -402 EPE line, with no title', () => {
+    const d = eng(true)
+    const labels = ['INLET TEMP', 'N1 RPM', 'N2 RPM', 'EGT', 'FF', 'NOZ POS', 'OIL PRESS', 'THRUST', 'VIB', 'FUEL TEMP', 'EPR', 'CDP', 'TDP']
+    expect(labels.map((l) => at(d, l))).toEqual(labels.map((_, i) => [200, 100 + 29 * i]))
+    expect(texts(d)).toContain('LEFT EPE')
+    expect(texts(d)).toContain('RIGHT EPE')
+    expect(texts(d)).not.toContain('ENG')
+  })
+
+  it('writes each value in the figure\'s digits, from the spool', () => {
+    const d = eng(true)
+    expect(row(d, 'N1 RPM')).toEqual(['100', '30']) // MIL on the left, idle on the right
+    expect(row(d, 'FF')).toEqual(['5000', '1000']) // to the ten
+    expect(row(d, 'VIB')).toEqual(['1.0', '1.0'])
+    expect(row(d, 'EPR')).toEqual(['1.70', '1.00'])
+    expect(row(d, 'TDP')).toEqual(['45.0', '15.0'])
+    expect(row(d, 'INLET TEMP')).toEqual(['-5', '-5'])
+    expect(row(d, 'CDP')).toEqual(['300', '60'])
+  })
+
+  it('left-aligns each engine\'s column', () => {
+    const d = eng(true)
+    const y = at(d, 'EGT')![1]
+    expect(d.text.filter((t) => t[2] === y && t[0] !== 'EGT').map((t) => t[1])).toEqual([96, 390])
+  })
+
+  it('shows THRUST for the ground run-up only', () => {
+    expect(row(eng(true), 'THRUST')).toEqual(['100', '0'])
+    const flying = eng(false)
+    expect(texts(flying)).not.toContain('THRUST')
+    expect(at(flying, 'VIB')![1]).toBe(100 + 29 * 8) // the rows below keep their places
   })
 })
 
