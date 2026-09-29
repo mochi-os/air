@@ -184,7 +184,7 @@ def whole(a, name):
 	value = a.input(name, "0") or "0"
 	return int(value) if decimal(value) else 0
 
-# match_record() -> {"data": {"stored": bool}}: store this player's own view of a finished multiplayer match.
+# match_record() -> {"data": {"stored": bool}}: store this player's own view of a flight or match.
 def match_record(a):
 	if not a.user:
 		a.error.label(401, "errors.not_logged_in")
@@ -195,12 +195,14 @@ def match_record(a):
 	if not world or not session:
 		a.error.label(400, "errors.missing_field")
 		return
-	# `on conflict do nothing` on the (world, session, started) index is the
-	# race-free dedup (#191); whether our own id landed tells the caller if this
-	# was the first record.
+	# The (world, session, started) index is the race-free dedup (#191): a
+	# finished row is never overwritten, and whether our own id landed tells the
+	# caller if this was the first record. A row saved while the flight was
+	# still flying (reason "flying", #16) is the one exception: the later
+	# record, a checkpoint or the finish, takes its place.
 	started = whole(a, "started")
 	id = mochi.uid()
-	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
+	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do update set title=excluded.title, mode=excluded.mode, team=excluded.team, ended=excluded.ended, reason=excluded.reason, players=excluded.players, kills=excluded.kills, deaths=excluded.deaths, cheated=excluded.cheated, grade=excluded.grade, remarks=excluded.remarks, wire=excluded.wire where matches.reason='flying'",
 		id, world, title, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
 		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), a.input("grade", "")[:16], a.input("remarks", "")[:256], whole(a, "wire"), mochi.time.now())
 	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)

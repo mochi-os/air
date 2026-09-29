@@ -858,6 +858,78 @@ it('records the antenna elevation and bars with the sensor picture', () => {
   expect(lift('recording_sample')).toContain('antenna:Math.round(RADAR.centre.elevation/D2R), bars:RADAR.count()') // the engine records the scan it flew
 })
 
+// A flight saves itself every minute (#16), so the recorder renders the same
+// growing flight again and again. It converts only the samples added since
+// its last render, keeping the writer's delta state between renders - and the
+// file must be the very one a full rebuild writes, at every render.
+describe('rendering a recording as it grows', () => {
+  const flight = (count: number, from = 0): Sample[] =>
+    Array.from({ length: count }, (_, k) => {
+      const t = (from + k) / 8 // exact in binary: every sample clears the recorder's 10 Hz gate
+      return {
+        time: t,
+        objects: [
+          jet({
+            x: 100 * t,
+            data: {
+              flares: 40 - Math.floor(t / 3), // steps now and then: delta-suppressed between
+              radar: t < 4 ? 'rws' : 'tws',
+              antenna: Math.round(Math.sin(t)),
+              bars: 2,
+              throttle: 0.8,
+            },
+          }),
+        ],
+      }
+    })
+  const full = (samples: Sample[]) => {
+    const base = samples[0].time
+    return acmi(samples.map((s) => ({ time: s.time - base, objects: s.objects })), new Date(0), 't', { task: 'joust' })
+  }
+  it('writes at every render exactly what a full rebuild writes', () => {
+    const recorder = new Recorder()
+    const samples = flight(100)
+    samples.forEach((s, k) => {
+      recorder.add(s.time, s.objects)
+      if (k % 23 === 22) expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(samples.slice(0, k + 1)))
+    })
+    expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(samples))
+  })
+  it('converts each sample once: a render writes only the samples added since the last', () => {
+    const recorder = new Recorder()
+    const samples = flight(20)
+    for (const s of samples) recorder.add(s.time, s.objects)
+    const first = recorder.render(new Date(0), 't')
+    samples[0].objects[0].x = 99999 // were the written samples converted again, the file would move
+    expect(recorder.render(new Date(0), 't')).toBe(first)
+  })
+  it('starts afresh after a clear', () => {
+    const recorder = new Recorder()
+    for (const s of flight(20)) recorder.add(s.time, s.objects)
+    recorder.render(new Date(0), 't')
+    recorder.clear()
+    const next = flight(15, 100)
+    for (const s of next) recorder.add(s.time, s.objects)
+    expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(next))
+  })
+  it('writes the match block afresh each render', () => {
+    const recorder = new Recorder()
+    for (const s of flight(10)) recorder.add(s.time, s.objects)
+    recorder.render(new Date(0), 't', { task: 'joust' })
+    expect(recorder.render(new Date(0), 't', { task: 'joust', bandit: 'ace' })).toContain('0,Match_bandit=ace')
+  })
+  it('starts again when a windowed recorder drops its first samples', () => {
+    const recorder = new Recorder(5)
+    const samples = flight(120)
+    samples.forEach((s, k) => {
+      recorder.add(s.time, s.objects)
+      if (k === 40) recorder.render(new Date(0), 't', { task: 'joust' })
+    })
+    const kept = samples.filter((s) => s.time >= samples[samples.length - 1].time - 5)
+    expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(kept))
+  })
+})
+
 // Afterburner is the name the format defines; a Mochi-only Reheat reads as
 // stone cold to every other ACMI tool.
 it('records the burner as the standard Afterburner property, never Reheat', () => {

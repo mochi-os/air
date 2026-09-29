@@ -460,12 +460,10 @@ export function stamp(fight: {
   }
 }
 
-export function acmi(
-  samples: Sample[],
-  started: Date,
-  title: string,
-  match?: Match
-): string {
+// header is a recording's opening lines: the format, the reference time, the
+// title and the match block. It is written afresh on every render, since the
+// match block is the fight as it stands when the file is rendered.
+function header(started: Date, title: string, match?: Match): string[] {
   const out: string[] = [
     'FileType=text/acmi/tacview',
     'FileVersion=2.2',
@@ -481,6 +479,13 @@ export function acmi(
       out.push(`0,Match_${key}=${field(String(value))}`)
     }
   }
+  return out
+}
+
+// writer converts samples to ACMI lines one at a time, keeping between them
+// the state its delta suppression needs, so a recording can be written out as
+// it grows (#16) and not rebuilt from its first sample on every save.
+export function writer(): (sample: Sample, out: string[]) => void {
   // Declared properties are written once per object and repeated only when
   // they change — ACMI is a delta format, and repeating them every frame
   // multiplies the file size for no information.
@@ -499,7 +504,7 @@ export function acmi(
   const bloomed = new Map<number, number>() // last written chaff, per object
   const sensed_last = new Map<number, string>() // last written sensor group, per object
   const guided = new Map<number, string>() // last written seeker channels, per missile object
-  for (const sample of samples) {
+  return (sample: Sample, out: string[]) => {
     out.push(`#${round(sample.time, 2)}`)
     for (const o of sample.objects) {
       const { longitude, latitude } = position(o.x, o.z)
@@ -762,6 +767,17 @@ export function acmi(
       out.push(line)
     }
   }
+}
+
+export function acmi(
+  samples: Sample[],
+  started: Date,
+  title: string,
+  match?: Match
+): string {
+  const out = header(started, title, match)
+  const write = writer()
+  for (const sample of samples) write(sample, out)
   return out.join('\n') + '\n'
 }
 
@@ -770,6 +786,13 @@ export function acmi(
 export class Recorder {
   private samples: Sample[] = []
   private last = -1
+  // What render has already written (#16): the body's lines for the first
+  // `written` samples and the writer's delta state after them, so a render -
+  // one a minute while the flight saves itself - converts only the samples
+  // added since, not the whole flight again.
+  private body: string[] = []
+  private written = 0
+  private write = writer()
   constructor(
     private window = 0, // seconds kept; 0 = the WHOLE flight (a debrief wants the takeoff, not the last few minutes)
     private rate = 10 // samples per second
@@ -778,6 +801,14 @@ export class Recorder {
   clear() {
     this.samples = []
     this.last = -1
+    this.restart()
+  }
+
+  // restart drops what render has written: the samples it rebased on changed.
+  private restart() {
+    this.body = []
+    this.written = 0
+    this.write = writer()
   }
 
   // due reports whether a sample offered at `time` would be kept: the caller
@@ -798,7 +829,10 @@ export class Recorder {
     const cut = time - this.window
     let drop = 0
     while (drop < this.samples.length && this.samples[drop].time < cut) drop++
-    if (drop) this.samples.splice(0, drop)
+    if (drop) {
+      this.samples.splice(0, drop)
+      this.restart() // the first sample moved, and every time is rebased on it
+    }
   }
 
   get length() {
@@ -809,11 +843,10 @@ export class Recorder {
   render(started: Date, title: string, match?: Match): string {
     if (!this.samples.length) return ''
     const base = this.samples[0].time
-    return acmi(
-      this.samples.map((s) => ({ time: s.time - base, objects: s.objects })),
-      started,
-      title,
-      match
-    )
+    for (; this.written < this.samples.length; this.written++) {
+      const s = this.samples[this.written]
+      this.write({ time: s.time - base, objects: s.objects }, this.body)
+    }
+    return header(started, title, match).concat(this.body).join('\n') + '\n'
   }
 }
