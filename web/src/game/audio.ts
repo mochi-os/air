@@ -65,7 +65,6 @@ const SHOT_BUS: Record<string, Bus> = {
   lock: 'aircraft',
   door: 'aircraft',
   caution: 'alerts',
-  warning: 'alerts',
   horn: 'alerts',
   law: 'alerts',
 }
@@ -799,23 +798,6 @@ async function bake(): Promise<void> {
   })
   // Master caution: the NATOPS tone (caution_shape).
   shots.caution = await render(CAUTION_LENGTH, caution_shape)
-  // Master WARNING: three fast high beeps — the red tier (FIRE and kin) is
-  // explicitly not backed by the caution tone (NATOPS 2.17.3), so it gets
-  // its own urgent voice. Synthesized like everything else — no recordings.
-  shots.warning = await render(0.6, (d, r) => {
-    const beep = (at: number) => {
-      const base = Math.floor(at * r)
-      for (let i = 0; i < r * 0.12 && base + i < d.length; i++)
-        d[base + i] +=
-          Math.sin((i / r) * 2 * Math.PI * 1600) *
-          Math.min(1, i / (r * 0.006)) *
-          decay(i, r, 0.1) *
-          0.4
-    }
-    beep(0)
-    beep(0.18)
-    beep(0.36)
-  })
   // Gear warning horn: a slow insistent low beep (looped while active).
   shots.horn = await render(1.0, (d, r) => {
     for (let i = 0; i < r * 0.55; i++)
@@ -1164,9 +1146,6 @@ export function audio_eject(): void {
 // 250 Hz gear horn needs the most gain, since that is where the engine is.
 export function audio_caution(): void {
   play('caution', 3.4)
-}
-export function audio_warning(): void {
-  play('warning', 3.4)
 }
 
 // audio_voiced reports whether a voice alert's recording is ready to play.

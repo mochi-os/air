@@ -35,14 +35,19 @@ export const MESSAGES = [
 ] as const
 export type Message = (typeof MESSAGES)[number]
 
-// The caution and warning rows that raise each message. FLAMEOUT is both
-// engines flamed out, so both ENGINE calls. The FCS row is a jammed control
-// surface, which the jet shows as AIL OFF, RUD OFF or FLAPS OFF, all voiced
-// FLIGHT CONTROLS (2.8.4.6). FUEL LO says FUEL LOW alone: BINGO keeps its own
-// row beside it, so its voice and repeat come from there.
+// The caution and warning rows that raise each message, and the DDI captions
+// whose voice replaces the master caution tone. FLAMEOUT is both engines flamed
+// out, so both ENGINE calls; a fuel fire lights both FIRE lights, so both ENGINE
+// FIRE calls, left first (2.14.1). The FCS row is a jammed control surface,
+// which the jet shows as AIL OFF, RUD OFF or FLAPS OFF, all voiced FLIGHT
+// CONTROLS (2.8.4.6). FUEL LO says FUEL LOW alone: BINGO keeps its own row
+// beside it, so its voice and repeat come from there.
 export const SPOKEN: Record<string, readonly Message[]> = {
   'L ENG FIRE': ['ENGINE FIRE LEFT'],
   'R ENG FIRE': ['ENGINE FIRE RIGHT'],
+  'FUEL FIRE': ['ENGINE FIRE LEFT', 'ENGINE FIRE RIGHT'],
+  'L FLAMEOUT': ['ENGINE LEFT'],
+  'R FLAMEOUT': ['ENGINE RIGHT'],
   FCS: ['FLIGHT CONTROLS'],
   'L ENG': ['ENGINE LEFT'],
   'R ENG': ['ENGINE RIGHT'],

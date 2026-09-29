@@ -181,10 +181,19 @@ describe('the HOOK light', () => {
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
 interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number; flbit?: boolean }
+const generators = /\nfunction generators\(out\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+// The DDI side of the generators (NATOPS 2.5.1.1): cautions_update's L GEN and R
+// GEN captions and its battery state, from the core's spools and harm.
+function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
+  const lines = /\n\tconst \[genL,genR\]=core\?generators\(core\):\[true,true\][^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!lines || !generators) throw new Error('generator captions not found in engine.ts')
+  return new Function('c', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
+    const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[]; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
+}
 function cautionlit(c: Cautions): string[] {
   const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,jammed\); \}\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('caution panel block not found in engine.ts')
-  const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  if (!block || !generators) throw new Error('caution panel block not found in engine.ts')
+  const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
     const ownship={fuel:c.fuel??3000, group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
     const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, flbit_lit=()=>!!c.flbit; ${block}
@@ -193,6 +202,13 @@ function cautionlit(c: Cautions): string[] {
 }
 
 describe('the caution lights panel', () => {
+  it('raises the L GEN or R GEN caution on the DDI with its light, neither in a dual failure, which is the battery (2.5.1.1)', () => {
+    expect(gencaptions({})).toEqual({ captions: [], battery: false })
+    expect(gencaptions({ spoolL: 0 })).toEqual({ captions: ['L GEN'], battery: false })
+    expect(gencaptions({ harmR: 1 })).toEqual({ captions: ['R GEN'], battery: false })
+    expect(gencaptions({ spoolL: 0, spoolR: 0 })).toEqual({ captions: [], battery: true })
+  })
+
   it('lights FUEL LO for a fuel low BIT with the fuel above it', () => {
     expect(cautionlit({ fuel: 3000, flbit: true })).toContain('fuello')
     expect(cautionlit({ fuel: 3000 })).not.toContain('fuello')
@@ -315,9 +331,9 @@ describe('the LOCK and SHOOT lights', () => {
 // stay readable at night. No cockpit control.
 interface Power { spoolL?: number; spoolR?: number; view?: string }
 function emergency(p: Power): { unpowered: boolean; intensity: number } {
-  const block = /\n\t\{ const turning=[\s\S]*?EMERGENCY_LIGHT:0; \}[^\n]*\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('generator block not found in engine.ts')
-  const run = new Function('p', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  const block = /\n\t\{ const \[genL,genR\]=generators\(out\);[\s\S]*?EMERGENCY_LIGHT:0; \}[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block || !generators) throw new Error('generator block not found in engine.ts')
+  const run = new Function('p', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     const out=[p.spoolL??0.7, 0, p.spoolR??0.7, 0, 0, 0];
     const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
     const l={genL:{},genR:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
