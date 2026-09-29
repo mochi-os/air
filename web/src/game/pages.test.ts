@@ -484,6 +484,83 @@ describe('the fuel low BIT', () => {
   })
 })
 
+// The FCS status display against figure 2-16 (C/D) and 2.8.4.7. The core's words:
+// STAB 0/1, AIL 2/3, RUD 4, LEF 5, TEF 6, jams from 10 in the harness's layout.
+function fcspage(words: number[], o: { gross?: number; fuel?: number; aoa?: number; jams?: number[] } = {}): Drawn {
+  const out = [...words.map((w) => w * Math.PI / 180), 0, 0, 0]
+  for (const j of o.jams ?? []) out[10 + j] = 0.9
+  return page('ddi_fcs', `const STATE={ stabilator:0, flaperon:2, rudder:4, slat:5, flap:6, jam:10 }, last_out=${JSON.stringify(out)};
+    const ownship={ aoa:${o.aoa ?? 4.2}, gauges:{ fuelRaw:${o.fuel ?? 9000}, externalRaw:0 } }, gross_weight=()=>${o.gross ?? 30000};`)
+}
+describe('the FCS status display', () => {
+  const words = [3, -4, 15, -15, 5, 1, 5, 0, 0, 0] // STAB 3 TED / 4 TEU, AIL 15 TED / 15 TEU, RUD 5 left, LEF 1 LED, TEF 5 TED
+  const line = (d: Drawn, want: number[]) => d.lines.some((l) => want.every((v, i) => Math.abs(v - (l[i] as number)) < 1e-9))
+
+  it('lists LEF, TEF, AIL, RUD and STAB down the middle, each side\'s degrees unsigned beside it, with no title or extras', () => {
+    const d = fcspage(words)
+    const rows: [string, number, string, string][] = [['LEF', 56, '1', '1'], ['TEF', 80, '5', '5'], ['AIL', 128, '15', '15'], ['RUD', 152, '5', '5'], ['STAB', 176, '3', '4']]
+    for (const [label, y, left, right] of rows) {
+      expect(at(d, label)).toEqual([256, y])
+      expect(d.text).toContainEqual([left, 190, y])
+      expect(d.text).toContainEqual([right, 314, y])
+    }
+    for (const gone of ['FCS']) expect(texts(d)).not.toContain(gone)
+    expect(texts(d).some((s) => /^(SPD BRK|TRIM|ROLL) |°|^-\d/.test(s))).toBe(false)
+  })
+
+  it('points each arrow the way the surface has gone from neutral', () => {
+    const d = fcspage(words)
+    expect(line(d, [176, 170, 176, 182])).toBe(true) // left STAB trailing edge down: the arrow points down
+    expect(line(d, [300, 182, 300, 170])).toBe(true) // right STAB trailing edge up: up
+    expect(line(d, [176, 50, 176, 62])).toBe(true) // LEF leading edge down: down
+    expect(line(d, [182, 152, 170, 152])).toBe(true) // RUD trailing edge left: left
+    expect(line(fcspage([0, 0, 0, 0, -5, 0, 0]), [170, 152, 182, 152])).toBe(true) // and right
+  })
+
+  it('puts a bold X through the number of a surface the FCC no longer commands', () => {
+    const d = fcspage(words, { jams: [2] })
+    expect(line(d, [186, 117, 216, 139])).toBe(true) // the left AIL
+    expect(line(d, [310, 117, 340, 139])).toBe(false)
+    expect(line(fcspage(words), [186, 117, 216, 139])).toBe(false)
+  })
+
+  it('boxes the channels: LEF, AIL and RUD on 1 and 4 at the left and 2 and 3 at the right, TEF and STAB on all four', () => {
+    const d = fcspage(words)
+    const box = (bx: number, by: number) => d.rects.some(([rx, ry, w, h]) => rx === bx && ry === by && w === 24 && h === 24)
+    for (const y of [44, 116, 140]) {
+      expect([box(40, y), box(64, y), box(88, y), box(112, y)]).toEqual([true, false, false, true])
+      expect([box(376, y), box(400, y), box(424, y), box(448, y)]).toEqual([false, true, true, false])
+    }
+    for (const y of [68, 92, 164, 188]) for (const left of [40, 376]) for (let c = 0; c < 4; c++) expect(box(left + 24 * c, y)).toBe(true)
+    expect(texts(d).filter((s) => s === 'SV1')).toHaveLength(4)
+  })
+
+  it('lists the CAS and sensor channels at the lower right, clear', () => {
+    const d = fcspage(words)
+    for (const name of ['CAS', 'P', 'R', 'Y', 'N ACC', 'L ACC', 'STICK', 'PEDAL', 'AOA', 'BADSA', 'PROC', 'DEGD']) expect(texts(d)).toContain(name)
+    expect(d.rects.filter(([rx, , w, h]) => rx >= 376 && rx < 456 && w === 20 && h === 18)).toHaveLength(44)
+  })
+
+  it('shows the FCS\'s own g limit, crossed out under 3,300 lb of fuel or over 44,000 lb gross', () => {
+    const cross = (d: Drawn) => line(d, [98, 276, 160, 304])
+    const light = fcspage(words)
+    expect(at(light, 'G-LIM 7.5G')).toEqual([20, 290])
+    expect(cross(light)).toBe(false)
+    const heavy = fcspage(words, { gross: 46000 })
+    expect(texts(heavy)).toContain('G-LIM 5.3G') // 7.5 x 32,357 / 46,000
+    expect(cross(heavy)).toBe(true)
+    expect(cross(fcspage(words, { fuel: 2800 }))).toBe(true)
+  })
+
+  it('reads the L, INS and R AoA along the bottom', () => {
+    const d = fcspage(words, { aoa: 11.25 })
+    expect(at(d, 'L 11.3')).toEqual([90, 456])
+    expect(at(d, 'R 11.3')).toEqual([360, 456])
+    expect(at(d, 'AOA 11.3')).toEqual([236, 456])
+    expect(d.rects.some(([, ry, , h]) => ry === 444 && h === 24)).toBe(true) // the INS readout boxed
+  })
+})
+
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.

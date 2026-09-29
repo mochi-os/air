@@ -2842,33 +2842,56 @@ function ddi_chklst(x,display){ const o=last_out||[];   // CHKLST (#8): the real
 	x.fillText("WT "+wt+" LB",286,402);
 	x.fillText("VAPP "+vapp,286,430);
 	x.fillText("VS0  "+vs0,286,458); }
-function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straight from the flight core's control words; X = the channel's jam word
+// ddi_fcs: the FCS status display as figure 2-16 draws it for the C/D (2.8.4.7). At top
+// centre each surface's left and right position in whole degrees with an arrow for its
+// direction from neutral - the leading edge for LEF, the trailing edge for the rest,
+// sideways for RUD - and a bold X through the number of a surface the FCC no longer
+// commands (the core's jam words: 0/1 stabilator, 2/3 flaperon, 4 rudder, 5 slat; the
+// flap has none). Either side, the channel boxes: LEF, AIL and RUD on channels 1 and 4
+// at the left and 2 and 3 at the right, TEF and STAB on all four in SV1 and SV2 rows.
+// At the lower right the CAS and sensor channel status, and at the left centre the
+// FCS's symmetrical positive g limit, crossed out under 3,300 lb of fuel or over
+// 44,000 lb gross. The L, INS and R AoA along the bottom. The game models no channel
+// or sensor failure, so every box reads clear, and one AoA, which all three show.
+function ddi_fcs(x,display){ const o=last_out||[], gz=ownship.gauges||{};
 	const colour=display==="center";
 	const deg=i=>(o[i]||0)/D2R;
 	const jam=i=>(o[STATE.jam+i]||0)>0.5;
-	x.fillText("FCS",256,36);
-	x.font="20px monospace";
-	const row=(label,v,xx,y,jammed)=>{ const r=Math.round(v);   // round BEFORE the sign, or a -0.3° deflection prints "-0°"
-		x.textAlign="center"; x.fillText(label,xx,y);
-		x.fillText((r<0?"-":"")+Math.abs(r)+"°",xx,y+26);
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle";
+	const arrow=(ax,ay,dx,dy)=>{ x.beginPath(); x.moveTo(ax-dx*6,ay-dy*6); x.lineTo(ax+dx*6,ay+dy*6);   // a short arrow along (dx,dy), its head at the far end
+		x.moveTo(ax+dx*6-dy*4-dx*4,ay+dy*6+dx*4-dy*4); x.lineTo(ax+dx*6,ay+dy*6); x.lineTo(ax+dx*6+dy*4-dx*4,ay+dy*6-dx*4-dy*4); x.stroke(); };
+	const side=(v,xx,y,sideways,jammed)=>{ const r=Math.round(v);   // one side of a surface row: the arrow, then the number
+		if(sideways) arrow(xx,y,v>=0?-1:1,0); else arrow(xx,y,0,v>=0?1:-1);   // + is the leading or trailing edge down, and for the rudder the trailing edge left (the nose yaws left)
+		x.textAlign="left"; x.font="18px monospace"; x.fillText(String(Math.abs(r)),xx+14,y);
 		if(jammed){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;
-			x.beginPath(); x.moveTo(xx-26,y-12); x.lineTo(xx+26,y+38); x.moveTo(xx+26,y-12); x.lineTo(xx-26,y+38); x.stroke();
+			x.beginPath(); x.moveTo(xx+10,y-11); x.lineTo(xx+40,y+11); x.moveTo(xx+40,y-11); x.lineTo(xx+10,y+11); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
-	row("LEF",deg(STATE.slat),110,140,jam(5)); row("LEF",deg(STATE.slat),402,140,jam(5));   // one slat word, both wings
-	// Jam words are per actuator (flight/damage.go: 0/1 stabilator, 2/3 flaperon,
-	// 4 rudder, 5 slat, 6 speedbrake); there is no flap channel, so the X goes on
-	// the AIL rows, never TEF.
-	row("TEF",deg(STATE.flap),110,216,false); row("TEF",deg(STATE.flap),402,216,false);
-	row("AIL",deg(STATE.flaperon),110,292,jam(2)); row("AIL",deg(STATE.flaperon+1),402,292,jam(3));
-	row("STAB",deg(STATE.stabilator),110,368,jam(0)); row("STAB",deg(STATE.stabilator+1),402,368,jam(1));
-	row("RUD",deg(STATE.rudder),256,368,jam(4));
-	x.textAlign="center"; x.fillText("SPD BRK "+Math.round((o[STATE.speedbrake]||0)*100)+"%",256,110);
-	if(jam(6)){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;   // the speedbrake actuator jams too (battle plumbing damage) and showed nothing
-		x.beginPath(); x.moveTo(150,92); x.lineTo(362,122); x.moveTo(362,92); x.lineTo(150,122); x.stroke();
-		x.strokeStyle="#39e07a"; x.lineWidth=2; }
-	x.textAlign="left";   // the two trim datums
-	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
+	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,deg(STATE.flap),deg(STATE.flap),false,false,false],
+		["AIL",128,deg(STATE.flaperon),deg(STATE.flaperon+1),false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
+		["STAB",176,deg(STATE.stabilator),deg(STATE.stabilator+1),false,jam(0),jam(1)]];
+	for(const [label,y,L,R,sideways,jamL,jamR] of rows){
+		x.textAlign="center"; x.font="18px monospace"; x.fillText(label,256,y);
+		side(L,176,y,sideways,jamL); side(R,300,y,sideways,jamR); }
+	x.lineWidth=1.5;   // the rules under LEF, AIL and RUD
+	for(const y of [68,140,164]){ x.beginPath(); x.moveTo(166,y); x.lineTo(346,y); x.stroke(); }
+	// the channel boxes: 24 px cells, LEF 44, TEF 68-116, AIL 116, RUD 140, STAB 164-212
+	const grid=(left,cols)=>{ const cells=[[44,cols],[68,[1,2,3,4]],[92,[1,2,3,4]],[116,cols],[140,cols],[164,[1,2,3,4]],[188,[1,2,3,4]]];
+		for(const [y,cs] of cells) for(const c of cs) x.strokeRect(left+24*(c-1),y,24,24);
+		x.font="14px monospace"; x.textAlign="center"; for(let c=1;c<=4;c++) x.fillText(String(c),left+24*(c-1)+12,226); };
+	grid(40,[1,4]); grid(376,[2,3]);
+	x.font="14px monospace"; x.textAlign="right"; for(const y of [80,176]){ x.fillText("SV1",36,y); x.fillText("SV2",36,y+24); }
+	x.textAlign="left"; for(const y of [80,176]){ x.fillText("SV1",476,y); x.fillText("SV2",476,y+24); }
+	// the CAS and sensor channel status at the lower right: four channel columns, 18 px rows
+	const status=[["CAS","P"],["","R"],["","Y"],["N ACC",""],["L ACC",""],["STICK",""],["PEDAL",""],["AOA",""],["BADSA",""],["PROC",""],["DEGD",""]];
+	status.forEach(([name,axis],i)=>{ const y=240+18*i;
+		for(let c=0;c<4;c++) x.strokeRect(376+20*c,y,20,18);
+		x.font="14px monospace"; x.textAlign="right"; x.fillText(axis||name,370,y+9); if(axis&&name){ x.textAlign="left"; x.fillText(name,286,y+9); } });
+	{ const gross=gross_weight(), limit=7.5*Math.min(1,32357/Math.max(1,gross)), fuel=(gz.fuelRaw||0)+(gz.externalRaw||0);   // the FCS's own schedule: 7.5 g to 32,357 lb, falling as the reference over gross above it (fa18c.go Limit)
+		x.font="24px monospace"; x.textAlign="left"; x.fillText("G-LIM "+limit.toFixed(1)+"G",20,290);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		if(fuel<3300||gross>44000){ x.lineWidth=3; x.beginPath(); x.moveTo(98,276); x.lineTo(160,304); x.moveTo(160,276); x.lineTo(98,304); x.stroke(); x.lineWidth=2; } }   // the value crossed out (2.8.4.7)
+	{ const a=(ownship.aoa??0).toFixed(1);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		x.font="18px monospace"; x.textAlign="left"; x.fillText("L "+a,90,456); x.fillText("R "+a,360,456);
+		const text="AOA "+a, w=x.measureText(text).width; x.textAlign="center"; x.fillText(text,236,456); x.strokeRect(236-w/2-6,456-12,w+12,24); } }
 // ============================================================================ stores (#17): per-station loadout, visuals, firing order
 const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
 const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
