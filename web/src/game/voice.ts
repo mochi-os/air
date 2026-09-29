@@ -8,17 +8,25 @@
 // after the condition has been gone for 5 seconds and returns. A message that
 // has started is never interrupted, so a higher priority one waits for it to
 // finish. BINGO repeats every 30 seconds while the fuel stays below bingo
-// (2.2.10.4, MC OFP 19C) and the GPWS CHECK GEAR call every 8 seconds while the
-// jet stays in the gear-up landing condition (2.17.5.4).
+// (2.2.10.4, MC OFP 19C), the GPWS CHECK GEAR call every 8 seconds while the
+// jet stays in the gear-up landing condition (2.17.5.4), and the GPWS recovery
+// calls back to back until the warning clears (2.17.4.3.1).
 
-// Every message, highest priority first. NATOPS orders the fire warnings
-// (2.14.1: ENGINE FIRE LEFT, then RIGHT) and gives the GPWS calls priority over
-// the other cues (2.17.4.3.1); the cautions follow the severity of what they
+// Every message, highest priority first. The GPWS recovery calls come first,
+// having priority over all other cues (2.17.4.3.1, 2.17.5.4); NATOPS orders the
+// fire warnings (2.14.1: ENGINE FIRE LEFT, then RIGHT); ALTITUDE is a warning
+// (2.17.3), the single call of the secondary radar and barometric low-altitude
+// warnings (2.12.5.2, 2.12.5.3); the cautions follow the severity of what they
 // announce.
 export const MESSAGES = [
+  'PULL UP',
+  'POWER',
+  'ROLL LEFT',
+  'ROLL RIGHT',
   'ENGINE FIRE LEFT',
   'ENGINE FIRE RIGHT',
   'CHECK GEAR',
+  'ALTITUDE',
   'FLIGHT CONTROLS',
   'ENGINE LEFT',
   'ENGINE RIGHT',
@@ -43,7 +51,7 @@ export const SPOKEN: Record<string, readonly Message[]> = {
   BINGO: ['BINGO'],
 }
 
-const REPEAT: Partial<Record<Message, number>> = { BINGO: 30, 'CHECK GEAR': 8 }
+const REPEAT: Partial<Record<Message, number>> = { BINGO: 30, 'CHECK GEAR': 8, 'PULL UP': 0, POWER: 0, 'ROLL LEFT': 0, 'ROLL RIGHT': 0 }
 const CLEAR = 5 // seconds a condition must be gone before it announces again
 const GAP = 0.3 // seconds of silence after a message before the next starts
 

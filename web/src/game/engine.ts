@@ -38,7 +38,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
@@ -75,6 +75,7 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
+import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
@@ -224,6 +225,7 @@ let menu_hold=false, game_paused=false;   // menu_hold = the Esc popup freeze; t
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
+let joust_start=null;   // the BVR joust's drawn start (#46): each end's block (the player's first), the block speed, the flank and the separation; null for the merge
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:SHIP.deck };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
@@ -267,6 +269,21 @@ const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false
 		col=mix(col, vec3(dot(col,vec3(0.333)))*u_ovct, u_ovc*(1.0-smoothstep(0.0,u_ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) — under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze tone) — the real field extends far beyond the 90 km march and its stacked distant clouds read as a hazy band riding the sea line. Horizon-weighted so sky overhead stays blue. LOCKSTEP with the cloud skybg
 		float s=max(dot(d,normalize(u_sun)),0.0); col+=u_sun_col*pow(s,220.0)*1.4; col+=u_sun_col*pow(s,8.0)*0.18; gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
+// The canopy's rear-view mirrors (#99) reflect the sky behind the pilot: an
+// environment map baked from the sky dome whenever the time of day sets it. The
+// dome writes display values, so the bake converts them to the linear light a
+// lit material expects, or the mirror would wash out.
+const mirror_mats=[];
+let mirror_env=null;
+function mirror_bake(){
+	const generator=new THREE.PMREMGenerator(renderer);
+	const bake=new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, uniforms:sky_mat.uniforms, vertexShader:sky_mat.vertexShader,
+		fragmentShader:sky_mat.fragmentShader.replace("gl_FragColor=vec4(col*u_blackout,1.0);","gl_FragColor=vec4(pow(col*u_blackout,vec3(2.2)),1.0);") });
+	const room=new THREE.Scene(); room.add(new THREE.Mesh(new THREE.SphereGeometry(50,32,16),bake));
+	const target=generator.fromScene(room,0,0.1,100);
+	if(mirror_env) mirror_env.dispose(); mirror_env=target;
+	for(const m of mirror_mats){ m.envMap=target.texture; m.needsUpdate=true; }
+	bake.dispose(); generator.dispose(); }
 
 // stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
 // placed by ./sky for the map origin at local midnight on today's date, the hour a full moon
@@ -318,6 +335,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
 		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio;
 		contrail_mat.color.setHex(p.sunCol).lerp(new THREE.Color(0xffffff),0.5).multiplyScalar(Math.pow(ratio,1/2.2)); }   // ice lit by the sun: white at noon, warmed by a low sun, dim at night   // foam is a white surface, lit like the land's white paint; encoded because the sea writes display-referred
+	mirror_bake();   // the mirrors reflect this sky
 }
 // Beam-versus-ambient balance under a cloud layer, applied PER FRAGMENT by the
 // receivers (cloud_shadow_receive) and never to the global lights: a jet marshalling
@@ -1135,7 +1153,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
-		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer))/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page
+		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
@@ -1175,10 +1193,10 @@ const AIRCRAFT_MODELS={
 	      // None of these nodes may be matched by a scrubbed-clip track regex, or
 	      // the mixer fights the writes.
 	      { name:"adiPitch",  node:"INSTRUMENT_AttitudeIndicator_Pitch_AN_Pitch_503",        axis:"x", gauge:"pitch" },
-	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", sign:-1, gauge:"bank" },
+	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", gauge:"bank" },
 	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
-	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttle" },
-	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttle" },
+	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttleL" },   // 0.698 rad, 40°: the clip's whole travel, IDLE to MAX
+	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttleR" },
 	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.35, gauge:"stickPitch" },
 	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
 	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the modeled glideslope and localizer carriages beside it stay hidden (spec.hide): the C's standby indicator has no ILS bars
@@ -1202,10 +1220,11 @@ const AIRCRAFT_MODELS={
 	      { name:"clockH",    node:"Clock_hourAction_AN_Hour_364", axis:"z", gain:6.2832/12, gauge:"clockH" },
 	      { name:"clockM",    node:"ClockMinutesAction_AN__367",   axis:"z", gain:6.2832/60, gauge:"clockM" },
 	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" },
-	      // right-console gauges: batteries are calibrated ±143° y-axis sweeps; hyd/cabin follow
-	      // the needle family's clock-anchored +z convention with game-plausible drives
+	      // right-console gauges: batteries are calibrated ±143° y-axis sweeps; hyd follows
+	      // the needle family's clock-anchored +z convention with a game-plausible drive. The
+	      // model's CabinPress needle turns on the radar altimeter's dial (FO-5 item 41), whose
+	      // face build_radalt draws, needle and all: it is hidden
 	      { name:"hyd",       node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd" },
-	      { name:"cabin",     node:"INSTRUMENT_Needle_CabinPress_AN_CabinPress_526",   axis:"z", gauge:"cabin" },
 	      { name:"voltE",     node:"INSTRUMENT_Needle_Battery_AN_BatteryE_520",  axis:"y", sign:-1, gauge:"volts" },
 	      { name:"voltU",     node:"INSTRUMENT_Needle_BatteryUAction_AN_BatteryU_523", axis:"y", gauge:"volts" },
 	      // cockpit levers ride their authored clips (single calibrated sweeps), scrubbed from state
@@ -1337,42 +1356,95 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			for(const o of objects) o.traverse(c=>{ if(c.isMesh) meshes.push(c); });
 			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; }); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
+// model_of is the airframe the model load hung on the group: the pit's sightline
+// casts test only it. The group also carries effects - the gun's flash, plume
+// and bloom - that are no structure to see through or past, and a sprite
+// cannot be ray-cast without a camera, which these casts have none of.
+function model_of(g){ return g.children.find(c=>c.userData&&c.userData.model)||g; }
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
-	ownship.group.updateMatrixWorld(true);
+	const g=ownship.group; g.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
-	ownship.group.worldToLocal(p);
-	ownship.group.userData.eye={ x:p.x+0.17, y:p.y+0.17 };   // head origin -> eye offset (y tuned from captures: more world over the glareshield; x moved 7 cm nearer the glass so the canopy bow reads slim, DCS-style, instead of looming); z forced to the centreline by the camera branch
-	const pane=ownship.group.getObjectByName("Object_1042");   // the combining glass: the only small transparent pane centred just forward-above the eye line (identified by geometry — the GLB leaves it anonymous)
+	g.worldToLocal(p);
+	g.userData.eye={ x:p.x+0.17, y:p.y+0.17 };   // head origin -> eye: x forward of the head, where the canopy bow is thinnest for the windshield it frames - further aft thins the band but pulls it in over the windshield and costs the HUD its floor, further forward swells it; y is the fallback until the glass calibrates below; z forced to the centreline by the camera branch
+	const pane=g.getObjectByName("Object_1042");   // the combining glass: the only small transparent pane centred just forward-above the eye line (identified by geometry — the GLB leaves it anonymous)
 	let mesh=null; if(pane) pane.traverse(o=>{ if(!mesh&&o.isMesh&&o.geometry) mesh=o; });
-	if(mesh){ ownship.group.updateMatrixWorld(true);
+	if(mesh){
 		mesh.geometry.computeBoundingBox();   // the node's OWN geometry only — setFromObject would sweep in child meshes and fatten the pane
 		const box=mesh.geometry.boundingBox;
 		const lo=new THREE.Vector3(Infinity,Infinity,Infinity), hi=new THREE.Vector3(-Infinity,-Infinity,-Infinity), c=new THREE.Vector3();
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
-			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
-		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+			c.applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); lo.min(c); hi.max(c); }
+		const glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+		g.userData.glass=glass;
+		// The design eye, from the HUD. The aircraft waterline is 4° up from the
+		// HUD's optical centre and the field is 20° (NATOPS 2.13.4.8.11 item 2),
+		// so it runs from 6° above the waterline to 14° below; the heading scale
+		// rides its top. The modeled pane is shorter than that field and its
+		// lower part is hidden by the HUD housing, so the eye takes the field's
+		// top from the pane's top edge, 6.5° above the waterline, and the
+		// housing sets the floor, near 10.5° below: room for the approach's
+		// velocity vector at 8° with its bracket and needles. The modeled pilot
+		// sits over ten centimetres lower, which put the waterline at the foot
+		// of the glass and the velocity vector, the horizon and the gun cross
+		// under the glareshield in level flight.
+		const eye=g.userData.eye;
+		{ const pos=mesh.geometry.attributes.position, top=new THREE.Vector3(0,-Infinity,0);
+			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k)).applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); if(c.y>top.y) top.copy(c); }
+			eye.y=top.y-(top.x-eye.x)*Math.tan(6.5*D2R); }
+		{ const at=DEV_MODE&&new URLSearchParams(location.search).get("eye"); if(at){ const [ex,ey]=at.split(",").map(Number); if(isFinite(ex)&&isFinite(ey)){ eye.x=ex; eye.y=ey; } } }   // &eye=x,y (dev): try an eye point
 		// Clip to the pane's outline, not its box: the combining glass is an octagon
 		// and a rectangular clip lets symbology float on sky at the sloped corners
 		// (#16). Convex-hull the pane's vertices, pre-clipped at the visible glass
-		// line.
+		// line: the lowest point of the pane the eye sees over the HUD housing,
+		// raycast down the pane's centreline, since the 2D overlay cannot be
+		// occluded by geometry.
+		// What the eye sees of the pane: a ray to a pane point is clear when it
+		// meets the pane before anything opaque - the housing below, the frame
+		// posts at the sides. The floor is the lowest clear point down the
+		// centreline; each side, the last clear point out from the centre along
+		// the waterline's row and the floor's row, whichever is narrower. The
+		// clip outline is the pane's hull cut to that window, since the 2D
+		// overlay cannot be occluded by geometry.
+		const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
+		const from=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0)), toward=new THREE.Vector3();
+		const clear=(y,z)=>{ toward.copy(g.localToWorld(new THREE.Vector3(glass.x,y,z))).sub(from).normalize(); rc.set(from,toward);
+			const hits=rc.intersectObject(model_of(g),true).filter(h=>h.distance>0.15&&shown(h.object)&&!h.object.userData.overlay);   // past the pilot's own head, which is still drawn outside the cockpit view
+			const onto=hits.find(h=>h.object===mesh); if(!onto) return null;   // off the pane
+			const blocked=hits.some(h=>h.distance<onto.distance-0.002&&!(((Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}).transparent));
+			return blocked?false:g.worldToLocal(onto.point.clone()); };
+		let floor=hi.y, base=null;
+		for(let y=hi.y-0.004;y>lo.y;y-=0.002){ const at=clear(y,0); if(at===null) continue; if(at===false) break; floor=at.y; base=at; }
+		glass.floor=floor;
+		const angle=(v,x)=>Math.atan2(v,x-eye.x)/D2R;
+		let left=-hi.z, right=hi.z, side=Infinity;   // the window's z edges, and its narrowest half-width in degrees
+		for(const row of [eye.y,floor+0.006]) for(const sign of [-1,1]){ let last=null;
+			for(let z=0;z<hi.z+0.01;z+=0.002){ const at=clear(row,sign*z); if(!at) break; last=at; }
+			if(!last) continue;
+			if(sign<0) left=Math.max(left,last.z); else right=Math.min(right,last.z);
+			side=Math.min(side,angle(Math.abs(last.z),last.x)); }
 		{ const pos=mesh.geometry.attributes.position, pts=[];
 			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k));
-				c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
+				c.applyMatrix4(mesh.matrixWorld); g.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
 			pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
 			const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
 			const half=(list)=>{ const out=[]; for(const p of list){
 				while(out.length>1&&cross(out[out.length-2],out[out.length-1],p)<=0) out.pop(); out.push(p); } return out; };
 			const lower=half(pts), upper=half(pts.slice().reverse());
-			const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
-			const floor=ownship.group.userData.glass.y-ownship.group.userData.glass.hh*0.42;   // the visible glass line — same raise glass_rect always applied
-			const clipped=[];
-			for(let k=0;k<hull.length;k++){ const a=hull[k], b=hull[(k+1)%hull.length];
-				if(a[1]>=floor) clipped.push(a);
-				if((a[1]>=floor)!==(b[1]>=floor)){ const f=(floor-a[1])/(b[1]-a[1]);
-					clipped.push([a[0]+(b[0]-a[0])*f, floor, a[2]+(b[2]-a[2])*f]); } }
-			if(clipped.length>=3) ownship.group.userData.outline=clipped; } }   // [z, y, x] per hull vertex, group frame
-	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
-	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }   // i18n-format-ok: developer console output, never shown to a user
+			let clipped=lower.slice(0,-1).concat(upper.slice(0,-1));
+			const cut=(poly,axis,bound,above)=>{ const out=[], inside=(p)=>above?p[axis]>=bound:p[axis]<=bound;   // one half-plane of the window
+				for(let k=0;k<poly.length;k++){ const a=poly[k], b=poly[(k+1)%poly.length];
+					if(inside(a)) out.push(a);
+					if(inside(a)!==inside(b)){ const f=(bound-a[axis])/(b[axis]-a[axis]); out.push(a.map((v,i)=>v+(b[i]-v)*f)); } }
+				return out; };
+			clipped=cut(cut(cut(clipped,1,floor,true),0,left,true),0,right,false);
+			if(clipped.length>=3) g.userData.outline=clipped;   // [z, y, x] per hull vertex, group frame
+			// The field the pilot sees through the glass, in degrees from the
+			// waterline: up to the pane's top, down to the housing, and the
+			// narrower side. draw_hud fits the symbology to it.
+			let up=-Infinity; for(const p of clipped) up=Math.max(up,angle(p[1]-eye.y,p[2]));
+			glass.field={ top:up, floor:angle(eye.y-floor,base?base.x:glass.x), side:isFinite(side)?side:angle(glass.hw,glass.x) }; } }
+	try{ build_indexer(g); }catch(e){ build_error=String(e&&e.message||e); }
+	console.warn("cockpit eye", g.userData.eye.x.toFixed(3), g.userData.eye.y.toFixed(3), "glass floor", g.userData.glass&&g.userData.glass.floor.toFixed(3)); }   // i18n-format-ok: developer console output, never shown to a user
 // AoA indexer (#99): the GLB has no indexer lights, so three unlit emissive
 // shapes beside the combining glass stand in (green chevron slow, amber donut
 // on-speed, red chevron fast). Driven from alpha in update_gauges; LAYER_OWN so
@@ -1404,37 +1476,44 @@ function build_indexer(g){
 		const origin=g.localToWorld(new THREE.Vector3(eye.x,IY,IZ));
 		const aim=g.localToWorld(new THREE.Vector3(eye.x+1,IY,IZ)).sub(origin).normalize();
 		rc.set(origin,aim);
-		const h=rc.intersectObject(g,true).find(k=>!k.object.userData.overlay&&shown(k.object));
+		const h=rc.intersectObject(model_of(g),true).find(k=>!k.object.userData.overlay&&shown(k.object));
 		if(h){ const p=g.worldToLocal(h.point.clone());
 			iy=IY; depth=p.x-0.006; edge=IZ; } }   // 6 mm proud of the unit's face
 	box.position.set(depth, iy, edge);
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); mount_compass(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); }
 // The standby flight instruments (#32): the model hides its mechanical airspeed,
 // altimeter, vertical speed and attitude parts 8 cm behind opaque black discs
 // painted on the cockpit tub, so, like the radar altimeter, each gets a canvas
-// face proud of its disc, drawn from the gauges. The centres are the hidden
-// needles' pivots and the ball's centre (dev_origin on the rig nodes), the radii
-// the apertures they turn in; the tub's discs sit at x 6.211.
-const STANDBY={ x:6.207, asi:{ y:0.097, z:0.125, r:0.026 }, alt:{ y:0.097, z:0.192, r:0.026 }, vsi:{ y:0.096, z:0.258, r:0.026 }, adi:{ y:0.163, z:0.154, r:0.045 }, clock:{ y:0.150, z:0.279, r:0.045 } };   // the clock's bezel (2.12.7, #33) has nothing behind it: its centre is the tub's disc, measured by click
+// face proud of its disc, drawn from the gauges. The seats are the discs the
+// pilot sees, not the hidden needles' pivots, which sit up to 5 cm off them:
+// each disc's edge fitted as a circle on a head-on luminance map of the bare
+// tub (dev_overlays, dev_screen), the tub at x 6.211. The climb indicator's
+// disc is half behind the lever in front of it, so it takes the row's height,
+// pitch and radius.
+const STANDBY={ x:6.207, asi:{ y:0.082, z:0.132, r:0.031 }, alt:{ y:0.083, z:0.218, r:0.031 }, vsi:{ y:0.083, z:0.304, r:0.031 }, adi:{ y:0.177, z:0.158, r:0.043 } };   // radii a millimetre inside each disc's edge, so the painted rim frames the face
 const STANDBY_C=128, STANDBY_R=118;   // the faces' canvas centre and dial radius
 const ADI_PIXELS=STANDBY_R*0.22/10;   // pixels per degree of pitch on the standby ball: 10° is 0.22 of the radius
+// A mechanical instrument's face: lit by the cockpit like the model's own gauges,
+// with the integral lighting behind it following the INST PNL level (#21) - the
+// displays (DDIs, IFEI, UFC, RWR) are self-lit and stay basic.
+function gauge_material(tex){ const m=new THREE.MeshStandardMaterial({ map:tex, emissiveMap:tex, emissive:new THREE.Color(0xffffff), emissiveIntensity:lighting.instrument, roughness:0.85, metalness:0, side:THREE.DoubleSide });
+	instrument_mats.push(m); return m; }
 function build_standby(g){
 	if(g.userData.standby&&g.userData.standby.asi.mesh.parent) return;
 	const faces={};
-	for(const name of ["asi","alt","vsi","adi","clock"]){ const seat=STANDBY[name];
+	for(const name of ["asi","alt","vsi","adi"]){ const seat=STANDBY[name];
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=256;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), gauge_material(tex));
 		surface_pose(mesh,STANDBY.x,0,seat.y,seat.z); mesh.layers.set(LAYER_OWN); mesh.name=name+"face"; g.add(mesh);
 		faces[name]={ mesh, canvas, tex }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0);
-	clock_face(faces.clock,gz.clockH||0,gz.clockM||0,gz.clockS||0);
-	for(const k of ["asi","alt","vsi","adi","clock"]) faces[k].tex.needsUpdate=true; }
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0,gz.yaw||0,gz.slip||0);
+	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
 	x.strokeStyle="#e8e8e0"; x.fillStyle="#e8e8e0"; x.lineWidth=2; x.textAlign="center"; x.textBaseline="middle"; return x; }
@@ -1444,63 +1523,81 @@ function face_tick(x,a,outer,inner,width){ x.lineWidth=width; x.beginPath(); x.m
 function face_label(x,a,radius,text){ x.fillText(text,STANDBY_C+Math.cos(a)*radius,STANDBY_C+Math.sin(a)*radius); }
 // The standby airspeed indicator (NATOPS 2.12.3): the needle at the ASI_DIAL angle the rig uses, over that dial's marks
 function asi_face(f,angle){ const x=face_start(f), R=STANDBY_R;
-	for(let kt=60;kt<=850;kt+=10){ if(kt<=200?kt%20:kt%50) continue; const a=dial(ASI_DIAL,kt)-Math.PI/2, major=kt%100===0||kt===60||kt===850;
-		face_tick(x,a,R,major?R-16:R-9,major?3:1.5);
-		if(kt%100===0){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(kt)); } }
-	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+40);
+	for(let kt=60;kt<=850;kt+=10){ if(kt<=200?kt%20:kt%50) continue; const a=dial(ASI_DIAL,kt)-Math.PI/2, major=kt%100===0||kt===60||kt===150||kt===850;
+		face_tick(x,a,R,major?R-16:R-9,major?3:1.5); }
+	for(const [kt,label] of [[60,".6"],[100,"1"],[150,"1.5"],[200,"2"],[300,"3"],[400,"4"],[500,"5"],[600,"6"],[700,"7"],[800,"8"]]){   // hundreds of knots (FO-5 item 27)
+		x.font="bold 20px monospace"; face_label(x,dial(ASI_DIAL,kt)-Math.PI/2,R-32,label); }
+	x.font="11px monospace"; x.fillText("KNOTS",STANDBY_C,STANDBY_C+30); x.fillText("X 100",STANDBY_C,STANDBY_C+44);
 	face_needle(x,angle,R-14,5); }
-// The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial, the thousands
-// counter left of centre, the barometric setting window lower right
+// The standby altimeter (2.12.4): the pointer one turn per 1,000 ft over a 0 to 9 dial of 20
+// graduations, 50 ft each, the thousands counter left of centre, and the barometric setting
+// window centred below under ALT and IN HG with its index beneath (FO-5 item 28)
 function alt_face(f,feet,baro){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
-	for(let i=0;i<50;i++){ const a=i/50*Math.PI*2-Math.PI/2, major=i%5===0;
+	for(let i=0;i<20;i++){ const a=i/20*Math.PI*2-Math.PI/2, major=i%2===0;
 		face_tick(x,a,R,major?R-16:R-8,major?3:1.5);
-		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(i/5)); } }
+		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-32,String(i/2)); } }
 	const shown=Math.max(0,Math.min(99999,Math.round(feet)));
 	x.fillStyle="#202220"; x.fillRect(C-58,C-14,52,28); x.strokeStyle="#606460"; x.strokeRect(C-58,C-14,52,28);
 	x.fillStyle="#f0f0e8"; x.font="bold 22px monospace"; x.fillText(String(Math.floor(shown/1000)).padStart(2,"0"),C-32,C+1);
-	x.fillStyle="#202220"; x.fillRect(C+10,C+22,64,22); x.strokeStyle="#606460"; x.strokeRect(C+10,C+22,64,22);
-	x.fillStyle="#f0f0e8"; x.font="bold 16px monospace"; x.fillText((baro/100).toFixed(2),C+42,C+33);   // i18n-format-ok: canvas-drawn instrument window, fixed-format like the real drum
+	x.fillStyle="#f0f0e8"; x.font="bold 12px monospace"; x.fillText("ALT",C,C+26); x.font="bold 10px monospace"; x.fillText("IN HG",C,C+40);
+	x.fillStyle="#202220"; x.fillRect(C-32,C+48,64,22); x.strokeStyle="#606460"; x.strokeRect(C-32,C+48,64,22);
+	x.fillStyle="#f0f0e8"; x.font="bold 16px monospace"; x.fillText(String(Math.round(baro)).padStart(4,"0"),C,C+59);   // the drums read hundredths of inHg, no point
+	x.beginPath(); x.moveTo(C,C+72); x.lineTo(C-5,C+79); x.lineTo(C+5,C+79); x.closePath(); x.fill();   // the index under the window
 	x.strokeStyle="#e8e8e0";
 	face_needle(x,(shown%1000)/1000*Math.PI*2,R-14,5); }
-// The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses
+// The standby rate of climb indicator (2.12.6): zero at nine o'clock, climb clockwise, the VSI_DIAL angles the rig uses.
+// FO-5 item 29: short ticks every 100 ft/min to 1,000 and every 500 beyond, long ones at .5, 1, 2, 3, 4, 5 and 6, the
+// labels .5, 1, 2 and 4 each way with one 6 at three o'clock between the climb and dive ticks, UP and DOWN beside
+// zero and 1000 FT PER MN over the hub
 function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
-	for(const [fpm,label] of [[0,"0"],[500,".5"],[1000,"1"],[2000,"2"],[4000,"4"],[6000,"6"]]) for(const s of (fpm?[1,-1]:[1])){
-		const a=s*dial(VSI_DIAL,fpm)-Math.PI; face_tick(x,a,R,R-16,3);
-		x.font="bold 20px monospace"; face_label(x,a,R-34,label); }
-	x.font="11px monospace"; x.fillText("UP",C-36,C-52); x.fillText("DOWN",C-36,C+52); x.fillText("X1000",C+30,C-8); x.fillText("FT/MIN",C+30,C+8);
+	face_tick(x,-Math.PI,R,R-16,3);
+	for(let fpm=100;fpm<=6000;fpm+=fpm<1000?100:500) for(const s of [1,-1]){ const long=fpm===500||fpm%1000===0;
+		face_tick(x,s*dial(VSI_DIAL,fpm)-Math.PI,R,long?R-16:R-9,long?3:1.5); }
+	x.font="bold 20px monospace";
+	for(const [fpm,label] of [[0,"0"],[500,".5"],[1000,"1"],[2000,"2"],[4000,"4"]]) for(const s of (fpm?[1,-1]:[1])) face_label(x,s*dial(VSI_DIAL,fpm)-Math.PI,R-34,label);
+	face_label(x,0,R-34,"6");
+	x.font="11px monospace"; x.fillText("UP",C-80,C-20); x.fillText("DOWN",C-66,C+24); x.fillText("1000 FT PER MN",C,C-30);
 	face_needle(x,-Math.PI/2+angle,R-14,5); }
-// The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder and the fixed
-// bank scale, the ADI page's sign conventions, no ILS carriages
-function adi_face(f,pitch,bank){ const x=face_start(f,"#3a6ea8"), C=STANDBY_C, R=STANDBY_R;
-	x.save(); x.beginPath(); x.arc(C,C,R,0,Math.PI*2); x.clip();
-	x.translate(C,C); x.rotate(-bank); x.translate(0,pitch/D2R*ADI_PIXELS);
-	x.fillStyle="#7a5230"; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle="#3a6ea8"; x.fillRect(-3*R,-3*R,6*R,3*R);
-	x.strokeStyle="#f0f0e8"; x.lineWidth=3; x.beginPath(); x.moveTo(-3*R,0); x.lineTo(3*R,0); x.stroke();
-	x.lineWidth=2; x.font="bold 14px monospace"; x.fillStyle="#f0f0e8";
-	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?22:38;
-		x.beginPath(); x.moveTo(-w,y); x.lineTo(w,y); x.stroke(); x.fillText(String(Math.abs(d)),w+16,y); x.fillText(String(Math.abs(d)),-w-16,y); }
+// The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder, its
+// upper half white and lettered CLIMB, its lower half black and lettered DIVE (FO-5 item 25),
+// seen through a round window in a black mask that carries the fixed bank scale; the ADI
+// page's sign conventions, no ILS carriages. The ball's pitch stops at about 90° climb and
+// 80° dive (2.12.2), and the needle and ball sit at the bottom of the mask: the needle
+// deflects one needle width for a turn of 90° a minute, to the side the ADI page's turn
+// indicator goes; the ball slides to the side the velocity vector lies, as the rudder
+// that centres it would push the nose.
+function adi_face(f,pitch,bank,yaw=0,slip=0){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
+	const white="#dcdcd4", black="#141514";
+	x.save(); x.beginPath(); x.arc(C,C,W,0,Math.PI*2); x.clip();
+	x.translate(C,C); x.rotate(-bank); x.translate(0,THREE.MathUtils.clamp(pitch,-80*D2R,90*D2R)/D2R*ADI_PIXELS);
+	x.fillStyle=black; x.fillRect(-3*R,0,6*R,3*R); x.fillStyle=white; x.fillRect(-3*R,-3*R,6*R,3*R);
+	x.lineWidth=2; x.font="bold 13px monospace";
+	for(const d of [-30,-20,-10,10,20,30]){ const y=-d*ADI_PIXELS, w=d%20?20:34, ink=d>0?black:white;
+		x.strokeStyle=ink; x.fillStyle=ink; x.beginPath(); x.moveTo(-w,y); x.lineTo(w,y); x.stroke(); x.fillText(String(Math.abs(d)),w+14,y); x.fillText(String(Math.abs(d)),-w-14,y); }
+	x.font="bold 15px monospace"; x.fillStyle=black; x.fillText("CLIMB",0,-15*ADI_PIXELS); x.fillStyle=white; x.fillText("DIVE",0,15*ADI_PIXELS);
 	x.restore();
-	x.save(); x.translate(C,C); x.strokeStyle="#f0f0e8"; x.lineWidth=3;
+	x.save(); x.translate(C,C); x.strokeStyle="#e8e8e0"; x.lineWidth=3;
 	for(const d of [-60,-30,-20,-10,0,10,20,30,60]){ const a=d*D2R-Math.PI/2, len=d===0?14:(d%30?8:12);
 		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len)); x.stroke(); }
-	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#f0f0e8"; x.beginPath(); x.moveTo(0,-R+18); x.lineTo(-7,-R+32); x.lineTo(7,-R+32); x.closePath(); x.fill();
+	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#e8e8e0"; x.beginPath(); x.moveTo(0,-W+2); x.lineTo(-7,-W+16); x.lineTo(7,-W+16); x.closePath(); x.fill();
 	x.restore();
+	{ const needle=4, turn=THREE.MathUtils.clamp(yaw/D2R/1.5*needle,-24,24);   // one needle width per 1.5°/s
+		x.fillStyle="#e8e8e0"; x.fillRect(C+turn-needle/2,C+W+2,needle,8);
+		const by=C+R-7, travel=24, ball=THREE.MathUtils.clamp(slip,-1,1)*travel;
+		x.fillStyle=white; x.fillRect(C-travel-8,by-5,2*travel+16,10);   // the tube
+		x.strokeStyle=black; x.lineWidth=1.5; for(const s of [-1,1]){ x.beginPath(); x.moveTo(C+s*7,by-5); x.lineTo(C+s*7,by+5); x.stroke(); }   // its reference wires
+		x.fillStyle=black; x.beginPath(); x.arc(C+ball,by,5,0,Math.PI*2); x.fill(); }
 	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
-// The clock (2.12.7): a twelve-hour dial with hour, minute and sweep second hands from the game clock the rig's pedestal clock also reads
-function clock_face(f,hours,minutes,seconds){ const x=face_start(f), R=STANDBY_R;
-	for(let i=0;i<60;i++){ const a=i/60*Math.PI*2-Math.PI/2, major=i%5===0; face_tick(x,a,R,major?R-14:R-7,major?3:1.5);
-		if(major){ x.font="bold 20px monospace"; face_label(x,a,R-30,String(i/5||12)); } }
-	face_needle(x,hours/12*Math.PI*2,R-56,6); face_needle(x,minutes/60*Math.PI*2,R-26,5);
-	x.save(); x.translate(STANDBY_C,STANDBY_C); x.rotate(seconds/60*Math.PI*2); x.strokeStyle="#e0a020"; x.lineWidth=2; x.beginPath(); x.moveTo(0,16); x.lineTo(0,-(R-14)); x.stroke(); x.restore(); }
-// The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26 puts it in the
-// round housing on the right vertical panel where the model seated its standby
-// compass, which mount_compass hangs on the arch. The housing's bezel, measured
-// by panel click (&panelpoint=1), is about 5 cm across on a face at x 6.023.
-const RWR_FACE={ x:6.020, y:0.353, z:0.305, r:0.024 };
+// The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26, the upper
+// right of the standby cluster beside the attitude indicator (25), over the
+// ASI, altimeter and climb indicator (27-29). The seat is the tub's disc there,
+// fitted like the standby faces'. The clock is item 37, the model's rigged dial
+// on the pedestal under the AMPCD.
+const RWR_FACE={ x:6.207, y:0.177, z:0.277, r:0.042 };
 function build_rwr(g){
 	if(g.userData.rwr&&g.userData.rwr.mesh.parent) return;
 	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
 	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RWR_FACE.r,36), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
 	surface_pose(mesh,RWR_FACE.x,0,RWR_FACE.y,RWR_FACE.z); mesh.layers.set(LAYER_OWN); g.add(mesh);
 	g.userData.rwr={ mesh, canvas, tex, last:0, count:0 };
@@ -1508,25 +1605,9 @@ function build_rwr(g){
 function rwr_draw(w){ const x=w.canvas.getContext("2d");
 	x.fillStyle="#0b120d"; x.fillRect(0,0,160,160); x.globalAlpha=1; x.textBaseline="middle";
 	ew_draw(x,80,80,68,11); w.count=RWR.contacts.length; w.tex.needsUpdate=true; }
-// Standby magnetic compass (#2): the model spins its card in a bezel at the top of
-// the right vertical panel, where foldout FO-5 item 26 puts the RWR azimuth
-// indicator; NATOPS 2.12.9 hangs the compass from the right windshield arch, and
-// the model has the housing there - a pendant under the arch box on the canopy
-// frame. Re-seat the card in that housing, reparented so it rides the frame the
-// housing rides, and tilt it to read from below rather than above.
-const COMPASS_SEAT={ x:6.01, y:0.70, z:0.10, scale:0.6, tilt:-20 };   // group frame: hung under the right windshield arch just inboard of the LOCK/SHOOT pendant, placed by panel click (&panelpoint=1) and framed by capture - the arch mesh (Object_622) is the whole frame, both sides, so its bounds cannot place it, and the model has no compass housing to seat into. scale takes the panel-sized card drum down to a hanging compass; tilt (degrees about the lateral axis) turns the authored lean, made for a pilot looking DOWN at the card, toward one looking up. &compass=x,y,z,scale,tilt (dev) overrides for recalibration
-function mount_compass(g){
-	const card=g.getObjectByName("INSTRUMENT_MagneticCompass_518"), housing=g.getObjectByName("Object_622");
-	if(!card||!housing||card.userData.mounted) return;
-	g.updateMatrixWorld(true);
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("compass");
-	const [x,y,z,scale,tilt]=at?at.split(",").map(Number):[COMPASS_SEAT.x,COMPASS_SEAT.y,COMPASS_SEAT.z,COMPASS_SEAT.scale,COMPASS_SEAT.tilt];
-	if(![x,y,z,scale,tilt].every(isFinite)) return;
-	housing.parent.attach(card);   // keeps the world pose across the reparent; the seat, the size and the tilt follow
-	card.position.copy(housing.parent.worldToLocal(g.localToWorld(new THREE.Vector3(x,y,z))));
-	card.scale.multiplyScalar(scale);
-	card.rotateOnWorldAxis(new THREE.Vector3(0,0,1).transformDirection(g.matrixWorld).normalize(),tilt*D2R);
-	card.userData.mounted=true; g.userData.compass={ at:[x,y,z], scale, tilt }; }
+// The standby magnetic compass (NATOPS 2.12.9, FO-5 item 19) is the model's own:
+// the card turns in its housing on the right windshield arch's foot beside the
+// right DDI, where the foldout draws it, driven by the rig's compass entry.
 // legend makes an annunciator lens: the legend painted dark on the face until
 // lit, then in its colour, as the real backlit lenses read. Annunciator text
 // is English by policy. lamp_set drives either kind of lamp - a lens by its
@@ -1536,7 +1617,7 @@ function legend(text,colour,w=0.026,h=0.010){
 		x.fillStyle=on?"#262826":"#141614"; x.fillRect(0,0,160,64);
 		x.fillStyle=on?colour:"#3a3c38"; x.font="bold 24px monospace"; x.textAlign="center"; x.textBaseline="middle";
 		const lines=text.split("\n"); lines.forEach((t,i)=>x.fillText(t,80,32+(i-(lines.length-1)/2)*26));
-		const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; return tex; };
+		const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace; return tex; };
 	const off=make(false), on=make(true);
 	const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:off, side:THREE.DoubleSide, toneMapped:false, depthWrite:false }));
 	m.userData.lens={ off, on }; m.userData.on=false; return m; }
@@ -1626,8 +1707,8 @@ function build_lamps(g){
 	g.userData.emergency=emergency;
 	// The LOCK and SHOOT lights (FO-5 item 1, NATOPS 2.6.2.2, #14) are the pendant under the right
 	// windshield arch, LOCK over SHOOT painted on its aft face, which panel clicks put at x 6.04,
-	// y 0.715 to 0.726, z 0.143 to 0.170, just outboard of the standby compass (COMPASS_SEAT); the painted
-	// window reads a centimetre above those hits, so the lenses sit at 0.740 and 0.729.
+	// y 0.715 to 0.726, z 0.143 to 0.170; the painted window reads a centimetre above those hits,
+	// so the lenses sit at 0.740 and 0.729.
 	const PENDANT={ x:6.033, y:0.740, z:0.160, pitch:0.011 };
 	const bow=new THREE.Group();
 	lamps.lock=legend("LOCK","#2fd24a",0.026,0.010); lamps.lock.position.set(0,0,0);
@@ -1651,7 +1732,7 @@ function lamps_update(out){
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
 	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
-	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO);
+	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO||flbit_lit());
 	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
@@ -1672,7 +1753,7 @@ function lamps_update(out){
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
-		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0), law_index, RADAR.sil); } }
+		radalt_draw(r, (ownship.pos.y-(surface>-1e8?Math.max(surface,0):0))*3.28084, law_index, radalt_inhibited(), radalt_on&&sim_time-radalt_test<5); } }   // feet, as the dial, the index and the 5,000 ft limit are, and as the aural reads it
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
 	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } }
 	const sb=ownship.group.userData.standby;   // the standby flight instruments (#32): needles want ten frames a second
@@ -1680,7 +1761,7 @@ function lamps_update(out){
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
-const RADALT_DIAL=[[0,35],[100,52],[200,70],[300,103],[400,149],[600,202],[800,235],[1000,280],[3000,305],[5000,325]];
+const RADALT_DIAL=[[0,0],[100,40.2],[200,79.2],[300,118.2],[400,159.1],[500,174.1],[600,189.2],[700,206.5],[800,223.5],[900,240.6],[1000,257.6],[2000,272.6],[3000,287.6],[4000,303],[5000,319.9]];   // FO-5 item 41, measured from the dial's fitted centre: 0 at twelve o'clock, 1,000 ft at 258°, 5,000 at 320°
 // node_box: the node's own geometry corners in the group frame. A world Box3
 // tilts with the parked heading and centres inside the housing depth, which
 // buries quads placed from it behind the painted faces.
@@ -1704,14 +1785,14 @@ function surface_fit(g,box){
 	let cover=null;
 	const probe=(y)=>{ const pW=g.localToWorld(new THREE.Vector3(box.lo.x,y,cz));
 		rc.set(eyeW,pW.sub(eyeW).normalize());
-		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay||!shown(h.object)) continue;
+		for(const h of rc.intersectObject(model_of(g),true)){ if(h.object.userData.overlay||!shown(h.object)) continue;
 			const p=g.worldToLocal(h.point.clone());
 			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02){ cover=cover||h.object; return p.x; } }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
 		return null; };
 	const xm=probe(cy); if(xm==null) return null;
 	const xt=probe(cy+hh*0.8)??xm, xb=probe(cy-hh*0.8)??xm;
 	const pW=g.localToWorld(new THREE.Vector3(box.lo.x,cy,cz)); rc.set(eyeW,pW.sub(eyeW).normalize());   // diagnostic: the full surface stack on the centre sightline
-	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
+	const stack=rc.intersectObject(model_of(g),true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
 		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack, cover }; }
 // surface_pose orients a +Z-facing geometry onto the fitted surface: width
@@ -1723,64 +1804,71 @@ function surface_pose(mesh,x,tilt,cy,cz){
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
 	mesh.position.set(x,cy,cz).addScaledVector(N,0.003);
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
+// The radar altimeter (NATOPS 2.12.5, FO-5 item 41) is the dial on the right
+// vertical panel above the hydraulic pressure indicator (47): the model paints
+// its face - the x100 FT scale, the OFF flag, the BIT and low-altitude lights -
+// on a panel turned up and inboard toward the pilot. The seat is that dial's
+// centre, face normal and up, from a head-on luminance map in the panel's own
+// plane (dev_pick, dev_screen).
+const RADALT_SEAT={ centre:[6.222,0.010,0.285], normal:[-0.762,0.503,-0.408], up:[0.615,0.761,-0.209], r:0.0185 };
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
-	// The GLB has no radar-altimeter face node; the dial position was measured by
-	// a panel click (&panelpoint=1). &radalt=y,z (dev) overrides for
-	// recalibration.
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("radalt");
-	const [y,z]=at?at.split(",").map(Number):[0.535,0.011];
-	if(!isFinite(y)||!isFinite(z)) return;
-	const box={ lo:new THREE.Vector3(6.20,y-0.04,z-0.04), hi:new THREE.Vector3(6.25,y+0.04,z+0.04) };
 	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(0.023,36),   // sized to the right cluster's small-gauge aperture (~6 cm pitch), not the imagined big face the bogus anchor implied
-		new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
-	const fit=surface_fit(g,box);
-	surface_pose(mesh,fit?fit.x:box.lo.x,fit?fit.tilt:0,(box.lo.y+box.hi.y)/2,(box.lo.z+box.hi.z)/2);
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RADALT_SEAT.r,36), gauge_material(tex));
+	const N=new THREE.Vector3(...RADALT_SEAT.normal).normalize(), Y=new THREE.Vector3(...RADALT_SEAT.up).normalize(), X=new THREE.Vector3().crossVectors(Y,N).normalize();
+	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
+	mesh.position.set(...RADALT_SEAT.centre).addScaledVector(N,0.001);   // over the painted dial, under its cover glass
+	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
-	radalt_draw(g.userData.radalt, 1e9, law_index, RADAR.sil); }
-function radalt_draw(r, agl, index, silent){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: radar silence, the EMCON inhibit (2.12.5, #29)
+	radalt_draw(g.userData.radalt, 1e9, law_index, radalt_inhibited(), false); }
+function radalt_draw(r, agl, index, silent, test){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: the set off or inhibited by radar silence (2.12.5, #29); test: its push-to-test BIT running
 	const x=r.canvas.getContext("2d"), W=160, C=80;
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
 	x.font="16px monospace"; x.textAlign="center"; x.textBaseline="middle";
-	for(const [ft,deg] of RADALT_DIAL){ if(!ft) continue;
-		const a=(deg-90)*D2R, inner=ft<=1000&&ft%200===0||ft>=3000;
-		x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*58,C+Math.sin(a)*58); x.stroke();
-		if(inner) x.fillText(String(ft/100),C+Math.cos(a)*46,C+Math.sin(a)*46); }
-	x.font="9px monospace"; x.fillText("RADAR ALT",C,C-22); x.fillText("X100 FT",C,C+24);
+	for(let ft=0;ft<=5000;ft+=ft<100?20:ft<1000?50:500){   // FO-5 item 41: every 20 ft to 100, every 50 to 1,000, every 500 to 5,000; long every 100 then every 1,000
+		const a=dial(RADALT_DIAL,ft)-Math.PI/2, long=ft<=1000?ft%100===0:ft%1000===0;
+		x.lineWidth=long?2:1; x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*(long?57:61),C+Math.sin(a)*(long?57:61)); x.stroke(); }
+	x.lineWidth=2;
+	for(const ft of [0,100,200,300,400,600,800,1000,3000,5000]){ const a=dial(RADALT_DIAL,ft)-Math.PI/2; x.fillText(String(ft/100),C+Math.cos(a)*47,C+Math.sin(a)*47); }
+	x.font="9px monospace"; x.fillText("R ALT",C,C-30); x.fillText("X100 FT",C,C-20);
 	{ const a=(dial(RADALT_DIAL,index)/D2R-90)*D2R;   // the low-altitude index pointer at the set index (NATOPS 2.12.5.4.4): 200 ft in the pattern, 40 for a cat shot, never a fixed figure the aural disagrees with
 		x.fillStyle="#e8c832"; x.beginPath();
 		x.moveTo(C+Math.cos(a)*70,C+Math.sin(a)*70); x.lineTo(C+Math.cos(a-0.08)*58,C+Math.sin(a-0.08)*58); x.lineTo(C+Math.cos(a+0.08)*58,C+Math.sin(a+0.08)*58); x.closePath(); x.fill();
 		x.fillStyle="#d8d8d0"; }
 	const off=silent||agl>5000, lamp=!off&&agl<index;   // OFF with the set inhibited or above 5,000 ft AGL (2.12.5.4.6); the red light whenever the pointer is below the index (2.12.5.4.3) - the aural's gear gate is the aural's, not the lamp's
-	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill();   // the red low-altitude warning light, upper right
-	x.fillStyle="#173a17"; x.beginPath(); x.arc(C-30,C-30,7,0,7); x.fill();   // the green BIT light (2.12.5.4.5): dark - the game runs no initiated BIT
+	x.fillStyle=lamp?"#c02020":"#3a1414"; x.beginPath(); x.arc(C+27,C-9,7,0,7); x.fill();   // the red low-altitude warning light, right of the hub (FO-5 item 41)
+	x.fillStyle=test&&!off?"#30d040":"#173a17"; x.beginPath(); x.arc(C-27,C-9,7,0,7); x.fill();   // the green BIT light, left of it: GO while the initiated BIT runs (2.12.5.4.5)
 	x.fillStyle="#d8d8d0";
-	if(off){ x.fillStyle="#a02020"; x.fillRect(C-18,C+34,36,14); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+41); }
+	if(off){ x.fillStyle="#a02020"; x.fillRect(C-16,C+21,32,12); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+27); }   // the flag's window below the hub
 	else{ const ang=(dial(RADALT_DIAL,Math.max(0,agl))/D2R-90)*D2R;
 		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
 	r.index=index; r.lamp=lamp; r.off=off;   // what the face shows, for dev_probe
 	r.tex.needsUpdate=true; }
-// DDI/AMPCD screens (#99): the three screen meshes exist in the GLB but are
-// bare dark glass; each gets a canvas quad proud of its pane, drawn by the
-// shared page renderers below. left/right are the monochrome DDIs, center the
-// colour-capable AMPCD.
+// DDI/AMPCD screens (#99): each display gets a canvas quad on the dark screen
+// the pilot sees, drawn by the shared page renderers below. left/right are the
+// monochrome DDIs, center the colour-capable AMPCD. The visible screens are
+// painted on the cockpit shell's panel face (x 6.163); the GLB's screen plates
+// (Object_1045/1048/1051) sit 8 cm behind it, hidden, and are offset from the
+// painted apertures, so a quad sized and centred on a plate's box landed a
+// quarter too small and 2-3 cm off its bezel. DDI_FACE holds the painted
+// apertures, measured by thresholding a capture of the bare panel and picking
+// the edges into the group frame (dev_overlays, dev_pick).
+const DDI_FACE={ left:{ y:[0.295,0.441], z:[-0.293,-0.137] }, right:{ y:[0.295,0.442], z:[0.137,0.294] }, center:{ y:[0.053,0.191], z:[-0.072,0.072] } };
 function build_screens(g){
 	if(g.userData.screens&&g.userData.screens.every(sc=>sc.mesh.parent)) return;
-	const spec=[ ["Object_1045","left"], ["Object_1048","right"], ["Object_1051","center"] ];
 	const list=[];
-	for(const [name,display] of spec){ const node=g.getObjectByName(name); if(!node) continue;
-		const box=node_box(g,node); if(!box) continue;
+	for(const display of ["left","right","center"]){ const face=DDI_FACE[display];
+		const box={ lo:new THREE.Vector3(6.16,face.y[0],face.z[0]), hi:new THREE.Vector3(6.2,face.y[1],face.z[1]) };
 		const fit=surface_fit(g,box);
 		const tilt=fit?fit.tilt:0;
-		const cy=(box.lo.y+box.hi.y)/2+0.002, cz=(box.lo.z+box.hi.z)/2-0.002;   // the recess reads a hair up-left of the plate box in grid captures
-		const w=(box.hi.z-box.lo.z)*0.92, h=(box.hi.y-box.lo.y)*0.92/Math.cos(tilt);
+		const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2;
+		const w=(box.hi.z-box.lo.z)*0.97, h=(box.hi.y-box.lo.y)*0.97/Math.cos(tilt);   // a hair inside the aperture, whose corners are rounded
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;   // the default filter would REGENERATE mipmaps on every upload
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;   // the default filter would REGENERATE mipmaps on every upload
 		const flat=DEV_MODE&&new URLSearchParams(location.search).get("ddiflat");   // &ddiflat=1: untextured magenta quads — separates a mesh-render problem from a texture problem
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
 			flat?new THREE.MeshBasicMaterial({ color:0xff00ff, side:THREE.DoubleSide })
@@ -1826,9 +1914,13 @@ function next_master(){
 	for(let step=1;step<=order.length;step++){ const m=order[(at+step)%order.length]; if(loaded[m]||m==="gun"&&!order.some(w=>w!=="nav"&&loaded[w])) return m; }
 	return master; }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
-const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
-	tac:[ [6,"HUD","hud"],[7,"RDR","rdr"],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
-	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS","fpas"],[13,"BIT",""],[14,"MUMI",""] ] };
+// DDI_MENUS: [pushbutton, legend, page] where figure 2-22's F/A-18C/D formats put
+// them, the game's own pages only - an option for equipment the jet does not carry
+// is left off, as the real format leaves it off (TAC's sensor, weapon and RECCE
+// displays; SUPT's GPS, NETS, MIDS, HMD, BIT, MUMI and UFC BU).
+const DDI_MENUS={
+	tac:[ [5,"STORES","sms"],[4,"RDR ATTK","rdr"],[3,"HUD","hud"],[13,"SA","sa"],[17,"EW","ew"] ],
+	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -1863,7 +1955,8 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle";
 	const st=ddi_state[display];
-	if(st.menu){ x.fillText(st.menu==="tac"?"TAC":"SUPT",256,256);
+	if(st.menu){ const name=st.menu==="tac"?"TAC":"SUPT", w=x.measureText(name).width;   // the menu's name boxed just above MENU (2.13.4.2.1)
+		x.fillText(name,256,446); x.strokeRect(256-w/2-8,446-17,w+16,34);
 		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
 	if(display==="left") cautions_draw(x);
@@ -1920,24 +2013,30 @@ function screens_update(){
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
 // semantics; 0 puts the page's transient state back to defaults).
 let adi_source="ins";   // the EADI's attitude source option (2.13.4.3): STBY boxed on a weight-on-wheels power-up, INS otherwise; a press switches
-function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===19) adi_source="stby"; else return false; return true; }
+function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===16) adi_source="stby"; else return false; return true; }
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
 	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
 // HSI page state (#99): one nav picture shared by every display showing the
-// format. The rose ring sits at half the selected scale; DCTR slides the rose
-// down; the map underlay is AMPCD-only.
+// format. scale: the distance to the inside of the rose; north: N UP, else T UP;
+// mode: the MODE sublevel is up (24.1.3.2, figure 24-2); the map underlay is
+// AMPCD-only.
 const HSI_SCALES=[5,10,20,40,80,160];
-const hsi_state={ scale:40, dctr:false, map:true };
+const hsi_state={ scale:40, dctr:false, map:true, north:false, mode:false };
 function hsi_range(direction){ const i=HSI_SCALES.indexOf(hsi_state.scale);
 	hsi_state.scale=HSI_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,HSI_SCALES.length-1)]; }   // zoom-in steps the scale DOWN
 function hsi_reset(){ hsi_state.scale=40; }   // 0: range to default — DCTR and MAP are pilot layout choices and stay
 function hsi_press(pb,display){
-	if(pb===4){ hsi_range(-1); return true; }   // ↑ scale out
-	if(pb===3){ hsi_range(1); return true; }    // ↓ scale in
-	if(pb===9){ hsi_state.dctr=!hsi_state.dctr; return true; }
-	if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
+	if(pb===8){ const i=HSI_SCALES.indexOf(hsi_state.scale); hsi_state.scale=HSI_SCALES[(i+HSI_SCALES.length-1)%HSI_SCALES.length]; return true; }   // SCL: each press steps the scale down, then starts over at 160 (24.1.3.8)
+	if(hsi_state.mode){   // the MODE sublevel (figure 24-2)
+		if(pb===4){ hsi_state.north=!hsi_state.north; return true; }   // T UP and N UP, one option toggling the two (24.1.3.4.1)
+		if(pb===2){ hsi_state.dctr=!hsi_state.dctr; return true; }
+		if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
+		if(pb===10){ hsi_state.mode=false; return true; }   // HSI: back to the top level
+		return false; }
+	if(pb===3){ hsi_state.mode=true; return true; }
+	if(pb===17){ ufc_press("time"); return true; }   // TIMEUFC loads the UFC with the timer options (24.1.3.15)
 	return false; }
 // ---- SA page state (#99 pages): the datalink-style tactical picture, its own
 // scale independent of the HSI's. It shows exactly what the client already
@@ -2050,7 +2149,6 @@ function ddi_rdr(x){
 		x.strokeStyle="rgba(57,224,122,0.7)"; x.lineWidth=2; x.setLineDash([10,7]);
 		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); x.setLineDash([]);
 		x.font="14px monospace"; x.textAlign="center"; x.fillText("JAM",px,64); }
-	if(jammer_armed){ x.font="16px monospace"; x.textAlign="right"; x.fillStyle=jammer_loud()?"#ffc14d":"#39e07a"; x.fillText(jammer_loud()?"XMIT":"JAM ARM",430,110); x.fillStyle="#39e07a"; }   // #31: the ASPJ state, amber while actually radiating
 	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
 		x.globalAlpha=Math.max(0.15,1-(RADAR.time-b.at)/12); x.fillStyle="#39e07a";
 		x.fillRect(rdr_x(b.azimuth,half)-6,rdr_y(b.range,scaleM)-2,12,5); }
@@ -2067,78 +2165,119 @@ function ddi_rdr(x){
 		x.beginPath(); x.moveTo(px-5,py-9); x.lineTo(px-5,py+9); x.moveTo(px+5,py-9); x.lineTo(px+5,py+9); x.stroke();
 		const reach=Math.max(NM,radar_cursor.range);
 		const hi=Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation+0.175))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation-0.175))*3.281/1000));
-		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); } }
-function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
-	x.fillText("ENG",256,36);
-	// The EMD's thirteen rows (2.1.1.7.6), parameter names down the centre with the engine values either
-	// side. N2, EGT, fuel flow, nozzle and oil pressure are the IFEI's channels (update_gauges); the rest
-	// follow the same health-weighted spool through F404-shaped schedules, N2 65 % idle to 99 MIL: N1 from
-	// 30 to 100 %, thrust the spool itself, vibration a nominal 1, EPR 1.0 to 1.7, CDP 60 to 300 psi and TDP
-	// 15 to 45 psi, and the inlet and fuel temperatures ISA air at altitude, the fuel a little warmer.
+		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); }
+	if(breakaway_shown()){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } }   // the breakaway X across the attack format's centre, flashing with the HUD's
+function ddi_eng(x){ const gz=ownship.gauges||{};   // the EMD as figure 2-3 draws it: the -402's EPE line on top, no title, the parameter names down the middle and each engine's values left-aligned either side
+	// The EMD's thirteen rows (2.1.1.7.6), with the figure's names and digits: FF to the ten,
+	// VIB and TDP to a tenth, EPR to a hundredth. N2, EGT, fuel flow, nozzle and oil pressure are
+	// the IFEI's channels (update_gauges); the rest follow the same health-weighted spool through
+	// F404-shaped schedules, N2 65 % idle to 99 MIL: N1 from 30 to 100 %, thrust the spool itself,
+	// vibration a nominal 1, EPR 1.0 to 1.7, CDP 60 to 300 psi and TDP 15 to 45 psi, and the inlet
+	// and fuel temperatures ISA air at altitude, the fuel a little warmer. THRUST shows only for
+	// the ground run-up (figure 2-3), so on the deck and not in the air.
 	const spool=(n2)=>THREE.MathUtils.clamp(((n2||35)-65)/34,0,1), oat=gz.oat||15;
-	const rows=[["INLET °C",oat,oat,1],["N1 %",30+70*spool(gz.rpmL),30+70*spool(gz.rpmR),1],["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],
-		["FF PPH",gz.flowL||0,gz.flowR||0,10],["NOZ %",gz.nozL||0,gz.nozR||0,1],["OIL PSI",gz.oilL||0,gz.oilR||0,1],
-		["THRUST %",100*spool(gz.rpmL),100*spool(gz.rpmR),1],["VIB",1,1,1],["FUEL °C",oat+10,oat+10,1],
-		["EPR",10+7*spool(gz.rpmL),10+7*spool(gz.rpmR),0.1],["CDP PSI",60+240*spool(gz.rpmL),60+240*spool(gz.rpmR),1],["TDP PSI",15+30*spool(gz.rpmL),15+30*spool(gz.rpmR),1]];
-	x.textAlign="center"; x.font="17px monospace"; x.fillText("LEFT EPE",150,72); x.fillText("RIGHT EPE",362,72);   // the -402's top line
+	const rows=[["INLET TEMP",oat,oat,0],["N1 RPM",30+70*spool(gz.rpmL),30+70*spool(gz.rpmR),0],["N2 RPM",gz.rpmL,gz.rpmR,0],["EGT",gz.egtL,gz.egtR,0],
+		["FF",gz.flowL||0,gz.flowR||0,-1],["NOZ POS",gz.nozL||0,gz.nozR||0,0],["OIL PRESS",gz.oilL||0,gz.oilR||0,0],
+		["THRUST",100*spool(gz.rpmL),100*spool(gz.rpmR),0],["VIB",1,1,1],["FUEL TEMP",oat+10,oat+10,0],
+		["EPR",1+0.7*spool(gz.rpmL),1+0.7*spool(gz.rpmR),2],["CDP",60+240*spool(gz.rpmL),60+240*spool(gz.rpmR),0],["TDP",15+30*spool(gz.rpmL),15+30*spool(gz.rpmR),1]];
+	x.textAlign="left"; x.font="17px monospace"; x.fillText("LEFT EPE",72,72); x.fillText("RIGHT EPE",344,72);
 	let y=100;
-	for(const [label,L,R,q] of rows){
-		x.textAlign="center"; x.font="16px monospace"; x.fillText(label,256,y);
-		x.font="19px monospace"; x.textAlign="right";
-		const show=(v)=>q===0.1?(Math.round(v||0)/10).toFixed(1):String(Math.round((v||0)/q)*q);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
-		x.fillText(show(L),192,y); x.fillText(show(R),404,y);
+	for(const [label,L,R,digits] of rows){
+		if(label!=="THRUST"||ownship.grounded){
+			x.textAlign="left"; x.font="16px monospace"; x.fillText(label,200,y);
+			x.font="19px monospace";
+			const show=(v)=>digits>0?(v||0).toFixed(digits):String(Math.round((v||0)/10**-digits)*10**-digits);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+			x.fillText(show(L),96,y); x.fillText(show(R),390,y); }
 		y+=29; } }   // the fuel total lives on the FUEL page now
+// altitude_reading: the altitude the HUD and the EADI show - barometric, or with the
+// HUD's ALT switch at RDR the radar altitude, which is invalid above 5,000 ft AGL and
+// with the set inhibited by radar silence (2.12.5, 2.12.5.4.7), when the barometric
+// altitude stands in under a flashing B.
+function altitude_reading(){ const baro=ownship.pos.y*3.28084+baro_error();
+	if(!alt_radar) return { feet:baro, radar:false, fallback:false };
+	const g=ground_height(ownship.pos.x,ownship.pos.z), agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
+	if(agl<=5000&&!radalt_inhibited()) return { feet:Math.max(agl,0), radar:true, fallback:false };
+	return { feet:baro, radar:false, fallback:true }; }
+// ddi_adi: the EADI (2.13.4.3, figures 2-23 and 24-22). The ladder is one line down
+// the ball's meridian with a mark every 10° - thin crosses above the horizon, thick
+// bars at and below it - and each figure on the line beside its mark, zenith side.
+// The line runs out past the rim to the bank scale on the lower arc: its lower end
+// is the bank pointer.
 function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=5.2;
 	const colour=display==="center";   // the AMPCD's colour licence; the DDIs shade the ball in green
-	const cx=256, cy=246, R=186;
+	const cx=256, cy=240, R=176, T=10;   // T: the bank scale's tick length, and the ladder line's reach out to it
+	const ink=colour?"#e8e8e0":"#39e07a";
 	x.save(); x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.clip();   // the attitude BALL, not a full-screen wash
 	x.translate(cx,cy); x.rotate(-bank);
 	const off=pitch/D2R*ppd;
-	x.fillStyle=colour?"#123a5e":"#12351f"; x.fillRect(-280,-280+off,560,280);   // sky
-	x.fillStyle=colour?"#4a3a20":"#050b06"; x.fillRect(-280,off,560,280);        // ground
-	x.strokeStyle=colour?"#e8e8e0":"#39e07a"; x.lineWidth=3;
+	x.fillStyle=colour?"#123a5e":"#12351f"; x.fillRect(-280,off-700,560,700);   // sky, tall enough for the ball at the vertical
+	x.fillStyle=colour?"#4a3a20":"#050b06"; x.fillRect(-280,off,560,700);       // ground
+	x.strokeStyle=ink; x.fillStyle=ink; x.lineWidth=3;
 	x.beginPath(); x.moveTo(-280,off); x.lineTo(280,off); x.stroke();
-	x.fillStyle=colour?"#e8e8e0":"#39e07a"; x.font="18px monospace"; x.lineWidth=2;
-	for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
-		x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
-		x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
+	x.lineWidth=2; x.font="18px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	const gaps=[[off-90*ppd-10,off-90*ppd+10],[off+90*ppd-10,off+90*ppd+10]];   // where the line breaks: the zenith and nadir symbols, and each figure
+	for(let d=80;d>=-80;d-=10){ const py=off-d*ppd; gaps.push([py-32,py-12]);
+		x.fillText(String(Math.abs(d)),0,py-22);
+		if(d>0){ x.beginPath(); x.moveTo(-9,py); x.lineTo(9,py); x.stroke(); } else x.fillRect(-10,py-3,20,6); }
+	gaps.sort((a,b)=>a[0]-b[0]);
+	{ let from=-R; x.beginPath();
+		for(const [top,bottom] of gaps){ if(Math.min(top,R)>from){ x.moveTo(0,from); x.lineTo(0,Math.min(top,R)); } from=Math.max(from,bottom); }
+		if(from<R){ x.moveTo(0,from); x.lineTo(0,R); } x.stroke(); }
 	x.beginPath(); x.arc(0,off-90*ppd,10,0,Math.PI*2); x.stroke();   // the zenith, a small circle (2.13.4.3)
 	x.beginPath(); x.arc(0,off+90*ppd,10,0,Math.PI*2); x.moveTo(-10,off+90*ppd); x.lineTo(10,off+90*ppd); x.moveTo(0,off+90*ppd-10); x.lineTo(0,off+90*ppd+10); x.stroke();   // the nadir, a circle with a cross
 	x.restore();
-	x.strokeStyle="#39e07a"; x.lineWidth=2;   // ball rim, bank scale outside the top arc, pointer at the bank angle
+	x.strokeStyle="#39e07a"; x.lineWidth=2;   // the ball's rim, and the bank scale outside its lower arc at 0, 10, 20, 30, 60 and 90° each side
 	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
-	for(const d of [-60,-45,-30,-20,-10,0,10,20,30,45,60]){ const a=-Math.PI/2+d*D2R, i=d===0?16:10;
-		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+i),cy+Math.sin(a)*(R+i)); x.stroke(); }
-	{ const ba=-Math.PI/2-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3);
-		x.fillStyle="#39e07a";
-		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(R-4),cy+Math.sin(ba)*(R-4)); x.lineTo(cx+Math.cos(ba-0.045)*(R-20),cy+Math.sin(ba-0.045)*(R-20)); x.lineTo(cx+Math.cos(ba+0.045)*(R-20),cy+Math.sin(ba+0.045)*(R-20)); x.closePath(); x.fill(); }
-	x.strokeStyle="#39e07a"; x.lineWidth=4;   // waterline, fixed
-	x.beginPath(); x.moveTo(cx-60,cy); x.lineTo(cx-20,cy); x.lineTo(cx,cy+12); x.lineTo(cx+20,cy); x.lineTo(cx+60,cy); x.stroke();
+	for(const d of [-90,-60,-30,-20,-10,0,10,20,30,60,90]){ const a=Math.PI/2+d*D2R;
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+T),cy+Math.sin(a)*(R+T)); x.stroke(); }
+	{ const a=Math.PI/2-bank;   // the ladder line's lower end, carried on out to the scale
+		x.strokeStyle=ink; x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+T),cy+Math.sin(a)*(R+T)); x.stroke(); }
+	x.strokeStyle="#39e07a"; x.lineWidth=3;   // the waterline W, fixed at the ball's centre
+	x.beginPath(); x.moveTo(cx-24,cy); x.lineTo(cx-14,cy); x.lineTo(cx-7,cy+11); x.lineTo(cx,cy); x.lineTo(cx+7,cy+11); x.lineTo(cx+14,cy); x.lineTo(cx+24,cy); x.stroke();
 	const dev=approach_deviation();
-	if(dev){ x.strokeStyle=colour?"#ffd24a":"#7dff9f"; x.lineWidth=4;   // ICLS needles ride the ball, as on the real format
-		const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
-		x.beginPath(); x.moveTo(cx-176,cy+gs*120); x.lineTo(cx-116,cy+gs*120); x.stroke();
-		x.beginPath(); x.moveTo(cx+az*120,cy+94); x.lineTo(cx+az*120,cy+154); x.stroke(); }
-	{ const sy=cy+R+12, span=60, rate=THREE.MathUtils.clamp((gz.yaw||0)/(3*D2R),-1,1)*span;   // the turn indicator below the ball (2.13.4.3): FCS yaw rate, the lower box under an end box at a standard rate turn of 3°/s
+	if(dev){ x.strokeStyle=colour?"#ffd24a":"#39e07a"; x.lineWidth=3;   // the ICLS needles, full length about the waterline, full scale a fifth of the ball's radius off it; yellow only in the AMPCD's colour
+		const gs=THREE.MathUtils.clamp(dev.gs,-1,1)*R*0.2, az=THREE.MathUtils.clamp(dev.az,-1,1)*R*0.2, L=R*0.325;
+		x.beginPath(); x.moveTo(cx-L,cy+gs); x.lineTo(cx+L,cy+gs); x.moveTo(cx+az,cy-L); x.lineTo(cx+az,cy+L); x.stroke(); }
+	{ const sy=cy+R+20, span=60, rate=THREE.MathUtils.clamp((gz.yaw||0)/(3*D2R),-1,1)*span;   // the turn indicator below the ball (2.13.4.3): FCS yaw rate, the lower box under an end box at a standard rate turn of 3°/s
 		x.strokeStyle="#39e07a"; x.lineWidth=2;
 		for(const bx of [-span,0,span]) x.strokeRect(cx+bx-12,sy-8,24,16);
 		x.strokeRect(cx+rate-12,sy+12,24,16); }
-	{ const kcas=Math.round((ownship.cas??ownship.speed)*1.94384), alt=Math.round(gz.altitude||0), vv=Math.round((gz.vspeed||0)/10)*10;   // the top-left block (2.13.4.3, MC OFP 13C): vertical velocity over the airspeed and altitude boxes, the altitude source beside
-		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="left";
-		x.fillText(String(vv),22,60);
-		x.strokeRect(16,74,88,30); x.fillText(String(kcas),22,89);
-		x.strokeRect(16,110,104,30); x.fillText(String(alt),22,125);
-		x.fillText(alt_radar?"RDR":"BARO",130,125); }
-	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,19,"STBY",true,adi_source==="stby"); }
+	{ const kcas=Math.round((ownship.cas??ownship.speed)*1.94384), reading=altitude_reading(), shown=Math.max(0,Math.round(reading.feet)), thousands=Math.floor(shown/1000), vv=Math.round((gz.vspeed||0)/10)*10;   // airspeed boxed at the top left; altitude boxed at the top right, the thousands larger as on the HUD, with the vertical velocity above it and R (or the flashing B) to its right (2.13.4.3, MC OFP 13C)
+		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.textAlign="right"; x.textBaseline="middle";
+		x.strokeRect(40,44,88,30); x.font="20px monospace"; x.fillText(String(kcas),120,59);
+		x.strokeRect(360,44,104,30);
+		if(thousands>0){ const rest=String(shown%1000).padStart(3,"0"); x.font="18px monospace"; const rw=x.measureText(rest).width;
+			x.fillText(rest,456,60); x.font="24px monospace"; x.fillText(String(thousands),456-rw-1,59); }
+		else { x.font="24px monospace"; x.fillText(String(shown),456,59); }
+		x.font="20px monospace"; x.fillText(String(vv),456,30);
+		x.textAlign="left";
+		if(reading.radar) x.fillText("R",470,59);
+		else if(reading.fallback&&(sim_time*3)%2<1) x.fillText("B",470,59); }
+	ddi_legend(x,20,"INS",true,adi_source==="ins"); ddi_legend(x,16,"STBY",true,adi_source==="stby"); }
+// tacan: the ship's TACAN as the jet reads it - true bearing (the heading
+// convention), horizontal range and slant range, in metres, across the world wrap.
+function tacan(){ const dx=wrap_axis(CARRIER.x-ownship.pos.x), dz=wrap_axis(CARRIER.z-ownship.pos.z);
+	return { bearing:Math.atan2(dx,-dz), range:Math.hypot(dx,dz), slant:Math.hypot(dx,ownship.pos.y,dz) }; }
+// time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
+function time_to_go(seconds){ const s=Math.min(Math.round(seconds),8*3600+59*60+59), two=(v)=>String(v).padStart(2,"0");
+	return s>=3600?Math.floor(s/3600)+":"+two(Math.floor(s/60)%60)+":"+two(s%60):Math.floor(s/60)+":"+two(s%60); }
+// ddi_hsi: the HSI (2.13.4.7, figures 2-24 and 24-2). The scale is the distance from
+// the aircraft to the inside of the compass rose (24.1.3.8). The rose turns to the
+// ground track (T UP) or to north (N UP), and the lubber line and the aircraft
+// symbol sit at the heading. DCTR puts the aircraft near the bottom with the rose
+// centred on it at twice the radius, so the scale shown doubles (2.13.4.4.1).
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
-	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
-	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
+	const scale=hsi_state.scale, R=164, T=12, cy=hsi_state.dctr?430:260, rose=hsi_state.dctr?2*R:R;
+	const ppm=R/(scale*NM);   // pixels per metre: the selected scale out to the inside of the centred rose
+	const rot=hsi_state.north?0:(gz.track??hdg);   // up on the display: north, or the ground track, the heading standing in below taxi speed
+	const polar=(r,a)=>[Math.sin(a)*r,-Math.cos(a)*r];   // a display angle, clockwise from up
+	const ink=display==="center"?"#ffd24a":"#39e07a";   // the TACAN symbology: green on the monochrome DDIs, colour only on the AMPCD
 	// TAMMAC-style underlay, AMPCD only: the same Midway coastline / airport /
-	// carrier set the tactical map draws, ownship-centred and heading-up, in
-	// muted chart colours so the symbology stays on top of it.
+	// carrier set the tactical map draws, ownship-centred and turned as the rose is,
+	// in muted chart colours so the symbology stays on top of it.
 	if(display==="center"&&hsi_state.map){ x.save();
-		x.beginPath(); x.arc(256,cy,R+34,0,Math.PI*2); x.clip();
-		x.translate(256,cy); x.rotate(-hdg);
+		x.beginPath(); x.arc(256,cy,rose+T+30,0,Math.PI*2); x.clip();
+		x.translate(256,cy); x.rotate(-rot);
 		x.fillStyle="#33402f"; x.strokeStyle="#55684e"; x.lineWidth=1.5;
 		for(const polygon of island_polygons||[]){ x.beginPath();
 			for(let k=0;k<polygon.length;k++){ const sx=wrap_axis(polygon[k][0]-ownship.pos.x)*ppm, sy=wrap_axis(polygon[k][1]-ownship.pos.z)*ppm;
@@ -2150,44 +2289,66 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 		{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;
 			x.fillStyle="#ffd27a"; x.fillRect(kx-6,kz-6,12,12); }   // the boat, in the AMPCD's colour licence
 		x.restore(); }
-	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
-	x.font="16px monospace"; x.fillText("T",256,52); x.font="26px monospace";   // true heading under the lubber line (2.13.4.7)
+	const station=tacan();
 	x.save(); x.translate(256,cy);
-	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // rose ring (half scale) and the quarter-scale ring inside it
-	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
-	x.strokeStyle="rgba(57,224,122,0.22)";
-	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
-	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center";
-	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
-		const cx=Math.cos(a), cyy=Math.sin(a);
-		x.beginPath(); x.moveTo(cx*196,cyy*196); x.lineTo(cx*180,cyy*180); x.stroke();
-		x.fillText(d%90===0?"NESW"[d/90]:String(d/10),cx*158,cyy*158); }
-	if(gz.track!=null){ const a=gz.track-hdg, tx=Math.sin(a)*R, ty=-Math.cos(a)*R;   // ground-track diamond on the rim — the gap off the lubber line is drift
-		x.lineWidth=2.5;
-		x.beginPath(); x.moveTo(tx,ty-9); x.lineTo(tx+7,ty); x.lineTo(tx,ty+9); x.lineTo(tx-7,ty); x.closePath(); x.stroke(); }
-	const dx=CARRIER.x-ownship.pos.x, dz=CARRIER.z-ownship.pos.z;
-	const brg=Math.atan2(dx,-dz), rel=brg-hdg;   // world bearing in the heading convention, relative to the nose
-	x.rotate(rel); x.strokeStyle="#ffd24a"; x.lineWidth=5;   // TACAN pointer to the boat
-	x.beginPath(); x.moveTo(0,-196); x.lineTo(0,-140); x.stroke();
-	x.beginPath(); x.moveTo(-12,-172); x.lineTo(0,-196); x.lineTo(12,-172); x.stroke();
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	for(let d=0;d<360;d+=10){ const a=d*D2R-rot;   // the rose: a tick every 10°, the figures in their place every 30°, no ring
+		if(d%30){ const [ix,iy]=polar(rose,a), [ox,oy]=polar(rose+T,a); x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke(); }
+		else { const [lx,ly]=polar(rose+T/2,a); x.fillText(d%90===0?"NESW"[d/90]:String(d/10),lx,ly); } }
+	{ const a=hdg-rot, [ix,iy]=polar(rose-18,a), [ox,oy]=polar(rose+T+6,a), [tx,ty]=polar(rose-30,a);   // the lubber line at the heading, the T under it: the game's headings are true (item 13)
+		x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke();
+		x.font="16px monospace"; x.fillText("T",tx,ty); }
+	if(gz.track!=null){ const a=gz.track-rot, c=Math.cos(a), s=Math.sin(a), [px,py]=polar(rose-2,a), [mx,my]=polar(rose-10,a), [bx,by]=polar(rose-18,a), [ex,ey]=polar(rose-28,a);   // the ground track pointer, a diamond on a stem: at the top in T UP
+		x.beginPath(); x.moveTo(px,py); x.lineTo(mx+5*c,my+5*s); x.lineTo(bx,by); x.lineTo(mx-5*c,my-5*s); x.closePath(); x.moveTo(bx,by); x.lineTo(ex,ey); x.stroke(); }
+	{ const a=station.bearing-rot, c=Math.cos(a), s=Math.sin(a);   // the TACAN bearing pointer outside the rose, its tail outside the far side, and the station where it lies (item 4)
+		x.strokeStyle=ink; x.fillStyle=ink;
+		const [hx,hy]=polar(rose+T+3,a), [kx,ky]=polar(rose+T+17,a);
+		x.beginPath(); x.moveTo(hx,hy); x.lineTo(kx+7*c,ky+7*s); x.lineTo(kx-7*c,ky-7*s); x.closePath(); x.fill();
+		const [ax,ay]=polar(rose+T+3,a+Math.PI), [zx,zy]=polar(rose+T+17,a+Math.PI);
+		x.lineWidth=4; x.beginPath(); x.moveTo(ax,ay); x.lineTo(zx,zy); x.stroke(); x.lineWidth=2;
+		const [sx,sy]=polar(Math.min(station.range*ppm,rose),a);   // held at the inside of the rose beyond the scale
+		x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke(); }
 	x.restore();
-	x.strokeStyle="#39e07a"; x.lineWidth=3;   // ownship symbol
-	x.beginPath(); x.moveTo(256,cy-20); x.lineTo(246,cy+16); x.lineTo(266,cy+16); x.closePath(); x.stroke();
-	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // range scale arrows, the scale value between them
-	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
-	x.fillText(String(scale),14,216);
-	if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
-	ddi_legend(x,9,"DCTR",true,hsi_state.dctr);
-	if(gz.ground>50) x.fillText("GS "+Math.round(gz.ground),24,64);
-	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN data at the upper left (2.13.4.7 item 2): bearing / range / minutes to the boat at present groundspeed
+	{ const a=hdg-rot, c=Math.cos(a), s=Math.sin(a), f=([px,py])=>[256+c*px-s*py,cy+s*px+c*py];   // the aircraft symbol at the heading: fuselage, wings and tail bar
+		x.strokeStyle="#39e07a"; x.lineWidth=2;
+		for(const [p,q] of [[[0,-7],[0,27]],[[-18,0],[18,0]],[[-6,25],[6,25]]]){ const [px,py]=f(p), [qx,qy]=f(q); x.beginPath(); x.moveTo(px,py); x.lineTo(qx,qy); x.stroke(); } }
+	x.fillStyle="#39e07a"; x.font="18px monospace"; x.textBaseline="middle";
+	x.textAlign="right"; x.fillText(Math.round(ownship.speed*1.94384)+"T",240,cy+22);   // true airspeed left of the symbol, groundspeed right
+	x.textAlign="left"; x.fillText(Math.round(gz.ground||0)+"G",272,cy+22);
 	x.font="20px monospace";
-	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,92);
-	let tline=rngnm.toFixed(1)+" NM";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
-	x.fillText(tline,24,118);
-	const z=gz.zulu||0, two=(v)=>String(v).padStart(2,"0");   // ZTOD lower left and the IFEI's elapsed time lower right (2.13.4.7)
-	x.fillText("ZTOD "+two(Math.floor(z/3600))+":"+two(Math.floor(z/60)%60)+":"+two(z%60),24,458);
-	x.textAlign="right"; x.fillText("ET "+ifei_current().elapsed,488,458); }
+	{ const nm=station.slant/NM, line=String(Math.round(station.bearing/D2R+360)%360).padStart(3,"0")+"°/ "+nm.toFixed(1), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		x.fillText(line,20,66);
+		if((gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),20+w,90); }
+		x.textAlign="left"; x.fillText(SHIP.ident,36,114); }
+	const z=gz.zulu||0, two=(v)=>String(Math.floor(v)).padStart(2,"0");
+	x.fillText(two(z/3600)+":"+two(z/60%60)+":"+two(z%60),20,458);   // ZTOD at the lower left (item 10)
+	x.textAlign="center";
+	if(timer.shown==="et"||timer.shown==="cd"){ x.fillText(timer.shown.toUpperCase(),452,434); x.fillText(timer_text(z),452,458); }   // the timer shown, ET or CD, at the lower right (item 12)
+	x.font="16px monospace"; x.fillText("TRUE",256,52);   // under the scale, with true heading (item 13)
+	ddi_legend(x,8,"SCL/"+(hsi_state.dctr?2*scale:scale),true,false);
+	if(hsi_state.mode){ ddi_legend(x,4,hsi_state.north?"N UP":"T UP",true,false); ddi_legend(x,2,"DCTR",true,hsi_state.dctr);
+		if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
+		ddi_legend(x,10,"HSI",true,false); }
+	else { ddi_legend(x,3,"MODE",true,false); ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time"); } }   // TIMEUFC boxed while the UFC holds the timer options (figure 24-9)
+// known is the picture the pilot holds, which the SA page and the map draw: a
+// teammate by its datalink position report, a hostile close enough to see as
+// it is, and otherwise a hostile only as the radar holds it - a trackfile at
+// its last fix, carried on by its velocity, or an RWS paint with no heading.
+// No sensor gives a hostile's callsign. The eyes reach SIGHT by day and half
+// that at night, as the world's bots see (bot.go visible).
+const SIGHT=12000;   // m
+function known(){
+	const all=contacts(), mine=MULTIPLAYER&&net?(net.teams.get(net.slot)||""):"", reach=cfg.tod==="night"?SIGHT/2:SIGHT;
+	const friend=c=>!!mine&&c.team===mine;
+	const eyes=c=>!friend(c)&&Math.hypot(wrap_axis(c.x-ownship.pos.x),c.y-ownship.pos.y,wrap_axis(c.z-ownship.pos.z))<=reach;
+	const seen=(c,name)=>({ x:c.x, z:c.z, fx:c.fwd.x, fz:c.fwd.z, team:c.team, name });
+	const out=[...all.filter(friend).map(c=>seen(c,c.name)),...all.filter(eyes).map(c=>seen(c,""))];
+	const held=id=>all.some(c=>c.id===id&&(friend(c)||eyes(c))), team=id=>{ const c=all.find(k=>k.id===id); return c?c.team:""; };
+	for(const t of RADAR.tracks){ if(held(t.id)) continue; const age=RADAR.time-t.at;
+		out.push({ x:t.x+t.vx*age, z:t.z+t.vz*age, fx:t.vx, fz:t.vz, team:team(t.id), name:"" }); }
+	for(const b of RADAR.bricks){ if(held(b.id)||RADAR.tracks.some(t=>t.id===b.id)||RADAR.bricks.some(k=>k.id===b.id&&k.at>b.at)) continue;   // the newest paint of each, and none a trackfile already shows
+		out.push({ x:b.x, z:b.z, fx:0, fz:0, team:team(b.id), name:"" }); }
+	return out; }
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
 	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
@@ -2204,54 +2365,52 @@ function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0
 	x.rotate(-hdg);   // heading-up frame: contacts draw at their north-up offsets
 	const jet=(wx,wz,fx,fz,c,label)=>{ const dx=wrap_axis(wx-ownship.pos.x)*ppm, dz=wrap_axis(wz-ownship.pos.z)*ppm;
 		if(Math.hypot(dx,dz)>R+14) return;   // outside the scale: not shown, like the real format
+		if(!fx&&!fz){ x.strokeStyle=c; x.lineWidth=2; x.beginPath(); x.arc(dx,dz,6,0,Math.PI*2); x.stroke(); return; }   // a paint with no heading: a plain mark
 		const fl=Math.hypot(fx,fz)||1, ux=fx/fl, uz=fz/fl, rx=-uz, rz=ux;
 		x.fillStyle=c; x.beginPath();
 		x.moveTo(dx+ux*11,dz+uz*11); x.lineTo(dx-ux*7+rx*6,dz-uz*7+rz*6); x.lineTo(dx-ux*7-rx*6,dz-uz*7-rz*6); x.closePath(); x.fill();
 		if(label){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright
 	{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;   // the boat
 		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5,kz-5,10,10); } }
-	for(const c of contacts()) jet(c.x,c.z,c.fwd.x,c.fwd.z,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);   // the contacts model (#30): today truth-fed (furball is omniscient by design); the BVR rules (#32) will gate it by sensors and this page must not notice
+	for(const c of known()) jet(c.x,c.z,c.fx,c.fz,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);
 	x.restore();
 	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=3;   // ownship
 	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(248,cy+12); x.lineTo(264,cy+12); x.closePath(); x.stroke();
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
 	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
 	x.fillText(String(scale),14,216); }
-function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9): the symbol generator's boresight picture at a fixed field — the same numbers the HUD shows, independent of the head and camera (which is why this is a fresh renderer, not a copy of the screen HUD's camera-coupled draw)
-	const ppd=512/26, cx=256, cy=250;   // a 26° square field, about the HUD's own
-	const pitch=(gz.pitch||0)/D2R, bank=gz.bank||0;
+// ddi_hud: the HUD format on a DDI (#9, #62), a repeat of the HUD: the same
+// furniture (hud_cluster), ladder (hud_pitch) and symbols (hud_symbols), drawn
+// through a fixed 26° field about the nose in place of the HUD's camera, at the
+// glass's proportions - one degree the same on the ladder and in the layout, the
+// waterline datum 4° above the display's centre, the HUD's optical centre (item 2).
+function ddi_hud(x){
+	const ppd=512/26, k=ppd/(HH/45), cx=256, cy=256, wly=cy-4*ppd, bore=[cx,wly], GREEN="#39e07a";   // k: the HUD layout's pixels onto the display's
+	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=ppd/D2R, pa=(ownship.gear??1)<0.02;   // pa: the landing symbology, on the gear as the HUD's (item 13)
+	const place=(d)=>{ const f=d.x*fwd.x+d.y*fwd.y+d.z*fwd.z; if(f<0.05) return null;   // a perspective projection about the nose, as the HUD's camera makes
+		return [cx+(d.x*right.x+d.y*right.y+d.z*right.z)/f*focal, wly-(d.x*up.x+d.y*up.y+d.z*up.z)/f*focal]; };
+	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(fwd,Math.max(0,2-ownship.speed));   // the flight path as the HUD takes it, faded in from the nose over the first 2 m/s
+	if(path.lengthSq()>1e-9) path.normalize(); else path.copy(fwd);
+	const limit=(q)=>{ const dx=q[0]-cx, dy=q[1]-cy, r=Math.hypot(dx,dy), rmax=8*ppd; return r>rmax?[[cx+dx/r*rmax,cy+dy/r*rmax],true]:[q,false]; };   // 8° about the optical centre (item 10)
+	const cage=master==="nav"?caged:!pa;
+	let fpm=place(path), fpm_limited=false, ghost=null, ghost_limited=false;
+	if(fpm){ const truth=fpm;
+		if(cage) fpm=[bore[0],truth[1]];
+		[fpm,fpm_limited]=limit(fpm);
+		if(cage&&Math.abs(truth[0]-bore[0])>2*ppd) [ghost,ghost_limited]=limit(truth); }
 	x.save(); x.beginPath(); x.rect(40,44,432,432); x.clip();   // the picture stays clear of the button bands
-	x.lineWidth=2;
-	x.save(); x.translate(cx,cy); x.rotate(-bank);   // pitch ladder about the boresight
-	for(let p=-30;p<=30;p+=5){ const off=(pitch-p)*ppd; if(Math.abs(off)>230) continue;
-		if(p===0){ x.beginPath(); x.moveTo(-200,off); x.lineTo(-40,off); x.moveTo(40,off); x.lineTo(200,off); x.stroke(); continue; }   // horizon
-		const w=p%10===0?70:40, gap=36;
-		x.save(); if(p<0) x.setLineDash([10,7]);
-		x.beginPath(); x.moveTo(-gap-w,off); x.lineTo(-gap,off); x.moveTo(gap,off); x.lineTo(gap+w,off); x.stroke();
-		x.restore();
-		if(p%10===0){ x.font="17px monospace"; x.textAlign="left"; x.fillText(String(Math.abs(p)),gap+w+6,off);
-			x.textAlign="right"; x.fillText(String(Math.abs(p)),-gap-w-6,off); } }
+	x.lineWidth=2; x.strokeStyle=GREEN; x.fillStyle=GREEN; x.textBaseline="middle";
+	{ const marked=fpm?new THREE.Vector3().copy(fwd).addScaledVector(right,(fpm[0]-cx)/focal).addScaledVector(up,-(fpm[1]-wly)/focal).normalize():path;   // the ladder hangs on the marker as drawn, as the HUD's does
+		const ladFwd=new THREE.Vector3(marked.x,0,marked.z);
+		if(ladFwd.lengthSq()<0.0025) ladFwd.set(fwd.x,0,fwd.z);
+		if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); hud_pitch(x,GREEN,place,ladFwd,new THREE.Vector3().crossVectors(ladFwd,world_up).normalize(),pa,k); } }
+	hud_symbols(x,GREEN,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,k);
+	if(law_active){ x.strokeStyle=GREEN; gpws_arrow(x,cx,cy,ppd,-Math.atan2(right.y,up.y)); }
+	let boxed=null, rng=1500, vc=0, ranged=false;
+	{ const dst=hud_target(); if(dst){ boxed=dst; const r=ranging(); if(r){ rng=r.range; vc=r.closure; ranged=true; } } }   // the ranging data, found as the HUD finds it
+	x.save(); x.translate(bore[0],bore[1]); x.scale(k,k); x.translate(0,4*HH/45);   // the layout's waterline datum onto the display's, at its degree
+	hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,boxed,vc,ranged?rng:null,{ fwd, right, up });
 	x.restore();
-	{ const vx=cx+(gz.slip||0)*3*ppd, vy=cy+(ownship.aoa||0)*ppd;   // velocity vector: alpha below the waterline, slip across (the repeat of the picture, not a camera projection)
-		const r=9;
-		x.beginPath(); x.arc(vx,vy,r,0,Math.PI*2); x.stroke();
-		x.beginPath(); x.moveTo(vx-r,vy); x.lineTo(vx-r-10,vy); x.moveTo(vx+r,vy); x.lineTo(vx+r+10,vy); x.moveTo(vx,vy-r); x.lineTo(vx,vy-r-8); x.stroke(); }
-	x.beginPath(); x.moveTo(cx-30,cy); x.lineTo(cx-12,cy); x.lineTo(cx-6,cy+8); x.lineTo(cx,cy); x.lineTo(cx+6,cy+8); x.lineTo(cx+12,cy); x.lineTo(cx+30,cy); x.stroke();   // waterline W
-	x.font="24px monospace"; x.textAlign="right";   // airspeed and altitude boxes at the waterline datum
-	x.strokeRect(58,196,96,34); x.fillText(String(Math.round(gz.casKt||0)),144,214);
-	x.strokeRect(360,196,110,34); x.fillText(String(Math.round(gz.altitude||0)),462,214);
-	x.font="20px monospace"; x.textAlign="left";
-	x.fillText("α "+(ownship.aoa||0).toFixed(1),58,254);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("G  "+(ownship.gload||1).toFixed(1),58,280);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("M  "+(gz.mach||0).toFixed(2),58,306);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.textAlign="right"; x.fillText(String(Math.round(gz.fpm||0)),470,254);   // VVI under the altitude box
-	x.font="26px monospace"; x.textAlign="center";
-	x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,70);
-	for(const d of [-45,-30,-20,-10,0,10,20,30,45]){ const a=Math.PI/2+d*D2R, br=180;   // bank scale under the boresight, pointer at the bank angle
-		const i=d===0?14:10;
-		x.beginPath(); x.moveTo(cx+Math.cos(a)*br,cy+Math.sin(a)*br); x.lineTo(cx+Math.cos(a)*(br+i),cy+Math.sin(a)*(br+i)); x.stroke(); }
-	{ const ba=Math.PI/2-THREE.MathUtils.clamp(bank,-45*D2R,45*D2R), br=180;
-		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(br-4),cy+Math.sin(ba)*(br-4)); x.lineTo(cx+Math.cos(ba-0.035)*(br-16),cy+Math.sin(ba-0.035)*(br-16)); x.lineTo(cx+Math.cos(ba+0.035)*(br-16),cy+Math.sin(ba+0.035)*(br-16)); x.closePath(); x.fill(); }
 	x.restore(); }
 // fpas_home (#54): distance and time to the carrier at present groundspeed, and
 // the fuel state on arrival at the present burn. Null on deck, hovering, or
@@ -2291,16 +2450,29 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu pr
 	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("---",256,360); }
 }
 const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
-function fuel_press(pb){
-	if(pb===4){ bingo_set(fuel_state.bingo+100); return true; }
-	if(pb===3){ bingo_set(fuel_state.bingo-100); return true; }
+// FLBIT (NATOPS 2.2.10.3): the fuel low level system's BIT, run from the FUEL page.
+// It raises FUEL LO through the whole warning chain - the caution, the FUEL LO light,
+// the voice alert and MASTER CAUTION - within 13 s of the press (here at 10 s), and
+// that FUEL LO holds the minute any FUEL LO does (2.2.8). FLBIT is boxed while the
+// test runs, and inoperative while FUEL LO is up. flbit: the sim time it was pressed.
+let flbit=-Infinity;
+const FLBIT_RESULT=10, FLBIT_HOLD=60;
+function flbit_running(){ return sim_time-flbit<FLBIT_RESULT; }
+function flbit_lit(){ const t=sim_time-flbit; return t>=FLBIT_RESULT&&t<FLBIT_RESULT+FLBIT_HOLD; }
+function fuel_press(pb){   // BINGO is set on the IFEI in the C/D (2.2.10.4), not from this page
+	if(pb===20&&!flbit_running()&&!flbit_lit()&&(ownship.fuel??1e9)>=FUELLO){ flbit=sim_time; return true; }
 	return false; }
 // The IFEI (NATOPS 2.1.1.7.5, 2.2.10.1, 2.12.8): the C's LCD block under the
-// left DDI, a canvas quad over the face of the model's A/B drum unit (hidden by
-// spec.hide), drawn from the face ifei.ts computes. fuel_state owns BINGO; the
-// rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives here.
+// left DDI, drawn from the face ifei.ts computes. The cockpit shell paints the
+// unit: the engine window on the left, the six pushbuttons down the middle, the
+// fuel window and the time window on the right (FO-5 item 22), with its legends
+// above them. A transparent canvas quad over the unit's face lights the three
+// windows and leaves the painted buttons and legends showing, as the UFC's does.
+// The windows are self-lit: white digits in the DAY mode, green in NITE (the
+// brightness knob works only in NITE and NVG, 2.6.2.6). fuel_state owns BINGO;
+// the rest of the panel's state (QTY sub-level, ZONE, the elapsed timer) lives
+// here.
 let ifei_state=ifei_fresh(fuel_state.bingo), ifei_dirty=true;
-const IFEI_W=512, IFEI_H=224, IFEI_BUTTON_X=[300,372], IFEI_BUTTON_Y=6, IFEI_BUTTON_PITCH=36;   // canvas layout: engine block left, the six buttons down the middle, fuel and time right
 function ifei_view(){ return { ...ifei_state, bingo:fuel_state.bingo }; }
 function tanks_fitted(){ const lo=ownship.loadout||{};   // which external stations carry a tank: 3 and 7 the wings, 5 the centreline
 	const has=(station)=>{ const slot=lo[String(station)]; return !!slot&&stores_entries(station,slot).some(n=>n.startsWith("tank")); };
@@ -2309,47 +2481,56 @@ function ifei_reading(){ const gz=ownship.gauges||{};
 	return { rpm:[gz.rpmL??NaN,gz.rpmR??NaN], egt:[gz.egtL??NaN,gz.egtR??NaN], flow:[gz.flowL??NaN,gz.flowR??NaN], noz:[gz.nozL??NaN,gz.nozR??NaN], oil:[gz.oilL??NaN,gz.oilR??NaN],
 		internal:gz.fuelRaw??NaN, external:gz.externalRaw??0, tanks:tanks_fitted() }; }
 function ifei_current(){ return ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }
-const IFEI_FACE={ y:0.208, z:-0.189, w:0.122 };   // the modeled unit's face, group frame, measured by panel click (&panelpoint=1) on its legend row and window edges: the drum nodes behind it sit 8 cm deep and off their windows, so their boxes mislocate the face. &ifei=y,z,w (dev) overrides for recalibration
+// The unit's face and windows in the group frame, on the panel face at x 6.211:
+// measured by thresholding captures of the bare panel, the stick hidden, and
+// picking each window's edges (dev_overlays, dev_hide, dev_pick). The buttons
+// are the painted legends' centres.
+const IFEI_FACE={ y:[0.088,0.218], z:[-0.314,-0.126] };
+const IFEI_WINDOWS={ engine:{ y:[0.094,0.212], z:[-0.309,-0.223] }, fuel:{ y:[0.168,0.210], z:[-0.186,-0.131] }, time:{ y:[0.097,0.164], z:[-0.185,-0.130] } };
+const IFEI_BUTTONS={ mode:0.200, qty:0.181, up:0.163, down:0.142, zone:0.121, et:0.102 }, IFEI_BUTTON_Z=-0.205, IFEI_RADIUS=0.009;   // y of each, one column
+const IFEI_SCALE=3600;   // canvas pixels per metre of face
 function build_ifei(g){
 	if(g.userData.ifei&&g.userData.ifei.mesh.parent===g) return;
-	const at=DEV_MODE&&new URLSearchParams(location.search).get("ifei");
-	const [y,z,w]=at?at.split(",").map(Number):[IFEI_FACE.y,IFEI_FACE.z,IFEI_FACE.w];
-	if(!isFinite(y)||!isFinite(z)||!isFinite(w)) return;
-	const h=w*IFEI_H/IFEI_W;   // the LCD's own aspect
-	const box={ lo:new THREE.Vector3(6.20,y-h/2,z-w/2), hi:new THREE.Vector3(6.25,y+h/2,z+w/2) };   // the face reads at x≈6.21; the fit finds its exact depth and lean through the cover, as the radalt's does
+	const w=IFEI_FACE.z[1]-IFEI_FACE.z[0], h=IFEI_FACE.y[1]-IFEI_FACE.y[0], y=(IFEI_FACE.y[0]+IFEI_FACE.y[1])/2, z=(IFEI_FACE.z[0]+IFEI_FACE.z[1])/2;
+	const box={ lo:new THREE.Vector3(6.20,IFEI_FACE.y[0],IFEI_FACE.z[0]), hi:new THREE.Vector3(6.25,IFEI_FACE.y[1],IFEI_FACE.z[1]) };   // the fit finds the face's exact depth and lean
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
-	const canvas=document.createElement("canvas"); canvas.width=IFEI_W; canvas.height=IFEI_H;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+	const canvas=document.createElement("canvas"); canvas.width=Math.round(w*IFEI_SCALE); canvas.height=Math.round(h*IFEI_SCALE);
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted buttons and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.211,tilt,y,z);
 	g.add(mesh);
 	g.userData.ifei={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
 	ifei_dirty=true; ifei_update(true); }
-function ifei_button_at(uv){ const px=uv.x*IFEI_W, py=(1-uv.y)*IFEI_H;   // canvas pixel under a click -> the pushbutton, or null
-	if(px<IFEI_BUTTON_X[0]||px>IFEI_BUTTON_X[1]) return null;
-	const i=Math.floor((py-IFEI_BUTTON_Y)/IFEI_BUTTON_PITCH); return ifei_buttons[i]||null; }
+function ifei_button_at(point){ const p=ownship.group.worldToLocal(point.clone());   // the painted pushbutton nearest a click on the unit, or null
+	let best=null, bd=IFEI_RADIUS*IFEI_RADIUS;
+	for(const b of ifei_buttons){ const d=(IFEI_BUTTONS[b]-p.y)**2+(IFEI_BUTTON_Z-p.z)**2; if(d<bd){ bd=d; best=b; } }
+	return best; }
 function ifei_click(button,hold){
 	const next=ifei_press(ifei_view(),button,performance.now()/1000,hold||0);
 	if(next.bingo!==fuel_state.bingo) bingo_set(next.bingo);
 	ifei_state={ ...next, bingo:fuel_state.bingo }; ifei_dirty=true; ifei_update(true); }
 function ifei_update(stale){ const u=ownship.group.userData.ifei; if(!u||!(ifei_dirty||stale)) return; ifei_dirty=false;
-	const x=u.canvas.getContext("2d"), f=ifei_current();
-	x.fillStyle="#b9c2b0"; x.fillRect(0,0,IFEI_W,IFEI_H);   // the LCD's pale face; legends and digits are the dark segments
-	x.fillStyle="#0e120e"; x.textBaseline="middle";
-	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("L",70,16); x.fillText("ENGINE",150,16); x.fillText("R",230,16);
-	f.engine.forEach((row,i)=>{ const y=48+i*36;
-		x.font="bold 14px monospace"; x.textAlign="center"; x.fillText(row.label,150,y);
-		x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(row.left,118,y); x.textAlign="left"; x.fillText(row.right,182,y); });
-	ifei_buttons.forEach((b,i)=>{ const y=IFEI_BUTTON_Y+i*IFEI_BUTTON_PITCH;
-		x.fillStyle="#2a2d2a"; x.fillRect(IFEI_BUTTON_X[0]+2,y,IFEI_BUTTON_X[1]-IFEI_BUTTON_X[0]-4,30);
-		x.fillStyle="#e8e8e0"; x.font="bold 13px monospace"; x.textAlign="center"; x.fillText(b==="up"?"▲":b==="down"?"▼":b.toUpperCase(),(IFEI_BUTTON_X[0]+IFEI_BUTTON_X[1])/2,y+15); });
-	x.fillStyle="#0e120e"; x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("FUEL",446,16);
-	const counter=(c,y)=>{ x.font="bold 24px monospace"; x.textAlign="right"; x.fillText(c.value,470,y);
-		x.font="bold 13px monospace"; if(c.legend.length>2){ x.textAlign="left"; x.fillText(c.legend,384,y+17); } else { x.textAlign="left"; x.fillText(c.legend,476,y); } };   // T / I / FL... ride beside the counter; BINGO reads beneath its value, as the real window labels it
-	counter(f.fuel.upper,44); counter(f.fuel.middle,76); counter(f.fuel.lower,108);
-	x.font="bold 15px monospace"; x.textAlign="center"; x.fillText("TIME",446,150);
-	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.clock,470,176); if(f.zulu){ x.font="bold 13px monospace"; x.textAlign="left"; x.fillText("Z",476,176); }
-	x.font="bold 22px monospace"; x.textAlign="right"; x.fillText(f.elapsed,470,206);
+	const x=u.canvas.getContext("2d"), f=ifei_current(), W=u.canvas.width, H=u.canvas.height;
+	const rect=(win)=>({ l:(win.z[0]-IFEI_FACE.z[0])*IFEI_SCALE, t:(IFEI_FACE.y[1]-win.y[1])*IFEI_SCALE, w:(win.z[1]-win.z[0])*IFEI_SCALE, h:(win.y[1]-win.y[0])*IFEI_SCALE });
+	const lit=lighting.mode==="nite"?"#5cf08a":"#eef2ee", dim=lighting.mode==="nite"?"#3fae62":"#aab2ac";   // DAY white, NITE green (2.6.2.6)
+	const face=(r)=>{ const k=Math.min(r.w,r.h)*0.08; x.fillStyle="#040605"; x.beginPath(); x.roundRect(r.l,r.t,r.w,r.h,k); x.fill(); };
+	const digits=(size)=>"bold "+Math.round(size)+"px 'Hornet Display', monospace";   // i18n-format-ok: a CSS font size
+	x.clearRect(0,0,W,H); x.textBaseline="middle";
+	{ const r=rect(IFEI_WINDOWS.engine); face(r);   // five rows: left value, the parameter in the middle, right value
+		const row=r.h/5.4, big=row*0.62;
+		f.engine.forEach((e,i)=>{ const cy=r.t+row*(0.7+i);
+			x.fillStyle=dim; x.font=digits(big*0.46); x.textAlign="center"; x.fillText(e.label,r.l+r.w/2,cy);
+			x.fillStyle=lit; x.font=digits(big); x.textAlign="right"; x.fillText(e.left,r.l+r.w*0.40,cy); x.textAlign="left"; x.fillText(e.right,r.l+r.w*0.60,cy); }); }
+	{ const r=rect(IFEI_WINDOWS.fuel); face(r);   // three counters: total (T), internal (I) and BINGO, the legends beside them
+		const row=r.h/3.2, big=row*0.72;
+		[f.fuel.upper,f.fuel.middle,f.fuel.lower].forEach((c,i)=>{ const cy=r.t+row*(0.6+i);
+			x.fillStyle=lit; x.font=digits(big); x.textAlign="right"; x.fillText(c.value,r.l+r.w*0.80,cy);
+			x.fillStyle=dim; x.font=digits(big*0.5); x.textAlign="left"; x.fillText(c.legend,r.l+r.w*(c.legend.length>2?0.03:0.84),c.legend.length>2?cy+big*0.62:cy); }); }
+	{ const r=rect(IFEI_WINDOWS.time); face(r);   // the clock (Z when zulu) over elapsed time
+		const big=r.h*0.22;
+		x.fillStyle=lit; x.font=digits(big); x.textAlign="right";
+		x.fillText(f.clock,r.l+r.w*0.86,r.t+r.h*0.34); x.fillText(f.elapsed,r.l+r.w*0.86,r.t+r.h*0.72);
+		if(f.zulu){ x.fillStyle=dim; x.font=digits(big*0.5); x.textAlign="left"; x.fillText("Z",r.l+r.w*0.88,r.t+r.h*0.34); } }
 	u.tex.needsUpdate=true; }
 // The arrows scroll while held (a second's hold, then 100 lb every 150 ms,
 // NATOPS 2.2.10.1); ET needs the hold length to tell a reset from a press.
@@ -2357,8 +2538,8 @@ let ifei_hold=null;
 function ifei_hold_begin(e){ if(cfg.view!=="cockpit"||map_on||!running) return;
 	const u=ownship.group.userData.ifei; if(!u) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
-	const hit=_click_ray.intersectObject(u.mesh,false)[0]; if(!hit||!hit.uv) return;
-	const button=ifei_button_at(hit.uv); if(button!=="up"&&button!=="down") return;
+	const hit=_click_ray.intersectObject(u.mesh,false)[0]; if(!hit) return;
+	const button=ifei_button_at(hit.point); if(button!=="up"&&button!=="down") return;
 	const hold={ button, fired:false, interval:null, timeout:null };
 	hold.timeout=setTimeout(()=>{ hold.interval=setInterval(()=>{ hold.fired=true; ifei_click(button,0); },150); },1000);
 	ifei_hold=hold; }
@@ -2385,11 +2566,40 @@ const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the optio
 	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.450, z:-0.085 },
 	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 } ];
 const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
-const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows
+const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""], time:["","ET","CD","ZTOD",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows; time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
 const UFC_CUES={ tcn:[0,3], ils:[0] };   // the colons the game's fixed equipment states show: TACAN in T/R on the X band, ILS on its channel
+// The mission computer's timers (NATOPS 2.13.4.8.11 item 17, 24.2.5.7.4-6): ZTOD,
+// ET and CD share the HUD's lower-left corner one at a time, each shown and blanked
+// from the TIMEUFC page's options. ET counts 00:00 to 59:59 and wraps; CD counts down
+// from its preset (06:00 at power-up) and leaves the display at 00:00; ENT starts and
+// stops the one shown, and a keypad entry presets CD. since: sim_time a timer started,
+// null while stopped.
+const timer={ shown:"", et:{ seconds:0, since:null }, cd:{ seconds:360, since:null } };
+function timer_reset(){ timer.shown=""; timer.et.seconds=0; timer.et.since=null; timer.cd.seconds=360; timer.cd.since=null; }
+function timer_seconds(kind){ const t=timer[kind], run=t.since===null?0:sim_time-t.since;
+	return kind==="et"?(t.seconds+run)%3600:Math.max(0,t.seconds-run); }
+function timer_run(kind,on){ const t=timer[kind]; if(on===(t.since!==null)) return;
+	if(on) t.since=sim_time; else { t.seconds=timer_seconds(kind); t.since=null; } }
+function timer_update(){ if(timer.cd.since!==null&&timer_seconds("cd")<=0){ timer_run("cd",false); if(timer.shown==="cd") timer.shown=""; } }   // CD run down: stopped, and off the HUD
+// timer_text is the HUD's reading of the timer shown, as bare digits (figure 2-26:
+// 00:00:00, 00:00, 06:00), or "" with none; CD shows its whole seconds rounded up,
+// so it reads 00:00 only as it goes.
+function timer_text(zulu){ const two=v=>String(Math.floor(v)).padStart(2,"0");
+	if(timer.shown==="ztod") return two(zulu/3600)+":"+two(zulu/60%60)+":"+two(zulu%60);
+	if(timer.shown==="et"||timer.shown==="cd"){ const s=timer.shown==="cd"?Math.ceil(timer_seconds("cd")):timer_seconds("et"); return two(s/60)+":"+two(s%60); }
+	return ""; }
+// timer_enter works ENT on the TIMEUFC page: with a keypad entry (minutes and seconds,
+// MMSS) it presets CD and starts it, and a value past 59:59 sets 59:59 and freezes it
+// (24.2.5.7.6); with none it starts or stops the timer shown. false: nothing to act on.
+function timer_enter(entry){
+	if(entry!==""){ const n=+entry, minutes=Math.floor(n/100), seconds=n%100; if(seconds>59) return false;
+		timer_run("cd",false);
+		if(minutes>59) timer.cd.seconds=3599; else { timer.cd.seconds=minutes*60+seconds; timer_run("cd",true); }
+		return true; }
+	if(timer.shown!=="et"&&timer.shown!=="cd") return false;
+	timer_run(timer.shown,timer[timer.shown].since===null); return true; }
 const ufc={ func:"", ralt:false, entry:"", error:false, blink:0 };   // the selected function, the :RALT cue, the keypad entry, the ERROR flash, the blink-once deadline
 let ufc_dirty=true, ufc_last="";
-let law_set=false;   // the low-altitude index was keyed on the UFC: the climb-out no longer restores the pattern's 200
 // ufc_face: what the windows show, from the panel's state and the equipment it
 // reads (silent: EMCON/radar silence; atc; ils: the ICLS needles live; index: the
 // low-altitude index). The scratchpad is nine characters: two alphanumeric (ON for
@@ -2397,35 +2607,36 @@ let law_set=false;   // the low-altitude index was keyed on the UFC: the climb-o
 // until cleared (2.13.5.9); a valid entry blanks the window once.
 function ufc_face(state,live,now){
 	const options=live.silent?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>{ if(!o) return "";
-		const cue=state.func==="ap"?(i===3&&state.ralt):(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
+		const cue=state.func==="ap"?(i===3&&state.ralt):state.func==="time"?o.toLowerCase()===live.timer:(UFC_CUES[state.func]||[]).includes(i); return (cue?":":" ")+o; });
 	let scratch;
 	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
 	else if(now<state.blink) scratch="         ";
 	else { const on=state.func==="ap"?live.atc:state.func==="tcn"?true:state.func==="ils"?live.ils:false;
-		const seven=state.entry!==""?state.entry:(state.func==="ap"&&state.ralt)?String(live.index):"";
+		const seven=state.entry;
 		scratch=(on?"ON":"  ")+seven.padStart(7); }
 	return { scratch, options }; }
-function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), index:law_index }; }
+function ufc_live(){ return { silent:!!RADAR.sil, atc:!!atc_on, ils:!!approach_deviation(), timer:timer.shown }; }
 function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
 	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
 	return best; }
 // ufc_press works one pushbutton. Digits fill the entry; CLR clears the entry or
-// the ERROR first and the option windows second (2.13.5.9); ENT keys the entry to
-// the selected option, which is only :RALT: the low-altitude index, 0 to 5,000 ft.
-// A function selector shows its page, or clears the display when pressed again;
-// A/P engages the approach power compensator as the autopilot switch engages the
-// autopilot (2.13.5.10). :RALT pressed again disables the warning until it re-arms
-// from above the index (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2).
+// the ERROR first and the option windows second (2.13.5.9); ENT has no entry the
+// game keys, so it flags ERROR. A function selector shows its page, or clears the
+// display when pressed again; A/P engages the approach power compensator as the
+// autopilot switch engages the autopilot (2.13.5.10). Pressing :RALT, or commanding
+// the UFC to another mode, disables a sounding primary low-altitude warning until
+// it is reset (2.12.5.1). EMCON is the radar silence toggle (2.13.5.2). On the
+// TIMEUFC page an option shows or blanks its timer on the HUD, and ENT works the
+// timers (timer_enter).
 function ufc_press(name){ const now=performance.now()/1000;
 	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
 	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else { ufc.func=""; ufc.ralt=false; } }
-	else if(name==="ent"){ const v=ufc.entry===""?NaN:+ufc.entry;
-		if(ufc.func==="ap"&&ufc.ralt&&v>=0&&v<=5000){ law_index=v; law_set=true; ufc.entry=""; ufc.blink=now+0.3; }
-		else ufc.error=true; }
+	else if(name==="ent"){ if(ufc.func==="time"&&timer_enter(ufc.entry)){ ufc.entry=""; ufc.blink=now+0.3; } else ufc.error=true; }
 	else if(name==="emcon") pit_press("radar",0);   // one silence: the radar, and the radar altimeter with it (#29)
 	else if(name.startsWith("opt")){ const i=+name.slice(3);
-		if(ufc.func==="ap"&&i===3){ if(ufc.ralt){ ufc.ralt=false; law_armed=false; } else ufc.ralt=true; ufc.entry=""; ufc.error=false; } }
-	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; }
+		if(ufc.func==="ap"&&i===3){ ufc.ralt=!ufc.ralt; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
+		else if(ufc.func==="time"&&UFC_PAGES.time[i]){ const kind=UFC_PAGES.time[i].toLowerCase(); timer.shown=timer.shown===kind?"":kind; ufc.entry=""; ufc.error=false; } }
+	else if(name in UFC_PAGES){ if(ufc.func===name) ufc.func=""; else { ufc.func=name; if(name==="ap"&&!atc_on) pit_press("atc",0); } ufc.ralt=false; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
 	ufc_dirty=true; ufc_update(true); }
 function build_ufc(g){
 	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
@@ -2433,7 +2644,7 @@ function build_ufc(g){
 	const box={ lo:new THREE.Vector3(6.12,y-h/2,z-w/2), hi:new THREE.Vector3(6.16,y+h/2,z+w/2) };   // the face reads at x≈6.13-6.14 with a lean of a few degrees; the fit finds both
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
 	const canvas=document.createElement("canvas"); canvas.width=UFC_W; canvas.height=UFC_H;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
 	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.138,tilt,y,z);
 	g.add(mesh);
@@ -2453,9 +2664,14 @@ function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 	window_(UFC_SCRATCH.y[0],UFC_SCRATCH.y[1],UFC_SCRATCH.z[0],UFC_SCRATCH.z[1],face.scratch,"right");
 	UFC_OPTIONS.rows.forEach((r,i)=>window_(r-UFC_OPTIONS.h/2,r+UFC_OPTIONS.h/2,UFC_OPTIONS.z[0],UFC_OPTIONS.z[1],face.options[i],"left"));
 	u.tex.needsUpdate=true; }
-if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, armed:law_armed }; };   // dev: press a UFC pushbutton headless and read the windows
+if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(button); return { ...ufc_face(ufc,ufc_live(),performance.now()/1000), state:{ ...ufc }, index:law_index, primary:law_primary, disabled:law_disabled }; };   // dev: press a UFC pushbutton headless and read the windows
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
+if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
+	rc.setFromCamera(new THREE.Vector2(px/HW*2-1,-(py/HH)*2+1),cockpit_cam); ownship.group.updateMatrixWorld(true);
+	return rc.intersectObject(ownship.group,true).filter(h=>all||shown(h.object)).slice(0,8).map(h=>{ const m=(Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}; const p=ownship.group.worldToLocal(h.point.clone());
+		return { at:p.toArray().map(n=>+n.toFixed(3)), node:h.object.name, parent:h.object.parent&&h.object.parent.name, material:m.name, type:m.type, transparent:m.transparent, opacity:m.opacity, depthWrite:m.depthWrite, map:!!m.map, emissive:m.emissive&&m.emissive.getHexString(), colour:m.color&&m.color.getHexString(), metal:m.metalness, rough:m.roughness, shown:shown(h.object), overlay:!!h.object.userData.overlay }; }); };   // i18n-format-ok: dev readout
+if(DEV_MODE) (globalThis as any).dev_hide=function(name,hidden){ const o=ownship.group.getObjectByName(name); if(!o) return false; o.visible=!hidden; return true; };   // dev: hide a model node (the stick, say) to measure what it covers
 if(DEV_MODE) (globalThis as any).dev_overlays=function(on){ let n=0; ownship.group.traverse(o=>{ if(o.userData&&o.userData.overlay){ o.visible=!!on; n++; } }); return n; };   // dev: hide or show every canvas face laid over the model, to see the modeled surface beneath
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)
 	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
@@ -2468,27 +2684,63 @@ if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei
 // flashing centre legend called BINGO at every join for the fifth of a second
 // that took.
 function bingo_low(){ if(cheat("fuel")||!flight_active) return false;
-	return ((ownship.fuel??0)+(ownship.external??0))*2.20462<fuel_state.bingo; }
+	return (ownship.fuel??0)*2.20462<fuel_state.bingo; }   // internal fuel alone (NATOPS 2.2.10.4)
+// FUEL_TANKS: the C's internal tanks' usable fuel, JP-5 pounds (NATOPS figure 2-6).
+const FUEL_TANKS={ one:2840, four:3620, feed:{ left:1790, right:1400 }, wing:580 };
+// fuel_tanks apportions the core's two totals, internal and external pounds, to the
+// tanks in the order NATOPS gives the C/D's transfer (2.2.3.2): the internal wings
+// first; then tanks 1 and 4 on the CG control schedule (2.2.3.4, figure 2-4) - tank 1
+// down to the middle of its band while tank 4 stays full, both down the band to tank 4
+// at 125 lb, tank 1 empty, then tank 4's last; the feed tanks last, each engine burning
+// its own and the two alike. The external tanks aboard ([{station, capacity}]) transfer
+// together (2.2.4), so each holds the same fraction of its capacity.
+function fuel_tanks(internal,external,aboard){ const T=FUEL_TANKS;
+	const band=(four)=>958+0.3875*four;   // the middle of the C's tank 1 band for tank 4's pounds (figure 2-4, measured)
+	let used=Math.max(0,T.one+T.four+T.feed.left+T.feed.right+2*T.wing-internal);
+	const wing=2*T.wing-Math.min(used,2*T.wing); used=Math.max(0,used-2*T.wing);
+	const top=band(T.four), bottom=band(125);
+	let d=Math.min(used,T.one+T.four), one, four; used-=d;
+	if(d<=T.one-top){ one=T.one-d; four=T.four; }
+	else if((d-=T.one-top)<=(T.four-125)*1.3875){ four=T.four-d/1.3875; one=band(four); }
+	else if((d-=(T.four-125)*1.3875)<=bottom){ four=125; one=bottom-d; }
+	else { one=0; four=125-(d-bottom); }
+	const e=Math.min(used,T.feed.left+T.feed.right), right=Math.max(0,T.feed.right-e/2), left=T.feed.left+T.feed.right-e-right;
+	const capacity=aboard.reduce((sum,tank)=>sum+tank.capacity,0), fraction=capacity>0?THREE.MathUtils.clamp(external/capacity,0,1):0;
+	const outside={}; for(const tank of aboard) outside[tank.station]=tank.capacity*fraction;
+	return { one, four, feed:{ left, right }, wing:{ left:wing/2, right:wing/2 }, external:outside }; }
+// fuel_aboard: the external tanks the flown loadout carries, [{station, capacity}] in
+// pounds, from the stores catalogue (figure 2-6's 330-gallon tank until it loads).
+function fuel_aboard(){ const book=stores_catalog(), lo=ownship.loadout||loadout(), aboard=[];
+	for(const station of [3,5,7]){ const slot=lo&&lo[String(station)]; if(!slot||!slot.stores||slot.stores[0]!=="tank") continue;
+		const bit=book?book.index.get("tank"+station):undefined;
+		aboard.push({ station, capacity:bit===undefined?2240:book.stores[bit].fuel*2.20462 }); }
+	return aboard; }
+// ddi_fuel: the FUEL display as figure 2-5 draws it (2.2.10.5): TOTAL (internal and
+// external) and INTERNAL at the upper left, the BINGO setting at the upper right, and a
+// box per tank - tanks 1, the feeds and 4 down the middle, the wings either side, the
+// external tanks aboard along the bottom - each with its pounds and a caret on its
+// right side at its fill. FLBIT at the lower left; no title.
 function ddi_fuel(x,display){ const gz=ownship.gauges||{};
-	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=(gz.flowL||0)+(gz.flowR||0);
-	const low=bingo_low(), colour=display==="center";   // the BINGO caret watches TOTAL fuel — externals burn first, so they count (#17)
-	x.fillText("FUEL",256,36);
-	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest INTERNAL total inside — one external figure below it (concurrent transfer drains the tanks in step, so per-tank rows would all read the same)
-	x.beginPath(); x.moveTo(256,86); x.lineTo(292,130); x.lineTo(292,330); x.lineTo(276,364); x.lineTo(236,364); x.lineTo(220,330); x.lineTo(220,130); x.closePath(); x.stroke();
-	if(low&&colour) x.fillStyle="#ffb04a";
-	x.font="30px monospace"; x.textAlign="center"; x.fillText(String(total),256,226);
-	x.font="19px monospace"; x.fillText("LB",256,258);
-	if(low){ x.font="22px monospace"; x.fillText("BINGO",256,304); }   // annunciated under the total while beneath the caret
-	if(fuel_dump){ if(colour) x.fillStyle="#ffb04a"; x.font="22px monospace"; x.fillText("DUMP",256,336); x.fillStyle="#39e07a"; }   // #54: the switch is ON — fuel is going overboard
-	x.fillStyle="#39e07a"; x.font="20px monospace";
-	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)/10)*10,190,206);   // per-engine burn either side of the tank
-	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)/10)*10,322,206);
-	if(ext>0||external_capacity()>0){ x.textAlign="center"; x.fillText("EXT "+ext,256,396); }   // external tanks aboard: their remaining fuel (burns before internal)
-	if(flow>300){ const m=Math.round((total+ext)/flow*60);   // endurance at the present burn, externals included
-		x.textAlign="left"; x.fillText("TIME "+Math.floor(m/60)+"+"+String(m%60).padStart(2,"0"),24,458); }
-	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // the arrows step the caret
-	x.font="16px monospace"; x.textAlign="left"; x.fillText(String(fuel_state.bingo),8,216);
-	x.font="13px monospace"; x.fillText("BINGO",8,242); }
+	const internal=gz.fuelRaw||0, external=gz.externalRaw||0, aboard=fuel_aboard(), tanks=fuel_tanks(internal,external,aboard);
+	const lb=(v)=>String(Math.max(0,Math.round(v/10)*10));   // the display's ten-pound resolution
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle";
+	x.textAlign="left"; x.font="16px monospace"; x.fillText("TOTAL",20,64); x.fillText("INTERNAL",20,128);
+	x.font="22px monospace"; x.fillText(lb(internal+external),20,90); x.fillText(lb(internal),20,154);
+	x.textAlign="right"; x.font="16px monospace"; x.fillText("BINGO",492,64);
+	x.font="22px monospace"; x.fillText(String(fuel_state.bingo),492,90);
+	const tank=(label,cx,cy,pounds,capacity)=>{
+		x.textAlign="center"; x.font="13px monospace"; x.fillText(label,cx,cy-26);
+		x.strokeRect(cx-44,cy-15,88,30); x.font="19px monospace"; x.fillText(lb(pounds),cx,cy);
+		const y=cy+15-30*THREE.MathUtils.clamp(capacity>0?pounds/capacity:0,0,1);   // the caret, up the tank's right side with its fill
+		x.beginPath(); x.moveTo(cx+56,y-6); x.lineTo(cx+48,y); x.lineTo(cx+56,y+6); x.stroke(); };
+	tank("TK 1",256,96,tanks.one,FUEL_TANKS.one);
+	tank("L FD",256,166,tanks.feed.left,FUEL_TANKS.feed.left);
+	tank("R FD",256,236,tanks.feed.right,FUEL_TANKS.feed.right);
+	tank("TK 4",256,306,tanks.four,FUEL_TANKS.four);
+	tank("L WG",100,236,tanks.wing.left,FUEL_TANKS.wing);
+	tank("R WG",412,236,tanks.wing.right,FUEL_TANKS.wing);
+	for(const t of aboard) tank({3:"L EXT",5:"C/L",7:"R EXT"}[t.station],{3:120,5:256,7:392}[t.station],392,tanks.external[t.station],t.capacity);
+	ddi_legend(x,20,"FLBIT",true,flbit_running()); }
 function ddi_sms(x,display){   // SMS (#5): the stores format over the real loadout model (#17) — planform with per-station contents, remaining rounds, and the SMS priority station boxed when the missile is selected. Display and employment only; configuration lives in the menus.
 	const colour=display==="center";
 	const lo=ownship.loadout||{};
@@ -2591,33 +2843,56 @@ function ddi_chklst(x,display){ const o=last_out||[];   // CHKLST (#8): the real
 	x.fillText("WT "+wt+" LB",286,402);
 	x.fillText("VAPP "+vapp,286,430);
 	x.fillText("VS0  "+vs0,286,458); }
-function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straight from the flight core's control words; X = the channel's jam word
+// ddi_fcs: the FCS status display as figure 2-16 draws it for the C/D (2.8.4.7). At top
+// centre each surface's left and right position in whole degrees with an arrow for its
+// direction from neutral - the leading edge for LEF, the trailing edge for the rest,
+// sideways for RUD - and a bold X through the number of a surface the FCC no longer
+// commands (the core's jam words: 0/1 stabilator, 2/3 flaperon, 4 rudder, 5 slat; the
+// flap has none). Either side, the channel boxes: LEF, AIL and RUD on channels 1 and 4
+// at the left and 2 and 3 at the right, TEF and STAB on all four in SV1 and SV2 rows.
+// At the lower right the CAS and sensor channel status, and at the left centre the
+// FCS's symmetrical positive g limit, crossed out under 3,300 lb of fuel or over
+// 44,000 lb gross. The L, INS and R AoA along the bottom. The game models no channel
+// or sensor failure, so every box reads clear, and one AoA, which all three show.
+function ddi_fcs(x,display){ const o=last_out||[], gz=ownship.gauges||{};
 	const colour=display==="center";
 	const deg=i=>(o[i]||0)/D2R;
 	const jam=i=>(o[STATE.jam+i]||0)>0.5;
-	x.fillText("FCS",256,36);
-	x.font="20px monospace";
-	const row=(label,v,xx,y,jammed)=>{ const r=Math.round(v);   // round BEFORE the sign, or a -0.3° deflection prints "-0°"
-		x.textAlign="center"; x.fillText(label,xx,y);
-		x.fillText((r<0?"-":"")+Math.abs(r)+"°",xx,y+26);
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle";
+	const arrow=(ax,ay,dx,dy)=>{ x.beginPath(); x.moveTo(ax-dx*6,ay-dy*6); x.lineTo(ax+dx*6,ay+dy*6);   // a short arrow along (dx,dy), its head at the far end
+		x.moveTo(ax+dx*6-dy*4-dx*4,ay+dy*6+dx*4-dy*4); x.lineTo(ax+dx*6,ay+dy*6); x.lineTo(ax+dx*6+dy*4-dx*4,ay+dy*6-dx*4-dy*4); x.stroke(); };
+	const side=(v,xx,y,sideways,jammed)=>{ const r=Math.round(v);   // one side of a surface row: the arrow, then the number
+		if(sideways) arrow(xx,y,v>=0?-1:1,0); else arrow(xx,y,0,v>=0?1:-1);   // + is the leading or trailing edge down, and for the rudder the trailing edge left (the nose yaws left)
+		x.textAlign="left"; x.font="18px monospace"; x.fillText(String(Math.abs(r)),xx+14,y);
 		if(jammed){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;
-			x.beginPath(); x.moveTo(xx-26,y-12); x.lineTo(xx+26,y+38); x.moveTo(xx+26,y-12); x.lineTo(xx-26,y+38); x.stroke();
+			x.beginPath(); x.moveTo(xx+10,y-11); x.lineTo(xx+40,y+11); x.moveTo(xx+40,y-11); x.lineTo(xx+10,y+11); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
-	row("LEF",deg(STATE.slat),110,140,jam(5)); row("LEF",deg(STATE.slat),402,140,jam(5));   // one slat word, both wings
-	// Jam words are per actuator (flight/damage.go: 0/1 stabilator, 2/3 flaperon,
-	// 4 rudder, 5 slat, 6 speedbrake); there is no flap channel, so the X goes on
-	// the AIL rows, never TEF.
-	row("TEF",deg(STATE.flap),110,216,false); row("TEF",deg(STATE.flap),402,216,false);
-	row("AIL",deg(STATE.flaperon),110,292,jam(2)); row("AIL",deg(STATE.flaperon+1),402,292,jam(3));
-	row("STAB",deg(STATE.stabilator),110,368,jam(0)); row("STAB",deg(STATE.stabilator+1),402,368,jam(1));
-	row("RUD",deg(STATE.rudder),256,368,jam(4));
-	x.textAlign="center"; x.fillText("SPD BRK "+Math.round((o[STATE.speedbrake]||0)*100)+"%",256,110);
-	if(jam(6)){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;   // the speedbrake actuator jams too (battle plumbing damage) and showed nothing
-		x.beginPath(); x.moveTo(150,92); x.lineTo(362,122); x.moveTo(362,92); x.lineTo(150,122); x.stroke();
-		x.strokeStyle="#39e07a"; x.lineWidth=2; }
-	x.textAlign="left";   // the two trim datums
-	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
+	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,deg(STATE.flap),deg(STATE.flap),false,false,false],
+		["AIL",128,deg(STATE.flaperon),deg(STATE.flaperon+1),false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
+		["STAB",176,deg(STATE.stabilator),deg(STATE.stabilator+1),false,jam(0),jam(1)]];
+	for(const [label,y,L,R,sideways,jamL,jamR] of rows){
+		x.textAlign="center"; x.font="18px monospace"; x.fillText(label,256,y);
+		side(L,176,y,sideways,jamL); side(R,300,y,sideways,jamR); }
+	x.lineWidth=1.5;   // the rules under LEF, AIL and RUD
+	for(const y of [68,140,164]){ x.beginPath(); x.moveTo(166,y); x.lineTo(346,y); x.stroke(); }
+	// the channel boxes: 24 px cells, LEF 44, TEF 68-116, AIL 116, RUD 140, STAB 164-212
+	const grid=(left,cols)=>{ const cells=[[44,cols],[68,[1,2,3,4]],[92,[1,2,3,4]],[116,cols],[140,cols],[164,[1,2,3,4]],[188,[1,2,3,4]]];
+		for(const [y,cs] of cells) for(const c of cs) x.strokeRect(left+24*(c-1),y,24,24);
+		x.font="14px monospace"; x.textAlign="center"; for(let c=1;c<=4;c++) x.fillText(String(c),left+24*(c-1)+12,226); };
+	grid(40,[1,4]); grid(376,[2,3]);
+	x.font="14px monospace"; x.textAlign="right"; for(const y of [80,176]){ x.fillText("SV1",36,y); x.fillText("SV2",36,y+24); }
+	x.textAlign="left"; for(const y of [80,176]){ x.fillText("SV1",476,y); x.fillText("SV2",476,y+24); }
+	// the CAS and sensor channel status at the lower right: four channel columns, 18 px rows
+	const status=[["CAS","P"],["","R"],["","Y"],["N ACC",""],["L ACC",""],["STICK",""],["PEDAL",""],["AOA",""],["BADSA",""],["PROC",""],["DEGD",""]];
+	status.forEach(([name,axis],i)=>{ const y=240+18*i;
+		for(let c=0;c<4;c++) x.strokeRect(376+20*c,y,20,18);
+		x.font="14px monospace"; x.textAlign="right"; x.fillText(axis||name,370,y+9); if(axis&&name){ x.textAlign="left"; x.fillText(name,286,y+9); } });
+	{ const gross=gross_weight(), limit=7.5*Math.min(1,32357/Math.max(1,gross)), fuel=(gz.fuelRaw||0)+(gz.externalRaw||0);   // the FCS's own schedule: 7.5 g to 32,357 lb, falling as the reference over gross above it (fa18c.go Limit)
+		x.font="24px monospace"; x.textAlign="left"; x.fillText("G-LIM "+limit.toFixed(1)+"G",20,290);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		if(fuel<3300||gross>44000){ x.lineWidth=3; x.beginPath(); x.moveTo(98,276); x.lineTo(160,304); x.moveTo(160,276); x.lineTo(98,304); x.stroke(); x.lineWidth=2; } }   // the value crossed out (2.8.4.7)
+	{ const a=(ownship.aoa??0).toFixed(1);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		x.font="18px monospace"; x.textAlign="left"; x.fillText("L "+a,90,456); x.fillText("R "+a,360,456);
+		const text="AOA "+a, w=x.measureText(text).width; x.textAlign="center"; x.fillText(text,236,456); x.strokeRect(236-w/2-6,456-12,w+12,24); } }
 // ============================================================================ stores (#17): per-station loadout, visuals, firing order
 const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
 const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
@@ -2851,6 +3126,7 @@ async function init_external_model(kind){
 				}
 				proto.traverse(o=>{ if(o.isMesh&&o.material){ const list=Array.isArray(o.material)?o.material:[o.material]; list.forEach((mm,ix)=>{
 					if(/^EMISSIVE_LIGHTS$/.test(mm.name||"")) instrument_mats.push(mm);   // the main panel's own emissive placards follow the INST PNL knob too (#21)
+					if(mm.name==="Mirrors"){ const glass=mm.clone(); glass.metalness=1; glass.roughness=0.05; glass.color=new THREE.Color(0xd4d8dc); glass.envMap=mirror_env&&mirror_env.texture; mirror_mats.push(glass); if(Array.isArray(o.material)) o.material[ix]=glass; else o.material=glass; }   // the canopy bow's side mirrors: matte white plastic in the model, silvered glass here
 					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
@@ -3062,9 +3338,11 @@ function pool_spawn(p){ if(p.activeList.length>=(p.limit??p.max)) return -1; for
 		p.pos[k]=p.activeList.length; p.activeList.push(k); return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
 const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX),debris=pool(DB_MAX);
-function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); }
+const VP_MAX=8000, vapour_pool=pool(VP_MAX); vapour_pool.rise=0.01; vapour_pool.pale=0; vapour_pool.alpha=new Float32Array(VP_MAX);   // condensation: shows at once, keeps its white as it goes, and each puff is as dense as the vapour it was laid in
+function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); vapour_pool.limit=Math.floor(VP_MAX*scale); }
 effects_limits();   // and again from apply_effects: computed only at boot, a Settings change over a paused mission silently did nothing until reload
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
+const vp_pts=make_points(VP_MAX,1.6,false,soft,true);   // vapour puffs: sized so a puff's scale is about its width in metres
 const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
 // Strike flashes get their own additive pool: a flash is emissive, and
 // normal-blended in the tracer pool it read as the same dull amber as the
@@ -3080,8 +3358,8 @@ function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,c
 			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left, elapsed=age*p.ttl[i];
 			grow[n]=p.sz[i]+p.gr[i]*elapsed;
 			spin[n]=p.spin[i]+elapsed*(0.08+0.08*Math.sin(p.seed[i]));
-			fade[n]=Math.min(1,elapsed/0.12)*Math.pow(left,0.6);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
-			const t=age*0.75; col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
+			fade[n]=Math.min(1,elapsed/(p.rise??0.12))*Math.pow(left,0.6)*(p.alpha?p.alpha[i]:1);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
+			const t=age*(p.pale??0.75); col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
 		} else {
 			const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; }
 		n++; }
@@ -3253,6 +3531,373 @@ function contrail_effects(){   // lay each flying jet's segment when due, then a
 		if(rig.count===0){ rig.mesh.visible=false; if(!jets.has(rig.owner)||rig.owner.contrail!==rig){ scene.remove(rig.mesh); rig.geo.dispose(); gone.push(rig); } continue; }
 		rig.mesh.visible=true; contrail_vertices(rig,sim_time,camera.position,pixel); }
 	for(const rig of gone) contrails.delete(rig); }
+// ============================================================================
+// Vapour (vapour.ts decides when it shows): the water a jet's own flow
+// condenses in humid air. Ropes along the LEX vortices at high alpha, which
+// trail off behind the jet, streamers off the wingtips and the flap edges at
+// high lift, a film over the wings in a hard pull, and near Mach 1 the cloud
+// the jet flies inside - dense on the shock that ends it, thinning forward to
+// nothing - with a plume rising off the canopy and a sheet over each wing ending
+// on the wing's own shock. Every jet draws its own: the pilot's, the
+// bandit's, a match's remotes and a replay's jets.
+// Three things draw it. The transonic cloud and the canopy's plume are a
+// volume: a stack of slices facing the camera through the sphere they lie in,
+// each pixel of each slice reading the density at its own point, so the cloud
+// has no edge but its own and grows as smoothly as the Mach does; each slice
+// is depth-tested, so the jet shows through the cloud it flies in, from
+// outside or from the cockpit. The LEX ropes are tubes, and the sheet and
+// film over the wings soft sprites, fixed in the jet's frame. What trails is
+// puffs left in the air, so it bends with the jet's path.
+// Places are in the drawn Hornet's frame (x nose, y up, z starboard), from
+// its measured planform: the LEX edge runs from (6.3, 0, 0.75) to (1.5, -0.2,
+// 1.5), the wing's leading edge from (1.3, 2.0) to (-0.5, 5.8) over a
+// trailing edge near x -2.2, the tip near z 5.9, the canopy's top at x 5.5,
+// 0.93 m up, falling to 0.64 at x 3.
+const VAPOUR_VERTEX=`
+attribute float size;
+attribute float part;
+attribute float grain;
+uniform float uHalf, uTime;
+uniform float uStrength;  // the transonic sheet over the wings
+uniform vec2 uWing;       // the film's strength, and the fraction of chord the sheet's shock stands at
+uniform vec3 uSun;        // toward the sun, in the jet's frame
+varying float vAlpha;
+varying float vShade;
+varying float vSpin;
+#include <fog_pars_vertex>
+void main(){
+	vec3 p=position; float s=size; vec3 centre=p-vec3(0.0,0.5,0.0);
+	float lead=1.29-0.5*(abs(p.z)-2.0), c=clamp((lead-p.x)/(lead+2.2),0.0,1.0);
+	float sheet=uStrength*(1.0-smoothstep(uWing.y-0.04,uWing.y+0.04,c))*smoothstep(0.05,max(uWing.y-0.1,0.06),c);   // the supersonic pocket, ending on its shock
+	float film=uWing.x*(1.0-smoothstep(0.15,0.6,c));   // the suction peak, near the leading edge
+	float a=max(sheet,film);
+	a*=0.93+0.07*sin(grain*40.0+uTime*7.0);   // the flow through it never quite holds still
+	vAlpha=a; vSpin=grain*6.2832;
+	vShade=0.78+0.3*dot(normalize(p-centre+vec3(0.0,1e-4,0.0)),uSun);   // lit on the sun's side
+	vec4 mvPosition=modelViewMatrix*vec4(p,1.0);
+	gl_Position=projectionMatrix*mvPosition;
+	gl_PointSize=a>0.004?s*projectionMatrix[1][1]*uHalf/max(-mvPosition.z,0.05):0.0;   // s metres across at any distance, in any camera
+	#include <fog_vertex>
+}`;
+const VAPOUR_FRAGMENT=`
+uniform sampler2D uMap;
+uniform vec3 uColour;
+varying float vAlpha;
+varying float vShade;
+varying float vSpin;
+#include <fog_pars_fragment>
+void main(){
+	vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc;
+	float alpha=clamp(vAlpha*texture2D(uMap,pc+0.5).a*0.45,0.0,1.0);
+	if(alpha<0.002) discard;
+	gl_FragColor=vec4(uColour*vShade,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}`;
+const VAPOUR_SLICES=56;   // across the sphere the volume lies in: half a metre apart across the biggest cloud
+const VAPOUR_VOLUME_VERTEX=`
+attribute vec2 corner;
+attribute float slice;
+uniform vec3 uEye, uForward, uRight, uUp;   // the camera drawing this pass, in the jet's frame
+uniform vec3 uCentre;                       // the sphere the volume lies in, in the jet's frame
+uniform float uRadius, uNear;
+varying vec3 vBody;
+varying float vStep;
+#include <fog_pars_vertex>
+void main(){
+	vec3 toward=uCentre-uEye; float along=dot(toward,uForward);
+	float first=max(uNear,along-uRadius), last=along+uRadius;
+	float t=mix(last,first,slice);   // far to near: the slices are drawn back to front
+	float off=t-along, reach=1.02*sqrt(max(uRadius*uRadius-off*off,0.0))*step(first,last);
+	vec3 p=uEye+uForward*t+(toward-uForward*along)+(uRight*corner.x+uUp*corner.y)*reach;   // each slice a square over the sphere's section, square to the view
+	vBody=p; vStep=max(last-first,0.0)/${VAPOUR_SLICES-1}.0;
+	vec4 mvPosition=modelViewMatrix*vec4(p,1.0);
+	gl_Position=projectionMatrix*mvPosition;
+	#include <fog_vertex>
+}`;
+const VAPOUR_VOLUME_FRAGMENT=`
+uniform vec2 uStrength;   // the transonic cloud, the canopy's plume
+uniform vec3 uCone;       // the transonic cloud: its shock's x on the axis, its length from there to its apex, its base's radius
+uniform float uCanopy;    // the canopy's plume: the x it rises from
+uniform vec3 uSun, uColour;
+uniform float uTime;
+varying vec3 vBody;
+varying float vStep;
+#include <fog_pars_fragment>
+float hash(vec3 p){ return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453); }
+float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+	return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+		mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
+void main(){
+	vec3 p=vBody; float sigma=0.0, r=length(vec2(p.y-0.2,p.z));
+	float top=p.x>5.2?0.93-0.3*(p.x-5.2):0.93-0.13*(5.2-p.x);   // the canopy's crest, over the pilot's head and down to the windscreen and the spine
+	if(uStrength.x>0.0){   // the transonic cloud: a cone from its apex behind the canopy, flaring to its base on the shock
+		float rim=r/uCone.z, base=uCone.x+0.15*uCone.z*rim*rim;   // the shock bulges aft on the axis
+		float u=(p.x-uCone.x)/uCone.y, reach=uCone.z*clamp(1.0-u,0.0,1.0);   // how far out the cone reaches at this station
+		float surface=mix(0.55,1.0,smoothstep(0.0,1.0,r/max(reach,0.01)));   // densest toward its conical skin, so it reads as a cone from any side
+		sigma+=0.8*uStrength.x*smoothstep(base-0.25,base+0.15,p.x)*(1.0-smoothstep(0.3,1.0,u))*(1.0-smoothstep(0.82*reach,reach+0.05,r))*surface;   // dense on the shock, thinning toward the apex
+	}
+	if(uStrength.y>0.0){   // the canopy's vapour: a column rooted on the glass behind the pilot's head, densest on it and thinning as it rises to a rounded top
+		float h=p.y-top+0.9*min(p.z*p.z,0.34), rise=max(h,0.0);   // its height over the canopy, whose glass falls away to either side
+		vec2 q=vec2((p.x-uCanopy)/0.62,p.z/(0.8+0.15*rise));
+		sigma+=6.0*uStrength.y*smoothstep(-0.1,0.05,h)*exp(-1.2*rise-0.6*rise*rise-2.0*dot(q,q));
+	}
+	if(p.x>2.0&&p.x<7.4&&p.y>0.3){   // none inside the canopy: the pilot looks out through clear air
+		float inside=pow((p.y-0.3)/max(top+0.06-0.3,0.05),2.0)+pow(p.z/0.58,2.0);
+		sigma*=smoothstep(1.0,1.15,inside);
+	}
+	sigma*=0.85+0.3*noise(vec3(p.x*0.35+uTime*20.0,p.y*1.1,p.z*1.1));   // streaked aft with the flow through it
+	float alpha=1.0-exp(-sigma*vStep);
+	if(alpha<0.012) discard;   // a slice fainter than a few 8-bit steps: many of them blended round each colour channel apart, and tint the cloud's thin edge
+	float shade=0.74+0.32*dot(normalize(vec3(0.0,p.y-0.2,p.z)+vec3(0.0,1e-4,0.0)),uSun);   // lit on the sun's side, greyer beneath
+	gl_FragColor=vec4(uColour*shade,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}`;
+// vapour_points lays the points the sprites are drawn from: two layers over
+// each wing. Which show, and how densely, the shader decides; a fixed seed
+// keeps captures stable.
+function vapour_points(){ let seed=11; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+	const position=[], size=[], part=[], grain=[], add=(x,y,z,s,p)=>{ position.push(x,y,z); size.push(s); part.push(p); grain.push(rnd()); };
+	for(const side of [1,-1]) for(const lift of [0.12,0.38]) for(let i=0;i<=11;i++) for(let j=0;j<=9;j++){ const c=i/11, z=2.0+3.7*j/9, lead=1.29-0.5*(z-2.0);
+		add(lead+(-2.2-lead)*c+(rnd()-0.5)*0.15, -0.22-0.06*(z-2.0)+lift+(rnd()-0.5)*0.08, side*(z+(rnd()-0.5)*0.15), 0.8+0.3*rnd(), 0); }
+	const geo=new THREE.BufferGeometry();
+	geo.setAttribute("position",new THREE.Float32BufferAttribute(position,3)); geo.setAttribute("size",new THREE.Float32BufferAttribute(size,1));
+	geo.setAttribute("part",new THREE.Float32BufferAttribute(part,1)); geo.setAttribute("grain",new THREE.Float32BufferAttribute(grain,1)); return geo; }
+// vapour_slices is the volume's stack: VAPOUR_SLICES squares, the farthest
+// first, whose corners the vertex shader places each pass.
+function vapour_slices(){ const corner=[], slice=[], index=[];
+	for(let k=0;k<VAPOUR_SLICES;k++){ const base=k*4;
+		for(const [x,y] of [[-1,-1],[1,-1],[1,1],[-1,1]]){ corner.push(x,y); slice.push(k/(VAPOUR_SLICES-1)); }
+		index.push(base,base+1,base+2, base,base+2,base+3); }
+	const geo=new THREE.BufferGeometry();
+	geo.setAttribute("position",new THREE.Float32BufferAttribute(new Array(VAPOUR_SLICES*12).fill(0),3));   // placed by the shader, not from here
+	geo.setAttribute("corner",new THREE.Float32BufferAttribute(corner,2)); geo.setAttribute("slice",new THREE.Float32BufferAttribute(slice,1)); geo.setIndex(index); return geo; }
+// vapour_bounds is the sphere the volume lies in, in the jet's frame: round
+// the transonic cloud's cone and the canopy's plume, or round either alone,
+// tight, so their slices lie close.
+function vapour_bounds(collar,cap,cone){
+	const disc={ x:5.1, y:1.3, z:0, radius:1.65 };   // the canopy's plume, out to where it has faded to a hundredth, wherever on the canopy it rises
+	if(collar<=0) return disc;
+	const lens={ x:cone.x+0.5*cone.y, y:0.2, z:0, radius:Math.hypot(0.5*cone.y+0.25,cone.z) };   // from the cone's middle, past its apex, its base's rim and the soft face of its shock
+	if(cap<=0) return lens;
+	const gap=Math.hypot(disc.x-lens.x,disc.y-lens.y);
+	if(gap+disc.radius<=lens.radius) return lens;
+	const radius=(gap+disc.radius+lens.radius)/2, k=(radius-lens.radius)/gap;   // the smallest sphere round both
+	return { x:lens.x+(disc.x-lens.x)*k, y:lens.y+(disc.y-lens.y)*k, z:0, radius }; }
+// The starboard LEX vortex's core: one straight line from the strake's apex,
+// aft over the wing root and a little outboard, climbing away from the
+// airframe at half the alpha - the relative wind, turned down by the wing's
+// downwash - and on behind the jet along the same line, without a bend.
+const VAPOUR_APEX={ x:5.0, y:0.35, z:0.85 };   // where it starts, over the strake inboard of its edge
+const VAPOUR_LEX={ x:-2.4, spread:0.09, tail:20, fade:2.0 };   // where it leaves the airframe, at the wing root's trailing edge, how far outboard it runs per metre aft, how far behind the airframe it fades out, and how many metres past its burst its vapour is down to a third
+const VAPOUR_POINTS=vapour_points(), VAPOUR_STACK=vapour_slices();
+const VAPOUR_TIP={ x:-1.8, y:-0.45, z:5.95 }, VAPOUR_FLAP={ x:-2.1, y:-0.33, z:3.95 };   // where the tip and the flap-edge vortices leave the starboard wing
+let vapour_time=0;
+let vapour_air={ x:0, z:0 };   // the wind the mission's core flies in, world m/s: what a puff left behind drifts with
+let vapour_humid=null;   // dev: the humidity every jet meets, in place of the sky's
+let vapour_force=null;   // dev: the flight every jet's vapour is drawn for, in place of its own
+const _vapour_viewport=new THREE.Vector4(), _vapour_turn=new THREE.Quaternion(), _vapour_inverse=new THREE.Matrix4(), _vapour_at=new THREE.Vector3(), _vapour_eye=new THREE.Vector3();
+// vapour_texture is the attached cloud's sprite: a soft round falloff with a
+// faint grain drawn out across it, so a hundred overlapping read as one silky
+// cloud rather than a heap of puffs.
+function vapour_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"), image=x.createImageData(64,64);
+	let seed=5; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+	const streaks=Array.from({ length:64 },()=>0.8+0.2*rnd());
+	for(let j=0;j<64;j++) for(let i=0;i<64;i++){ const u=(i-31.5)/32, v=(j-31.5)/32, r=Math.hypot(u,v), k=(j*64+i)*4;
+		image.data[k]=image.data[k+1]=image.data[k+2]=255; image.data[k+3]=Math.round(255*Math.exp(-4.5*r*r)*(r<1?1-r*r*r*r:0)*streaks[j]); }
+	x.putImageData(image,0,0); return new THREE.CanvasTexture(c); }
+const vapour_sprite=vapour_texture();
+function vapour_material(){ const material=new THREE.ShaderMaterial({ vertexShader:VAPOUR_VERTEX, fragmentShader:VAPOUR_FRAGMENT, transparent:true, depthWrite:false, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uHalf:{ value:450 }, uTime:{ value:0 }, uStrength:{ value:0 }, uWing:{ value:new THREE.Vector2() }, uSun:{ value:new THREE.Vector3(0,1,0) }, uColour:{ value:new THREE.Color(1,1,1) }, uMap:{ value:null } }]) });
+	material.uniforms.uMap.value=vapour_sprite; return material; }   // shared: a merge would copy it for every jet
+function vapour_volume(){ return new THREE.ShaderMaterial({ vertexShader:VAPOUR_VOLUME_VERTEX, fragmentShader:VAPOUR_VOLUME_FRAGMENT, transparent:true, depthWrite:false, side:THREE.DoubleSide, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uEye:{ value:new THREE.Vector3() }, uForward:{ value:new THREE.Vector3() }, uRight:{ value:new THREE.Vector3() }, uUp:{ value:new THREE.Vector3() }, uCentre:{ value:new THREE.Vector3() }, uRadius:{ value:1 }, uNear:{ value:0.1 },
+		uStrength:{ value:new THREE.Vector2() }, uCone:{ value:new THREE.Vector3() }, uCanopy:{ value:0 }, uSun:{ value:new THREE.Vector3(0,1,0) }, uColour:{ value:new THREE.Color(1,1,1) }, uTime:{ value:0 } }]) }); }
+// vapour_rig hangs a jet's vapour on its airframe, once per group: the
+// sprites and the volume, neither ever hit by a ray - the cockpit's clicks,
+// the eye's calibration and the picks all see through them.
+function vapour_rig(st){ const g=st.group; if(!g) return null; if(st.vapour&&st.vapour.group===g) return st.vapour;
+	const material=vapour_material(), cloud=new THREE.Points(VAPOUR_POINTS,material);
+	cloud.frustumCulled=false; cloud.visible=false; cloud.renderOrder=2;
+	cloud.raycast=()=>{};
+	cloud.onBeforeRender=(renderer)=>{ renderer.getCurrentViewport(_vapour_viewport); material.uniforms.uHalf.value=_vapour_viewport.w/2; };   // the pass it is drawn in: the world's, or the cockpit's
+	const haze=vapour_volume(), volume=new THREE.Mesh(VAPOUR_STACK,haze);
+	volume.frustumCulled=false; volume.visible=false; volume.renderOrder=2;
+	volume.raycast=()=>{};
+	volume.onBeforeRender=(renderer,scene,camera)=>{ const u=haze.uniforms; _vapour_inverse.copy(g.matrixWorld).invert();   // the camera of the pass it is drawn in, in the jet's frame
+		u.uEye.value.copy(camera.getWorldPosition(_vapour_at)).applyMatrix4(_vapour_inverse);
+		u.uForward.value.copy(camera.getWorldDirection(_vapour_at)).transformDirection(_vapour_inverse);
+		u.uRight.value.setFromMatrixColumn(camera.matrixWorld,0).transformDirection(_vapour_inverse);
+		u.uUp.value.setFromMatrixColumn(camera.matrixWorld,1).transformDirection(_vapour_inverse);
+		u.uNear.value=camera.near*1.5+0.02; };
+	const cores=[rope_mesh(ROPE_ROWS),rope_mesh(ROPE_ROWS)], rows=[0,1].map(()=>Array.from({ length:ROPE_ROWS },()=>({ x:0, y:0, z:0, width:0, alpha:0 })));   // each LEX rope, in the jet's frame
+	g.add(cloud,volume,...cores); if(g.userData.player) layer_own_group(g);   // the cockpit pass draws the pilot's own
+	st.vapour={ group:g, cloud, material, volume, haze, cores, rows, drawn:[], flight:null, shown:null, gone:{ vx:0, vy:0, vz:0, g:1, primed:false } }; return st.vapour; }
+// vapour_flight is what a jet is doing, as its vapour depends on it: the
+// pilot's and the bandit's from their cores, a remote's from its pose, a
+// replay's from its recording; what none of those carry is read from the
+// jet's motion - its alpha from its velocity in its own frame, its load
+// factor from how its velocity turns.
+function vapour_flight(st,dt){ const vx=st.velx||0, vy=st.vely||0, vz=st.velz||0, speed=Math.hypot(vx,vy,vz), sound=airspeed(1,presented(st).y), up=st.up||world_up, s=st.vapour.gone;
+	if(!s.primed||dt>0.5){ s.vx=vx; s.vy=vy; s.vz=vz; s.g=1; s.primed=true; }
+	else if(dt>0){ const nz=((vx-s.vx)/dt*up.x+((vy-s.vy)/dt+9.81)*up.y+(vz-s.vz)/dt*up.z)/9.81;
+		s.g+=(nz-s.g)*Math.min(1,dt/0.3); s.vx=vx; s.vy=vy; s.vz=vz; }
+	const forward=vx*st.fwd.x+vy*st.fwd.y+vz*st.fwd.z, normal=vx*up.x+vy*up.y+vz*up.z;
+	let alpha=speed>1?Math.atan2(-normal,forward)/D2R:0, g=s.g, mach=speed/sound;
+	if(st===ownship){ alpha=ownship.aoa??alpha; g=ownship.gload??g; if(last_out) mach=last_out[STATE.mach]||mach; }
+	else if(st===bandit&&bandit_words){ alpha=(bandit_words[STATE.alpha]||0)/D2R; g=bandit_words[STATE.nz]||g; mach=bandit_words[STATE.mach]||mach; }
+	else { if(Number.isFinite(st.aoa)) alpha=st.aoa; if(Number.isFinite(st.gload)&&st.gload!==0) g=st.gload; if(Number.isFinite(st.mach)&&st.mach>0) mach=st.mach; }
+	return vapour_force?{ ...vapour_force }:{ alpha, g, speed:mach*sound, mach }; }
+// vapour_streamers leaves puffs along the path the tips and the flap edges
+// flew this frame, one every 30 cm, so a streamer is one line at any frame
+// rate; a marginal one is as faint as the vapour, and swells and thins along
+// its length rather than breaking. Each puff is left in the air the jet flies
+// through, drifting with the wind.
+function vapour_streamers(st,shown,dt){ const speed=Math.hypot(st.velx||0,st.vely||0,st.velz||0); if(speed<30||dt<=0) return;
+	const colour=vapour_light(), count=Math.min(40,Math.ceil(speed*dt/0.3)), air=vapour_air;
+	for(const [k,at,width,life,growth] of [[shown.tips,VAPOUR_TIP,0.6,0.5,1.2],[shown.flaps,VAPOUR_FLAP,0.45,0.5,1.2]]){ if(k<=0.01) continue;
+		for(const side of [1,-1]){ const p=body_offset(st,at.x,at.y,at.z*side);
+			for(let i=0;i<count;i++){
+				const n=pool_spawn(vapour_pool); if(n<0) return; const back=dt*(i+Math.random())/count, light=0.9+0.1*Math.random();
+				const vx=air.x+(Math.random()-0.5)*0.6, vy=(Math.random()-0.5)*0.6, vz=air.z+(Math.random()-0.5)*0.6;
+				vapour_pool.px[n]=p.x+(vx-(st.velx||0))*back; vapour_pool.py[n]=p.y+(vy-(st.vely||0))*back; vapour_pool.pz[n]=p.z+(vz-(st.velz||0))*back;   // laid where the source was, and moved on since as it moves
+				vapour_pool.vx[n]=vx; vapour_pool.vy[n]=vy; vapour_pool.vz[n]=vz;
+				vapour_pool.ttl[n]=vapour_pool.life[n]=(0.2+life*k)*(0.8+0.4*Math.random());   // the core warms and the water goes: longer in wetter air, under more lift
+				vapour_pool.sz[n]=width*(0.6+0.4*k); vapour_pool.gr[n]=growth;
+				vapour_pool.alpha[n]=Math.min(1,1.4*k)*(0.7+0.3*Math.sin((vapour_time-back)*9+side*1.7+width*5));
+				vapour_pool.r[n]=colour.r*light; vapour_pool.g[n]=colour.g*light; vapour_pool.b[n]=colour.b*light; } } } }
+// The LEX ropes: each vortex one soft round tube in one straight line from
+// the strake, laid each frame in the jet's frame: thin at its apex, widening
+// aft to its full width where it leaves the airframe and no wider behind,
+// fizzling out within a few metres past its burst, and fading out to
+// nothing behind the airframe. It hangs on the jet, so it never bends, and
+// the cockpit pass draws the pilot's own.
+// A tube, not a flat ribbon turned to the eye: a ribbon has no way to face an
+// eye looking along the rope - and the ropes trail straight back at a chase
+// camera - so its width swings from row to row there and it folds into
+// crosses. Each pixel of the tube is as dense as it faces the eye squarely:
+// thick through the rope's middle, clear at its outline, from any side.
+const ROPE_ROWS=56, ROPE_SIDES=8;   // the rows along each rope, half a metre apart, and the points round each ring
+const rope_mat=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide, fog:true,
+	uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{ uColour:{ value:new THREE.Color(1,1,1) } }]),
+	vertexShader:`
+attribute float fade;
+varying float vFade;
+varying vec3 vNormal;
+varying vec3 vView;
+#include <fog_pars_vertex>
+void main(){
+	vFade=fade;
+	vec4 mvPosition=modelViewMatrix*vec4(position,1.0);
+	vNormal=normalize(normalMatrix*normal); vView=normalize(-mvPosition.xyz);
+	gl_Position=projectionMatrix*mvPosition;
+	#include <fog_vertex>
+}`,
+	fragmentShader:`
+uniform vec3 uColour;
+varying float vFade;
+varying vec3 vNormal;
+varying vec3 vView;
+#include <fog_pars_fragment>
+void main(){
+	float facing=abs(dot(normalize(vNormal),normalize(vView)));
+	float alpha=vFade*0.55*facing*facing;   // dense through its middle, clear at its outline: a round rope from any side
+	if(alpha<0.004) discard;
+	gl_FragColor=vec4(uColour,alpha);
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+	#include <fog_fragment>
+}` });
+// rope_mesh is a tube of rows, a ring of ROPE_SIDES points round each.
+function rope_mesh(rows){ const geo=new THREE.BufferGeometry(), index=[], n=ROPE_SIDES;
+	for(let i=0;i<rows-1;i++) for(let j=0;j<n;j++){ const a=i*n+j, b=i*n+(j+1)%n; index.push(a,a+n,b, b,a+n,b+n); }
+	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(rows*n*3),3)); geo.setAttribute("normal",new THREE.BufferAttribute(new Float32Array(rows*n*3),3));
+	geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(rows*n),1)); geo.setIndex(index); geo.setDrawRange(0,0);
+	const mesh=new THREE.Mesh(geo,rope_mat); mesh.frustumCulled=false; mesh.visible=false; mesh.renderOrder=2; mesh.raycast=()=>{}; return mesh; }
+// rope_fill writes rows - { x, y, z, width, alpha } - into a tube: a ring
+// round each row, square to the rope and as wide as the row, carried from
+// row to row without twisting. eye is the camera in the rows' frame and pixel
+// a pixel's width at unit distance, so a rope far off keeps a pixel and a half
+// and dims rather than breaking into dots. Where the rope's own direction is
+// lost - two rows on one point - a row takes its neighbour's.
+function rope_fill(mesh,rows,count,eye,pixel){ const pos=mesh.geometry.attributes.position.array, nor=mesh.geometry.attributes.normal.array, fad=mesh.geometry.attributes.fade.array, n=ROPE_SIDES;
+	let tx=1, ty=0, tz=0, ux=0, uy=1, uz=0;   // along the rope, and the ring's reference, carried along
+	for(let i=0;i<count;i++){ const r=rows[i], a=rows[Math.max(0,i-1)], b=rows[Math.min(count-1,i+1)];
+		const dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dl=Math.hypot(dx,dy,dz); if(dl>1e-4){ tx=dx/dl; ty=dy/dl; tz=dz/dl; }
+		let d=ux*tx+uy*ty+uz*tz, px=ux-d*tx, py=uy-d*ty, pz=uz-d*tz, pl=Math.hypot(px,py,pz);   // the reference, brought square to the rope here
+		if(pl<1e-3){ const k=Math.abs(tx)<0.9?[1,0,0]:[0,1,0]; d=k[0]*tx+k[1]*ty+k[2]*tz; px=k[0]-d*tx; py=k[1]-d*ty; pz=k[2]-d*tz; pl=Math.hypot(px,py,pz); }
+		ux=px/pl; uy=py/pl; uz=pz/pl;
+		const vx=ty*uz-tz*uy, vy=tz*ux-tx*uz, vz=tx*uy-ty*ux;   // the ring's other axis
+		const least=Math.hypot(eye.x-r.x,eye.y-r.y,eye.z-r.z)*pixel*1.5; let width=r.width, alpha=r.alpha; if(width<least){ alpha*=width/least; width=least; }
+		for(let j=0;j<n;j++){ const q=j/n*Math.PI*2, c=Math.cos(q), s=Math.sin(q), ox=ux*c+vx*s, oy=uy*c+vy*s, oz=uz*c+vz*s, o=(i*n+j)*3;
+			pos[o]=r.x+ox*width/2; pos[o+1]=r.y+oy*width/2; pos[o+2]=r.z+oz*width/2; nor[o]=ox; nor[o+1]=oy; nor[o+2]=oz; fad[i*n+j]=alpha; } }
+	for(const key of ["position","normal","fade"]) mesh.geometry.attributes[key].needsUpdate=true;
+	mesh.geometry.setDrawRange(0,Math.max(0,count-1)*n*6); mesh.visible=count>1; }
+// vapour_burst is where a LEX core bursts at this alpha, x in the jet's
+// frame: over the LEX-wing junction at 35°, at the wing root's trailing edge
+// at 25°, and ever further behind the jet below that, so a rope trails tight
+// for a stretch before it bursts.
+function vapour_burst(alpha){ const a=Math.min(alpha,35); return a>=25?VAPOUR_LEX.x*(35-a)/10:VAPOUR_LEX.x-0.5*(25-a)*(25-a); }
+// vapour_thin is how much of a core's vapour is left this many metres past
+// its burst: its water goes within a few metres as the pressure in it
+// recovers, easing in from the burst so its density bends nowhere.
+function vapour_thin(past){ const t=past/VAPOUR_LEX.fade; return Math.exp(-t*t); }
+// vapour_point lays one row of a LEX rope, back metres aft of its apex, in
+// the jet's frame: side 1 starboard, -1 port; k how strongly it shows, climb
+// its rise per metre aft, burst the x it bursts at.
+function vapour_point(r,back,side,k,climb,burst){ const length=VAPOUR_APEX.x-VAPOUR_LEX.x, x=VAPOUR_APEX.x-back, past=Math.max(0,burst-x), t=Math.min(1,back/length);
+	r.x=x; r.y=VAPOUR_APEX.y+climb*back; r.z=side*(VAPOUR_APEX.z+VAPOUR_LEX.spread*back);
+	r.width=0.2+0.5*(1-(1-t)*(1-t));   // thin at the apex, widening aft and easing to its full width where it leaves the airframe, no wider behind
+	r.alpha=Math.min(1,1.2*k)*THREE.MathUtils.smoothstep(back,0,0.9)*vapour_thin(past)*(1-THREE.MathUtils.smoothstep(back,length,length+VAPOUR_LEX.tail));   // growing in from the apex, fizzling out past the burst, fading out behind the airframe
+	return r; }
+// vapour_core lays one LEX rope's rows, from its apex to where it has faded
+// out behind the airframe.
+function vapour_core(rows,side,k,climb,burst){ const length=VAPOUR_APEX.x-VAPOUR_LEX.x+VAPOUR_LEX.tail;
+	for(let i=0;i<ROPE_ROWS;i++) vapour_point(rows[i],length*i/(ROPE_ROWS-1),side,k,climb,burst);
+	return ROPE_ROWS; }
+// vapour_ropes draws one jet's LEX ropes for this frame.
+function vapour_ropes(st,rig,shown,alpha,burst){ const k=shown?shown.lex:0, speed=Math.hypot(st.velx||0,st.vely||0,st.velz||0);
+	const climb=Math.tan(THREE.MathUtils.clamp(alpha||0,0,40)*D2R/2);   // the core's climb per metre aft: half the alpha, the wing's downwash turning the relative wind down
+	const g=st.group, eye=_vapour_eye.copy(camera.position).sub(g.position).applyQuaternion(_vapour_turn.copy(g.quaternion).invert()), pixel=2*Math.tan(camera.fov*Math.PI/360)/renderer.domElement.height;
+	for(const [i,side] of [[0,1],[1,-1]]){ const core=rig.cores[i];
+		if(k<=0.01||speed<30){ core.visible=false; continue; }
+		rope_fill(core,rig.rows[i],vapour_core(rig.rows[i],side,k,climb,burst),eye,pixel); } }
+// vapour_light is the colour vapour is lit to: as bright as the contrails, by
+// the time of day, but near white - a small cloud in sunlight is white, and
+// the contrails' warm light laid thinly over a blue sky reads as green.
+const _vapour_light=new THREE.Color();
+function vapour_light(){ const c=contrail_mat.color, grey=0.2126*c.r+0.7152*c.g+0.0722*c.b; return _vapour_light.setRGB(grey,grey,grey).lerp(c,0.25); }
+// vapour_effects draws every jet's vapour for this frame.
+function vapour_effects(dt){ vapour_time+=dt;
+	const jets=new Set([ownship,bandit,...remotes.values()]);
+	for(const st of jets){ if(!st) continue;
+		const rig=vapour_rig(st); if(!rig) continue;
+		const flying=st===ownship?!(crash_t>0):!!st.group.visible, y=presented(st).y;
+		const f=flying?vapour_flight(st,dt):null, shown=f?vapour_show(f,vapour_humid??humidity(cfg.clouds,y),y):null;
+		rig.flight=f; rig.shown=shown;
+		const burst=f?vapour_burst(f.alpha):0;   // the cores burst further forward the higher the alpha
+		vapour_ropes(st,rig,shown,f?f.alpha:0,burst);
+		if(!shown){ rig.cloud.visible=false; rig.volume.visible=false; rig.drawn=[]; continue; }
+		const u=rig.material.uniforms, v=rig.haze.uniforms, edge=shown.edge;
+		const collar=0.9*shown.collar, cap=0.8*Math.max(shown.collar,0.8*shown.wing);
+		const sun=_vapour_at.copy(sun_dir).applyQuaternion(_vapour_turn.copy(st.group.quaternion).invert()), light=vapour_light();
+		u.uStrength.value=0.7*shown.wing;
+		u.uWing.value.set(0.6*shown.film,0.62+0.38*edge);
+		u.uSun.value.copy(sun); u.uColour.value.copy(light); u.uTime.value=vapour_time;
+		v.uStrength.value.set(collar,cap);
+		v.uCone.value.set(0.5-9.0*edge,2.0+10.0*edge,1.8+7.2*edge);   // the shock walks aft from mid-wing to the nozzles, the apex staying behind the canopy: a small cone over the wing root first, lengthening and flaring as Mach 1 nears
+		v.uCanopy.value=5.45-0.8*edge;   // from just behind the pilot's head, further aft down the canopy's rear slope as the Mach rises
+		const bounds=vapour_bounds(collar,cap,v.uCone.value); v.uCentre.value.set(bounds.x,bounds.y,bounds.z); v.uRadius.value=bounds.radius;
+		v.uSun.value.copy(sun); v.uColour.value.copy(light); v.uTime.value=vapour_time;
+		rig.drawn=[["lex",shown.lex],["collar",shown.collar],["canopy",cap],["wing",Math.max(shown.wing,shown.film)]].filter(([,value])=>value>0.005).map(([name])=>name);
+		rig.cloud.visible=Math.max(shown.wing,shown.film)>0.005; rig.volume.visible=collar>0.005||cap>0.005;
+		vapour_streamers(st,shown,dt); }
+	const settle=Math.exp(-dt/0.6), air=vapour_air;   // what a puff was given beyond the wind - the downwash, the cores' spread - fades as the jet draws away
+	for(const i of vapour_pool.activeList){ vapour_pool.vx[i]=air.x+(vapour_pool.vx[i]-air.x)*settle; vapour_pool.vy[i]*=settle; vapour_pool.vz[i]=air.z+(vapour_pool.vz[i]-air.z)*settle; }
+	update_pool_ballistic(vapour_pool,dt,0,0); }
 function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
@@ -4212,8 +4857,7 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	const low=s.dev<-0.7;
 	const pos=o.ballPts.geometry.attributes.position; pos.setY(0, o.datumY+THREE.MathUtils.clamp(s.dev/0.8,-1,1)*o.travel); pos.needsUpdate=true;
 	const col=o.ballPts.geometry.attributes.color; col.setXYZ(0, 1, low?0.1:0.62, 0); col.needsUpdate=true;
-	if(low && !o.low) o.wavet=performance.now(); o.low=low;   // phase-anchor the red flash to its onset too
-	o.wavePts.visible = low && !!ownship.groove && ((performance.now()-(o.wavet||0))%400)<200;   // paddles only waves an aircraft established in the groove — the lens ball above stays purely geometric (the lights are physical)
+	o.wavePts.visible = !!ownship.waving && ((performance.now()-(ownship.wavet||0))%400)<200;   // the waveoff lights are the LSO's: lit for every waveoff he calls - low, lined up badly, high in close or hook up - and flashing in phase with his call
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
 let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame). (Restored with _wireApex: the #166 sweep removed both while claw_world still used them — carrier traps would throw.)
@@ -4371,7 +5015,7 @@ function approach_deviation(){   // shared by the HUD ICLS needles and the ADI p
 // clockwise from the needle's rest. The standby ASI expands 60-200 kt (the
 // approach band) and compresses beyond; the VSI is the usual log-ish card.
 const ASI_DIAL=[[0,0],[60,14],[100,54],[150,108],[200,202],[300,242],[400,263],[500,287],[600,302],[700,321],[800,340],[850,350]];
-const VSI_DIAL=[[0,0],[500,28],[1000,44],[2000,73],[4000,119],[6000,180]];
+const VSI_DIAL=[[0,0],[500,35.5],[1000,60],[1500,77],[2000,94],[3000,118],[4000,140.5],[5000,156],[6000,171]];   // FO-5 item 29, measured from the dial's centre with the climb and dive sides averaged: 2,000 ft/min at twelve o'clock, 6,000 short of three
 function dial(table,v){ const a=Math.abs(v);
 	for(let i=1;i<table.length;i++){ if(a<=table[i][0]){ const [v0,d0]=table[i-1], [v1,d1]=table[i];
 		return Math.sign(v)*(d0+(d1-d0)*(a-v0)/(v1-v0))*D2R; } }
@@ -4379,7 +5023,7 @@ function dial(table,v){ const a=Math.abs(v);
 const yaw_state={t:0,heading:0,rate:0};   // heading rate, rad/s, smoothed over half a second: the EADI's turn indicator (2.13.4.3, #24)
 let flow_state={t:0,fuel:0,pph:0};   // smoothed total burn from the fuel word itself — honest, includes AB and leaks
 function update_gauges(out){   // instrument channels for the cockpit rig (#99)
-	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281);
+	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281+baro_error());
 	const fpm=THREE.MathUtils.clamp((out[STATE.velocity+1]||0)*196.85,-6000,6000);
 	const lbs=Math.max(0,(out[STATE.fuel]||0)*2.2046);
 	const extlbs=Math.max(0,(out[STATE.external]||0)*2.2046);   // external-tank fuel (#17): burns first, shown on the FUEL page and inside the totals
@@ -4401,22 +5045,21 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		yaw_state.rate+=(d/(t-yaw_state.t)-yaw_state.rate)*Math.min(1,(t-yaw_state.t)/0.5); yaw_state.t=t; yaw_state.heading=heading; }
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
-		bank:Math.atan2(ownship.right.y,ownship.up.y),
+		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
 		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds(),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
-		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool
+		throttleL:throttle_travel(), throttleR:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
 		asi:dial(ASI_DIAL,cas), altitude,
 		vsi:dial(VSI_DIAL,fpm),
 		fuelLbs:Math.min(lbs,21000),
 		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
 		egtL:300+(150+360*gL)*hL+90*bL, egtR:300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
-		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
-		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
+		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand, main engine only - the IFEI and engine page leave the afterburner out (NATOPS 2.1.1.7.5); a dead engine's counter winds to zero, matching the core's burn (#41)
+		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
-		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
 		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
 		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
@@ -4425,7 +5068,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
-	else if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
+	else if(ind){ const alpha=(out[STATE.alpha]||0)/D2R;
 		// The indexer lights with the gear down and weight off wheels, and flashes
 		// when the hook is up with the hook bypass switch in CARRIER (NATOPS
 		// 2.12.10); FIELD holds it steady, and the solenoid lets FIELD go the
@@ -4433,15 +5076,19 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		if((ownship.hook??0)>=0.5) hook_bypass="carrier";
 		const blink=((ownship.hook??0)<0.5&&hook_bypass==="carrier")?(Math.floor(sim_time*3)%2):1;
 		const lit=(out[STATE.extension]||0)>0.9 && !ownship.grounded && blink>0;
-		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
-		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
-		ind.donut.opacity= lit?THREE.MathUtils.clamp(1-(Math.abs(devd)-0.5)/0.5,0,1):0; } }
+		// The bands of NATOPS figure 2-19 (161520 and up), each symbol fully lit or
+		// dark: SLOW 9.3° up, SLIGHTLY SLOW 8.8-9.3° (chevron and donut), ON SPEED
+		// 7.4-8.8°, SLIGHTLY FAST 6.9-7.4° (donut and chevron), FAST below 6.9°.
+		ind.slow.opacity = lit&&alpha>=8.8?1:0;
+		ind.fast.opacity = lit&&alpha<7.4?1:0;
+		ind.donut.opacity= lit&&alpha>=6.9&&alpha<9.3?1:0; } }
 generate_world();
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
+const PIT_REST=-8*D2R;   // the cockpit view's resting head pitch: from the design eye the waterline runs through the upper HUD, and a level gaze leaves the displays half under the frame; a pilot's rest is a few degrees down, with the HUD high and the DDIs whole. head_el is the look relative to it
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
 /* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
 block, the import at the top, the head_apply/head_begin/head_close call sites,
@@ -4992,6 +5639,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("gear")) pit_press("gear",0);   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_press();
 		if(ch===key_of("tone.silence")) tone_silence();   // the warning tone silence button next to the gear handle (#20)   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
+		if(ch===key_of("index.up")) pit_press("index",1);   // the radar altimeter's low-altitude index knob, for the views without the panel
+		if(ch===key_of("index.down")) pit_press("index",-1);
 		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -5014,7 +5663,7 @@ addEventListener("pagehide",()=>{ exit_match(); },{ signal });   // closing/navi
 let dragging=false, drag_x=0, drag_y=0, press_moved=0, press_at=0, right_press=null;
 stage.addEventListener("contextmenu",e=>e.preventDefault(),{ signal });   // the right button works the pit's switches the other way (#19)
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
-	if(e.button===2){ right_press=(cfg.view==="cockpit"&&running&&!map_on)?{ x:e.clientX, y:e.clientY }:null; e.preventDefault(); return; }   // a right press is a switch press only: no head drag, no DDI bezel
+	if(e.button===2||e.button===1){ right_press=(cfg.view==="cockpit"&&running&&!map_on)?{ x:e.clientX, y:e.clientY }:null; e.preventDefault(); return; }   // a right or middle press is a switch press only: no head drag, no DDI bezel
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
 	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; press_at=performance.now(); ifei_hold_begin(e); try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
@@ -5023,7 +5672,7 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
-stage.addEventListener("pointerup",e=>{ if(e.button===2){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
+stage.addEventListener("pointerup",e=>{ if(e.button===2||e.button===1){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
 	const pressed=dragging&&head_drag&&press_moved<6, scrolled=ifei_hold_end(); end_drag(e); if(pressed&&!scrolled) pit_click(e); },{ signal });   // an arrow that scrolled while held has already stepped: no extra step on release
 stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on||!ddi_view_rect) return;   // the TDC follows the mouse over the full-screen attack format (#30) — position only; the click designates
 	const st=ddi_state[ddi_focus()]; if(!st||st.menu||st.page!=="rdr") return;
@@ -5042,9 +5691,15 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	if(e.button===1){ const u=ownship.group.userData.radalt;   // the middle button pushes the height indicator's knob, the pit's one push-to-test (2.12.5.4.1); it presses nothing else
+		if(u&&!playback&&_click_ray.intersectObject(u.mesh,false)[0]) pit_press("radalt.test",0); return; }
+	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
+		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
+	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
+		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
-		if(on){ if(on.uv){ const button=ifei_button_at(on.uv); if(button) ifei_click(button,(performance.now()-press_at)/1000); } return; } }
+		const button=on&&ifei_button_at(on.point); if(button){ ifei_click(button,(performance.now()-press_at)/1000); return; } }   // a click elsewhere on the unit falls through to the panel behind it
 	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
 		const p=h&&ownship.group.worldToLocal(h.point.clone()), button=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null;
 		if(button){ ufc_press(button); return; } }
@@ -5093,16 +5748,20 @@ function pit_press(action,direction){ const d=direction||0;
 	case "brake.parking": parking=!parking; break;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
-	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; break;   // NORM at the top, REJ 2 at the bottom
+	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
 	case "lights": ownship.lights=!ownship.lights; break;
 	case "dump": fuel_dump=!fuel_dump; break;
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
-	case "gear": if(!on_ground()) ownship.gearTarget=d>0?1:d<0?0:(ownship.gearTarget??0)>0.5?0:1; break;   // never on deck or runway; the SOUND follows the real transit in the audio block
+	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
+	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
+	case "radalt.test": if(radalt_on) radalt_test=sim_time; break;   // pushing the knob runs the BIT (2.12.5.4.1, 2.12.5.4.5)
+	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
+			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
 	case "flaps": if(d<0&&flap_select<2){ flap_select++; flap_armed=sim_time+4; } else if(d>0&&flap_select>0){ flap_select--; flap_armed=sim_time+4; } break;   // AUTO at the top, FULL at the bottom; no notice: the legend shows the selection and its travel
-	case "atc": if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here once, so ATC only ever engaged CLEAN and refused on every real approach
-			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } break;   // the key and the UFC's A/P selector: engages only in the landing configuration (gear down, airborne); toggling off is always allowed
+	case "atc": if(atc_on){ atc_on=false; atc_flash=-Infinity; } else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_flash=-Infinity; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here once, so ATC only ever engaged CLEAN and refused on every real approach
+			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } else atc_flash=sim_time; break;   // the key and the UFC's A/P selector: engages only in the landing configuration (gear down, airborne), and a refused engage flashes the advisory; toggling off is always allowed, and silent
 	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
@@ -5161,6 +5820,10 @@ let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
 const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between fire and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
 const pad_levers={};   // per-purpose lever state: armed on the first deliberate sweep
+// throttle_travel is where the throttle levers stand, 0 at IDLE to 1 at MAX: the dry
+// range to the MIL detent over the first three quarters of their travel and the
+// afterburner zones over the last (NATOPS 2.1.1.7.2), the split a physical lever maps.
+function throttle_travel(){ return (ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75; }
 function throttle_from_lever(){   // mission start: seed the throttle from the physical lever when one is bound, and arm it so it tracks from the first frame
 	const pad=read_gamepad(); if(!pad) return;
 	const text=String(pad_bindings(pad).axes.throttle??""); if(text==="") return;
@@ -5254,7 +5917,7 @@ function read_input(dt){
 		pp=ax("pitch");   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
-		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-((ownship.burner??0)>0?0.75+0.25*ownship.burner:Math.min(1,ownship.throttle??0)*0.75));   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
+		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-throttle_travel());   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0);   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
@@ -5324,7 +5987,7 @@ function read_input(dt){
 	// on-speed alpha. Auto-disengage on touchdown, gear retraction, or any manual
 	// throttle input (keys or an armed physical lever).
 	if(atc_on){
-		if(on_ground()||ownship.gearTarget>0.5||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)) atc_on=false;   // gearTarget>0.5 = gear UP (retraction disengages)
+		if(on_ground()||ownship.gearTarget>0.5||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)){ atc_on=false; atc_flash=sim_time; }   // gearTarget>0.5 = gear UP (retraction disengages); the advisory flashes, as for every drop-out but the switch
 		else { const rate=(ownship.aoa-atc_alpha)/Math.max(dt,1e-3); atc_alpha=ownship.aoa;
 			ownship.throttle=atc_step(ownship.throttle,ownship.aoa,rate,dt); ownship.burner=0; }
 	}
@@ -5492,6 +6155,7 @@ function recording_file(){
 	const {kind,match}=stamp({ multiplayer:MULTIPLAYER,
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
 		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
+		opening:(cfg.duel==="bvr"&&joust_start)?[joust_start.altitude[0],joust_start.altitude[1],joust_start.speed,joust_start.flank/D2R,joust_start.apart].map(v=>Math.round(v)).join("|"):"",   // the BVR start drawn (#46): the player's block|the bandit's (m)|speed (m/s)|flank (deg)|separation (m) — i18n-format-ok: recording header data, not display text
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
 		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(), passes:passes_text(),
 		wind:(()=>{ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed<0.1) return "calm";   // the vector points where the air goes: it comes from the reciprocal
@@ -5516,6 +6180,7 @@ function recording_identity(){ return replay_identity(MULTIPLAYER,MULTIPLAYER&&j
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
+let atc_flash=-Infinity;   // when ATC last dropped out other than by its switch, or refused to engage: the HUD advisory flashes for 10 s after (NATOPS 2.1.2, 2.13.4.8.15)
 const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
 let own_written=false;   // this death is in the recording: the ownship's last sample, carrying its Fate and killer, has been kept
@@ -5569,9 +6234,11 @@ function cautions_update(){
 	if(own_burn[0]>0) push("L ENG FIRE",true); else if(core&&core[STATE.engine_harm]>0.55) push("L ENG");
 	if(own_burn[1]>0) push("R ENG FIRE",true); else if(core&&core[STATE.engine_harm+1]>0.55) push("R ENG");
 	if((core&&core[STATE.leak]>0.1)||own_leak>0.1) push("FUEL LEAK");
-	if(!cheat("fuel")){ const total=(ownship.fuel??0)+(ownship.external??0);
-		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
-		else if(total>0&&total<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+	let low=false, below=false;   // the fuel itself under FUEL LO and under BINGO: what the BINGO voice and its repeat follow, as a FLBIT's FUEL LO does not
+	if(!cheat("fuel")){ const internal=ownship.fuel??0;   // BINGO appears when the INTERNAL fuel reaches the setting (NATOPS 2.2.10.4)
+		low=ownship.fuel!==undefined&&ownship.fuel<FUELLO; below=internal>0&&internal<BINGO;
+		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
+		else if(below) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
 	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
@@ -5597,21 +6264,38 @@ function cautions_update(){
 	if(freshWarning) audio_warning();
 	else if(freshCaution&&sim_time-caution_toned>=5){ audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
 	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
-	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
+	const bingo=low||below;
 	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
 	const active=new Set();
-	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
+	for(const [key] of rows) for(const message of SPOKEN[key]??[]) if(message!=="BINGO"||below) active.add(message);   // FUEL LO's BINGO only with the fuel under it: a FLBIT above bingo says FUEL LOW alone
 	if(gpws.gear) active.add("CHECK GEAR");
+	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
+	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
 	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
-let law_armed=false;   // radar-altimeter low-altitude warning: one aural per descent through the bug
-let law_index=200;   // the pilot-set low-altitude index, ft: 200 in the pattern, 40 for a cat shot
+let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
+let law_disabled=false;   // the primary warning was disabled from the UFC (:RALT, or another UFC mode) and stays quiet until it is reset
+// The radar altimeter set's knob (2.12.5.4.1): turning it clockwise applies power and
+// then raises the index; fully anticlockwise the set is off, with its OFF flag, no radar
+// altitude and neither radar warning, as under radar silence. Pushing it runs the BIT,
+// the green light GO for its 5 s. At ground power-up the set sounds the whoop once to
+// familiarise the pilot (2.12.5.1): greet is that whoop, owed.
+let radalt_on=true, radalt_test=-Infinity, radalt_greet=false;
+function radalt_inhibited(){ return RADAR.sil||!radalt_on; }
+let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
+const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
+const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
+let altitude_called=-Infinity;   // sim time of the last ALTITUDE, ALTITUDE, which the voice queue speaks once
+// index_step turns the height indicator's knob one notch: clockwise raises the
+// index (2.12.5.4.1). The dial is expanded low down, so the notches are too.
+function index_step(index,direction){ const notch=v=>v<100?10:v<500?50:v<1000?100:500;
+	return THREE.MathUtils.clamp(direction>0?index+notch(index):index-notch(index-1),0,5000); }
 let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
-const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false};   // the GPWS gear-up landing call: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, and whether CHECK GEAR is due
+const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false,call:""};   // the GPWS: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, whether CHECK GEAR is due, and the recovery call a warning makes ("" with none)
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
-let law_active=false;   // the ESCAPE warning is LIVE this frame: drives the repeating aural (#243 — the user flew into the sea padlocked, gear up, in silence). The gear-down index call is separate and sounds once; neither draws anything on the HUD (#187)
+let law_active=false;   // the GPWS warning (NATOPS 2.17.5) is live this frame: its recovery call (gpws.call) and the HUD's recovery arrow (#243 - the user flew into the sea padlocked, gear up, in silence)
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity
 // (#239) - one connected clumped plume, darkest and warmest at the head, paling
@@ -5644,7 +6328,6 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.4+Math.random()*0.8; smoke.sz[k]=0.26+Math.random()*0.10; smoke.gr[k]=0.55;   // fuel vapour: pale, fast-swelling, quick to thin (#239)
 	smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
-let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
 // The HUD trim readout shows the PA pitch datum, which the core holds only in its PA law, so it follows
 // that law's own trigger (flight/fcs.go), mirrored because the law state never crosses the wire: the flap
 // switch at HALF or FULL, the deck's takeoff-leg latch (set on the wheels under 40 m/s, cleared by a
@@ -5739,6 +6422,17 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
 if(DEV_MODE) (globalThis as any).dev_gun=()=>{ const loaded=fleet[own_aircraft()], rig=ownship.gun; return { profile:loaded?loaded.profile:null, gas:rig?rig.gas:null, flash:rig?rig.flash.visible:null, light:rig&&rig.light?rig.light.intensity:null }; };   // dev: the measured port and skin line, and the ownship rig's state
+if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapour - what it is flying, what shows, which shells are drawn and the puffs in the air; dev_vapour({humid, flight}) pins the humidity or the flight every jet is drawn for, dev_vapour(null) frees both
+	if(set!==undefined){ vapour_humid=set&&Number.isFinite(set.humid)?set.humid:null; vapour_force=set&&set.flight?set.flight:null; }
+	const round=(o)=>o?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,Math.round(v*1000)/1000])):null, jets={};
+	for(const [name,st] of [["own",ownship],["bandit",bandit],...[...remotes.entries()].map(([slot,st])=>["r"+slot,st])]){ const rig=st&&st.vapour; if(!rig) continue;
+		jets[name]={ flight:round(rig.flight), shown:round(rig.shown), drawn:rig.drawn, humid:Math.round((vapour_humid??humidity(cfg.clouds,presented(st).y))*1000)/1000 }; }
+	const rig=ownship.vapour, rows=rig&&rig.cores[0].visible?rig.rows[0].map(r=>[r.x,r.y,r.z,r.width,r.alpha].map(v=>Math.round(v*10000)/10000)):[];
+	return { puffs:vapour_pool.activeList.length, pinned:{ humid:vapour_humid, flight:vapour_force }, jets, rope:rows }; };   // rope: the pilot's starboard LEX rope while it shows, apex first, in the jet's frame - x, y, z, width (m) and density
+if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
+if(DEV_MODE) (globalThis as any).dev_wake=()=>{ const w=flight_wake(), at=(st)=>({ x:+st.pos.x.toFixed(1), y:+st.pos.y.toFixed(1), z:+st.pos.z.toFixed(1), vx:+(st.velx||0).toFixed(1), vy:+(st.vely||0).toFixed(1), vz:+(st.velz||0).toFixed(1) });   // i18n-format-ok: developer telemetry, never shown to a user
+	const others={}; if(has_enemy&&bandit.group.visible) others.bandit=at(bandit); for(const [slot,st] of remotes) if(st.group.visible) others["r"+slot]=at(st);
+	return w?{ pieces:w.pieces, trails:w.trails, swirl:w.swirl.map(v=>Math.round(v*1000)/1000), g:Math.round((ownship.gload??1)*1000)/1000, roll:last_out?Math.round((last_out[STATE.omega]||0)/D2R*100)/100:null, own:at(ownship), others }:null; };   // dev: the wake the pilot's core was handed on its last frame, how many jets have one laid, the air it made at the CG (m/s), the jet's g and roll rate, and where every jet is
 if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
 	const report={};
 	for(const [name,p] of [["smoke",smoke],["strikes",strikes],["debris",debris],["flares",flares],["tracers",tracers]]){
@@ -6115,8 +6809,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 				const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 				return { tl:p(-w,h), br:p(w,-h) }; })() }:null, probe:dev_probe_text, screens:(u.screens||[]).length, err:build_error,
 		hidden:(()=>{ const re=(AIRCRAFT_MODELS[own_aircraft()]||{}).hide, out=[]; if(re) ownship.group.traverse(o=>{ if(o.name&&re.test(o.name)&&!o.visible) out.push(o.name); }); return out; })(),
-		compass:u.compass||null,   // the standby compass seat on the arch housing (#2): group-frame centre and the tilt applied
-		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi","clock"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
+		compass:(()=>{ const card=ownship.group.getObjectByName("INSTRUMENT_MagneticCompass_518"); if(!card) return null; const p=new THREE.Vector3(); card.getWorldPosition(p); ownship.group.worldToLocal(p); return { at:p.toArray().map(n=>+n.toFixed(3)) }; })(),   // the standby compass card in the model's housing (FO-5 item 19), group frame (i18n-format-ok: dev readout)
+		standby:u.standby?Object.fromEntries(["asi","alt","vsi","adi"].map(k=>[k,u.standby[k].mesh.position.toArray().map(n=>+n.toFixed(3))])):null,   // i18n-format-ok: dev readout — the standby faces' seats (#32)
 		rwr:u.rwr?{ at:u.rwr.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.rwr.mesh.layers.mask, count:u.rwr.count }:null,   // i18n-format-ok: dev readout — the azimuth indicator's seat (#28), its layer and the contacts it last drew
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
@@ -6141,7 +6835,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
 			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi","clock"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
+		const sweep=[...Object.entries(u.lamps||{}), ...(u.screens||[]).map((sc,i)=>["screen"+i,sc.mesh]), ["ifei",u.ifei&&u.ifei.mesh], ["radalt",u.radalt&&u.radalt.mesh], ["rwr",u.rwr&&u.rwr.mesh], ["silence",u.silence], ...["asi","alt","vsi","adi"].map(k=>[k+"face",u.standby&&u.standby[k]&&u.standby[k].mesh]), ...((u.indexerGroup&&u.indexerGroup.children)||[]).map((o,i)=>["indexer"+i,o])]
 			.filter(([,o])=>o).map(([name,o])=>({ name, ...probe(o) }));   // every face and lamp the pit builds (#25): the probe wants each on the ownship layer, visible and in the scene
 		return { sweep, radalt:probe(u.radalt&&u.radalt.mesh), rwr:probe(u.rwr&&u.rwr.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -6391,6 +7085,7 @@ function playback_jet(pose,dt){ const p=pose.properties, n=(key,fallback)=>playb
 	(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
 	st.velx=pose.vx; st.vely=pose.vy; st.velz=pose.vz; st.speed=Math.hypot(pose.vx,pose.vy,pose.vz);
 	st.gearTarget=n("Gear",1); st.hookTarget=n("Hook",0); st.speedbrakeTarget=n("SpeedBrake",0); st.reheat=n("Afterburner",0); st.rounds=undefined;
+	st.aoa=n("AOA",NaN); st.gload=n("G",NaN); st.mach=n("Mach",NaN);   // what its vapour is drawn for; a recording without them leaves the jet's motion to tell
 	const surfaces=playback_surfaces(p); if(surfaces) st.surfaces=surfaces;
 	{ let words=playback_words.get(pose.id); if(!words){ words=new Float64Array(STATE.stage+1); playback_words.set(pose.id,words); }
 		if(playback_damage(p,words)) shed_panels(st,words); }
@@ -6521,12 +7216,11 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz]; if(ownship.gload>peak_g) peak_g=ownship.gload;   // sticky peak g for the NATOPS readout (#133)
-	{ const read=fuel_read, beforeInternal=ownship.fuel??0, beforeTotal=beforeInternal+(ownship.external??0);   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
+	{ const read=fuel_read, beforeInternal=ownship.fuel??0;   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
 		ownship.fuel=out[STATE.fuel]; ownship.external=out[STATE.external]||0;
-		const total=ownship.fuel+ownship.external;
 		fuel_read=true;
 		if(read&&!cheat("fuel")){   // the calls are crossings, so they need a real reading behind them: the first reading of a mission is a state the legend shows, not a crossing; a frozen tank makes them meaningless
-			if(beforeTotal>=BINGO&&total<BINGO) notice(translate("BINGO FUEL"));   // BINGO is a total-fuel caret (#17: externals count — they burn first, so total is what endurance means)
+			if(beforeInternal>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));   // BINGO judges the internal fuel quantity (NATOPS 2.2.10.4), not the external tanks
 			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
@@ -6645,8 +7339,10 @@ function fly_player(dt){
 	if(!flight_active){   // bind the core to this mission's world on the first live frame past the loading gate
 		if(MULTIPLAYER && !(net&&net.welcome&&net.geometry)) return;   // the world payload needs the match seed/wrap from the welcome and the map the server serves
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
-		if(!flight_init(flight_world())){ notice(translate("FLIGHT CORE FAILED")); return; }
-		flight_active=true; flight_push();
+		const world=flight_world();
+		if(!flight_init(world)){ notice(translate("FLIGHT CORE FAILED")); return; }
+		joust_drawn(); flight_active=true; flight_push();
+		vapour_air=world.environment.wind||{ x:0, z:0 };   // a match's core flies still air
 		if(MULTIPLAYER&&net&&net.welcome.spawn&&net.welcome.spawn.map&&airports.length&&carrier_model){ const chart=net.welcome.spawn.map;   // the served geometry is what the core flies; this build's own is what the scene draws — say so when they differ
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
@@ -6745,34 +7441,9 @@ function fly_player(dt){
 			if(audio_prev.droop!==undefined&&dt>0)
 				audio_servo(sim_time<flap_armed&&Math.abs(droop-audio_prev.droop)/dt>0.1);
 			audio_prev.droop=droop; }
-		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
+		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // the radar altimeter's height above the surface, ft, for its warnings and the GPWS escape model
 			const sink=-(ownship.vely??0);   // m/s down
-			// Gear down it is the index call, and it sounds ONCE (#187). The
-			// real APN-194 compares radar altitude against a pilot-set low
-			// altitude index — normally 200 ft, 40 for a cat shot — and the
-			// gear decides the manner: gear UP and below the index the tone
-			// repeats until reset, gear DOWN it sounds once as the jet
-			// descends through it, because the descent is declared. #47 made
-			// the aural repeat, which is right for the escape case below and
-			// was applied to both, so every approach flew its whole glideslope
-			// under a repeating tone and a flashing break-X.
-			//
-			// DESCENDING through the index, which is what the call is: the
-			// real one sounds on the way down and the index is set to 40 ft for
-			// a cat shot precisely so a launch does not trip it. #187 dropped
-			// the old `sink>2` on the grounds that a stabilised approach sinks
-			// 4.2 m/s and so was never excluded by it — true, but the gate was
-			// keeping the TAKEOFF quiet, and without it every rotation got the
-			// call as the jet climbed through 200 ft with the gear still down.
-			// 0.5 m/s is the honest reading of "descending" rather than the old
-			// 400 fpm, which was high enough to look arbitrary.
-			//
-			// gearTarget is the RETRACTION target (0 = down, 1 = up, as the
-			// spawn and the gear horn read it): the old branches were keyed
-			// backwards, so a gear-up fight only ever had the index call — one
-			// second of warning at the crash flight's sink.
-			const dirty=(ownship.gearTarget??0)<=0.5&&agl<law_index&&sink>0.5;
-			// Gear up, the warning models the ESCAPE, as the real GPWS does (#94):
+			// The GPWS warning models the ESCAPE, as the real one does (#94, NATOPS 2.17.5.2):
 			// a second of pilot reaction, the roll to wings-level, then a 4 g
 			// pull — deliberately milder than the jet's limit, so the call errs
 			// early — consumed against the altitude available. The old rule
@@ -6781,7 +7452,7 @@ function fly_player(dt){
 			// already needed 5,200: a time-of-sink rule cannot lead a steep,
 			// accelerating dive, and the pilot heard it with the arithmetic
 			// already lost.
-			const closure=(()=>{ if((ownship.gearTarget??0)<=0.5||sink<=10) return false;
+			const closure=(()=>{ if(sink<=10) return false;   // any gear position: the GPWS protects the approach too (2.17.5)
 				const speed=Math.max(ownship.speed,50), steep=Math.min(sink/speed,1), level=Math.sqrt(1-steep*steep);
 				const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level);
 				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
@@ -6796,24 +7467,34 @@ function fly_player(dt){
 				if(-sink>5.08&&agl<500&&slow){ if(gpws.climb<0) gpws.climb=sim_time; else if(sim_time-gpws.climb>5) gpws.waveoff=sim_time; }
 				else gpws.climb=-1;
 				gpws.gear=flying&&agl<150&&sink>0.5&&slow&&(ownship.gear??1)>=0.02&&sim_time-Math.max(gpws.wheels,gpws.waveoff)>60; }
-			// law_active is the ESCAPE warning and carries the whole
-			// presentation: the repeating aural (#47) and the break-X. The
-			// index call below is aural only and gear-down only, as the jet's
-			// is — a warning light on the altimeter face, not a symbol across
-			// the HUD (#187).
-			law_active=closure&&flying;
-			const declared=dirty&&flying&&!RADAR.sil;   // the primary low-altitude warning is the set's (2.12.5.1): radar silence inhibits the set and the call with it (#29)
-			if(law_active){ audio_law(); law_calls++; } // repeats while below: the escape margin is gone and stays gone until the pilot fixes it
-			else if(declared&&law_armed){ audio_law(); law_calls++; law_armed=false; }   // one call per descent through the index, then quiet: the approach is the pilot's
-			// Armed only from ABOVE the index, since the call is a descent through
-			// it. A jet spawned on the surface starts below any index: heavy, it
-			// settles onto its struts before weight-on-wheels latches, and that
-			// settle read as a descent. The cat shot's 40 ft index arms as the jet
-			// leaves the deck, so the settle off the bow is quiet and a settle
-			// toward the water is not; climbing away restores the pattern's 200.
-			if(!law_active&&!declared){
-				if(agl>400){ law_armed=true; if(!law_set) law_index=200; }   // a keyed index (UFC :RALT, #15) is the pilot's and stays
-				else if(law_index<200&&agl>law_index) law_armed=true; } }
+			// law_active is the GPWS warning (NATOPS 2.17.5, #243): no protection for the first
+			// 6 seconds after weight off wheels. It speaks the recovery the jet needs first
+			// (2.17.5.4) - ROLL LEFT or RIGHT past 45 degrees of bank, the shorter way to wings
+			// level, then POWER below 210 knots or PULL UP - and the HUD shows the recovery
+			// arrow (2.17.5.3). It does not use the radar altimeter's whoop.
+			law_active=closure&&flying&&sim_time-gpws.wheels>=6;
+			{ const bank=-Math.atan2(ownship.right.y,ownship.up.y)/D2R, knots=(ownship.cas??ownship.speed)*1.94384;   // bank + = right wing down
+				gpws.call=!law_active?"":Math.abs(bank)>45?(bank>0?"ROLL LEFT":"ROLL RIGHT"):knots<210?"POWER":"PULL UP"; }
+			// The primary radar low-altitude warning (2.12.5.1): gear up and locked and the
+			// radar altitude below the index, the whoop repeating until it is reset - a climb
+			// above the index, or the index turned below the present altitude - or disabled
+			// from the UFC (ufc_press), after which it stays quiet until that reset. With the
+			// gear down it does not sound. Radar silence inhibits the set and it with it (#29).
+			const below=flying&&(ownship.gear??1)>0.98&&!radalt_inhibited()&&agl<law_index;   // the index stops at 5,000 ft, where the set's reading ends
+			if(!below) law_disabled=false;
+			law_primary=below&&!law_disabled;
+			if(law_primary){ audio_law(); law_calls++; }   // repeats while it holds
+			if(radalt_greet){ radalt_greet=false; audio_law(); }   // the familiarisation whoop at ground power-up
+			// The secondary radar and barometric warnings (2.12.5.2, 2.12.5.3): one ALTITUDE,
+			// ALTITUDE as the jet descends through the altitude set for each; 0, which no
+			// reading goes below, disables it. Each arms 50 ft above its altitude - the game's
+			// margin, which NATOPS does not give - so a jet levelled at the setting does not
+			// call on every ripple.
+			{ const readings={ radar:(!radalt_inhibited()&&agl<=5000)?agl:null, baro:ownship.pos.y*3.28084+baro_error() };
+				for(const kind of ["radar","baro"]){ const set=altitude_set[kind], now=readings[kind];
+					if(now===null||!flying){ altitude_armed[kind]=false; continue; }
+					if(now>set+50) altitude_armed[kind]=true;
+					else if(altitude_armed[kind]&&now<set){ altitude_armed[kind]=false; altitude_called=sim_time; } } } }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
@@ -7015,7 +7696,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		// --- end switches
 		case "instpnl": f=lighting.instrument; break; case "consoles": f=lighting.consoles; break; case "flood": f=lighting.flood; break;   // the interior lights panel (#21)
 		case "chart": f=lighting.chart; break; case "warncaut": f=lighting.warn; break; case "mode": f=lighting.mode==="nite"?0.5:1; break;   // only the ownship has a pilot to select FIELD
-		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
+		case "flaplever": f=st===ownship?flap_select/2:(st.gear??1)<0.5?(st.grounded?0.5:1):0; break;   // the FLAP switch (NATOPS 2.8.2.2.1): AUTO, HALF, FULL as selected; other jets send no selection, so theirs follows the gear - AUTO up-and-away, HALF on deck, FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
@@ -7137,6 +7818,7 @@ function afterburner(g,on){
 function visuals(dt){
 	gun_effects(dt);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	contrail_effects();   // every jet's contrail, where the air is cold enough
+	vapour_effects(dt);   // every jet's vapour, where the air is humid enough
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
@@ -7147,13 +7829,13 @@ function visuals(dt){
 		smoke.vx[k]=debris.vx[i]*0.15; smoke.vy[k]=debris.vy[i]*0.15; smoke.vz[k]=debris.vz[i]*0.15;
 		smoke.ttl[k]=smoke.life[k]=1.2+Math.random()*0.8; smoke.sz[k]=0.16; smoke.gr[k]=0.5;
 		smoke.r[k]=0.30;smoke.g[k]=0.29;smoke.b[k]=0.28; }
-	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts);
+	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts)+flush_points(vapour_pool,vp_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 }
 function step_world(dt){ sim_time+=dt;
-	marshal_watch(); pattern_watch(); hints_watch();
+	marshal_watch(); pattern_watch(); hints_watch(); timer_update();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	afterburner(bandit.group,cfg.afterburner&&Math.max(...burners(bandit))>0.15);   // every other jet by its own burner too, where the setting alone used to light it all flight
@@ -7181,7 +7863,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); comm("PADDLES: "+translate("WAVE OFF"), "#9fd0ff"); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -7196,7 +7878,7 @@ function reset_ownship(){
 	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
@@ -7204,15 +7886,19 @@ function reset_ownship(){
 	const st=mission_start();
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
+	ddi_fresh=true; if(cfg.view==="ddi") ddi_open();   // and its first 3 opens the radar
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
-	baro_armed=false; baro_shown=-1e9; baro_flash=false;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
+	flbit=-Infinity;   // a fresh jet has run no fuel low BIT
+	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
-	law_armed=false; law_index=st==="carrier"?40:200;   // the radar altimeter arms from above its index, so a surface spawn is quiet until it has flown
+	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
+	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
-	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; law_set=false; ufc_dirty=true;   // the UFC powers up clear (#15)
+	ufc.func=""; ufc.ralt=false; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true;   // the UFC powers up clear (#15)
+	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
@@ -7253,16 +7939,14 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
+		timer.cd.seconds=MARSHAL_PUSH; timer_run("cd",true); timer.shown="cd";   // the push time on the CD timer, running on the HUD, as a pilot sets it at marshal
 		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff");
 		hint(HINT.stack,{heading:ship_groove()}); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
 		joust_side=Math.random()<0.5?1:-1;
-		const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
-		ownship.pos.set(-joust_side*reach, block, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=pace; ownship.throttle=0.85;
-		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		joust_start=bvr?bvr_opening():null; joust_place(); ownship.throttle=0.85;
 		if(bvr){ notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|start`); } }   // the rule difference announced at the calmest moment: this joust has no hold — i18n-format-ok: ACMI event timestamp, not display text
 	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
@@ -7278,8 +7962,8 @@ function reset_ownship(){
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-	if(st==="joust"){ const bvr=cfg.duel==="bvr"; const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
-		bandit.pos.set(joust_side*reach,block,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=pace; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+	if(st==="joust"){   // joust_place put the bandit at its end
+		bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
 		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
 	}
 	else { bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.speed=195; bandit.merging=false; }   // ground/deck starts: the bandit orbits near Midway as before
@@ -7324,7 +8008,7 @@ function update_camera(dt){
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
-			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br)),-1.047,1.396);
+			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br))-(cfg.view==="cockpit"?PIT_REST:0),-1.047,1.396);   // head_el is taken from the view's rest
 			const k=1-Math.exp(-dt*9), R=dt*7;   // ease constant ~0.11 s, rate cap ~400°/s
 			head_az+=THREE.MathUtils.clamp((azT-head_az)*k,-R,R);
 			head_el+=THREE.MathUtils.clamp((elT-head_el)*k,-R,R); } }
@@ -7362,7 +8046,7 @@ function update_camera(dt){
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
 		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
-		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el+PIT_REST)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
 		}
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
 		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
@@ -7480,16 +8164,14 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	// carrier
 	const kx=X(CARRIER.x), ky=Y(CARRIER.z); mctx.fillStyle="#ffd27a"; mctx.fillRect(kx-5,ky-5,10,10);
 	mctx.fillStyle="#ffd27a"; mctx.font="10px monospace"; mctx.fillText("CV",kx,ky-9);
-	// contacts: rendered remotes (and the SP bandit), coloured by side
-	const jet=(x2,y2,fx,fz,colour,label)=>{ const fl=Math.hypot(fx,fz)||1, jux=fx/fl, juz=fz/fl, jrx=-juz, jrz=jux;
+	// contacts: what the pilot knows, coloured by side
+	const jet=(x2,y2,fx,fz,colour,label)=>{
+		if(!fx&&!fz){ mctx.strokeStyle=colour; mctx.lineWidth=2; mctx.beginPath(); mctx.arc(x2,y2,5,0,Math.PI*2); mctx.stroke(); return; }   // a paint with no heading: a plain mark
+		const fl=Math.hypot(fx,fz)||1, jux=fx/fl, juz=fz/fl, jrx=-juz, jrz=jux;
 		mctx.fillStyle=colour; mctx.beginPath();
 		mctx.moveTo(x2+jux*9,y2+juz*9); mctx.lineTo(x2-jux*6+jrx*5,y2-juz*6+jrz*5); mctx.lineTo(x2-jux*6-jrx*5,y2-juz*6-jrz*5); mctx.closePath(); mctx.fill();
 		if(label){ mctx.font="9px monospace"; mctx.textAlign="center"; mctx.fillText(label,x2,y2+18); } };
-	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
-			const team=net.teams.get(slot)||"";
-			const colour=team==="red"?"#ff5a48":team==="blue"?"#5a86ff":"#ffb04a";
-			jet(X(st.pos.x),Y(st.pos.z),st.fwd.x,st.fwd.z,colour,st.name||net.names.get(slot)||""); } }
-	else if(has_enemy&&bandit.group.visible) jet(X(bandit.pos.x),Y(bandit.pos.z),bandit.fwd.x,bandit.fwd.z,"#ffb04a","");
+	for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a",c.name);
 	if(MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){
 		mctx.textAlign="left"; mctx.font="13px monospace";
 		mctx.fillStyle="#ff5a48"; mctx.fillText("RED "+(net.score.red||0),24,70);
@@ -7507,11 +8189,22 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
-const baro_set=2992;   // the standby altimeter's barometric setting, hundredths of inHg: 29.92 on the game's standard day, since no sea-level pressure reaches the core and the pit has no knob (#16)
+let baro_set=2992;   // the standby altimeter's barometric setting, hundredths of inHg, set with its knob (NATOPS 2.12.4); 29.92 is right everywhere on the game's standard day
+// baro_error is how far the barometric altitude reads above true for the setting: the air
+// data computer uses it too (2.12.4), and 1 inHg is about 1,000 ft, so a mis-set altimeter
+// reads wrong on the standby, the HUD and the barometric warning alike.
+function baro_error(){ return (baro_set-2992)*10; }
 let baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;   // the HUD baro-set readout (2.13.4.8.11 item 4): when it last appeared, whether it flashes, and whether a descent through 10,000 ft is armed
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_shoot=false;   // whether the HUD is drawing SHOOT this frame, flash phase included: the canopy bow SHOOT light (#14) mirrors it
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
+// The breakaway X (#120): one flashing X across the HUD and the radar attack
+// format while the frame's cue is break - a weapon inside its minimum range, or
+// closing to it within 1.5 s ("displayed and flashed when the L&S target range is
+// within Rmin", VRS AIM-7 documentation; ED's guide, figure 77). No flash rate is
+// published; it flashes at 2 Hz, as the HUD's other flashing cues do.
+function breakaway_shown(){ return hud_cue==="break"&&(sim_time*4)%2<1; }
+function breakaway(x,cx,cy,r){ x.beginPath(); x.moveTo(cx-r,cy-r); x.lineTo(cx+r,cy+r); x.moveTo(cx+r,cy-r); x.lineTo(cx-r,cy+r); x.stroke(); }
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px 'Hornet Display', monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS ENTER TO LAUNCH / N WIRE)
@@ -7530,20 +8223,62 @@ function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
 	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
 	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
 	return bvr_apart; }
+// bvr_opening draws this BVR joust's start (#46) from a fresh seed, through the
+// core's Go the world server draws a match's with. &opening=head (developer)
+// pins the classic head-on block the probes fly. A core not yet booted falls
+// back to it, marked pending for joust_drawn to draw once the core binds.
+function bvr_opening(){ const head={ altitude:[6096,6096], speed:272, flank:0, apart:bvr_separation() };
+	if(DEV_MODE&&new URLSearchParams(location.search).get("opening")==="head") return head;
+	return joust_opening(Math.floor(Math.random()*2147483647),WORLD_WRAP)||{ ...head, pending:true }; }
+// joust_heading is the heading an end of the joust starts on: along the line
+// toward the other end (side +1 east), turned the flank off it - the same way
+// for both ends, so each sees the other the same angle off its nose.
+function joust_heading(side){ const f=joust_start?joust_start.flank:0; return new THREE.Vector3(side*Math.cos(f),0,side*Math.sin(f)); }
+// joust_place puts both ends of the joust on joust_start - the pilot on the
+// first block, the bandit on the second - or on the merge ring when it is null.
+function joust_place(){ const bvr=!!joust_start; const reach=bvr?joust_start.apart/2:1.5*NM, pace=bvr?joust_start.speed:220;
+	ownship.pos.set(-joust_side*reach, bvr?joust_start.altitude[0]:4572, 0); ownship.fwd.copy(joust_heading(joust_side)); ownship.speed=pace;
+	const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+	bandit.pos.set(joust_side*reach, bvr?joust_start.altitude[1]:4572, 0); bandit.fwd.copy(joust_heading(-joust_side)); bandit.speed=pace; }
+// joust_drawn draws a single-player BVR joust's start that its spawn could not,
+// the core not having booted yet - a page's first mission - and puts both ends
+// on it, on the frame the core binds and before either jet has flown.
+function joust_drawn(){ if(MULTIPLAYER||!joust_start||!joust_start.pending) return;
+	joust_start=bvr_opening(); joust_place(); }
+// radar_target is what the radar holds of the locked or L&S contact, which the
+// launch zones fly against: its trackfile's last fix carried on by that fix's
+// velocity for the track's age. A tracking STT refreshes it every frame, a TWS
+// L&S at each paint, and a lock on memory not at all, so the zone ages with the
+// track. null while the jet is gone or no trackfile holds it.
+function radar_target(track){
+	const jet=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
+	const t=RADAR.tracks.find(k=>k.id===track);
+	if(!jet||!jet.group||!jet.group.visible||!t) return null;
+	const age=RADAR.time-t.at;
+	return { position:{x:t.x+t.vx*age,y:t.y+t.vy*age,z:t.z+t.vz*age}, velocity:{x:t.vx,y:t.vy,z:t.vz}, reheat:jet.reheat??0 }; }
+// ranging is the radar's range and closure (m/s, + closing) to the designated
+// jet, from the trackfile that holds it: null from a silent radar or with no
+// trackfile, and the HUD then has no ranging to show - the radar is the only
+// ranging the game has.
+function ranging(){
+	const track=RADAR.stt??RADAR.ls, t=RADAR.sil||track==null?null:radar_target(track); if(!t) return null;
+	const p=t.position, v=t.velocity, to=new THREE.Vector3(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z)), range=to.length();
+	if(range<1e-3) return { range, closure:0 };
+	to.multiplyScalar(1/range);
+	return { range, closure:(ownship.velx-v.x)*to.x+(ownship.vely-v.y)*to.y+(ownship.velz-v.z)*to.z }; }
 function launch_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
-	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
-	if(!t||!t.group||!t.group.visible) return null;
+	const t=radar_target(track); if(!t) return null;
 	if(zone&&zone_track===track&&sim_time-zone_at<0.5) return zone;   // ~2 Hz: each ladder flies several trial shots
 	zone_track=track; zone_at=sim_time;
 	zone=round_ladder(
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
-		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} },
-		WORLD_WRAP);
-	if(zone){ zone.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+		{ position:t.position, velocity:t.velocity }, WORLD_WRAP);
+	if(zone){ const p=t.position, v=t.velocity;
+		zone.range=Math.hypot(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z));
 		const tof=zone.range/(Math.max(ownship.speed,150)+650);   // rough round time of flight: launch speed plus the motor's gain — steering-dot precision, not fusing precision
-		const tvx=t.velx??t.fwd.x*t.speed, tvy=t.vely??t.fwd.y*t.speed, tvz=t.velz??t.fwd.z*t.speed;
-		zone.lead={x:t.pos.x+tvx*tof,y:t.pos.y+tvy*tof,z:t.pos.z+tvz*tof}; }
+		zone.lead={x:p.x+v.x*tof,y:p.y+v.y*tof,z:p.z+v.z*tof}; }
 	return zone; }
 // shoot_cue: null, "steady" (Rmax..Rne) or "flash" (inside Rne — the shot
 // the target cannot outrun). Inside Rmin the breakaway X replaces it.
@@ -7561,20 +8296,19 @@ function zone_cue(z){
 let heat_at=0, heat=null, heat_track=null, heat_prev=null;
 function heat_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
-	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
-	if(!t||!t.group||!t.group.visible) return null;
+	const t=radar_target(track); if(!t) return null;
 	if(heat&&heat_track===track&&sim_time-heat_at<0.5) return heat;
-	const v={x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed};
+	const v=t.velocity;
 	let swing={x:0,y:0,z:0};   // his present acceleration, from the last refresh: the ladder flies his turn on, not a straight line
 	if(heat_prev&&heat_track===track&&sim_time-heat_prev.t>0.2){ const dt=sim_time-heat_prev.t; swing={x:(v.x-heat_prev.vx)/dt,y:(v.y-heat_prev.vy)/dt,z:(v.z-heat_prev.vz)/dt}; }
 	heat_prev={t:sim_time,vx:v.x,vy:v.y,vz:v.z}; heat_track=track; heat_at=sim_time;
 	heat=heater_ladder(
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
-		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:v }, swing, t.reheat??0, WORLD_WRAP);
-	if(heat) heat.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+		{ position:t.position, velocity:v }, swing, t.reheat, WORLD_WRAP);
+	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
 function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; return zone_cue(z); }
-function hud_launch_zone(cx,cy,ppdv,ax,lx){
+function hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes){   // axes: the frame the zone is drawn in (fwd, right, up) - the HUD's view, or the airframe on a DDI
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
 	hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
@@ -7599,7 +8333,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	// The dot pegs at the rim edge-out when the lead point is far off axis.
 	if(z&&z.lead&&(ownship.amraam|0)>0){ const R=3.2*ppdv;
 		const to=new THREE.Vector3(wrap_axis(z.lead.x-ownship.pos.x),z.lead.y-ownship.pos.y,wrap_axis(z.lead.z-ownship.pos.z)).normalize();
-		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert());
+		const cs=new THREE.Vector3(to.dot(axes.right),to.dot(axes.up),-to.dot(axes.fwd));
 		let dxp=0, dyp=0;
 		if(cs.z<-1e-4){ dxp=Math.atan2(cs.x,-cs.z)*57.29578*ppdv; dyp=-Math.atan2(cs.y,-cs.z)*57.29578*ppdv; }
 		else { const sd=Math.hypot(cs.x,cs.y)||1; dxp=cs.x/sd*R*2; dyp=-cs.y/sd*R*2; }
@@ -7608,9 +8342,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 		hctx.beginPath(); hctx.arc(cx+dxp,cy+dyp,3.5,0,Math.PI*2); hctx.fill(); }
 	const cue=shoot_cue(z);
 	if(cue) hud_cue=cue;   // the radar cue's own words: steady / flash / break
-	if(cue==="break"){ hctx.strokeStyle=AM; hctx.lineWidth=3; const r=28;   // breakaway X: too close to shoot
-		hctx.beginPath(); hctx.moveTo(cx-r,cy-r); hctx.lineTo(cx+r,cy+r); hctx.moveTo(cx+r,cy-r); hctx.lineTo(cx-r,cy+r); hctx.stroke(); }
-	else if(cue&&(cue==="steady"||(sim_time*4)%2<1)){ hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
+	if(cue&&cue!=="break"&&(cue==="steady"||(sim_time*4)%2<1)){   // inside Rmin the breakaway X replaces it (drawn with the rest of the cluster) hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
 		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); hud_shoot=true; }
 	if(flying.length){   // one line per supported round: A-time to the seeker's wake, then T-time
 		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
@@ -7630,6 +8362,13 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 // the sim and audio run on. Re-press 3 cycles the display (cfg.ddi).
 const DDI_ORDER=["left","right","center"];
 function ddi_focus(){ return DDI_ORDER.includes(cfg.ddi)?cfg.ddi:"left"; }
+// The first 3 of a mission opens the display carrying the radar page - the
+// right DDI in A/A - whichever was looked at last; with no radar up it keeps
+// the remembered one. After that 3 returns to the display last shown. The pick
+// is the game's, not the pilot's, so it is not saved.
+let ddi_fresh=true;
+function ddi_open(){ if(!ddi_fresh) return; ddi_fresh=false;
+	const d=[ddi_focus(),...DDI_ORDER].find(k=>ddi_state[k].page==="rdr"); if(d) cfg.ddi=d; }
 const ddi_face=document.createElement("canvas");
 let ddi_view_last=0, ddi_view_rect=null;
 function draw_ddi_view(){
@@ -7668,6 +8407,22 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
+// The HUD's scale on the glass in the cockpit view, in screen pixels per pixel of
+// the HUD view's layout (whose pixels per degree are HH/45): the true angular
+// size, collimated like the real HUD's, unless the modeled glass is too small
+// for the layout, when every symbol shrinks evenly about the waterline datum.
+// The field is the glass's at the design eye, so a head turn does not rescale.
+function hud_fit(){ const glass=ownship.group.userData.glass, field=glass&&glass.field;
+	const ppd=HH/camera.fov, ppdv=HH/45, k=ppd/ppdv; if(!field) return k;
+	const up=Math.max(ppdv,172-2.75*ppdv), down=12.6*ppdv+8, half=4.2*ppdv+112;   // the layout's reach from the waterline datum: the A/A heading labels above, the NAV weapon word below, the altitude box's R suffix to the side
+	return Math.min(k,0.97*field.top*ppd/up,0.97*field.floor*ppd/down,0.97*field.side*ppd/half); }
+// gpws_arrow draws the GPWS recovery cue (NATOPS 2.17.5.3, figure 2-41): a steady
+// outlined arrow at the HUD centre, perpendicular to the horizon and pointing the
+// way to pull, up the ladder, so it turns with the bank (+ right wing down).
+function gpws_arrow(x,cx,cy,dpp,bank){ const tip=4.5*dpp, neck=1.0*dpp, head=2.6*dpp, shaft=1.2*dpp, tail=3.5*dpp;
+	x.save(); x.translate(cx,cy); x.rotate(-bank); x.setLineDash([]); x.lineWidth=2;
+	x.beginPath(); x.moveTo(0,-tip); x.lineTo(head,-neck); x.lineTo(shaft,-neck); x.lineTo(shaft,tail); x.lineTo(-shaft,tail); x.lineTo(-shaft,-neck); x.lineTo(-head,-neck); x.closePath(); x.stroke();
+	x.restore(); }
 function draw_hud(){
 	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
@@ -7683,6 +8438,7 @@ function draw_hud(){
 	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
 	const cx=HW/2, cy=HH/2;
 	const glass=(cfg.view==="cockpit")?glass_rect():null;   // #99: flight symbology binds to the combining glass in cockpit view
+	const hs=glass?hud_fit():1;   // the symbol scale: the HUD view's pixel sizes, carried onto the glass at the angle they subtend there
 	// The combining glass is bolted to the airframe: in HUD view the symbology
 	// fades as the head leaves boresight and is gone by ~25° off, about a real
 	// HUD's field of view. Cockpit view gets this from the glass rectangle.
@@ -7691,7 +8447,7 @@ function draw_hud(){
 	if(crash_t>0){ const end=demise(ownship.fate,own_killer,ejected);   // the cause the engine already recorded, not a guess: CRASHED was shown for every death including being shot down
 		hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace";
 		hctx.fillText(translate(end.text,end.callsign?{callsign:end.callsign}:undefined),cx,cy-60); return; }
-	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
+	if(crash_t<=0 && ownship.waving && cfg.view!=="cockpit" && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call, HUD-view furniture: the cockpit has the lens's waveoff lights and the LSO's call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
 		const whole=Math.max(0,Math.floor(sim_time));
@@ -7736,23 +8492,20 @@ function draw_hud(){
 	// vector, zenith/nadir, gun cross (A/A only), waterline (landing), the
 	// velocity vector with its 8° limit, E-bracket, and ILS deviation bars.
 	const ppd=HH/camera.fov;                      // true pixels per degree at the camera's LIVE field (tracks the pit's wide base and the zoom ease alike)
-	// Landing symbology is still inferred from the gear: a virtual flap schedule
-	// armed with the gear down below 125 m/s CAS and dropped passing 92.6 clean
-	// (180 KCAS) or 135 dirty, from before the client had a flap switch. The FCS
-	// law follows the switch instead, so the trim readout reads trim_law().
-	{ const geardown=(ownship.gear??1)<0.5, kcas=ownship.cas??ownship.speed;
-		if(hud_pa){ if((!geardown&&kcas>92.6)||kcas>135) hud_pa=false; }
-		else if(geardown&&kcas<125) hud_pa=true; }
+	// Landing symbology follows the gear alone: when any two gear are down the
+	// bracket, extended horizon and waterline appear and Mach, g and peak g go
+	// (NATOPS 2.13.4.8.11 item 13). One gear value stands for all three legs, and
+	// down means down and locked. The trim readout reads the FCS law, trim_law().
 	trim_manual=trim_law();
-	const pa=hud_pa;                              // landing symbology gate (flaps HALF/FULL)
+	const pa=(ownship.gear??1)<0.02;              // landing symbology gate
 	let fpm=null;
 	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
 	if(flight_symbols){
-	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
-	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
-	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
-	// approach. A crawling jet's velocity has no meaningful direction, and
+	// ---- velocity vector, limited to an 8° circle about the HUD optical centre
+	// and flashing when limited (NATOPS 2.13.4.8.11 item 10). The optical centre
+	// is 4° below the waterline (item 2), so an on-speed approach at 8.1° alpha
+	// sits about 4° from it. A crawling jet's velocity has no meaningful direction, and
 	// vel_dir switches from the nose to the velocity at 0.5 m/s, which snapped
 	// the marker and the ladder sideways in a slow taxi turn: the flight path
 	// fades from the nose to the velocity over the first 2 m/s instead.
@@ -7764,7 +8517,8 @@ function draw_hud(){
 	// more than 2° away, limited and flashing like the marker. NAV cages on the
 	// key; the A/A masters are always caged (ED manual: "In A/A it is always
 	// caged"); the landing symbology never is.
-	const limit=p=>{ const dx=p[0]-bore[0], dy=p[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd; return r>rmax?[[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax],true]:[p,false]; };
+	const centre=proj_dir(new THREE.Vector3().copy(ownship.fwd).multiplyScalar(Math.cos(4*D2R)).addScaledVector(ownship.up,-Math.sin(4*D2R)))||bore;   // the optical centre, 4° down the airframe from the nose, so it banks with the jet
+	const limit=p=>{ const dx=p[0]-centre[0], dy=p[1]-centre[1], r=Math.hypot(dx,dy), rmax=8*ppd; return r>rmax?[[centre[0]+dx/r*rmax,centre[1]+dy/r*rmax],true]:[p,false]; };
 	const cage=master==="nav"?caged:!pa;
 	fpm=proj_dir(path);
 	let fpm_limited=false, ghost=null, ghost_limited=false;
@@ -7780,59 +8534,11 @@ function draw_hud(){
 	if(ladFwd.lengthSq()<0.0025) ladFwd.set(ownship.fwd.x,0,ownship.fwd.z);   // near-vertical flight: fall back to the nose azimuth
 	if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); const rightH=new THREE.Vector3().crossVectors(ladFwd,world_up).normalize();   // fwd × up = out the RIGHT wing (up × fwd pointed left and inverted the ladder)
 		if(DEV_MODE){ hud_ladder.axis=[]; for(let q=-60;q<=60;q+=0.5){ const P=proj_dir(dir_at(ladFwd,rightH,0,q*D2R)); if(P) hud_ladder.axis.push(P); } }   // dev: the ladder's centre line on screen, so a probe can check the marker sits on it
-		for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
-			if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
-				hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7,0,Math.PI*2); hctx.stroke();
-				if(p<0){ hctx.beginPath(); hctx.moveTo(Z[0]-5,Z[1]-5); hctx.lineTo(Z[0]+5,Z[1]+5); hctx.moveTo(Z[0]+5,Z[1]-5); hctx.lineTo(Z[0]-5,Z[1]+5); hctx.stroke(); }
-				continue; }
-			const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
-			const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
-			const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
-			if(p===0) hud_ladder.horizon=[midx,midy];
-			const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
-			const gap=p===0?30:22;
-			hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
-			hctx.setLineDash(p<0?[7,6]:[]);
-			const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
-			const tick=p===0?0:(p>0?9:-9);                     // outer end-ticks point toward the horizon
-			for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
-				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); if(tick) hctx.lineTo(x1,y1+tick); hctx.stroke(); }
-			if(p!==0){ hctx.setLineDash([]); hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance
-				for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
-					hctx.fillText(String(Math.abs(p)),x1+half*14,y1+(p>0?tick*0.6:tick*0.6)); } }
-			hctx.restore(); } }
+		{ const horizon=hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs); if(horizon) hud_ladder.horizon=horizon; } }
 
-	// ---- boresight gun cross: A/A master modes only (the NAV HUD carries none) ----
-	if(master!=="nav"&&!pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-12,bore[1]); hctx.lineTo(bore[0]-4,bore[1]); hctx.moveTo(bore[0]+4,bore[1]); hctx.lineTo(bore[0]+12,bore[1]);
-		hctx.moveTo(bore[0],bore[1]-12); hctx.lineTo(bore[0],bore[1]-4); hctx.stroke(); }
-
-	// ---- waterline symbol (landing configuration) ----
-	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-16,bore[1]); hctx.lineTo(bore[0]-6,bore[1]); hctx.lineTo(bore[0],bore[1]+7); hctx.lineTo(bore[0]+6,bore[1]); hctx.lineTo(bore[0]+16,bore[1]); hctx.stroke(); }
-
-	// ---- the velocity vector, placed above with the ladder that hangs on it ----
-	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost;
-		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
-			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
-		// The ghost, dashed so it cannot be taken for the caged marker it stands beside.
-		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([3,3]); hctx.beginPath(); hctx.arc(ghost[0],ghost[1],6,0,Math.PI*2);
-			hctx.moveTo(ghost[0]-6,ghost[1]); hctx.lineTo(ghost[0]-14,ghost[1]); hctx.moveTo(ghost[0]+6,ghost[1]); hctx.lineTo(ghost[0]+14,ghost[1]); hctx.moveTo(ghost[0],ghost[1]-6); hctx.lineTo(ghost[0],ghost[1]-12); hctx.stroke(); hctx.setLineDash([]); } }
-
-	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
-	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
-	if(fpm && pa && !ownship.grounded){
-		const dpp=ppd/(view_zoom||1);   // zoom-independent degrees->px, tracking the view's base field
-		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*dpp,-3.5*dpp,3.5*dpp);
-		const bx=fpm[0]-30, by=fpm[1]+off, half=1.2*dpp;
-		hctx.beginPath(); hctx.moveTo(bx+7,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7,by+half);
-		hctx.moveTo(bx,by); hctx.lineTo(bx+5,by); hctx.stroke(); }   // centre tick marks on-speed
-
-	// ---- ILS deviation bars, referenced to the velocity vector (replacing the old centred needles) ----
-	if(fpm){ const dev=approach_deviation(); if(dev){ hctx.strokeStyle=GR; hctx.setLineDash([]);
-		const reach=2.2*ppd, lx=fpm[0]+dev.az*reach, gy=fpm[1]+dev.gs*reach;
-		hctx.beginPath(); hctx.moveTo(lx,fpm[1]-reach); hctx.lineTo(lx,fpm[1]+reach); hctx.stroke();
-		hctx.beginPath(); hctx.moveTo(fpm[0]-reach,gy); hctx.lineTo(fpm[0]+reach,gy); hctx.stroke(); } }
+	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost; }   // dev: where the marker was drawn, for the probes
+	hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs);
+	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	}
 	if(glass) hctx.restore();
 
@@ -7841,34 +8547,22 @@ function draw_hud(){
 	// the fixed right-side data block (the real HUD attaches no text to the
 	// target, boxes nothing else, and draws no amber).
 	const authentic=cfg.view==="cockpit";
-	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	// Closure from the two velocity vectors along the line of sight, never by
-	// differencing range between render frames: the cores step on a fixed 60 Hz
-	// accumulator, so above 60 fps the difference quotient alternated between zero
-	// and double the true closure and the director pipper shook.
-	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
-		if(to.lengthSq()<1e-6) return 0;
-		to.normalize();
-		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
-		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
-		return mine.sub(his).dot(to); };   // + = closing
-	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
-	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
-		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
-		else designated=-1; }
+	let boxed=null; let rng=1500; let vc=0; let ranged=false;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
+	{ const dst=hud_target(); if(dst){ boxed=dst; const r=ranging(); if(r){ rng=r.range; vc=r.closure; ranged=true; } } }   // the radar's ranging: without it the gun keeps its default range and no break X is cued
 	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
 	let lockon=false, drinking=0;
-	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
+	const quarry=heat_quarry(boxed);
+	if(master==="9m"&&!pa&&quarry){ const to=_v.set(wrap_axis(quarry.pos.x-ownship.pos.x),quarry.pos.y-ownship.pos.y,wrap_axis(quarry.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
 		// Plume-conditioned acquisition (#255), mirroring the server: a burner-lit
 		// nose is lockable to half the envelope, a cold one only close aboard, rear
 		// aspect the full reach. Depth inside that reach drives the growl's pitch
 		// (#59).
-		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
-		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
+		const tail=quarry.fwd?Math.max(0,to.dot(quarry.fwd)):0;
+		const floor=0.15+0.35*THREE.MathUtils.clamp(quarry.reheat??0,0,1);
 		const reach=5000*(floor+(1-floor)*tail);
 		lockon=ownship.fwd.dot(to)>0.866&&d<reach;
 		drinking=THREE.MathUtils.clamp(1-d/reach,0,1); }
@@ -7887,16 +8581,16 @@ function draw_hud(){
 	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); }
 	const brk=boxed&&rng<(master==="9m"?300:150)+THREE.MathUtils.clamp(vc,0,1000)*1.5;   // breakaway: reaching minimum range within 1.5 s at the current closure — time-based like the real cue, so a 900 kt merge breaks far earlier than a tail-chase (vc clamped: a boxed-target switch in MP spikes one frame)
 	const td=boxed?proj_point(boxed.pos):null;
-	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14,td[1]-14,28,28); }   // the target designator box — the real (monochrome green) marking, both views
+	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
 	if(boxed&&!(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH)){   // target locator line (NATIP): the boxed target is off the HUD — a line from the boresight points the shortest way to it, angle-off at the tip
 		const to=new THREE.Vector3(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();
 		const off=Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(to),-1,1))*57.29578;
 		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert()); const sd=Math.hypot(cs.x,cs.y);
 		if(sd>1e-4){ const ux=cs.x/sd, uy=-cs.y/sd;
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2;
-			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18,bore[1]+uy*18); hctx.lineTo(bore[0]+ux*70,bore[1]+uy*70); hctx.stroke(); hctx.lineWidth=1.5;
-			hctx.fillStyle=GR; hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="center";
-			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
+			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18*hs,bore[1]+uy*18*hs); hctx.lineTo(bore[0]+ux*70*hs,bore[1]+uy*70*hs); hctx.stroke(); hctx.lineWidth=1.5;
+			hctx.fillStyle=GR; hctx.font=(12*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size
+			hctx.fillText(String(Math.round(off)),bore[0]+ux*84*hs,bore[1]+uy*84*hs+4*hs); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
 			const muz=body_offset(ownship,6.0,0.35,0.0);
@@ -7930,8 +8624,8 @@ function draw_hud(){
 				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*(R-dash),pip[1]+Math.sin(tick)*(R-dash)); hctx.lineTo(pip[0]+Math.cos(tick)*(R+dash),pip[1]+Math.sin(tick)*(R+dash)); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0) hud_cue="gun";
-				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hud_shoot=true; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
-					hctx.fillText("SHOOT",pip[0],pip[1]-R-12); } } }
+				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hud_shoot=true; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. The director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
+					hctx.fillText("SHOOT",pip[0],pip[1]-R-12*hs); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 			const rails=[[],[]];
@@ -7945,169 +8639,48 @@ function draw_hud(){
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
 		const seeker=2.5*ppd;   // the 5° seeker circle
-		const at=(lockon&&td)?td:bore;
+		const at=lockon?(proj_point(quarry.pos)||bore):bore;   // a seeker with tone looks at its heat, boxed or not
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
 		// SHOOT only with a radar lock and the target inside the heater's zone (#47);
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
 		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
 		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
-		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px 'Hornet Display', monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
-			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); hud_shoot=true; }
+		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
+			hctx.fillText("SHOOT",at[0],at[1]-seeker-16*hs); hud_shoot=true; }
 		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
-			hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
-			const top=bore[1]-3.0*ppd, bottom=bore[1]+3.0*ppd, sx=bore[0]+9*ppd;   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
+			hctx.save(); hctx.font=(13*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;   // i18n-format-ok: a CSS font size
+			const hd=HH/45*hs, top=bore[1]-3.0*hd, bottom=bore[1]+3.0*hd, sx=bore[0]+9*hd;   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
 			const scale=Math.max(zone.max,zone.range)*1.05;
 			const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
 			hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
 			for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
 				if(range<=0) continue; const y=y_of(range);
-				hctx.beginPath(); hctx.moveTo(sx-5,y); hctx.lineTo(sx+5,y); hctx.stroke();
-				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5,y-3); hctx.lineTo(sx+5,y-3); hctx.stroke(); } }
+				hctx.beginPath(); hctx.moveTo(sx-5*hs,y); hctx.lineTo(sx+5*hs,y); hctx.stroke();
+				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5*hs,y-3*hs); hctx.lineTo(sx+5*hs,y-3*hs); hctx.stroke(); } }
 			const y=y_of(zone.range);
-			hctx.beginPath(); hctx.moveTo(sx+7,y); hctx.lineTo(sx+15,y-4); hctx.lineTo(sx+15,y+4); hctx.closePath(); hctx.fill();
-			hctx.fillText((zone.range/1852).toFixed(1),sx+18,y+4);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.beginPath(); hctx.moveTo(sx+7*hs,y); hctx.lineTo(sx+15*hs,y-4*hs); hctx.lineTo(sx+15*hs,y+4*hs); hctx.closePath(); hctx.fill();
+			hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,y+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 			hctx.restore(); }
-		if(cue==="break"&&lockon&&(sim_time*5)%2<1){ const R=2.2*ppd; hctx.strokeStyle=AM; hctx.setLineDash([]); hctx.lineWidth=2.5;   // inside the heater's own minimum: the breakaway X
-			hctx.beginPath(); hctx.moveTo(at[0]-R,at[1]-R); hctx.lineTo(at[0]+R,at[1]+R); hctx.moveTo(at[0]+R,at[1]-R); hctx.lineTo(at[0]-R,at[1]+R); hctx.stroke(); hctx.lineWidth=1.5; } }
-	if(brk) hud_cue="break";
-	if(brk&&(sim_time*5)%2<1){   // breakaway X (flashing): the 9M can't arm, a gun pass this close eats debris — break off
-		const R=2.2*ppd; hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2.5;
-		hctx.beginPath(); hctx.moveTo(bore[0]-R,bore[1]-R); hctx.lineTo(bore[0]+R,bore[1]+R); hctx.moveTo(bore[0]+R,bore[1]-R); hctx.lineTo(bore[0]-R,bore[1]+R); hctx.stroke(); hctx.lineWidth=1.5; }
+	}
+	if(brk) hud_cue="break";   // the 9M can't arm, a gun pass this close eats debris: break off (the X is drawn with the cluster)
 	if(glass) hctx.restore(); }
 
-	// ---- instrument furniture (#133): NATOPS boxes and scales. On the glass in
-	// cockpit view the cluster is clipped to the quad and SCALED into it (the
-	// transform maps the virtual layout centred on cx,cy onto the glass).
-	if(flight_symbols){ if(glass){ hctx.save(); glass_clip(glass);
-		hctx.translate(glass.rcx,glass.rcy); hctx.scale(glass.scale,glass.scale); hctx.translate(-cx,-cy); }
+	// ---- instrument furniture (#133): NATOPS boxes and scales, laid out about
+	// cx,cy with the waterline datum 4° above. Both first-person views move that
+	// datum onto the projected nose, so the cluster rides the airframe as the
+	// conformal symbols do; on the glass in cockpit view it is also clipped to
+	// the quad and SCALED into it. screen keeps the window's own transform for
+	// the HUD view's game furniture, which stays against the window's edges.
+	if(flight_symbols){ const screen=hctx.getTransform(); hctx.save(); if(glass) glass_clip(glass);
+		hctx.translate(bore[0],bore[1]); hctx.scale(hs,hs); hctx.translate(-cx,-(cy-4*HH/45));   // the layout's waterline datum onto the nose: the box tops ride the waterline (NATOPS 2.13.4.8.11 item 2)
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
-	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
-	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
-	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
-	if(declutter<2){
-	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
-	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
-	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
-	hctx.beginPath(); hctx.moveTo(cx-halfd*hppx,hty); hctx.lineTo(cx+halfd*hppx,hty); hctx.stroke();
-	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
-	const m0=Math.ceil((hdg-halfd)/5)*5;
-	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
-		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
-		if(major) hctx.fillText(val===0?"36":String(val/10).padStart(2,"0"),hx,hty-16); }
-	hctx.restore();
-	hctx.fillStyle=GR; hctx.beginPath(); hctx.moveTo(cx,hty+5); hctx.lineTo(cx-5,hty+13); hctx.lineTo(cx+5,hty+13); hctx.closePath(); hctx.fill();
-	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a hollow chevron sliding under the scale; pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
-		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
-		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
-		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(mx-6,hty+21); hctx.lineTo(mx,hty+14); hctx.lineTo(mx+6,hty+21); hctx.stroke(); }
-	}
+	hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged?rng:null,{ fwd:new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), right:new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion), up:new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion) });
+	// BINGO is annunciated on the DDI and by voice, not on the HUD (NATOPS 2.2.10.4)
 
-	// ---- airspeed box (left): boxed KCAS, top at the waterline ----
-	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
-	if(!declutter){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
-		hctx.strokeRect(ax-84,wly,84,30);
-		hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); }
-
-	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
-	const baro=ownship.pos.y*3.28084; const lx=cx+4.2*ppdv;
-	let alt=baro, radar=false, flashB=false;
-	if(alt_radar){ const g=ground_height(ownship.pos.x,ownship.pos.z);
-		const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;
-		if(agl<=5000&&!RADAR.sil){ alt=Math.max(agl,0); radar=true; } else flashB=true; }   // radar altitude is invalid above 5,000 ft AGL and with the set inhibited by radar silence (2.12.5, 2.12.5.4.7, #29): baro with the flashing B
-	if(!declutter){ hctx.strokeRect(lx,wly,96,30);
-		const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
-		hctx.textAlign="right";
-		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
-			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
-			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
-		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
-		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
-		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
-	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
-	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
-	{ const knots=(ownship.cas??ownship.speed)*1.944;
-		if(baro>=10000) baro_armed=true;
-		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
-		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
-		if(!declutter&&sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
-			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
-	// and the range, stacked under the altitude box where the jet puts them - RDR
-	// (the radar is the only ranging the game has), Vc in knots with a minus for an
-	// opening target, the range in feet inside a mile and in miles beyond ----
-	if(aa&&boxed&&!declutter){ const right=lx+96, top=wly+30;
-		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
-		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
-		const knots=Math.round(vc*1.94384/10)*10;
-		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		hctx.font="10px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
-		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
-		const feet=rng*3.28084;
-		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-
-	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
-	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
-		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
-
-	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
-	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
-		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
-		if(atc_on){ hctx.fillStyle=AM; hctx.fillText("ATC",bxl,dy); hctx.fillStyle=GR; dy+=17; }   // ATC advisory below the airspeed column, like the real HUD; the slot is free in the landing configuration (Mach/g deleted) and it rides the glass transform in cockpit view
-		if(!declutter&&!pa){ const core=last_out;
-			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
-
-	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
-	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
-		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
-		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
-			const tl=(b===0||Math.abs(b)>=30)?9:5;
-			hctx.beginPath(); hctx.moveTo(sx,sy); hctx.lineTo(cx+Math.sin(a)*(br+tl),pivotY+Math.cos(a)*(br+tl)); hctx.stroke(); }
-		const bank=Math.atan2(ownship.right.y,ownship.up.y)*57.29578;
-		const pegged=Math.abs(bank)>47, shownBank=THREE.MathUtils.clamp(-bank,-45,45)*D2R;
-		if(!pegged||(sim_time*5)%2<1){ const px2=cx+Math.sin(shownBank)*br, py2=pivotY+Math.cos(shownBank)*br;
-			const ix=cx+Math.sin(shownBank)*(br-9), iy=pivotY+Math.cos(shownBank)*(br-9);
-			const tx=Math.cos(shownBank)*5, ty=-Math.sin(shownBank)*5;
-			hctx.beginPath(); hctx.moveTo(ix,iy); hctx.lineTo(px2+tx,py2+ty); hctx.lineTo(px2-tx,py2-ty); hctx.closePath(); hctx.fill(); }
-		hctx.lineWidth=1.5; }
-
-	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
-	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
-		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
-	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
-		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
-		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
-	{ // The selected weapon and its count, centred at the bottom of the field as the
-		// jet's data block is: the gun's rounds on a line under the name, a missile's
-		// count beside it. NAV has no weapon block on the real HUD; its word sits
-		// below the bank scale, which the A/A masters do not draw.
-		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
-		hctx.textAlign="center";
-		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); hctx.fillStyle=GR; }
-		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
-		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
-		else hctx.fillText("NAV",cx,ly);
-		hctx.textAlign="left"; }
-	// ---- elapsed time, lower-left corner (NATOPS 2.13.4 item 17): the ET stopwatch
-	// from mission start on the sim clock, as the DCS references show it ("10:02ET"),
-	// the hour prefixed once there is one. REJ 2 removes it with the heading scale; REJ 1 keeps it ----
-	if(declutter<2){ const elapsed=Math.max(0,Math.floor(sim_time-mission_zero)), two=(v)=>String(v).padStart(2,"0");
-		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-		hctx.fillText((elapsed>=3600?Math.floor(elapsed/3600)+":":"")+two(Math.floor(elapsed/60)%60)+":"+two(elapsed%60)+"ET",ax-84,cy+7.2*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
-
-	// ---- BINGO annunciation: the fuel format's settable bug trips the flashing centre legend, as the real bug drives the HUD; the legend colours below key on the fixed 3,000 lb call and stay ----
-	if(bingo_low()&&(sim_time*2)%2<1){
-		hctx.font="17px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.fillText("BINGO",cx,cy+3.4*ppdv); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
-	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
+	if(!authentic){ hctx.save(); hctx.setTransform(screen); const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-5,tgcy-tgh/2,10,tgh);
 	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-5,tgcy+tgh/2-fh,10,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
 	{ const lever=pad_levers.throttle; if(lever&&!lever.armed&&lever.last!==undefined){ const ly=tgcy+tgh/2-tgh*(1-lever.last);   // where the physical lever is while it does not hold the throttle: move it to the bar to take over
@@ -8116,8 +8689,9 @@ function draw_hud(){
 	hctx.font="11px 'Hornet Display', monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
 	hctx.font="15px 'Hornet Display', monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
-	if((ownship.stage??0)>0.05){ hctx.font="11px 'Hornet Display', monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); } }
-	if(glass) hctx.restore(); }   // end of the on-glass instrument cluster
+	if((ownship.stage??0)>0.05){ hctx.font="11px 'Hornet Display', monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); }
+	hctx.restore(); }
+	hctx.restore(); }   // end of the instrument cluster
 
 	// ---- gear / hook status (bottom-right) ----
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
@@ -8131,9 +8705,9 @@ function draw_hud(){
 	// keep the place they have always had.
 	hctx.textAlign="right"; hctx.font="13px 'Hornet Display', monospace";
 	{ const rows=[];   // bottom of the stack first
-		if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
-		if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
-		if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
+		if(!authentic){   // hud-view furniture: the real HUD carries no configuration legend (#133), and the cockpit has the gear and HOOK lights
+			if((ownship.hook??0)>0.01) rows.push([(ownship.hook??0)>0.98?GR:AM,translate("HOOK")]);
+			if(ownship.gear<0.99) rows.push([ownship.gear<0.02?GR:AM,translate("GEAR")]);   // a gear-up trap is a game-ender, and the HUD view has no panel
 			if((ownship.speedbrake??0)>0.02) rows.push([AM,translate("SPD BK")]);
 			if(stab_cycle>0) rows.push([AM,"STAB "+stab_cycle]);   // Shift+E calibration state
 			// Wing fold and the parking brake follow their handles, not the panels or the brakes
@@ -8197,13 +8771,13 @@ function draw_hud(){
 	// 2026-09-11: "highly distracting, and completely unrealistic"). They were
 	// #243's answer to a padlocked gear-up flight into the sea in silence, and
 	// the silence was the real defect — but the remedy was invented, not
-	// modelled. The Hornet's low-altitude indication is a warning light on the
-	// radar altimeter's own face; nothing goes on the HUD, and an X across a
-	// Hornet display means the data is invalid, which is close to the opposite
-	// of what this was saying. The warning is the AURAL, as it is in the jet:
-	// one call descending through the index with the gear down, repeating
-	// while the escape margin is gone. Do not put it back on the glass without
-	// a modelled instrument to put it on.
+	// modelled. The radar altimeter's low-altitude indication is a warning light
+	// on its own face, and an X across a Hornet display means the data is
+	// invalid, which is close to the opposite of what this was saying. The
+	// radar and barometric warnings are AURAL, as they are in the jet (the
+	// whoop and ALTITUDE, ALTITUDE), and the one HUD cue is the GPWS recovery
+	// arrow NATOPS gives it (2.17.5.3, gpws_arrow). Do not put anything else
+	// back on the glass without a modelled instrument to put it on.
 	if(hit_flash>0){   // rounds are landing on us (#239): an edge-weighted vignette, not a flat wash —
 		// the pain lives at the periphery and the pilot keeps the picture. In single
 		// player the shooter is known, so the vignette centre shifts AWAY from the
@@ -8252,7 +8826,7 @@ function draw_hud(){
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
 	else { const pounds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/10)*10;   // the IFEI headline is TOTAL fuel, externals included (#17) — they burn first, so this is the number that counts down from the top
 		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes (internal — the feed-tank hardware caution)
-		else if(((ownship.fuel??1e9)+(ownship.external??0))<BINGO) hctx.fillStyle="#ffb050";
+		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";   // BINGO on internal fuel (NATOPS 2.2.10.4)
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; } }
 
 	// ---- catapult prompt ----
@@ -8318,7 +8892,7 @@ function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]
 function set_view(v){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
 		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
-	if(v==="ddi") ddi_view_last=0;   // entering: draw the remembered display's face this frame
+	if(v==="ddi"){ ddi_open(); ddi_view_last=0; }   // entering: draw the display's face this frame
 	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
@@ -8363,7 +8937,211 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
-let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
+let designated=-1;   // the pilot's L&S designation: the contact acquired - a remote's slot in a match, "bandit" alone - or -1 for none. The HUD boxes it and nothing else, like the real jet (the missile's seeker hunts its own cone)
+// hud_cluster draws the HUD's instrument furniture (#133): the heading scale, the
+// airspeed and altitude boxes, the ranging data, the vertical velocity, the
+// AoA/Mach/g block, the bank scale, the data blocks, the timer and the breakaway X,
+// laid out about cx,cy at ppdv layout pixels to the degree with the waterline datum
+// 4° above cy. The HUD draws it onto the nose and the glass, and the DDI's HUD
+// format draws the same (#62). glass: the heading scale rides the layout, as on the
+// combining glass or a DDI, rather than the HUD view's window edge, whose
+// transform screen keeps; axes the frame the AMRAAM's steering dot is taken in.
+function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
+	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
+	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
+	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
+	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
+	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
+	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
+	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
+	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
+	const m0=Math.ceil((hdg-halfd)/5)*5;
+	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
+		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
+		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
+	hctx.restore();
+	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
+	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
+		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
+		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
+		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
+		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
+	hctx.restore(); }
+
+	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
+	// remove the airspeed and altitude boxes and keep the values in them (NATOPS
+	// 2.13.4.8.1, figure 2-26 sheet 2) ----
+	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
+	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
+	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
+	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
+
+	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
+	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
+	const reading=altitude_reading(), alt=reading.feet, radar=reading.radar, flashB=reading.fallback;
+	if(!declutter) hctx.strokeRect(lx,wly,96,30);
+	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
+		hctx.textAlign="right";
+		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
+			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
+			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
+		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
+		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
+		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
+	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
+	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
+	{ const knots=(ownship.cas??ownship.speed)*1.944;
+		if(baro>=10000) baro_armed=true;
+		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
+		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
+		if(sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
+			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
+	// and the range, stacked under the altitude box where the jet puts them - RDR
+	// (the radar is the only ranging the game has), Vc in knots with a minus for an
+	// opening target, the range in feet inside a mile and in miles beyond ----
+	if(aa&&boxed&&rng!=null&&!declutter){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
+		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
+		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
+		const knots=Math.round(vc*1.94384/10)*10;
+		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		hctx.font="10px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
+		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
+		const feet=rng*3.28084;
+		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+
+	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
+	const vs=ownship.vel_dir.y*ownship.speed*196.85;
+	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
+		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
+
+	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
+	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
+		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
+		if(!declutter&&!pa){ const core=last_out;
+			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
+
+	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
+	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
+		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
+		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
+			const tl=Math.abs(b)===5?5:9;   // figure 2-26: the 5° ticks short, the centre, 15°, 30° and 45° long
+			hctx.beginPath(); hctx.moveTo(sx,sy); hctx.lineTo(cx+Math.sin(a)*(br+tl),pivotY+Math.cos(a)*(br+tl)); hctx.stroke(); }
+		const bank=Math.atan2(ownship.right.y,ownship.up.y)*57.29578;
+		const pegged=Math.abs(bank)>47, shownBank=THREE.MathUtils.clamp(-bank,-45,45)*D2R;
+		if(!pegged||(sim_time*5)%2<1){ const px2=cx+Math.sin(shownBank)*br, py2=pivotY+Math.cos(shownBank)*br;
+			const ix=cx+Math.sin(shownBank)*(br-9), iy=pivotY+Math.cos(shownBank)*(br-9);
+			const tx=Math.cos(shownBank)*5, ty=-Math.sin(shownBank)*5;
+			hctx.beginPath(); hctx.moveTo(px2,py2); hctx.lineTo(ix+tx,iy+ty); hctx.lineTo(ix-tx,iy-ty); hctx.closePath(); hctx.stroke(); }   // an open triangle pointing down onto the tick at the bank angle (figure 2-26)
+		hctx.lineWidth=1.5; }
+
+	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
+	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
+	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=tacan().slant/1852;
+		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
+	{ // The selected weapon and its count, centred at the bottom of the field as the
+		// jet's data block is: the gun's rounds on a line under the name, a missile's
+		// count beside it. NAV has no weapon block on the real HUD, so nothing is
+		// drawn there.
+		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
+		hctx.textAlign="center";
+		if(master==="gun"){ hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); }   // green like the rest of the HUD, firing or not; the HUD view's counter at the screen edge carries the firing cue
+		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
+		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
+		hctx.textAlign="left"; }
+	// ---- the mission computer's timer, lower-left corner (NATOPS 2.13.4.8.11 item 17):
+	// ZTOD, ET or CD, whichever the TIMEUFC page shows, as bare digits; none until
+	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
+	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
+		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
+	if(master==="120c"&&declutter<2) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);
+	// ---- the breakaway X: one cue for every weapon, however it was reached (the
+	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
+	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
+	// the symbology's green and line (the HUD draws in green only; Chuck's guide
+	// p.391), flashing ----
+	if(breakaway_shown()){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); } }
+// closure is the rate two jets close along the line of sight, from their
+// velocity vectors, m/s (+ = closing). Never by differencing range between render
+// frames: the cores step on a fixed 60 Hz accumulator, so above 60 fps the
+// difference quotient alternated between zero and double the true closure and the
+// director pipper shook.
+function closure(one,two){ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
+	if(to.lengthSq()<1e-6) return 0;
+	to.normalize();
+	const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
+	const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
+	return mine.sub(his).dot(to); }
+// hud_pitch draws the pitch ladder (NATOPS 2.13.4.8.11 item 11, figure 2-26): a
+// line every 5° to ±85° about the heading ladFwd, split about the centre, angled
+// toward the horizon at half the pitch angle, dashed below it, with the end tabs
+// and the figures, and the zenith and nadir. proj_dir places a direction: the
+// HUD's camera, or the DDI's fixed field. Returns where the horizon bar's centre
+// was drawn, or null.
+function hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs){ let horizon=null;
+	for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
+		if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
+			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7*hs,0,Math.PI*2); hctx.stroke();
+			if(p<0){ const q=5*hs; hctx.beginPath(); hctx.moveTo(Z[0]-q,Z[1]-q); hctx.lineTo(Z[0]+q,Z[1]+q); hctx.moveTo(Z[0]+q,Z[1]-q); hctx.lineTo(Z[0]-q,Z[1]+q); hctx.stroke(); }
+			continue; }
+		const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
+		const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
+		const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
+		if(p===0) horizon=[midx,midy];
+		const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
+		const gap=(p===0?30:22)*hs;
+		hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
+		hctx.setLineDash(p<0?[7*hs,6*hs]:[]);
+		const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
+		const tick=(p>=0?9:-9)*hs;                        // outer end-ticks point toward the horizon; the horizon bar's, extended or not, point down (figure 2-26)
+		for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
+			hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); hctx.lineTo(x1,y1+tick); hctx.stroke(); }
+		if(p!==0){ hctx.setLineDash([]); hctx.font=(11*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance (i18n-format-ok: a CSS font size)
+			for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
+				hctx.fillText(String(Math.abs(p)),x1+half*14*hs,y1+(p>0?tick*0.6:tick*0.6)); } }
+		hctx.restore(); }
+	return horizon; }
+// hud_symbols draws the symbols about the boresight and the velocity vector: the
+// A/A gun cross, the landing waterline, the velocity vector and its ghost, the E
+// bracket and the ILS deviation bars. bore and fpm are screen points; ppd the
+// world's pixels per degree, hs the symbol scale.
+function hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs){
+	// ---- boresight gun cross: A/A master modes only (the NAV HUD carries none) ----
+	if(master!=="nav"&&!pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
+		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
+
+	// ---- waterline symbol (landing configuration): a W with level wings (figure 2-26), as the repeater draws it ----
+	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-8*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]+7*hs); hctx.lineTo(bore[0],bore[1]);
+		hctx.lineTo(bore[0]+4*hs,bore[1]+7*hs); hctx.lineTo(bore[0]+8*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
+
+	// ---- the velocity vector, placed above with the ladder that hangs on it ----
+	if(fpm){ const marker=(m,ring=true)=>{ hctx.beginPath(); if(ring) hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
+			hctx.moveTo(m[0]-6*hs,m[1]); hctx.lineTo(m[0]-14*hs,m[1]); hctx.moveTo(m[0]+6*hs,m[1]); hctx.lineTo(m[0]+14*hs,m[1]); hctx.moveTo(m[0],m[1]-6*hs); hctx.lineTo(m[0],m[1]-12*hs); hctx.stroke(); };
+		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
+		// The ghost: the wings and tail without the circle (figure 2-26), so it cannot be taken for the caged marker it stands beside.
+		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(ghost,false); } }
+
+	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
+	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
+	// 2.13.4.8.11 item 13), so a slow jet sees its velocity vector high in the bracket.
+	if(fpm && pa && !ownship.grounded){
+		const dpp=HH/45*hs;   // the HUD's own degrees, not the world's: the HUD view's layout scale, carried onto the glass by hs
+		const off=THREE.MathUtils.clamp(((ownship.aoa??8.1)-8.1)*dpp,-3.5*dpp,3.5*dpp);
+		const bx=fpm[0]-30*hs, by=fpm[1]+off, half=1.2*dpp;
+		hctx.beginPath(); hctx.moveTo(bx+7*hs,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7*hs,by+half);
+		hctx.moveTo(bx,by); hctx.lineTo(bx+5*hs,by); hctx.stroke(); }   // centre tick marks on-speed
+
+	// ---- ILS deviation bars, referenced to the velocity vector (replacing the old centred needles) ----
+	if(fpm){ const dev=approach_deviation(); if(dev){ hctx.strokeStyle=GR; hctx.setLineDash([]);
+		const reach=2.2*ppd, lx=fpm[0]+dev.az*reach, gy=fpm[1]+dev.gs*reach;
+		hctx.beginPath(); hctx.moveTo(lx,fpm[1]-reach); hctx.lineTo(lx,fpm[1]+reach); hctx.stroke();
+		hctx.beginPath(); hctx.moveTo(fpm[0]-reach,gy); hctx.lineTo(fpm[0]+reach,gy); hctx.stroke(); } } }
 // ---- A/A radar (#30): the model lives in radar.ts; this block owns its
 // contacts feed, the per-frame step, the designation plumbing that makes the
 // L&S/STT the one target source (`designated`), the emitter uplink for other
@@ -8406,14 +9184,30 @@ let radar_events=[];
 // other. Drained the same way, into the Break channel.
 let radar_breaks=[];
 function radar_designate(id){ if(!RADAR.designate(id)) return false;   // a silent radar refuses; the visual designation stands
-	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+	designated=id; return true; }
 function radar_lock(id){ if(!RADAR.lock(id)) return false;   // the ACM acquisition: straight to STT
-	if(MULTIPLAYER&&typeof id==="number") designated=id; return true; }
+	designated=id; return true; }
 function radar_undesignate(){ const held=RADAR.stt!=null||RADAR.ls!=null; RADAR.undesignate();
-	if(RADAR.stt==null&&RADAR.ls==null&&MULTIPLAYER) designated=-1; return held; }
+	if(RADAR.stt==null&&RADAR.ls==null) designated=-1; return held; }
+// radar_held drops the pilot's designation once the radar no longer holds it:
+// the box stands for what the radar has, so a lock it breaks, or a trackfile
+// it lets go, takes the designation with it. A silent radar holds nothing,
+// and its visual designation stands.
+function radar_held(){ if(!RADAR.sil&&designated!==-1&&designated!==RADAR.stt&&designated!==RADAR.ls) designated=-1; }
+// hud_target is the jet the HUD boxes: the pilot's designation, while it
+// flies - not whatever is out there. Designate, step and undesignate on the
+// acquire key, like the real ACM flow.
+function hud_target(){ const dst=designated==="bandit"?(has_enemy?bandit:null):(MULTIPLAYER&&net?remotes.get(designated):null);
+	if(dst&&dst.group.visible) return dst;
+	designated=-1; return null; }
+// heat_quarry is what the 9M's seeker looks at: in a match the designated
+// jet, alone the one jet out there, boxed by the radar or not - a heat seeker
+// needs no radar.
+function heat_quarry(boxed){ return MULTIPLAYER?boxed:(has_enemy&&bandit.group.visible?bandit:null); }
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
+	radar_held();
 	if(RADAR.breakReason) radar_breaks.push(`${sim_time.toFixed(1)}|${RADAR.breakReason}`);   // i18n-format-ok: ACMI event timestamp, not display text
 	// A commanded ACM condition runs its own cone: with no lock held the radar
 	// takes the first target in it, at the real set's acquisition cadence, and
@@ -8476,7 +9270,7 @@ function acquire_press(){
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		RADAR.ls=order[0].id; radar_events.push(`${sim_time.toFixed(1)}|acquire|ls`);   // i18n-format-ok: ACMI event timestamp, not display text
-		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
+		designated=RADAR.ls;
 		return; }
 	acquire_acm(); }
 // BACKSPACE: undesignate, contextual like the real button — in TWS with no
@@ -8489,7 +9283,7 @@ function undesignate_press(){
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
 		const at=order.findIndex(t=>t.id===RADAR.ls);
 		RADAR.ls=order[(at+1)%order.length].id; radar_events.push(`${sim_time.toFixed(1)}|undesignate|step`);   // i18n-format-ok: ACMI event timestamp, not display text
-		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
+		designated=RADAR.ls;
 		return; }
 	const held=RADAR.stt!=null;   // which rung this press dropped from, for the label - undesignate() itself has already let go by the time it returns
 	if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
@@ -8514,11 +9308,11 @@ function acquire_acm(auto){
 	// never steps or undesignates, and it must never write to radar_events - a
 	// debrief reading Input as "presses that landed" would otherwise credit the
 	// radar's own polling as pilot input.
-	if(!cone.length){ if(auto) return; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|acquire|lost`); if(MULTIPLAYER&&RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }   // i18n-format-ok: ACMI event timestamp, not display text
-	const current=auto?null:(RADAR.stt??(MULTIPLAYER?designated:null));
+	if(!cone.length){ if(auto) return; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|acquire|lost`); if(RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }   // i18n-format-ok: ACMI event timestamp, not display text
+	const current=auto?null:(RADAR.stt??designated);
 	const at=cone.findIndex(k=>k.id===current);
 	const id=cone[(at+1)%cone.length].id;
-	if(MULTIPLAYER&&typeof id==="number") designated=id;
+	designated=id;
 	if(radar_lock(id)&&!auto) radar_events.push(`${sim_time.toFixed(1)}|acquire|cone`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // acm_press: the castle switch — BST commanded, then VACQ, then back to the
 // search radar. The commanded condition acquires by itself (radar_step); Enter
@@ -8738,7 +9532,7 @@ function net_frame(dt){
 			if(mine.alive){ const worst=Math.max(own_burn[0],own_burn[1],own_burning?1:0);
 				if(worst>0) burn_trail(ownship.pos,worst,ownship.velx,ownship.vely,ownship.velz);
 				if(own_leak>0.1) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz); } } }
-	const seen=new Set();
+	const seen=new Set(), wakes=[];
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
 		const st=remote_for(slot);
 		st.pos.set(pose.position[0],pose.position[1],pose.position[2]); st.speed=pose.speed;
@@ -8761,6 +9555,7 @@ function net_frame(dt){
 		// MP debrief reads his damage and his expenditure as ground truth
 		// rather than inferring them from his flight path.
 		st.spent=pose.spent||0; st.leak=pose.leak||0; st.thrust=pose.thrust||0;
+		if(pose.alive) wakes.push({ slot, position:pose.position, attitude:pose.attitude, velocity:[st.velx,st.vely,st.velz], g:pose.g||1 });   // his wake, laid in the pilot's core as the server lays it, so prediction flies through it too
 		st.aoa=pose.aoa||0; st.beta=pose.beta||0; st.gload=pose.g||0;   // #164: his alpha, sideslip and g off the wire — what a recording cannot derive (#44)
 		st.burn=pose.burn; st.burning=!!pose.burning; st.reheat=pose.reheat||0;
 		st.name=pose.name; st.group.visible=pose.alive;
@@ -8777,6 +9572,7 @@ function net_frame(dt){
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
 			if((pose.thrust||0)>0.06) engine_smoke(st.pos,pose.thrust,st.velx,st.vely,st.velz);   // harmless no-op on wires that do not carry it
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
+	flight_wake_shed(wakes);
 	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot);
 	update_darts(dt); }
 // Server missiles ("darts", net.darts): every missile near the player rides
@@ -8855,6 +9651,7 @@ function start_mission(){
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
 	const cheatq=devq.get("cheat"); if(cheatq){ const on={...(cfg.cheats as Record<string,boolean>)}; for(const c of cheatq.split(",")) if(c==="invulnerable"||c==="ammunition"||c==="fuel") on[c]=true; cfg.cheats=on; }   // &cheat=invulnerable,... — harness survival without teaching the rig to fly BFM
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
+	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="pilot"||banditq==="ace"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
 	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock

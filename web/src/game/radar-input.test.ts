@@ -4,8 +4,9 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { Radar, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, geometry, pick, type Track } from './radar'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -227,7 +228,7 @@ describe('the radar page click (rdr_face) and its UNDES bezel (rdr_press)', () =
     // snap tolerance, so both the brick and a matching contact are needed.
     const r = rig([{ id: 'bandit', x: 0, y: 0, z: -20000 }])
     r.RADAR.mode = 'rws'
-    r.RADAR.bricks = [{ id: 'bandit', azimuth: 0, range: 20000, at: 0 }]
+    r.RADAR.bricks = [{ id: 'bandit', azimuth: 0, range: 20000, at: 0, x: 0, z: -20000 }]
     r.clock(30)
     r.rdrClick(0, 20000)
     expect(r.RADAR.stt).toBe('bandit')
@@ -249,5 +250,289 @@ describe('the radar page click (rdr_face) and its UNDES bezel (rdr_press)', () =
     r.clock(2)
     r.rdrUndesignate()
     expect(r.events()).toEqual([])
+  })
+})
+
+describe('the range scale (the RDR page\'s arrows, the castle zoom)', () => {
+  // rdr_range, lifted as the rig does, stepping a real Radar's scale.
+  function stepper() {
+    return new Function(
+      'Radar',
+      'RADAR_SCALES',
+      `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
+       const RADAR=new Radar();
+       ${lift('rdr_range')}
+       return { RADAR, out:()=>rdr_range(-1), in:()=>rdr_range(1) };`
+    )(Radar, SCALES) as { RADAR: Radar; out(): void; in(): void }
+  }
+
+  it("steps out through the F/A-18C's scales to 160 nm and no further, and back in to 5", () => {
+    expect(SCALES).toEqual([5, 10, 20, 40, 80, 160])
+    const r = stepper()
+    expect(r.RADAR.scale).toBe(40) // the search scale a fight starts on
+    const seen = [r.RADAR.scale]
+    for (let i = 0; i < 4; i++) {
+      r.out()
+      seen.push(r.RADAR.scale)
+    }
+    expect(seen).toEqual([40, 80, 160, 160, 160])
+    for (let i = 0; i < 6; i++) r.in()
+    expect(r.RADAR.scale).toBe(5)
+  })
+})
+
+describe('the HUD box: what the pilot has designated, and nothing else', () => {
+  // hud_target, radar_held and heat_quarry, lifted as the rig does, with the
+  // bandit alone or a match's remotes.
+  type Jet = { group: { visible: boolean }; name: string }
+  function world(multiplayer: boolean) {
+    return new Function(
+      'Radar',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=${multiplayer}, has_enemy=!MULTIPLAYER, net=MULTIPLAYER?{}:null;
+       const bandit={ group:{ visible:true }, name:'bandit' };
+       const remotes=new Map([[3,{ group:{ visible:true }, name:'three' }]]);
+       let designated=-1;
+       ${lift('radar_held')}
+       ${lift('hud_target')}
+       ${lift('heat_quarry')}
+       return { RADAR, bandit, remotes, hud_target, radar_held, heat_quarry,
+         designate:(id)=>{ designated=id; }, designated:()=>designated };`
+    )(Radar) as {
+      RADAR: Radar
+      bandit: Jet
+      remotes: Map<number, Jet>
+      hud_target(): Jet | null
+      radar_held(): void
+      heat_quarry(boxed: Jet | null): Jet | null
+      designate(id: number | string): void
+      designated(): number | string
+    }
+  }
+
+  it('boxes no bandit the pilot has not designated, however near, alone', () => {
+    const w = world(false)
+    expect(w.hud_target()).toBeNull() // at a BVR joust's start: nothing designated, nothing boxed
+    w.designate('bandit')
+    expect(w.hud_target()).toBe(w.bandit) // once acquired, boxed
+    w.bandit.group.visible = false
+    expect(w.hud_target()).toBeNull() // shot down: gone, and the designation with it
+    expect(w.designated()).toBe(-1)
+  })
+
+  it("boxes a match's designated remote, and drops a designation that has gone", () => {
+    const w = world(true)
+    expect(w.hud_target()).toBeNull()
+    w.designate(3)
+    expect(w.hud_target()?.name).toBe('three')
+    w.designate(9) // left the match
+    expect(w.hud_target()).toBeNull()
+    expect(w.designated()).toBe(-1)
+  })
+
+  it('drops the designation when the radar lets it go, and keeps a silent radar\'s visual one', () => {
+    const w = world(false)
+    w.designate('bandit')
+    w.RADAR.stt = 'bandit'
+    w.radar_held()
+    expect(w.designated()).toBe('bandit') // the radar holds it: it stands
+    w.RADAR.stt = null // the lock broke: range, gimbal, memory
+    w.radar_held()
+    expect(w.designated()).toBe(-1) // and the box goes with it
+    w.designate('bandit')
+    w.RADAR.ls = 'bandit' // a TWS L&S holds it too
+    w.radar_held()
+    expect(w.designated()).toBe('bandit')
+    w.RADAR.ls = null
+    w.RADAR.sil = true // silent: a visual designation, the radar holding nothing
+    w.designate('bandit')
+    w.radar_held()
+    expect(w.designated()).toBe('bandit')
+  })
+
+  it("points the 9M's seeker at the bandit alone whether or not the radar has it, and at the designated jet in a match", () => {
+    const alone = world(false)
+    expect(alone.heat_quarry(null)).toBe(alone.bandit) // a heat seeker needs no radar
+    alone.bandit.group.visible = false
+    expect(alone.heat_quarry(null)).toBeNull()
+    const match = world(true)
+    const three = match.remotes.get(3)!
+    expect(match.heat_quarry(three)).toBe(three)
+    expect(match.heat_quarry(null)).toBeNull()
+  })
+
+  it('draws with these: the box from hud_target, the seeker from heat_quarry, the designation checked each radar step', () => {
+    const hud = lift('draw_hud')
+    expect(hud).toMatch(/const dst=hud_target\(\); if\(dst\)\{ boxed=dst;/)
+    expect(hud).not.toMatch(/if\(has_enemy\)\{[^}]*boxed=bandit/) // never the bandit for being there
+    expect(hud).toMatch(/const quarry=heat_quarry\(boxed\);/)
+    expect(hud).toMatch(/if\(master==="9m"&&!pa&&quarry\)/)
+    expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):bore;/) // the seeker circle on its heat, boxed or not
+    expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
+  })
+
+  it('designates the bandit alone as a match designates its remotes: the acquire key, the TWS L&S, the ACM cone', () => {
+    for (const name of ['radar_designate', 'radar_lock'])
+      expect(lift(name)).toMatch(/\tdesignated=id; return true; \}/)
+    expect(lift('acquire_press')).toMatch(/\t\tdesignated=RADAR\.ls;/)
+    expect(lift('undesignate_press')).toMatch(/\t\tdesignated=RADAR\.ls;/)
+    expect(lift('acquire_acm')).toMatch(/\tdesignated=id;\n\tif\(radar_lock\(id\)/)
+    for (const name of ['radar_designate', 'radar_lock', 'radar_undesignate', 'acquire_press', 'undesignate_press', 'acquire_acm'])
+      expect(lift(name)).not.toMatch(/MULTIPLAYER/) // nothing kept for a match alone
+  })
+})
+
+describe('the known picture: what the SA page and the map draw', () => {
+  // known lifted with the bandit alone, or a match with the pilot on blue, a
+  // blue teammate (slot 2) and a red hostile (slot 3); the pilot at the origin.
+  type Mark = { x: number; z: number; fx: number; fz: number; team: string; name: string }
+  function page(multiplayer: boolean, night = false, far = 100000) {
+    return new Function(
+      'Radar',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=${multiplayer}, net=MULTIPLAYER?{ slot:1, teams:new Map([[1,'blue'],[2,'blue'],[3,'red']]) }:null;
+       const cfg={ tod:${night}?'night':'day' }, ownship={ pos:{ x:0, y:0, z:0 } }, wrap_axis=(v)=>v;
+       const jets=MULTIPLAYER
+         ?[{ id:2, x:100, y:0, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
+         :[{ id:'bandit', x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'', team:'' }];
+       const contacts=()=>jets;
+       ${lift('known').replace(/^function known/, 'const SIGHT=12000; function known')}
+       return { RADAR, known };`
+    )(Radar) as { RADAR: Radar; known(): Mark[] }
+  }
+  const track = (id: number | string, z: number, at = 0) => ({ id, x: 0, y: 0, z, vx: 0, vy: 0, vz: 250, at, hits: 1 })
+  const paint = (id: number | string, z: number, at: number) => ({ id, azimuth: 0, range: -z, at, x: 0, z })
+
+  it('shows no bandit beyond sight that the radar does not hold', () => {
+    expect(page(false).known()).toEqual([])
+  })
+  it('shows a hostile close enough to see as it is, unnamed, radar or none', () => {
+    expect(page(false, false, 11000).known()).toEqual([{ x: 0, z: -11000, fx: 0, fz: 1, team: '', name: '' }])
+    expect(page(false, false, 13000).known()).toEqual([])
+  })
+  it("names no hostile in sight in a match: the eyes read no callsign", () => {
+    expect(page(true, false, 11000).known().map((m) => m.name)).toEqual(['two', ''])
+  })
+  it('sees half as far at night', () => {
+    expect(page(false, true, 7000).known()).toEqual([])
+    expect(page(false, true, 5000).known()).toHaveLength(1)
+  })
+  it('draws a trackfile where its last fix, carried on by its velocity, puts it, unnamed', () => {
+    const p = page(false)
+    p.RADAR.tracks = [track('bandit', -80000)]
+    p.RADAR.time = 4
+    expect(p.known()).toEqual([{ x: 0, z: -79000, fx: 0, fz: 250, team: '', name: '' }])
+  })
+  it('draws a seen hostile once, as seen, over its trackfile', () => {
+    const p = page(false, false, 9000)
+    p.RADAR.tracks = [track('bandit', -9500)]
+    expect(p.known()).toEqual([{ x: 0, z: -9000, fx: 0, fz: 1, team: '', name: '' }])
+  })
+  it('marks an RWS paint without a heading: its newest paint, and none beside a trackfile', () => {
+    const p = page(false)
+    p.RADAR.bricks = [paint('bandit', -90000, 0), paint('bandit', -89500, 2)]
+    expect(p.known()).toEqual([{ x: 0, z: -89500, fx: 0, fz: 0, team: '', name: '' }])
+    p.RADAR.tracks = [track('bandit', -89000, 2)]
+    p.RADAR.time = 2
+    expect(p.known().map((m) => m.fz)).toEqual([250])
+  })
+  it("shows a match's teammate by datalink at any range, named, and a hostile only as tracked, unnamed", () => {
+    const p = page(true)
+    expect(p.known().map((m) => m.name)).toEqual(['two'])
+    p.RADAR.tracks = [track(3, -30000), track(2, -50000)] // the teammate's own trackfile adds nothing
+    expect(p.known()).toEqual([
+      { x: 100, z: -50000, fx: 1, fz: 0, team: 'blue', name: 'two' },
+      { x: 0, z: -30000, fx: 0, fz: 250, team: 'red', name: '' },
+    ])
+  })
+  it('draws the SA page and the map from it, a paint with no heading as a plain mark', () => {
+    const sa = lift('ddi_sa'), map = lift('draw_map')
+    expect(sa).toContain('for(const c of known()) jet(c.x,c.z,c.fx,c.fz,')
+    expect(sa).toMatch(/if\(!fx&&!fz\)\{ [^\n]*x\.arc\(dx,dz,6,0,Math\.PI\*2\); x\.stroke\(\); return; \}/)
+    expect(map).toContain('for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,')
+    expect(map).toMatch(/if\(!fx&&!fz\)\{ [^\n]*mctx\.arc\(x2,y2,5,0,Math\.PI\*2\); mctx\.stroke\(\); return; \}/)
+    expect(map).not.toMatch(/remotes\.entries\(\)|bandit\.pos/)
+  })
+})
+
+describe('the launch zones fly the radar trackfile, not the jet', () => {
+  // radar_target, launch_zone and heat_zone lifted with the ladders stubbed to
+  // record what they are flown against; the bandit, alone, is somewhere else
+  // by now than the radar last saw it.
+  type Fed = { position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }
+  function zones() {
+    return new Function(
+      'Radar', 'THREE',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=false, has_enemy=true, remotes=new Map(), WORLD_WRAP=0, wrap_axis=(v)=>v;
+       const bandit={ group:{ visible:true }, pos:{ x:0, y:6000, z:-30000 }, velx:0, vely:0, velz:250, fwd:{ x:0, y:0, z:1 }, speed:250, reheat:0.5 };
+       const ownship={ pos:{ x:0, y:6000, z:0 }, velx:0, vely:0, velz:-250, speed:250 };
+       let sim_time=10, zone_at=0, zone=null, zone_track=null, heat_at=0, heat=null, heat_track=null, heat_prev=null;
+       const fed={ amraam:null, heater:null, reheat:null };
+       const round_ladder=(own,target)=>{ fed.amraam=target; return { max:40000, escape:20000, minimum:800 }; };
+       const heater_ladder=(own,target,swing,reheat)=>{ fed.heater=target; fed.reheat=reheat; return { max:8000, escape:4000, minimum:500 }; };
+       ${lift('radar_target')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')}
+       return { RADAR, bandit, fed, launch_zone, heat_zone, ranging };`
+    )(Radar, THREE) as { RADAR: Radar; bandit: { group: { visible: boolean } }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null }
+  }
+  // the trackfile's last fix: 40 km out four seconds ago, closing at 250 m/s
+  const held = { id: 'bandit', x: 0, y: 6000, z: -40000, vx: 0, vy: 0, vz: 250, at: 0, hits: 1 }
+
+  it('flies the AMRAAM zone against the trackfile carried on, not the jet', () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.ls = 'bandit'
+    z.RADAR.time = 4
+    const zone = z.launch_zone()
+    expect(z.fed.amraam?.position).toEqual({ x: 0, y: 6000, z: -39000 })
+    expect(z.fed.amraam?.velocity).toEqual({ x: 0, y: 0, z: 250 })
+    expect(zone?.range).toBeCloseTo(39000, 6)
+    expect(zone?.lead.z).toBeCloseTo(-39000 + 250 * (39000 / (250 + 650)), 6) // the steering dot leads the track, not the jet at 30 km
+  })
+  it("flies the 9M's zone against it too, with the jet's own plume", () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.stt = 'bandit'
+    z.RADAR.time = 4
+    const heat = z.heat_zone()
+    expect(z.fed.heater?.position).toEqual({ x: 0, y: 6000, z: -39000 })
+    expect(heat?.range).toBeCloseTo(39000, 6)
+    expect(z.fed.reheat).toBe(0.5)
+  })
+  it("ranges the HUD on the trackfile carried on: range, and closure on the track's velocity", () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.stt = 'bandit'
+    z.RADAR.time = 4
+    const r = z.ranging()
+    expect(r?.range).toBeCloseTo(39000, 6)
+    expect(r?.closure).toBeCloseTo(500, 6) // 250 m/s each, nose to nose
+  })
+  it('has no ranging from a silent radar or without a trackfile', () => {
+    const z = zones()
+    z.RADAR.stt = 'bandit'
+    expect(z.ranging()).toBeNull()
+    z.RADAR.tracks = [held]
+    z.RADAR.sil = true
+    expect(z.ranging()).toBeNull()
+  })
+  it('feeds both HUDs the radar ranging, and shows the data block only with it', () => {
+    for (const name of ['draw_hud', 'ddi_hud']) {
+      const body = lift(name)
+      expect(body, name).toMatch(/const r=ranging\(\); if\(r\)\{ rng=r\.range; vc=r\.closure; ranged=true; \}/)
+      expect(body, name).not.toMatch(/rng=wrap_distance\(ownship\.pos,dst\.pos\)/)
+      expect(body, name).toContain('vc,ranged?rng:null,')
+    }
+    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!declutter)')
+  })
+  it('has no zone without a trackfile, or once the jet is gone', () => {
+    const z = zones()
+    z.RADAR.ls = 'bandit'
+    expect(z.launch_zone()).toBeNull()
+    expect(z.heat_zone()).toBeNull()
+    z.RADAR.tracks = [held]
+    z.bandit.group.visible = false
+    expect(z.launch_zone()).toBeNull()
+    expect(z.heat_zone()).toBeNull()
   })
 })

@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest'
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 // The match ends on the line that also closes update_gauges, so its last brace
 // is dropped to leave just the else-if block.
-const block = (/\n\telse if\(ind\)\{ const devd=[\s\S]*?ind\.donut\.opacity=[^\n]*\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
+const block = (/\n\telse if\(ind\)\{ const [a-z]+=\(out\[STATE\.alpha\]\|\|0\)\/D2R[\s\S]*?ind\.donut\.opacity=[^\n]*\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
 
 interface Moment { hook: number; bypass: 'carrier' | 'field'; time: number }
 interface Result { lit: boolean; bypass: string }
@@ -51,6 +51,44 @@ describe('the AOA indexer flash', () => {
     const [up, down] = indexer([{ hook: 0, bypass: 'field', time: 0.1 }, { hook: 1, bypass: 'field', time: 0.2 }])
     expect(up.bypass).toBe('field')
     expect(down.bypass).toBe('carrier')
+  })
+})
+
+// NATOPS figure 2-19 (aircraft 161520 and up): five indications, each a set
+// of symbols fully lit or dark - SLOW 9.3-90° top chevron, SLIGHTLY SLOW
+// 8.8-9.3° chevron and donut, ON SPEED 7.4-8.8° donut, SLIGHTLY FAST 6.9-7.4°
+// donut and bottom chevron, FAST 0-6.9° bottom chevron.
+function lamps(alpha: number): { slow: number; donut: number; fast: number } {
+  if (!block) throw new Error('indexer block not found in engine.ts')
+  return new Function('alpha', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:false};
+    let sim_time=0, hook_bypass="carrier";
+    const out=[alpha*D2R, 1];
+    if(false){} ${block}
+    return { slow:ind.slow.opacity, donut:ind.donut.opacity, fast:ind.fast.opacity };`)(alpha)
+}
+const lit = (alpha: number) => { const l = lamps(alpha); return [l.slow, l.donut, l.fast] }
+
+describe('the AOA indexer bands', () => {
+  it('shows the five indications of figure 2-19, each lamp fully lit or dark', () => {
+    expect(lit(12)).toEqual([1, 0, 0]) // SLOW
+    expect(lit(9)).toEqual([1, 1, 0]) // SLIGHTLY SLOW
+    expect(lit(8.1)).toEqual([0, 1, 0]) // ON SPEED
+    expect(lit(7.5)).toEqual([0, 1, 0])
+    expect(lit(8.7)).toEqual([0, 1, 0])
+    expect(lit(7.1)).toEqual([0, 1, 1]) // SLIGHTLY FAST
+    expect(lit(5)).toEqual([0, 0, 1]) // FAST
+  })
+
+  it('changes indication at the figure\'s band edges', () => {
+    expect(lit(9.29)).toEqual([1, 1, 0])
+    expect(lit(9.3)).toEqual([1, 0, 0])
+    expect(lit(8.79)).toEqual([0, 1, 0])
+    expect(lit(8.8)).toEqual([1, 1, 0])
+    expect(lit(7.39)).toEqual([0, 1, 1])
+    expect(lit(7.4)).toEqual([0, 1, 0])
+    expect(lit(6.89)).toEqual([0, 0, 1])
+    expect(lit(6.9)).toEqual([0, 1, 1])
   })
 })
 
@@ -140,6 +178,25 @@ describe('the state-driven switches', () => {
     expect(drive('radaropr', {}, { sil: true }, true)).toBeCloseTo(2 / 3)
   })
 
+  // The FLAP switch (NATOPS 2.8.2.2.1) stands where the pilot put it, whatever the
+  // gear is doing; other aircraft send no selection, so theirs follows the gear.
+  it('set the FLAP switch lever to AUTO, HALF and FULL from the selection', () => {
+    const line = /\n\t\tcase "flaplever":[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const run = new Function('st', 'ownship', 'flap_select', `let f; switch("flaplever"){ ${line} } return f;`)
+    // gearTarget and gear run 0 down to 1 up
+    const own = (flap: number, gearTarget: number, grounded: boolean) => { const st = { gearTarget, grounded }; return run(st, st, flap) }
+    for (const [gear, grounded, where] of [[1, false, 'gear up'], [0, false, 'gear down'], [0, true, 'on deck']] as [number, boolean, string][]) {
+      expect(own(0, gear, grounded), `AUTO, ${where}`).toBe(0)
+      expect(own(1, gear, grounded), `HALF, ${where}`).toBe(0.5)
+      expect(own(2, gear, grounded), `FULL, ${where}`).toBe(1)
+    }
+    const other = (gear: number, grounded: boolean) => run({ gear, grounded }, {}, 2)
+    expect(other(1, false)).toBe(0)
+    expect(other(0, true)).toBe(0.5)
+    expect(other(0, false)).toBe(1)
+  })
+
   it('spring the DUMP switch back to OFF when BINGO comes on', () => {
     const line = /\n\tif\(fuel_dump&&bingo_low\(\)\) fuel_dump=false;/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
@@ -160,24 +217,25 @@ describe('the state-driven switches', () => {
 // pit_press, the right button up, forward or clockwise and the left the other way.
 // pit_press is lifted from engine.ts and run against stand-ins for the state it works.
 const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
+const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
-  hook_bypass?: string; flap_select?: number
+  hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
-  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]
+  parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', `
-    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0;
-    const RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true;
-    ${pressfn}
+    const ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false;
+    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
+    ${pressfn} ${indexfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test };`)
   return run(action, direction, state) as Pressed
 }
 
@@ -197,8 +255,9 @@ describe('the clickable switches', () => {
 
   it('route the right button to the switches and keep the context menu closed', () => {
     expect(source).toMatch(/stage\.addEventListener\("contextmenu",e=>e\.preventDefault\(\)/)
-    expect(source).toMatch(/if\(e\.button===2\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
-    expect(source).toMatch(/if\(e\.button===2\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
+    // the middle button too: a stationary press, the height indicator's push-to-test (#58)
+    expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
+    expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
     expect(source).toMatch(/if\(e\.button===2\)\{ if\(!playback\) pit_switch\(e\); return; \}/)   // a replay's switches are the recording's
     // a left click reaches the switches only after the screens miss, ahead of the panel-point measurement
     expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
@@ -248,6 +307,42 @@ describe('the clickable switches', () => {
     expect(press('gear', 1, { ground: false }).ownship.gearTarget).toBe(1)
     expect(press('gear', -1, { ground: false, gearTarget: 1 }).ownship.gearTarget).toBe(0)
     expect(press('gear', 1, { ground: true }).ownship.gearTarget).toBe(0)
+  })
+
+  it('turn the radar altimeter\'s index knob a notch, the right button clockwise to raise it (NATOPS 2.12.5.4.1)', () => {
+    expect(press('index', 1, { index: 200 }).index).toBe(250)
+    expect(press('index', -1, { index: 200 }).index).toBe(150)
+    expect(press('index', 1, { index: 40 }).index).toBe(50)
+  })
+
+  // NATOPS 2.12.5.4.1: turning the knob clockwise applies power to the set, further
+  // clockwise raises the index; fully anticlockwise it is off. Pushing it runs the BIT.
+  it('power the radar altimeter with its knob: off past index 0, on again clockwise with the familiarisation whoop on the ground', () => {
+    expect(press('index', -1, { index: 10 })).toMatchObject({ index: 0, on: true })
+    expect(press('index', -1, { index: 0 })).toMatchObject({ index: 0, on: false })
+    expect(press('index', 1, { index: 0, on: false })).toMatchObject({ index: 0, on: true, greet: true })
+    expect(press('index', 1, { index: 0, on: false, ground: false })).toMatchObject({ on: true, greet: false })
+    expect(press('index', -1, { index: 0, on: false })).toMatchObject({ on: false })
+  })
+
+  it('run the BIT on a push, only with the set powered', () => {
+    expect(press('radalt.test', 0).test).toBe(10)
+    expect(press('radalt.test', 0, { on: false }).test).toBe(-Infinity)
+  })
+
+  it('clear peak g when the reject switch moves into a reject position, and not on the way back to NORM (NATOPS 2.13.4.8.11 item 8)', () => {
+    expect(press('reject', -1, { declutter: 0, peak_g: 6.2 }).peak_g).toBe(1) // NORM to REJ 1
+    expect(press('reject', -1, { declutter: 1, peak_g: 6.2 }).peak_g).toBe(1) // REJ 1 to REJ 2
+    expect(press('reject', 1, { declutter: 1, peak_g: 6.2 }).peak_g).toBe(6.2) // REJ 1 to NORM
+    expect(press('reject', 0, { declutter: 2, peak_g: 6.2 }).peak_g).toBe(6.2) // the key's cycle from REJ 2 wraps to NORM
+  })
+
+  it('enter the NAV master mode when the gear handle is lowered, and only then (NATOPS 2.13.2)', () => {
+    expect(press('gear', -1, { ground: false, gearTarget: 1 }).masters).toEqual(['nav'])
+    expect(press('gear', 0, { ground: false, gearTarget: 1 }).masters).toEqual(['nav'])
+    expect(press('gear', 1, { ground: false, gearTarget: 0 }).masters).toEqual([]) // raising it leaves the mode alone
+    expect(press('gear', -1, { ground: false, gearTarget: 0 }).masters).toEqual([]) // already down
+    expect(press('gear', -1, { ground: true, gearTarget: 1 }).masters).toEqual([]) // the handle does not move on deck
   })
 
   it('move the flap lever one notch, FULL at the bottom, and arm the selection', () => {

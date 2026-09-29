@@ -162,3 +162,35 @@ describe('the engine wiring', () => {
     expect(source).toMatch(/function bingo_set\(lb\)\{[^\n]*BINGO=[^\n]*fuel_state\.bingo/)
   })
 })
+
+// NATOPS 2.1.1.7.5: the IFEI's FF "displays main engine fuel flow only
+// (afterburner fuel flow is not displayed)"; the engine page's FF row is the
+// same number. The per-engine flows are the measured total burn split by each
+// engine's demand - idle, core and reheat - and the display takes each
+// engine's main share only. The two lines are lifted from the gauges block.
+describe('the displayed fuel flow', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lines = /\n\t\tflowL:[^\n]*\n\t\tflowR:[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const flows = (pph: number, hL: number, gL: number, bL: number, hR: number, gR: number, bR: number) =>
+    new Function('pph', 'hL', 'gL', 'bL', 'hR', 'gR', 'bR', `const flow_state={ pph }, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+      return {${lines}};`)(pph, hL, gL, bL, hR, gR, bR) as { flowL: number; flowR: number }
+
+  it('splits the measured burn by demand in dry power', () => {
+    expect(lines).not.toBe('')
+    const { flowL, flowR } = flows(9000, 1, 1, 0, 1, 0.5, 0)
+    expect(flowL + flowR).toBeCloseTo(9000, 6)
+    expect(flowL / flowR).toBeCloseTo(1.12 / 0.62, 6)
+  })
+
+  it('leaves the afterburner out, each engine showing its main share of the burn', () => {
+    const { flowL, flowR } = flows(40000, 1, 1, 1, 1, 1, 0)
+    const demand = (0.12 + 1 + 3.4) + (0.12 + 1)
+    expect(flowL).toBeCloseTo(40000 * 1.12 / demand, 6) // the reheating engine: its core only
+    expect(flowR).toBeCloseTo(40000 * 1.12 / demand, 6)
+    expect(flows(40000, 1, 1, 0, 1, 1, 1).flowR).toBeCloseTo(40000 * 1.12 / demand, 6) // and the right engine in reheat
+  })
+
+  it('winds a dead engine down to zero', () => {
+    expect(flows(5000, 0, 0, 0, 1, 1, 0).flowL).toBe(0)
+  })
+})
