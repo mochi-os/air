@@ -2806,43 +2806,35 @@ function ew_draw(x,cx,cy,R,size){ const s=R/190;   // line weights and symbol ri
 		if(c.missile){ x.lineWidth=2.5*s; x.beginPath(); x.arc(px,py,13*s,0,Math.PI*2); x.stroke(); x.beginPath(); x.arc(px,py,17*s,0,Math.PI*2); x.stroke(); }   // the doubled ring: the MISSILE symbol the pilot reacts to without reading it
 		else if(c.locked){ x.lineWidth=2*s; x.beginPath(); x.arc(px,py,13*s,0,Math.PI*2); x.stroke(); } }
 	x.globalAlpha=1; }
-function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
+function gross_pounds(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross (#8, #51)
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
-	return Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10; }
-function ddi_chklst(x,display){ const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
-	const colour=display==="center";
-	x.fillText("CHKLST",256,36);
-	const wt=gross_weight();
-	const t=Math.max(0,(wt/2.2046/1000-11.2)/(15.6-11.2));   // linear on the Reference dialog's measured 11.2-15.6 t interval, EXTRAPOLATED above it: a tanked jet flies past the clean bracket and clamping under-read its speeds
-	const vapp=Math.round(126+t*22), vs0=Math.round(110+t*16);   // linear between the Reference dialog's measured endpoints (rows vapp/vs0, 11.2-15.6 t — re-based 2026-08-07 with the regenerated table)
-	const flap=["AUTO","HALF","FULL"][flap_select]||"AUTO";
-	const trim=((o[STATE.datum]||0)/D2R);
-	const item=(cx0,y,label,state,ok)=>{
-		if(ok!==null){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(cx0,y-9,18,18);
-			if(ok){ x.beginPath(); x.moveTo(cx0+4,y); x.lineTo(cx0+8,y+5); x.lineTo(cx0+15,y-6); x.stroke(); } }
-		x.font="18px monospace"; x.textAlign="left"; x.fillText(label,cx0+28,y);
-		if(state){ if(colour&&ok===false) x.fillStyle="#ffb04a";
-			x.font="15px monospace"; x.fillText(state,cx0+28,y+20); x.fillStyle="#39e07a"; } };
-	x.font="20px monospace"; x.textAlign="center"; x.fillText("T/O",130,88); x.fillText("LDG",372,88);
-	let y=130;
-	item(44,y,"WINGS","SPREAD",(ownship.fold??0)<0.02); y+=56;
-	item(44,y,"FLAPS","FLAPS "+flap,flap_select===1); y+=56;
-	item(44,y,"TRIM",trim.toFixed(1)+"° NU",trim>0.5); y+=56;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-	item(44,y,"HOOK UP",null,(ownship.hook??0)<0.02); y+=56;
-	item(44,y,"CANOPY",null,(ownship.canopy??ownship.canopyTarget??0)<0.02); y+=56;
-	item(44,y,"PARK BRK","OFF",!parking);
-	x.font="20px monospace"; x.textAlign="left";   // NATOPS 8.2.7 catapult power: below the 44,000 lb weight board the technique is the pilot's choice of MIL / MIL-MAX / MAX; 45,000 and above requires MAX. Data, not automation — the power stays in the pilot's hand
-	x.fillText("CAT "+(wt>=45000?"MAX":"MIL/MAX"),44,458);
-	y=130;
-	item(286,y,"GEAR","DOWN",(ownship.gear??1)<0.02); y+=56;
-	item(286,y,"FLAPS","FLAPS "+flap,flap_select>0); y+=56;
-	item(286,y,"HOOK","HOOK "+((ownship.hook??0)>0.98?"DN":"UP"),null); y+=56;   // carrier or field decides — state only
-	item(286,y,"ON SPEED","8.1° AOA",null); y+=56;
-	item(286,y,"LDG WT","MAX 33000",wt<=33000);   // NATOPS 4.1.7: carrier landing 33,000 lb unrestricted (34,000 absolute, with restrictions) — the box ticks when the live gross is legal to trap
-	x.font="20px monospace"; x.textAlign="left";   // under the shorter LDG column — the T/O column runs long
-	x.fillText("WT "+wt+" LB",286,402);
-	x.fillText("VAPP "+vapp,286,430);
-	x.fillText("VS0  "+vs0,286,458); }
+	return ((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0); }
+function gross_weight(){ return Math.round(gross_pounds()/10)*10; }   // to the ten, for the judgements that read it
+// landing: the most recent landing's peak vertical g, for the CHKLST's MAX NZ ("maximum
+// vertical acceleration experienced during the most recent landing", figure 7-1), taken
+// over the first 3 s from the wheels touching, trap or not. grounded is the last step's
+// weight on wheels, true at a spawn so a jet started on the deck has made no landing.
+const landing={ nz:null, at:-Infinity, grounded:true };
+function landing_track(grounded,nz){
+	if(grounded&&!landing.grounded){ landing.at=sim_time; landing.nz=nz; }
+	else if(grounded&&sim_time-landing.at<3) landing.nz=Math.max(landing.nz??nz,nz);
+	landing.grounded=grounded; }
+// ddi_chklst: the checklist display as figure 7-1 draws it for the C (NATOPS 7.2.1): the
+// abbreviated LAND and T.O. lists as plain words - a memory-jogger the pilot checks by
+// eye, not a page that checks itself - with EJECT SEL, a B/D item, left off; the gross
+// weight to the pound (MC OFP 13C and up) and the last landing's MAX NZ under LAND; and
+// the left and right stabilator positions along the bottom, degrees NU or ND (takeoff
+// trim is 12° NU there). Cockpit text stays English by the annunciator policy.
+function ddi_chklst(x,display){ const o=last_out||[];
+	x.fillStyle="#39e07a"; x.textBaseline="middle"; x.textAlign="left"; x.font="18px monospace";
+	x.fillText("LAND",60,72); x.fillText("T.O.",286,72);
+	["WHEELS","FLAPS","HOOK","ANTI SKID","HARNESS","DISPENSER"].forEach((item,i)=>x.fillText(item,84,100+22*i));
+	["CONTROLS","WINGS","TRIM","FLAPS","HOOK","HARNESS","WARN LITES","NWS LO","SEAT ARM"].forEach((item,i)=>x.fillText(item,310,100+22*i));
+	x.fillText("A/C WT "+Math.round(gross_pounds()),84,300);
+	if(landing.nz!==null) x.fillText("MAX NZ "+landing.nz.toFixed(2),84,366);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+	const stab=(i)=>{ const r=Math.round(-(o[STATE.stabilator+i]||0)/D2R);   // core negative is trailing edge up: nose up
+		return Math.abs(r)+"° "+(r>=0?"NU":"ND"); };
+	x.textAlign="center"; x.fillText(stab(0)+" STAB POS "+stab(1),256,410); }
 // ddi_fcs: the FCS status display as figure 2-16 draws it for the C/D (2.8.4.7). At top
 // centre each surface's left and right position in whole degrees with an arrow for its
 // direction from neutral - the leading edge for LEF, the trailing edge for the rest,
@@ -7232,6 +7224,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	recording_sample();
 	screens_update();
 	ownship.grounded=out[STATE.wow]>0.5;
+	landing_track(ownship.grounded,ownship.gload??1);   // the CHKLST's MAX NZ
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
 	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
@@ -7891,6 +7884,7 @@ function reset_ownship(){
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
+	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
 	flbit=-Infinity;   // a fresh jet has run no fuel low BIT
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
