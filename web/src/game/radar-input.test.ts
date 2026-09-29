@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import { Radar, SCALES, geometry, pick, type Track } from './radar'
 
@@ -451,5 +452,87 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(map).toContain('for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,')
     expect(map).toMatch(/if\(!fx&&!fz\)\{ [^\n]*mctx\.arc\(x2,y2,5,0,Math\.PI\*2\); mctx\.stroke\(\); return; \}/)
     expect(map).not.toMatch(/remotes\.entries\(\)|bandit\.pos/)
+  })
+})
+
+describe('the launch zones fly the radar trackfile, not the jet', () => {
+  // radar_target, launch_zone and heat_zone lifted with the ladders stubbed to
+  // record what they are flown against; the bandit, alone, is somewhere else
+  // by now than the radar last saw it.
+  type Fed = { position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }
+  function zones() {
+    return new Function(
+      'Radar', 'THREE',
+      `const RADAR=new Radar();
+       const MULTIPLAYER=false, has_enemy=true, remotes=new Map(), WORLD_WRAP=0, wrap_axis=(v)=>v;
+       const bandit={ group:{ visible:true }, pos:{ x:0, y:6000, z:-30000 }, velx:0, vely:0, velz:250, fwd:{ x:0, y:0, z:1 }, speed:250, reheat:0.5 };
+       const ownship={ pos:{ x:0, y:6000, z:0 }, velx:0, vely:0, velz:-250, speed:250 };
+       let sim_time=10, zone_at=0, zone=null, zone_track=null, heat_at=0, heat=null, heat_track=null, heat_prev=null;
+       const fed={ amraam:null, heater:null, reheat:null };
+       const round_ladder=(own,target)=>{ fed.amraam=target; return { max:40000, escape:20000, minimum:800 }; };
+       const heater_ladder=(own,target,swing,reheat)=>{ fed.heater=target; fed.reheat=reheat; return { max:8000, escape:4000, minimum:500 }; };
+       ${lift('radar_target')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')}
+       return { RADAR, bandit, fed, launch_zone, heat_zone, ranging };`
+    )(Radar, THREE) as { RADAR: Radar; bandit: { group: { visible: boolean } }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null }
+  }
+  // the trackfile's last fix: 40 km out four seconds ago, closing at 250 m/s
+  const held = { id: 'bandit', x: 0, y: 6000, z: -40000, vx: 0, vy: 0, vz: 250, at: 0, hits: 1 }
+
+  it('flies the AMRAAM zone against the trackfile carried on, not the jet', () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.ls = 'bandit'
+    z.RADAR.time = 4
+    const zone = z.launch_zone()
+    expect(z.fed.amraam?.position).toEqual({ x: 0, y: 6000, z: -39000 })
+    expect(z.fed.amraam?.velocity).toEqual({ x: 0, y: 0, z: 250 })
+    expect(zone?.range).toBeCloseTo(39000, 6)
+    expect(zone?.lead.z).toBeCloseTo(-39000 + 250 * (39000 / (250 + 650)), 6) // the steering dot leads the track, not the jet at 30 km
+  })
+  it("flies the 9M's zone against it too, with the jet's own plume", () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.stt = 'bandit'
+    z.RADAR.time = 4
+    const heat = z.heat_zone()
+    expect(z.fed.heater?.position).toEqual({ x: 0, y: 6000, z: -39000 })
+    expect(heat?.range).toBeCloseTo(39000, 6)
+    expect(z.fed.reheat).toBe(0.5)
+  })
+  it("ranges the HUD on the trackfile carried on: range, and closure on the track's velocity", () => {
+    const z = zones()
+    z.RADAR.tracks = [held]
+    z.RADAR.stt = 'bandit'
+    z.RADAR.time = 4
+    const r = z.ranging()
+    expect(r?.range).toBeCloseTo(39000, 6)
+    expect(r?.closure).toBeCloseTo(500, 6) // 250 m/s each, nose to nose
+  })
+  it('has no ranging from a silent radar or without a trackfile', () => {
+    const z = zones()
+    z.RADAR.stt = 'bandit'
+    expect(z.ranging()).toBeNull()
+    z.RADAR.tracks = [held]
+    z.RADAR.sil = true
+    expect(z.ranging()).toBeNull()
+  })
+  it('feeds both HUDs the radar ranging, and shows the data block only with it', () => {
+    for (const name of ['draw_hud', 'ddi_hud']) {
+      const body = lift(name)
+      expect(body, name).toMatch(/const r=ranging\(\); if\(r\)\{ rng=r\.range; vc=r\.closure; ranged=true; \}/)
+      expect(body, name).not.toMatch(/rng=wrap_distance\(ownship\.pos,dst\.pos\)/)
+      expect(body, name).toContain('vc,ranged?rng:null,')
+    }
+    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!declutter)')
+  })
+  it('has no zone without a trackfile, or once the jet is gone', () => {
+    const z = zones()
+    z.RADAR.ls = 'bandit'
+    expect(z.launch_zone()).toBeNull()
+    expect(z.heat_zone()).toBeNull()
+    z.RADAR.tracks = [held]
+    z.bandit.group.visible = false
+    expect(z.launch_zone()).toBeNull()
+    expect(z.heat_zone()).toBeNull()
   })
 })

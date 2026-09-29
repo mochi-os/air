@@ -179,7 +179,7 @@ describe('the selected weapon block', () => {
 // flashed when the L&S target range is within Rmin", VRS AIM-7 documentation).
 describe('the breakaway X', () => {
   const helpers = ['breakaway_shown', 'breakaway'].map((name) => new RegExp(`\\nfunction ${name}\\([^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
-  const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)\)\{[^\n]*?\}/.exec(source)?.[0] ?? ''
   const rdr = /\n\t(if\(breakaway_shown\(\)\)\{ x\.strokeStyle=[^}]*\})/.exec(source)?.[1] ?? ''
   const draw = (code: string, cue: string, time = 0) => {
     const segments: number[][] = [], state: Record<string, unknown> = {}
@@ -228,7 +228,7 @@ describe('the breakaway X', () => {
 
   it('takes the cue from every weapon: the AMRAAM zone draws first, the 9M and the closure breakaway before the cluster', () => {
     const x = source.indexOf('\t// ---- the breakaway X')
-    expect(source.indexOf('\tif(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);')).toBeLessThan(x)
+    expect(source.indexOf('\tif(master==="120c"&&declutter<2) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);')).toBeLessThan(x)
     const cluster = source.indexOf('\t// ---- instrument furniture (#133)')
     expect(source.indexOf('\tif(brk) hud_cue="break";')).toBeLessThan(cluster)
     expect(source.indexOf('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");')).toBeLessThan(cluster)

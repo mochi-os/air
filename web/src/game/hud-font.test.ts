@@ -22,7 +22,7 @@ function body(name: string): string[] {
   while (end < lines.length && !/^(function |const |let |if\(DEV_MODE\)|\/\/ =+)/.test(lines[end])) end++
   return lines.slice(start, end)
 }
-const drawers = [...body('draw_hud'), ...body('hud_launch_zone'), ...body('hud_message')]
+const drawers = [...body('draw_hud'), ...body('hud_cluster'), ...body('hud_pitch'), ...body('hud_symbols'), ...body('hud_launch_zone'), ...body('hud_message')]
 // A size scaled onto the cockpit glass is built as (n*hs).toFixed(1)+"px ...": its
 // literal tail carries the face.
 const fonts = drawers.flatMap((l) => [...l.matchAll(/hctx\.font=(?:"([^"]+)"|\(\d+\*hs\)\.toFixed\(1\)\+"([^"]+)")/g)].map((m) => [m[1] ?? m[2], l] as const))
@@ -49,7 +49,7 @@ describe('the HUD face', () => {
     const overlays = fonts.filter(([f]) => !f.endsWith(FACE))
     for (const [, line] of overlays) expect(line).toMatch(/#ff5040|#7fc8ff|#8fa0aa|ui-monospace/)
     // the sites the references were measured on
-    for (const anchor of [/hctx\.fillText\(text,ax-84/, /String\(Math\.round\(kcas\)\)/, /hctx\.fillText\(String\(thousands\)/, /hctx\.fillText\("c",right/, /fillText\(translate\("GUN"\)/]) {
+    for (const anchor of [/hctx\.fillText\(text,ax-84/, /String\(Math\.round\(kcas\)\)/, /hctx\.fillText\(String\(thousands\)/, /hctx\.fillText\("c",right/, /fillText\(translate\("GUN"\),cx,ly-0\.75\*ppdv\)/]) {
       const at = source.search(anchor)
       expect(at).toBeGreaterThan(0)
       const set = [...source.slice(0, at).matchAll(/hctx\.font="([^"]+)"/g)].pop()?.[1] ?? ''
