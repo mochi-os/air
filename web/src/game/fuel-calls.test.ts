@@ -69,7 +69,7 @@ describe('the BINGO judgements', () => {
   const lb = 2.20462
   const lift = (pattern: RegExp) => pattern.exec(source)?.[0] ?? ''
   const low = lift(/\nfunction bingo_low\(\)\{[^\n]*\n[^\n]*\n/)
-  const caution = lift(/\n\tif\(!cheat\("fuel"\)\)\{ const [^\n]*\n[^\n]*push\("FUEL LO"\);\n[^\n]*push\("BINGO"\); \}/)
+  const caution = lift(/\n\tlet low=false, below=false;[\s\S]*?else if\(below\) push\("BINGO"\); \}/)
   const colour = lift(/\n\t\tif\(\(ownship\.fuel\?\?1e9\)<FUELLO\) hctx\.fillStyle=[^\n]*\n[^\n]*<BINGO\) hctx\.fillStyle="#ffb050";/)
   const tanks = { below: { fuel: 1200, external: 2000 }, above: { fuel: 1500, external: 0 } } // kg, the setting 3,000 lb (1,361 kg)
 
@@ -83,7 +83,7 @@ describe('the BINGO judgements', () => {
 
   it('raises the BINGO caution on internal fuel', () => {
     expect(caution).not.toBe('')
-    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, cheat=()=>false, rows=[], push=(k)=>rows.push(k); ${caution} return rows;`)(ownship) as string[]
+    const run = (ownship: object) => new Function('ownship', `const FUELLO=726, BINGO=1361, cheat=()=>false, flbit_lit=()=>false, rows=[], push=(k)=>rows.push(k); ${caution} return rows;`)(ownship) as string[]
     expect(run(tanks.below)).toEqual(['BINGO'])
     expect(run(tanks.above)).toEqual([])
   })

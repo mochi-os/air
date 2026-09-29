@@ -356,6 +356,134 @@ describe('the engine monitor display', () => {
   })
 })
 
+// The FUEL display against figure 2-5 and 2.2.10.5, its tanks apportioned from the
+// core's two totals by the C/D's transfer order (2.2.3.2, 2.2.3.4 and figure 2-4,
+// capacities from figure 2-6), and the FLBIT (2.2.10.3).
+const tanksource = (/\nconst FUEL_TANKS=[^\n]*\n/.exec(source)?.[0] ?? '') + lift('fuel_tanks')
+interface Tanks { one: number; four: number; feed: { left: number; right: number }; wing: { left: number; right: number }; external: Record<string, number> }
+function apportion(internal: number, external = 0, aboard: { station: number; capacity: number }[] = []): Tanks {
+  return new Function('internal', 'external', 'aboard', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${tanksource} return fuel_tanks(internal,external,aboard);`)(internal, external, aboard) as Tanks
+}
+const sum = (k: Tanks) => k.one + k.four + k.feed.left + k.feed.right + k.wing.left + k.wing.right
+describe('the fuel tanks, apportioned', () => {
+  it('fills every tank at the full internal load', () => {
+    const k = apportion(10810)
+    expect([k.one, k.four, k.feed.left, k.feed.right, k.wing.left, k.wing.right]).toEqual([2840, 3620, 1790, 1400, 580, 580])
+  })
+
+  it('empties the wings first', () => {
+    const k = apportion(10810 - 1160)
+    expect([k.wing.left, k.wing.right, k.one, k.four, k.feed.left, k.feed.right]).toEqual([0, 0, 2840, 3620, 1790, 1400])
+  })
+
+  it('takes tank 1 to its band, then 1 and 4 down the band together, then 1 empty and 4\'s last', () => {
+    const alone = apportion(9650 - 400)
+    expect([alone.one, alone.four]).toEqual([2440, 3620])
+    const onband = apportion(9650 - 479.25 - 1620 * 1.3875)
+    expect(onband.four).toBeCloseTo(2000, 6)
+    expect(onband.one).toBeCloseTo(958 + 0.3875 * 2000, 6)
+    const late = apportion(9650 - 479.25 - 3495 * 1.3875 - 500)
+    expect(late.four).toBeCloseTo(125, 6)
+    expect(late.one).toBeCloseTo(958 + 0.3875 * 125 - 500, 6)
+    const last = apportion(3190 + 50)
+    expect([last.one, last.four, last.feed.left, last.feed.right]).toEqual([0, 50, 1790, 1400])
+  })
+
+  it('keeps the feed tanks full to the last, each engine burning its own', () => {
+    const k = apportion(2190)
+    expect([k.feed.left, k.feed.right, k.one, k.four]).toEqual([1290, 900, 0, 0])
+    expect([apportion(390).feed.left, apportion(390).feed.right]).toEqual([390, 0])
+  })
+
+  it('never loses or makes fuel', () => {
+    for (let internal = 0; internal <= 10810; internal += 37) expect(sum(apportion(internal))).toBeCloseTo(internal, 6)
+  })
+
+  it('splits the external fuel over the tanks aboard, which transfer together', () => {
+    const wings = apportion(10810, 2240, [{ station: 3, capacity: 2240 }, { station: 7, capacity: 2240 }])
+    expect(wings.external).toEqual({ 3: 1120, 7: 1120 })
+    expect(apportion(10810, 2240, [{ station: 5, capacity: 2240 }]).external).toEqual({ 5: 2240 })
+    expect(apportion(10810, 0, []).external).toEqual({})
+  })
+})
+
+function fuelpage(over: { internal?: number; external?: number; stations?: number[]; time?: number; flbit?: number } = {}): Drawn {
+  const stations = over.stations ?? []
+  const lo = Object.fromEntries(stations.map((s) => [String(s), { fixture: 'pylon', stores: ['tank'] }]))
+  return page('ddi_fuel', `const ownship={ gauges:{ fuelRaw:${over.internal ?? 10810}, externalRaw:${over.external ?? 0} }, loadout:${JSON.stringify(lo)} };
+    const fuel_state={ bingo:3000 }, sim_time=${over.time ?? 100}, flbit=${over.flbit ?? '-Infinity'}, FLBIT_RESULT=10, stores_catalog=()=>null, loadout=()=>({});
+    ${tanksource} ${lift('fuel_aboard')} ${lift('flbit_running')}`)
+}
+describe('the FUEL display', () => {
+  it('shows TOTAL and INTERNAL at the upper left and the BINGO setting at the upper right, with no title', () => {
+    const d = fuelpage({ internal: 9000, external: 1200, stations: [5] })
+    expect(at(d, 'TOTAL')).toEqual([20, 64])
+    expect(at(d, '10200')).toEqual([20, 90])
+    expect(at(d, 'INTERNAL')).toEqual([20, 128])
+    expect(at(d, '9000')).toEqual([20, 154])
+    expect(at(d, 'BINGO')).toEqual([492, 64])
+    expect(at(d, '3000')).toEqual([492, 90])
+    for (const gone of ['FUEL', 'LB', 'DUMP', '\u2191', '\u2193']) expect(texts(d)).not.toContain(gone)
+    expect(texts(d).some((s) => /^(FF|EXT|TIME) /.test(s))).toBe(false)
+  })
+
+  it('boxes each tank with its pounds, the externals only where one is carried', () => {
+    const d = fuelpage({ internal: 10810, external: 2240, stations: [3, 7] })
+    const shown = (label: string, cx: number, cy: number, pounds: string) => {
+      expect(at(d, label)).toEqual([cx, cy - 26])
+      expect(d.rects).toContainEqual([cx - 44, cy - 15, 88, 30])
+      expect(d.text).toContainEqual([pounds, cx, cy])
+    }
+    shown('TK 1', 256, 96, '2840'); shown('L FD', 256, 166, '1790'); shown('R FD', 256, 236, '1400'); shown('TK 4', 256, 306, '3620')
+    shown('L WG', 100, 236, '580'); shown('R WG', 412, 236, '580')
+    shown('L EXT', 120, 392, '1120'); shown('R EXT', 392, 392, '1120')
+    expect(texts(d)).not.toContain('C/L')
+    expect(texts(fuelpage())).not.toContain('L EXT')
+  })
+
+  it('puts each tank\'s caret up its right side with its fill', () => {
+    const caret = (d: Drawn, cx: number) => d.moves.find(([mx]) => mx === cx + 56)
+    const full = fuelpage({ internal: 10810 }), drawn = fuelpage({ internal: 10810 - 1420 }) // both wings empty, then 260 lb of tank 1
+    expect(caret(full, 256)![1]).toBeCloseTo(96 - 15 - 6, 6) // TK 1 full: at the top
+    expect(caret(drawn, 100)![1]).toBeCloseTo(236 + 15 - 6, 6) // L WG empty: at the bottom
+    expect(caret(drawn, 256)![1]).toBeCloseTo(96 + 15 - 30 * 2580 / 2840 - 6, 6) // TK 1 at 2,580 of 2,840
+  })
+
+  it('boxes FLBIT while the test runs', () => {
+    const running = fuelpage({ flbit: 95 }), idle = fuelpage()
+    expect(at(running, 'FLBIT')).toEqual([96, 482])
+    expect(running.rects.some(([bx, by]) => by === 482 - 14 && bx === 96 - 25 - 6)).toBe(true)
+    expect(idle.rects.some(([, by]) => by === 482 - 14)).toBe(false)
+  })
+})
+
+describe('the fuel low BIT', () => {
+  const flbits = (/\nlet flbit=-Infinity;\nconst FLBIT_RESULT=[^\n]*\n/.exec(source)?.[0] ?? '') + lift('flbit_running') + lift('flbit_lit') + lift('fuel_press')
+  const run = (steps: string) => new Function(`let sim_time=0; const FUELLO=726, ownship={ fuel:2000 }; ${flbits} ${steps}`)() as unknown[]
+  it('raises FUEL LO within 13 s of the press and holds it the minute any FUEL LO holds', () => {
+    expect(flbits).toMatch(/^\nlet flbit=/)
+    expect(run('const r=[fuel_press(20)]; for(const t of [5,9.9,10,69.9,70]){ sim_time=t; r.push(flbit_running(), flbit_lit()); } return r;'))
+      .toEqual([true, true, false, true, false, false, true, false, true, false, false])
+  })
+
+  it('is inoperative while FUEL LO is up, or while it runs, and the page has no BINGO arrows', () => {
+    expect(run('ownship.fuel=500; return [fuel_press(20)];')).toEqual([false])
+    expect(run('fuel_press(20); sim_time=5; const again=fuel_press(20); sim_time=30; return [again, fuel_press(20)];')).toEqual([false, false])
+    expect(run('return [fuel_press(3), fuel_press(4)];')).toEqual([false, false])
+  })
+
+  it('carries its FUEL LO through the caution, the light and the voice, and clears at a spawn', () => {
+    const section = /\n\tlet low=false, below=false;[\s\S]*?else if\(below\) push\("BINGO"\); \}/.exec(source)?.[0] ?? ''
+    expect(section).not.toBe('')
+    const rows = (fuel: number, lit: boolean) => new Function(`const rows=[], push=(k)=>rows.push(k), cheat=()=>false, FUELLO=726, BINGO=1361, ownship={ fuel:${fuel} }, flbit_lit=()=>${lit}; ${section} return [rows, low, below];`)() as [string[], boolean, boolean]
+    expect(rows(3000, true)).toEqual([['FUEL LO'], false, false]) // the test's FUEL LO, the fuel itself above both
+    expect(rows(3000, false)).toEqual([[], false, false])
+    expect(rows(500, false)).toEqual([['FUEL LO'], true, true])
+    expect(source).toMatch(/lamp_set\(l\.fuello,\(ownship\.fuel\?\?1e9\)<FUELLO\|\|flbit_lit\(\)\);/)
+    expect(source).toMatch(/\n\tflbit=-Infinity;[^\n]*\n\tbaro_armed=false;/)
+  })
+})
+
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.

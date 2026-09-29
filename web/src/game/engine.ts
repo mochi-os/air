@@ -1731,7 +1731,7 @@ function lamps_update(out){
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
 	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
-	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO);
+	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO||flbit_lit());
 	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
@@ -2449,9 +2449,17 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu pr
 	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("---",256,360); }
 }
 const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
-function fuel_press(pb){
-	if(pb===4){ bingo_set(fuel_state.bingo+100); return true; }
-	if(pb===3){ bingo_set(fuel_state.bingo-100); return true; }
+// FLBIT (NATOPS 2.2.10.3): the fuel low level system's BIT, run from the FUEL page.
+// It raises FUEL LO through the whole warning chain - the caution, the FUEL LO light,
+// the voice alert and MASTER CAUTION - within 13 s of the press (here at 10 s), and
+// that FUEL LO holds the minute any FUEL LO does (2.2.8). FLBIT is boxed while the
+// test runs, and inoperative while FUEL LO is up. flbit: the sim time it was pressed.
+let flbit=-Infinity;
+const FLBIT_RESULT=10, FLBIT_HOLD=60;
+function flbit_running(){ return sim_time-flbit<FLBIT_RESULT; }
+function flbit_lit(){ const t=sim_time-flbit; return t>=FLBIT_RESULT&&t<FLBIT_RESULT+FLBIT_HOLD; }
+function fuel_press(pb){   // BINGO is set on the IFEI in the C/D (2.2.10.4), not from this page
+	if(pb===20&&!flbit_running()&&!flbit_lit()&&(ownship.fuel??1e9)>=FUELLO){ flbit=sim_time; return true; }
 	return false; }
 // The IFEI (NATOPS 2.1.1.7.5, 2.2.10.1, 2.12.8): the C's LCD block under the
 // left DDI, drawn from the face ifei.ts computes. The cockpit shell paints the
@@ -2676,26 +2684,62 @@ if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei
 // that took.
 function bingo_low(){ if(cheat("fuel")||!flight_active) return false;
 	return (ownship.fuel??0)*2.20462<fuel_state.bingo; }   // internal fuel alone (NATOPS 2.2.10.4)
+// FUEL_TANKS: the C's internal tanks' usable fuel, JP-5 pounds (NATOPS figure 2-6).
+const FUEL_TANKS={ one:2840, four:3620, feed:{ left:1790, right:1400 }, wing:580 };
+// fuel_tanks apportions the core's two totals, internal and external pounds, to the
+// tanks in the order NATOPS gives the C/D's transfer (2.2.3.2): the internal wings
+// first; then tanks 1 and 4 on the CG control schedule (2.2.3.4, figure 2-4) - tank 1
+// down to the middle of its band while tank 4 stays full, both down the band to tank 4
+// at 125 lb, tank 1 empty, then tank 4's last; the feed tanks last, each engine burning
+// its own and the two alike. The external tanks aboard ([{station, capacity}]) transfer
+// together (2.2.4), so each holds the same fraction of its capacity.
+function fuel_tanks(internal,external,aboard){ const T=FUEL_TANKS;
+	const band=(four)=>958+0.3875*four;   // the middle of the C's tank 1 band for tank 4's pounds (figure 2-4, measured)
+	let used=Math.max(0,T.one+T.four+T.feed.left+T.feed.right+2*T.wing-internal);
+	const wing=2*T.wing-Math.min(used,2*T.wing); used=Math.max(0,used-2*T.wing);
+	const top=band(T.four), bottom=band(125);
+	let d=Math.min(used,T.one+T.four), one, four; used-=d;
+	if(d<=T.one-top){ one=T.one-d; four=T.four; }
+	else if((d-=T.one-top)<=(T.four-125)*1.3875){ four=T.four-d/1.3875; one=band(four); }
+	else if((d-=(T.four-125)*1.3875)<=bottom){ four=125; one=bottom-d; }
+	else { one=0; four=125-(d-bottom); }
+	const e=Math.min(used,T.feed.left+T.feed.right), right=Math.max(0,T.feed.right-e/2), left=T.feed.left+T.feed.right-e-right;
+	const capacity=aboard.reduce((sum,tank)=>sum+tank.capacity,0), fraction=capacity>0?THREE.MathUtils.clamp(external/capacity,0,1):0;
+	const outside={}; for(const tank of aboard) outside[tank.station]=tank.capacity*fraction;
+	return { one, four, feed:{ left, right }, wing:{ left:wing/2, right:wing/2 }, external:outside }; }
+// fuel_aboard: the external tanks the flown loadout carries, [{station, capacity}] in
+// pounds, from the stores catalogue (figure 2-6's 330-gallon tank until it loads).
+function fuel_aboard(){ const book=stores_catalog(), lo=ownship.loadout||loadout(), aboard=[];
+	for(const station of [3,5,7]){ const slot=lo&&lo[String(station)]; if(!slot||!slot.stores||slot.stores[0]!=="tank") continue;
+		const bit=book?book.index.get("tank"+station):undefined;
+		aboard.push({ station, capacity:bit===undefined?2240:book.stores[bit].fuel*2.20462 }); }
+	return aboard; }
+// ddi_fuel: the FUEL display as figure 2-5 draws it (2.2.10.5): TOTAL (internal and
+// external) and INTERNAL at the upper left, the BINGO setting at the upper right, and a
+// box per tank - tanks 1, the feeds and 4 down the middle, the wings either side, the
+// external tanks aboard along the bottom - each with its pounds and a caret on its
+// right side at its fill. FLBIT at the lower left; no title.
 function ddi_fuel(x,display){ const gz=ownship.gauges||{};
-	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=(gz.flowL||0)+(gz.flowR||0);
-	const low=bingo_low(), colour=display==="center";   // the BINGO caret watches internal fuel, as the caution does (NATOPS 2.2.10.4)
-	x.fillText("FUEL",256,36);
-	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest INTERNAL total inside — one external figure below it (concurrent transfer drains the tanks in step, so per-tank rows would all read the same)
-	x.beginPath(); x.moveTo(256,86); x.lineTo(292,130); x.lineTo(292,330); x.lineTo(276,364); x.lineTo(236,364); x.lineTo(220,330); x.lineTo(220,130); x.closePath(); x.stroke();
-	if(low&&colour) x.fillStyle="#ffb04a";
-	x.font="30px monospace"; x.textAlign="center"; x.fillText(String(total),256,226);
-	x.font="19px monospace"; x.fillText("LB",256,258);
-	if(low){ x.font="22px monospace"; x.fillText("BINGO",256,304); }   // annunciated under the total while beneath the caret
-	if(fuel_dump){ if(colour) x.fillStyle="#ffb04a"; x.font="22px monospace"; x.fillText("DUMP",256,336); x.fillStyle="#39e07a"; }   // #54: the switch is ON — fuel is going overboard
-	x.fillStyle="#39e07a"; x.font="20px monospace";
-	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)/10)*10,190,206);   // per-engine burn either side of the tank
-	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)/10)*10,322,206);
-	if(ext>0||external_capacity()>0){ x.textAlign="center"; x.fillText("EXT "+ext,256,396); }   // external tanks aboard: their remaining fuel (burns before internal)
-	if(flow>300){ const m=Math.round((total+ext)/flow*60);   // endurance at the present burn, externals included
-		x.textAlign="left"; x.fillText("TIME "+Math.floor(m/60)+"+"+String(m%60).padStart(2,"0"),24,458); }
-	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // the arrows step the caret
-	x.font="16px monospace"; x.textAlign="left"; x.fillText(String(fuel_state.bingo),8,216);
-	x.font="13px monospace"; x.fillText("BINGO",8,242); }
+	const internal=gz.fuelRaw||0, external=gz.externalRaw||0, aboard=fuel_aboard(), tanks=fuel_tanks(internal,external,aboard);
+	const lb=(v)=>String(Math.max(0,Math.round(v/10)*10));   // the display's ten-pound resolution
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle";
+	x.textAlign="left"; x.font="16px monospace"; x.fillText("TOTAL",20,64); x.fillText("INTERNAL",20,128);
+	x.font="22px monospace"; x.fillText(lb(internal+external),20,90); x.fillText(lb(internal),20,154);
+	x.textAlign="right"; x.font="16px monospace"; x.fillText("BINGO",492,64);
+	x.font="22px monospace"; x.fillText(String(fuel_state.bingo),492,90);
+	const tank=(label,cx,cy,pounds,capacity)=>{
+		x.textAlign="center"; x.font="13px monospace"; x.fillText(label,cx,cy-26);
+		x.strokeRect(cx-44,cy-15,88,30); x.font="19px monospace"; x.fillText(lb(pounds),cx,cy);
+		const y=cy+15-30*THREE.MathUtils.clamp(capacity>0?pounds/capacity:0,0,1);   // the caret, up the tank's right side with its fill
+		x.beginPath(); x.moveTo(cx+56,y-6); x.lineTo(cx+48,y); x.lineTo(cx+56,y+6); x.stroke(); };
+	tank("TK 1",256,96,tanks.one,FUEL_TANKS.one);
+	tank("L FD",256,166,tanks.feed.left,FUEL_TANKS.feed.left);
+	tank("R FD",256,236,tanks.feed.right,FUEL_TANKS.feed.right);
+	tank("TK 4",256,306,tanks.four,FUEL_TANKS.four);
+	tank("L WG",100,236,tanks.wing.left,FUEL_TANKS.wing);
+	tank("R WG",412,236,tanks.wing.right,FUEL_TANKS.wing);
+	for(const t of aboard) tank({3:"L EXT",5:"C/L",7:"R EXT"}[t.station],{3:120,5:256,7:392}[t.station],392,tanks.external[t.station],t.capacity);
+	ddi_legend(x,20,"FLBIT",true,flbit_running()); }
 function ddi_sms(x,display){   // SMS (#5): the stores format over the real loadout model (#17) — planform with per-station contents, remaining rounds, and the SMS priority station boxed when the missile is selected. Display and employment only; configuration lives in the menus.
 	const colour=display==="center";
 	const lo=ownship.loadout||{};
@@ -6165,9 +6209,11 @@ function cautions_update(){
 	if(own_burn[0]>0) push("L ENG FIRE",true); else if(core&&core[STATE.engine_harm]>0.55) push("L ENG");
 	if(own_burn[1]>0) push("R ENG FIRE",true); else if(core&&core[STATE.engine_harm+1]>0.55) push("R ENG");
 	if((core&&core[STATE.leak]>0.1)||own_leak>0.1) push("FUEL LEAK");
+	let low=false, below=false;   // the fuel itself under FUEL LO and under BINGO: what the BINGO voice and its repeat follow, as a FLBIT's FUEL LO does not
 	if(!cheat("fuel")){ const internal=ownship.fuel??0;   // BINGO appears when the INTERNAL fuel reaches the setting (NATOPS 2.2.10.4)
-		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
-		else if(internal>0&&internal<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+		low=ownship.fuel!==undefined&&ownship.fuel<FUELLO; below=internal>0&&internal<BINGO;
+		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
+		else if(below) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
 	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
@@ -6193,10 +6239,10 @@ function cautions_update(){
 	if(freshWarning) audio_warning();
 	else if(freshCaution&&sim_time-caution_toned>=5){ audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
 	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
-	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
+	const bingo=low||below;
 	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
 	const active=new Set();
-	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
+	for(const [key] of rows) for(const message of SPOKEN[key]??[]) if(message!=="BINGO"||below) active.add(message);   // FUEL LO's BINGO only with the fuel under it: a FLBIT above bingo says FUEL LOW alone
 	if(gpws.gear) active.add("CHECK GEAR");
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
@@ -7820,6 +7866,7 @@ function reset_ownship(){
 	hinted={}; hint_rows=hint_key=null; field_left=ship_left=false; stroked=false; rising=null; upwind=false;   // and the flight hints (#70)
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
+	flbit=-Infinity;   // a fresh jet has run no fuel low BIT
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
