@@ -283,3 +283,99 @@ def recording_fetch(a):
 		a.error.label(404, "errors.not_found")   # not one of my flights, or no recording: indistinguishable from absent, deliberately
 		return
 	a.write.file("recordings/" + match)
+
+# ---- feedback ---- The main menu's Feedback posts to the Mochi users
+# forum as the player, through the player's own forums app, the way the Help
+# app's questions go (help.star): tagged "air" so the forum can group them. A
+# self-hosted server that wants its own forum edits FORUM.
+FORUM = "126YM4PAEioT47rkAionhLKowZw6kWugijf9AAF6jFtxwRbo1Mo"
+
+# Help's limits, which mirror the forum's, in bytes: the menu counts bytes too,
+# so its gate and these agree.
+LONGEST = {"title": 500, "body": 50000}
+SHORTEST = 20   # the body: stops a one-letter post, lets a short report through
+
+# feedback_check() -> {"data": {"available": bool, "message": str}}: whether the
+# forum can take a post, before the player writes a word. app/check is
+# read-only: joining the forum waits for a post, so a cancelled dialog leaves
+# nothing behind.
+def feedback_check(a):
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
+	result = mochi.remote.request(a.user.identity.id, "forums", "app/check", {"forum": FORUM})
+	# The far end's decoded JSON comes back as-is: anything but a dict is a
+	# failure to report, not a reply to read.
+	if type(result) != "dict":
+		return {"data": {"available": False, "message": mochi.app.label("errors.remote_failed")}}
+	if result.get("error"):
+		if result.get("code", 502) == 504:
+			return {"data": {"available": False, "message": mochi.app.label("errors.service_unavailable")}}
+		return {"data": {"available": False, "message": mochi.app.label(feedback_error(result))}}
+	return {"data": {"available": True}}
+
+# feedback_post() -> {"data": {"redirect": "/forums/<fingerprint>/"}}: post the
+# player's feedback, and where the forum is, for the dialog's "Go to forum". The
+# post id is minted here, so a retried delivery is one post. It goes to
+# moderation before anyone sees it, so the link is to the forum, not the post.
+def feedback_post(a):
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
+	title = a.input("title", "").strip()
+	body = a.input("body", "").strip()
+	if len(body) < SHORTEST:
+		a.error.label(400, "errors.body_is_required")
+		return
+	if len(body) > LONGEST["body"]:
+		a.error.label(400, "errors.body_too_long")
+		return
+	if not title:
+		a.error.label(400, "errors.title_is_required")
+		return
+	if len(title) > LONGEST["title"]:
+		a.error.label(400, "errors.title_too_long")
+		return
+	result = mochi.remote.request(a.user.identity.id, "forums", "app/post", {
+		"id": mochi.uid(),
+		"forum": FORUM,
+		"title": title,
+		"body": body,
+		"tags": ["air"],
+	})
+	if type(result) != "dict":
+		a.error.label(502, "errors.remote_failed")
+		return
+	if result.get("error"):
+		code = result.get("code", 502)
+		if code == 504:
+			a.error.label(503, "errors.service_unavailable")
+			return
+		# The code is the far end's: held to 4xx/5xx so it cannot make this answer
+		# a success or a redirect. JSON numbers decode as floats.
+		if type(code) == "float":
+			code = int(code)
+		if type(code) != "int" or code < 400 or code > 599:
+			code = 502
+		a.error.label(code, feedback_error(result))
+		return
+	# The fingerprint is the far end's decoded JSON: mochi.text.valid raises on a
+	# non-string, and a bad one must not reach a URL, so it falls back to the
+	# forums root as help's does.
+	fingerprint = result.get("fingerprint")
+	if type(fingerprint) != "string" or not mochi.text.valid(fingerprint, "fingerprint"):
+		fingerprint = ""
+	return {"data": {"redirect": ("/forums/" + fingerprint + "/") if fingerprint else "/forums/"}}
+
+# feedback_error is the label key to show for the forum's refusal: its own key
+# when this app carries a translation of it, else the generic one. A key that
+# is not a string, not a safe constant, or unknown here would reach the player
+# raw (a label lookup answers a missing key with the key itself).
+def feedback_error(result):
+	key = result.get("error", "")
+	if type(key) != "string" or not mochi.text.valid(key, "constant") or not key.startswith("errors."):
+		return "errors.remote_failed"
+	if mochi.app.label(key) == key:
+		mochi.log.debug("air: no label for the forum's error " + key + ", showing the generic message")
+		return "errors.remote_failed"
+	return key

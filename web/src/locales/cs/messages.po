@@ -317,6 +317,10 @@ msgstr "Aktivita"
 msgid "Add"
 msgstr "Přidat"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Přidejte trochu více podrobností."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Přidat komentář..."
@@ -772,6 +776,7 @@ msgstr "Kamera není k dispozici"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Vyberte datum"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Vyberte hru z postranního panelu nebo začněte novou."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Vyberte čas"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Stoupání: kurz dráhy {heading}, 350 uzlů"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Zavřít"
@@ -1193,6 +1203,10 @@ msgstr "Zprávu se nepodařilo odeslat"
 msgid "Couldn't load notifications"
 msgstr "Nepodařilo se načíst oznámení"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Zatím se nepodařilo doručit"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Kód se nepodařilo odeslat. Zkuste to prosím znovu."
@@ -1200,6 +1214,10 @@ msgstr "Kód se nepodařilo odeslat. Zkuste to prosím znovu."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Opětovné ověření se nepodařilo zahájit. Zkuste to prosím znovu."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Nepodařilo se odeslat"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Zničen požárem"
 msgid "Detail"
 msgstr "Detail"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Podrobnosti"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panel podrobností"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "VYSUŇ PODVOZEK"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Zahodit"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Zahodit koncept?"
 
@@ -1667,6 +1691,10 @@ msgstr "Zadejte kód z autentizační aplikace"
 msgid "Error"
 msgstr "Chyba"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Každá minuta"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Všichni"
@@ -1840,6 +1868,11 @@ msgstr "USPOKOJIVÉ"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Zpětná vazba"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Opakování okruhu: plný výkon, štíty zataženy, křídla vodorovně
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Zpět"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Přejít na fórum"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Právě teď"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Pokračovat v úpravách"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Klávesové zkratky"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Načítám podrobnosti položky"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Načítám..."
 
@@ -2653,6 +2695,10 @@ msgstr "Model střely <0>“AIM-120C AMRAAM”</0> od <1>Pippa</1> (Sketchfab), 
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Mise skončila"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Zpětná vazba k Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Zkontrolujte připojení k internetu a zkuste to znovu."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Zkuste to prosím znovu."
 
@@ -3198,6 +3247,10 @@ msgstr "Kladné stoupání: podvozek nahoru; klapky auto po 250 uzlech"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Kladné stoupání: převezmi knipl, podvozek nahoru, klapky auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Zveřejnit zpětnou vazbu"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Odeslat komentář"
 msgid "Submit reply"
 msgstr "Odeslat odpověď"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Úspěšně odesláno"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Čas"
 msgid "Time of day"
 msgstr "Denní doba"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Název"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Kam"
@@ -4266,6 +4327,7 @@ msgstr "Zkuste upravit hledané výrazy"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Zkusit znovu"
 
@@ -4610,6 +4672,10 @@ msgstr "Váš účet byl přesunut sem z {source}. Dokud ho tam nesmažete, zpr�
 msgid "Your attachments will be lost."
 msgstr "Vaše přílohy budou ztraceny."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Vaše zpětná vazba byla odeslána a zobrazí se po schválení."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Vaše lety se zobrazí zde, jakmile nějaký odletíte."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Váš text a přílohy budou ztraceny."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Váš text bude ztracen."
 

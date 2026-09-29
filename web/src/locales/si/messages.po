@@ -317,6 +317,10 @@ msgstr "ක්‍රියාකාරකම"
 msgid "Add"
 msgstr "එක් කරන්න"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "තවත් ටිකක් විස්තර එක් කරන්න."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "අදහසක් එක් කරන්න..."
@@ -772,6 +776,7 @@ msgstr "කැමරාව නොමැත"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "දිනයක් තෝරන්න"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "පැති තීරුවෙන් ක්‍රීඩාවක් තෝරන්න හෝ නව එකක් ආරම්භ කරන්න."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "වේලාවක් තෝරන්න"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "නැගීම: ධාවන පථ දිශාව {heading}, 350 න�
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "වසන්න"
@@ -1193,6 +1203,10 @@ msgstr "පණිවිඩය යැවීමට නොහැකි විය"
 msgid "Couldn't load notifications"
 msgstr "දැනුම්දීම් පූරණය කළ නොහැකි විය"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "තවම ගමනාන්තයට ළඟා විය නොහැකි විය"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "කේතය යැවිය නොහැකි විය. නැවත උත්සාහ කරන්න."
@@ -1200,6 +1214,10 @@ msgstr "කේතය යැවිය නොහැකි විය. නැවත 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "නැවත සත්‍යාපනය ආරම්භ කළ නොහැකි විය. නැවත උත්සාහ කරන්න."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "ඉදිරිපත් කළ නොහැකි විය"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "ගින්නෙන් විනාශ විය"
 msgid "Detail"
 msgstr "විස්තර මට්ටම"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "විස්තර"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "විස්තර පුවරුව"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ගියර් පහත් කරන්න"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "ඉවත ලන්න"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "කෙටුම්පත ඉවත ලන්නද?"
 
@@ -1667,6 +1691,10 @@ msgstr "ඔබගේ සත්‍යාපන කේතය ඇතුළත් �
 msgid "Error"
 msgstr "දෝෂයක්"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "සෑම මිනිත්තුවක්ම"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "සැම"
@@ -1840,6 +1868,11 @@ msgstr "සාමාන්‍ය"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "ප්‍රතිපෝෂණ"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "නැවත වටයක්: පූර්ණ බලය, වේග ත�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "ආපසු යන්න"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "සංසදයට යන්න"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "මේ දැන්"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "සංස්කරණය කරගෙන යන්න"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "යතුරුපුවරු කෙටි මං"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "අයිතම විස්තර පූරණය වෙමින්"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "පූරණය වෙමින්..."
 
@@ -2653,6 +2695,10 @@ msgstr "මිසයිල ආකෘතිය <0>“AIM-120C AMRAAM”</0>, <1>P
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "මෙහෙයුම අවසන්"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air පිළිබඳ ප්‍රතිපෝෂණ"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "කරුණාකර ඔබගේ අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "කරුණාකර නැවත උත්සාහ කරන්න."
 
@@ -3198,6 +3247,10 @@ msgstr "ධනාත්මක නැගීම: ගියරය ඉහළට; 250
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "ධනාත්මක නැගීම: පාලන දණ්ඩ අල්ලන්න, ගියරය ඉහළට, ෆ්ලැප් ස්වයංක්‍රීයව"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "ප්‍රතිපෝෂණ පළ කරන්න"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "අදහස ඉදිරිපත් කරන්න"
 msgid "Submit reply"
 msgstr "පිළිතුර ඉදිරිපත් කරන්න"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "සාර්ථකව ඉදිරිපත් කරන ලදී"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "කාලය"
 msgid "Time of day"
 msgstr "දවසේ වේලාව"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "මාතෘකාව"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "වෙත"
@@ -4266,6 +4327,7 @@ msgstr "ඔබේ සෙවුම් යෙදුම් සකස් කිර�
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "නැවත උත්සාහ කරන්න"
 
@@ -4610,6 +4672,10 @@ msgstr "ඔබේ ගිණුම {source} සිට මෙහි ගෙන ආ�
 msgid "Your attachments will be lost."
 msgstr "ඔබගේ ඇමුණුම් නැති වනු ඇත."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "ඔබගේ ප්‍රතිපෝෂණ ඉදිරිපත් කර ඇති අතර එය මධ්‍යස්ථ කිරීමෙන් පසු දිස් වනු ඇත."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "ඔබ එක් වරක් පියාසර කළ පසු ඔබේ පියාසර මෙහි දිස් වේ."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "ඔබගේ පෙළ සහ ඇමුණුම් නැති වනු ඇත."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "ඔබේ පෙළ නැති වී යයි."
 

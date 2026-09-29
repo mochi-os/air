@@ -317,6 +317,10 @@ msgstr "Aktivnost"
 msgid "Add"
 msgstr "Dodaj"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Dodaj malo više detalja."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Dodajte komentar..."
@@ -772,6 +776,7 @@ msgstr "Kamera nije dostupna"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Odaberite datum"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Odaberite igru iz bočne trake ili započnite novu."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Odaberite vrijeme"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Penjanje: smjer staze {heading}, 350 čvorova"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Zatvori"
@@ -1193,6 +1203,10 @@ msgstr "Slanje poruke nije uspjelo"
 msgid "Couldn't load notifications"
 msgstr "Nije moguće učitati obavijesti"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Još nije uspjelo dostaviti"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Slanje kôda nije uspjelo. Pokušajte ponovno."
@@ -1200,6 +1214,10 @@ msgstr "Slanje kôda nije uspjelo. Pokušajte ponovno."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Pokretanje ponovne autentifikacije nije uspjelo. Pokušajte ponovno."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Nije uspjelo slanje"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Uništen u požaru"
 msgid "Detail"
 msgstr "Razina detalja"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Detalji"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panel s detaljima"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "SPUSTI TRAP"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Odbaci"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Odbaciti skicu?"
 
@@ -1667,6 +1691,10 @@ msgstr "Unesite kôd iz aplikacije za autentifikaciju"
 msgid "Error"
 msgstr "Greška"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Svaka minuta"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Svi"
@@ -1840,6 +1868,11 @@ msgstr "ZADOVOLJAVAJUĆE"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Povratne informacije"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Produženi krug: puna snaga, zračne kočnice uvučene, krila u ravnini,
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Natrag"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Idi na forum"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Upravo sada"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Nastavi uređivati"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Tipkovnički prečaci"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Učitavanje detalja stavke"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Učitavanje..."
 
@@ -2653,6 +2695,10 @@ msgstr "Model projektila <0>“AIM-120C AMRAAM”</0> autora <1>Pippa</1> (Sketc
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Misija završena"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Povratne informacije o Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Provjerite internetsku vezu i pokušajte ponovno."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Pokušajte ponovno."
 
@@ -3198,6 +3247,10 @@ msgstr "Pozitivna stopa penjanja: podvozje gore; zakrilca auto pri prolasku 250 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Pozitivna stopa penjanja: uzmi palicu, podvozje gore, zakrilca auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Objavi povratne informacije"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Pošalji komentar"
 msgid "Submit reply"
 msgstr "Pošalji odgovor"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Uspješno poslano"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Vrijeme"
 msgid "Time of day"
 msgstr "Doba dana"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Naslov"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Za"
@@ -4266,6 +4327,7 @@ msgstr "Pokušajte prilagoditi pojmove pretrage"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Pokušaj ponovno"
 
@@ -4610,6 +4672,10 @@ msgstr "Vaš račun je premješten ovdje s {source}. Dok ga tamo ne izbrišete, 
 msgid "Your attachments will be lost."
 msgstr "Vaši će privici biti izgubljeni."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Vaše povratne informacije su poslane i pojavit će se nakon moderacije."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Vaši letovi pojavit će se ovdje nakon što odletite jedan."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Vaš tekst i privici bit će izgubljeni."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Tekst će biti izgubljen."
 

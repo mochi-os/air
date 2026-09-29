@@ -317,6 +317,10 @@ msgstr "Activitate"
 msgid "Add"
 msgstr "Adaugă"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Adaugă un pic mai multe detalii."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Adaugă un comentariu..."
@@ -772,6 +776,7 @@ msgstr "Camera nu este disponibilă"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Alegeți o dată"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Alege un joc din bara laterală sau începe unul nou."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Alegeți o oră"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Urcare: cap pistă {heading}, 350 noduri"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Închide"
@@ -1193,6 +1203,10 @@ msgstr "Mesajul nu a putut fi trimis"
 msgid "Couldn't load notifications"
 msgstr "Notificările nu au putut fi încărcate"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Destinația nu poate fi încă contactată"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Codul nu a putut fi trimis. Încearcă din nou."
@@ -1200,6 +1214,10 @@ msgstr "Codul nu a putut fi trimis. Încearcă din nou."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Reautentificarea nu a putut fi inițiată. Încearcă din nou."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Trimiterea nu a reușit"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Distrus de incendiu"
 msgid "Detail"
 msgstr "Detaliu"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Detalii"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Panou detalii"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "TREN JOS"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Renunță"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Renunți la ciornă?"
 
@@ -1667,6 +1691,10 @@ msgstr "Introdu codul din aplicația de autentificare"
 msgid "Error"
 msgstr "Eroare"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Fiecare minut"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Toți"
@@ -1840,6 +1868,11 @@ msgstr "SATISFĂCĂTOR"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Păreri"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Ratare: putere maximă, frâne aerodinamice retrase, aripi în palier, u
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Înapoi"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Mergi la forum"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Chiar acum"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Continuă editarea"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Scurtături de tastatură"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Se încarcă detaliile elementului"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Se încarcă..."
 
@@ -2653,6 +2695,10 @@ msgstr "Model de rachetă <0>“AIM-120C AMRAAM”</0> de <1>Pippa</1> (Sketchfa
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Misiune încheiată"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Păreri despre Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Verifică conexiunea la internet și încearcă din nou."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Încearcă din nou."
 
@@ -3198,6 +3247,10 @@ msgstr "Rată pozitivă: tren sus; flapsuri auto la trecerea prin 250 noduri"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Rată pozitivă: ia manșa, tren sus, flapsuri auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Publică părerile"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Trimite comentariul"
 msgid "Submit reply"
 msgstr "Trimite răspunsul"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Trimis cu succes"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Timp"
 msgid "Time of day"
 msgstr "Ora din zi"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Titlu"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Spre"
@@ -4266,6 +4327,7 @@ msgstr "Încearcă să ajustezi termenii de căutare"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Încearcă din nou"
 
@@ -4610,6 +4672,10 @@ msgstr "Contul dvs. a fost mutat aici de la {source}. Până când îl ștergeț
 msgid "Your attachments will be lost."
 msgstr "Atașamentele tale se vor pierde."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Părerile tale au fost trimise și vor apărea după moderare."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Zborurile tale apar aici după ce efectuezi unul."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Textul și atașamentele tale se vor pierde."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Textul tău va fi pierdut."
 

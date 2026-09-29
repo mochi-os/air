@@ -317,6 +317,10 @@ msgstr "활동"
 msgid "Add"
 msgstr "추가"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "조금 더 자세히 적어 주세요."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "댓글 추가..."
@@ -772,6 +776,7 @@ msgstr "카메라를 사용할 수 없음"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "날짜 선택"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "사이드바에서 게임을 선택하거나 새로 시작하세요."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "시간 선택"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "상승: 활주로 방위 {heading}, 350노트"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "닫기"
@@ -1193,6 +1203,10 @@ msgstr "메시지를 보내지 못했습니다"
 msgid "Couldn't load notifications"
 msgstr "알림을 불러오지 못했습니다"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "아직 대상에 도달하지 못했습니다"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "코드를 보낼 수 없습니다. 다시 시도해 주세요."
@@ -1200,6 +1214,10 @@ msgstr "코드를 보낼 수 없습니다. 다시 시도해 주세요."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "재인증을 시작할 수 없습니다. 다시 시도해 주세요."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "제출하지 못했습니다"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "화재로 파괴됨"
 msgid "Detail"
 msgstr "디테일"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "세부 정보"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "세부 정보 패널"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "기어 다운"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "버리기"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "초안을 버릴까요?"
 
@@ -1667,6 +1691,10 @@ msgstr "인증 앱 코드를 입력하세요"
 msgid "Error"
 msgstr "오류"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "1분 단위"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "전체"
@@ -1840,6 +1868,11 @@ msgstr "보통"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "피드백"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "복행: 최대 출력, 스피드브레이크 넣고, 날개 수평, 방�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "뒤로"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "포럼으로 이동"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "방금"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "계속 편집"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "키보드 단축키"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "항목 세부 정보 로딩 중"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "로딩 중..."
 
@@ -2653,6 +2695,10 @@ msgstr "미사일 모델 <0>“AIM-120C AMRAAM”</0>, <1>Pippa</1> 제작 (Sket
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "임무 종료"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air 피드백"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "다시 시도해 주세요."
 
@@ -3198,6 +3247,10 @@ msgstr "양의 상승률: 기어 올림; 250노트 통과 시 플랩 오토"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "양의 상승률: 조종간 잡고, 기어 올림, 플랩 오토"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "피드백 게시"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "댓글 제출"
 msgid "Submit reply"
 msgstr "답글 제출"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "성공적으로 제출되었습니다"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "시간"
 msgid "Time of day"
 msgstr "시간대"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "제목"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "도착지"
@@ -4266,6 +4327,7 @@ msgstr "검색어를 조정해 보세요"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "다시 시도"
 
@@ -4610,6 +4672,10 @@ msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 �
 msgid "Your attachments will be lost."
 msgstr "첨부 파일이 사라집니다."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "피드백이 제출되었으며 모더레이션 후 표시됩니다."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "비행을 한 번 하면 여기에 표시돼요."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "텍스트와 첨부 파일이 사라집니다."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "작성한 내용이 사라져요."
 

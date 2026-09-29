@@ -317,6 +317,10 @@ msgstr "Jarduera"
 msgid "Add"
 msgstr "Gehitu"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Eman xehetasun gehiago."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Gehitu iruzkin bat..."
@@ -772,6 +776,7 @@ msgstr "Kamera ez dago erabilgarri"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Aukeratu data"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Aukeratu joko bat alboko barratik edo hasi berri bat."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Aukeratu ordua"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Igoera: pistaren norabidea {heading}, 350 korapilo"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Itxi"
@@ -1193,6 +1203,10 @@ msgstr "Ezin izan da mezua bidali"
 msgid "Couldn't load notifications"
 msgstr "Ezin izan dira jakinarazpenak kargatu"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Oraindik ezin izan da helmugara iritsi"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Ezin izan da kodea bidali. Saiatu berriro."
@@ -1200,6 +1214,10 @@ msgstr "Ezin izan da kodea bidali. Saiatu berriro."
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Ezin izan da berrautentifikazioa hasi. Saiatu berriro."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Ezin izan da bidali"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Suteak suntsitu du"
 msgid "Detail"
 msgstr "Xehetasuna"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Xehetasunak"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Xehetasun panela"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "TRENA JAITSI"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Baztertu"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Zirriborroa baztertu?"
 
@@ -1667,6 +1691,10 @@ msgstr "Sartu zure autentifikazio-aplikazioaren kodea"
 msgid "Error"
 msgstr "Errorea"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Minutu oro"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Denak"
@@ -1840,6 +1868,11 @@ msgstr "NAHIKOA"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Iritzia"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Hegaldi frustratua: potentzia osoa, aerofrenoak barrura, hegalak zuzen, 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Atzera"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Joan foroa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Oraintxe"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Editatzen jarraitu"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Teklatuko lasterbideak"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Elementuaren xehetasunak kargatzen"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Kargatzen..."
 
@@ -2653,6 +2695,10 @@ msgstr "Misil eredua <0>“AIM-120C AMRAAM”</0> hegazkin-ontzia, <1>Pippa</1>-
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Misioa amaituta"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air-i buruzko iritzia"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Egiaztatu zure interneteko konexioa eta saiatu berriro."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Saiatu berriro."
 
@@ -3198,6 +3247,10 @@ msgstr "Igoera positiboa: trena gora; flapak auto 250 korapilo pasatzean"
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Igoera positiboa: hartu palanka, trena gora, flapak auto"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Argitaratu iritzia"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Bidali iruzkina"
 msgid "Submit reply"
 msgstr "Bidali erantzuna"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Behar bezala bidali da"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Denbora"
 msgid "Time of day"
 msgstr "Eguneko ordua"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Izenburua"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Nora"
@@ -4266,6 +4327,7 @@ msgstr "Saiatu zure bilaketa-terminoak doitzen"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Saiatu berriro"
 
@@ -4610,6 +4672,10 @@ msgstr "Zure kontua {source}-etik hona mugitu da. Han ezabatu arte, mezuak eta j
 msgid "Your attachments will be lost."
 msgstr "Zure eranskinak galduko dira."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Zure iritzia bidali da eta moderazioaren ondoren agertuko da."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Zure hegaldiak hemen agertuko dira bat egin ondoren."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Zure testua eta eranskinak galduko dira."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Zure testua galduko da."
 

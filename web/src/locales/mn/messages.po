@@ -317,6 +317,10 @@ msgstr "Үйл ажиллагаа"
 msgid "Add"
 msgstr "Нэмэх"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Бага зэрэг дэлгэрэнгүй мэдээлэл нэм."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Сэтгэгдэл нэмэх..."
@@ -772,6 +776,7 @@ msgstr "Камер ашиглах боломжгүй"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Огноо сонгох"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Хажуугийн талбараас тоглоом сонгох эсвэл шинээр эхлүүлнэ үү."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Цаг сонгох"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Өндөрсөлт: зурвасын чиглэл {heading}, 350 зан�
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Хаах"
@@ -1193,6 +1203,10 @@ msgstr "Зурвасыг илгээж чадсангүй"
 msgid "Couldn't load notifications"
 msgstr "Мэдэгдлийг ачаалж чадсангүй"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Очих газартаа хараахан хүрсэнгүй"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Кодыг илгээж чадсангүй. Дахин оролдоно уу."
@@ -1200,6 +1214,10 @@ msgstr "Кодыг илгээж чадсангүй. Дахин оролдоно 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Дахин баталгаажуулалтыг эхлүүлж чадсангүй. Дахин оролдоно уу."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Илгээж чадсангүй"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Галд сүйрсэн"
 msgid "Detail"
 msgstr "Нарийвчлал"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Дэлгэрэнгүй"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Дэлгэрэнгүй самбар"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ШАССИ БУУЛГА"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Хаях"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Ноорогийг хаах уу?"
 
@@ -1667,6 +1691,10 @@ msgstr "Баталгаажуулагчийн кодоо оруулна уу"
 msgid "Error"
 msgstr "Алдаа"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Минут бүр"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Бүгд"
@@ -1840,6 +1868,11 @@ msgstr "ДУНД"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Санал хүсэлт"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Дахин тойрох: бүрэн хүч, тоормос хураа, �
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Буцах"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Чуулга руу очих"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Дөнгөж сая"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Засварлахаа үргэлжлүүл"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Гарын товчлолууд"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Зүйлийн дэлгэрэнгүй ачаалж байна"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Ачаалж байна..."
 
@@ -2653,6 +2695,10 @@ msgstr "Пуужингийн загвар <0>“AIM-120C AMRAAM”</0>, зохи
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Даалгавар дууслаа"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Mochi Air-ийн талаарх санал хүсэлт"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Интернет холболтоо шалгаад дахин оролдоно уу."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Дахин оролдоно уу."
 
@@ -3198,6 +3247,10 @@ msgstr "Эерэг өсөлт: шасси дээш; 250 зангилаа өнг�
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Эерэг өсөлт: бариулаа бариад, шасси дээш, флап автомат"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Санал хүсэлт нийтлэх"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Сэтгэгдэл илгээх"
 msgid "Submit reply"
 msgstr "Хариу илгээх"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Амжилттай илгээлээ"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Хугацаа"
 msgid "Time of day"
 msgstr "Өдрийн цаг"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Гарчиг"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Хаашаа"
@@ -4266,6 +4327,7 @@ msgstr "Хайлтын үгсээ засахыг туршаад үз"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Дахин оролдох"
 
@@ -4610,6 +4672,10 @@ msgstr "Таны бүртгэл {source}-с энд шилжсэн. Тэнд ус
 msgid "Your attachments will be lost."
 msgstr "Таны хавсралтууд устах болно."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Таны санал хүсэлтийг илгээсэн бөгөөд хяналт шалгалтын дараа харагдана."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Та нэг удаа нисмэгц нислэгүүд чинь энд харагдана."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Таны текст болон хавсралтууд устах болно."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Чиний текст алдагдана."
 

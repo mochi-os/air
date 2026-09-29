@@ -317,6 +317,10 @@ msgstr "Фаъолият"
 msgid "Add"
 msgstr "Илова кардан"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "Каме бештар тафсилот илова кунед."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "Иловаи шарҳ..."
@@ -772,6 +776,7 @@ msgstr "Камера дастрас нест"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "Санаро интихоб кунед"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Аз панели канорӣ бозиеро интихоб кунед ё нав оғоз кунед."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "Вақтро интихоб кунед"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "Боло рафтан: самти хатти парвоз {heading}, 350
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "Пӯшидан"
@@ -1193,6 +1203,10 @@ msgstr "Паём фиристода нашуд"
 msgid "Couldn't load notifications"
 msgstr "Огоҳиномаҳоро бор кардан нашуд"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "Ҳанӯз ба муқарраршуда расидан натавонист"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "Рамзро фиристодан имконнопазир буд. Лутфан, аз нав кӯшиш кунед."
@@ -1200,6 +1214,10 @@ msgstr "Рамзро фиристодан имконнопазир буд. Лу�
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Аз нав аутентификатсияро оғоз кардан имконнопазир буд. Лутфан, аз нав кӯшиш кунед."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "Фиристода нашуд"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "Дар оташ нобуд шуд"
 msgid "Detail"
 msgstr "Тафсилот"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "Тафсилот"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "Панели тафсилот"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ШАССИРО ФАРОРАД"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "Партофтан"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "Сиёҳнависро партофта мешавад?"
 
@@ -1667,6 +1691,10 @@ msgstr "Рамзи аутентификатори худро ворид куне
 msgid "Error"
 msgstr "Хатогӣ"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "Ҳар дақиқа"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "Ҳама"
@@ -1840,6 +1868,11 @@ msgstr "МИЁНА"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "Фикру мулоҳиза"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "Даври дуюм: қуввати пурра, тормозҳои ҳа�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "Бозгашт"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "Ба форум гузаред"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "Ҳозир"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "Таҳрирро давом диҳед"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "Миёнбурҳои клавиатура"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "Тафсилоти ашё бор карда мешаванд"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "Бор карда мешавад..."
 
@@ -2653,6 +2695,10 @@ msgstr "Модели мушак <0>“AIM-120C AMRAAM”</0> аз <1>Pippa</1> (
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "Вазифа анҷом ёфт"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "Фикру мулоҳиза дар бораи Mochi Air"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "Лутфан пайвасти интернети худро санҷед ва аз нав кӯшиш кунед."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "Лутфан, бори дигар кӯшиш кунед."
 
@@ -3198,6 +3247,10 @@ msgstr "Боло рафтани мусбат: шассӣ боло; ҳангом�
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "Боло рафтани мусбат: дастаро бигир, шассӣ боло, закрилкаҳо авто"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "Фикру мулоҳизаро интишор кардан"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "Шарҳ пешниҳод кардан"
 msgid "Submit reply"
 msgstr "Ҷавоб пешниҳод кардан"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "Бомуваффақият фиристода шуд"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "Вақт"
 msgid "Time of day"
 msgstr "Вақти рӯз"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "Сарлавҳа"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "Ба куҷо"
@@ -4266,6 +4327,7 @@ msgstr "Истилоҳҳои ҷустуҷӯи худро танзим кунед
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "Аз нав кӯшиш кунед"
 
@@ -4610,6 +4672,10 @@ msgstr "Ҳисоби шумо аз {source} ба ин ҷо интиқол дод
 msgid "Your attachments will be lost."
 msgstr "Замимаҳои шумо гум мешаванд."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "Фикру мулоҳизаи шумо фиристода шуд ва пас аз модератсия пайдо мешавад."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "Парвозҳои шумо пас аз як парвоз дар ин ҷо пайдо мешаванд."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "Матн ва замимаҳои шумо гум мешаванд."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "Матни шумо гум мешавад."
 

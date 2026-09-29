@@ -317,6 +317,10 @@ msgstr "فعالیت"
 msgid "Add"
 msgstr "اضافه کړئ"
 
+#: src/components/Feedback.tsx
+msgid "Add a bit more detail."
+msgstr "لږ نور تفصیل ورزیات کړئ."
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "Add a comment..."
 msgstr "تبصره اضافه کړئ..."
@@ -772,6 +776,7 @@ msgstr "کامره شتون نلري"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
+#: src/components/Feedback.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
@@ -930,6 +935,10 @@ msgstr "نېټه وټاکئ"
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "د څنګې پټۍ څخه لوبه وټاکئ یا نوې پیل کړئ."
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Choose a time"
+msgstr "وخت وټاکئ"
+
 #: ../../../lib/web/src/components/language-picker.tsx
 #: ../../../lib/web/src/components/language-picker.tsx
 msgid "Choose language"
@@ -976,6 +985,7 @@ msgstr "پورته کېدل: د پټۍ سمت {heading}، 350 ناټ"
 #: ../../../lib/web/src/components/ui/sheet.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
 #: ../../../lib/web/src/components/ui/side-panel.tsx
+#: src/components/Feedback.tsx
 #: src/components/GameCanvas.tsx
 msgid "Close"
 msgstr "وتړئ"
@@ -1193,6 +1203,10 @@ msgstr "پیغام ونه لېږل شو"
 msgid "Couldn't load notifications"
 msgstr "خبرتیاوې نه شول پورته کولی"
 
+#: src/components/Feedback.tsx
+msgid "Couldn't reach the destination yet"
+msgstr "تر اوسه منزل ته رسیدلی نه شو"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't send the code. Please try again."
 msgstr "کوډ نه شو لیږل کیدی. مهرباني وکړئ بیا هڅه وکړئ."
@@ -1200,6 +1214,10 @@ msgstr "کوډ نه شو لیږل کیدی. مهرباني وکړئ بیا هڅ�
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "بیا تصدیق پیلیدلی نشو. مهرباني وکړئ بیا هڅه وکړئ."
+
+#: src/components/Feedback.tsx
+msgid "Couldn't submit"
+msgstr "سپارل ونه شول"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Couldn't verify with that account. Please try again."
@@ -1425,6 +1443,10 @@ msgstr "په اور کې ویجاړه شوه"
 msgid "Detail"
 msgstr "جزئیات"
 
+#: src/components/Feedback.tsx
+msgid "Details"
+msgstr "تفصیلات"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx
 msgid "Details Panel"
 msgstr "د تفصیلاتو پینل"
@@ -1458,10 +1480,12 @@ msgid "DIRTY UP"
 msgstr "ټایر ښکته کړه"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard"
 msgstr "ړنګول"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Discard draft?"
 msgstr "مسوده ړنګه شي؟"
 
@@ -1667,6 +1691,10 @@ msgstr "د خپل تصدیق کوونکي کوډ دننه کړئ"
 msgid "Error"
 msgstr "تېروتنه"
 
+#: ../../../lib/web/src/components/ui/time-picker.tsx
+msgid "Every minute"
+msgstr "هره دقیقه"
+
 #: src/components/GameCanvas.tsx
 msgid "Everyone"
 msgstr "ټول"
@@ -1840,6 +1868,11 @@ msgstr "منځنی"
 #: src/components/GameCanvas.tsx
 msgid "FCS"
 msgstr "FCS"
+
+#: src/components/Feedback.tsx
+#: src/components/MissionSetup.tsx
+msgid "Feedback"
+msgstr "نظر"
 
 #: src/components/GameCanvas.tsx
 msgid "FIGHT'S ON"
@@ -2044,6 +2077,10 @@ msgstr "بیا ګرځېدل: بشپړ ځواک، بریکونه دننه، وز�
 #: ../../../lib/web/src/features/errors/not-found-error.tsx
 msgid "Go back"
 msgstr "بېرته"
+
+#: src/components/Feedback.tsx
+msgid "Go to forum"
+msgstr "فورم ته لاړ شئ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"
@@ -2287,6 +2324,10 @@ msgstr "همدا اوس"
 msgid "K/D"
 msgstr "K/D"
 
+#: src/components/Feedback.tsx
+msgid "Keep editing"
+msgstr "سمونې ته دوام ورکړئ"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Keyboard shortcuts"
 msgstr "د کیبورډ شارټ کټونه"
@@ -2442,6 +2483,7 @@ msgid "Loading item details"
 msgstr "د توکي جزئیات بار کیږي"
 
 #: ../../../lib/web/src/features/document/document-page.tsx
+#: src/components/Feedback.tsx
 msgid "Loading..."
 msgstr "بار کیږي..."
 
@@ -2653,6 +2695,10 @@ msgstr "د توغندي ماډل <0>“AIM-120C AMRAAM”</0> د <1>Pippa</1> (S
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
 msgstr "ماموریت پای ته ورسېد"
+
+#: src/components/Feedback.tsx
+msgid "Mochi Air feedback"
+msgstr "د Mochi Air په اړه نظر"
 
 #: ../../../lib/web/src/features/accounts/types.ts
 msgid "Mochi web"
@@ -3184,6 +3230,9 @@ msgid "Please check your internet connection and try again."
 msgstr "مهرباني وکړئ خپل د انټرنیټ اړیکه وګورئ او بیا هڅه وکړئ."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
+#: src/components/Feedback.tsx
 msgid "Please try again."
 msgstr "مهرباني وکړئ بیا هڅه وکړئ."
 
@@ -3198,6 +3247,10 @@ msgstr "مثبت پورته کېدل: ګیر پورته; د 250 ناټ په تې
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: take stick, gear up, flaps auto"
 msgstr "مثبت پورته کېدل: سټک ونیسه، ګیر پورته، فلېپ اتومات"
+
+#: src/components/Feedback.tsx
+msgid "Post feedback"
+msgstr "د نظر خپرول"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Posts"
@@ -3983,6 +4036,10 @@ msgstr "تبصره وسپارئ"
 msgid "Submit reply"
 msgstr "ځواب وسپارئ"
 
+#: src/components/Feedback.tsx
+msgid "Submitted successfully"
+msgstr "په بریالیتوب سره واستول شو"
+
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/recommended-entities.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -4177,6 +4234,10 @@ msgstr "وخت"
 msgid "Time of day"
 msgstr "د ورځې وخت"
 
+#: src/components/Feedback.tsx
+msgid "Title"
+msgstr "سرلیک"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx
 msgid "To"
 msgstr "ته"
@@ -4266,6 +4327,7 @@ msgstr "د خپل لټون اصطلاحات سمول هڅه وکړئ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: src/components/Feedback.tsx
 msgid "Try again"
 msgstr "بیا هڅه وکړئ"
 
@@ -4610,6 +4672,10 @@ msgstr "ستاسو حساب له {source} دلته لیږدول شوی. تر ه�
 msgid "Your attachments will be lost."
 msgstr "ستاسو ضمیمې به له لاسه ولاړې شي."
 
+#: src/components/Feedback.tsx
+msgid "Your feedback has been submitted and will appear after moderation."
+msgstr "ستاسو نظر واستول شو او د څارنې وروسته به ښکاره شي."
+
 #: src/components/MatchLog.tsx
 msgid "Your flights appear here once you've flown one."
 msgstr "کله چې یوه الوتنه وکړئ، ستاسو الوتنې به دلته ښکاره شي."
@@ -4623,6 +4689,7 @@ msgid "Your text and attachments will be lost."
 msgstr "ستاسو متن او ضمیمې به له لاسه ولاړې شي."
 
 #: ../../../lib/web/src/components/comment-composer.tsx
+#: src/components/Feedback.tsx
 msgid "Your text will be lost."
 msgstr "ستاسو متن به له لاسه ووځي."
 
