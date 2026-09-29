@@ -2376,41 +2376,38 @@ function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
 	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
 	x.fillText(String(scale),14,216); }
-function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9): the symbol generator's boresight picture at a fixed field — the same numbers the HUD shows, independent of the head and camera (which is why this is a fresh renderer, not a copy of the screen HUD's camera-coupled draw)
-	const ppd=512/26, cx=256, cy=250;   // a 26° square field, about the HUD's own
-	const pitch=(gz.pitch||0)/D2R, bank=gz.bank||0;
+// ddi_hud: the HUD format on a DDI (#9, #62), a repeat of the HUD: the same
+// furniture (hud_cluster), ladder (hud_pitch) and symbols (hud_symbols), drawn
+// through a fixed 26° field about the nose in place of the HUD's camera, at the
+// glass's proportions - one degree the same on the ladder and in the layout, the
+// waterline datum 4° above the display's centre, the HUD's optical centre (item 2).
+function ddi_hud(x){
+	const ppd=512/26, k=ppd/(HH/45), cx=256, cy=256, wly=cy-4*ppd, bore=[cx,wly], GREEN="#39e07a";   // k: the HUD layout's pixels onto the display's
+	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=ppd/D2R, pa=(ownship.gear??1)<0.02;   // pa: the landing symbology, on the gear as the HUD's (item 13)
+	const place=(d)=>{ const f=d.x*fwd.x+d.y*fwd.y+d.z*fwd.z; if(f<0.05) return null;   // a perspective projection about the nose, as the HUD's camera makes
+		return [cx+(d.x*right.x+d.y*right.y+d.z*right.z)/f*focal, wly-(d.x*up.x+d.y*up.y+d.z*up.z)/f*focal]; };
+	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(fwd,Math.max(0,2-ownship.speed));   // the flight path as the HUD takes it, faded in from the nose over the first 2 m/s
+	if(path.lengthSq()>1e-9) path.normalize(); else path.copy(fwd);
+	const limit=(q)=>{ const dx=q[0]-cx, dy=q[1]-cy, r=Math.hypot(dx,dy), rmax=8*ppd; return r>rmax?[[cx+dx/r*rmax,cy+dy/r*rmax],true]:[q,false]; };   // 8° about the optical centre (item 10)
+	const cage=master==="nav"?caged:!pa;
+	let fpm=place(path), fpm_limited=false, ghost=null, ghost_limited=false;
+	if(fpm){ const truth=fpm;
+		if(cage) fpm=[bore[0],truth[1]];
+		[fpm,fpm_limited]=limit(fpm);
+		if(cage&&Math.abs(truth[0]-bore[0])>2*ppd) [ghost,ghost_limited]=limit(truth); }
 	x.save(); x.beginPath(); x.rect(40,44,432,432); x.clip();   // the picture stays clear of the button bands
-	x.lineWidth=2;
-	x.save(); x.translate(cx,cy); x.rotate(-bank);   // pitch ladder about the boresight
-	for(let p=-30;p<=30;p+=5){ const off=(pitch-p)*ppd; if(Math.abs(off)>230) continue;
-		if(p===0){ x.beginPath(); x.moveTo(-200,off); x.lineTo(-40,off); x.moveTo(40,off); x.lineTo(200,off); x.stroke(); continue; }   // horizon
-		const w=p%10===0?70:40, gap=36;
-		x.save(); if(p<0) x.setLineDash([10,7]);
-		x.beginPath(); x.moveTo(-gap-w,off); x.lineTo(-gap,off); x.moveTo(gap,off); x.lineTo(gap+w,off); x.stroke();
-		x.restore();
-		if(p%10===0){ x.font="17px monospace"; x.textAlign="left"; x.fillText(String(Math.abs(p)),gap+w+6,off);
-			x.textAlign="right"; x.fillText(String(Math.abs(p)),-gap-w-6,off); } }
+	x.lineWidth=2; x.strokeStyle=GREEN; x.fillStyle=GREEN; x.textBaseline="middle";
+	{ const marked=fpm?new THREE.Vector3().copy(fwd).addScaledVector(right,(fpm[0]-cx)/focal).addScaledVector(up,-(fpm[1]-wly)/focal).normalize():path;   // the ladder hangs on the marker as drawn, as the HUD's does
+		const ladFwd=new THREE.Vector3(marked.x,0,marked.z);
+		if(ladFwd.lengthSq()<0.0025) ladFwd.set(fwd.x,0,fwd.z);
+		if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); hud_pitch(x,GREEN,place,ladFwd,new THREE.Vector3().crossVectors(ladFwd,world_up).normalize(),pa,k); } }
+	hud_symbols(x,GREEN,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,k);
+	if(law_active){ x.strokeStyle=GREEN; gpws_arrow(x,cx,cy,ppd,-Math.atan2(right.y,up.y)); }
+	let boxed=null, rng=1500, vc=0, ranged=false;
+	{ const dst=hud_target(); if(dst){ boxed=dst; const r=ranging(); if(r){ rng=r.range; vc=r.closure; ranged=true; } } }   // the ranging data, found as the HUD finds it
+	x.save(); x.translate(bore[0],bore[1]); x.scale(k,k); x.translate(0,4*HH/45);   // the layout's waterline datum onto the display's, at its degree
+	hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,boxed,vc,ranged?rng:null,{ fwd, right, up });
 	x.restore();
-	{ const vx=cx+(gz.slip||0)*3*ppd, vy=cy+(ownship.aoa||0)*ppd;   // velocity vector: alpha below the waterline, slip across (the repeat of the picture, not a camera projection)
-		const r=9;
-		x.beginPath(); x.arc(vx,vy,r,0,Math.PI*2); x.stroke();
-		x.beginPath(); x.moveTo(vx-r,vy); x.lineTo(vx-r-10,vy); x.moveTo(vx+r,vy); x.lineTo(vx+r+10,vy); x.moveTo(vx,vy-r); x.lineTo(vx,vy-r-8); x.stroke(); }
-	x.beginPath(); x.moveTo(cx-30,cy); x.lineTo(cx-12,cy); x.lineTo(cx-6,cy+8); x.lineTo(cx,cy); x.lineTo(cx+6,cy+8); x.lineTo(cx+12,cy); x.lineTo(cx+30,cy); x.stroke();   // waterline W
-	x.font="24px monospace"; x.textAlign="right";   // airspeed and altitude boxes at the waterline datum
-	x.strokeRect(58,196,96,34); x.fillText(String(Math.round(gz.casKt||0)),144,214);
-	x.strokeRect(360,196,110,34); x.fillText(String(Math.round(gz.altitude||0)),462,214);
-	x.font="20px monospace"; x.textAlign="left";
-	x.fillText("α "+(ownship.aoa||0).toFixed(1),58,254);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("G  "+(ownship.gload||1).toFixed(1),58,280);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.fillText("M  "+(gz.mach||0).toFixed(2),58,306);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	x.textAlign="right"; x.fillText(String(Math.round(gz.fpm||0)),470,254);   // VVI under the altitude box
-	x.font="26px monospace"; x.textAlign="center";
-	x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,70);
-	for(const d of [-45,-30,-20,-10,0,10,20,30,45]){ const a=Math.PI/2+d*D2R, br=180;   // bank scale under the boresight, pointer at the bank angle
-		const i=d===0?14:10;
-		x.beginPath(); x.moveTo(cx+Math.cos(a)*br,cy+Math.sin(a)*br); x.lineTo(cx+Math.cos(a)*(br+i),cy+Math.sin(a)*(br+i)); x.stroke(); }
-	{ const ba=Math.PI/2-THREE.MathUtils.clamp(bank,-45*D2R,45*D2R), br=180;
-		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(br-4),cy+Math.sin(ba)*(br-4)); x.lineTo(cx+Math.cos(ba-0.035)*(br-16),cy+Math.sin(ba-0.035)*(br-16)); x.lineTo(cx+Math.cos(ba+0.035)*(br-16),cy+Math.sin(ba+0.035)*(br-16)); x.closePath(); x.fill(); }
 	x.restore(); }
 // fpas_home (#54): distance and time to the carrier at present groundspeed, and
 // the fuel state on arrival at the present burn. Null on deck, hovering, or
@@ -8155,20 +8152,39 @@ function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
 	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
 	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
 	return bvr_apart; }
+// radar_target is what the radar holds of the locked or L&S contact, which the
+// launch zones fly against: its trackfile's last fix carried on by that fix's
+// velocity for the track's age. A tracking STT refreshes it every frame, a TWS
+// L&S at each paint, and a lock on memory not at all, so the zone ages with the
+// track. null while the jet is gone or no trackfile holds it.
+function radar_target(track){
+	const jet=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
+	const t=RADAR.tracks.find(k=>k.id===track);
+	if(!jet||!jet.group||!jet.group.visible||!t) return null;
+	const age=RADAR.time-t.at;
+	return { position:{x:t.x+t.vx*age,y:t.y+t.vy*age,z:t.z+t.vz*age}, velocity:{x:t.vx,y:t.vy,z:t.vz}, reheat:jet.reheat??0 }; }
+// ranging is the radar's range and closure (m/s, + closing) to the designated
+// jet, from the trackfile that holds it: null from a silent radar or with no
+// trackfile, and the HUD then has no ranging to show - the radar is the only
+// ranging the game has.
+function ranging(){
+	const track=RADAR.stt??RADAR.ls, t=RADAR.sil||track==null?null:radar_target(track); if(!t) return null;
+	const p=t.position, v=t.velocity, to=new THREE.Vector3(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z)), range=to.length();
+	if(range<1e-3) return { range, closure:0 };
+	to.multiplyScalar(1/range);
+	return { range, closure:(ownship.velx-v.x)*to.x+(ownship.vely-v.y)*to.y+(ownship.velz-v.z)*to.z }; }
 function launch_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
-	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
-	if(!t||!t.group||!t.group.visible) return null;
+	const t=radar_target(track); if(!t) return null;
 	if(zone&&zone_track===track&&sim_time-zone_at<0.5) return zone;   // ~2 Hz: each ladder flies several trial shots
 	zone_track=track; zone_at=sim_time;
 	zone=round_ladder(
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
-		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} },
-		WORLD_WRAP);
-	if(zone){ zone.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+		{ position:t.position, velocity:t.velocity }, WORLD_WRAP);
+	if(zone){ const p=t.position, v=t.velocity;
+		zone.range=Math.hypot(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z));
 		const tof=zone.range/(Math.max(ownship.speed,150)+650);   // rough round time of flight: launch speed plus the motor's gain — steering-dot precision, not fusing precision
-		const tvx=t.velx??t.fwd.x*t.speed, tvy=t.vely??t.fwd.y*t.speed, tvz=t.velz??t.fwd.z*t.speed;
-		zone.lead={x:t.pos.x+tvx*tof,y:t.pos.y+tvy*tof,z:t.pos.z+tvz*tof}; }
+		zone.lead={x:p.x+v.x*tof,y:p.y+v.y*tof,z:p.z+v.z*tof}; }
 	return zone; }
 // shoot_cue: null, "steady" (Rmax..Rne) or "flash" (inside Rne — the shot
 // the target cannot outrun). Inside Rmin the breakaway X replaces it.
@@ -8186,20 +8202,19 @@ function zone_cue(z){
 let heat_at=0, heat=null, heat_track=null, heat_prev=null;
 function heat_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
-	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
-	if(!t||!t.group||!t.group.visible) return null;
+	const t=radar_target(track); if(!t) return null;
 	if(heat&&heat_track===track&&sim_time-heat_at<0.5) return heat;
-	const v={x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed};
+	const v=t.velocity;
 	let swing={x:0,y:0,z:0};   // his present acceleration, from the last refresh: the ladder flies his turn on, not a straight line
 	if(heat_prev&&heat_track===track&&sim_time-heat_prev.t>0.2){ const dt=sim_time-heat_prev.t; swing={x:(v.x-heat_prev.vx)/dt,y:(v.y-heat_prev.vy)/dt,z:(v.z-heat_prev.vz)/dt}; }
 	heat_prev={t:sim_time,vx:v.x,vy:v.y,vz:v.z}; heat_track=track; heat_at=sim_time;
 	heat=heater_ladder(
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
-		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:v }, swing, t.reheat??0, WORLD_WRAP);
-	if(heat) heat.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+		{ position:t.position, velocity:v }, swing, t.reheat, WORLD_WRAP);
+	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
 function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; return zone_cue(z); }
-function hud_launch_zone(cx,cy,ppdv,ax,lx){
+function hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes){   // axes: the frame the zone is drawn in (fwd, right, up) - the HUD's view, or the airframe on a DDI
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
 	hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
@@ -8224,7 +8239,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	// The dot pegs at the rim edge-out when the lead point is far off axis.
 	if(z&&z.lead&&(ownship.amraam|0)>0){ const R=3.2*ppdv;
 		const to=new THREE.Vector3(wrap_axis(z.lead.x-ownship.pos.x),z.lead.y-ownship.pos.y,wrap_axis(z.lead.z-ownship.pos.z)).normalize();
-		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert());
+		const cs=new THREE.Vector3(to.dot(axes.right),to.dot(axes.up),-to.dot(axes.fwd));
 		let dxp=0, dyp=0;
 		if(cs.z<-1e-4){ dxp=Math.atan2(cs.x,-cs.z)*57.29578*ppdv; dyp=-Math.atan2(cs.y,-cs.z)*57.29578*ppdv; }
 		else { const sd=Math.hypot(cs.x,cs.y)||1; dxp=cs.x/sd*R*2; dyp=-cs.y/sd*R*2; }
@@ -8425,61 +8440,10 @@ function draw_hud(){
 	if(ladFwd.lengthSq()<0.0025) ladFwd.set(ownship.fwd.x,0,ownship.fwd.z);   // near-vertical flight: fall back to the nose azimuth
 	if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); const rightH=new THREE.Vector3().crossVectors(ladFwd,world_up).normalize();   // fwd × up = out the RIGHT wing (up × fwd pointed left and inverted the ladder)
 		if(DEV_MODE){ hud_ladder.axis=[]; for(let q=-60;q<=60;q+=0.5){ const P=proj_dir(dir_at(ladFwd,rightH,0,q*D2R)); if(P) hud_ladder.axis.push(P); } }   // dev: the ladder's centre line on screen, so a probe can check the marker sits on it
-		for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
-			if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
-				hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7*hs,0,Math.PI*2); hctx.stroke();
-				if(p<0){ const q=5*hs; hctx.beginPath(); hctx.moveTo(Z[0]-q,Z[1]-q); hctx.lineTo(Z[0]+q,Z[1]+q); hctx.moveTo(Z[0]+q,Z[1]-q); hctx.lineTo(Z[0]-q,Z[1]+q); hctx.stroke(); }
-				continue; }
-			const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
-			const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
-			const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
-			if(p===0) hud_ladder.horizon=[midx,midy];
-			const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
-			const gap=(p===0?30:22)*hs;
-			hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
-			hctx.setLineDash(p<0?[7*hs,6*hs]:[]);
-			const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
-			const tick=(p>=0?9:-9)*hs;                        // outer end-ticks point toward the horizon; the horizon bar's, extended or not, point down (figure 2-26)
-			for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
-				hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); hctx.lineTo(x1,y1+tick); hctx.stroke(); }
-			if(p!==0){ hctx.setLineDash([]); hctx.font=(11*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance (i18n-format-ok: a CSS font size)
-				for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
-					hctx.fillText(String(Math.abs(p)),x1+half*14*hs,y1+(p>0?tick*0.6:tick*0.6)); } }
-			hctx.restore(); } }
+		{ const horizon=hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs); if(horizon) hud_ladder.horizon=horizon; } }
 
-	// ---- boresight gun cross: A/A master modes only (the NAV HUD carries none) ----
-	if(master!=="nav"&&!pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
-		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
-
-	// ---- waterline symbol (landing configuration): a W with level wings (figure 2-26), as the repeater draws it ----
-	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-8*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]+7*hs); hctx.lineTo(bore[0],bore[1]);
-		hctx.lineTo(bore[0]+4*hs,bore[1]+7*hs); hctx.lineTo(bore[0]+8*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
-
-	// ---- the velocity vector, placed above with the ladder that hangs on it ----
-	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost;
-		const marker=(m,ring=true)=>{ hctx.beginPath(); if(ring) hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
-			hctx.moveTo(m[0]-6*hs,m[1]); hctx.lineTo(m[0]-14*hs,m[1]); hctx.moveTo(m[0]+6*hs,m[1]); hctx.lineTo(m[0]+14*hs,m[1]); hctx.moveTo(m[0],m[1]-6*hs); hctx.lineTo(m[0],m[1]-12*hs); hctx.stroke(); };
-		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
-		// The ghost: the wings and tail without the circle (figure 2-26), so it cannot be taken for the caged marker it stands beside.
-		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(ghost,false); } }
-
-	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
-	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
-	// 2.13.4.8.11 item 13), so a slow jet sees its velocity vector high in the bracket.
-	if(fpm && pa && !ownship.grounded){
-		const dpp=HH/45*hs;   // the HUD's own degrees, not the world's: the HUD view's layout scale, carried onto the glass by hs
-		const off=THREE.MathUtils.clamp(((ownship.aoa??8.1)-8.1)*dpp,-3.5*dpp,3.5*dpp);
-		const bx=fpm[0]-30*hs, by=fpm[1]+off, half=1.2*dpp;
-		hctx.beginPath(); hctx.moveTo(bx+7*hs,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7*hs,by+half);
-		hctx.moveTo(bx,by); hctx.lineTo(bx+5*hs,by); hctx.stroke(); }   // centre tick marks on-speed
-
-	// ---- ILS deviation bars, referenced to the velocity vector (replacing the old centred needles) ----
-	if(fpm){ const dev=approach_deviation(); if(dev){ hctx.strokeStyle=GR; hctx.setLineDash([]);
-		const reach=2.2*ppd, lx=fpm[0]+dev.az*reach, gy=fpm[1]+dev.gs*reach;
-		hctx.beginPath(); hctx.moveTo(lx,fpm[1]-reach); hctx.lineTo(lx,fpm[1]+reach); hctx.stroke();
-		hctx.beginPath(); hctx.moveTo(fpm[0]-reach,gy); hctx.lineTo(fpm[0]+reach,gy); hctx.stroke(); } }
+	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost; }   // dev: where the marker was drawn, for the probes
+	hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs);
 	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	}
 	if(glass) hctx.restore();
@@ -8489,18 +8453,8 @@ function draw_hud(){
 	// the fixed right-side data block (the real HUD attaches no text to the
 	// target, boxes nothing else, and draws no amber).
 	const authentic=cfg.view==="cockpit";
-	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	// Closure from the two velocity vectors along the line of sight, never by
-	// differencing range between render frames: the cores step on a fixed 60 Hz
-	// accumulator, so above 60 fps the difference quotient alternated between zero
-	// and double the true closure and the director pipper shook.
-	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
-		if(to.lengthSq()<1e-6) return 0;
-		to.normalize();
-		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
-		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
-		return mine.sub(his).dot(to); };   // + = closing
-	{ const dst=hud_target(); if(dst){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); } }
+	let boxed=null; let rng=1500; let vc=0; let ranged=false;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
+	{ const dst=hud_target(); if(dst){ boxed=dst; const r=ranging(); if(r){ rng=r.range; vc=r.closure; ranged=true; } } }   // the radar's ranging: without it the gun keeps its default range and no break X is cued
 	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
@@ -8627,126 +8581,9 @@ function draw_hud(){
 	if(flight_symbols){ const screen=hctx.getTransform(); hctx.save(); if(glass) glass_clip(glass);
 		hctx.translate(bore[0],bore[1]); hctx.scale(hs,hs); hctx.translate(-cx,-(cy-4*HH/45));   // the layout's waterline datum onto the nose: the box tops ride the waterline (NATOPS 2.13.4.8.11 item 2)
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
-	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
-	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
-	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
-	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
-	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
-	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
-	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
-	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
-	const m0=Math.ceil((hdg-halfd)/5)*5;
-	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
-		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
-		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
-	hctx.restore();
-	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
-	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
-		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
-		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
-		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
-		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
-	hctx.restore(); }
-
-	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
-	// remove the airspeed and altitude boxes and keep the values in them (NATOPS
-	// 2.13.4.8.1, figure 2-26 sheet 2) ----
-	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
-	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
-	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
-	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
-
-	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
-	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
-	const reading=altitude_reading(), alt=reading.feet, radar=reading.radar, flashB=reading.fallback;
-	if(!declutter) hctx.strokeRect(lx,wly,96,30);
-	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
-		hctx.textAlign="right";
-		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
-			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
-			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
-		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
-		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
-		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
-	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
-	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
-	{ const knots=(ownship.cas??ownship.speed)*1.944;
-		if(baro>=10000) baro_armed=true;
-		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
-		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
-		if(sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
-			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
-	// and the range, stacked under the altitude box where the jet puts them - RDR
-	// (the radar is the only ranging the game has), Vc in knots with a minus for an
-	// opening target, the range in feet inside a mile and in miles beyond ----
-	if(aa&&boxed&&!declutter){ const right=lx+96, top=wly+30;
-		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
-		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
-		const knots=Math.round(vc*1.94384/10)*10;
-		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		hctx.font="10px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
-		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
-		const feet=rng*3.28084;
-		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-
-	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
-	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
-		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
-
-	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
-	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
-		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
-		if(!declutter&&!pa){ const core=last_out;
-			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
-
-	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
-	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
-		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
-		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
-			const tl=Math.abs(b)===5?5:9;   // figure 2-26: the 5° ticks short, the centre, 15°, 30° and 45° long
-			hctx.beginPath(); hctx.moveTo(sx,sy); hctx.lineTo(cx+Math.sin(a)*(br+tl),pivotY+Math.cos(a)*(br+tl)); hctx.stroke(); }
-		const bank=Math.atan2(ownship.right.y,ownship.up.y)*57.29578;
-		const pegged=Math.abs(bank)>47, shownBank=THREE.MathUtils.clamp(-bank,-45,45)*D2R;
-		if(!pegged||(sim_time*5)%2<1){ const px2=cx+Math.sin(shownBank)*br, py2=pivotY+Math.cos(shownBank)*br;
-			const ix=cx+Math.sin(shownBank)*(br-9), iy=pivotY+Math.cos(shownBank)*(br-9);
-			const tx=Math.cos(shownBank)*5, ty=-Math.sin(shownBank)*5;
-			hctx.beginPath(); hctx.moveTo(px2,py2); hctx.lineTo(ix+tx,iy+ty); hctx.lineTo(ix-tx,iy-ty); hctx.closePath(); hctx.stroke(); }   // an open triangle pointing down onto the tick at the bank angle (figure 2-26)
-		hctx.lineWidth=1.5; }
-
-	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
-	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
-	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=tacan().slant/1852;
-		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
-	{ // The selected weapon and its count, centred at the bottom of the field as the
-		// jet's data block is: the gun's rounds on a line under the name, a missile's
-		// count beside it. NAV has no weapon block on the real HUD, so nothing is
-		// drawn there.
-		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
-		hctx.textAlign="center";
-		if(master==="gun"){ hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); }   // green like the rest of the HUD, firing or not; the HUD view's counter at the screen edge carries the firing cue
-		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
-		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
-		hctx.textAlign="left"; }
-	// ---- the mission computer's timer, lower-left corner (NATOPS 2.13.4.8.11 item 17):
-	// ZTOD, ET or CD, whichever the TIMEUFC page shows, as bare digits; none until
-	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
-	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
-		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
-	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
-	// ---- the breakaway X: one cue for every weapon, however it was reached (the
-	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
-	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
-	// the symbology's green and line (the HUD draws in green only; Chuck's guide
-	// p.391), flashing ----
-	if(breakaway_shown()){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); }
-
+	hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged?rng:null,{ fwd:new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), right:new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion), up:new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion) });
 	// BINGO is annunciated on the DDI and by voice, not on the HUD (NATOPS 2.2.10.4)
+
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
 	if(!authentic){ hctx.save(); hctx.setTransform(screen); const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
@@ -9007,6 +8844,210 @@ let mission_began=Date.now();   // local session identity for the history's repl
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // the pilot's L&S designation: the contact acquired - a remote's slot in a match, "bandit" alone - or -1 for none. The HUD boxes it and nothing else, like the real jet (the missile's seeker hunts its own cone)
+// hud_cluster draws the HUD's instrument furniture (#133): the heading scale, the
+// airspeed and altitude boxes, the ranging data, the vertical velocity, the
+// AoA/Mach/g block, the bank scale, the data blocks, the timer and the breakaway X,
+// laid out about cx,cy at ppdv layout pixels to the degree with the waterline datum
+// 4° above cy. The HUD draws it onto the nose and the glass, and the DDI's HUD
+// format draws the same (#62). glass: the heading scale rides the layout, as on the
+// combining glass or a DDI, rather than the HUD view's window edge, whose
+// transform screen keeps; axes the frame the AMRAAM's steering dot is taken in.
+function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
+	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
+	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
+	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
+	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
+	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
+	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
+	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
+	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
+	const m0=Math.ceil((hdg-halfd)/5)*5;
+	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
+		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
+		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
+	hctx.restore();
+	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
+	if(carrier_ols&&master==="nav"){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
+		const brg=(Math.atan2(wrap_axis(CARRIER.x-ownship.pos.x),-wrap_axis(CARRIER.z-ownship.pos.z))*180/Math.PI+360)%360;
+		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
+		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
+		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
+	hctx.restore(); }
+
+	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
+	// remove the airspeed and altitude boxes and keep the values in them (NATOPS
+	// 2.13.4.8.1, figure 2-26 sheet 2) ----
+	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
+	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
+	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
+	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
+
+	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
+	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
+	const reading=altitude_reading(), alt=reading.feet, radar=reading.radar, flashB=reading.fallback;
+	if(!declutter) hctx.strokeRect(lx,wly,96,30);
+	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
+		hctx.textAlign="right";
+		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
+			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
+			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
+		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
+		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
+		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
+	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
+	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
+	{ const knots=(ownship.cas??ownship.speed)*1.944;
+		if(baro>=10000) baro_armed=true;
+		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
+		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
+		if(sim_time-baro_shown<5&&(!baro_flash||(sim_time*3)%2<1)){ hctx.fillStyle=GR; hctx.font="14px 'Hornet Display', monospace"; hctx.textAlign="right";
+			hctx.fillText((baro_set/100).toFixed(2),lx+88,wly+46); } }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
+	// and the range, stacked under the altitude box where the jet puts them - RDR
+	// (the radar is the only ranging the game has), Vc in knots with a minus for an
+	// opening target, the range in feet inside a mile and in miles beyond ----
+	if(aa&&boxed&&rng!=null&&!declutter){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
+		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
+		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
+		const knots=Math.round(vc*1.94384/10)*10;
+		hctx.fillText((knots<0?"-":"")+Math.abs(knots)+"V",right-1.9*ppdv-7,top+2.65*ppdv);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		hctx.font="10px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("c",right-1.9*ppdv-7,top+2.65*ppdv+3);   // the subscript of Vc
+		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
+		const feet=rng*3.28084;
+		hctx.fillText(feet<6076?Math.round(feet/10)*10+" FT":(feet/6076).toFixed(1)+" NM",right-1.9*ppdv,top+3.3*ppdv); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+
+	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
+	const vs=ownship.vel_dir.y*ownship.speed*196.85;
+	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
+		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
+
+	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
+	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
+		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
+		if(!declutter&&!pa){ const core=last_out;
+			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
+
+	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
+	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
+		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
+		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
+			const tl=Math.abs(b)===5?5:9;   // figure 2-26: the 5° ticks short, the centre, 15°, 30° and 45° long
+			hctx.beginPath(); hctx.moveTo(sx,sy); hctx.lineTo(cx+Math.sin(a)*(br+tl),pivotY+Math.cos(a)*(br+tl)); hctx.stroke(); }
+		const bank=Math.atan2(ownship.right.y,ownship.up.y)*57.29578;
+		const pegged=Math.abs(bank)>47, shownBank=THREE.MathUtils.clamp(-bank,-45,45)*D2R;
+		if(!pegged||(sim_time*5)%2<1){ const px2=cx+Math.sin(shownBank)*br, py2=pivotY+Math.cos(shownBank)*br;
+			const ix=cx+Math.sin(shownBank)*(br-9), iy=pivotY+Math.cos(shownBank)*(br-9);
+			const tx=Math.cos(shownBank)*5, ty=-Math.sin(shownBank)*5;
+			hctx.beginPath(); hctx.moveTo(px2,py2); hctx.lineTo(ix+tx,iy+ty); hctx.lineTo(ix-tx,iy-ty); hctx.closePath(); hctx.stroke(); }   // an open triangle pointing down onto the tick at the bank angle (figure 2-26)
+		hctx.lineWidth=1.5; }
+
+	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
+	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
+	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
+	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=tacan().slant/1852;
+		hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
+	{ // The selected weapon and its count, centred at the bottom of the field as the
+		// jet's data block is: the gun's rounds on a line under the name, a missile's
+		// count beside it. NAV has no weapon block on the real HUD, so nothing is
+		// drawn there.
+		const ly=aa?cy+7.2*ppdv:cy+8.6*ppdv, count=cheat("ammunition")?"\u221e":null;
+		hctx.textAlign="center";
+		if(master==="gun"){ hctx.fillText(translate("GUN"),cx,ly-0.75*ppdv); hctx.fillText(count??String(ownship.rounds),cx,ly); }   // green like the rest of the HUD, firing or not; the HUD view's counter at the screen edge carries the firing cue
+		else if(master==="9m") hctx.fillText("9M "+(count??ownship.msl),cx,ly);
+		else if(master==="120c"){ hctx.fillText("120C "+(count??Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),cx,ly); }
+		hctx.textAlign="left"; }
+	// ---- the mission computer's timer, lower-left corner (NATOPS 2.13.4.8.11 item 17):
+	// ZTOD, ET or CD, whichever the TIMEUFC page shows, as bare digits; none until
+	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
+	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
+		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
+	if(master==="120c"&&declutter<2) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);
+	// ---- the breakaway X: one cue for every weapon, however it was reached (the
+	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
+	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
+	// the symbology's green and line (the HUD draws in green only; Chuck's guide
+	// p.391), flashing ----
+	if(breakaway_shown()){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); } }
+// closure is the rate two jets close along the line of sight, from their
+// velocity vectors, m/s (+ = closing). Never by differencing range between render
+// frames: the cores step on a fixed 60 Hz accumulator, so above 60 fps the
+// difference quotient alternated between zero and double the true closure and the
+// director pipper shook.
+function closure(one,two){ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
+	if(to.lengthSq()<1e-6) return 0;
+	to.normalize();
+	const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
+	const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
+	return mine.sub(his).dot(to); }
+// hud_pitch draws the pitch ladder (NATOPS 2.13.4.8.11 item 11, figure 2-26): a
+// line every 5° to ±85° about the heading ladFwd, split about the centre, angled
+// toward the horizon at half the pitch angle, dashed below it, with the end tabs
+// and the figures, and the zenith and nadir. proj_dir places a direction: the
+// HUD's camera, or the DDI's fixed field. Returns where the horizon bar's centre
+// was drawn, or null.
+function hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs){ let horizon=null;
+	for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
+		if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
+			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7*hs,0,Math.PI*2); hctx.stroke();
+			if(p<0){ const q=5*hs; hctx.beginPath(); hctx.moveTo(Z[0]-q,Z[1]-q); hctx.lineTo(Z[0]+q,Z[1]+q); hctx.moveTo(Z[0]+q,Z[1]-q); hctx.lineTo(Z[0]-q,Z[1]+q); hctx.stroke(); }
+			continue; }
+		const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
+		const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
+		const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
+		if(p===0) horizon=[midx,midy];
+		const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
+		const gap=(p===0?30:22)*hs;
+		hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;
+		hctx.setLineDash(p<0?[7*hs,6*hs]:[]);
+		const slope=Math.tan(Math.abs(pr)/2)*(p>0?1:-1);   // NATOPS: lines angled toward the horizon at HALF the flight-path angle
+		const tick=(p>=0?9:-9)*hs;                        // outer end-ticks point toward the horizon; the horizon bar's, extended or not, point down (figure 2-26)
+		for(const half of [-1,1]){ const x0=half*gap, x1=half*len, y1=Math.abs(x1-x0)*slope;
+			hctx.beginPath(); hctx.moveTo(x0,0); hctx.lineTo(x1,y1); hctx.lineTo(x1,y1+tick); hctx.stroke(); }
+		if(p!==0){ hctx.setLineDash([]); hctx.font=(11*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // numbers ride the rotated frame, so inverted flight reads at a glance (i18n-format-ok: a CSS font size)
+			for(const half of [-1,1]){ const x1=half*len, y1=Math.abs(x1-half*gap)*slope;
+				hctx.fillText(String(Math.abs(p)),x1+half*14*hs,y1+(p>0?tick*0.6:tick*0.6)); } }
+		hctx.restore(); }
+	return horizon; }
+// hud_symbols draws the symbols about the boresight and the velocity vector: the
+// A/A gun cross, the landing waterline, the velocity vector and its ghost, the E
+// bracket and the ILS deviation bars. bore and fpm are screen points; ppd the
+// world's pixels per degree, hs the symbol scale.
+function hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs){
+	// ---- boresight gun cross: A/A master modes only (the NAV HUD carries none) ----
+	if(master!=="nav"&&!pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
+		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
+
+	// ---- waterline symbol (landing configuration): a W with level wings (figure 2-26), as the repeater draws it ----
+	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-8*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]+7*hs); hctx.lineTo(bore[0],bore[1]);
+		hctx.lineTo(bore[0]+4*hs,bore[1]+7*hs); hctx.lineTo(bore[0]+8*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
+
+	// ---- the velocity vector, placed above with the ladder that hangs on it ----
+	if(fpm){ const marker=(m,ring=true)=>{ hctx.beginPath(); if(ring) hctx.arc(m[0],m[1],6*hs,0,Math.PI*2);
+			hctx.moveTo(m[0]-6*hs,m[1]); hctx.lineTo(m[0]-14*hs,m[1]); hctx.moveTo(m[0]+6*hs,m[1]); hctx.lineTo(m[0]+14*hs,m[1]); hctx.moveTo(m[0],m[1]-6*hs); hctx.lineTo(m[0],m[1]-12*hs); hctx.stroke(); };
+		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
+		// The ghost: the wings and tail without the circle (figure 2-26), so it cannot be taken for the caged marker it stands beside.
+		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(ghost,false); } }
+
+	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
+	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
+	// 2.13.4.8.11 item 13), so a slow jet sees its velocity vector high in the bracket.
+	if(fpm && pa && !ownship.grounded){
+		const dpp=HH/45*hs;   // the HUD's own degrees, not the world's: the HUD view's layout scale, carried onto the glass by hs
+		const off=THREE.MathUtils.clamp(((ownship.aoa??8.1)-8.1)*dpp,-3.5*dpp,3.5*dpp);
+		const bx=fpm[0]-30*hs, by=fpm[1]+off, half=1.2*dpp;
+		hctx.beginPath(); hctx.moveTo(bx+7*hs,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7*hs,by+half);
+		hctx.moveTo(bx,by); hctx.lineTo(bx+5*hs,by); hctx.stroke(); }   // centre tick marks on-speed
+
+	// ---- ILS deviation bars, referenced to the velocity vector (replacing the old centred needles) ----
+	if(fpm){ const dev=approach_deviation(); if(dev){ hctx.strokeStyle=GR; hctx.setLineDash([]);
+		const reach=2.2*ppd, lx=fpm[0]+dev.az*reach, gy=fpm[1]+dev.gs*reach;
+		hctx.beginPath(); hctx.moveTo(lx,fpm[1]-reach); hctx.lineTo(lx,fpm[1]+reach); hctx.stroke();
+		hctx.beginPath(); hctx.moveTo(fpm[0]-reach,gy); hctx.lineTo(fpm[0]+reach,gy); hctx.stroke(); } } }
 // ---- A/A radar (#30): the model lives in radar.ts; this block owns its
 // contacts feed, the per-frame step, the designation plumbing that makes the
 // L&S/STT the one target source (`designated`), the emitter uplink for other

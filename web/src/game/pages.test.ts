@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as THREE from 'three'
 
 // The DDI pages against NATOPS (#24): the EADI (2.13.4.3), the engine monitor
 // display (2.1.1.7.6) and the HSI (2.13.4.7). engine.ts cannot be imported
@@ -37,8 +38,6 @@ function bank_right(degrees: number): number {
   const ownship = { right: { x: 0, y: -Math.sin(r), z: Math.cos(r) }, up: { x: 0, y: Math.cos(r), z: Math.sin(r) } }
   return new Function('ownship', `return ${expression}`)(ownship) as number
 }
-// The pointer's tip: the one path start at that radius from the display centre.
-const tip = (d: Drawn, cx: number, cy: number, radius: number) => d.moves.filter(([mx, my]) => Math.abs(Math.hypot(mx - cx, my - cy) - radius) < 1e-6)
 const texts = (d: Drawn) => d.text.map((t) => t[0])
 const at = (d: Drawn, s: string) => d.text.find((t) => t[0] === s)?.slice(1)
 
@@ -197,13 +196,126 @@ describe('the attitude pages in a right bank', () => {
     expect(pointer[0][0]).toBeGreaterThan(256)
   })
 
-  it('turns the HUD repeater ladder anticlockwise and swings its bank pointer right, as the HUD does', () => {
-    const d = page('ddi_hud', `const ownship={ aoa:0, gload:1, gauges:{ ${gauges} } };`)
-    expect(d.rotate[0]).toBeCloseTo(turn, 9)
-    const [pointer] = tip(d, 256, 250, 180 - 4)
-    expect(pointer[0]).toBeCloseTo(256 + Math.cos(Math.PI / 2 + turn) * 176, 6)
-    expect(pointer[0]).toBeGreaterThan(256)
-    expect(pointer[1]).toBeGreaterThan(250)
+})
+
+// The HUD format on a DDI (#62): the HUD's own furniture, ladder and symbols,
+// drawn through a fixed field about the nose. The recording canvas applies the
+// transforms, so everything is read in display pixels.
+interface Repeat { pitch?: number; bank?: number; gear?: number; master?: string; declutter?: number; reading?: string; climb?: number }
+interface Shown { text: [string, number, number][]; rects: [number, number, number, number][]; lines: [number, number, number, number][]; arcs: [number, number, number][]; rotations: number[] }
+function repeat(o: Repeat = {}): Shown {
+  const r = (o.pitch ?? 0) * Math.PI / 180, b = (o.bank ?? 0) * Math.PI / 180
+  // a jet heading east (+x), pitched then banked right wing down
+  const fwd = new THREE.Vector3(Math.cos(r), Math.sin(r), 0)
+  const up0 = new THREE.Vector3(-Math.sin(r), Math.cos(r), 0), right0 = new THREE.Vector3(0, 0, 1)
+  const right = right0.clone().multiplyScalar(Math.cos(b)).addScaledVector(up0, -Math.sin(b))
+  const up = up0.clone().multiplyScalar(Math.cos(b)).addScaledVector(right0, Math.sin(b))
+  const climb = o.climb ?? 0, speed = 150
+  const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
+  const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
+  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  return new Function('THREE', 'ownship', `const D2R=Math.PI/180, HH=900, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
+    const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
+    let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
+    const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
+    const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
+    ${names.map((n) => lift(n)).join(' ')}
+    const text=[], rects=[], lines=[], arcs=[], rotations=[]; let m=[1,0,0,1,0,0], stack=[], at=[0,0];
+    const apply=(px,py)=>[m[0]*px+m[2]*py+m[4], m[1]*px+m[3]*py+m[5]];
+    const mul=(n)=>{ m=[m[0]*n[0]+m[2]*n[1], m[1]*n[0]+m[3]*n[1], m[0]*n[2]+m[2]*n[3], m[1]*n[2]+m[3]*n[3], m[0]*n[4]+m[2]*n[5]+m[4], m[1]*n[4]+m[3]*n[5]+m[5]]; };
+    const x=new Proxy({}, { get:(o,k)=>{
+      if(k==='save') return ()=>stack.push(m.slice()); if(k==='restore') return ()=>{ m=stack.pop()||m; };
+      if(k==='translate') return (tx,ty)=>mul([1,0,0,1,tx,ty]); if(k==='scale') return (sx,sy)=>mul([sx,0,0,sy,0,0]);
+      if(k==='rotate') return (a)=>{ rotations.push(a); mul([Math.cos(a),Math.sin(a),-Math.sin(a),Math.cos(a),0,0]); };
+      if(k==='getTransform') return ()=>({ a:m[0], b:m[1], c:m[2], d:m[3], e:m[4], f:m[5] }); if(k==='setTransform') return (tr)=>{ m=[tr.a,tr.b,tr.c,tr.d,tr.e,tr.f]; };
+      if(k==='fillText') return (s,px,py)=>text.push([String(s),...apply(px,py)]);
+      if(k==='strokeRect') return (rx,ry,w,h)=>{ const [ax,ay]=apply(rx,ry); rects.push([ax,ay,w*m[0],h*m[3]]); };
+      if(k==='moveTo') return (px,py)=>{ at=apply(px,py); }; if(k==='lineTo') return (px,py)=>{ const q=apply(px,py); lines.push([...at,...q]); at=q; };
+      if(k==='arc') return (ax,ay,rr)=>arcs.push([...apply(ax,ay),rr*m[0]]);
+      if(k==='measureText') return (s)=>({ width:7*String(s).length });
+      return ()=>{}; }, set:()=>true });
+    ddi_hud(x); return { text, rects, lines, arcs, rotations };`)(THREE, ownship) as Shown
+}
+describe('the HUD format on a DDI', () => {
+  const ppd = 512 / 26, k = ppd / 20, wly = 256 - 4 * ppd
+  const labels = (d: Shown) => d.text.map((s) => s[0])
+
+  it('boxes airspeed and altitude with their tops on the waterline, as the HUD does', () => {
+    const d = repeat()
+    const tops = d.rects.map((q) => q[1])
+    expect(tops.length).toBe(2)
+    for (const y of tops) expect(y).toBeCloseTo(wly, 9)
+    expect(labels(repeat({ declutter: 1 })).length).toBeGreaterThan(0)
+    expect(repeat({ declutter: 1 }).rects).toEqual([]) // REJ 1 takes the boxes, as on the HUD
+  })
+
+  it('runs the moving 30° heading scale across the top, not a digital heading', () => {
+    const d = repeat()
+    for (const label of ['080', '090', '100']) expect(labels(d)).toContain(label)
+    const [, hx, hy] = d.text.find((s) => s[0] === '090')!
+    expect(hx).toBeCloseTo(256, 6)
+    expect(hy).toBeLessThan(wly)
+  })
+
+  it('shows the altitude the HUD shows, with R for radar', () => {
+    const d = repeat({ reading: '{ feet:420, radar:true, fallback:false }' })
+    expect(labels(d)).toContain('420')
+    expect(labels(d)).toContain('R')
+  })
+
+  it('puts the vertical velocity above the altitude box in NAV and on approach only', () => {
+    const vv = (d: Shown) => d.text.find((s) => s[0] === '980')
+    const nav = vv(repeat({ climb: 5 }))
+    expect(nav).toBeDefined()
+    expect(nav![2]).toBeLessThan(wly)
+    expect(vv(repeat({ climb: 5, master: 'gun' }))).toBeUndefined()
+    expect(vv(repeat({ climb: 5, master: 'gun', gear: 0 }))).toBeDefined()
+  })
+
+  it('switches to the landing symbology with the gear down: the waterline, and Mach and g gone', () => {
+    const w = (d: Shown) => d.lines.some(([x0, y0, x1, y1]) => Math.abs(x0 - (256 - 8 * k)) < 1e-6 && Math.abs(y0 - wly) < 1e-6 && Math.abs(x1 - (256 - 4 * k)) < 1e-6 && Math.abs(y1 - (wly + 7 * k)) < 1e-6)
+    const up = repeat(), down = repeat({ gear: 0 })
+    expect(w(up)).toBe(false)
+    expect(w(down)).toBe(true)
+    expect(labels(up).some((s) => s.startsWith('M '))).toBe(true)
+    expect(labels(down).some((s) => s.startsWith('M ') || s.startsWith('G '))).toBe(false)
+  })
+
+  it('carries the ladder every 5° to the vertical, with the zenith', () => {
+    const steep = repeat({ pitch: 60 })
+    expect(labels(steep)).toContain('60')
+    expect(labels(steep)).toContain('65')
+    const near = repeat({ pitch: 82 })
+    const zenith = near.arcs.find((a) => Math.abs(a[2] - 7 * k) < 1e-9)
+    expect(zenith).toBeDefined()
+    expect(zenith![1]).toBeCloseTo(wly - Math.tan(8 * Math.PI / 180) * ppd * 180 / Math.PI, 3)
+  })
+
+  it('turns the ladder anticlockwise in a right bank and swings the bank pointer right, as the HUD does', () => {
+    const d = repeat({ bank: 30 })
+    expect(d.rotations.every((a) => a < 0)).toBe(true)
+    expect(d.rotations.some((a) => Math.abs(a + 30 * Math.PI / 180) < 0.02)).toBe(true)
+    const pointer = repeat({ bank: 30 }).lines.find(([x0, y0, x1, y1]) => y0 > 256 && x0 > 256 && Math.hypot(x1 - x0, y1 - y0) > 5 * k && Math.hypot(x1 - x0, y1 - y0) < 12 * k)
+    expect(pointer).toBeDefined()
+  })
+
+  it('takes the AMRAAM steering dot in the frame it is drawn in: the airframe on a DDI', () => {
+    const dot = (axes: string, lead: string) => new Function('THREE', `const D2R=Math.PI/180, GR='g', sim_time=0, missiles=[], ownship={ pos:{x:0,y:0,z:0}, amraam:4 }, wrap_axis=(v)=>v, shoot_cue=()=>null;
+      const launch_zone=()=>({ aero:0, lead:${lead} }), camera={ quaternion:new THREE.Quaternion() }, _q=new THREE.Quaternion(); let hud_cue="", hud_shoot=false;
+      const arcs=[]; const hctx=new Proxy({}, { get:(o,k)=>k==='arc'?(ax,ay,r)=>arcs.push([ax,ay,r]):()=>{}, set:()=>true });
+      ${lift('hud_launch_zone')} hud_launch_zone(hctx,GR,0,0,20,0,0,${axes}); return arcs.find((a)=>a[2]===3.5);`)(THREE) as number[]
+    const east = '{ fwd:new THREE.Vector3(1,0,0), right:new THREE.Vector3(0,0,1), up:new THREE.Vector3(0,1,0) }' // an airframe heading east
+    const [x, y] = dot(east, '{ x:1000*Math.cos(2*D2R), y:0, z:1000*Math.sin(2*D2R) }') // 2° right of its nose, inside the dot's peg
+    expect(x).toBeCloseTo(2 * 20, 6)
+    expect(y).toBeCloseTo(0, 6)
+  })
+
+  it('is drawn by the HUD\'s own code', () => {
+    const body = lift('ddi_hud')
+    for (const call of ['hud_pitch(x,GREEN,place,', 'hud_symbols(x,GREEN,bore,', 'hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,']) expect(body).toContain(call)
+    expect(source).toMatch(/\n\thud_cluster\(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged\?rng:null,/)
+    expect(source).toMatch(/const horizon=hud_pitch\(hctx,GR,proj_dir,ladFwd,rightH,pa,hs\);/)
+    expect(source).toMatch(/\n\thud_symbols\(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs\);/)
   })
 })
 

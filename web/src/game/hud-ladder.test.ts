@@ -204,15 +204,15 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
   })
 
   it('ends the horizon bar in short downward ticks, extended or not, and the pitch lines toward the horizon', () => {
-    const body = /\n(\t\t\tconst wide=[\s\S]*?\n\t\t\thctx\.restore\(\);) \} \}/.exec(source)?.[1] ?? ''
+    const body = /\n(\t\tconst wide=[\s\S]*?\n\t\thctx\.restore\(\);) \}/.exec(source)?.[1] ?? ''
     expect(body).not.toBe('')
     const ends = (p: number, pa: boolean) => {
       const c = record()
       const D2R = Math.PI / 180
       // the ladder line's ends straight across the screen, so the local frame is the screen's
       const dir_at = (_f: unknown, _r: unknown, across: number, up: number) => [400 - across * 1000, 300 - up * 1000]
-      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', 'hud_ladder', `for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
-        c.hctx, p, pa, 1, 'g', D2R, (d: number[]) => d, dir_at, null, null, {})
+      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', `let horizon=null; for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
+        c.hctx, p, pa, 1, 'g', D2R, (d: number[]) => d, dir_at, null, null)
       return c.paths.filter(path => path.points.length === 3).map(path => { const [, [, x1, y1], [, x2, y2]] = path.points; return [x2 - x1, y2 - y1] })
     }
     expect(ends(0, false)).toEqual([[0, 9], [0, 9]])
