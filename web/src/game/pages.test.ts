@@ -561,6 +561,60 @@ describe('the FCS status display', () => {
   })
 })
 
+// The checklist display against figure 7-1 (NATOPS 7.2.1) for the C, and the landing
+// record its MAX NZ reads.
+function chklst(o: { stab?: [number, number]; gross?: number; nz?: number | null } = {}): Drawn {
+  const [l, r] = o.stab ?? [-12, -12]
+  return page('ddi_chklst', `const STATE={ stabilator:0 }, last_out=[${l}*D2R, ${r}*D2R], gross_pounds=()=>${o.gross ?? 32512.4}, landing={ nz:${o.nz === undefined ? 1.834 : o.nz} };`)
+}
+describe('the checklist display', () => {
+  it('lists LAND at the left and T.O. at the right as figure 7-1 does, the C without EJECT SEL', () => {
+    const d = chklst()
+    expect(at(d, 'LAND')).toEqual([60, 72])
+    expect(at(d, 'T.O.')).toEqual([286, 72])
+    const land = ['WHEELS', 'FLAPS', 'HOOK', 'ANTI SKID', 'HARNESS', 'DISPENSER'], takeoff = ['CONTROLS', 'WINGS', 'TRIM', 'FLAPS', 'HOOK', 'HARNESS', 'WARN LITES', 'NWS LO', 'SEAT ARM']
+    land.forEach((item, i) => expect(d.text).toContainEqual([item, 84, 100 + 22 * i]))
+    takeoff.forEach((item, i) => expect(d.text).toContainEqual([item, 310, 100 + 22 * i]))
+    for (const gone of ['EJECT SEL', 'CHKLST', 'T/O', 'LDG', 'GEAR', 'CANOPY', 'PARK BRK', 'ON SPEED', 'LDG WT']) expect(texts(d)).not.toContain(gone)
+    expect(texts(d).some((s) => /^(VAPP|VS0|CAT|WT) /.test(s))).toBe(false)
+    expect(d.rects).toEqual([]) // no boxes: the pilot checks by eye
+  })
+
+  it('gives the gross weight to the pound and the last landing\'s MAX NZ under LAND', () => {
+    const d = chklst()
+    expect(at(d, 'A/C WT 32512')).toEqual([84, 300])
+    expect(at(d, 'MAX NZ 1.83')).toEqual([84, 366])
+    expect(texts(chklst({ nz: null })).some((s) => s.startsWith('MAX NZ'))).toBe(false)
+  })
+
+  it('reads the stabilators along the bottom in degrees nose up or down', () => {
+    expect(at(chklst(), '12° NU STAB POS 12° NU')).toEqual([256, 410])
+    expect(texts(chklst({ stab: [3, -2] }))).toContain('3° ND STAB POS 2° NU')
+  })
+})
+
+describe('the landing record', () => {
+  const block = (/\nconst landing=\{[^\n]*\n/.exec(source)?.[0] ?? '') + lift('landing_track')
+  const run = (steps: [number, boolean, number][]) => new Function('steps', `let sim_time=0; ${block}
+    return steps.map(([t,grounded,nz])=>{ sim_time=t; landing_track(grounded,nz); return landing.nz; });`)(steps) as (number | null)[]
+
+  it('takes the peak vertical g over the first 3 s from the wheels touching', () => {
+    expect(block).toMatch(/^\nconst landing=/)
+    expect(run([[0, false, 1], [1, true, 1.5], [1.5, true, 2.1], [2, true, 1.2], [4.5, true, 3]])).toEqual([null, 1.5, 2.1, 2.1, 2.1])
+  })
+
+  it('starts again at the next touchdown, and counts none for a jet that spawned on the deck', () => {
+    expect(run([[0, false, 1], [1, true, 2.4], [10, false, 1], [20, true, 1.6]])).toEqual([null, 2.4, 2.4, 1.6])
+    expect(run([[0, true, 1], [1, true, 1]])).toEqual([null, null])
+  })
+
+  it('follows the core\'s weight on wheels each step, clears at a spawn, and leaves the other judgements the weight to the ten', () => {
+    expect(source).toMatch(/\n\township\.grounded=out\[STATE\.wow\]>0\.5;\n\tlanding_track\(ownship\.grounded,ownship\.gload\?\?1\);/)
+    expect(source).toMatch(/\n\tlanding\.nz=null; landing\.grounded=true;/)
+    expect(new Function(`const gross_pounds=()=>32512.4; ${lift('gross_weight')}\n return gross_weight();`)()).toBe(32510)
+  })
+})
+
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.
