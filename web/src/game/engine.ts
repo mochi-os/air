@@ -1654,8 +1654,8 @@ function caution_place(r,c){ const G=CAUTION_GRID; return G.origin.map((v,i)=>v+
 function build_lamps(g){
 	if(g.userData.lamps&&g.userData.lampsGroup&&g.userData.lampsGroup.parent===g) return;
 	const glass=g.userData.glass; if(!glass) return;
-	const lamp=(c,w,h)=>new THREE.Mesh(new THREE.PlaneGeometry(w||0.016,h||0.009),
-		new THREE.MeshBasicMaterial({ color:c, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false }));
+	const lamp=(c,w,h)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(w||0.016,h||0.009),
+		new THREE.MeshBasicMaterial({ color:c, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false })); m.userData.lit=c; return m; };   // lit: its colour at full brightness, which WARN/CAUT and NITE scale
 	const lamps={};
 	const brow=new THREE.Group();
 	// The glareshield (FO-5 items 4-10, NATOPS 2.14.1, 2.17.2, #12): outboard to
@@ -1741,7 +1741,7 @@ function build_lamps(g){
 	lamps.shoot=legend("SHOOT","#2fd24a",0.026,0.010); lamps.shoot.position.set(0,-PENDANT.pitch,0);
 	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
 	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
-	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
+	g.userData.lamps=lamps; backlight_state=""; g.userData.lampsGroup=brow; }
 // generators: each generator on the line, its engine turning (the core's spool, less the harm to it) (NATOPS 2.5.1).
 function generators(out){ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 	return [turning(0,0),turning(2,1)]; }
@@ -1755,19 +1755,19 @@ function lamps_update(out){
 	lamp_set(l.caution,caution_lamp);   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
 	// glareshield panels (#12): the lamps the game can drive; GO, NO GO, the BLEEDs, STBY, RCDR ON, DISP, SAM, AAA, CW and APU FIRE have no state and stay dark
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
-	lamp_set(l.lbar,(ownship.bar??0)>0.05);   // green while the launch bar is extended (2.10.4, #11); the red L BAR needs a retraction fault the game has none of
+	lamp_set(l.lbar,(ownship.barTarget??0)>0.5);   // green with the launch bar switch at EXTEND, out when it goes to RETRACT (2.10.4, #11); the red L BAR needs a retraction fault the game has none of
 	lamp_set(l.aspj,jammer_armed); lamp_set(l.xmit,jammer_loud()); lamp_set(l.rec,jammer_armed&&!jammer_loud());   // the ASPJ: power on, radiating, armed and listening
 	lamp_set(l.ai,RWR.contacts.length>0);   // every emitter the RWR hears is an aircraft radar; SAM, AAA and CW have no emitter class to fire on
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
 	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
-	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO||flbit_lit());
+	lamp_set(l.fuello,fuel_low());
 	{ const [genL,genR]=generators(out); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // only spends when the pit is on screen, like the flood
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
-	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot);
+	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot&&!(cfg.tod==="night"&&ownship.lights));   // the strobe SHOOT light does not light with the instrument lights on (2.6.2.4): the game keeps a dim instrument wash by day, so "on" is the night setting with the lights up
 	if(l.transit){ const locked=[0,1,2].map(leg=>ext>0.98&&(out[STATE.gear_harm+leg]||0)<GEAR_COLLAPSE), unsafe=(ownship.gearTarget??0)<0.5?!locked.every(Boolean):ext>0.02;
 		// NATOPS 2.10.1.4 (#22): the handle light is on while the gear travels and, with DN selected, until all three are
 		// down and locked, so a folded strut keeps it on; once on for 15 s it brings the aural tone (gear_tone); under the
@@ -1775,7 +1775,7 @@ function lamps_update(out){
 		handle_lit=unsafe?(handle_lit<0?sim_time:handle_lit):-1;
 		l.transit.material.opacity=wheels_warning()?((sim_time%1.1)<0.55?1:0):(unsafe?1:0);
 		l.nose.material.opacity=locked[0]?1:0; l.left.material.opacity=locked[1]?1:0; l.right.material.opacity=locked[2]?1:0; }
-	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5;   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs)
+	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5||!(((ownship.gauges||{}).hyd??0)>0);   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs) or without hydraulic pressure
 		l.half.material.opacity=(flap_select===1&&slow)?1:0;
 		l.full.material.opacity=(flap_select===2&&slow)?1:0;
 		l.flaps.material.opacity=((flap_select>0&&!slow)||off)?1:0; }
@@ -2509,7 +2509,7 @@ const FLBIT_RESULT=10, FLBIT_HOLD=60;
 function flbit_running(){ return sim_time-flbit<FLBIT_RESULT; }
 function flbit_lit(){ const t=sim_time-flbit; return t>=FLBIT_RESULT&&t<FLBIT_RESULT+FLBIT_HOLD; }
 function fuel_press(pb){   // BINGO is set on the IFEI in the C/D (2.2.10.4), not from this page
-	if(pb===20&&!flbit_running()&&!flbit_lit()&&(ownship.fuel??1e9)>=FUELLO){ flbit=sim_time; return true; }
+	if(pb===20&&!flbit_running()&&!flbit_lit()&&!fuel_lo.on){ flbit=sim_time; return true; }
 	return false; }
 // The IFEI (NATOPS 2.1.1.7.5, 2.2.10.1, 2.12.8): the C's LCD block under the
 // left DDI, drawn from the face ifei.ts computes. The cockpit shell paints the
@@ -5002,8 +5002,8 @@ function instrument_backlight(){
 	lighting_set(); const level=lighting.instrument;
 	const key=level.toFixed(2)+lighting.warn.toFixed(2); if(key===backlight_state) return; backlight_state=key;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	for(const mm of instrument_mats) mm.emissiveIntensity=level;
-	const lamps=ownship.group&&ownship.group.userData.lamps;   // WARN/CAUT and the NITE mode dim the lenses: the painted legends multiply by the material colour
-	if(lamps) for(const m of Object.values(lamps)) if(m.userData.lens) m.material.color.setScalar(lighting.warn); }
+	const g=ownship.group;   // WARN/CAUT and the NITE mode dim every warning, caution and advisory light (2.6.2.1, 2.17.2.2): a lens's painted legend multiplies by its material colour, a plain lamp's colour is its own at that level
+	if(g&&g.userData.lamps) g.traverse(o=>{ if(o.userData.lens) o.material.color.setScalar(lighting.warn); else if(o.userData.lit!==undefined) o.material.color.setHex(o.userData.lit).multiplyScalar(lighting.warn); }); }
 let cockpit_flood=null, console_lights=null;
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
@@ -5811,7 +5811,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "altitude": alt_radar=!alt_radar; break;
 	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
 	case "lights": ownship.lights=!ownship.lights; break;
-	case "dump": fuel_dump=!fuel_dump; break;
+	case "dump": fuel_dump=!fuel_dump&&!bingo_low()&&!fuel_low(); break;   // held ON only with BINGO and FUEL LO off (NATOPS 2.2.7)
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
@@ -6293,6 +6293,7 @@ const voice=voice_queue();  // the voice alerts (voice.ts)
 // the NATOPS caution index (chapter 12): PARK BRK is the index's PARK BRAKE.
 const DDI_CAPTIONS={ "FUEL LO":"FUEL LO", BINGO:"BINGO", "HOME FUEL":"HOME FUEL", "WING UNLK":"WING UNLK", "PARK BRK":"PARK BRAKE", CANOPY:"CANOPY", "PROBE UNLK":"PROBE UNLK", FCS:"FCS" };
 function cautions_update(){
+	fuel_low_step();
 	const rows=[]; const core=last_out;
 	const push=(key,red)=>rows.push([key,translate(key),!!red]);
 	if((ownship.fuel??1)<=0) push("FLAMEOUT",true);
@@ -6302,7 +6303,7 @@ function cautions_update(){
 	if((core&&core[STATE.leak]>0.1)||own_leak>0.1) push("FUEL LEAK");
 	let low=false, below=false;   // the fuel itself under FUEL LO and under BINGO: what the BINGO voice and its repeat follow, as a FLBIT's FUEL LO does not
 	if(!cheat("fuel")){ const internal=ownship.fuel??0;   // BINGO appears when the INTERNAL fuel reaches the setting (NATOPS 2.2.10.4)
-		low=ownship.fuel!==undefined&&ownship.fuel<FUELLO; below=internal>0&&internal<BINGO;
+		low=fuel_lo.on; below=internal>0&&internal<BINGO;
 		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
 		if(below) push("BINGO"); }   // with FUEL LO when both hold: two conditions, neither hiding the other (2.2.8, 2.2.10.4)
 	{ const home=fpas_home(); if(home&&home.arrive<=2000&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out (2.3.1.2); fpas_home is null with weight on wheels
@@ -7230,7 +7231,17 @@ function playback_step(frame){ const dt=playback_held?0:frame;
 const physics_strips=[];   // paved capsules (taxiways, stopways, aprons), collected as the airfields build
 const runway_strips=[];   // the runway's own capsules — a separate field because it sits RUNWAY_FLOAT up, not AIRFIELD_FLOAT (#220)
 const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
-let BINGO=1361; const FUELLO=726;   // kg: the bingo call (the IFEI setting, 3,000 lb until the pilot moves it — bingo_set) and the ~1,600 lb hardware FUEL LO caution
+let BINGO=1361;   // kg: the bingo call (the IFEI setting, 3,000 lb until the pilot moves it — bingo_set)
+// FUEL LO (NATOPS 2.2.8): the feed tanks' low-level sensors, apart from the gauging - on when either feed tank is
+// down to 800 lb in fuel_tanks' apportionment of the internal fuel (the right feed, the smaller, at about 1,990 lb
+// internal), and held on at least a minute from coming on however brief the cause. fuel_lo is that state, stepped
+// by fuel_low_step with the cautions; fuel_low() adds a FLBIT's FUEL LO (flbit_lit).
+const FEED_LOW=800;   // lb
+const fuel_lo={ on:false, at:-Infinity };
+function feed_low(kg){ const t=fuel_tanks(kg*2.20462,0,[]); return Math.min(t.feed.left,t.feed.right)<=FEED_LOW; }
+function fuel_low_step(){ const low=ownship.fuel!==undefined&&!cheat("fuel")&&feed_low(ownship.fuel);
+	if(low&&!fuel_lo.on) fuel_lo.at=sim_time; fuel_lo.on=low||(fuel_lo.on&&sim_time-fuel_lo.at<60); }
+function fuel_low(){ return fuel_lo.on||flbit_lit(); }
 function bingo_set(lb){ fuel_state.bingo=THREE.MathUtils.clamp(Math.round(lb/100)*100,0,20000); BINGO=fuel_state.bingo/2.2046; ifei_dirty=true; }   // one BINGO: the IFEI counter, the FUEL page caret, the HUD legend and the caution all read the same setting (NATOPS 2.2.10.4)
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let fuel_read=false;   // the core has reported a real tank this mission: joining a match it runs on zero until the welcome's state lands, and zero there is unread, not empty
@@ -7306,7 +7317,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 		fuel_read=true;
 		if(read&&!cheat("fuel")){   // the calls are crossings, so they need a real reading behind them: the first reading of a mission is a state the legend shows, not a crossing; a frozen tank makes them meaningless
 			if(beforeInternal>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));   // BINGO judges the internal fuel quantity (NATOPS 2.2.10.4), not the external tanks
-			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
+			if(!feed_low(beforeInternal)&&feed_low(ownship.fuel)) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+3]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved reheat, health-weighted (#41): a dead engine's flame disc stops and its nozzle glow dies with it
@@ -7434,7 +7445,7 @@ function fly_player(dt){
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	if(demonstration) demonstration_drive(dt);   // the scripted pilot: flies the controls the player just released, through the same sample the core reads
-	if(fuel_dump&&bingo_low()) fuel_dump=false;   // NATOPS 2.2.7: the DUMP switch returns to OFF when the BINGO caution comes on
+	if(fuel_dump&&(bingo_low()||fuel_low())) fuel_dump=false;   // NATOPS 2.2.7: the DUMP switch returns to OFF when the BINGO caution comes on, and dumping ends with a feed tank at the FUEL LO level
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
@@ -7978,7 +7989,7 @@ function reset_ownship(){
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
-	flbit=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
+	flbit=-Infinity; fuel_lo.on=false; fuel_lo.at=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
@@ -8913,7 +8924,7 @@ function draw_hud(){
 	hctx.fillText(translate("CHAFF")+"  "+(cheat("ammunition")?"∞":ownship.chaff),40,HH-52);   // its own line, like every other counter in the stack
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
 	else { const pounds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/10)*10;   // the IFEI headline is TOTAL fuel, externals included (#17) — they burn first, so this is the number that counts down from the top
-		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes (internal — the feed-tank hardware caution)
+		if(fuel_lo.on) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes (internal — the feed-tank hardware caution)
 		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";   // BINGO on internal fuel (NATOPS 2.2.10.4)
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; } }
 
