@@ -615,6 +615,72 @@ describe('the landing record', () => {
   })
 })
 
+// The FPAS display against NATOPS 2.3.1 and figure 2-7, the areas the game can compute.
+interface Fpas { total?: number; pph?: number; gs?: number; mach?: number; grounded?: boolean; home?: string; time?: number }
+function fpas(o: Fpas = {}): Drawn {
+  return page('ddi_fpas', `const ownship={ grounded:${o.grounded ?? false}, gauges:{ fuelRaw:${o.total ?? 8000}, externalRaw:0, ground:${o.gs ?? 400}, mach:${o.mach ?? 0.7} } };
+    const flow_state={ pph:${o.pph ?? 6000} }, sim_time=${o.time ?? 0}, fpas_home=()=>(${o.home ?? '{ dist:160, hours:0.3958, arrive:5620 }'});`)
+}
+describe('the FPAS display', () => {
+  it('lays out the CURRENT range and endurance and the steering row as figure 2-7 does, without the areas the game cannot compute', () => {
+    const d = fpas()
+    expect(at(d, 'CURRENT')).toEqual([261, 40]); expect(at(d, 'RANGE')).toEqual([261, 68]); expect(at(d, 'ENDURANCE')).toEqual([408, 68])
+    expect(at(d, 'TO 2000 LB')).toEqual([36, 96])
+    expect(d.text).toContainEqual(['400', 261, 96]) // 6,000 lb spare at 6,000 pph and 400 kt
+    expect(d.text).toContainEqual(['1:00', 408, 96])
+    for (const [label, cx] of [['NAV TO', 66], ['TIME', 190], ['FUEL REMAIN', 330], ['LB/NM', 446]] as [string, number][]) expect(at(d, label)).toEqual([cx, 140])
+    expect(d.text).toContainEqual(['TCN', 66, 166])
+    expect(d.text).toContainEqual(['5620', 330, 166])
+    expect(d.text).toContainEqual(['15', 446, 166]) // 6,000 pph over 400 kt
+    for (const gone of ['FPAS', 'BEST MACH', 'OPTIMUM', 'ALTITUDE', 'ENGINES DEAD', 'HOME', 'HOME FUEL', 'FLOW']) expect(texts(d)).not.toContain(gone)
+  })
+
+  it('computes to 0 lb below 2,500 lb of fuel', () => {
+    const d = fpas({ total: 2400, pph: 2400, gs: 300 })
+    expect(texts(d)).toContain('TO 0 LB')
+    expect(d.text).toContainEqual(['300', 261, 96]) // all 2,400 lb at 2,400 pph and 300 kt
+    expect(d.text).toContainEqual(['1:00', 408, 96])
+  })
+
+  it('reads MACH under RANGE and LIM under ENDURANCE above Mach 0.9, and blanks the arrival fuel', () => {
+    const d = fpas({ mach: 0.95 })
+    expect(d.text).toContainEqual(['MACH', 261, 96])
+    expect(d.text).toContainEqual(['LIM', 408, 96])
+    expect(d.text.some(([, px, py]) => px === 330 && py === 166)).toBe(false)
+  })
+
+  it('shows arrival fuel below zero as 0, and writes the times as figure 2-7 does', () => {
+    expect(fpas({ home: '{ dist:300, hours:0.75, arrive:-400 }' }).text).toContainEqual(['0', 330, 166])
+    const d = fpas()
+    expect(d.text).toContainEqual([':23:45', 190, 166]) // 0.3958 h
+    expect(fpas({ pph: 6000, total: 2000 + 2900 }).text).toContainEqual([':29', 408, 96])
+    expect(fpas({ home: '{ dist:600, hours:1.25, arrive:3000 }' }).text).toContainEqual(['1:15:00', 190, 166])
+  })
+
+  it('flashes NAV TO, the TO legend and the fuel when the arrival fuel is under the reserve', () => {
+    const low = '{ dist:300, hours:0.75, arrive:1500 }'
+    const on = texts(fpas({ home: low, time: 0 })), off = texts(fpas({ home: low, time: 0.3 }))
+    for (const s of ['TCN', 'TO 2000 LB', '1500']) { expect(on).toContain(s); expect(off).not.toContain(s) }
+    expect(texts(fpas({ time: 0.3 }))).toContain('TCN') // steady when the fuel is enough
+  })
+
+  it('reads XXXX on the deck or with the engines not burning', () => {
+    const deck = fpas({ grounded: true, home: 'null', gs: 0 })
+    expect(d_at(deck, 261, 96)).toBe('XXXX'); expect(d_at(deck, 408, 96)).toBe('XXXX'); expect(d_at(deck, 190, 166)).toBe('XXXX')
+    expect(d_at(fpas({ pph: 0, home: 'null' }), 408, 96)).toBe('XXXX')
+  })
+
+  it('holds the HOME FUEL caution off with the refuelling probe out', () => {
+    const section = /\n\t\{ const home=fpas_home\(\); if\(home&&home\.arrive<=2000[^\n]*push\("HOME FUEL"\); \}/.exec(source)?.[0] ?? ''
+    expect(section).not.toBe('')
+    const run = (probe: number, target: number) => new Function(`const rows=[], push=(k)=>rows.push(k), fpas_home=()=>({ arrive:1800 }), ownship={ probe:${probe}, probeTarget:${target} }; ${section} return rows;`)() as string[]
+    expect(run(0, 0)).toEqual(['HOME FUEL'])
+    expect(run(1, 1)).toEqual([])
+    expect(run(0.3, 1)).toEqual([]) // extending
+  })
+})
+const d_at = (d: Drawn, x: number, y: number) => d.text.find(([, px, py]) => px === x && py === y)?.[0]
+
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.

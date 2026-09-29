@@ -2423,32 +2423,37 @@ function fpas_home(){ const gz=ownship.gauges||{};
 	const arrive=(gz.fuelRaw||0)+(gz.externalRaw||0)-pph*hours;
 	return { dist, hours, arrive };
 }
-function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu promise, built at #54): the real page advises best-efficiency cruise; this one carries the decision the game is actually about — endurance and range to the 2,000 lb reserve at the PRESENT burn and speed, and the fuel state on arrival back at the boat. Cockpit text stays English by the annunciator policy.
-	const colour=display==="center";
-	x.fillText("FPAS",256,36);
-	const total=(gz.fuelRaw||0)+(gz.externalRaw||0), pph=flow_state.pph, gs=gz.ground||0;
-	const hm=h=>Math.floor(h)+"+"+String(Math.floor((h%1)*60)).padStart(2,"0");
-	const row=(label,value,y)=>{ x.font="20px monospace"; x.textAlign="left"; x.fillText(label,60,y); x.fillText(value,190,y); };
-	x.font="20px monospace"; x.textAlign="center"; x.fillText("RANGE",256,96);
-	if(pph>200){
-		const spare=Math.max(0,total-2000), hours=spare/pph;
-		row("FLOW",Math.round(pph/10)*10+" PPH",140);
-		row("",gs>60?(pph/gs).toFixed(1)+" LB/NM":"--- LB/NM",168);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		row("TIME",hm(hours)+" TO 2000",210);
-		row("RANGE",gs>60?Math.round(hours*gs)+" NM TO 2000":"---",238);
-	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("ENGINES DEAD",256,180); }
-	x.font="20px monospace"; x.textAlign="center"; x.fillText("HOME",256,300);
-	const home=fpas_home();
-	if(home){
-		const low=home.arrive<=2000;
-		row("DIST",home.dist.toFixed(0)+" NM",344);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		row("TIME",hm(home.hours),372);
-		if(low&&colour) x.fillStyle="#ffb04a";
-		row("FUEL",Math.round(home.arrive/10)*10+" LB",400);
-		if(low){ x.font="22px monospace"; x.textAlign="center"; x.fillText("HOME FUEL",256,436); }
-		x.fillStyle="#39e07a";
-	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("---",256,360); }
-}
+// ddi_fpas: the FPAS display (NATOPS 2.3.1, figure 2-7), the areas the game can compute.
+// CURRENT: the range (nm) and endurance to 2,000 lb - to 0 lb once total fuel is under
+// 2,500 lb (2.3.1.1.2) - at the present burn and groundspeed; over Mach 0.9 the range
+// reads MACH and the endurance LIM (2.3.1.1.3). The steering row to the carrier's TACAN,
+// the game's one station (2.3.1.1.6): the time and the fuel on arrival, 0 rather than
+// negative and blank over Mach 0.9, flashing with NAV TO and the TO legend when under the
+// reserve (2.3.1.4); and the fuel flow in pounds per mile. XXXX where the inputs are not
+// valid - on deck, or the engines not burning. BEST MACH and the OPTIMUM area need a
+// cruise performance search the game does not have (#126), so they are left off.
+// Cockpit text stays English by the annunciator policy.
+function ddi_fpas(x,display){ const gz=ownship.gauges||{};
+	const total=(gz.fuelRaw||0)+(gz.externalRaw||0), pph=flow_state.pph, gs=gz.ground||0, mach=gz.mach||0;
+	const reserve=total<2500?0:2000, fast=mach>0.9, burning=pph>200&&!ownship.grounded, home=fpas_home();
+	const two=(v)=>String(Math.floor(v)).padStart(2,"0");
+	const hours=(h)=>{ const m=Math.round(h*60); return (m>=60?String(Math.floor(m/60)):"")+":"+two(m%60); };   // h:mm, a zero hour left blank (:29)
+	const clock=(h)=>{ const s=Math.round(h*3600); return (s>=3600?String(Math.floor(s/3600)):"")+":"+two(s/60%60)+":"+two(s%60); };   // h:mm:ss the same way (:23:45)
+	const flash=home&&home.arrive<reserve&&!fast, lit=!flash||(sim_time*4)%2<1;   // under the reserve: NAV TO, the TO legend and the fuel flash (2.3.1.4)
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=1.5; x.textBaseline="middle"; x.font="18px monospace";
+	const under=(text,cx,y)=>{ const w=x.measureText(text).width; x.textAlign="center"; x.fillText(text,cx,y); x.beginPath(); x.moveTo(cx-w/2,y+11); x.lineTo(cx+w/2,y+11); x.stroke(); };
+	under("CURRENT",261,40); under("RANGE",261,68); under("ENDURANCE",408,68);
+	const spare=Math.max(0,total-reserve);
+	x.textAlign="left"; if(lit) x.fillText("TO "+reserve+" LB",36,96);
+	x.textAlign="center";
+	x.fillText(fast?"MACH":burning&&gs>60?String(Math.round(spare/pph*gs)):"XXXX",261,96);
+	x.fillText(fast?"LIM":burning?hours(spare/pph):"XXXX",408,96);
+	under("NAV TO",66,140); under("TIME",190,140); under("FUEL REMAIN",330,140); under("LB/NM",446,140);
+	if(lit) x.fillText("TCN",66,166);
+	x.fillText(home?clock(home.hours):"XXXX",190,166);
+	if(!fast&&lit) x.fillText(home?String(Math.max(0,Math.round(home.arrive/10)*10)):"XXXX",330,166);
+	if(burning&&gs>60) x.fillText(String(Math.round(pph/gs)),446,166);   // whenever the engines run and the jet is moving (2.3.1.1.7)
+	x.beginPath(); x.moveTo(24,186); x.lineTo(488,186); x.stroke(); }
 const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
 // FLBIT (NATOPS 2.2.10.3): the fuel low level system's BIT, run from the FUEL page.
 // It raises FUEL LO through the whole warning chain - the caution, the FUEL LO light,
@@ -6231,7 +6236,7 @@ function cautions_update(){
 		low=ownship.fuel!==undefined&&ownship.fuel<FUELLO; below=internal>0&&internal<BINGO;
 		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
 		else if(below) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
-	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }
+	{ const home=fpas_home(); if(home&&home.arrive<=2000&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out (2.3.1.2); fpas_home is null with weight on wheels
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
 	// spread and locked (2.11.1); PARK BRK only with the brake set and both engines above about 80% rpm (2.10.3.4);
