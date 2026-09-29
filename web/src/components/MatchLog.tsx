@@ -4,12 +4,15 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 // The flight log: every flight this player has recorded (match_list), with a
 // career summary aggregated SERVER-side over all of them and a table of the
-// fifty most recent. Raw mode/reason enums are mapped to labels before display.
+// flights a page at a time, newest first, "Load more" reaching back through
+// every one (#57: recordings are kept forever). Raw mode/reason enums are
+// mapped to labels before display.
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import {
   EmptyState,
   getErrorMessage,
+  LoadMore,
   naturalCompare,
   shellSaveBlob,
   toast,
@@ -36,15 +39,12 @@ import {
   CircleAlert,
   Download,
   History,
-  Pin,
-  PinOff,
   Play,
   ShieldAlert,
 } from 'lucide-react'
 import {
   log,
   recording_load,
-  recording_pin,
   type MatchRow,
   type MatchTotals,
 } from '../game/net'
@@ -145,6 +145,8 @@ export function MatchLog({
     (replay && replay.session === m.session ? replay.text : null)
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
+  const [more, setMore] = useState(false) // older flights remain on the server
+  const [loading, setLoading] = useState(false) // the next page is on its way
   const [totals, setTotals] = useState<MatchTotals | null>(null)
   const [failure, setFailure] = useState<unknown>(null)
   const [mode, setMode] = useState('all')
@@ -157,6 +159,7 @@ export function MatchLog({
       .then((result) => {
         if (!live) return
         setMatches(result.matches)
+        setMore(result.more)
         setTotals(result.totals)
       })
       .catch((problem: unknown) => {
@@ -166,6 +169,23 @@ export function MatchLog({
       live = false
     }
   }, [])
+
+  // older reads the page after the oldest flight loaded, the last row the
+  // server sent (the table's own sort is applied to a copy).
+  const older = () => {
+    const last = matches?.[matches.length - 1]
+    if (!last || loading) return
+    setLoading(true)
+    log(last)
+      .then((result) => {
+        setMatches((rows) => [...(rows ?? []), ...result.matches])
+        setMore(result.more)
+      })
+      .catch((problem: unknown) =>
+        toast.error(getErrorMessage(problem, t`Could not load your flights`))
+      )
+      .finally(() => setLoading(false))
+  }
 
   const modeLabel = (mode: string): string => {
     const labels: Record<string, string> = {
@@ -531,7 +551,7 @@ export function MatchLog({
                     type='button'
                     variant='outline'
                     size='sm'
-                    // An icon alone, like Pin: the label is for a screen
+                    // An icon alone, like Download: the label is for a screen
                     // reader and the tooltip. Its own context, so this sense
                     // never meets a Play that starts a game.
                     aria-label={t({ message: 'Play', context: 'recording' })}
@@ -586,70 +606,18 @@ export function MatchLog({
                     <Download className='size-4' />
                   </Button>
                 ) : null}
-                {m.recording ? (
-                  <Button
-                    type='button'
-                    variant='ghost'
-                    size='sm'
-                    // A toggle names the CONTROL and lets aria-pressed carry
-                    // the state, so the label stays "Pin" either way - the
-                    // standard pattern, and it reuses a string the other apps
-                    // already have translated.
-                    aria-pressed={m.pinned === 1}
-                    aria-label={t`Pin`}
-                    title={t`Pin`}
-                    // A pinned recording stays visible: which flights are
-                    // exempt is state worth seeing without hovering every row.
-                    // Unpinned, it follows the download button's reveal.
-                    className={
-                      m.pinned === 1
-                        ? 'ml-1'
-                        : 'ml-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
-                    }
-                    onClick={() =>
-                      void (async () => {
-                        const wanted = m.pinned !== 1
-                        // Optimistic: the row flips at once, and reverts if the
-                        // server disagrees. recording_pin returns what it
-                        // actually stored, or null when the call failed.
-                        const apply = (value: number) =>
-                          setMatches((rows) =>
-                            rows
-                              ? rows.map((r) =>
-                                  r.session === m.session &&
-                                  r.started === m.started
-                                    ? { ...r, pinned: value }
-                                    : r
-                                )
-                              : rows
-                          )
-                        apply(wanted ? 1 : 0)
-                        const stored = await recording_pin(
-                          m.session,
-                          m.started,
-                          wanted
-                        )
-                        if (stored === null) {
-                          apply(wanted ? 0 : 1)
-                          toast.error(t`Could not change the recording`)
-                          return
-                        }
-                        apply(stored ? 1 : 0)
-                      })()
-                    }
-                  >
-                    {m.pinned === 1 ? (
-                      <PinOff className='size-4' />
-                    ) : (
-                      <Pin className='size-4' />
-                    )}
-                  </Button>
-                ) : null}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <LoadMore
+        hasMore={more}
+        isLoading={loading}
+        onLoadMore={older}
+        totalShown={matches.length}
+        total={flights}
+      />
     </div>
   )
 }
