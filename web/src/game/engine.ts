@@ -3368,11 +3368,14 @@ function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeo
 	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("spin",new THREE.BufferAttribute(new Float32Array(max),1));
 		mat.onBeforeCompile=(sh)=>{
 			sh.vertexShader="attribute float grow;\nattribute float fade;\nattribute float spin;\nvarying float vFade;\nvarying float vSpin;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;\n\tvSpin = spin;");
-			sh.fragmentShader="varying float vFade;\nvarying float vSpin;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );\n// Cheap hemispheric volume cue: the upper lobe catches sky/sun while the lower core stays dense.\ndiffuseColor.rgb *= 0.72 + 0.42 * smoothstep(0.0, 1.0, 1.0-gl_PointCoord.y);").replace("vec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;","vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;");
+			// THREE expands #include only after this hook, and the uv line spin rotates
+			// sits in map_particle_fragment: expand that chunk here, or spin never lands.
+			sh.fragmentShader="varying float vFade;\nvarying float vSpin;\n"+sh.fragmentShader.replace("#include <map_particle_fragment>",THREE.ShaderChunk.map_particle_fragment).replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );\n// Cheap hemispheric volume cue: the upper lobe catches sky/sun while the lower core stays dense.\ndiffuseColor.rgb *= 0.72 + 0.42 * smoothstep(0.0, 1.0, 1.0-gl_PointCoord.y);").replace("vec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;","vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;");
 			// The replaces target THREE r160's exact chunk text; a reworded upgrade
 			// would otherwise drop growth/fade/rotation SILENTLY (invisible smoke
 			// or static puffs, no error anywhere).
-			if(!sh.vertexShader.includes("size * grow")||!sh.fragmentShader.includes("opacity * vFade")||!sh.fragmentShader.includes("mat2(cs,-sn,sn,cs)")) console.warn("points shader injection missed a token — THREE chunk text changed; sized-particle growth/fade/spin are OFF"); }; }
+			const missed=[!sh.vertexShader.includes("size * grow")&&"growth", !sh.fragmentShader.includes("opacity * vFade")&&"fade", !sh.fragmentShader.includes("mat2(cs,-sn,sn,cs)")&&"spin"].filter(Boolean);
+			if(missed.length) console.warn("points shader injection missed a token — THREE chunk text changed; sized-particle "+missed.join("/")+" OFF"); }; }
 	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.userData.sized=!!sized; scene.add(pts); return pts; }
 const glow=glow_texture(false), soft=glow_texture(true);
 function light_dot_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);   // crisp light point (solid core, quick falloff) — no big halo, unlike the soft `glow`

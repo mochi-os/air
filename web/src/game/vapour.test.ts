@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { humidity, shows, vapour, type Flight } from './vapour'
 
 const cruise: Flight = { alpha: 3, g: 1, speed: 180, mach: 0.55 }
@@ -1033,5 +1033,62 @@ describe('the engine', () => {
     expect(lift('vapour_rig')).toMatch(/cloud\.raycast=\(\)=>\{\};/)
     expect(lift('vapour_rig')).toMatch(/volume\.raycast=\(\)=>\{\};/)
     expect(lift('rope_mesh')).toMatch(/mesh\.raycast=\(\)=>\{\};/)
+  })
+})
+
+describe("the puffs' shader", () => {
+  // make_points as the engine runs it; THREE's own points shaders stand in
+  // for the renderer, which hands the hook its shaders before expanding any
+  // #include.
+  const make_points = new Function(
+    'THREE',
+    'scene',
+    `${lift('make_points')}\nreturn make_points;`
+  )(THREE, { add: () => {} }) as (
+    max: number,
+    size: number,
+    additive: boolean,
+    tex: null,
+    sized: boolean
+  ) => THREE.Points
+  const stock = THREE.ShaderLib.points
+  function compile(vertex = stock.vertexShader, fragment = stock.fragmentShader) {
+    const shader = { vertexShader: vertex, fragmentShader: fragment }
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      const material = make_points(4, 1, false, null, true).material as THREE.PointsMaterial
+      material.onBeforeCompile(shader as never, null as never)
+      return { shader, warnings: warn.mock.calls.map((call) => String(call[0])) }
+    } finally {
+      warn.mockRestore()
+    }
+  }
+
+  it('turns each puff by its spin, and still grows and fades it, warning of nothing', () => {
+    const { shader, warnings } = compile()
+    expect(shader.fragmentShader).not.toContain('#include <map_particle_fragment>')
+    expect(shader.fragmentShader).toContain(
+      'pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;'
+    )
+    expect(shader.fragmentShader).not.toContain('gl_PointCoord.x, 1.0 - gl_PointCoord.y')
+    expect(shader.fragmentShader).toContain('diffuseColor *= texture2D( map, uv );') // the texture is read through the turned uv
+    expect(shader.vertexShader).toContain('gl_PointSize = size * grow;')
+    expect(shader.fragmentShader).toContain('opacity * vFade')
+    expect(warnings).toEqual([])
+  })
+
+  it('names only the effect it lost when a token moves', () => {
+    const vertex = stock.vertexShader,
+      fragment = stock.fragmentShader
+    expect(compile(vertex.replace('gl_PointSize = size;', 'gl_PointSize = size ;')).warnings).toEqual([
+      expect.stringMatching(/sized-particle growth OFF$/),
+    ])
+    const faded = fragment.replace(
+      'vec4 diffuseColor = vec4( diffuse, opacity );',
+      'vec4 diffuseColor = vec4(diffuse, opacity);'
+    )
+    expect(compile(vertex, faded).warnings).toEqual([expect.stringMatching(/sized-particle fade OFF$/)])
+    const moved = fragment.replace('#include <map_particle_fragment>', '#include <map_particle_moved>')
+    expect(compile(vertex, moved).warnings).toEqual([expect.stringMatching(/sized-particle spin OFF$/)])
   })
 })
