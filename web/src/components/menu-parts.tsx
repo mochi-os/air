@@ -4,14 +4,14 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { useFormat } from '@mochi/web'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@mochi/web/components/ui/dialog'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from '@mochi/web/components/ui/responsive-dialog'
 import { Slider } from '@mochi/web/components/ui/slider'
 import { Switch } from '@mochi/web/components/ui/switch'
 
@@ -214,8 +214,8 @@ export function MenuDialog({
   children: ReactNode
 }) {
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent
+    <ResponsiveDialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <ResponsiveDialogContent
         // No DialogDescription anywhere in this app: an explanatory line under
         // a dialog title is exactly what the client removed across the estate.
         // Saying so explicitly is what stops Radix warning on every open; the
@@ -232,18 +232,18 @@ export function MenuDialog({
           steady ? 'h-[min(53rem,calc(100svh-2rem))]' : '',
         ].join(' ')}
       >
-        <DialogHeader className='border-border border-b pb-3'>
-          <DialogTitle className='text-lg font-semibold tracking-tight'>
+        <ResponsiveDialogHeader className='border-border border-b pb-3'>
+          <ResponsiveDialogTitle className='text-lg font-semibold tracking-tight'>
             {title}
-          </DialogTitle>
-        </DialogHeader>
+          </ResponsiveDialogTitle>
+        </ResponsiveDialogHeader>
         <div className='flex min-h-0 flex-1 flex-col overflow-y-auto pt-2'>
           {children}
         </div>
         {/* Outside the scroller: a footer holds the dialog's primary action,
             which must never scroll out of reach with the body. */}
         {footer && <div className='border-border border-t pt-2'>{footer}</div>}
-      </DialogContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   )
 }
