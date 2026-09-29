@@ -2166,25 +2166,27 @@ function ddi_rdr(x){
 		const hi=Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation+0.175))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation-0.175))*3.281/1000));
 		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); }
 	if(breakaway_shown()){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } }   // the breakaway X across the attack format's centre, flashing with the HUD's
-function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
-	x.fillText("ENG",256,36);
-	// The EMD's thirteen rows (2.1.1.7.6), parameter names down the centre with the engine values either
-	// side. N2, EGT, fuel flow, nozzle and oil pressure are the IFEI's channels (update_gauges); the rest
-	// follow the same health-weighted spool through F404-shaped schedules, N2 65 % idle to 99 MIL: N1 from
-	// 30 to 100 %, thrust the spool itself, vibration a nominal 1, EPR 1.0 to 1.7, CDP 60 to 300 psi and TDP
-	// 15 to 45 psi, and the inlet and fuel temperatures ISA air at altitude, the fuel a little warmer.
+function ddi_eng(x){ const gz=ownship.gauges||{};   // the EMD as figure 2-3 draws it: the -402's EPE line on top, no title, the parameter names down the middle and each engine's values left-aligned either side
+	// The EMD's thirteen rows (2.1.1.7.6), with the figure's names and digits: FF to the ten,
+	// VIB and TDP to a tenth, EPR to a hundredth. N2, EGT, fuel flow, nozzle and oil pressure are
+	// the IFEI's channels (update_gauges); the rest follow the same health-weighted spool through
+	// F404-shaped schedules, N2 65 % idle to 99 MIL: N1 from 30 to 100 %, thrust the spool itself,
+	// vibration a nominal 1, EPR 1.0 to 1.7, CDP 60 to 300 psi and TDP 15 to 45 psi, and the inlet
+	// and fuel temperatures ISA air at altitude, the fuel a little warmer. THRUST shows only for
+	// the ground run-up (figure 2-3), so on the deck and not in the air.
 	const spool=(n2)=>THREE.MathUtils.clamp(((n2||35)-65)/34,0,1), oat=gz.oat||15;
-	const rows=[["INLET °C",oat,oat,1],["N1 %",30+70*spool(gz.rpmL),30+70*spool(gz.rpmR),1],["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],
-		["FF PPH",gz.flowL||0,gz.flowR||0,10],["NOZ %",gz.nozL||0,gz.nozR||0,1],["OIL PSI",gz.oilL||0,gz.oilR||0,1],
-		["THRUST %",100*spool(gz.rpmL),100*spool(gz.rpmR),1],["VIB",1,1,1],["FUEL °C",oat+10,oat+10,1],
-		["EPR",10+7*spool(gz.rpmL),10+7*spool(gz.rpmR),0.1],["CDP PSI",60+240*spool(gz.rpmL),60+240*spool(gz.rpmR),1],["TDP PSI",15+30*spool(gz.rpmL),15+30*spool(gz.rpmR),1]];
-	x.textAlign="center"; x.font="17px monospace"; x.fillText("LEFT EPE",150,72); x.fillText("RIGHT EPE",362,72);   // the -402's top line
+	const rows=[["INLET TEMP",oat,oat,0],["N1 RPM",30+70*spool(gz.rpmL),30+70*spool(gz.rpmR),0],["N2 RPM",gz.rpmL,gz.rpmR,0],["EGT",gz.egtL,gz.egtR,0],
+		["FF",gz.flowL||0,gz.flowR||0,-1],["NOZ POS",gz.nozL||0,gz.nozR||0,0],["OIL PRESS",gz.oilL||0,gz.oilR||0,0],
+		["THRUST",100*spool(gz.rpmL),100*spool(gz.rpmR),0],["VIB",1,1,1],["FUEL TEMP",oat+10,oat+10,0],
+		["EPR",1+0.7*spool(gz.rpmL),1+0.7*spool(gz.rpmR),2],["CDP",60+240*spool(gz.rpmL),60+240*spool(gz.rpmR),0],["TDP",15+30*spool(gz.rpmL),15+30*spool(gz.rpmR),1]];
+	x.textAlign="left"; x.font="17px monospace"; x.fillText("LEFT EPE",72,72); x.fillText("RIGHT EPE",344,72);
 	let y=100;
-	for(const [label,L,R,q] of rows){
-		x.textAlign="center"; x.font="16px monospace"; x.fillText(label,256,y);
-		x.font="19px monospace"; x.textAlign="right";
-		const show=(v)=>q===0.1?(Math.round(v||0)/10).toFixed(1):String(Math.round((v||0)/q)*q);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
-		x.fillText(show(L),192,y); x.fillText(show(R),404,y);
+	for(const [label,L,R,digits] of rows){
+		if(label!=="THRUST"||ownship.grounded){
+			x.textAlign="left"; x.font="16px monospace"; x.fillText(label,200,y);
+			x.font="19px monospace";
+			const show=(v)=>digits>0?(v||0).toFixed(digits):String(Math.round((v||0)/10**-digits)*10**-digits);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+			x.fillText(show(L),96,y); x.fillText(show(R),390,y); }
 		y+=29; } }   // the fuel total lives on the FUEL page now
 // altitude_reading: the altitude the HUD and the EADI show - barometric, or with the
 // HUD's ALT switch at RDR the radar altitude, which is invalid above 5,000 ft AGL and
