@@ -160,19 +160,24 @@ describe('the HOOK light', () => {
 // The caution lights panel (FO-5 item 46): FUEL LO on the feed-tank hardware
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
-interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number }
+interface Cautions { fuel?: number; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number; flbit?: boolean }
 function cautionlit(c: Cautions): string[] {
   const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,jammed\); \}\n/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
     const ownship={fuel:c.fuel??3000, group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
-    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, flbit_lit=()=>!!c.flbit; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
 }
 
 describe('the caution lights panel', () => {
+  it('lights FUEL LO for a fuel low BIT with the fuel above it', () => {
+    expect(cautionlit({ fuel: 3000, flbit: true })).toContain('fuello')
+    expect(cautionlit({ fuel: 3000 })).not.toContain('fuello')
+  })
+
   it('is dark with fuel above the hardware caution, both engines turning and no jam', () => {
     expect(cautionlit({})).toEqual([])
   })

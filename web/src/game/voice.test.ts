@@ -104,18 +104,19 @@ describe('the messages', () => {
 })
 
 type Row = [string, string, boolean]
-interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string }
+interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean }
 interface Result { tones: string[]; lamp: boolean; active: string[] }
 // Runs cautions_update's tail once per moment, and returns each moment's tones,
-// the MASTER CAUTION lamp and the messages handed to the queue.
+// the MASTER CAUTION lamp and the messages handed to the queue. The fuel is under
+// FUEL LO and BINGO as its rows say, except for a FUEL LO a FLBIT raised (test).
 function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
   const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
     const voice={}, gpws={gear:false, call:""};
     const audio_caution=()=>tones.push("caution"), audio_warning=()=>tones.push("warning"), audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
-    function cautions_update(rows){ ${tail}
-    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time; cautions_update(m.rows); return { tones, lamp:caution_lamp, active:active_passed }; });`)
+    function cautions_update(rows,test){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO"); ${tail}
+    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time; cautions_update(m.rows,!!m.test); return { tones, lamp:caution_lamp, active:active_passed }; });`)
   return run(SPOKEN, moments) as Result[]
 }
 const row = (key: string, red = false): Row => [key, key, red]
@@ -175,6 +176,16 @@ describe('the voice takes over from the caution tone', () => {
     const minute = (ready: boolean) => cautions(Array.from({ length: 3700 }, () => ({ rows: [row('BINGO')], ready })))
     expect(minute(false).flatMap((m) => m.tones)).toEqual(['caution', 'caution', 'caution']) // the new caution, then 30 s and 60 s
     expect(minute(true).flatMap((m) => m.tones)).toEqual([])
+  })
+
+  it('says FUEL LOW alone for a FLBIT above bingo, and does not repeat BINGO for it', () => {
+    const [tested] = cautions([{ rows: [row('FUEL LO')], ready: true, test: true }])
+    expect(tested.active).toEqual(['FUEL LOW'])
+    expect(tested.lamp).toBe(true)
+    const minute = cautions(Array.from({ length: 3700 }, () => ({ rows: [row('FUEL LO')], ready: false, test: true })))
+    expect(minute.flatMap((m) => m.tones)).toEqual(['caution']) // the new caution's tone, and no BINGO repeat
+    const [real] = cautions([{ rows: [row('FUEL LO')], ready: true }])
+    expect(real.active).toEqual(['FUEL LOW', 'BINGO'])
   })
 
   it('hands CHECK GEAR to the queue while the GPWS condition holds', () => {
