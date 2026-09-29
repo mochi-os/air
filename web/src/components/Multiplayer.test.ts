@@ -15,7 +15,7 @@ const source = readFileSync(fileURLToPath(new URL('./Multiplayer.tsx', import.me
 
 describe('the lobby row', () => {
   it('offers Cancel on your own match while it is an offer or stands empty', () => {
-    expect(source).toMatch(/\{pilot && s\.mine && \(s\.offer \|\| \(s\.players \?\? \[\]\)\.length === 0\) && \(/)
+    expect(source).toMatch(/\{pilot\s*&&\s*s\.mine\s*&&\s*\(s\.offer \|\| \(s\.players \?\? \[\]\)\.length === 0\)\s*&&\s*\(/)
     expect(source).toMatch(/await world_withdraw\(address, pilot\)/)
   })
 })

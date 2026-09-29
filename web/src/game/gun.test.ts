@@ -309,7 +309,7 @@ describe('the joust hold in single player', () => {
 
   it("binds the bandit's brain by the same rule, and opens on its report before its rounds fly", () => {
     // The brain is told the hold when it is armed...
-    expect(source).toMatch(/omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
+    expect(source).toMatch(/omit: BANDIT_OMIT, hold: weapons_hold, air: weather\(\) \}\);/)
     expect(bridge).toMatch(/\n {2}hold\?: boolean/)
     // ...the bridge reads the brain's report of the merge...
     expect(bridge).toMatch(/\n {4}free: \(flags & 256\) !== 0,/)

@@ -1023,7 +1023,7 @@ describe('stamp', () => {
     expect(stamp({ ...fight, mode: 'free' }).match.stage).toBe('')
     // and the engine hands the stamp the stage it armed the bandit with
     expect(lift('recording_file')).toMatch(/bandit:cfg\.bandit\|\|"", stage:BANDIT_STAGE, omit:BANDIT_OMIT,/)
-    expect(source).toMatch(/stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold \}\);/)
+    expect(source).toMatch(/stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold, air: weather\(\) \}\);/)
   })
 
   it('names a multiplayer match by the mode the SERVER says it is', () => {
