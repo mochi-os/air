@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { Radar, SCALES, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, BARS, boresight, geometry, pick, type Track } from './radar'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -33,6 +33,8 @@ type Rig = {
   undesignate(): void
   rdrUndesignate(): void
   rdrClick(azimuth: number, range: number): void
+  rdrX(azimuth: number): number
+  rdrPress(pb: number): boolean
   events(): string[]
   clock(t: number): void
 }
@@ -69,6 +71,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
     lift('undesignate_press'),
     lift('acquire_acm'),
     lift('rdr_x'),
+    lift('rdr_azimuth'),
     lift('rdr_y'),
     lift('rdr_press'),
     lift('rdr_face'),
@@ -78,6 +81,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
     'radar_geometry',
     'radar_pick',
     'contactList',
+    'RADAR_BARS',
     `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
      const NM=1852;
      const RADAR=new Radar();
@@ -92,10 +96,108 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
      return { RADAR, press:acquire_press, undesignate:undesignate_press,
        rdrUndesignate:()=>rdr_press(10),
        rdrClick:(azimuth,range)=>rdr_face(rdr_x(azimuth,RADAR.half()),rdr_y(range,RADAR.scale*NM)),
+       rdrX:(azimuth)=>rdr_x(azimuth,RADAR.half()),
+       rdrPress:(pb)=>rdr_press(pb),
        events:()=>radar_events, clock:(t)=>{ sim_time=t; } };`
   )
-  return run(Radar, geometry, pick, contacts) as Rig
+  return run(Radar, geometry, pick, contacts, BARS) as Rig
 }
+
+// The attack format's scan readouts (#47): the bars scanned on their bezel,
+// where the scan points, the sector's edges about its centre, and the
+// altitudes the bars span at the cursor's range.
+describe('a new mission sets the radar up afresh', () => {
+  it('scans four bars level, whatever the last mission left', () => {
+    const run = new Function(
+      'Radar',
+      'boresight',
+      `const NM=1852, cfg={ task:'joust', duel:'bvr' }, master='120c';
+       const RADAR=new Radar(); const radar_cursor={ azimuth:0, range:0 };
+       ${[lift('merge_joust'), lift('radar_scale'), lift('rdr_reset'), lift('default_radar')].join('\n')}
+       RADAR.bars=0; RADAR.elevation=0.3;
+       default_radar();
+       return RADAR;`
+    )
+    const radar = run(Radar, boresight) as Radar
+    expect(radar.bars).toBe(2)
+    expect(radar.elevation).toBe(0)
+    expect(radar.mode).toBe('tws')
+  })
+})
+
+describe('the RDR page draws the scan volume', () => {
+  function draw(set: (radar: Radar) => void) {
+    const text: string[] = []
+    const at: [string, number][] = [] // each text with where it was drawn across
+    const boxes: number[] = [] // each strokeRect's left edge
+    const run = new Function(
+      'Radar',
+      'radar_geometry',
+      'set',
+      'text',
+      'at',
+      'boxes',
+      `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
+       const NM=1852, D2R=Math.PI/180, wrap_axis=(v)=>v;
+       const RADAR=new Radar();
+       const radar_cursor={ azimuth:0, range:20*NM };
+       const ownship={ pos:{x:0,y:6096,z:0}, gauges:{heading:0}, speed:250, fwd:{x:0,y:0,z:-1} };
+       const breakaway_shown=()=>false, breakaway=()=>{};
+       ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
+       set(RADAR);
+       const x=new Proxy({}, { get:(t,k)=>k==='fillText'?(s,px)=>{ text.push(String(s)); at.push([String(s),px]); }:k==='strokeRect'?(bx)=>boxes.push(bx):k==='measureText'?(s)=>({ width:10*String(s).length }):()=>{}, set:()=>true });
+       ddi_rdr(x);
+       return RADAR;`
+    )
+    const radar = run(Radar, geometry, set, text, at, boxes) as Radar
+    return { text, at, boxes, radar }
+  }
+  it('labels the bars scanned, TWS dropping bars as it caps the width', () => {
+    expect(draw(() => {}).text).toContain('4B')
+    expect(draw((r) => { r.mode = 'tws' }).text).toContain('2B')
+  })
+  it('says where the scan points, and nothing when it points level', () => {
+    expect(draw(() => {}).text.some((t) => t.startsWith('EL '))).toBe(false)
+    expect(draw((r) => { r.centre = { azimuth: 0, elevation: (10 * Math.PI) / 180 } }).text).toContain('EL +10°')
+  })
+  it('labels the sector about its centre', () => {
+    const { text } = draw((r) => {
+      r.mode = 'tws'
+      r.width = 2
+      r.centre = { azimuth: (30 * Math.PI) / 180, elevation: 0 }
+    })
+    for (const edge of ['10', '30', '50']) expect(text).toContain(edge)
+  })
+  it('draws trackfiles, strobes and the cursor about an off-nose centre', () => {
+    const off = (40 * Math.PI) / 180 // 10° right of a centre at 30°: three quarters across a ±20° face
+    const { at, boxes } = draw((r) => {
+      r.mode = 'tws'
+      r.width = 2
+      r.centre = { azimuth: (30 * Math.PI) / 180, elevation: 0 }
+      r.tracks = [{ id: 'b', x: 20000 * Math.sin(off), y: 6096, z: -20000 * Math.cos(off), vx: 0, vy: 0, vz: 0, at: 0, hits: 1 }]
+      r.strobes = [off]
+    })
+    const across = 256 + 0.5 * 180
+    expect(boxes.some((bx) => Math.abs(bx - (across - 6)) < 0.5)).toBe(true) // the trackfile's box
+    expect(at.some(([s, px]) => s === 'JAM' && Math.abs(px - across) < 0.5)).toBe(true)
+    const { at: cursor } = draw((r) => {
+      r.mode = 'tws'
+      r.width = 2
+      r.centre = { azimuth: (30 * Math.PI) / 180, elevation: 0 }
+    })
+    // The TDC sits at the cursor's azimuth, 0° here: past the sector's left edge, so pinned to it.
+    expect(cursor.some(([s, px]) => /^-?\d+--?\d+$/.test(s) && Math.abs(px - (76 + 12)) < 0.5)).toBe(true)
+  })
+
+  it('gives the altitudes the bars span at the cursor', () => {
+    const { text, radar } = draw(() => {})
+    const reach = 20 * 1852, cover = radar.coverage()
+    const hi = Math.round(((6096 + reach * Math.tan(cover)) * 3.281) / 1000)
+    const lo = Math.round(((6096 - reach * Math.tan(cover)) * 3.281) / 1000)
+    expect(text).toContain(`${hi}-${lo}`)
+    expect(hi - lo).toBeLessThan(30) // four bars at 20 nm: about ±14,000 ft, not the old ±10° band's ±21,000
+  })
+})
 
 describe('acquire (Enter / the stick\'s acquire button)', () => {
   it('first press on a fresh TWS trackfile claims it as the L&S, not a lock', () => {
@@ -221,6 +323,31 @@ describe('the radar page click (rdr_face) and its UNDES bezel (rdr_press)', () =
     r.rdrClick(0, 20000)
     expect(r.RADAR.stt).toBe('bandit')
     expect(r.events()).toEqual(['50.0|acquire|ls', '51.0|acquire|stt'])
+  })
+
+  it('draws and clicks about the scan centre when TWS follows an L&S off the nose', () => {
+    const r = rig()
+    r.RADAR.mode = 'tws'
+    r.RADAR.width = 2 // ±20°
+    const off = 0.7 // 40° right: outside a ±20° face on the nose
+    r.RADAR.tracks = [{ ...track('bandit', 0), x: 20000 * Math.sin(off), z: -20000 * Math.cos(off) }]
+    r.RADAR.centre = { azimuth: 0.6, elevation: 0 }
+    expect(r.rdrX(0.6)).toBe(256) // the scan's centre is the face's
+    r.clock(40)
+    r.rdrClick(off, 20000)
+    expect(r.RADAR.ls).toBe('bandit')
+  })
+
+  it('steps the bars on its bezel, and slews the antenna on EL', () => {
+    const r = rig()
+    expect(r.RADAR.bars).toBe(2) // four
+    const seen = [1, 2, 3].map(() => (r.rdrPress(13), r.RADAR.bars))
+    expect(seen).toEqual([3, 0, 1])
+    r.rdrPress(11)
+    expect(r.RADAR.elevation).toBeCloseTo((5 * Math.PI) / 180, 6)
+    r.rdrPress(12)
+    r.rdrPress(12)
+    expect(r.RADAR.elevation).toBeCloseTo((-5 * Math.PI) / 180, 6)
   })
 
   it('a click on an RWS brick locks straight to STT, one click', () => {

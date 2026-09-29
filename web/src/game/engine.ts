@@ -51,7 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
+import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
@@ -2053,8 +2053,11 @@ function sa_press(pb){
 // RDR ATTK page (#30): B-scan attack format, azimuth across and range up - RWS
 // bricks, TWS trackfiles with velocity sticks and the L&S star, STT with its
 // data block. The mouse is the TDC (rdr_face); top bezels carry
-// mode/width/SIL/ACM/UNDES, left arrows the range scale.
-function rdr_x(azimuth,half){ return 256+(azimuth/half)*180; }
+// mode/width/SIL/ACM/UNDES, left arrows the range scale, the right side the
+// antenna's elevation and bars. Azimuth runs across the scanned sector, about
+// its centre: the nose, or in TWS the L&S.
+function rdr_x(azimuth,half){ return 256+((azimuth-RADAR.centre.azimuth)/half)*180; }
+function rdr_azimuth(lx,half){ return RADAR.centre.azimuth+THREE.MathUtils.clamp((lx-256)/180,-1,1)*half; }   // the inverse: a point across the face to its azimuth
 function rdr_y(range,scaleM){ return 430-THREE.MathUtils.clamp(range/scaleM,0,1)*360; }
 function rdr_range(direction){ const i=RADAR_SCALES.indexOf(RADAR.scale);
 	RADAR.scale=RADAR_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,RADAR_SCALES.length-1)]; }   // zoom-in steps the scale DOWN, like the HSI
@@ -2069,6 +2072,7 @@ function rdr_press(pb){
 	if(pb===10){ const held=RADAR.stt!=null; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); return true; }   // i18n-format-ok: ACMI event timestamp, not display text
 	if(pb===11){ RADAR.slew(1); return true; }   // EL↑/EL↓ (#30): sanitise high or low — the caret shows what the band covers at the cursor
 	if(pb===12){ RADAR.slew(-1); return true; }
+	if(pb===13){ RADAR.bars=(RADAR.bars+1)%RADAR_BARS.length; return true; }   // bars: more cover more altitude and take longer to scan
 	return false; }
 // rdr_face: a click on the scan face is the TDC — move the cursor there and
 // try the ladder on whatever it captured: trackfiles in TWS (first the L&S,
@@ -2076,7 +2080,7 @@ function rdr_press(pb){
 // target has moved on simply fails, which is the honest lesson about RWS.
 function rdr_face(lx,ly){ if(lx<60||lx>452||ly<54||ly>446) return false;
 	const half=RADAR.half(), scaleM=RADAR.scale*NM;
-	const azimuth=THREE.MathUtils.clamp((lx-256)/180,-1,1)*half;
+	const azimuth=rdr_azimuth(lx,half);
 	const range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM;
 	radar_cursor.azimuth=azimuth; radar_cursor.range=range;
 	const own=radar_own();
@@ -2121,20 +2125,23 @@ function ddi_rdr(x){
 	ddi_legend(x,10,"UNDES",RADAR.stt!=null||RADAR.ls!=null,false);
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
 	ddi_legend(x,11,"EL↑",true,false); ddi_legend(x,12,"EL↓",true,false);
+	ddi_legend(x,13,RADAR.count()+"B",true,false);   // the bars SCANNED — TWS drops bars as it caps the width
 	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left"; x.fillText(String(RADAR.scale),14,216);
-	if(RADAR.elevation!==0){ x.textAlign="right"; x.fillText("EL "+(RADAR.elevation>0?"+":"-")+Math.round(Math.abs(RADAR.elevation)/D2R)+"°",430,92); }   // slewed off level: say so — a silent tilt is a mystery blind scan
+	{ const tilt=Math.round(RADAR.centre.elevation/D2R);   // where the scan points, slewed or following the L&S: say so — a silent tilt is a mystery blind scan
+		if(tilt!==0){ x.textAlign="right"; x.fillText("EL "+(tilt>0?"+":"-")+Math.abs(tilt)+"°",430,92); } }
 	x.strokeStyle="rgba(57,224,122,0.5)"; x.lineWidth=1.5; x.strokeRect(76,70,360,360);
-	for(const az of [0,half/2,-half/2]){ const px=rdr_x(az,half);   // azimuth grid
+	for(const az of [0,half/2,-half/2]){ const px=rdr_x(RADAR.centre.azimuth+az,half);   // azimuth grid
 		x.strokeStyle=az===0?"rgba(57,224,122,0.25)":"rgba(57,224,122,0.12)";
 		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); }
 	for(const q of [0.25,0.5,0.75]){ const py=rdr_y(scaleM*q,scaleM);   // range ticks up the left inside edge
 		x.strokeStyle="rgba(57,224,122,0.35)"; x.beginPath(); x.moveTo(76,py); x.lineTo(86,py); x.stroke(); }
 	x.fillStyle="#39e07a"; x.font="16px monospace"; x.textAlign="center";
-	x.fillText(String(-Math.round(half/D2R)),76,450); x.fillText("0",256,450); x.fillText(String(Math.round(half/D2R)),436,450);
+	{ const c=RADAR.centre.azimuth;   // the sector's edges and centre, off the nose
+		x.fillText(String(Math.round((c-half)/D2R)),76,450); x.fillText(String(Math.round(c/D2R)),256,450); x.fillText(String(Math.round((c+half)/D2R)),436,450); }
 	if(RADAR.stt!=null){ const t=RADAR.tracks.find(k=>k.id===RADAR.stt);
 		x.font="18px monospace"; x.textAlign="left"; x.fillText(RADAR.memory>0?"MEM":"STT",86,92);   // #31: the display finally admits what the tracker knows — a coasting track is MEMORY, not a lock
 		if(t){ const g=radar_geometry(own,t,wrap_axis);
-			const px=rdr_x(THREE.MathUtils.clamp(g.azimuth,-half,half),half), py=rdr_y(g.range,scaleM);
+			const px=rdr_x(THREE.MathUtils.clamp(g.azimuth,RADAR.centre.azimuth-half,RADAR.centre.azimuth+half),half), py=rdr_y(g.range,scaleM);
 			x.strokeStyle="#39e07a"; x.lineWidth=2.5;
 			x.beginPath(); x.arc(px,py,12,0,Math.PI*2); x.stroke();
 			x.fillRect(px-3,py-3,6,6);
@@ -2144,27 +2151,28 @@ function ddi_rdr(x){
 		x.strokeStyle="rgba(57,224,122,0.6)"; x.lineWidth=2;
 		x.beginPath(); x.moveTo(sx,70); x.lineTo(sx,430); x.stroke(); }
 	if(RADAR.sil){ x.font="22px monospace"; x.textAlign="center"; x.fillText("SIL",256,108); }
-	for(const az of RADAR.strobes){ if(Math.abs(az)>half) continue;   // #31: jam strobes — bearing-only spokes, range unknown, so the whole column glows
+	for(const az of RADAR.strobes){ if(Math.abs(az-RADAR.centre.azimuth)>half) continue;   // #31: jam strobes — bearing-only spokes, range unknown, so the whole column glows
 		const px=rdr_x(az,half);
 		x.strokeStyle="rgba(57,224,122,0.7)"; x.lineWidth=2; x.setLineDash([10,7]);
 		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); x.setLineDash([]);
 		x.font="14px monospace"; x.textAlign="center"; x.fillText("JAM",px,64); }
-	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
+	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth-RADAR.centre.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
 		x.globalAlpha=Math.max(0.15,1-(RADAR.time-b.at)/12); x.fillStyle="#39e07a";
 		x.fillRect(rdr_x(b.azimuth,half)-6,rdr_y(b.range,scaleM)-2,12,5); }
 	x.globalAlpha=1;
 	if(RADAR.mode==="tws"&&RADAR.stt==null){ for(const t of RADAR.tracks){ const g=radar_geometry(own,t,wrap_axis);
-		if(Math.abs(g.azimuth)>half||g.range>scaleM) continue;
+		if(Math.abs(g.azimuth-RADAR.centre.azimuth)>half||g.range>scaleM) continue;
 		const px=rdr_x(g.azimuth,half), py=rdr_y(g.range,scaleM);
 		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.strokeRect(px-6,py-6,12,12);
 		rdr_stick(x,px,py,t,own);
 		x.font="14px monospace"; x.textAlign="center"; x.fillText(String(Math.round(t.y*3.281/1000)),px,py+26);   // altitude, kft
 		if(t.id===RADAR.ls){ rdr_star(x,px,py-16); rdr_block(x,t,own,g); } } }
-	{ const px=rdr_x(THREE.MathUtils.clamp(radar_cursor.azimuth,-half,half),half), py=rdr_y(THREE.MathUtils.clamp(radar_cursor.range,0,scaleM),scaleM);   // the TDC: two bars, with the elevation coverage readout at its range
+	{ const px=rdr_x(THREE.MathUtils.clamp(radar_cursor.azimuth,RADAR.centre.azimuth-half,RADAR.centre.azimuth+half),half), py=rdr_y(THREE.MathUtils.clamp(radar_cursor.range,0,scaleM),scaleM);   // the TDC: two bars, with the elevation coverage readout at its range
 		x.strokeStyle="#39e07a"; x.lineWidth=2.5;
 		x.beginPath(); x.moveTo(px-5,py-9); x.lineTo(px-5,py+9); x.moveTo(px+5,py-9); x.lineTo(px+5,py+9); x.stroke();
 		const reach=Math.max(NM,radar_cursor.range);
-		const hi=Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation+0.175))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation-0.175))*3.281/1000));
+		const tilt=RADAR.centre.elevation, cover=RADAR.coverage();   // the altitudes the bars span at the cursor's range
+		const hi=Math.round((ownship.pos.y+reach*Math.tan(tilt+cover))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(tilt-cover))*3.281/1000));
 		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); }
 	if(breakaway_shown()){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } }   // the breakaway X across the attack format's centre, flashing with the HUD's
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the EMD as figure 2-3 draws it: the -402's EPE line on top, no title, the parameter names down the middle and each engine's values left-aligned either side
@@ -5588,6 +5596,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("jammer")) jammer_armed=!jammer_armed;   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")) pit_press("radar",0);   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")) acm_press();   // #30: the castle-switch stand-in
+		if(ch===key_of("antenna.up")) RADAR.slew(1);   // the throttle's antenna elevation wheel: point the bars where the target is
+		if(ch===key_of("antenna.down")) RADAR.slew(-1);
 		if(ch===key_of("select")) set_master(next_master());   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN, skipping any weapon with nothing left to fire. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")) pit_press("altitude",0);   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")) pit_press("reject",0);     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
@@ -5676,7 +5686,7 @@ stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on|
 	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
 	if(lx<60||lx>452||ly<54||ly>446) return;
 	const half=RADAR.half(), scaleM=RADAR.scale*NM;
-	radar_cursor.azimuth=THREE.MathUtils.clamp((lx-256)/180,-1,1)*half;
+	radar_cursor.azimuth=rdr_azimuth(lx,half);
 	radar_cursor.range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM; },{ signal });
 // A stationary press-release in the pit is a pushbutton CLICK, not a head look
 // (movement past a few px stays a drag, with its snap-back): raycast the
@@ -6053,6 +6063,7 @@ function recording_sample(){
 		gear:ownship.gear??1, flaps:flap_select|0, trim:input.trim||0, hook:ownship.hook??0, speedbrake:ownship.speedbrake??0,   // configuration (#86): which pitch law the FCS was flying, and the hook a replay draws
 		override:!!(last_controls&&last_controls.override),   // (#33 debrief): the g-limit paddle switch - raises the commanded ceiling from 7.5 to 10 g and is what lets Stress accrue in that band at all
 		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
+		antenna:Math.round(RADAR.centre.elevation/D2R), bars:RADAR.count(),   // where the scan pointed and how many bars it swept: a target the bars never covered was never there to find
 		// Acquire/undesignate presses that actually landed (#33 debrief): drained
 		// exactly where the bandit's own decision journal is, on a frame the
 		// recorder will keep, so a press between two samples is never lost with
@@ -9326,7 +9337,7 @@ function acm_press(){
 function merge_joust(){ return boresight(cfg.task,cfg.duel); }   // the rule lives in radar.ts, where a test can reach it
 function radar_scale(){ return merge_joust()?10:40; }   // the merge is inside ten miles from the first frame; everything else searches at the full scale
 function default_radar(){
-	RADAR.sil=false; RADAR.width=0; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";
+	RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";
 	if(merge_joust()){ RADAR.mode="rws"; RADAR.auto=true; }
 	else RADAR.mode=master==="120c"?"tws":"rws";
 	rdr_reset(); }

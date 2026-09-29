@@ -194,6 +194,8 @@ const BUTTON_ROWS: Row[] = [
   { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
   { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
   { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
+  { id: 'antenna.up', label: msg`Raise radar antenna`, group: 'weapons' },
+  { id: 'antenna.down', label: msg`Lower radar antenna`, group: 'weapons' },
   { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
   { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
   {
@@ -253,6 +255,8 @@ const KEY_ROWS: Row[] = [
   { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
   { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
   { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
+  { id: 'antenna.up', label: msg`Raise radar antenna`, group: 'weapons' },
+  { id: 'antenna.down', label: msg`Lower radar antenna`, group: 'weapons' },
   { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
   { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
   {
