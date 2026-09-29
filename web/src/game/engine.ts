@@ -46,7 +46,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, granted as st
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
-import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
+import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, test as ifei_test, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
 import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines } from './cautions'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
@@ -1622,7 +1622,12 @@ function legend(text,colour,w=0.026,h=0.010){
 	const off=make(false), on=make(true);
 	const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:off, side:THREE.DoubleSide, toneMapped:false, depthWrite:false }));
 	m.userData.lens={ off, on }; m.userData.on=false; return m; }
-function lamp_set(m,on){ if(!m) return; on=!!on;
+// The lights test (NATOPS 2.6.2.11): lights_test reads the LT TEST switch, spring-loaded off, so on while its key
+// is held; it works only with AC power on the aircraft (a generator on the line), and a replay has no switches.
+// lamps_update reads it once a frame into lamps_testing, which holds every light lamp_set drives on.
+let lamps_testing=false;
+function lights_test(){ return !playback&&!unpowered&&held("lights.test"); }
+function lamp_set(m,on){ if(!m) return; on=!!on||lamps_testing;
 	if(m.userData.lens){ if(m.userData.on!==on){ m.userData.on=on; m.material.map=on?m.userData.lens.on:m.userData.lens.off; m.material.needsUpdate=true; } }
 	else m.material.opacity=on?1:0; }
 // The glareshield's warning/caution/advisory panels (FO-5 items 6 and 8), rows top
@@ -1741,12 +1746,15 @@ function build_lamps(g){
 	lamps.shoot=legend("SHOOT","#2fd24a",0.026,0.010); lamps.shoot.position.set(0,-PENDANT.pitch,0);
 	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
 	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
+	g.userData.tested=[...new Set([...brow.children,...cautions.children,...Object.values(lamps)])];   // every light the lights test brings on: each lens on the glareshield and the caution panel, those with no legend too, and the rest of the lamps
 	g.userData.lamps=lamps; backlight_state=""; g.userData.lampsGroup=brow; }
 // generators: each generator on the line, its engine turning (the core's spool, less the harm to it) (NATOPS 2.5.1).
 function generators(out){ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 	return [turning(0,0),turning(2,1)]; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
+	const tested=ownship.group.userData.tested||[], was=lamps_testing; lamps_testing=lights_test();
+	if(was&&!lamps_testing) for(const m of tested) lamp_set(m,false);   // the test released: the lights no condition drives go out, and the rest re-light below
 	const ext=out[STATE.extension]||0;   // the gear lamps' one input; the engine-harm, fuel and leak reads that sat here went unused once the FIRE lamps below stopped deriving from thrust loss (#40)
 	// The FIRE warnings read FIRE, not thrust loss (#40): three cannon hits on a
 	// turbine reach full harm with nothing alight, and the red light is the most
@@ -1779,6 +1787,7 @@ function lamps_update(out){
 		l.half.material.opacity=(flap_select===1&&slow)?1:0;
 		l.full.material.opacity=(flap_select===2&&slow)?1:0;
 		l.flaps.material.opacity=((flap_select>0&&!slow)||off)?1:0; }
+	if(lamps_testing) for(const m of tested) lamp_set(m,true);   // the lights no condition drives, and the gear and flap lights set by opacity above
 	const r=ownship.group.userData.radalt;
 	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
 		const surface=ground_height(ownship.pos.x,ownship.pos.z);
@@ -2527,7 +2536,7 @@ function ifei_view(){ ifei_state=ifei_settle(ifei_state,performance.now()/1000,n
 function ifei_reading(){ const gz=ownship.gauges||{}, internal=gz.fuelRaw??NaN, external=gz.externalRaw??0;
 	return { rpm:[gz.rpmL??NaN,gz.rpmR??NaN], egt:[gz.egtL??NaN,gz.egtR??NaN], flow:[gz.flowL??NaN,gz.flowR??NaN], noz:[gz.nozL??NaN,gz.nozR??NaN], oil:[gz.oilL??NaN,gz.oilR??NaN],
 		internal, external, tanks:fuel_tanks(internal,external,fuel_aboard()) }; }   // the QTY sub-levels read the FUEL page's apportionment
-function ifei_current(){ return ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }
+function ifei_current(){ return lamps_testing?ifei_test():ifei_face(ifei_reading(), ifei_view(), new Date(), performance.now()/1000); }   // the lights test shows its 1s and 0s (NATOPS 2.6.2.11)
 // The unit's face and windows in the group frame, on the panel face at x 6.211:
 // measured by thresholding captures of the bare panel, the stick hidden, and
 // picking each window's edges (dev_overlays, dev_hide, dev_pick). The buttons
@@ -5123,7 +5132,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
-	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
+	if(ind&&(INDEXER_TEST||lamps_testing)){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }   // the lights test lights all three (NATOPS 2.6.2.11, 2.12.10)
 	else if(ind){ const alpha=(out[STATE.alpha]||0)/D2R;
 		// The indexer lights with the gear down and weight off wheels, and flashes
 		// when the hook is up with the hook bypass switch in CARRIER (NATOPS
@@ -5699,6 +5708,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("tone.silence")) tone_silence();   // the warning tone silence button next to the gear handle (#20)   // the MASTER CAUTION press (NATOPS 2.17.2.1): lit, it goes out and the next NEW caution re-lights it; out, it packs the DDI's cautions left and down
 		if(ch===key_of("index.up")) pit_press("index",1);   // the radar altimeter's low-altitude index knob, for the views without the panel
 		if(ch===key_of("index.down")) pit_press("index",-1);
+		if(ch===key_of("baro.up")) pit_press("baro",1);   // the standby altimeter's barometric set knob (NATOPS 2.12.4), unbound by default: a click on the altimeter turns it too
+		if(ch===key_of("baro.down")) pit_press("baro",-1);
 		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -5874,6 +5885,10 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // against the full chord.
 const KEYS=KEY_DEFAULTS;
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
+// held: an action's key is down. A live shift-chord owns its bare key: Shift+, is roll trim, not nose-down-with-Shift.
+function held(action){ const b=key_of(action); if(!b||b==="None") return false;
+	if(!keys.has(b)) return false;
+	return b.startsWith("Shift+")||!keys.has("Shift+"+b); }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
 const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between fire and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
@@ -6025,9 +6040,6 @@ function read_input(dt){
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
 	if(pad) scan_zoom(pad,pad_bindings(pad));
 	input.guns=(keys.has(key_of("fire"))||pad_fire)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
-	const held=(action)=>{ const b=key_of(action); if(!b||b==="None") return false;
-		if(!keys.has(b)) return false;
-		return b.startsWith("Shift+")||!keys.has("Shift+"+b); };   // a live shift-chord owns its bare key: Shift+, is roll trim, not nose-down-with-Shift
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
@@ -7506,7 +7518,7 @@ function fly_player(dt){
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
-		audio_horn(gear_tone());
+		audio_horn(gear_tone()||lamps_testing);   // the lights test sounds the landing gear tone too (NATOPS 2.6.2.11)
 		{ const gear=ownship.gear??1;   // retraction fraction: 1 stowed, 0 down and locked
 			if(audio_prev.gear!==undefined&&!ownship.grounded){
 				audio_gear(gear>0.03&&gear<0.97);   // the pump cycles for the whole transit, not the keypress (#88)

@@ -558,6 +558,18 @@ describe('the standby altimeter knob', () => {
     expect(source).toMatch(/const u=ownship\.group\.userData\.standby;[^\n]*\n\t\tif\(u&&u\.alt&&_click_ray\.intersectObject\(u\.alt\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("baro",e\.button===2\?1:-1\); return; \} \}/)
     expect(source).toMatch(/baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;/)
   })
+
+  it('is turned by its two keys, unbound until the player binds them, each with a settings label', () => {
+    const lines = /\n\t\tif\(ch===key_of\("baro\.up"\)\)[^\n]*\n\t\tif\(ch===key_of\("baro\.down"\)\)[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(lines).not.toBe('')
+    const press = (ch: string) => new Function('ch', `const turned=[], key_of=(a)=>({ "baro.up":"KeyU", "baro.down":"KeyD" })[a], pit_press=(a,d)=>turned.push(a+" "+d); ${lines} return turned;`)(ch) as string[]
+    expect([press('KeyU'), press('KeyD'), press('KeyX')]).toEqual([['baro 1'], ['baro -1'], []])
+    const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
+    expect(keys).toMatch(/'baro\.down': 'None',[^\n]*\n  'baro\.up': 'None',/)
+    const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
+    expect(settings).toMatch(/id: 'baro\.down', label: msg`Lower altimeter setting`, group: 'aircraft'/)
+    expect(settings).toMatch(/id: 'baro\.up', label: msg`Raise altimeter setting`, group: 'aircraft'/)
+  })
 })
 
 // The height indicator per FO-5 item 41 and NATOPS 2.12.5 (#58): the scale measured

@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { ARM, HOLD, IDLE, LIMIT, STEP, elapsed, face, flow, fresh, noz, oil, press, reset, rpm, settle, zulu, type Button, type Reading, type State, type Tanks } from './ifei'
+import { ARM, HOLD, IDLE, LIMIT, STEP, elapsed, face, flow, fresh, noz, oil, press, reset, rpm, settle, test, zulu, type Button, type Reading, type State, type Tanks } from './ifei'
 
 // The IFEI readout against NATOPS A1-F18AC-NFM-000 2.1.1.7.5, 2.2.10.1 and
 // 2.12.8: the display increments, the fuel counters, the QTY sub-levels, the
@@ -322,5 +322,36 @@ describe('the displayed fuel flow', () => {
 
   it('winds a dead engine down to zero', () => {
     expect(flows(5000, 0, 0, 0, 1, 1, 0).flowL).toBe(0)
+  })
+})
+
+// The lights test (NATOPS 2.6.2.11): the leading 1s for RPM, TEMP, FF and OIL
+// and 0s in every other position, each field as wide as the display's range.
+describe('the lights test face', () => {
+  it('shows the leading 1s and the 0s, under the normal legends', () => {
+    const t = test()
+    expect(t.engine.map((e) => [e.label, e.left, e.right])).toEqual([
+      ['RPM', '100', '100'],
+      ['TEMP', '1000', '1000'],
+      ['FF', '100000', '100000'],
+      ['NOZ', '000', '000'],
+      ['OIL', '100', '100'],
+    ])
+    expect(t.fuel).toEqual({ upper: { legend: 'T', value: '00000' }, middle: { legend: 'I', value: '00000' }, lower: { legend: 'BINGO', value: '00000' } })
+    expect([t.clock, t.elapsed, t.zulu]).toEqual(['00:00:00', '0:00:00', false])
+  })
+
+  it('fills each engine field to the width of its range', () => {
+    const top = face(reading({ rpm: [1e9, 1e9], egt: [1e9, 1e9], flow: [1e9, 1e9], noz: [1e9, 1e9], oil: [1e9, 1e9], internal: 1e9 }), fresh(), new Date(0), 0)
+    test().engine.forEach((e, i) => expect(e.left.length, e.label).toBe(top.engine[i].left.length))
+    expect(test().fuel.upper.value.length).toBe(top.fuel.upper.value.length)
+  })
+
+  it('is what the unit shows while the test is on', () => {
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    const line = /\nfunction ifei_current\(\)\{[^\n]*\n/.exec(engine)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const shown = (on: boolean) => new Function('on', `const lamps_testing=on, ifei_test=()=>"test", ifei_face=()=>"face", ifei_reading=()=>0, ifei_view=()=>0; ${line} return ifei_current();`)(on) as string
+    expect([shown(true), shown(false)]).toEqual(['test', 'face'])
   })
 })

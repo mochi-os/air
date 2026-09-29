@@ -38,9 +38,12 @@ export const KEY_DEFAULTS: Record<string, string> = {
   hook: 'KeyH',
   'index.down': 'KeyN', // the radar altimeter's low-altitude index knob, anticlockwise (NATOPS 2.12.5.4.1): for the views without the panel
   'index.up': 'Shift+KeyN',
+  'baro.down': 'None', // the standby altimeter's barometric set knob (NATOPS 2.12.4): unbound, as a click on the altimeter turns it
+  'baro.up': 'None',
   'hook.bypass': 'Shift+KeyH', // the hook bypass switch, CARRIER <-> FIELD: FIELD stops the AOA indexer flashing with the hook up (NATOPS 2.12.10) and drops back to CARRIER when the hook comes down
   atc: 'KeyP',
   lights: 'KeyL',
+  'lights.test': 'Shift+KeyL', // the LT TEST switch, held (NATOPS 2.6.2.11)
   flares: 'KeyC',
   eject: 'Shift+KeyE',
   map: 'KeyM',
