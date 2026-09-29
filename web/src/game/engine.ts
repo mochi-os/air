@@ -61,7 +61,7 @@ import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
 import { geometry_canonical, geometry_hash } from './geometry'
-import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_warning, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -1742,6 +1742,9 @@ function build_lamps(g){
 	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
 	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
+// generators: each generator on the line, its engine turning (the core's spool, less the harm to it) (NATOPS 2.5.1).
+function generators(out){ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
+	return [turning(0,0),turning(2,1)]; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
 	const ext=out[STATE.extension]||0;   // the gear lamps' one input; the engine-harm, fuel and leak reads that sat here went unused once the FIRE lamps below stopped deriving from thrust loss (#40)
@@ -1759,8 +1762,7 @@ function lamps_update(out){
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
 	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); CK SEAT, APU ACC, BATT SW, FCS HOT and GEN TIE have no state
 	lamp_set(l.fuello,(ownship.fuel??1e9)<FUELLO||flbit_lit());
-	{ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
-		const genL=turning(0,0), genR=turning(2,1); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
+	{ const [genL,genR]=generators(out); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // only spends when the pit is on screen, like the flood
 	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
@@ -6270,19 +6272,19 @@ function tone_silence(){ tone_silenced=true; tone_presses++; }   // the warning 
 function caution_press(){ if(caution_lamp) caution_lamp=false; else { caution_slots=cautions_restack(caution_slots); ddi_dirty=true; } }
 function wheels_warning(){ return (ownship.gearTarget??0)>0.5&&(ownship.cas??ownship.speed)<90&&ownship.pos.y<2286&&(ownship.vely??0)<-1.27&&!ownship.grounded&&!ownship.launching; }
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0,gear:undefined as number|undefined};   // one-shot edge detection (#73)
-// Master caution/warning (#47): the caution set is built in the sim step, keyed
-// and view-independent; the tone, the glareshield lamp and the HUD stack all
-// read it. NATOPS 2.17.2.1: the tone fires on any new caution key, the light
-// clears when pressed and re-arms on the next. Warnings (red) carry their own
-// tone. A caution with a voice alert is announced instead of toned, and a FIRE
-// warning has only its voice (2.17.3); the tone backs the voice up, so a key
-// whose recording is not ready still gets it.
+// Master caution (#47): the caution set is built in the sim step, keyed and
+// view-independent; the tone, the glareshield lamp and the HUD stack all read it.
+// MASTER CAUTION and its tone follow the jet's cautions (2.17.2.1); a caution with a
+// voice alert is announced instead of toned, the tone backing up a voice whose
+// recording is not ready; a FIRE warning has its voice alone (2.17.3).
 let caution_list=[];        // [key, label, red] rows, sim-step fresh — the renderers' source
 let caution_slots=[];       // the left DDI's caution area (#5, cautions.ts): slots taken in order of occurrence, blank when cleared, packed by a MASTER CAUTION press with the light out
 let caution_keys=new Set(); // keys present last step (the new-key edge)
 let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
 let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on), as a tone while the voice cannot say it
 let caution_toned=-1e9;     // sim time the MASTER CAUTION tone last sounded: the 5 s spacing of NATOPS 2.17.2.1
+const relight={ low:0, high:false, sat:false };   // the reset MASTER CAUTION's re-light (2.17.2.1): since when both engines have sat below 80% on the wheels, and last step's states
+const BATTERY_VOICES=new Set(["ENGINE FIRE LEFT","ENGINE FIRE RIGHT"]);   // the voice alerts that work on the battery (2.17.3): FIRE, APU FIRE and the BLEEDs, of which the game has the engine FIREs
 const voice=voice_queue();  // the voice alerts (voice.ts)
 // DDI_CAPTIONS: the game's caution rows that are cautions in the jet, each to its caption in
 // the NATOPS caution index (chapter 12): PARK BRK is the index's PARK BRAKE.
@@ -6323,25 +6325,35 @@ function cautions_update(){
 	const captions=[];
 	for(let e=0;e<2;e++) if(!secured[e]&&((ownship.fuel??1)<=0||(core&&(core[STATE.engine_harm+e]||0)>=0.99))) captions.push(["L FLAMEOUT","R FLAMEOUT"][e]);
 	for(const [key] of rows){ const caption=DDI_CAPTIONS[key]; if(caption) captions.push(caption); }
+	const [genL,genR]=core?generators(core):[true,true], battery=!genL&&!genR;   // both generators off the line: the jet on its battery
+	if(genR&&!genL) captions.push("L GEN"); if(genL&&!genR) captions.push("R GEN");   // one generator off the line; neither shows in a dual failure (2.5.1.1)
 	{ const next=cautions_reconcile(caution_slots,captions.map(c=>[c,c,false])); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots follow the captions; a change redraws the display now
 	caution_list=rows;
-	let fresh=false, freshCaution=false, freshWarning=false;
-	for(const [key,,red] of rows) if(!caution_keys.has(key)){ fresh=true;
-		if(SPOKEN[key]?.every(audio_voiced)) continue;
-		if(red) freshWarning=true; else freshCaution=true; }
-	caution_keys=new Set(rows.map(r=>r[0]));
+	// MASTER CAUTION comes on for the jet's cautions, the left DDI's captions (2.17.2.1): a new one lights it and,
+	// unless its voice alert replaces it, sounds the tone. A dual generator failure lights it too, with the tone
+	// inoperative (2.5.1.1): on the battery the tone, the caution voices and ALTITUDE are gone and only the FIRE
+	// voices work (2.17.3). With weight on wheels and a caution present, a reset light comes back on, with its tone,
+	// when both engines are run up past about 80% rpm or after both have sat below it for 60 s.
+	const latch=battery?[...captions,"DUAL GEN"]:captions;
+	let fresh=false, toned=false;
+	for(const key of latch) if(!caution_keys.has(key)){ fresh=true; if(!SPOKEN[key]?.every(audio_voiced)) toned=true; }
+	caution_keys=new Set(latch);
+	{ const g=ownship.gauges||{}, high=(g.rpmL??0)>80&&(g.rpmR??0)>80, wheels=!!ownship.grounded;
+		if(!wheels||high) relight.low=sim_time;
+		const sat=wheels&&sim_time-relight.low>=60, back=wheels&&((high&&!relight.high)||(sat&&!relight.sat));
+		relight.high=high; relight.sat=sat;
+		if(back&&!caution_lamp&&latch.length){ fresh=true; toned=true; } }
 	if(fresh) caution_lamp=true;
-	if(freshWarning) audio_warning();
-	else if(freshCaution&&sim_time-caution_toned>=5){ audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
-	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
+	if(toned&&!battery&&sim_time-caution_toned>=5){ audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
+	if(!latch.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=low||below;
-	if(bingo&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
+	if(bingo&&!battery&&!audio_voiced("BINGO")){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;
 	const active=new Set();
 	for(const [key] of rows) for(const message of SPOKEN[key]??[]) active.add(message);
 	if(gpws.gear) active.add("CHECK GEAR");
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
-	for(const message of [...active]) if(!audio_voiced(message)) active.delete(message);
+	for(const message of [...active]) if(!audio_voiced(message)||(battery&&!BATTERY_VOICES.has(message))) active.delete(message);
 	voice_step(voice,sim_time,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
@@ -6467,7 +6479,7 @@ if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownsh
 	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
 	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_voice=(message)=>{ if(message) audio_voice(message); return { clock:sim_time, until:voice.until, gear:gpws.gear, wheels:gpws.wheels, waveoff:gpws.waveoff }; };   // dev: the voice alert queue and the GPWS gear-up landing state; given a message, plays it outside the queue to audition the mix
-if(DEV_MODE) (globalThis as any).dev_alert=(name)=>{ ({caution:audio_caution,warning:audio_warning,law:audio_law,horn:()=>audio_horn(true)})[name]?.(); };   // dev: sound one alert tone outside its condition, to audition the mix
+if(DEV_MODE) (globalThis as any).dev_alert=(name)=>{ ({caution:audio_caution,law:audio_law,horn:()=>audio_horn(true)})[name]?.(); };   // dev: sound one alert tone outside its condition, to audition the mix
 if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
 if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest catalogue stars on screen now, projected to canvas pixels, so a probe can check a star is drawn where the sky has it
 	const pos=star_geo.attributes.position.array, w=renderer.domElement.clientWidth, h=renderer.domElement.clientHeight, v=new THREE.Vector3(), out=[];
@@ -7963,7 +7975,7 @@ function reset_ownship(){
 	law_halfleg=false; law_wheels=-Infinity; law_fast=false; trim_manual=false;   // a fresh core starts with no takeoff-leg latch, no wheel timer and below the AUTO handover
 	handle_lit=-1; tone_silenced=false;   // a fresh spawn has no handle light history and no silenced tone (#22)
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
-	flbit=-Infinity;   // a fresh jet has run no fuel low BIT
+	flbit=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise

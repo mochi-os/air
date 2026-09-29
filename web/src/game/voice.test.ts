@@ -15,6 +15,7 @@ import { MESSAGES, SPOKEN, voice_queue, voice_step, type Message } from './voice
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const tool = readFileSync(fileURLToPath(new URL('../../../tools/voice.py', import.meta.url)), 'utf8')
 const tail = /\n\tcaution_list=rows;\n[\s\S]*?\n\tvoice_step\(voice,sim_time,active,audio_voice\); \}\n/.exec(source)?.[0] ?? ''
+const constants = ['DDI_CAPTIONS', 'relight', 'BATTERY_VOICES'].map((n) => new RegExp(`\\nconst ${n}=[^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
 const ground = /\n\t\t\t\{ const slow=\(ownship\.cas\?\?ownship\.speed\)<102\.9;[\s\S]*?gpws\.waveoff\)>60; \}\n/.exec(source)?.[0] ?? ''
 
 const LENGTH: Record<Message, number> = { 'PULL UP': 1.3, POWER: 1.3, 'ROLL LEFT': 1.7, 'ROLL RIGHT': 1.7, 'ENGINE FIRE LEFT': 2.8, 'ENGINE FIRE RIGHT': 2.7, 'CHECK GEAR': 1.7, ALTITUDE: 1.7, 'FLIGHT CONTROLS': 2.6, 'ENGINE LEFT': 2.1, 'ENGINE RIGHT': 2, 'FUEL LOW': 1.6, BINGO: 1.1 }
@@ -71,7 +72,8 @@ describe('the voice alert queue', () => {
 
 describe('the messages', () => {
   it('are raised by cautions and warnings the engine shows', () => {
-    for (const key of Object.keys(SPOKEN)) expect(source, key).toMatch(new RegExp(`push\\("${key}"[,)]`))
+    const flameouts = source.includes('captions.push(["L FLAMEOUT","R FLAMEOUT"][e])') // the per-engine FLAMEOUT captions
+    for (const key of Object.keys(SPOKEN)) expect(new RegExp(`push\\("${key}"[,)]`).test(source) || (flameouts && /^[LR] FLAMEOUT$/.test(key)), key).toBe(true)
     expect(SPOKEN.FLAMEOUT).toEqual(['ENGINE LEFT', 'ENGINE RIGHT'])
     expect(SPOKEN['FUEL LO']).toEqual(['FUEL LOW']) // BINGO speaks from its own row, beside FUEL LO
   })
@@ -104,19 +106,26 @@ describe('the messages', () => {
 })
 
 type Row = [string, string, boolean]
-interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean }
+interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean; captions?: string[]; battery?: boolean; grounded?: boolean; rpm?: number; reset?: boolean }
 interface Result { tones: string[]; lamp: boolean; active: string[] }
 // Runs cautions_update's tail once per moment, and returns each moment's tones,
 // the MASTER CAUTION lamp and the messages handed to the queue. The fuel is under
 // FUEL LO and BINGO as its rows say, except for a FUEL LO a FLBIT raised (test).
+// The DDI's captions are the rows' own, as cautions_update maps them, unless the
+// moment names them (the flameouts and the generators come from the core); the
+// moment also sets the battery, the wheels, both engines' rpm and a MASTER
+// CAUTION press (reset).
 function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
   const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
-    const voice={}, gpws={gear:false, call:""};
-    const audio_caution=()=>tones.push("caution"), audio_warning=()=>tones.push("warning"), audio_voiced=()=>ready, audio_voice=()=>0;
+    const voice={}, gpws={gear:false, call:""}, ownship={ grounded:false, gauges:{} }; ${constants}
+    const audio_caution=()=>tones.push("caution"), audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
-    function cautions_update(rows,test){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO"); ${tail}
-    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time; cautions_update(m.rows,!!m.test); return { tones, lamp:caution_lamp, active:active_passed }; });`)
+    function cautions_update(rows,test,m){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO");
+      const captions=m.captions??rows.map((r)=>DDI_CAPTIONS[r[0]]).filter(Boolean), battery=!!m.battery; ${tail}
+    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time;
+      ownship.grounded=!!m.grounded; ownship.gauges={ rpmL:m.rpm??0, rpmR:m.rpm??0 }; if(m.reset) caution_lamp=false;
+      cautions_update(m.rows,!!m.test,m); return { tones, lamp:caution_lamp, active:active_passed }; });`)
   return run(SPOKEN, moments) as Result[]
 }
 const row = (key: string, red = false): Row => [key, key, red]
@@ -129,16 +138,70 @@ describe('the voice takes over from the caution tone', () => {
     expect(voiced.active.sort()).toEqual(['BINGO', 'FUEL LOW'])
   })
 
-  it('gives a FIRE warning its voice alone', () => {
+  it('gives a FIRE warning its voice alone, with no tone and no MASTER CAUTION (2.17.2.1, 2.17.3)', () => {
     const [fire] = cautions([{ rows: [row('L ENG FIRE', true)], ready: true }])
     expect(fire.tones).toEqual([])
+    expect(fire.lamp).toBe(false)
     expect(fire.active).toEqual(['ENGINE FIRE LEFT'])
+    const [unready] = cautions([{ rows: [row('R ENG FIRE', true)], ready: false }])
+    expect(unready.tones).toEqual([]) // no warning tone behind a voice that cannot play
+  })
+
+  it('calls both ENGINE FIRE voices, left first, for the fuel fire that lights both FIRE lights (2.14.1)', () => {
+    const [fire] = cautions([{ rows: [row('FUEL FIRE', true)], ready: true }])
+    expect(fire.active).toEqual(['ENGINE FIRE LEFT', 'ENGINE FIRE RIGHT'])
+    expect(fire.tones).toEqual([])
   })
 
   it('tones a caution with no voice, alongside a voiced one', () => {
-    const [both] = cautions([{ rows: [row('R ENG'), row('FUEL LEAK')], ready: true }])
+    const [both] = cautions([{ rows: [row('CANOPY'), row('FCS')], ready: true }])
     expect(both.tones).toEqual(['caution'])
-    expect(both.active).toEqual(['ENGINE RIGHT'])
+    expect(both.active).toEqual(['FLIGHT CONTROLS'])
+  })
+
+  it('lights MASTER CAUTION for the jet\'s cautions only, not for the game\'s damage cues (2.17.2.1)', () => {
+    const [damage] = cautions([{ rows: [row('FUEL LEAK'), row('STRUCTURE'), row('R GEAR', true)], ready: true }])
+    expect(damage).toMatchObject({ tones: [], lamp: false })
+    const [flameout] = cautions([{ rows: [], captions: ['L FLAMEOUT'], ready: true }])
+    expect(flameout.lamp).toBe(true)
+    expect(flameout.tones).toEqual([]) // its ENGINE LEFT voice replaces the tone
+    expect(cautions([{ rows: [], captions: ['L FLAMEOUT'], ready: false }])[0].tones).toEqual(['caution'])
+  })
+
+  it('lights MASTER CAUTION with its tone for one generator off the line (2.5.1.1)', () => {
+    const [gen] = cautions([{ rows: [], captions: ['R GEN'], ready: true }])
+    expect(gen).toMatchObject({ tones: ['caution'], lamp: true })
+  })
+
+  it('on the battery lights MASTER CAUTION with no tone, and keeps only the FIRE voices (2.5.1.1, 2.17.3)', () => {
+    const [dual] = cautions([{ rows: [row('L ENG FIRE', true), row('FUEL LO'), row('BINGO')], battery: true, ready: true, gear: true, altitude: true }])
+    expect(dual.lamp).toBe(true)
+    expect(dual.tones).toEqual([])
+    expect(dual.active).toEqual(['ENGINE FIRE LEFT'])
+    expect(cautions([{ rows: [], battery: true, ready: true }])[0]).toMatchObject({ lamp: true, tones: [] }) // the dual failure alone
+    const minute = cautions(Array.from({ length: 3700 }, () => ({ rows: [row('BINGO')], battery: true, ready: false })))
+    expect(minute.flatMap((m) => m.tones)).toEqual([]) // nor the BINGO repeat
+  })
+
+  // 2.17.2.1: with weight on wheels and a caution still present, a reset MASTER
+  // CAUTION comes back on with its tone when both engines are run up past about
+  // 80% rpm, or once both have sat below 80% for 60 s.
+  it('re-lights a reset MASTER CAUTION on the run-up, or after a minute at idle, on the wheels', () => {
+    const idle = (n: number, extra: Partial<Moment> = {}): Moment[] => Array.from({ length: n }, () => ({ rows: [row('CANOPY')], ready: true, grounded: true, rpm: 70, ...extra }))
+    const runup = cautions([...idle(1), ...idle(1, { reset: true }), ...idle(310), ...idle(1, { rpm: 85 })]) // past the tone's 5 s spacing
+    expect(runup[1].lamp).toBe(false)
+    expect(runup[311].lamp).toBe(false)
+    expect(runup[312]).toMatchObject({ lamp: true, tones: ['caution'] })
+    const sat = cautions([...idle(1), ...idle(1, { reset: true }), ...idle(3700)])
+    const back = sat.findIndex((m, i) => i > 1 && m.lamp)
+    expect(back).toBeGreaterThan(3500) // a minute at idle, from the start of the idle
+    expect(back).toBeLessThan(3620)
+    expect(sat[back].tones).toEqual(['caution'])
+    const airborne = cautions([...idle(1, { grounded: false }), ...idle(1, { grounded: false, reset: true }), ...idle(10, { grounded: false }), ...idle(3700, { grounded: false, rpm: 85 })])
+    expect(airborne.slice(2).some((m) => m.lamp)).toBe(false)
+    const clean = cautions([{ rows: [], ready: true, grounded: true, rpm: 70 }, { rows: [], ready: true, grounded: true, rpm: 85 }])
+    expect(clean[1]).toMatchObject({ lamp: false, tones: [] }) // no caution, nothing to re-light or tone
+    expect(source).toMatch(/\n\tflbit=-Infinity; relight\.low=sim_time; relight\.high=false; relight\.sat=false;/) // a fresh jet starts its idle minute afresh
   })
 
   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have
@@ -151,16 +214,16 @@ describe('the voice takes over from the caution tone', () => {
 
   it('lets a second caution inside 5 s ride the first tone, and sounds again for one 5 s on', () => {
     const results = cautions([
-      ...hold([row('FUEL LEAK')], 60),
-      ...hold([row('FUEL LEAK'), row('CANOPY')], 246),
-      ...hold([row('FUEL LEAK'), row('CANOPY'), row('STRUCTURE')], 60),
+      ...hold([row('PROBE UNLK')], 60),
+      ...hold([row('PROBE UNLK'), row('CANOPY')], 246),
+      ...hold([row('PROBE UNLK'), row('CANOPY'), row('WING UNLK')], 60),
     ])
     expect(toned(results)).toEqual([0, 306]) // the third caution lands 5.1 s after the first tone
     expect(results[60].lamp).toBe(true) // the quiet second caution still lights MASTER CAUTION
   })
 
   it('does not re-tone a caution that clears and recurs inside 5 s, and does after', () => {
-    const results = cautions([...hold([row('STRUCTURE')], 60), ...hold([], 60), ...hold([row('STRUCTURE')], 60), ...hold([], 126), ...hold([row('STRUCTURE')], 60)])
+    const results = cautions([...hold([row('CANOPY')], 60), ...hold([], 60), ...hold([row('CANOPY')], 60), ...hold([], 126), ...hold([row('CANOPY')], 60)])
     expect(toned(results)).toEqual([0, 306]) // recurs at 2 s: quiet; recurs at 5.1 s: tones
   })
 
@@ -168,8 +231,6 @@ describe('the voice takes over from the caution tone', () => {
     const [caution] = cautions([{ rows: [row('FCS')], ready: false }])
     expect(caution.tones).toEqual(['caution'])
     expect(caution.active).toEqual([])
-    const [warning] = cautions([{ rows: [row('R ENG FIRE', true)], ready: false }])
-    expect(warning.tones).toEqual(['warning'])
   })
 
   it('repeats BINGO as a tone only when the voice cannot', () => {
