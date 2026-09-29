@@ -1625,6 +1625,27 @@ function legend(text,colour,w=0.026,h=0.010){
 function lamp_set(m,on){ if(!m) return; on=!!on;
 	if(m.userData.lens){ if(m.userData.on!==on){ m.userData.on=on; m.material.map=on?m.userData.lens.on:m.userData.lens.off; m.material.needsUpdate=true; } }
 	else m.material.opacity=on?1:0; }
+// The glareshield's warning/caution/advisory panels (FO-5 items 6 and 8), rows top
+// down and each row left to right as the foldout draws it: outboard first on the
+// left panel, inboard first on the right. An entry is [lamp, legend, colour]; a
+// null name is a lens with no legend, where the foldout draws a dash, and null
+// is a place with no lens.
+const GLARESHIELD={
+	left:[[["go","GO","#2fd24a"],["nogo","NO GO","#ffc23a"]],[["bleedL","L BLEED","#e23b2e"],["bleedR","R BLEED","#e23b2e"]],[["spdbrk","SPD BRK","#2fd24a"],["stby","STBY","#ffc23a"]],
+		[["lbar","L BAR","#2fd24a"],["rec","REC","#2fd24a"]],[["lbarfault","L BAR","#e23b2e"],["xmit","XMIT","#2fd24a"]],[null,["aspj","ASPJ ON","#2fd24a"]]],
+	right:[[["rcdr","RCDR ON","#2fd24a"],["disp","DISP","#2fd24a"]],[[null,""],[null,""]],[[null,""],[null,""]],[[null,""],["sam","SAM","#ffc23a"]],
+		[["ai","AI","#ffc23a"],["aaa","AAA","#ffc23a"]],[["cw","CW","#ffc23a"],null]] };
+// The caution lights panel (FO-5 item 46), four rows by three, top down and left to
+// right; a null name is a lens with no legend.
+const CAUTION_LIGHTS=[[["ckseat","CK SEAT"],["apuacc","APU ACC"],["battsw","BATT SW"]],[[null,""],["gentie","GEN TIE"],[null,""]],
+	[[null,""],["fces","FCES"],["fcshot","FCS HOT"]],[["fuello","FUEL LO"],["genL","L GEN"],["genR","R GEN"]]];
+// CAUTION_GRID is the model's painted lens grid for that panel in the group frame:
+// the top-left lens's centre and the step to the next column and to the next row,
+// fitted to the twelve lens centres the model's texture places on the panel (the
+// largest residual a quarter of a millimetre). The panel leans aft going down and
+// is canted, its rows climbing outboard.
+const CAUTION_GRID={ origin:[6.178,-0.0123,0.323], across:[-0.00953,0.00716,0.0242], down:[-0.00569,-0.00931,0.0005] };
+function caution_place(r,c){ const G=CAUTION_GRID; return G.origin.map((v,i)=>v+c*G.across[i]+r*G.down[i]); }
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
@@ -1639,17 +1660,16 @@ function build_lamps(g){
 	// inboard on the left, the guarded FIRE light, MASTER CAUTION and the left
 	// warning/caution/advisory panel, two columns by six rows; on the right the
 	// right panel, APU FIRE and FIRE. The HUD glass spans ±glass.hw (9 cm), so the
-	// grids start just outboard of it. Rows are listed outboard column first, as
-	// the foldout draws them. The lenses sit on the glareshield's aft face, which
-	// the panel-point measurer (&panelpoint=1) puts vertical at x 6.163 below
-	// y 0.50, under a chamfer up to the top edge at x 6.10, y 0.54.
+	// grids start just outboard of it (GLARESHIELD). The lenses sit on the
+	// glareshield's aft face, which the panel-point measurer (&panelpoint=1) puts
+	// vertical at x 6.163 below y 0.50, under a chamfer up to the top edge at x
+	// 6.10, y 0.54: the model's own lens panels lie inside the glareshield behind
+	// that face, where the eye never sees them.
 	const BROW={ x:6.160, y:0.495 };
 	const P=0.012, col=(k)=>0.125+k*0.032;   // row pitch and the grid columns, metres from the centreline
 	const grid=(side,rows)=>rows.forEach((row,r)=>row.forEach((entry,c)=>{ if(!entry) return; const [name,text,colour]=entry;
-		lamps[name]=legend(text,colour); lamps[name].position.set(0,-0.006-r*P,side<0?-col(1-c):col(c)); brow.add(lamps[name]); }));
-	grid(-1,[[["go","GO","#2fd24a"],["nogo","NO GO","#ffc23a"]],[["bleedL","L BLEED","#e23b2e"],["bleedR","R BLEED","#e23b2e"]],[["spdbrk","SPD BRK","#2fd24a"],["stby","STBY","#ffc23a"]],
-		[["lbar","L BAR","#2fd24a"],["rec","REC","#2fd24a"]],[["lbarfault","L BAR","#e23b2e"],["xmit","XMIT","#2fd24a"]],[["aspj","ASPJ ON","#2fd24a"],null]]);
-	grid(1,[[["rcdr","RCDR ON","#2fd24a"],["disp","DISP","#2fd24a"]],[null,["sam","SAM","#ffc23a"]],[["ai","AI","#ffc23a"],["aaa","AAA","#ffc23a"]],[["cw","CW","#ffc23a"],null]]);
+		const m=legend(text,colour||"#2fd24a"); if(name) lamps[name]=m; m.position.set(0,-0.006-r*P,side<0?-col(1-c):col(c)); brow.add(m); }));
+	grid(-1,GLARESHIELD.left); grid(1,GLARESHIELD.right);
 	lamps.caution=legend("MASTER\nCAUTION","#ffc23a",0.028,0.016); lamps.caution.position.set(0,-0.012,-0.205);
 	lamps.fireL=legend("FIRE","#e23b2e",0.024,0.016); lamps.fireL.position.set(0,-0.012,-0.245);
 	lamps.apufire=legend("APU\nFIRE","#e23b2e",0.024,0.016); lamps.apufire.position.set(0,-0.012,0.205);
@@ -1684,19 +1704,17 @@ function build_lamps(g){
 		if(b){ lamps.hook=legend("HOOK","#ffc23a",0.020,0.012); lamps.hook.name="hooklamp";
 			lamps.hook.position.set(b.lo.x-0.003,(b.lo.y+b.hi.y)/2,(b.lo.z+b.hi.z)/2); lamps.hook.rotateY(-Math.PI/2); lamps.hook.layers.set(LAYER_OWN);
 			g.add(lamps.hook); g.updateMatrixWorld(true); hook.attach(lamps.hook); } }
-	// The caution lights panel (FO-5 item 46, NATOPS 2.17.2, #13): nine yellow lights three by three at
-	// the lower right of the main panel. A grid of panel clicks (&panelpoint=1) fits the face there as a
-	// plane through x 6.167 at the painted APU ACC legend, y -0.003, z 0.354, leaning aft going down
-	// (dx/dy 0.6) and going outboard (dx/dz -0.51). The lenses lie on that plane 7 mm proud, facing
-	// along its normal, raised and moved outboard a few millimetres for the design eye's parallax, at the painted lights' full size so the texture's lit APU ACC stays covered as
-	// the head moves. The rows read as the foldout lists them.
-	const CAUTIONS={ x:6.160, y:0.001, z:0.357, pitch:0.016, span:0.034, lean:0.6, wrap:-0.51 };
-	const cautions=new THREE.Group(), aft=new THREE.Vector3(-1,CAUTIONS.lean,CAUTIONS.wrap).normalize();   // the face's normal toward the pilot
-	const face=new THREE.Matrix4().lookAt(aft,new THREE.Vector3(),new THREE.Vector3(0,1,0));   // a quad's front along that normal, legend upright
-	[[["ckseat","CK SEAT"],["apuacc","APU ACC"],["battsw","BATT SW"]],[["fcshot","FCS HOT"],["gentie","GEN TIE"],["fuello","FUEL LO"]],[["fces","FCES"],["genL","L GEN"],["genR","R GEN"]]]
-		.forEach((row,r)=>row.forEach(([name,text],c)=>{ const m=lamps[name]=legend(text,"#ffc23a",0.035,0.015); m.name=name+"lamp";   // a millimetre over the pitch so the seams close
-			const dy=-r*CAUTIONS.pitch, dz=(c-1)*CAUTIONS.span; m.position.set(CAUTIONS.lean*dy+CAUTIONS.wrap*dz,dy,dz); m.setRotationFromMatrix(face); cautions.add(m); }));
-	cautions.position.set(CAUTIONS.x,CAUTIONS.y,CAUTIONS.z);
+	// The caution lights panel (FO-5 item 46, NATOPS 2.17.2, #13): twelve yellow lights four by three at
+	// the lower right of the main panel, one on each of the model's painted lenses (CAUTION_GRID). Each
+	// quad lies a millimetre and a half proud of its lens, facing along the panel's normal toward the
+	// pilot with its legend upright on the panel, and a lens's size, so the lit legends the texture
+	// paints on the lenses stay covered as the head moves.
+	const across=new THREE.Vector3(...CAUTION_GRID.across), down=new THREE.Vector3(...CAUTION_GRID.down);
+	const right=across.clone().normalize(), up=down.clone().negate().normalize(), aft=new THREE.Vector3().crossVectors(right,up);   // the fitted steps are square to a tenth of a degree; aft: the panel's normal toward the pilot
+	const face=new THREE.Matrix4().makeBasis(right,up,aft), cautions=new THREE.Group();
+	CAUTION_LIGHTS.forEach((row,r)=>row.forEach(([name,text],c)=>{ const m=legend(text,"#ffc23a",0.026,0.0095);
+		if(name){ m.name=name+"lamp"; lamps[name]=m; }
+		m.position.set(...caution_place(r,c)).addScaledVector(aft,0.0015); m.setRotationFromMatrix(face); cautions.add(m); }));
 	cautions.children.forEach(m=>{ m.layers.set(LAYER_OWN); }); g.add(cautions);
 	// The emergency instrument light (NATOPS 2.6.2.8, #17): a white light on the right side of the
 	// instrument panel that lights the standby flight instruments on a double generator failure, with

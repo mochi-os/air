@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 
 // The pit's flap position lights (NATOPS 2.8.4.3): HALF and FULL are green
@@ -79,8 +80,27 @@ describe('the glareshield panels', () => {
     expect(build).toMatch(/lamps\.fireL=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireL\.position\.set\(0,-0\.012,-0\.245\);/)
     expect(build).toMatch(/lamps\.apufire=legend\("APU\\nFIRE","#e23b2e",0\.024,0\.016\); lamps\.apufire\.position\.set\(0,-0\.012,0\.205\);/)
     expect(build).toMatch(/lamps\.fireR=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireR\.position\.set\(0,-0\.012,0\.245\);/)
-    for (const [name, text] of [['go', 'GO'], ['nogo', 'NO GO'], ['bleedL', 'L BLEED'], ['bleedR', 'R BLEED'], ['spdbrk', 'SPD BRK'], ['stby', 'STBY'], ['lbar', 'L BAR'], ['rec', 'REC'], ['lbarfault', 'L BAR'], ['xmit', 'XMIT'], ['aspj', 'ASPJ ON'], ['rcdr', 'RCDR ON'], ['disp', 'DISP'], ['sam', 'SAM'], ['ai', 'AI'], ['aaa', 'AAA'], ['cw', 'CW']])
-      expect(build, name).toContain(`["${name}","${text}"`)
+    expect(build).toMatch(/grid\(-1,GLARESHIELD\.left\); grid\(1,GLARESHIELD\.right\);/)
+  })
+
+  // Each lens by its row from the top and its column, 0 inboard and 1 outboard,
+  // as build_lamps places it on the brow.
+  const place = (m: THREE.Object3D) => [Math.round((-0.006 - m.position.y) / 0.012), Math.abs(m.position.z) < 0.14 ? 0 : 1, Math.sign(m.position.z)]
+  it('lay the right panel six rows deep as FO-5 item 8 does, with legendless lenses where it draws a dash', () => {
+    const { lamps, brow } = built()
+    const at = Object.fromEntries(['rcdr', 'disp', 'sam', 'ai', 'aaa', 'cw'].map((n) => [n, place(lamps[n])]))
+    expect(at).toEqual({ rcdr: [0, 0, 1], disp: [0, 1, 1], sam: [3, 1, 1], ai: [4, 0, 1], aaa: [4, 1, 1], cw: [5, 0, 1] })
+    const blanks = brow.children.filter((m) => m.userData.text === '' && m.position.z > 0).map((m) => place(m).slice(0, 2))
+    expect(blanks).toEqual([[1, 0], [1, 1], [2, 0], [2, 1], [3, 0]])
+    expect(Object.values(lamps).filter((m) => m.userData.text === '')).toEqual([]) // no lamp for a legendless lens
+  })
+
+  it('put ASPJ ON in the left panel\'s inboard column under XMIT (FO-5 item 6)', () => {
+    const { lamps } = built()
+    expect(place(lamps.aspj)).toEqual([5, 0, -1])
+    expect(place(lamps.xmit)).toEqual([4, 0, -1])
+    expect(place(lamps.lbarfault)).toEqual([4, 1, -1])
+    expect(place(lamps.go)).toEqual([0, 1, -1])
   })
 
   it('light SPD BRK off the stop and L BAR extended', () => {
@@ -196,15 +216,63 @@ describe('the caution lights panel', () => {
     expect(cautionlit({ jam: 1 })).toEqual(['fces'])
   })
 
-  it('lays the nine lights three by three on the lower right panel', () => {
-    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
-    expect(build).toMatch(/const CAUTIONS=\{ x:6\.160, y:0\.001, z:0\.357, pitch:0\.016, span:0\.034, lean:0\.6, wrap:-0\.51 \};/) // the face fitted by panel clicks
-    expect(build).toMatch(/m\.position\.set\(CAUTIONS\.lean\*dy\+CAUTIONS\.wrap\*dz,dy,dz\); m\.setRotationFromMatrix\(face\);/) // each lens on the leaning plane, facing its normal
-    for (const [name, text] of [['ckseat', 'CK SEAT'], ['apuacc', 'APU ACC'], ['battsw', 'BATT SW'], ['fcshot', 'FCS HOT'], ['gentie', 'GEN TIE'], ['fuello', 'FUEL LO'], ['fces', 'FCES'], ['genL', 'L GEN'], ['genR', 'R GEN']])
-      expect(build, name).toContain(`["${name}","${text}"]`)
-    expect(build).toMatch(/const face=new THREE\.Matrix4\(\)\.lookAt\(aft,new THREE\.Vector3\(\),new THREE\.Vector3\(0,1,0\)\);/)
+  // The model's painted caution lenses, their centres in the group frame: each
+  // lens's texture centre mapped through the mesh that carries it and the
+  // model's placement (scale, yaw and offset, which dev_box confirms node for
+  // node), rows top down and left to right.
+  const PAINTED = [
+    [[6.178, -0.0122, 0.3229], [6.1684, -0.005, 0.3473], [6.159, 0.0021, 0.3713]],
+    [[6.1723, -0.0217, 0.3234], [6.1627, -0.0144, 0.3478], [6.1532, -0.0073, 0.3718]],
+    [[6.1665, -0.031, 0.3239], [6.1568, -0.0238, 0.3483], [6.1475, -0.0167, 0.3723]],
+    [[6.161, -0.0401, 0.3244], [6.1514, -0.0329, 0.3488], [6.1419, -0.0258, 0.3728]],
+  ]
+  it('lays the twelve lights four by three as FO-5 item 46 does, each on its painted lens', () => {
+    const { lamps, cautions } = built()
+    const names = [['ckseat', 'apuacc', 'battsw'], [null, 'gentie', null], [null, 'fces', 'fcshot'], ['fuello', 'genL', 'genR']]
+    expect(cautions.children.length).toBe(12)
+    names.forEach((row, r) => row.forEach((name, c) => {
+      const m = cautions.children[r * 3 + c]
+      expect(m.userData.text === '', `${r},${c}`).toBe(name === null)
+      if (name) expect(lamps[name], name).toBe(m)
+      const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(m.quaternion)
+      const lens = m.position.clone().addScaledVector(normal, -0.0015)
+      expect(lens.distanceTo(new THREE.Vector3(...PAINTED[r][c])), `${r},${c}`).toBeLessThan(0.0006)
+    }))
+  })
+
+  it('faces each light toward the pilot, its legend upright on the canted panel and a lens in size', () => {
+    const { cautions } = built()
+    for (const m of cautions.children) {
+      const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(m.quaternion), across = new THREE.Vector3(1, 0, 0).applyQuaternion(m.quaternion)
+      expect(normal.x).toBeLessThan(-0.7) // aft
+      expect(normal.y).toBeGreaterThan(0.4) // up
+      expect(normal.z).toBeLessThan(-0.4) // inboard
+      expect(across.z).toBeGreaterThan(0.8) // the legend reads outboard
+      expect(m.userData.size).toEqual([0.026, 0.0095]) // inside the 27 by 11 mm cell, the painted frame showing between
+    }
   })
 })
+
+// build_lamps's brow and caution panel blocks, run on three.js with the layout
+// constants and a stand-in lens that records its legend and size.
+function built(): { lamps: Record<string, THREE.Mesh>; brow: THREE.Object3D; cautions: THREE.Object3D } {
+  const constants = ['GLARESHIELD', 'CAUTION_LIGHTS', 'CAUTION_GRID'].map((n) => {
+    const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;\\n`).exec(source)?.[0]
+    if (!m) throw new Error(`${n} not found in engine.ts`)
+    return m
+  }).join('')
+  const cut = (from: string, to: string) => {
+    const start = source.indexOf(from), end = source.indexOf(to, start)
+    if (start < 0 || end < 0) throw new Error(`${from} not found in engine.ts`)
+    return source.slice(start, end)
+  }
+  const place = /\nfunction caution_place\([^\n]*\n/.exec(source)?.[0] ?? ''
+  const brow = cut('\tconst brow=new THREE.Group();', '\tconst handle=')
+  const cautions = cut('\t// The caution lights panel (FO-5 item 46', '\t// The emergency instrument light')
+  return new Function('THREE', `${constants} ${place} const LAYER_OWN=1, lamps={}, g=new THREE.Group();
+    const legend=(text,colour,w=0.026,h=0.010)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h)); m.userData.text=text; m.userData.size=[w,h]; return m; };
+    ${brow} ${cautions} return { lamps, brow, cautions };`)(THREE)
+}
 
 // The canopy bow lights (FO-5 item 1): LOCK while the radar holds a single
 // target track, SHOOT whenever the HUD draws its SHOOT cue, so the bow light
