@@ -119,6 +119,8 @@ interface Core {
   catalog(aircraft: string): string
   wake_shed?(count: number, poses: Uint8Array): string
   wake_state?(): string
+  debris_lay?(words: Uint8Array): string
+  debris_meet?(output: Uint8Array): number | string
   approach(
     x: number,
     y: number,
@@ -996,6 +998,40 @@ export function flight_wake_shed(poses: readonly WakePose[]): void {
     new Uint8Array(wake_poses.buffer, 0, poses.length * WAKE_POSE * 8)
   )
   if (error) console.error('flight wake:', error)
+}
+
+// Debris (world battle/debris.go): a kill's wreckage, laid where the jet fell,
+// that strikes the pilot's jet if it flies through the pieces while they are
+// still close together. flight_debris_lay lays it; flight_debris_meet, called
+// after each frame, rolls the jet against it over the time the frame stepped
+// and returns the strikes, the battle event mask and where the pieces landed
+// in the body frame. Null from a core without debris.
+const debris_words = new Float64Array(6)
+const debris_out = new Float64Array(3 + 3 * 8)
+export function flight_debris_lay(
+  position: { x: number; y: number; z: number },
+  velocity: { x: number; y: number; z: number }
+): void {
+  if (!core?.debris_lay) return
+  debris_words.set([position.x, position.y, position.z, velocity.x, velocity.y, velocity.z])
+  const error = core.debris_lay(new Uint8Array(debris_words.buffer))
+  if (error) console.error('flight debris:', error)
+}
+export function flight_debris_meet(): {
+  strikes: number
+  mask: number
+  impacts: { x: number; y: number; z: number }[]
+} | null {
+  if (!core?.debris_meet) return null
+  const strikes = core.debris_meet(new Uint8Array(debris_out.buffer))
+  if (typeof strikes === 'string') {
+    console.error('flight debris:', strikes)
+    return null
+  }
+  const impacts = []
+  for (let h = 0; h < debris_out[2]; h++)
+    impacts.push({ x: debris_out[3 + h * 3], y: debris_out[4 + h * 3], z: debris_out[5 + h * 3] })
+  return { strikes: debris_out[0], mask: debris_out[1], impacts }
 }
 
 // flight_wake reports what the pilot's core was handed on its last frame - how
