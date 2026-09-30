@@ -1158,6 +1158,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
+		cut:{ node:"Object_1372", lo:[0.275,0.325,4.165], hi:[0.525,0.852,4.508] },   // see model_cut: the cockpit shell's block over the lower left panel
 		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
@@ -1251,8 +1252,8 @@ const AIRCRAFT_MODELS={
 	      { name:"canopyswitch", track:/^Canopy_Switch_AN/i,                            drive:"canopyswitch" },   // 2.15.1.1.1: the clip runs CLOSE (its rest, the lever down) to OPEN, HOLD between
 	      { name:"foldswitch",   track:/^Wing_Fold_Switch_AN/i,                         drive:"foldswitch" },     // 2.11.1: the clip turns SPREAD (its rest) counterclockwise to FOLD, HOLD between...
 	      { name:"foldpull",     node:"Wing_Fold_Switch_AN_Switch_743", trans:[0,0,-1], gain:0.015, gauge:"foldpull" },   // ...and out of LOCK the handle stands 1.5 cm proud along its shaft, which the model does not animate
-	      { name:"parkbrake",    track:/^LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake/i, drive:"parkbrake" },   // 2.10.3.4: the handle rotated and pulled...
-	      { name:"parkpull",     track:/^LANDING_GEAR_Switch_ParkingBrake_AN_287/i,     drive:"parkbrake" },      // ...on both of its animated nodes
+	      { name:"parkbrake",    track:/^LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake/i, drive:"parkbrake" },   // the emergency/parking brake handle (2.10.3.3, 2.10.3.4): this node turns it 90° for PARK...
+	      { name:"parkpull",     track:/^LANDING_GEAR_Switch_ParkingBrake_AN_287/i,     drive:"parkpull" },      // ...and this one draws it 18 mm out to its detent, for EMERG and PARK
 	      { name:"barswitch",    track:/^Switch_LAUNCHBAR_LeftPanel_AN/i,               drive:"barswitch", flip:true },   // 2.10.4: the clip runs EXTEND (its rest, lever down) to RETRACT
 	      { name:"probeswitch",  track:/^Refuel_Switch_Action_AN/i,                     drive:"probeswitch" },    // 2.2.11: the clip runs EMERG EXTD (aft, its rest) to EXTEND (forward), RETRACT between (FO-5)
 	      { name:"altswitch",    track:/^Switch_ALT_HudPanel_AN/i,                      drive:"altswitch" },      // BARO / RDR
@@ -1278,6 +1279,19 @@ const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for a
 const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
 const SLAT_PA=12*D2R;  // parked/gear-down LEF droop for aircraft without FCS data (NATOPS flaps HALF: LEF 12°) — the ownship's comes live from the alpha schedule
 const _NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
+// model_cut drops the triangles of one mesh lying wholly inside a box given in
+// the GLB's own scene frame. The cockpit shell (Object_1372) is a low-detail copy
+// of the whole pit with one coarse texture, and over the lower left panel it
+// stands as a grey block about 4 cm in front of the modelled one, hiding the
+// BRAKE PRESSURE gauge, HOOK BYPASS, the LDG/TAXI switch and the fire test and
+// ground power panel behind it; cut away, the modelled panel shows as FO-5 draws it.
+function model_cut(scene, cut){ scene.updateMatrixWorld(true);
+	const mesh=scene.getObjectByName(cut.node); if(!mesh||!mesh.geometry||!mesh.geometry.index) return 0;
+	const box=new THREE.Box3(new THREE.Vector3(...cut.lo),new THREE.Vector3(...cut.hi)), at=mesh.geometry.attributes.position, index=mesh.geometry.index.array, v=new THREE.Vector3(), kept=[];
+	const inside=i=>box.containsPoint(v.fromBufferAttribute(at,i).applyMatrix4(mesh.matrixWorld));
+	for(let t=0;t<index.length;t+=3) if(!(inside(index[t])&&inside(index[t+1])&&inside(index[t+2]))) kept.push(index[t],index[t+1],index[t+2]);
+	mesh.geometry.setIndex(kept);
+	return (index.length-kept.length)/3; }
 function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
 	const s=spec.length/Math.max(size.x,size.y,size.z,1e-3);
@@ -1494,7 +1508,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_screens(g); build_ifei(g); build_ufc(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_screens(g); build_ifei(g); build_ufc(g); }
 // The standby flight instruments (#32): the model hides its mechanical airspeed,
 // altimeter, vertical speed and attitude parts 8 cm behind opaque black discs
 // painted on the cockpit tub, so, like the radar altimeter, each gets a canvas
@@ -1826,6 +1840,8 @@ function lamps_update(out){
 		radalt_draw(r, (ownship.pos.y-(surface>-1e8?Math.max(surface,0):0))*3.28084, law_index, radalt_inhibited(), radalt_on&&sim_time-radalt_test<5); } }   // feet, as the dial, the index and the 5,000 ft limit are, and as the aural reads it
 	const w=ownship.group.userData.rwr;   // the ALR-67 azimuth indicator (#28), refreshed like the radar altimeter
 	if(w){ const now=performance.now(); if(now-w.last>250){ w.last=now; rwr_draw(w); } }
+	const bk=ownship.group.userData.brake;   // the brake accumulator gauge, redrawn as its pressure moves
+	if(bk&&bk.psi!==Math.round(brake_accumulator)) brake_draw(bk,brake_accumulator);
 	const sb=ownship.group.userData.standby;   // the standby flight instruments (#32): needles want ten frames a second
 	if(sb){ const now=performance.now(); if(now-(sb.last||0)>100){ sb.last=now; standby_draw(sb,ownship.gauges||{}); } } }
 // Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
@@ -1918,6 +1934,40 @@ function radalt_draw(r, agl, index, silent, test){   // index: the low-altitude 
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
 	r.index=index; r.lamp=lamp; r.off=off;   // what the face shows, for dev_probe
 	r.tex.needsUpdate=true; }
+// The brake accumulator pressure gauge (FO-5 item 33, NATOPS 2.10.3.3) in the lower
+// left corner of the main panel: psi x1000, 3 at the top and 45° a thousand, red
+// below the 2,000 psi redline. The modelled dial (under Object_1060's glass,
+// measured with dev_pick once model_cut had cleared the shell off it) is painted
+// with its pointer at 3; the face is laid over it, behind the gauge's front plate,
+// which shows it through a window across its upper half and carries the PSI X
+// legend itself. The pointer pivots low in the window, as the painted one does.
+const BRAKE_SEAT={ centre:[6.162,-0.038,-0.342], normal:[-0.779,0.449,0.437], up:[0.530,0.847,0.047], r:0.0165 };
+function build_brake(g){
+	if(g.userData.brake&&g.userData.brake.mesh.parent) return;
+	const canvas=document.createElement("canvas"); canvas.width=canvas.height=128;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(BRAKE_SEAT.r,36), gauge_material(tex));
+	const N=new THREE.Vector3(...BRAKE_SEAT.normal).normalize(), up=new THREE.Vector3(...BRAKE_SEAT.up), Y=up.addScaledVector(N,-up.dot(N)).normalize(), X=new THREE.Vector3().crossVectors(Y,N).normalize();
+	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
+	mesh.position.set(...BRAKE_SEAT.centre).addScaledVector(N,0.001);   // over the painted dial, under its cover glass
+	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
+	g.add(mesh);
+	g.userData.brake={ mesh, canvas, tex, psi:null };
+	brake_draw(g.userData.brake, brake_accumulator); }
+function brake_draw(b, psi){ const x=b.canvas.getContext("2d"), W=128, C=64, P=C+22, R=50;   // P: the pointer's pivot, low in the window
+	const angle=p=>((p/1000-3)*45-90)*D2R;   // 3,000 psi straight up, 45° a thousand
+	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
+	x.strokeStyle="#c02020"; x.lineWidth=4; x.beginPath(); x.arc(C,P,R-2,angle(1000),angle(2000)); x.stroke();   // the redline arc
+	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0";
+	for(let p=1000;p<=4000;p+=250){ const a=angle(p), long=p%1000===0, r=long?R-9:R-5;
+		x.lineWidth=long?2.5:1.5; x.beginPath(); x.moveTo(C+Math.cos(a)*R,P+Math.sin(a)*R); x.lineTo(C+Math.cos(a)*r,P+Math.sin(a)*r); x.stroke(); }
+	x.font="bold 13px sans-serif"; x.textAlign="center"; x.textBaseline="middle";
+	for(const n of [2,3,4]){ const a=angle(n*1000); x.fillText(String(n),C+Math.cos(a)*(R-18),P+Math.sin(a)*(R-18)); }
+	x.font="9px sans-serif"; x.fillText("BRAKE PRESSURE",C,P+2);
+	const a=angle(THREE.MathUtils.clamp(psi,1000,4000));
+	x.strokeStyle="#f0f0e8"; x.lineWidth=4; x.beginPath(); x.moveTo(C-Math.cos(a)*6,P-Math.sin(a)*6); x.lineTo(C+Math.cos(a)*(R-3),P+Math.sin(a)*(R-3)); x.stroke();
+	x.fillStyle="#303030"; x.beginPath(); x.arc(C,P,4,0,7); x.fill();
+	b.psi=Math.round(psi); b.tex.needsUpdate=true; }
 // DDI/AMPCD screens (#99): each display gets a canvas quad on the dark screen
 // the pilot sees, drawn by the shared page renderers below. left/right are the
 // monochrome DDIs, center the colour-capable AMPCD. The visible screens are
@@ -3202,6 +3252,7 @@ async function init_external_model(kind){
 		const gltf={ scene:stocked.scene.clone(true), animations:stocked.animations };
 		{ try{
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
+				if(spec.cut) model_cut(gltf.scene, spec.cut);
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
 				// Stand the drawn model on its wheels: normalise_model centres on the
@@ -5880,7 +5931,10 @@ function pit_press(action,direction){ const d=direction||0;
 	switch(action){
 	case "canopy": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.canopyTarget=d>0?1:d<0?0:(ownship.canopyTarget??0)>0.5?0:1; else notice(translate("CANOPY LOCKED")); break;   // ground only, taxi speeds (NATOPS 2.15.1.1.1); up is OPEN, down is CLOSE
 	case "fold": if((ownship.squish??0)>0.5 && ownship.speed<15) fold_turn(d); else notice(translate("WINGS LOCKED")); break;   // counterclockwise to FOLD, clockwise to SPREAD (NATOPS 2.11.1)
-	case "brake.parking": parking=!parking; break;
+	case "brake.parking":   // the emergency/parking brake handle (2.10.3.3, 2.10.3.4): out to its detent is EMERG, out and turned PARK. A click steps it, out on the right button and in on the left; the key toggles PARK
+		if(d===0){ parking=!parking; pulled=false; }
+		else { const at=THREE.MathUtils.clamp((parking?2:pulled?1:0)+(d>0?1:-1),0,2); parking=at===2; pulled=at===1; }
+		break;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
 	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
@@ -6033,12 +6087,30 @@ let parking=false;   // the parking brake: forces the wheel-brake input while se
 // nothing below 10 kt; locked-wheel protection needs each main's wheel speed, which the core does
 // not model. OFF, the pedals get the full 3,000 psi: the sample says so, and the core blows the
 // main tyres braking at speed. Carrier operations fly it OFF (reset_ownship).
+let pulled=false;   // the same handle out to its detent without the turn: EMERG, the emergency brakes (2.10.3.3)
 let antiskid=true;
+function guarded(){ return antiskid&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
 let spun=-Infinity;   // the touchdown (its landing.at) whose wheels have spun up past 50 kt: its protection is over
 function brakes_held(){ const kt=(ownship.speed??0)*1.94384;
 	if(!ownship.grounded) return false;
 	if(kt>50) spun=landing.at;
-	return antiskid&&spun!==landing.at&&kt>=10&&sim_time-landing.at<3; }
+	return guarded()&&spun!==landing.at&&kt>=10&&sim_time-landing.at<3; }
+// The brakes' hydraulics (2.7.1, 2.7.4, 2.10.3). The normal brakes run on HYD 2A, and
+// HYD 2's pump is on the right engine. EMERG and PARK run on HYD 2B, or without it on
+// the brake accumulator, which HYD 2A keeps charged. The accumulator's gas charge makes
+// a full application cost more the higher it stands: 1/p rises by 1/gas each time, the
+// one constant that puts the five applications NATOPS gives between the 2,000 psi
+// redline and BRK ACCUM at 1,750, where it may be empty, and about fourteen from full
+// down to the redline. The charge rate back from HYD 2 is a judgement.
+const ACCUMULATOR={ full:3000, empty:1750, gas:80000, charge:20 };   // psi, psi, psi·applications, psi/s
+let brake_accumulator=ACCUMULATOR.full;   // psi
+let drawn=false;   // the brakes held now have drawn their application from the accumulator
+function hydraulic(){ return ((ownship.gauges||{}).spoolR??1)>0.03; }   // HYD 2 up: the right engine turning, as the gauges read it
+function brakes_step(pedals,dt){ const pump=hydraulic(), backup=pulled||parking, demand=pedals||parking;
+	if(pump) brake_accumulator=Math.min(ACCUMULATOR.full,brake_accumulator+ACCUMULATOR.charge*dt);
+	if(!demand||!backup) drawn=false;
+	else if(!pump&&!drawn&&brake_accumulator>ACCUMULATOR.empty){ drawn=true; brake_accumulator=Math.max(ACCUMULATOR.empty,brake_accumulator/(1+brake_accumulator/ACCUMULATOR.gas)); }
+	return demand&&(pump||drawn); }
 let reset_flag=false;   // one-shot trim reset, consumed once the core has stepped with it
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
@@ -6128,7 +6200,7 @@ function read_input(dt){
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
 	const withheld=brakes_held();   // every frame, pedals or not: the spin-up has to be seen whenever it happens
-	input.brake=(keys.has(key_of("brake.wheel"))&&!withheld)||parking;   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic. Anti-skid holds the pedals, never the parking brake
+	input.brake=brakes_step(keys.has(key_of("brake.wheel"))&&!withheld,dt);   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic. Anti-skid holds the pedals, never the parking brake, and the handle chooses what powers them
 	if(DEV_MODE && on_ground() && (ownship.speed??0)<1){   // dev measuring cursor: nudge the readout point off the nose wheel while parked (the eject/lights/override keys are gated off in this state)
 		const step=dt*1.2, turn=dt*2.5;
 		if(keys.has("KeyI")) dev_nudge.fa+=step; if(keys.has("KeyK")) dev_nudge.fa-=step;
@@ -6437,6 +6509,7 @@ function cautions_update(){
 	for(const [key] of rows){ const caption=DDI_CAPTIONS[key]; if(caption) captions.push(caption); }
 	const [genL,genR]=core?generators(core):[true,true], battery=!genL&&!genR;   // both generators off the line: the jet on its battery
 	if(genR&&!genL) captions.push("L GEN"); if(genL&&!genR) captions.push("R GEN");   // one generator off the line; neither shows in a dual failure (2.5.1.1)
+	if(brake_accumulator<=ACCUMULATOR.empty) captions.push("BRK ACCUM");   // the brake accumulator down to 1,750 psi, where it may be empty (2.10.3.3)
 	{ const next=cautions_reconcile(caution_slots,captions.map(c=>[c,c,false])); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots follow the captions; a change redraws the display now
 	caution_list=rows;
 	// MASTER CAUTION comes on for the jet's cautions, the left DDI's captions (2.17.2.1): a new one lights it and,
@@ -7022,6 +7095,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		antiskid,   // the ANTI SKID switch (#114)
+		brakes:{ handle:parking?"park":pulled?"emerg":"norm", accumulator:Math.round(brake_accumulator), pump:hydraulic(), face:u.brake?u.brake.psi:null },   // the emergency/parking brake handle, the brake accumulator and what its gauge last drew (#13)
 		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting }, lights:!!ownship.lights, exterior:{ ...exterior },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
 		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
 		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
@@ -7571,7 +7645,7 @@ function fly_player(dt){
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
-		bypass:!antiskid, gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
+		bypass:!guarded(), gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
 		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), sequence:++control_sequence };   // the core kicks back while rounds leave
@@ -7906,6 +7980,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
 		case "foldswitch": f=st===ownship?(fold_handle==="fold"?1:fold_handle==="hold"?0.5:0):(st.foldTarget??0)>0.5?1:0; break;
 		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
+		case "parkpull": f=(st===ownship&&(parking||pulled))?1:0; break;
 		case "barswitch": f=(st.barTarget??0)>0.5?1:0; break;
 		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0.5; break;   // EXTEND or RETRACT; the game has no emergency extension
 		case "altswitch": f=(st===ownship&&alt_radar)?1:0; break;
@@ -8137,6 +8212,7 @@ function reset_ownship(){
 	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
+	brake_accumulator=ACCUMULATOR.full; drawn=false;   // a charged brake accumulator, over the 2,600 psi the exterior inspection asks (NATOPS 7.1.2)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
@@ -9737,7 +9813,7 @@ function net_frame(dt){
 	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, bypass:!antiskid, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };

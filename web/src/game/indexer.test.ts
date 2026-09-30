@@ -149,7 +149,7 @@ describe('the state-driven switches', () => {
   it('bind one rig entry per animated switch node, and the parking brake both of its nodes', () => {
     const entries: [string, string, string][] = [
       ['canopyswitch', 'Canopy_Switch_AN', 'canopyswitch'], ['foldswitch', 'Wing_Fold_Switch_AN', 'foldswitch'],
-      ['parkbrake', 'LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake', 'parkbrake'], ['parkpull', 'LANDING_GEAR_Switch_ParkingBrake_AN_287', 'parkbrake'],
+      ['parkbrake', 'LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake', 'parkbrake'], ['parkpull', 'LANDING_GEAR_Switch_ParkingBrake_AN_287', 'parkpull'],
       ['probeswitch', 'Refuel_Switch_Action_AN', 'probeswitch'],
       ['altswitch', 'Switch_ALT_HudPanel_AN', 'altswitch'], ['rejswitch', 'Switch_REJ2_HudPanel_AN', 'rejswitch'],
       ['ldglight', 'Switch_LDG_Light_LeftPanel_AN', 'ldglight'], ['strobe', 'Switch_Strobe_LeftPanel_AN', 'strobe'],
@@ -410,7 +410,6 @@ describe('the clickable switches', () => {
 
   it('toggle the two-position controls on either button', () => {
     for (const d of [1, -1]) {
-      expect(press('brake.parking', d).parking).toBe(true)
       expect(press('probe', d).ownship.probeTarget).toBe(1)
       expect(press('altitude', d).alt_radar).toBe(true)
       expect(press('lights', d).ownship.lights).toBe(true)
