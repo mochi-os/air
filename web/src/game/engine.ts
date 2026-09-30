@@ -1237,6 +1237,7 @@ const AIRCRAFT_MODELS={
 	      { name:"gearlever", track:/^Gear_handle_AN/i, drive:"gearlever" },
 	      { name:"hooklever", track:/^LANDING_Gear_Lever_Hook_AN/i, drive:"hooklever" },
 	      { name:"hookbypass", track:/^SWITCH_HOOKBYPASS_LEFTPANEL_AN/i, drive:"hookbypass" },   // the hook bypass switch: authored = CARRIER, track end = FIELD (#7)
+	      { name:"antiskid", track:/^Switch_FULL_ANTISKID_LeftPanel_AN/i, drive:"antiskid" },   // the ANTI SKID switch (2.10.3.2): authored = OFF, the lever level; track end = ON, up (#114)
 	      // the interior lights panel (2.6.2, #21) in the model's older layout: the four knobs scrub their clips from the lighting
 	      // levels; the FLOOD COCKPIT/CHART switch (2.6.2.5, the model's Knob_CHART: its rest forward, COCKPIT) and the LT TEST switch
 	      // (2.6.2.11, the model's PEDESTAL_LIGHT: its rest aft, OFF) are toggles. The panel has no MODE switch: MODE_C_AN is the KY-58's MODE knob
@@ -1268,7 +1269,7 @@ const AIRCRAFT_MODELS={
 // derived from the catapult spot every frame, so a click there changes nothing.
 const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:null, probeswitch:"probe",
 	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
-	hookbypass:"hook.bypass", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test" };
+	hookbypass:"hook.bypass", antiskid:"antiskid", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test" };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -5889,6 +5890,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "formation": exterior.formation=THREE.MathUtils.clamp(exterior.formation+(d<0?-0.25:0.25),0,1); break;
 	case "dump": fuel_dump=!fuel_dump&&!bingo_low()&&!fuel_low(); break;   // held ON only with BINGO and FUEL LO off (NATOPS 2.2.7)
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
+	case "antiskid": antiskid=!antiskid; break;   // the ANTI SKID switch, ON or OFF (NATOPS 2.10.3.2)
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
@@ -6025,6 +6027,17 @@ function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: 
 }
 let flap_select=0;   // the flap switch: 0 AUTO (the FCS virtual schedule), 1 HALF, 2 FULL — notched by the flaps keys, sent with every control sample
 let parking=false;   // the parking brake: forces the wheel-brake input while set, so the idle-thrust creep needs no held key
+// The ANTI SKID switch (NATOPS 2.10.3.2). ON, touchdown protection holds the pedals off from
+// touchdown until the wheels spin up past 50 kt, or for 3 s if they do not, and the system does
+// nothing below 10 kt; locked-wheel protection needs each main's wheel speed, which the core does
+// not model. OFF, the pedals get the full 3,000 psi: the sample says so, and the core blows the
+// main tyres braking at speed. Carrier operations fly it OFF (reset_ownship).
+let antiskid=true;
+let spun=-Infinity;   // the touchdown (its landing.at) whose wheels have spun up past 50 kt: its protection is over
+function brakes_held(){ const kt=(ownship.speed??0)*1.94384;
+	if(!ownship.grounded) return false;
+	if(kt>50) spun=landing.at;
+	return antiskid&&spun!==landing.at&&kt>=10&&sim_time-landing.at<3; }
 let reset_flag=false;   // one-shot trim reset, consumed once the core has stepped with it
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
@@ -6113,7 +6126,8 @@ function read_input(dt){
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
-	input.brake=keys.has(key_of("brake.wheel"))||parking;   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic
+	const withheld=brakes_held();   // every frame, pedals or not: the spin-up has to be seen whenever it happens
+	input.brake=(keys.has(key_of("brake.wheel"))&&!withheld)||parking;   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic. Anti-skid holds the pedals, never the parking brake
 	if(DEV_MODE && on_ground() && (ownship.speed??0)<1){   // dev measuring cursor: nudge the readout point off the nose wheel while parked (the eject/lights/override keys are gated off in this state)
 		const step=dt*1.2, turn=dt*2.5;
 		if(keys.has("KeyI")) dev_nudge.fa+=step; if(keys.has("KeyK")) dev_nudge.fa-=step;
@@ -7006,6 +7020,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		radalt:u.radalt?{ index:u.radalt.index, lamp:!!u.radalt.lamp, off:!!u.radalt.off }:null,   // what the radar altimeter face last drew (#6): the index its bug sits at, the red light, the OFF flag
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
+		antiskid,   // the ANTI SKID switch (#114)
 		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting }, lights:!!ownship.lights, exterior:{ ...exterior },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
 		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
 		tone:{ handle:handle_lit>=0?+(sim_time-handle_lit).toFixed(1):null, due:wheels_warning()||(handle_lit>=0&&sim_time-handle_lit>=15), silenced:tone_silenced, presses:tone_presses },   // i18n-format-ok: dev readout — the gear handle light's time on, whether the aural is due and the silence latch (#22)
@@ -7555,7 +7570,7 @@ function fly_player(dt){
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
-		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
+		bypass:!antiskid, gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
 		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), sequence:++control_sequence };   // the core kicks back while rounds leave
@@ -7885,6 +7900,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
 		case "hooklever": f=(st.hookTarget??0)>0.5?1:0; break;   // the handle is the selection; the HOOK light shows the hook disagreeing with it (#10)
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
+		case "antiskid": f=(st===ownship&&antiskid)?1:0; break;
 		// switches from state (#18) ---
 		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
 		case "foldswitch": f=st===ownship?(fold_handle==="fold"?1:fold_handle==="hold"?0.5:0):(st.foldTarget??0)>0.5?1:0; break;
@@ -8113,6 +8129,7 @@ function reset_ownship(){
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
+	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
@@ -9713,7 +9730,7 @@ function net_frame(dt){
 	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, bypass:!antiskid, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };

@@ -308,6 +308,7 @@ export interface InputSample {
   speedbrake: number
   reheat: number
   brake: boolean
+  bypass: boolean // the ANTI SKID switch OFF (#114): a server that predates it reads nothing, and a sample without it keeps anti-skid on
   gear: boolean
   hook: boolean
   override: boolean
