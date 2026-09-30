@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
-import { atc_step, ATC_ONSPEED, ATC_LEAST, ATC_MOST } from './atc'
+import { atc_step, cruise_step, ATC_ONSPEED, ATC_LEAST, ATC_MOST } from './atc'
 
 // A toy backside-of-the-power-curve surrogate: thrust above the drag-balance
 // point accelerates the jet, and alpha falls as speed rises (level flight at
@@ -71,6 +71,48 @@ describe('atc_step', () => {
   })
 })
 
+// A toy cruise plant: thrust past the drag balance accelerates the jet, drag rising
+// with speed; about 14 kt/s for the full throttle range, and the engines' spool
+// lag, a first-order second. Balanced at 300 kt on throttle 0.6.
+function cruise(entry: number, target: number, seconds: number): { speed: number; overshoot: number } {
+  const dt = 1 / 60
+  let speed = entry, throttle = 0.6, thrust = 0.6, last = entry, overshoot = 0
+  for (let t = 0; t < seconds; t += dt) {
+    const accel = (speed - last) / dt
+    last = speed
+    throttle = cruise_step(throttle, speed, target, accel, dt)
+    thrust += (throttle - thrust) * dt / 1.0
+    speed += ((thrust - 0.6) * 14 - (speed - 300) * 0.02) * dt
+    if (Math.sign(target - entry) !== Math.sign(target - speed)) overshoot = Math.max(overshoot, Math.abs(speed - target))
+  }
+  return { speed, overshoot }
+}
+
+describe('cruise_step', () => {
+  it('adds power below the engaged airspeed and takes it off above', () => {
+    expect(cruise_step(0.5, 290, 300, 0, 1 / 60)).toBeGreaterThan(0.5)
+    expect(cruise_step(0.5, 310, 300, 0, 1 / 60)).toBeLessThan(0.5)
+  })
+
+  it('damps against an acceleration already closing the error', () => {
+    expect(cruise_step(0.5, 290, 300, 4, 1 / 60)).toBeLessThan(cruise_step(0.5, 290, 300, 0, 1 / 60))
+  })
+
+  it('clamps to the spool floor and the MIL ceiling, and spike-limits the acceleration', () => {
+    expect(cruise_step(1.0, 200, 300, 0, 1)).toBe(ATC_MOST)
+    expect(cruise_step(0.0, 400, 300, 0, 1)).toBe(ATC_LEAST)
+    expect(cruise_step(0.5, 300, 300, 500, 1 / 60)).toBe(cruise_step(0.5, 300, 300, 20, 1 / 60))
+  })
+
+  it('holds the engaged airspeed from either side without a divergent swing', () => {
+    for (const entry of [280, 320]) {
+      const r = cruise(entry, 300, 60)
+      expect(Math.abs(r.speed - 300), `${entry}`).toBeLessThan(1)
+      expect(r.overshoot, `${entry}`).toBeLessThan(5)
+    }
+  })
+})
+
 // The HUD's ATC advisory (NATOPS 2.1.2, 2.13.4.8.15, figure 2-26): green, above
 // the distance display, while ATC is engaged; flashing for 10 seconds when ATC
 // drops out by any means but its switch, or when an engage is refused. engine.ts
@@ -78,32 +120,80 @@ describe('atc_step', () => {
 describe('the ATC advisory', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
   const press = /\n\tcase "atc":[^\n]*\n[^\n]*break;[^\n]*\n/.exec(source)?.[0] ?? ''
-  const drop = /\n\tif\(atc_on\)\{\n[\s\S]*?\n\t\}\n/.exec(source)?.[0] ?? ''
+  const drop = /\n\tif\(atc_on\)\{[^\n]*\n[\s\S]*?\n\t\}\n/.exec(source)?.[0] ?? ''
+  const engage = /\nfunction atc_engage\(\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   const draw = /\n\thctx\.font="13px 'Hornet Display', monospace"; hctx\.textAlign="left"; hctx\.fillStyle=GR;\n\tif\(atc_on[^\n]*\n/.exec(source)?.[0] ?? ''
 
-  const switched = (on: boolean, gearTarget: number, grounded: boolean) =>
-    new Function('on', 'gearTarget', 'grounded', `let atc_on=on, atc_flash=5, atc_alpha=0; const sim_time=50, ownship={ gearTarget, aoa:8 }, on_ground=()=>grounded, pad_levers={};
-      switch("atc"){ ${press} } return { on:atc_on, flash:atc_flash };`)(on, gearTarget, grounded) as { on: boolean; flash: number }
+  // The engage: the FLAP switch (flap_select: 0 AUTO, 1 HALF, 2 FULL) and the trailing-edge flaps' travel, degrees.
+  interface Jet { on?: boolean; flap?: number; tef?: number; grounded?: boolean; speed?: number; gearTarget?: number }
+  const switched = (j: Jet) =>
+    new Function('j', `let atc_on=!!j.on, atc_flash=5, atc_alpha=0, atc_speed=null, atc_last=0; const sim_time=50, D2R=Math.PI/180, STATE={ flap:0 }, last_out=[(j.tef??30)*D2R];
+      const flap_select=j.flap??1, ownship={ gearTarget:j.gearTarget??0, aoa:8, speed:j.speed??150 }, on_ground=()=>!!j.grounded, pad_levers={};
+      ${engage} switch("atc"){ ${press} } return { on:atc_on, flash:atc_flash, speed:atc_speed };`)(j) as { on: boolean; flash: number; speed: number | null }
 
   it('is silent when the switch disengages it, and clears on engage', () => {
     expect(press).not.toBe('')
-    expect(switched(true, 0, false)).toEqual({ on: false, flash: -Infinity })
-    expect(switched(false, 0, false)).toEqual({ on: true, flash: -Infinity })
+    expect(switched({ on: true })).toMatchObject({ on: false, flash: -Infinity })
+    expect(switched({})).toMatchObject({ on: true, flash: -Infinity })
   })
 
-  it('flashes when an engage is refused', () => {
-    expect(switched(false, 1, false)).toEqual({ on: false, flash: 50 })   // gear up
-    expect(switched(false, 0, true)).toEqual({ on: false, flash: 50 })    // on the deck
+  it('engages approach mode with the FLAP switch at HALF or FULL and the flaps down 27°, gear up or down (2.1.2.1)', () => {
+    for (const flap of [1, 2]) expect(switched({ flap, tef: 30 }), `${flap}`).toEqual({ on: true, flash: -Infinity, speed: null })
+    expect(switched({ flap: 1, tef: 30, gearTarget: 1 })).toMatchObject({ on: true, speed: null }) // the gear is no condition
   })
 
-  it('flashes when ATC drops out on its own', () => {
+  it('engages cruise mode with the FLAP switch at AUTO, holding the true airspeed of the moment (2.1.2.2)', () => {
+    const r = switched({ flap: 0, tef: 0, speed: 154.3 })
+    expect(r.on).toBe(true)
+    expect(r.speed).toBeCloseTo(154.3 * 1.944, 6)
+  })
+
+  it('flashes when an engage is refused: the flaps short of 27° with HALF or FULL, or on the deck', () => {
+    expect(switched({ flap: 1, tef: 20 })).toMatchObject({ on: false, flash: 50 })
+    expect(switched({ flap: 1, tef: 30, grounded: true })).toMatchObject({ on: false, flash: 50 })
+    expect(switched({ flap: 0, grounded: true })).toMatchObject({ on: false, flash: 50 })
+  })
+
+  // The drop-outs, run against a jet in either mode: approach (speed null) or cruise.
+  interface Flight { cruise?: boolean; flap?: number; tef?: number; bank?: number; grounded?: boolean; throttling?: boolean; gearTarget?: number }
+  const flown = (f: Flight) =>
+    new Function('f', `let atc_on=true, atc_flash=-Infinity, atc_alpha=8, atc_speed=f.cruise?300:null, atc_last=300; const sim_time=70, dt=1/60, D2R=Math.PI/180, STATE={ flap:0 };
+      const last_out=[(f.tef??30)*D2R], flap_select=f.flap??(f.cruise?0:1), throttling=!!f.throttling;
+      const ownship={ gearTarget:f.gearTarget??0, aoa:8, throttle:0.5, speed:300/1.944, gauges:{ bank:(f.bank??0)*D2R } }, on_ground=()=>!!f.grounded, pad_levers={};
+      let stepped=""; const atc_step=(t)=>{ stepped="approach"; return t; }, cruise_step=(t)=>{ stepped="cruise"; return t; };
+      ${drop} return { on:atc_on, flash:atc_flash, stepped };`)(f) as { on: boolean; flash: number; stepped: string }
+
+  it('flies each mode with its own law while nothing drops it out, the gear up included', () => {
     expect(drop).not.toBe('')
-    const run = (gearTarget: number, throttling: boolean) =>
-      new Function('gearTarget', 'throttling', `let atc_on=true, atc_flash=-Infinity, atc_alpha=8; const sim_time=70, dt=1/60, ownship={ gearTarget, aoa:8, throttle:0.5 };
-        const on_ground=()=>false, pad_levers={}, atc_step=(t)=>t; ${drop} return { on:atc_on, flash:atc_flash };`)(gearTarget, throttling) as { on: boolean; flash: number }
-    expect(run(1, false)).toEqual({ on: false, flash: 70 })   // gear up
-    expect(run(0, true)).toEqual({ on: false, flash: 70 })    // the throttle moved
-    expect(run(0, false)).toEqual({ on: true, flash: -Infinity })
+    expect(flown({})).toEqual({ on: true, flash: -Infinity, stepped: 'approach' })
+    expect(flown({ gearTarget: 1 })).toEqual({ on: true, flash: -Infinity, stepped: 'approach' }) // no gear drop-out
+    expect(flown({ cruise: true, tef: 0 })).toEqual({ on: true, flash: -Infinity, stepped: 'cruise' })
+    expect(flown({ cruise: true, tef: 0, bank: 80 })).toMatchObject({ on: true }) // bank is approach mode's
+  })
+
+  it('drops out and flashes on the FLAP switch moving between AUTO and HALF or FULL, either way', () => {
+    expect(flown({ flap: 0 })).toEqual({ on: false, flash: 70, stepped: '' })
+    expect(flown({ cruise: true, flap: 1 })).toEqual({ on: false, flash: 70, stepped: '' })
+    expect(flown({ flap: 2 })).toMatchObject({ on: true }) // HALF to FULL is no change of mode
+  })
+
+  it('drops approach mode on the flaps short of 27° and on bank past 70° (2.1.2.1)', () => {
+    expect(flown({ tef: 25 })).toMatchObject({ on: false, flash: 70 })
+    expect(flown({ bank: 71 })).toMatchObject({ on: false, flash: 70 })
+    expect(flown({ bank: -71 })).toMatchObject({ on: false, flash: 70 })
+    expect(flown({ bank: 69 })).toMatchObject({ on: true })
+  })
+
+  it('drops either mode on a throttle input and on the deck', () => {
+    for (const cruise of [false, true]) {
+      expect(flown({ cruise, tef: cruise ? 0 : 30, throttling: true }), `${cruise}`).toMatchObject({ on: false, flash: 70 })
+      expect(flown({ cruise, tef: cruise ? 0 : 30, grounded: true }), `${cruise}`).toMatchObject({ on: false, flash: 70 })
+    }
+  })
+
+  it('makes the AUTO ball call in approach mode only, and clears cruise at a spawn', () => {
+    expect(source).toMatch(/\(atc_on&&atc_speed===null\?" "\+translate\("AUTO"\):""\)/)
+    expect(source).toMatch(/atc_on=false; atc_flash=-Infinity; atc_speed=null;/)
   })
 
   const shown = (on: boolean, flash: number, time: number) => {

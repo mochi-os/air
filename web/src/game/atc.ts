@@ -36,3 +36,25 @@ export function atc_step(
     throttle + ((alpha - ATC_ONSPEED) * GAIN_ERROR + rate * GAIN_RATE) * dt
   return Math.min(ATC_MOST, Math.max(ATC_LEAST, command))
 }
+
+// Cruise mode (NATOPS 2.1.2.2): with the FLAP switch at AUTO the same button
+// holds the true airspeed of the moment of engagement. The throttle integrates
+// again: the speed error commands a throttle rate and the acceleration damps it,
+// over the same flight idle to MIL range.
+const CRUISE_ERROR = 0.02 // throttle/s per knot below the engaged airspeed
+const CRUISE_ACCEL = 0.08 // throttle/s per knot/s of acceleration
+
+// cruise_step returns the next throttle command holding the engaged airspeed.
+// speed and target in knots true, accel in knots/second; throttle 0..1 (idle..MIL).
+export function cruise_step(
+  throttle: number,
+  speed: number,
+  target: number,
+  accel: number,
+  dt: number
+): number {
+  const rate = Math.max(-20, Math.min(20, accel)) // a spike (a state snap, a catapult) must not slam the levers
+  const command =
+    throttle + ((target - speed) * CRUISE_ERROR - rate * CRUISE_ACCEL) * dt
+  return Math.min(ATC_MOST, Math.max(ATC_LEAST, command))
+}

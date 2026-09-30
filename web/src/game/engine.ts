@@ -22,7 +22,7 @@
 // Air game engine: the Three.js render loop, flight model and 2D-canvas HUD,
 // mounted by the React <GameCanvas> via startGame().
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
-import { atc_step } from './atc'
+import { atc_step, cruise_step } from './atc'
 import { pass_grade, pass_sample, pass_start, pass_wire } from './lso'
 import { demonstration_start, demonstration_step } from './demonstration'
 import { items as playback_items, number as playback_number, parse as playback_parse, scene as playback_scene } from './playback'
@@ -5321,7 +5321,7 @@ function call_the_ball(){
 	const clara=(()=>{ if(!carrier_ols) return true; const s=ols_dev(ownship.pos,carrier_ols);
 		return Math.abs(Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI)>4 || s.dev<-1; })();
 	const ball=clara?translate("CLARA"):translate("BALL");
-	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); // i18n-format-ok: the ball call is radio phraseology, spoken the same way in every locale
+	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on&&atc_speed===null?" "+translate("AUTO"):""), "#9fd0ff"); // i18n-format-ok: the ball call is radio phraseology, spoken the same way in every locale
 	hint(HINT.ball); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 // The flight hints (#70): carrier recovery coaching through the comms area —
 // amber, no callsign, so advice never reads as radio. Every number is sourced
@@ -5779,7 +5779,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
-		if(ch===key_of("atc")) pit_press("atc",0);   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
+		if(ch===key_of("atc")) pit_press("atc",0);   // P: ATC (#202) — approach mode with the flaps down, cruise mode with them at AUTO (atc_engage); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
@@ -5899,8 +5899,8 @@ function pit_press(action,direction){ const d=direction||0;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
 	case "hook": ownship.hookTarget=(ownship.hookTarget??0)>0.5?0:1; break;
 	case "flaps": if(d<0&&flap_select<2){ flap_select++; flap_armed=sim_time+4; } else if(d>0&&flap_select>0){ flap_select--; flap_armed=sim_time+4; } break;   // AUTO at the top, FULL at the bottom; no notice: the legend shows the selection and its travel
-	case "atc": if(atc_on){ atc_on=false; atc_flash=-Infinity; } else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_flash=-Infinity; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here once, so ATC only ever engaged CLEAN and refused on every real approach
-			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } else atc_flash=sim_time; break;   // the key and the UFC's A/P selector: engages only in the landing configuration (gear down, airborne), and a refused engage flashes the advisory; toggling off is always allowed, and silent
+	case "atc": if(atc_on){ atc_on=false; atc_flash=-Infinity; } else { const mode=atc_engage(); if(mode){ atc_on=true; atc_flash=-Infinity; atc_alpha=ownship.aoa; atc_speed=mode==="cruise"?(ownship.speed??0)*1.944:null; atc_last=atc_speed??0;
+			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } else atc_flash=sim_time; } break;   // the key and the UFC's A/P selector: engages the mode the FLAP switch sets (atc_engage), and a refused engage flashes the advisory; toggling off is always allowed, and silent
 	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
@@ -6123,13 +6123,19 @@ function read_input(dt){
 	const throttling=keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down"));
 	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
 	if(keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
-	// Approach Power Compensator (#202): with ATC engaged the throttle holds
-	// on-speed alpha. Auto-disengage on touchdown, gear retraction, or any manual
-	// throttle input (keys or an armed physical lever).
-	if(atc_on){
-		if(on_ground()||ownship.gearTarget>0.5||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)){ atc_on=false; atc_flash=sim_time; }   // gearTarget>0.5 = gear UP (retraction disengages); the advisory flashes, as for every drop-out but the switch
-		else { const rate=(ownship.aoa-atc_alpha)/Math.max(dt,1e-3); atc_alpha=ownship.aoa;
+	// ATC (#202, NATOPS 2.1.2): approach mode holds on-speed alpha, cruise mode the
+	// true airspeed it engaged at. Either drops out on any manual throttle input (keys
+	// or an armed physical lever), on the FLAP switch moving between AUTO and HALF or
+	// FULL, and on the deck; approach mode also on the trailing-edge flaps short of
+	// 27° and on bank past 70° (2.1.2.1). The game has one throttle, so the 10° split
+	// between the levers cannot arise.
+	if(atc_on){ const approach=atc_speed===null;
+		if(on_ground()||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)||(flap_select>0)!==approach
+			||(approach&&(((last_out||[])[STATE.flap]||0)<27*D2R||Math.abs((ownship.gauges||{}).bank??0)>70*D2R))){ atc_on=false; atc_flash=sim_time; }   // the advisory flashes, as for every drop-out but the switch
+		else if(approach){ const rate=(ownship.aoa-atc_alpha)/Math.max(dt,1e-3); atc_alpha=ownship.aoa;
 			ownship.throttle=atc_step(ownship.throttle,ownship.aoa,rate,dt); ownship.burner=0; }
+		else { const knots=(ownship.speed??0)*1.944, accel=(knots-atc_last)/Math.max(dt,1e-3); atc_last=knots;
+			ownship.throttle=cruise_step(ownship.throttle,knots,atc_speed,accel,dt); ownship.burner=0; }
 	}
 	if(keys.has(key_of("throttle.down"))){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
 }
@@ -6321,6 +6327,12 @@ function recording_identity(){ return replay_identity(MULTIPLAYER,MULTIPLAYER&&j
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
+let atc_speed=null, atc_last=0;   // cruise mode's engaged true airspeed, knots (null in approach mode), and last frame's, for the acceleration term
+// atc_engage: the mode the ATC button engages (NATOPS 2.1.2): approach with the FLAP switch at HALF or FULL and
+// the trailing-edge flaps down 27° or more (2.1.2.1), cruise with it at AUTO (2.1.2.2); none on the deck.
+function atc_engage(){ if(on_ground()) return null;
+	if(flap_select===0) return "cruise";
+	return ((last_out||[])[STATE.flap]||0)>=27*D2R?"approach":null; }
 let atc_flash=-Infinity;   // when ATC last dropped out other than by its switch, or refused to engage: the HUD advisory flashes for 10 s after (NATOPS 2.1.2, 2.13.4.8.15)
 const BANDIT="BANDIT";   // the single-player opponent has no callsign; this is the label the recording gives it too
 let crash_t=0;   // >0 = crashed; counts down through the fireball
@@ -8074,7 +8086,7 @@ function reset_ownship(){
 	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; ownship.lights=(cfg.tod!=="day");
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
