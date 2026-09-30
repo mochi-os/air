@@ -492,8 +492,8 @@ describe('the MASTER CAUTION and silence button clicks', () => {
     expect(source).toMatch(/if\(ch===key_of\("caution\.reset"\)\) caution_press\(\);/)
     expect(source).toMatch(/if\(ch===key_of\("tone\.silence"\)\) tone_silence\(\);/)
     expect(source).toMatch(/function tone_silence\(\)\{ tone_silenced=true; tone_presses\+\+; \}/)
-    expect(source).toMatch(/targets=\[u\.lamps&&u\.lamps\.caution,u\.silence\]\.filter\(Boolean\);/)
-    expect(source).toMatch(/if\(on\)\{ if\(on\.object===u\.silence\) tone_silence\(\); else caution_press\(\); return; \}/)
+    expect(source).toMatch(/targets=\[l\.caution,u\.silence,l\.fireL,l\.fireR\]\.filter\(Boolean\);/)
+    expect(source).toMatch(/if\(on\)\{ if\(on\.object===u\.silence\) tone_silence\(\); else if\(on\.object===l\.fireL\|\|on\.object===l\.fireR\)\{[^\n]*\} else caution_press\(\); return; \}/)
   })
 
   it('seat the button below the gear unit and bind Shift+G with a settings label', () => {
@@ -562,6 +562,35 @@ describe('the interior lights panel', () => {
     expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
     expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
     expect(source).toMatch(/cockpit_flood\.intensity=pit\?0\.12\*lighting\.flood:0;/)
+  })
+})
+
+// The FIRE warning/extinguisher lights as pushbuttons (NATOPS 2.14.4): a click
+// on one, or its key, shuts off that engine's fuel at the feed tank, and the light
+// stays in with a barber pole in its guard until it is pushed again.
+describe('the FIRE lights as pushbuttons', () => {
+  it('shut off and restore an engine\'s fuel, each light its own engine, as the keys do', () => {
+    const fn = /\nfunction fire_press\(side\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(fn).not.toBe('')
+    const pushes = (sides: number[]) => new Function('sides', `const secured=[false,false]; ${fn} const seen=[]; for(const s of sides){ fire_press(s); seen.push([...secured]); } return seen;`)(sides) as boolean[][]
+    expect(pushes([0, 1, 0])).toEqual([[true, false], [true, true], [false, true]])
+    expect(source).toMatch(/if\(ch===key_of\("secure\.port"\)\) fire_press\(0\);/)
+    expect(source).toMatch(/if\(ch===key_of\("secure\.starboard"\)\) fire_press\(1\);/)
+  })
+
+  it('take a click on either FIRE light, but not in a replay', () => {
+    expect(source).toMatch(/targets=\[l\.caution,u\.silence,l\.fireL,l\.fireR\]\.filter\(Boolean\);/)
+    expect(source).toMatch(/else if\(on\.object===l\.fireL\|\|on\.object===l\.fireR\)\{ if\(!playback\) fire_press\(on\.object===l\.fireL\?0:1\); \}/)
+  })
+
+  it('show each light\'s barber pole while it is in, kept out of the lights test and the dimming', () => {
+    const line = /\n\t\{ const p=ownship\.group\.userData\.poles; [^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const shown = (secured: boolean[]) => new Function('secured', `const poles=[{ visible:false },{ visible:false }], ownship={ group:{ userData:{ poles } } }; ${line} return poles.map((p)=>p.visible);`)(secured) as boolean[]
+    expect([shown([true, false]), shown([false, true]), shown([false, false])]).toEqual([[true, false], [false, true], [false, false]])
+    // their own group beside the glareshield's, so neither brow.children (the lights test) nor a lens or lamp colour (the dimming) reaches them
+    expect(source).toMatch(/guard\.position\.copy\(brow\.position\); g\.add\(guard\); g\.userData\.poles=poles; \}/)
+    expect(source).toMatch(/for\(const z of \[-0\.245,0\.245\]\)/) // under the left and right FIRE lenses
   })
 })
 

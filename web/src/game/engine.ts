@@ -177,7 +177,11 @@ function sanitize_cfg(){   // runs after every config merge (the server-backed s
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
 let dev_probe=null, dev_probe_text="", dev_probe_t=0;
 let departure_drive=[0,0];   // the departure tone's last drive (#53): [yaw intensity 0..1, steady-alpha flag] — headless verification reads it from dev_probe
-let fuel_dump=false; const secured=[false,false];   // #54: the DUMP switch and the per-engine fuel cutoffs (port, starboard) — toggles, cleared at every spawn   // &probe pixel raycast state
+let fuel_dump=false; const secured=[false,false];
+// fire_press: an engine's FIRE warning/extinguisher light pushed (NATOPS 2.14.4), or its key: fuel to that engine
+// shut off at the feed tank, the light staying in with a barber pole in its guard; pushed again, back out. The
+// extinguisher it arms is the master arm panel's (#7).
+function fire_press(side){ secured[side]=!secured[side]; }   // #54: the DUMP switch and the per-engine fuel cutoffs (port, starboard) — toggles, cleared at every spawn   // &probe pixel raycast state
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
@@ -1244,7 +1248,8 @@ const AIRCRAFT_MODELS={
 	      { name:"lttest",    track:/^PEDESTAL_LIGHT_AN/i,              drive:"lttest" },
 	      // the switches the game has state for (#18), each scrubbing its clip from that state so it reads back its setting as the levers do
 	      { name:"canopyswitch", track:/^Canopy_Switch_AN/i,                            drive:"canopyswitch" },   // 2.15.1.1.1: the clip runs CLOSE (its rest, the lever down) to OPEN, HOLD between
-	      { name:"foldswitch",   track:/^Wing_Fold_Switch_AN/i,                         drive:"foldswitch" },     // 2.11.1: FOLD / SPREAD
+	      { name:"foldswitch",   track:/^Wing_Fold_Switch_AN/i,                         drive:"foldswitch" },     // 2.11.1: the clip turns SPREAD (its rest) counterclockwise to FOLD, HOLD between...
+	      { name:"foldpull",     node:"Wing_Fold_Switch_AN_Switch_743", trans:[0,0,-1], gain:0.015, gauge:"foldpull" },   // ...and out of LOCK the handle stands 1.5 cm proud along its shaft, which the model does not animate
 	      { name:"parkbrake",    track:/^LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake/i, drive:"parkbrake" },   // 2.10.3.4: the handle rotated and pulled...
 	      { name:"parkpull",     track:/^LANDING_GEAR_Switch_ParkingBrake_AN_287/i,     drive:"parkbrake" },      // ...on both of its animated nodes
 	      { name:"barswitch",    track:/^Switch_LAUNCHBAR_LeftPanel_AN/i,               drive:"barswitch", flip:true },   // 2.10.4: the clip runs EXTEND (its rest, lever down) to RETRACT
@@ -1752,6 +1757,14 @@ function build_lamps(g){
 	lamps.shoot=legend("SHOOT","#2fd24a",0.026,0.010); lamps.shoot.position.set(0,-PENDANT.pitch,0);
 	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
 	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
+	// The barber poles in the FIRE lights' guards (NATOPS 2.14.4), shown while a light is pushed in: a strip under each lens,
+	// in their own group so the lights test and the dimming, which walk the lenses, leave them alone.
+	{ const c=document.createElement("canvas"); c.width=64; c.height=8; const x=c.getContext("2d");
+		x.fillStyle="#f2c12e"; x.fillRect(0,0,64,8); x.fillStyle="#141414"; for(let k=-8;k<64;k+=8){ x.beginPath(); x.moveTo(k,8); x.lineTo(k+4,8); x.lineTo(k+8,0); x.lineTo(k+4,0); x.fill(); }
+		const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; const guard=new THREE.Group(), poles=[];
+		for(const z of [-0.245,0.245]){ const m=new THREE.Mesh(new THREE.PlaneGeometry(0.024,0.004),new THREE.MeshBasicMaterial({ map:t, side:THREE.DoubleSide, toneMapped:false }));
+			m.position.set(0,-0.0225,z); m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); m.visible=false; guard.add(m); poles.push(m); }
+		guard.position.copy(brow.position); g.add(guard); g.userData.poles=poles; }
 	g.userData.tested=[...new Set([...brow.children,...cautions.children,...Object.values(lamps)])];   // every light the lights test brings on: each lens on the glareshield and the caution panel, those with no legend too, and the rest of the lamps
 	g.userData.lamps=lamps; backlight_state=""; g.userData.lampsGroup=brow; }
 // generators: each generator on the line, its engine turning (the core's spool, less the harm to it) (NATOPS 2.5.1).
@@ -1766,6 +1779,7 @@ function lamps_update(out){
 	// turbine reach full harm with nothing alight, and the red light is the most
 	// action-forcing cue in the cockpit — it must not cry wolf.
 	lamp_set(l.fireL,own_burn[0]>0||own_burning); lamp_set(l.fireR,own_burn[1]>0||own_burning);
+	{ const p=ownship.group.userData.poles; if(p){ p[0].visible=secured[0]; p[1].visible=secured[1]; } }   // a FIRE light pushed in shows its barber pole
 	lamp_set(l.caution,caution_lamp);   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
 	// glareshield panels (#12): the lamps the game can drive; GO, NO GO, the BLEEDs, STBY, RCDR ON, DISP, SAM, AAA, CW and APU FIRE have no state and stay dark
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
@@ -5157,6 +5171,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
+		foldpull:fold_handle==="lock"?0:1,                       // the wing fold handle out of LOCK (2.11.1), for its travel along the shaft
 		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
 		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
@@ -5744,8 +5759,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("baro.down")) pit_press("baro",-1);
 		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
-		if(ch===key_of("secure.port")) secured[0]=!secured[0];   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
-		if(ch===key_of("secure.starboard")) secured[1]=!secured[1];
+		if(ch===key_of("secure.port")) fire_press(0);   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
+		if(ch===key_of("secure.starboard")) fire_press(1);
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
@@ -5804,9 +5819,9 @@ function pit_click(e){
 	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
 		const p=h&&ownship.group.worldToLocal(h.point.clone()), button=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null;
 		if(button){ ufc_press(button); return; } }
-	{ const u=ownship.group.userData, targets=[u.lamps&&u.lamps.caution,u.silence].filter(Boolean);   // the MASTER CAUTION light and the silence button (#20): the press the key makes
+	{ const u=ownship.group.userData, l=u.lamps||{}, targets=[l.caution,u.silence,l.fireL,l.fireR].filter(Boolean);   // the MASTER CAUTION light, the silence button (#20) and the two FIRE lights: the press the key makes
 		const on=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
-		if(on){ if(on.object===u.silence) tone_silence(); else caution_press(); return; } }
+		if(on){ if(on.object===u.silence) tone_silence(); else if(on.object===l.fireL||on.object===l.fireR){ if(!playback) fire_press(on.object===l.fireL?0:1); } else caution_press(); return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
 		if(pit_switch(e)) return;   // a switch or handle under the pointer (#19), tested after the screens so the bezel and TDC paths are unchanged
@@ -5845,7 +5860,7 @@ const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
 function pit_press(action,direction){ const d=direction||0;
 	switch(action){
 	case "canopy": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.canopyTarget=d>0?1:d<0?0:(ownship.canopyTarget??0)>0.5?0:1; else notice(translate("CANOPY LOCKED")); break;   // ground only, taxi speeds (NATOPS 2.15.1.1.1); up is OPEN, down is CLOSE
-	case "fold": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.foldTarget=d<0?1:d>0?0:(ownship.foldTarget??0)>0.5?0:1; else notice(translate("WINGS LOCKED")); break;   // counterclockwise to FOLD, clockwise to SPREAD (NATOPS 2.11.1)
+	case "fold": if((ownship.squish??0)>0.5 && ownship.speed<15) fold_turn(d); else notice(translate("WINGS LOCKED")); break;   // counterclockwise to FOLD, clockwise to SPREAD (NATOPS 2.11.1)
 	case "brake.parking": parking=!parking; break;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
@@ -6354,11 +6369,11 @@ function cautions_update(){
 		if(below) push("BINGO"); }   // with FUEL LO when both hold: two conditions, neither hiding the other (2.2.8, 2.2.10.4)
 	{ const home=fpas_home(); if(home&&home.arrive<=2000&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out (2.3.1.2); fpas_home is null with weight on wheels
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
-	// once the banner no longer announces the switches: WING UNLK from the fold command until the panels are
-	// spread and locked (2.11.1); PARK BRK only with the brake set and both engines above about 80% rpm (2.10.3.4);
+	// once the banner no longer announces the switches: WING UNLK from the handle leaving LOCK until it is
+	// back in (2.11.1); PARK BRK only with the brake set and both engines above about 80% rpm (2.10.3.4);
 	// CANOPY while it is not down and locked (2.15.1.1.5); PROBE UNLK while the probe is not fully in with the
 	// switch at RETRACT. A normally extended probe and the fuel dump switch have no light.
-	if((ownship.foldTarget??0)>0.5||(ownship.fold??0)>0.02) push("WING UNLK");
+	if(fold_handle!=="lock") push("WING UNLK");
 	{ const g=ownship.gauges||{}; if(parking&&(g.rpmL??0)>80&&(g.rpmR??0)>80) push("PARK BRK"); }
 	if((ownship.canopyTarget??0)>0.5||(ownship.canopy??0)>0.02) push("CANOPY");
 	if((ownship.probeTarget??0)<0.5&&(ownship.probe??0)>0.02) push("PROBE UNLK");   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
@@ -6423,6 +6438,20 @@ let altitude_called=-Infinity;   // sim time of the last ALTITUDE, ALTITUDE, whi
 // index (2.12.5.4.1). The dial is expanded low down, so the notches are too.
 function index_step(index,direction){ const notch=v=>v<100?10:v<500?50:v<1000?100:500;
 	return THREE.MathUtils.clamp(direction>0?index+notch(index):index-notch(index-1),0,5000); }
+// The wing fold handle (NATOPS 2.11.1): pulled out and turned counterclockwise to FOLD, clockwise through HOLD,
+// which stops the wings wherever they are, to SPREAD, and pushed in to LOCK once they are fully spread. WING UNLK
+// is on from the moment it leaves LOCK until it is back in. The game refuses LOCK before the wings are fully
+// spread, where the real jet clears the caution and damages the fold transmission. ownship.foldTarget stays the
+// wings' command (1 folded, 0 spread), which the recording carries.
+const FOLD_HANDLE=["fold","hold","spread","lock"];   // counterclockwise to clockwise, then in
+let fold_handle="lock";
+function fold_set(handle){ fold_handle=handle; ownship.foldTarget=handle==="fold"?1:handle==="hold"?(ownship.fold??0):0; }
+// fold_turn: d<0 one position counterclockwise (out of LOCK first), d>0 one clockwise and then in, 0 the key's
+// cycle: LOCK to FOLD, FOLD or HOLD to SPREAD, SPREAD to LOCK.
+function fold_turn(d){ const at=FOLD_HANDLE.indexOf(fold_handle);
+	let next=d<0?FOLD_HANDLE[Math.max(0,at-1)]:d>0?FOLD_HANDLE[Math.min(3,at+1)]:fold_handle==="lock"?"fold":fold_handle==="spread"?"lock":"spread";
+	if(next==="lock"&&(ownship.fold??0)>0.001) next="spread";
+	fold_set(next); }
 let hook_bypass="carrier";   // the hook bypass switch on the left vertical panel (NATOPS 2.12.10): CARRIER flashes the AOA indexer with the hook up, FIELD does not; the solenoid holds FIELD only while the hook is up, so a lowered hook drops it back to CARRIER
 const gpws={wheels:-Infinity,waveoff:-Infinity,climb:-1,gear:false,call:""};   // the GPWS: when the wheels last bore weight, when a waveoff was last flown, when the climb that makes one began, whether CHECK GEAR is due, and the recovery call a warning makes ("" with none)
 let law_calls=0;   // dev (#187): how many times the warning has sounded, so a probe can assert the index call does not repeat down the groove
@@ -7191,6 +7220,7 @@ function playback_own(pose,dt){
 	ownship.waving=n("Waving",0)>0;
 	const lights=n("Lights",-1); if(lights>=0) ownship.lights=lights>0;   // the master switch; the panel's knobs are not recorded
 	ownship.canopyTarget=n("Canopy",ownship.canopyTarget??0); ownship.foldTarget=n("Fold",ownship.foldTarget??0); ownship.probeTarget=n("Probe",ownship.probeTarget??0);
+	fold_handle=ownship.foldTarget>0.5?"fold":(ownship.fold??0)>0.02?"spread":"lock";   // the recording carries the wings, not the handle
 	if(p.Master&&p.Master!==master) set_master(p.Master);
 	declutter=n("Declutter",declutter)|0;
 	own_burning=n("Burning",0)>0; own_leak=n("Leak",0);
@@ -7827,7 +7857,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
 		// switches from state (#18) ---
 		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
-		case "foldswitch": f=(st.foldTarget??0)>0.5?1:0; break;
+		case "foldswitch": f=st===ownship?(fold_handle==="fold"?1:fold_handle==="hold"?0.5:0):(st.foldTarget??0)>0.5?1:0; break;
 		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
 		case "barswitch": f=(st.barTarget??0)>0.5?1:0; break;
 		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0.5; break;   // EXTEND or RETRACT; the game has no emergency extension
@@ -7938,7 +7968,8 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
 	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13) st.canopyTarget=0;   // the takeoff roll closes an open canopy before the airflow does it destructively
 	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
-	if(st===ownship && (st.foldTarget??0)>0.5 && st.speed>13) st.foldTarget=0;   // rolling for takeoff spreads folded wings before the airflow rips them
+	if(st===ownship && (fold_handle==="fold"||fold_handle==="hold") && st.speed>13) fold_set("spread");   // rolling for takeoff spreads folded wings before the airflow rips them...
+	if(st===ownship && fold_handle==="spread" && (st.fold??0)<=0.001 && st.speed>13) fold_handle="lock";   // ...and locks them once spread
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
 	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
@@ -8043,6 +8074,7 @@ function reset_ownship(){
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	lights_clicked=-Infinity;   // a fresh jet's LT TEST switch at OFF
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
+	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
 	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
@@ -8865,7 +8897,7 @@ function draw_hud(){
 			// (NATOPS 2.11.1, 2.10.3.4): the jet shows no in-motion state for either. WING UNLK
 			// comes on as the handle leaves LOCK and goes out only once the panels are spread and
 			// the handle is back in, so WINGS lights from the fold command until then.
-			if((ownship.foldTarget??0)>0.5||(ownship.fold??0)>0.02) rows.push([GR,translate("WINGS")]);
+			if(fold_handle!=="lock") rows.push([GR,translate("WINGS")]);
 			// The SWITCH, not the surfaces (#199, ruled 2026-09-12). The real panel's
 			// HALF and FULL lights indicate switch position and are explicitly not an
 			// indication of actual flap position; a Hornet pilot reads the real angle

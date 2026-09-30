@@ -17,16 +17,16 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 const catalogue = readFileSync(fileURLToPath(new URL('../components/GameCanvas.tsx', import.meta.url)), 'utf8')
 
 const stackCode = /\n\t\{ const rows=\[\]; {3}\/\/ bottom of the stack first\n[\s\S]*?\n\t\thud_stack\.right=stack_draw\(rows,HW-40,HH-52\); \}\n/.exec(source)?.[0] ?? ''
-const cautionCode = /\n\tif\(\(ownship\.foldTarget\?\?0\)>0\.5\|\|\(ownship\.fold\?\?0\)>0\.02\) push\("WING UNLK"\);[\s\S]*?push\("PROBE UNLK"\);/.exec(source)?.[0] ?? ''
+const cautionCode = /\n\tif\(fold_handle!=="lock"\) push\("WING UNLK"\);[\s\S]*?push\("PROBE UNLK"\);/.exec(source)?.[0] ?? ''
 
 interface Jet { hook?: number; gear?: number; speedbrake?: number; fold?: number; foldTarget?: number; canopy?: number; canopyTarget?: number; probe?: number; probeTarget?: number; gauges?: { rpmL: number; rpmR: number } }
-interface World { jet?: Jet; parking?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number; authentic?: boolean }
+interface World { jet?: Jet; handle?: string; parking?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number; authentic?: boolean }
 
 // The rows the stack draws for a world, as [colour, text] with GR/AM as names.
 function stack(world: World): string[] {
   if (!stackCode) throw new Error('status stack not found in engine.ts')
   const run = new Function('w', `const ownship={gear:1,hook:0,...w.jet}, authentic=!!w.authentic, GR="GR", AM="AM", STATE={datum:0,bank:1}, last_out=null, trim_manual=false, stab_cycle=0, flap_select=0;
-    const parking=!!w.parking, fuel_dump=!!w.dump, secured=w.secured||[false,false], declutter=w.declutter||0;
+    const parking=!!w.parking, fuel_dump=!!w.dump, secured=w.secured||[false,false], declutter=w.declutter||0, fold_handle=w.handle||"lock";
     const RADAR={sil:!!w.sil, auto:!!w.acm, acm:w.acm||"bst"}, jammer_armed=(w.jammer||"off")!=="off", jammer_loud=()=>w.jammer==="loud";
     const translate=t=>t, hud_stack={}, hctx={}, HW=0, HH=0; let drawn=[];
     const stack_draw=(rows)=>{ drawn=rows.map(([c,t])=>c+":"+t); return drawn; };
@@ -37,17 +37,42 @@ function stack(world: World): string[] {
 // The configuration cautions raised for a jet.
 function cautions(world: World): string[] {
   if (!cautionCode) throw new Error('configuration cautions not found in engine.ts')
-  const run = new Function('w', `const ownship={...w.jet}, parking=!!w.parking, rows=[]; const push=k=>rows.push(k);
+  const run = new Function('w', `const ownship={...w.jet}, parking=!!w.parking, fold_handle=w.handle||"lock", rows=[]; const push=k=>rows.push(k);
     ${cautionCode}
     return rows;`) as (w: World) => string[]
   return run(world)
 }
 
 describe('wing fold and the parking brake follow their handles', () => {
-  it('lights WINGS green from the fold command, through the spread, until the panels are down', () => {
-    expect(stack({ jet: { foldTarget: 1, fold: 0 } })).toContain('GR:WINGS') // commanded, panels not yet moving
-    expect(stack({ jet: { foldTarget: 0, fold: 0.5 } })).toContain('GR:WINGS') // spreading, not yet locked
-    expect(stack({ jet: { foldTarget: 0, fold: 0 } }).some((row) => row.endsWith('WINGS'))).toBe(false)
+  it('lights WINGS green from the handle leaving LOCK until it is back in', () => {
+    for (const handle of ['fold', 'hold', 'spread']) expect(stack({ handle, jet: { fold: 0 } }), handle).toContain('GR:WINGS') // spread and not yet locked too
+    expect(stack({ handle: 'lock', jet: { fold: 0 } }).some((row) => row.endsWith('WINGS'))).toBe(false)
+  })
+
+  it('spreads folded or held wings on the takeoff roll and locks them once spread, the way the handle would be worked', () => {
+    const lines = /\n\tif\(st===ownship && \(fold_handle==="fold"\|\|fold_handle==="hold"\) && st\.speed>13\) fold_set\("spread"\);[^\n]*\n\tif\(st===ownship && fold_handle==="spread" && \(st\.fold\?\?0\)<=0\.001 && st\.speed>13\) fold_handle="lock";[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(lines).not.toBe('')
+    const roll = (handle: string, fold: number, speed: number) => new Function('handle', 'fold', 'speed', `const ownship={ fold, speed, foldTarget:handle==="fold"?1:0 }, st=ownship; let fold_handle=handle;
+      const fold_set=(h)=>{ fold_handle=h; ownship.foldTarget=h==="fold"?1:0; }; ${lines} return [fold_handle, ownship.foldTarget];`)(handle, fold, speed) as [string, number]
+    expect(roll('fold', 1, 20)).toEqual(['spread', 0])
+    expect(roll('hold', 0.5, 20)).toEqual(['spread', 0])
+    expect(roll('spread', 0.3, 20)).toEqual(['spread', 0]) // still spreading
+    expect(roll('spread', 0, 20)).toEqual(['lock', 0])
+    expect(roll('fold', 1, 5)).toEqual(['fold', 1]) // taxiing
+    expect(roll('spread', 0, 5)).toEqual(['spread', 0])
+  })
+
+  it('takes the handle from the wings in a replay, and a fresh jet\'s from its wings', () => {
+    const replay = /\n\tfold_handle=ownship\.foldTarget>0\.5\?"fold":\(ownship\.fold\?\?0\)>0\.02\?"spread":"lock";[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(replay).not.toBe('')
+    const handle = (foldTarget: number, fold: number) => new Function('foldTarget', 'fold', `const ownship={ foldTarget, fold }; let fold_handle=""; ${replay} return fold_handle;`)(foldTarget, fold) as string
+    expect([handle(1, 0.3), handle(0, 0.3), handle(0, 0)]).toEqual(['fold', 'spread', 'lock'])
+    expect(source).toMatch(/\n\texterior\.landing=[^\n]*\n\tfold_handle=\(ownship\.foldTarget\?\?0\)>0\.5\?"fold":"lock";[^\n]*\n\tadi_source=/)
+  })
+
+  it('stands the handle out of the panel along its shaft while it is out of LOCK', () => {
+    expect(source).toMatch(/\{ name:"foldpull",\s+node:"Wing_Fold_Switch_AN_Switch_743", trans:\[0,0,-1\], gain:0\.015, gauge:"foldpull" \}/)
+    expect(source).toMatch(/\n\t\tfoldpull:fold_handle==="lock"\?0:1,/)
   })
 
   it('lights PARK green on the handle, with no in-motion state', () => {
@@ -56,9 +81,8 @@ describe('wing fold and the parking brake follow their handles', () => {
   })
 
   it('raises WING UNLK on the same handle condition, and PARK BRK only with both engines above 80%', () => {
-    expect(cautions({ jet: { foldTarget: 1, fold: 0 } })).toContain('WING UNLK')
-    expect(cautions({ jet: { foldTarget: 0, fold: 0.4 } })).toContain('WING UNLK')
-    expect(cautions({ jet: { foldTarget: 0, fold: 0 } })).not.toContain('WING UNLK')
+    for (const handle of ['fold', 'hold', 'spread']) expect(cautions({ handle, jet: { fold: 0 } }), handle).toContain('WING UNLK')
+    expect(cautions({ handle: 'lock', jet: { fold: 0 } })).not.toContain('WING UNLK')
     expect(cautions({ parking: true, jet: { gauges: { rpmL: 85, rpmR: 85 } } })).toContain('PARK BRK')
     expect(cautions({ parking: true, jet: { gauges: { rpmL: 70, rpmR: 99 } } })).not.toContain('PARK BRK')
     expect(cautions({ parking: false, jet: { gauges: { rpmL: 99, rpmR: 99 } } })).not.toContain('PARK BRK')
