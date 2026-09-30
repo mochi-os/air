@@ -190,8 +190,9 @@ describe('the HOOK light', () => {
 // The caution lights panel (FO-5 item 46): FUEL LO on the feed-tank hardware
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
-interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number }
+interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number[] }
 const generators = /\nfunction generators\(out\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const fcs = /\nconst FCS_CHANNELS=[^\n]*\nfunction fcs_jammed\(words\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 // The DDI side of the generators (NATOPS 2.5.1.1): cautions_update's L GEN and R
 // GEN captions and its battery state, from the core's spools and harm.
 function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
@@ -201,10 +202,10 @@ function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
     const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[]; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
 }
 function cautionlit(c: Cautions): string[] {
-  const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,jammed\); \}\n/.exec(source)?.[0] ?? ''
-  if (!block || !generators) throw new Error('caution panel block not found in engine.ts')
+  const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,fcs_jammed\(out\)\);\n/.exec(source)?.[0] ?? ''
+  if (!block || !generators || !fcs) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
-    const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,c.jam||0,0,0,0,0];
+    ${fcs} const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,0,0,0,0,0]; for(const ch of c.jam||[]) out[6+ch]=1;
     const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
     const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
@@ -233,8 +234,17 @@ describe('the caution lights panel', () => {
     expect(cautionlit({ spoolL: 0, spoolR: 0 })).toEqual([])
   })
 
-  it('lights FCES with any jam word', () => {
-    expect(cautionlit({ jam: 1 })).toEqual(['fces'])
+  it('lights FCES for a jammed flight control, and not for a jammed speedbrake, which is not the FCS\'s (2.8.4.5.1, 2.8.4.8)', () => {
+    for (const channel of [0, 1, 2, 3, 4, 5]) expect(cautionlit({ jam: [channel] }), String(channel)).toEqual(['fces'])
+    expect(cautionlit({ jam: [6] })).toEqual([]) // the speedbrake
+    expect(cautionlit({ jam: [7] })).toEqual([]) // reserved
+  })
+
+  it('raises the DDI FCS caution on the same flight control channels', () => {
+    const line = /\n\tif\(core\)\{ if\(fcs_jammed\(core\)\) push\("FCS"\);/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const raised = (channel: number) => new Function('channel', `const STATE={ jam:0 }; ${fcs} const core=[0,0,0,0,0,0,0,0], rows=[], push=(k)=>rows.push(k); core[channel]=1; ${line} } return rows;`)(channel) as string[]
+    expect([raised(4), raised(6)]).toEqual([['FCS'], []])
   })
 
   // The model's painted caution lenses, their centres in the group frame: each
@@ -615,7 +625,7 @@ describe('the lights test', () => {
       for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
       const blank=lens(), tested=[...Object.values(l),blank];
       const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, jammer_armed=false, jammer_loud=()=>false;
-      const RWR={contacts:[]}, fuel_low=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
+      const RWR={contacts:[]}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
       const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd:3000 } };
       ${update}

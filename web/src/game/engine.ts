@@ -1205,7 +1205,7 @@ const AIRCRAFT_MODELS={
 	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttleR" },
 	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.35, gauge:"stickPitch" },
 	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
-	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the modeled glideslope and localizer carriages beside it stay hidden (spec.hide): the C's standby indicator has no ILS bars
+	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the model's glideslope and localizer carriages stay hidden (spec.hide): the pointers are stowed, and adi_face draws them centred under TEST (25.2.4.2)
 	      // ---- #99 batch 2: needles are shaped in update_gauges (nonlinear dials measured off the
 	      // face textures — the GLB's needle tracks are uncalibrated double-spins, useless beyond
 	      // axis+sign); drums are plain place-value gains (full turn per 10 units of their place).
@@ -1522,7 +1522,7 @@ function build_standby(g){
 		faces[name]={ mesh, canvas, tex }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0,gz.yaw||0,gz.slip||0);
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing());
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
@@ -1571,12 +1571,14 @@ function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
 // The standby attitude reference indicator (2.12.2, #3): a ball with the pitch ladder, its
 // upper half white and lettered CLIMB, its lower half black and lettered DIVE (FO-5 item 25),
 // seen through a round window in a black mask that carries the fixed bank scale; the ADI
-// page's sign conventions, no ILS carriages. The ball's pitch stops at about 90° climb and
+// page's sign conventions. Its vertical and horizontal pointers stay stowed, the vertical one behind the pointer
+// shield, until the TEST switch is pressed, which centres both on the miniature airplane and deflects the turn
+// needle two needle widths (25.2.4.2); a click on the face presses it (sari_clicked). The ball's pitch stops at about 90° climb and
 // 80° dive (2.12.2), and the needle and ball sit at the bottom of the mask: the needle
 // deflects one needle width for a turn of 90° a minute, to the side the ADI page's turn
 // indicator goes; the ball slides to the side the velocity vector lies, as the rudder
 // that centres it would push the nose.
-function adi_face(f,pitch,bank,yaw=0,slip=0){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
+function adi_face(f,pitch,bank,yaw=0,slip=0,test=false){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
 	const white="#dcdcd4", black="#141514";
 	x.save(); x.beginPath(); x.arc(C,C,W,0,Math.PI*2); x.clip();
 	x.translate(C,C); x.rotate(-bank); x.translate(0,THREE.MathUtils.clamp(pitch,-80*D2R,90*D2R)/D2R*ADI_PIXELS);
@@ -1591,12 +1593,14 @@ function adi_face(f,pitch,bank,yaw=0,slip=0){ const x=face_start(f), C=STANDBY_C
 		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len)); x.stroke(); }
 	x.rotate(-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3)); x.fillStyle="#e8e8e0"; x.beginPath(); x.moveTo(0,-W+2); x.lineTo(-7,-W+16); x.lineTo(7,-W+16); x.closePath(); x.fill();
 	x.restore();
-	{ const needle=4, turn=THREE.MathUtils.clamp(yaw/D2R/1.5*needle,-24,24);   // one needle width per 1.5°/s
+	{ const needle=4, turn=test?2*needle:THREE.MathUtils.clamp(yaw/D2R/1.5*needle,-24,24);   // one needle width per 1.5°/s; two under TEST
 		x.fillStyle="#e8e8e0"; x.fillRect(C+turn-needle/2,C+W+2,needle,8);
 		const by=C+R-7, travel=24, ball=THREE.MathUtils.clamp(slip,-1,1)*travel;
 		x.fillStyle=white; x.fillRect(C-travel-8,by-5,2*travel+16,10);   // the tube
 		x.strokeStyle=black; x.lineWidth=1.5; for(const s of [-1,1]){ x.beginPath(); x.moveTo(C+s*7,by-5); x.lineTo(C+s*7,by+5); x.stroke(); }   // its reference wires
 		x.fillStyle=black; x.beginPath(); x.arc(C+ball,by,5,0,Math.PI*2); x.fill(); }
+	if(test) for(const [ink,width] of [[black,6],["#f2d23c",3]]){ x.strokeStyle=ink; x.lineWidth=width;   // the pointers centred, yellow edged in black to read on both halves of the ball
+		x.beginPath(); x.moveTo(C,C-W+6); x.lineTo(C,C+W-6); x.moveTo(C-W+6,C); x.lineTo(C+W-6,C); x.stroke(); }
 	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke(); }
 // The ALR-67 azimuth indicator (#28): NATOPS foldout FO-5 item 26, the upper
 // right of the standby cluster beside the attitude indicator (25), over the
@@ -1635,7 +1639,8 @@ function legend(text,colour,w=0.026,h=0.010){
 // key is held or for two seconds from a click on it (lights_clicked, sim_time), as a click cannot be held; a replay
 // has no switches. lights_test adds AC power on the aircraft (a generator on the line). lamps_update reads it once
 // a frame into lamps_testing, which holds every light lamp_set drives on.
-let lamps_testing=false, lights_clicked=-Infinity;
+let lamps_testing=false, lights_clicked=-Infinity, sari_clicked=-Infinity;   // sari_clicked: when the standby attitude indicator's TEST switch was last clicked (sim_time)
+function sari_testing(){ return sim_time-sari_clicked<2; }   // the switch held two seconds from a click, as LT TEST
 function lights_switch(){ return !playback&&(held("lights.test")||sim_time-lights_clicked<2); }
 function lights_test(){ return lights_switch()&&!unpowered; }
 function lamp_set(m,on){ if(!m) return; on=!!on||lamps_testing;
@@ -1767,6 +1772,12 @@ function build_lamps(g){
 		guard.position.copy(brow.position); g.add(guard); g.userData.poles=poles; }
 	g.userData.tested=[...new Set([...brow.children,...cautions.children,...Object.values(lamps)])];   // every light the lights test brings on: each lens on the glareshield and the caution panel, those with no legend too, and the rest of the lamps
 	g.userData.lamps=lamps; backlight_state=""; g.userData.lampsGroup=brow; }
+// The actuator channels the FCES light and the FCS caution watch (NATOPS 2.8.4.5.1, 2.8.4.7): the stabilators,
+// the flaperons, the rudder and the leading-edge flaps, the surfaces the flight control computers command. The
+// speedbrake (channel 6) is not among them: its throttle switch and HYD 2A drive it outside the FCS (2.8.4.8), and
+// its SPD BRK light is what shows it; channel 7 is reserved.
+const FCS_CHANNELS=[0,1,2,3,4,5];
+function fcs_jammed(words){ return FCS_CHANNELS.some(c=>(words[STATE.jam+c]||0)>0.2); }
 // generators: each generator on the line, its engine turning (the core's spool, less the harm to it) (NATOPS 2.5.1).
 function generators(out){ const turning=(s,h)=>THREE.MathUtils.clamp(out[STATE.engine+s]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+h]||0,0,1))>0.03;
 	return [turning(0,0),turning(2,1)]; }
@@ -1793,7 +1804,7 @@ function lamps_update(out){
 	{ const [genL,genR]=generators(out); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // only spends when the pit is on screen, like the flood
-	{ let jammed=false; for(let c=0;c<8;c++) if((out[STATE.jam+c]||0)>0.2) jammed=true; lamp_set(l.fces,jammed); }
+	lamp_set(l.fces,fcs_jammed(out));
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
 	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot&&!(lighting.mode==="nite"&&lighting.instrument>0));   // the strobe SHOOT light does not light with the instrument lights on (2.6.2.4): INST PNL is up at night, and the dim wash the game keeps by day is not the lights on
 	if(l.transit){ const locked=[0,1,2].map(leg=>ext>0.98&&(out[STATE.gear_harm+leg]||0)<GEAR_COLLAPSE), unsafe=(ownship.gearTarget??0)<0.5?!locked.every(Boolean):ext>0.02;
@@ -5815,6 +5826,8 @@ function pit_click(e){
 		if(u&&!playback&&_click_ray.intersectObject(u.mesh,false)[0]) pit_press("radalt.test",0); return; }
 	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
 		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
+	{ const u=ownship.group.userData.standby;   // the standby attitude indicator: a click presses its TEST switch (25.2.4.2), as a click on the altimeter turns its knob
+		if(u&&u.adi&&_click_ray.intersectObject(u.adi.mesh,false)[0]){ if(!playback) pit_press("sari.test",0); return; } }
 	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
 		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
@@ -5879,7 +5892,8 @@ function pit_press(action,direction){ const d=direction||0;
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
-	case "lights.test": lights_clicked=sim_time; break;   // a click on the LT TEST switch holds it at TEST two seconds
+	case "lights.test": lights_clicked=sim_time; break;
+	case "sari.test": sari_clicked=sim_time; break;   // the standby attitude indicator's TEST switch (25.2.4.2), held two seconds   // a click on the LT TEST switch holds it at TEST two seconds
 	case "radalt.test": if(radalt_on) radalt_test=sim_time; break;   // pushing the knob runs the BIT (2.12.5.4.1, 2.12.5.4.5)
 	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
@@ -6382,7 +6396,7 @@ function cautions_update(){
 	if((ownship.canopyTarget??0)>0.5||(ownship.canopy??0)>0.02) push("CANOPY");
 	if((ownship.probeTarget??0)<0.5&&(ownship.probe??0)>0.02) push("PROBE UNLK");   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
 	if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3) push(["NOSE GEAR","L GEAR","R GEAR"][leg],harm>0.7); }
-	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
+	if(core){ if(fcs_jammed(core)) push("FCS");
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
 		if(torn||core[STATE.stress]>2) push("STRUCTURE"); }
 	// The left DDI shows the jet's cautions only (2.20.3.2.1): those in the chapter 12 index, under
@@ -8076,7 +8090,7 @@ function reset_ownship(){
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
 	flbit=-Infinity; fuel_lo.on=false; fuel_lo.at=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
-	lights_clicked=-Infinity;   // a fresh jet's LT TEST switch at OFF
+	lights_clicked=-Infinity; sari_clicked=-Infinity;   // a fresh jet's LT TEST switch at OFF, and the standby indicator's TEST switch out
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
