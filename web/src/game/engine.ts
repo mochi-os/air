@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -4458,6 +4458,7 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // mission from the menu. `why` names the cause, as crash_ownship(why) does; the
 // fallback is for a caller that cannot say.
 function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
+	if(why==="verdict"||why==="fire"||why==="midair") flight_debris_lay(bandit.pos,{ x:bandit.velx??0, y:bandit.vely??0, z:bandit.velz??0 });   // killed in the air, its wreckage hangs there a few seconds: fly through it and the pieces strike (debris_struck). A jet that met the ground or the sea left none in the air
 	has_enemy=false; bandit.group.visible=false;
 	if(bandit.fate!=="midair") feed(opponent(bandit.fate), cfg.callsign||"701", BANDIT);   // a midair kills both, and the ownship's own crash reports that one, naming both jets
 	notice(translate("KILL")); }
@@ -8058,9 +8059,15 @@ function visuals(dt){
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 }
+// debris_struck meets the pilot's jet against the bandit's wreckage (world
+// battle/debris.go) over the time the frame's flight stepped. A strike wounds
+// in the core as a fragment does; here it is felt, flash and thud, and counted
+// as a hit taken. Multiplayer's wreckage is the server's, reached by its hit events.
+function debris_struck(){ const met=flight_debris_meet(); if(!met||!met.strikes) return;
+	ownship.struck=(ownship.struck||0)+met.strikes; hit_flash=Math.min(1,hit_flash+0.25*met.strikes); audio_hit(Math.min(met.strikes,4)); }
 function step_world(dt){ sim_time+=dt;
 	marshal_watch(); pattern_watch(); hints_watch(); timer_update();
-	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
+	fly_player(dt); if(!MULTIPLAYER&&!playback&&crash_t<=0&&!cheat("invulnerable")) debris_struck(); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	afterburner(bandit.group,cfg.afterburner&&Math.max(...burners(bandit))>0.15);   // every other jet by its own burner too, where the setting alone used to light it all flight
 	for(const st of remotes.values()) if(st!==bandit&&st.group.visible) afterburner(st.group,cfg.afterburner&&Math.max(...burners(st))>0.15);
