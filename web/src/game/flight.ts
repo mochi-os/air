@@ -85,6 +85,7 @@ export interface Controls {
   reset: boolean // one-shot: zero the trim datums, re-datum the hold
   flap: number // flap switch: 0 AUTO, 1 HALF, 2 FULL
   brake: boolean
+  bypass: boolean // the ANTI SKID switch OFF: the pedals get the full pressure, and the core blows the main tyres braking at speed
   gear: boolean
   hook: boolean
   probe: boolean // refuelling probe out (drag; the real ~300 KCAS limit stays procedural)
@@ -271,6 +272,7 @@ function fill(controls: Controls, count: number): void {
   input[4] = controls.speedbrake
   input[5] =
     (controls.brake ? 2 : 0) |
+    (controls.bypass ? 2048 : 0) |
     (controls.gear ? 4 : 0) |
     (controls.hook ? 8 : 0) |
     (controls.launch ? 16 : 0) |
