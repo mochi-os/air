@@ -645,7 +645,7 @@ describe('the flown loadout is wired to the class', () => {
   )
 
   it('clamps the flown loadout through granted(), not a local rule', () => {
-    expect(engine).toContain('stores_granted(cfg.stores, weapons_rule)')
+    expect(engine).toMatch(/stores_granted\(demonstrating\(\)\?[^:]+:cfg\.stores, weapons_rule\)/)
     expect(engine).not.toContain('missiles_rule')
   })
 
@@ -656,5 +656,58 @@ describe('the flown loadout is wired to the class', () => {
 
   it('sends the fuel request inside the stores map', () => {
     expect(net).toContain('fuel: join.fuel')
+  })
+})
+
+// The demonstration's pilot is tuned on one fit, so the demonstration flies it
+// whatever the player has set: lifted from the engine and run against stand-ins.
+describe('the demonstration flies its own fit', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lift = (name: string) => {
+    const start = engine.indexOf(`function ${name}(`)
+    expect(start, name).toBeGreaterThan(0)
+    const rest = engine.slice(start)
+    return rest.slice(0, /\n(?=\S)/.exec(rest.slice(1))!.index + 1)
+  }
+  const fit = /const DEMONSTRATION=\{[^\n]*/.exec(engine)![0]
+  const fuel = /const FUEL=\(\)=>[^\n]*/.exec(engine)![0]
+  type Config = { demonstration?: boolean; start?: string; stores?: unknown; fuel?: number }
+  const flown = (cfg: Config, multiplayer = false) =>
+    new Function(
+      'cfg',
+      'MULTIPLAYER',
+      'stores_granted',
+      'stores_normalize',
+      'stores_presets',
+      'weapons_rule',
+      'THREE',
+      `${fit}\n${lift('demonstrating')}\n${lift('loadout')}\n${fuel}\nreturn { stores: loadout(), fuel: FUEL() };`
+    )(
+      cfg,
+      multiplayer,
+      (stores: unknown) => stores,
+      (stores: unknown) => stores,
+      PRESETS,
+      'open',
+      { MathUtils: { clamp: (v: number, low: number, high: number) => Math.min(high, Math.max(low, v)) } }
+    ) as { stores: unknown; fuel: number }
+  const clean = { 1: { fixture: 'rail', stores: [''] }, 9: { fixture: 'rail', stores: [''] } }
+
+  it('flies Fox 2 with 4,500 lb in a Case I demonstration, whatever the player has set', () => {
+    const d = flown({ demonstration: true, start: 'case1', stores: clean, fuel: 10800 })
+    expect(d.stores).toEqual(PRESETS.fox2)
+    expect(d.fuel).toBeCloseTo(4500 / 2.2046, 6)
+  })
+
+  it("flies the player's own fit and fuel everywhere else", () => {
+    for (const [cfg, multiplayer] of [
+      [{ demonstration: false, start: 'case1', stores: clean, fuel: 10800 }, false],
+      [{ demonstration: true, start: 'air', stores: clean, fuel: 10800 }, false],
+      [{ demonstration: true, start: 'case1', stores: clean, fuel: 10800 }, true],
+    ] as [Config, boolean][]) {
+      const d = flown(cfg, multiplayer)
+      expect(d.stores).toEqual(clean)
+      expect(d.fuel).toBeCloseTo(10800 / 2.2046, 6)
+    }
   })
 })

@@ -2987,7 +2987,11 @@ const BOT_CLEAN=stores_normalize({});
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
 function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircraft()); if(raw) stores_book=stores_resolve(raw); } return stores_book; }
-function loadout(){ return stores_granted(cfg.stores, weapons_rule); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice — the same clamp the server applies at Join (stores_grant)
+// The demonstration flies one fit whatever the player has set: its pilot's
+// power and energy are tuned on it, and a clean jet floats every pass long.
+const DEMONSTRATION={ stores:"fox2", fuel:4500 };   // preset name; pounds, as the menu speaks
+function demonstrating(){ return !MULTIPLAYER&&!!cfg.demonstration&&cfg.start==="case1"; }
+function loadout(){ return stores_granted(demonstrating()?stores_normalize(stores_presets[DEMONSTRATION.stores]):cfg.stores, weapons_rule); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice — the same clamp the server applies at Join (stores_grant)
 function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
@@ -7306,7 +7310,7 @@ function playback_step(frame){ const dt=playback_held?0:frame;
 // the ownship object every rendered frame.
 const physics_strips=[];   // paved capsules (taxiways, stopways, aprons), collected as the airfields build
 const runway_strips=[];   // the runway's own capsules — a separate field because it sits RUNWAY_FLOAT up, not AIRFIELD_FLOAT (#220)
-const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
+const FUEL=()=>THREE.MathUtils.clamp(((demonstrating()?DEMONSTRATION.fuel:cfg.fuel)||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
 let BINGO=1361;   // kg: the bingo call (the IFEI setting, 3,000 lb until the pilot moves it — bingo_set)
 // FUEL LO (NATOPS 2.2.8): the feed tanks' low-level sensors, apart from the gauging - on when either feed tank is
 // down to 800 lb in fuel_tanks' apportionment of the internal fuel (the right feed, the smaller, at about 1,990 lb
