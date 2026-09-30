@@ -132,17 +132,17 @@ describe('the hook bypass wiring', () => {
 const cases = /\/\/ switches from state \(#18\) ---\n([\s\S]*?)\t\t\/\/ --- end switches/.exec(source)?.[1] ?? ''
 interface Craft { canopyTarget?: number; canopy?: number; foldTarget?: number; barTarget?: number; probeTarget?: number; lights?: boolean }
 interface Panel { position: number; formation: number; strobe: string; landing: boolean }
-interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel> }
+interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel>; handle?: string }
 // The exterior lights panel's state and the STROBE switch's positions, aft to forward, as engine.ts declares them.
 const strobe = JSON.parse(/\nconst STROBE=(\[[^\n]*\]);/.exec(source)?.[1] ?? 'null') as string[] | null
 const panel = new Function(`return ${/\nconst exterior=(\{[^\n]*\});/.exec(source)?.[1] ?? 'null'};`)() as Panel | null
 // Runs one drive case for the aircraft st, which is the ownship unless foreign is set.
 function drive(name: string, st: Craft, own: Own = {}, foreign = false): number | undefined {
   if (!cases) throw new Error('switch drive cases not found in engine.ts')
-  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE',
+  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE', 'fold_handle',
     `let f; switch(name){ ${cases} } return f;`)
   const ownship = foreign ? {} : st
-  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe) as number | undefined
+  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe, own.handle ?? 'lock') as number | undefined
 }
 
 describe('the state-driven switches', () => {
@@ -170,8 +170,10 @@ describe('the state-driven switches', () => {
     expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0.3 })).toBe(0)
     expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0 })).toBe(0.5)
     expect(drive('canopyswitch', {})).toBe(0.5)
-    expect(drive('foldswitch', { foldTarget: 1 })).toBe(1)
-    expect(drive('foldswitch', { foldTarget: 0 })).toBe(0)
+    // the fold handle's clip turns SPREAD counterclockwise to FOLD, HOLD between; LOCK is SPREAD pushed in (foldpull)
+    expect(['fold', 'hold', 'spread', 'lock'].map((handle) => drive('foldswitch', {}, { handle }))).toEqual([1, 0.5, 0, 0])
+    expect(drive('foldswitch', { foldTarget: 1 }, { handle: 'lock' }, true)).toBe(1) // another jet's follows its wings
+    expect(drive('foldswitch', { foldTarget: 0 }, {}, true)).toBe(0)
     expect(drive('barswitch', { barTarget: 1 })).toBe(1)
     expect(drive('barswitch', {})).toBe(0)
     // the PROBE clip runs EMERG EXTD (aft) to EXTEND (forward), RETRACT in the middle (FO-5)
@@ -258,26 +260,28 @@ describe('the state-driven switches', () => {
 // pit_press is lifted from engine.ts and run against stand-ins for the state it works.
 const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
 const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const foldfn = /\nconst FOLD_HANDLE=[^\n]*\nlet fold_handle="lock";\nfunction fold_set\(handle\)\{[^\n]*\n(?:\/\/[^\n]*\n)*function fold_turn\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
   hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean; bingo?: boolean; fuellow?: boolean
-  exterior?: Partial<Panel>
+  exterior?: Partial<Panel>; handle?: string; fold?: number
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
   parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
-  exterior: Panel; clicked: number
+  exterior: Panel; clicked: number; handle: string
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
-  if (!pressfn) throw new Error('pit_press not found in engine.ts')
+  if (!pressfn || !foldfn) throw new Error('pit_press or the fold handle not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
-    ${pressfn} ${indexfn}
+    ${pressfn} ${indexfn} ${foldfn}
+    fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle };`)
   return run(action, direction, state, panel, strobe) as Pressed
 }
 
@@ -325,10 +329,18 @@ describe('the clickable switches', () => {
     expect(airborne.notices).toEqual(['CANOPY LOCKED'])
   })
 
-  it('fold the wings on a left click, counterclockwise, and spread them on a right', () => {
-    expect(press('fold', -1).ownship.foldTarget).toBe(1)
-    expect(press('fold', 1, { foldTarget: 1 }).ownship.foldTarget).toBe(0)
+  it('work the wing fold handle through FOLD, HOLD, SPREAD and LOCK, a left click counterclockwise and a right clockwise and in', () => {
+    // the wing fold handle (2.11.1): the left button counterclockwise, out of LOCK first, the right clockwise and then in
+    const turn = (handle: string, d: number, fold = 0) => { const r = press('fold', d, { handle, fold }); return [r.handle, r.ownship.foldTarget] }
+    expect([turn('lock', -1), turn('spread', -1), turn('hold', -1, 0.4), turn('fold', -1, 1)]).toEqual([['spread', 0], ['hold', 0], ['fold', 1], ['fold', 1]])
+    expect([turn('fold', 1, 1), turn('hold', 1, 0.4), turn('spread', 1), turn('lock', 1)]).toEqual([['hold', 1], ['spread', 0], ['lock', 0], ['lock', 0]])
+    expect(turn('hold', -1, 0.4)[0]).toBe('fold')
+    expect(turn('fold', 1, 0.6)).toEqual(['hold', 0.6]) // HOLD stops the wings where they are
+    expect(turn('spread', 1, 0.3)).toEqual(['spread', 0]) // no LOCK until the wings are fully spread
+    // the key's cycle: LOCK to FOLD, FOLD or HOLD to SPREAD, SPREAD to LOCK once spread
+    expect([turn('lock', 0), turn('fold', 0, 1), turn('hold', 0, 0.5), turn('spread', 0), turn('spread', 0, 0.5)]).toEqual([['fold', 1], ['spread', 0], ['spread', 0], ['lock', 0], ['spread', 0]])
     expect(press('fold', -1, { speed: 20 }).notices).toEqual(['WINGS LOCKED'])
+    expect(press('fold', -1, { speed: 20 }).handle).toBe('lock')
   })
 
   it('step the reject switch down to REJ 2 and up to NORM without wrapping, and cycle it from the key', () => {
