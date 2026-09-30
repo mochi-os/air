@@ -351,7 +351,7 @@ function emergency(p: Power): { unpowered: boolean; intensity: number } {
     return { unpowered, intensity:ownship.group.userData.emergency.intensity };`)
   return run(p) as { unpowered: boolean; intensity: number }
 }
-interface Lights { mode: string; instrument: number; consoles: number; flood: number; chart: number; warn: number }
+interface Lights { mode: string; instrument: number; consoles: number; flood: number; warn: number }
 function lights(tod: string, lights: boolean, unpowered: boolean): Lights {
   const state = /\nconst lighting=\{[^\n]*\n/.exec(source)?.[0] ?? ''
   const fn = /\nfunction lighting_set\(\)\{[\s\S]*?lighting\.warn=[^\n]*\n/.exec(source)?.[0] ?? ''
@@ -511,12 +511,12 @@ describe('the MASTER CAUTION and silence button clicks', () => {
 // key and the generators, driving the model's knobs and dimming the lenses.
 describe('the interior lights panel', () => {
   it('sets DAY with a dim instrument wash and everything else off by day', () => {
-    expect(lights('day', false, false)).toEqual({ mode: 'day', instrument: 0.22, consoles: 0, flood: 0, chart: 0, warn: 1 })
+    expect(lights('day', false, false)).toEqual({ mode: 'day', instrument: 0.22, consoles: 0, flood: 0, warn: 1 })
     expect(lights('day', true, false).flood).toBe(0)
   })
 
   it('sets NITE at night, dims the lenses, and brings the panel, consoles and floods up, whatever the exterior lights master', () => {
-    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, chart: 0, warn: 0.55 })
+    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, warn: 0.55 })
     expect(lights('night', true, false)).toEqual(lights('night', false, false))
     expect(lights('day', true, false)).toEqual(lights('day', false, false))
   })
@@ -550,12 +550,15 @@ describe('the interior lights panel', () => {
     expect(quad.userData.lit).toBe(0x2fd24a) // the gear and flap lamps carry the colour the dimming scales
   })
 
-  it('drives the six panel controls from the levels and dims the lenses by their material colour', () => {
+  it('drives the panel\'s four knobs and two switches from the levels and dims the lenses by their material colour', () => {
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
-    for (const [name, node] of [['instpnl', 'Knob_INSTPNL_RightPanel_AN'], ['consoles', 'Knob_CONSOLES_RIGHTPANEL_AN'], ['flood', 'Knob_FLOOD_RightPanel_AN'], ['chart', 'Knob_CHART_RightPanel_AN'], ['warncaut', 'Knob_WARN_CAUT_RightPanel_AN'], ['mode', 'MODE_C_AN']])
+    for (const [name, node] of [['instpnl', 'Knob_INSTPNL_RightPanel_AN'], ['consoles', 'Knob_CONSOLES_RIGHTPANEL_AN'], ['flood', 'Knob_FLOOD_RightPanel_AN'], ['floodswitch', 'Knob_CHART_RightPanel_AN'], ['warncaut', 'Knob_WARN_CAUT_RightPanel_AN'], ['lttest', 'PEDESTAL_LIGHT_AN']])
       expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+track:/\\^' + node + '/i,\\s+drive:"' + name + '"'))
     expect(source).toMatch(/case "instpnl": f=lighting\.instrument; break; case "consoles": f=lighting\.consoles; break; case "flood": f=lighting\.flood; break;/)
-    expect(source).toMatch(/case "chart": f=lighting\.chart; break; case "warncaut": f=lighting\.warn; break; case "mode": f=lighting\.mode==="nite"\?0\.5:1; break;/)
+    // the FLOOD COCKPIT/CHART switch rests at COCKPIT, the floods on the FLOOD knob (2.6.2.5); the KY-58's MODE knob is no lights control
+    expect(source).toMatch(/case "floodswitch": f=0; break; case "warncaut": f=lighting\.warn; break;/)
+    expect(source).not.toMatch(/track:\/\^MODE_C_AN/)
+    expect(source).not.toMatch(/lighting\.chart/)
     expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
     expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
     expect(source).toMatch(/cockpit_flood\.intensity=pit\?0\.12\*lighting\.flood:0;/)
@@ -568,13 +571,13 @@ describe('the interior lights panel', () => {
 // one frame per call, with the real lamp_set and lights_test.
 describe('the lights test', () => {
   const update = /\nfunction lamps_update\(out\)\{[\s\S]*?\n(?=\/\/ Radar altimeter)/.exec(source)?.[0] ?? ''
-  const test = /\nfunction lights_test\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const test = /\nfunction lights_switch\(\)\{[^\n]*\nfunction lights_test\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   const set = /\nfunction lamp_set\(m,on\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Light { on: boolean; swaps: number }
   interface Rig { frame(held: boolean): Record<string, Light> }
-  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean } = {}): Rig => {
+  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number } = {}): Rig => {
     for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
-    return new Function('c', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1; const playback=c.playback?{}:null;
+    return new Function('c', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
       const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
       ${test}${set}
       const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
@@ -617,6 +620,23 @@ describe('the lights test', () => {
     expect(lit(rig({ unpowered: true }).frame(true))).toEqual([])
     expect(lit(rig({ playback: true }).frame(true))).toEqual([])
     expect(lit(rig().frame(false))).toEqual([])
+    expect(lit(rig({ unpowered: true, clicked: -1 }).frame(false))).toEqual([])
+  })
+
+  it('runs two seconds from a click on the switch, which a click cannot hold', () => {
+    const r = rig({ clicked: -1.9 }).frame(false) // sim_time 0: clicked 1.9 s ago
+    expect(lit(r)).toEqual(Object.keys(r).sort())
+    expect(lit(rig({ clicked: -2 }).frame(false))).toEqual([])
+    expect(lit(rig({ playback: true, clicked: -1 }).frame(false))).toEqual([])
+  })
+
+  it('shows TEST on the model\'s LT TEST switch while the test runs, on the ownship only, and starts a fresh jet at OFF', () => {
+    const line = /\n\t\tcase "lttest": [^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const drive = (on: boolean, own: boolean) => new Function('on', 'own', `const ownship={}, st=own?ownship:{}, lights_switch=()=>on; let f; switch("lttest"){ ${line} } return f;`)(on, own) as number
+    expect([drive(true, true), drive(false, true), drive(true, false)]).toEqual([1, 0, 0])
+    expect(source).toMatch(/\{ name:"lttest",\s+track:\/\^PEDESTAL_LIGHT_AN\/i,\s+drive:"lttest" \}/)
+    expect(source).toMatch(/\n\tlights_clicked=-Infinity;[^\n]*\n\texterior\.landing=/)
   })
 
   it('tests each lens on the glareshield and the caution panel, those with no legend too, and every other lamp once', () => {

@@ -1233,20 +1233,22 @@ const AIRCRAFT_MODELS={
 	      { name:"gearlever", track:/^Gear_handle_AN/i, drive:"gearlever" },
 	      { name:"hooklever", track:/^LANDING_Gear_Lever_Hook_AN/i, drive:"hooklever" },
 	      { name:"hookbypass", track:/^SWITCH_HOOKBYPASS_LEFTPANEL_AN/i, drive:"hookbypass" },   // the hook bypass switch: authored = CARRIER, track end = FIELD (#7)
-	      // the interior lights panel (2.6.2, #21): the knobs and the MODE switch scrub their clips from the lighting levels
+	      // the interior lights panel (2.6.2, #21) in the model's older layout: the four knobs scrub their clips from the lighting
+	      // levels; the FLOOD COCKPIT/CHART switch (2.6.2.5, the model's Knob_CHART: its rest forward, COCKPIT) and the LT TEST switch
+	      // (2.6.2.11, the model's PEDESTAL_LIGHT: its rest aft, OFF) are toggles. The panel has no MODE switch: MODE_C_AN is the KY-58's MODE knob
 	      { name:"instpnl",   track:/^Knob_INSTPNL_RightPanel_AN/i,     drive:"instpnl" },
 	      { name:"consoles",  track:/^Knob_CONSOLES_RIGHTPANEL_AN/i,    drive:"consoles" },
 	      { name:"flood",     track:/^Knob_FLOOD_RightPanel_AN/i,       drive:"flood" },
-	      { name:"chart",     track:/^Knob_CHART_RightPanel_AN/i,       drive:"chart" },
+	      { name:"floodswitch", track:/^Knob_CHART_RightPanel_AN/i,     drive:"floodswitch" },
 	      { name:"warncaut",  track:/^Knob_WARN_CAUT_RightPanel_AN/i,   drive:"warncaut" },
-	      { name:"mode",      track:/^MODE_C_AN/i,                      drive:"mode" },
+	      { name:"lttest",    track:/^PEDESTAL_LIGHT_AN/i,              drive:"lttest" },
 	      // the switches the game has state for (#18), each scrubbing its clip from that state so it reads back its setting as the levers do
-	      { name:"canopyswitch", track:/^Canopy_Switch_AN/i,                            drive:"canopyswitch" },   // 2.15.1.1.1: the clip runs HOLD (its rest) to OPEN; there is no CLOSE pose
+	      { name:"canopyswitch", track:/^Canopy_Switch_AN/i,                            drive:"canopyswitch" },   // 2.15.1.1.1: the clip runs CLOSE (its rest, the lever down) to OPEN, HOLD between
 	      { name:"foldswitch",   track:/^Wing_Fold_Switch_AN/i,                         drive:"foldswitch" },     // 2.11.1: FOLD / SPREAD
 	      { name:"parkbrake",    track:/^LANDING_GEAR_Switch_ParkingBrake_AN_ParkingBrake/i, drive:"parkbrake" },   // 2.10.3.4: the handle rotated and pulled...
 	      { name:"parkpull",     track:/^LANDING_GEAR_Switch_ParkingBrake_AN_287/i,     drive:"parkbrake" },      // ...on both of its animated nodes
 	      { name:"barswitch",    track:/^Switch_LAUNCHBAR_LeftPanel_AN/i,               drive:"barswitch", flip:true },   // 2.10.4: the clip runs EXTEND (its rest, lever down) to RETRACT
-	      { name:"probeswitch",  track:/^Refuel_Switch_Action_AN/i,                     drive:"probeswitch" },
+	      { name:"probeswitch",  track:/^Refuel_Switch_Action_AN/i,                     drive:"probeswitch" },    // 2.2.11: the clip runs EMERG EXTD (aft, its rest) to EXTEND (forward), RETRACT between (FO-5)
 	      { name:"altswitch",    track:/^Switch_ALT_HudPanel_AN/i,                      drive:"altswitch" },      // BARO / RDR
 	      { name:"rejswitch",    track:/^Switch_REJ2_HudPanel_AN/i,                     drive:"rejswitch" },      // 2.13.4.8.1: NORM / REJ 1 / REJ 2
 	      { name:"ldglight",     track:/^Switch_LDG_Light_LeftPanel_AN/i,               drive:"ldglight" },    // 2.6.1.5: the clip runs OFF (its rest) to ON, the lever up
@@ -1261,7 +1263,7 @@ const AIRCRAFT_MODELS={
 // derived from the catapult spot every frame, so a click there changes nothing.
 const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:null, probeswitch:"probe",
 	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
-	hookbypass:"hook.bypass", gearlever:"gear", hooklever:"hook", flaplever:"flaps" };
+	hookbypass:"hook.bypass", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test" };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -1624,11 +1626,13 @@ function legend(text,colour,w=0.026,h=0.010){
 	const off=make(false), on=make(true);
 	const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:off, side:THREE.DoubleSide, toneMapped:false, depthWrite:false }));
 	m.userData.lens={ off, on }; m.userData.on=false; return m; }
-// The lights test (NATOPS 2.6.2.11): lights_test reads the LT TEST switch, spring-loaded off, so on while its key
-// is held; it works only with AC power on the aircraft (a generator on the line), and a replay has no switches.
-// lamps_update reads it once a frame into lamps_testing, which holds every light lamp_set drives on.
-let lamps_testing=false;
-function lights_test(){ return !playback&&!unpowered&&held("lights.test"); }
+// The lights test (NATOPS 2.6.2.11): lights_switch is the LT TEST switch at TEST, spring-loaded off, so while its
+// key is held or for two seconds from a click on it (lights_clicked, sim_time), as a click cannot be held; a replay
+// has no switches. lights_test adds AC power on the aircraft (a generator on the line). lamps_update reads it once
+// a frame into lamps_testing, which holds every light lamp_set drives on.
+let lamps_testing=false, lights_clicked=-Infinity;
+function lights_switch(){ return !playback&&(held("lights.test")||sim_time-lights_clicked<2); }
+function lights_test(){ return lights_switch()&&!unpowered; }
 function lamp_set(m,on){ if(!m) return; on=!!on||lamps_testing;
 	if(m.userData.lens){ if(m.userData.on!==on){ m.userData.on=on; m.material.map=on?m.userData.lens.on:m.userData.lens.off; m.material.needsUpdate=true; } }
 	else m.material.opacity=on?1:0; }
@@ -5019,16 +5023,15 @@ const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity
 // The interior lights panel (NATOPS 2.6.2, #21) as the game sets it: the MODE switch DAY by day and NITE
 // at night, when it dims the warning, caution and advisory lights (2.6.2.1); INST PNL the integral
 // instrument lighting (2.6.2.4), a dim wash by day and up at night; CONSOLES the console lighting
-// (2.6.2.3) and FLOOD the white floods (2.6.2.5), on at night; CHART off; and
+// (2.6.2.3) and FLOOD the white floods (2.6.2.5), on at night, with the FLOOD switch at COCKPIT; and
 // WARN/CAUT the lens brightness, held in the low range under NITE. Both generators gone (2.6.2.8)
 // takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles.
-const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, chart:0, warn:1 };
+const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, warn:1 };
 function lighting_set(){ const night=cfg.tod==="night";   // none of it on the L key, the exterior lights master switch
 	lighting.mode=night?"nite":"day";
 	lighting.instrument=unpowered?0:night?0.62:0.22;
 	lighting.consoles=unpowered?0:night?1:0;
 	lighting.flood=unpowered?0:night?1:0;
-	lighting.chart=0;
 	lighting.warn=night?0.55:1; }
 function instrument_backlight(){
 	lighting_set(); const level=lighting.instrument;
@@ -5857,6 +5860,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
+	case "lights.test": lights_clicked=sim_time; break;   // a click on the LT TEST switch holds it at TEST two seconds
 	case "radalt.test": if(radalt_on) radalt_test=sim_time; break;   // pushing the knob runs the BIT (2.12.5.4.1, 2.12.5.4.5)
 	case "gear": if(!on_ground()){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
 			if(up&&ownship.gearTarget<0.5) set_master("nav"); } break;   // never on deck or runway; the SOUND follows the real transit in the audio block. Lowering the handle enters NAV (NATOPS 2.13.2), which recalls the NAV displays
@@ -7822,11 +7826,11 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "hooklever": f=(st.hookTarget??0)>0.5?1:0; break;   // the handle is the selection; the HOOK light shows the hook disagreeing with it (#10)
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
 		// switches from state (#18) ---
-		case "canopyswitch": f=((st.canopyTarget??0)>0.5&&(st.canopy??0)<0.98)?1:0; break;   // OPEN while the canopy rises, then spring-loaded back to HOLD
+		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
 		case "foldswitch": f=(st.foldTarget??0)>0.5?1:0; break;
 		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
 		case "barswitch": f=(st.barTarget??0)>0.5?1:0; break;
-		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0; break;
+		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0.5; break;   // EXTEND or RETRACT; the game has no emergency extension
 		case "altswitch": f=(st===ownship&&alt_radar)?1:0; break;
 		case "rejswitch": f=st===ownship?declutter/2:0; break;
 		case "ldglight": f=(st===ownship&&exterior.landing)?1:0; break;
@@ -7837,7 +7841,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "radaropr": f=(st===ownship&&RADAR.sil)?1/3:2/3; break;
 		// --- end switches
 		case "instpnl": f=lighting.instrument; break; case "consoles": f=lighting.consoles; break; case "flood": f=lighting.flood; break;   // the interior lights panel (#21)
-		case "chart": f=lighting.chart; break; case "warncaut": f=lighting.warn; break; case "mode": f=lighting.mode==="nite"?0.5:1; break;   // only the ownship has a pilot to select FIELD
+		case "floodswitch": f=0; break; case "warncaut": f=lighting.warn; break;   // FLOOD at COCKPIT: the floods and the chart light on the FLOOD knob (2.6.2.5)
+		case "lttest": f=(st===ownship&&lights_switch())?1:0; break;
 		case "flaplever": f=st===ownship?flap_select/2:(st.gear??1)<0.5?(st.grounded?0.5:1):0; break;   // the FLAP switch (NATOPS 2.8.2.2.1): AUTO, HALF, FULL as selected; other jets send no selection, so theirs follows the gear - AUTO up-and-away, HALF on deck, FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
@@ -8036,6 +8041,7 @@ function reset_ownship(){
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
 	flbit=-Infinity; fuel_lo.on=false; fuel_lo.at=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
+	lights_clicked=-Infinity;   // a fresh jet's LT TEST switch at OFF
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
