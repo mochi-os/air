@@ -163,16 +163,20 @@ describe('the state-driven switches', () => {
   })
 
   it('read the canopy, fold, launch bar and probe switches from their targets', () => {
-    // the canopy switch is OPEN while the canopy rises and springs back to HOLD once it is up (NATOPS 2.15.1.1.1)
+    // the canopy switch's clip runs CLOSE to OPEN with HOLD between: OPEN while the canopy rises, CLOSE while it
+    // lowers, and HOLD once it stops either way, both springing back (NATOPS 2.15.1.1.1)
     expect(drive('canopyswitch', { canopyTarget: 1, canopy: 0.3 })).toBe(1)
-    expect(drive('canopyswitch', { canopyTarget: 1, canopy: 1 })).toBe(0)
+    expect(drive('canopyswitch', { canopyTarget: 1, canopy: 1 })).toBe(0.5)
     expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0.3 })).toBe(0)
+    expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0 })).toBe(0.5)
+    expect(drive('canopyswitch', {})).toBe(0.5)
     expect(drive('foldswitch', { foldTarget: 1 })).toBe(1)
     expect(drive('foldswitch', { foldTarget: 0 })).toBe(0)
     expect(drive('barswitch', { barTarget: 1 })).toBe(1)
     expect(drive('barswitch', {})).toBe(0)
+    // the PROBE clip runs EMERG EXTD (aft) to EXTEND (forward), RETRACT in the middle (FO-5)
     expect(drive('probeswitch', { probeTarget: 1 })).toBe(1)
-    expect(drive('probeswitch', { probeTarget: 0 })).toBe(0)
+    expect(drive('probeswitch', { probeTarget: 0 })).toBe(0.5)
   })
 
   it('read the exterior lights panel, each control from its own setting, and leave another jet\'s at rest', () => {
@@ -263,17 +267,17 @@ interface Pit {
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
   parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
-  exterior: Panel
+  exterior: Panel; clicked: number
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn) throw new Error('pit_press not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false;
+    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn}
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked };`)
   return run(action, direction, state, panel, strobe) as Pressed
 }
 
@@ -283,7 +287,7 @@ describe('the clickable switches', () => {
     const expected: [string, string | null][] = [
       ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', null],
       ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'landing'], ['strobe', 'strobe'], ['formation', 'formation'], ['position', 'position'],
-      ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'],
+      ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'], ['lttest', 'lights.test'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
     expect(table.match(/\w+:/g)?.length).toBe(expected.length)
@@ -422,6 +426,11 @@ describe('the clickable switches', () => {
     expect(press('lights', 1, { exterior: { landing: false, strobe: 'dim' } }).exterior).toEqual({ ...panel, landing: false, strobe: 'dim' })
     expect(panel).toEqual({ position: 1, formation: 1, strobe: 'bright', landing: false }) // BRT on both knobs and the strobes as the jet comes
     expect(strobe).toEqual(['dim', 'off', 'bright'])
+  })
+
+  it('put the LT TEST switch to TEST on a click, from which it springs back', () => {
+    expect(press('lights.test', 1).clicked).toBe(10) // the click's sim_time
+    expect(press('lights.test', -1).clicked).toBe(10)
   })
 
   it('hold the DUMP switch ON only with BINGO and FUEL LO off, and let it go OFF any time (NATOPS 2.2.7)', () => {
