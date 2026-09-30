@@ -370,7 +370,30 @@ describe('the standby instrument faces', () => {
     expect(ball(0)).toBe(128)
     expect(ball(0.5)).toBe(128 + 12)
     expect(ball(-2)).toBe(128 - 24)
-    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0\);/)
+    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0,sari_testing\(\)\);/)
+  })
+
+  // NATOPS 25.2.4.2: the vertical and horizontal pointers stay stowed, the vertical one behind the pointer
+  // shield, until the TEST switch is pressed, which centres both on the miniature airplane and deflects the turn
+  // needle two needle widths. A click on the face presses it for two seconds.
+  it('centre both pointers and deflect the turn needle two widths under TEST, and stow them otherwise', () => {
+    const needle = (d: Drawn) => d.rects.find(([, y, w, h]) => w === 4 && h === 8 && y > 128)?.[0]
+    const rest = face('adi_face', 0, 0, 3 * Math.PI / 180, 0), test = face('adi_face', 0, 0, 3 * Math.PI / 180, 0, 1)
+    expect(needle(test)).toBeCloseTo(128 + 8 - 2, 6) // two widths whatever the turn
+    expect(needle(rest)).toBeCloseTo(128 + 8 - 2, 6) // ...which a 3°/s turn also gives, so check the pointers too
+    expect(test.strokes - rest.strokes).toBe(2) // the pointer pair, black under yellow
+    expect(needle(face('adi_face', 0, 0, 0, 0, 1))).toBeCloseTo(128 + 8 - 2, 6)
+    expect(needle(face('adi_face', 0, 0, 0, 0))).toBe(128 - 2)
+    expect(lift('adi_face')).toMatch(/x\.moveTo\(C,C-W\+6\); x\.lineTo\(C,C\+W-6\); x\.moveTo\(C-W\+6,C\); x\.lineTo\(C\+W-6,C\);/) // vertical and horizontal through the centre
+  })
+
+  it('hold the TEST switch two seconds from a click on the face, clear at a spawn', () => {
+    const fn = /\nfunction sari_testing\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(fn).not.toBe('')
+    const testing = (now: number, clicked: number) => new Function('now', 'clicked', `const sim_time=now, sari_clicked=clicked; ${fn} return sari_testing();`)(now, clicked) as boolean
+    expect([testing(10, 9), testing(10, 8.01), testing(10, 8), testing(10, -Infinity)]).toEqual([true, true, false, false])
+    expect(source).toMatch(/if\(u&&u\.adi&&_click_ray\.intersectObject\(u\.adi\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("sari\.test",0\); return; \} \}/)
+    expect(source).toMatch(/\n\tlights_clicked=-Infinity; sari_clicked=-Infinity;/)
   })
 
   it('letter the ball CLIMB on its white half and DIVE on its black half, as FO-5 item 25 draws it', () => {
@@ -384,7 +407,7 @@ describe('the standby instrument faces', () => {
 
   it('are seated proud of the tub\'s discs at the measured bezels and refreshed from the gauges', () => {
     expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.082, z:0\.132, r:0\.031 \}, alt:\{ y:0\.083, z:0\.218, r:0\.031 \}, vsi:\{ y:0\.083, z:0\.304, r:0\.031 \}, adi:\{ y:0\.177, z:0\.158, r:0\.043 \} \};/) // the tub's painted discs, fitted as circles
-    expect(source).not.toMatch(/function clock_face\(/) // the clock is the model's rigged dial on the pedestal (FO-5 item 37)
+    expect(source).not.toMatch(/function clock_face\(/) // no clock face yet: the model's rigged clock sits behind the shell, out of sight
     expect(source).toMatch(/for\(const name of \["asi","alt","vsi","adi"\]\)\{ const seat=STANDBY\[name\];/)
     expect(source).toMatch(/new THREE\.CircleGeometry\(seat\.r,48\), gauge_material\(tex\)\)/) // lit like the model's own gauges
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
