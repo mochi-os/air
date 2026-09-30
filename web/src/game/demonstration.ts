@@ -22,6 +22,18 @@
 // corrected - so that a pass looks flown rather than computed, while still
 // arriving on speed, on the ball, and on the 2 or 3 wire.
 //
+// Its power and energy are tuned on the Fox 2 fit at 4,500 lb, which the
+// demonstration therefore always flies (engine.ts DEMONSTRATION). In the 25
+// knot trade wind the 180 drifts aft and the 90 falls about 3.6 km out, where
+// the slope stands near 800 ft over the 600 ft pattern. On Fox 2 the pass
+// still traps on the 3 wire, FAIR or OK. On a clean jet it bolters: the
+// inbound turn rides the slope's descent rate from under it and rolls out some
+// 50 m low, the jet levels, meets the slope sinking too slowly, rises through
+// it and floats the hook past the 4 wire. Holding height until the slope comes
+// down (a capture band under it) cures the low roll-out, but the clean jet's
+// roll-out then balloons through the slope, and Fox 2's traps move to the 4
+// wire, high: flying other fits needs the power and energy retuned.
+//
 // Dependency-free: the engine builds the Picture each frame from the ownship
 // and the ship's geometry, and applies the Commands. The maths is testable
 // without WebGL.
