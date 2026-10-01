@@ -35,6 +35,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   override: 'KeyO',
   'brake.speed': 'Slash',
   gear: 'KeyG',
+  'gear.emergency': 'None', // the gear handle turned and pulled (NATOPS 2.10.1.6): unbound, as a middle click on the handle does it
   hook: 'KeyH',
   'index.down': 'KeyN', // the radar altimeter's low-altitude index knob, anticlockwise (NATOPS 2.12.5.4.1): for the views without the panel
   'index.up': 'Shift+KeyN',

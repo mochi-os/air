@@ -98,8 +98,8 @@ describe('the ANTI SKID switch', () => {
   })
 
   it('reaches the flight core as bypass, flag bit 2048, in both samples', () => {
-    expect(source).toMatch(/\n\t\tbypass:!guarded\(\), gear:\(ownship\.gearTarget\?\?0\)<0\.5,/)
-    expect(source).toMatch(/brake:input\.brake, bypass:!guarded\(\), trim:/)
+    expect(source).toMatch(/\n\t\tbypass:!guarded\(\), [^\n]*gear:\(ownship\.gearTarget\?\?0\)<0\.5,/)
+    expect(source).toMatch(/brake:input\.brake, bypass:!guarded\(\), [^\n]*trim:/)
     expect(bridge).toMatch(/\n {2}bypass: boolean/)
     expect(bridge).toMatch(/\n {4}\(controls\.bypass \? 2048 : 0\) \|\n/)
     expect(wire).toMatch(/\n {2}bypass: boolean/)
@@ -180,9 +180,9 @@ describe('the brake hydraulics', () => {
 
   it('refill a fresh jet, and raise BRK ACCUM on the left DDI at 1,750 psi', () => {
     expect(source).toMatch(/\n\tbrake_accumulator=ACCUMULATOR\.full; drawn=false;/)
-    const line = /\n\tif\(brake_accumulator<=ACCUMULATOR\.empty\) captions\.push\("BRK ACCUM"\);[^\n]*\n\t\{ const next=cautions_reconcile/.exec(source)?.[0] ?? ''
+    const line = /\n\tif\(brake_accumulator<=ACCUMULATOR\.empty\) captions\.push\("BRK ACCUM"\);[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
-    const raised = (psi: number) => new Function('psi', `const ACCUMULATOR={ empty:1750 }, brake_accumulator=psi, captions=[]; ${line.split('\n\t{')[0]}
+    const raised = (psi: number) => new Function('psi', `const ACCUMULATOR={ empty:1750 }, brake_accumulator=psi, captions=[]; ${line}
       return captions;`)(psi) as string[]
     expect(raised(1750)).toEqual(['BRK ACCUM'])
     expect(raised(1751)).toEqual([])
@@ -234,7 +234,7 @@ describe('the brake pressure gauge', () => {
   })
 
   it('is built on the ownship and redrawn as the accumulator moves', () => {
-    expect(source).toMatch(/build_standby\(g\); build_brake\(g\); build_screens\(g\);/)
+    expect(source).toMatch(/build_standby\(g\); build_brake\(g\); build_cabin\(g\); build_clock\(g\); build_screens\(g\);/)
     expect(source).toMatch(/\n\tif\(bk&&bk\.psi!==Math\.round\(brake_accumulator\)\) brake_draw\(bk,brake_accumulator\);/)
   })
 })
@@ -271,7 +271,7 @@ describe('the cockpit shell over the lower left panel', () => {
     const root = new THREE.Group(); root.add(mesh); root.updateMatrixWorld(true); return { root, mesh }
   }
   const cutfn = /\nfunction model_cut\(scene, cut\)\{[\s\S]*?\n\treturn \(index\.length-kept\.length\)\/3; \}\n/.exec(source)?.[0] ?? ''
-  const spec = /\n\t\tcut:(\{ node:"Object_1372", lo:\[[^\]]*\], hi:\[[^\]]*\] \}),/.exec(source)?.[1] ?? ''
+  const spec = /\n\t\tcut:(\{ node:"Object_1372", boxes:\[[\s\S]*?\} \] \}),/.exec(source)?.[1] ?? ''
   const cut = (box: string) => { const s = scene(); const n = new Function('THREE', 'scene', `${cutfn} return model_cut(scene, ${box});`)(THREE, s.root) as number; return { ...s, n } }
   // the first shell triangle between the design eye and a point, if any
   const eye = new THREE.Vector3(0, 1.379, 3.971)
@@ -280,8 +280,10 @@ describe('the cockpit shell over the lower left panel', () => {
     mesh.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
     return ray.intersectObject(mesh).length > 0
   }
-  // in the GLB's frame: the gauge's centre (fitted to FO-5's layout) and the controls the block hid
-  const hidden: Record<string, number[]> = { gauge: [0.331, 0.675, 4.45], hookbypass: [0.376, 0.675, 4.424], ldg: [0.358, 0.711, 4.457], parkbrake: [0.306, 0.664, 4.494], firetest: [0.293, 0.648, 4.433], apu: [0.353, 0.654, 4.378], ground: [0.384, 0.659, 4.386] }
+  // in the GLB's frame: the brake gauge's centre (fitted to FO-5's layout) and the controls the lower left block hid;
+  // the clock's hub and the cockpit altimeter under the pedestal block; AV COOL under the right one
+  const hidden: Record<string, number[]> = { gauge: [0.331, 0.675, 4.45], hookbypass: [0.376, 0.675, 4.424], ldg: [0.358, 0.711, 4.457], parkbrake: [0.306, 0.664, 4.494], firetest: [0.293, 0.648, 4.433], apu: [0.353, 0.654, 4.378], ground: [0.384, 0.659, 4.386],
+    clock: [-0.068, 0.615, 4.529], cabin: [-0.066, 0.56, 4.515], avcool: [-0.404, 0.709, 4.434] }
 
   it('is cut once, on load, before the model is normalised', () => {
     expect(spec).not.toBe('')
@@ -296,9 +298,11 @@ describe('the cockpit shell over the lower left panel', () => {
     }
   })
 
-  it('takes only that block: 105 of the shell\'s 2,226 triangles, none outside the box', () => {
+  it('takes only those blocks: 136 of the shell\'s 2,226 triangles, none outside the boxes, and leaves the main panel\'s face', () => {
     const open = cut(spec)
-    expect(open.n).toBe(105)
-    expect(open.mesh.geometry.index?.count).toBe((2226 - 105) * 3)
+    expect(open.n).toBe(136)
+    expect(open.mesh.geometry.index?.count).toBe((2226 - 136) * 3)
+    // the AMPCD's aperture on the shell's panel face, which the AMPCD's screen is seated on, stays
+    expect(blocked(open.mesh, [0, 0.85, 4.47])).toBe(true)
   })
 })

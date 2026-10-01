@@ -16,17 +16,17 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 // is dropped to leave just the else-if block.
 const block = (/\n\telse if\(ind\)\{ const [a-z]+=\(out\[STATE\.alpha\]\|\|0\)\/D2R[\s\S]*?ind\.donut\.opacity=[^\n]*\n/.exec(source)?.[0] ?? '').replace(/\} \}\n$/, '}\n')
 
-interface Moment { hook: number; bypass: 'carrier' | 'field'; time: number }
+interface Moment { hook: number; bypass: 'carrier' | 'field'; time: number; essential?: boolean }
 interface Result { lit: boolean; bypass: string }
 // Steps the block once per moment, on speed with the gear down and flying, and
 // returns whether the donut is lit and where the switch ended up.
 function indexer(moments: Moment[]): Result[] {
   if (!block) throw new Error('indexer block not found in engine.ts')
-  const run = new Function('moments', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  const run = new Function('moments', `const D2R=Math.PI/180, glow=1, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:0,grounded:false};
-    let sim_time=0, hook_bypass="carrier";
+    let sim_time=0, hook_bypass="carrier", buses={ essential:true };
     const out=[8.1*D2R, 1];
-    return moments.map((m)=>{ ownship.hook=m.hook; hook_bypass=m.bypass; sim_time=m.time;
+    return moments.map((m)=>{ ownship.hook=m.hook; hook_bypass=m.bypass; sim_time=m.time; buses={ essential:m.essential??true };
       if(false){} ${block}
       return { lit: ind.donut.opacity>0.5, bypass: hook_bypass }; });`)
   return run(moments) as Result[]
@@ -39,7 +39,7 @@ const dark = (t: number) => Math.floor(t * 3) % 2 === 0
 const tested = /\n\tif\(ind&&\(INDEXER_TEST\|\|lamps_testing\)\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 function testing(on: boolean): number[] {
   if (!block || !tested) throw new Error('indexer block not found in engine.ts')
-  return new Function('on', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, INDEXER_TEST="", lamps_testing=on;
+  return new Function('on', `const D2R=Math.PI/180, glow=1, buses={ essential:true }, STATE={alpha:0, extension:1}, INDEXER_TEST="", lamps_testing=on;
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:true};
     let sim_time=0, hook_bypass="carrier";
     const out=[8.1*D2R, 0];
@@ -67,6 +67,11 @@ describe('the AOA indexer flash', () => {
     expect(indexer([{ hook: 1, bypass: 'carrier', time: t0 }])[0].lit).toBe(true)
   })
 
+  it('drops FIELD back to CARRIER when the aircraft\'s power is removed (2.12.10, #116)', () => {
+    const [dead] = indexer([{ hook: 0, bypass: 'field', time: 0.1, essential: false }])
+    expect(dead.bypass).toBe('carrier')
+  })
+
   it('drops FIELD back to CARRIER when the hook comes down', () => {
     const [up, down] = indexer([{ hook: 0, bypass: 'field', time: 0.1 }, { hook: 1, bypass: 'field', time: 0.2 }])
     expect(up.bypass).toBe('field')
@@ -80,7 +85,7 @@ describe('the AOA indexer flash', () => {
 // donut and bottom chevron, FAST 0-6.9° bottom chevron.
 function lamps(alpha: number): { slow: number; donut: number; fast: number } {
   if (!block) throw new Error('indexer block not found in engine.ts')
-  return new Function('alpha', `const D2R=Math.PI/180, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  return new Function('alpha', `const D2R=Math.PI/180, glow=1, buses={ essential:true }, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:false};
     let sim_time=0, hook_bypass="carrier";
     const out=[alpha*D2R, 1];
@@ -276,7 +281,7 @@ function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn || !foldfn) throw new Error('pit_press or the fold handle not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
-    let parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity;
+    let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn} ${foldfn}
     fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
@@ -292,9 +297,14 @@ describe('the clickable switches', () => {
       ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', null],
       ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'landing'], ['strobe', 'strobe'], ['formation', 'formation'], ['position', 'position'],
       ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['antiskid', 'antiskid'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'], ['lttest', 'lights.test'],
+      // G1: the interior lights' knobs (#23), the HUD panel and the UFC's BRT (#11, #115), the electrical panel (#21), BLEED AIR (#22), FIRE TEST (#17), RUD TRIM (#19) and EXT TANKS (#18)
+      ['instpnl', 'knob.instrument'], ['consoles', 'knob.consoles'], ['flood', 'knob.flood'], ['warncaut', 'knob.warn'], ['symbology', 'knob.symbology'], ['indexer', 'knob.indexer'], ['ufcbrt', 'knob.ufc'],
+      ['attswitch', 'attitude'], ['battery', 'battery'], ['genleft', 'generator.left'], ['genright', 'generator.right'], ['bleed', 'bleed'], ['firetest', 'fire.test'], ['ruddertrim', 'rudder.trim'],
+      ['wingtanks', 'transfer.wing'], ['centretank', 'transfer.centre'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
     expect(table.match(/\w+:/g)?.length).toBe(expected.length)
+    expect(table).toMatch(/\.\.\.Object\.fromEntries\(Object\.keys\(TRAVEL\)\.map\(k=>\[k,"travel\."\+k\]\)\) $/) // and every travel-only control, to travel_press
     // the targets are built from the rig: the clip's nodes and every mesh under them
     expect(source).toMatch(/g\.userData\.switches=g\.userData\.rig\.filter\(r=>r\.clip&&r\.name in PIT_SWITCHES\)/)
   })
