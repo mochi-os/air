@@ -82,6 +82,11 @@ msgstr "{0, plural, other {# ရွေးထား}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, other {#/{2} ကစားသမား}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, other {+# ခု ထပ်ရှိ}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "ထိုအကောင့်ဖြင့် အတည်ပြု၍�
 msgid "Countermeasures"
 msgstr "တန်ပြန်နည်းလမ်းများ"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "လမ်းကြောင်း သတ်မှတ်ချက် ဘယ်"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "လမ်းကြောင်း သတ်မှတ်ချက် ညာ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "ပျက်ကျသည်"
@@ -2173,6 +2188,16 @@ msgstr "ဦးခေါင်း"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ဦးခေါင်းခြေရာခံခြင်း"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "ဦးတည်ရာ သတ်မှတ်ချက် ဘယ်"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "ဦးတည်ရာ သတ်မှတ်ချက် ညာ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

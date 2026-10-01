@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# yan} other {# yan}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, other {#/{2} olùṣeré}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, other {+# síi}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "A kò lè fọwọ́sí pẹ̀lú àkàùntì yẹn. Jọ̀wọ́ gbìy�
 msgid "Countermeasures"
 msgstr "Àwọn ìdènà"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Ṣètò ipa ọ̀nà sí òsì"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Ṣètò ipa ọ̀nà sí ọ̀tún"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Ó ṣubú lulẹ̀"
@@ -1872,7 +1887,7 @@ msgstr "Kò lè tún prompt ṣe"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "Ìkùnà láti fagilé ìwọlé RSS"
+msgstr "Kò lè gba ìwọlé RSS padà"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Orí"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Títọpa orí"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Ṣètò ìdojúkọ sí òsì"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Ṣètò ìdojúkọ sí ọ̀tún"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Àwọn ila kójọ nípa"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "Ìwọlé RSS ti fagilé"
+msgstr "A ti gba ìwọlé RSS padà"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

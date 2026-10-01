@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# сонгогдсон} other {# сонгогдсон}}
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} тоглогч} other {#/{2} тоглогч}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# бусад} other {+# бусад}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Тэр бүртгэлээр баталгаажуулж чадсангү�
 msgid "Countermeasures"
 msgstr "Сөрөг арга хэмжээ"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Замын шугамыг зүүн тийш тохируулах"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Замын шугамыг баруун тийш тохируулах"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Осолдсон"
@@ -1872,7 +1887,7 @@ msgstr "Промптыг дахин тохируулж чадсангүй"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS хандалтыг цуцалж чадсангүй"
+msgstr "RSS хандалтыг хүчингүй болгож чадсангүй"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Толгой"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Толгой хянах"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Чиглэлийг зүүн тийш тохируулах"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Чиглэлийг баруун тийш тохируулах"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3474,7 +3499,7 @@ msgstr "Нэвтрэх рүү дахин чиглүүлж байна."
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Reduce interest"
-msgstr "Хүүг бууруулах"
+msgstr "Сонирхлыг бууруулах"
 
 #: src/components/MissionSetup.tsx
 msgid "Reference"
@@ -3718,7 +3743,7 @@ msgstr "Мөрүүдийг группд хуваах"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS хандалтыг цуцаллаа"
+msgstr "RSS хандалтыг хүчингүй болголоо"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

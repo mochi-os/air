@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# seleccionat} other {# seleccionats}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} jugador} other {#/{2} jugadors}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# més} other {+# més}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "No s'ha pogut verificar amb aquest compte. Torneu-ho a provar."
 msgid "Countermeasures"
 msgstr "Contramesures"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Ajust de curs a l'esquerra"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Ajust de curs a la dreta"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "S'ha estavellat"
@@ -2173,6 +2188,16 @@ msgstr "Cap"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Seguiment del cap"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Ajust de rumb a l'esquerra"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Ajust de rumb a la dreta"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

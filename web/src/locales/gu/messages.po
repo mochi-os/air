@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# પસંદ કરેલ} other {# પસંદ ક�
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} ખેલાડી} other {#/{2} ખેલાડીઓ}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# વધુ} other {+# વધુ}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "તે ખાતા વડે ચકાસણી કરી શકાઈ 
 msgid "Countermeasures"
 msgstr "પ્રતિપગલાં"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "કોર્સ સેટ ડાબે"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "કોર્સ સેટ જમણે"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "ક્રેશ થયું"
@@ -1872,7 +1887,7 @@ msgstr "પ્રોમ્પ્ટ રીસેટ કરવામાં નિ
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS ઍક્સેસ રદ કરવામાં નિષ્ફળ"
+msgstr "RSS ઍક્સેસ પાછું ખેંચવામાં નિષ્ફળ"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "માથું"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "હેડ ટ્રૅકિંગ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "હેડિંગ સેટ ડાબે"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "હેડિંગ સેટ જમણે"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "પંક્તિઓ આ રીતે જૂથબદ્ધ કરો"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS ઍક્સેસ રદ કરી"
+msgstr "RSS ઍક્સેસ પાછું ખેંચ્યું"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

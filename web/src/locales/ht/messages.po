@@ -82,6 +82,11 @@ msgstr "{0, plural, other {# chwazi}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} jwè} other {#/{2} jwè}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# ankò} other {+# ankò}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Nou pa t kapab verifye ak kont sa a. Tanpri eseye ankò."
 msgid "Countermeasures"
 msgstr "Kontmezi"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Regle wout agoch"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Regle wout adwat"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Avyon an kraze"
@@ -1872,7 +1887,7 @@ msgstr "Echwe pou reset prompt"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "Echwe pou revoke aksè RSS"
+msgstr "Echwe pou retire aksè RSS"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Tèt"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Swiv tèt"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Regle kap agoch"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Regle kap adwat"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Ranje gwoupe pa"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "Aksè RSS revoke"
+msgstr "Aksè RSS retire"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

@@ -42,14 +42,14 @@ msgstr "[heb ei osod]"
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {# flying} other {# flying}}"
-msgstr "{0, plural, one {# yn hedfan} other {# yn hedfan}}"
+msgstr "{0, plural, zero {# yn hedfan} one {# yn hedfan} two {# yn hedfan} few {# yn hedfan} many {# yn hedfan} other {# yn hedfan}}"
 
 #. placeholder {0}: ordered.length
 #. placeholder {1}: formatNumber(matches.length)
 #. placeholder {2}: formatNumber(matches.length)
 #: src/components/MatchLog.tsx
 msgid "{0, plural, one {# of {1} flight} other {# of {2} flights}}"
-msgstr "{0, plural, one {# o {1} hediad} other {# o {2} hediad}}"
+msgstr "{0, plural, zero {# o {2} hediad} one {# o {1} hediad} two {# o {2} hediad} few {# o {2} hediad} many {# o {2} hediad} other {# o {2} hediad}}"
 
 #. placeholder {0}: status.present ?? status.players
 #: src/components/Multiplayer.tsx
@@ -80,7 +80,12 @@ msgstr "{0, plural, zero {# wedi'i ddewis} one {# wedi'i ddewis} two {# wedi'u d
 #. placeholder {2}: s.capacity
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
-msgstr "{0, plural, one {#/{1} chwaraewr} other {#/{2} chwaraewr}}"
+msgstr "{0, plural, zero {#/{2} chwaraewr} one {#/{1} chwaraewr} two {#/{2} chwaraewr} few {#/{2} chwaraewr} many {#/{2} chwaraewr} other {#/{2} chwaraewr}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, zero {+# arall} one {+# arall} two {+# arall} few {+# arall} many {+# arall} other {+# arall}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "Roedd {0} ar {1}, sydd bellach heb ei rwymo."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# echel} other {# echelinau}}"
+msgstr "{axisCount, plural, zero {# echel} one {# echel} two {# echel} few {# echel} many {# echel} other {# echel}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# botwm} other {# botymau}}"
+msgstr "{buttonCount, plural, zero {# botwm} one {# botwm} two {# fotwm} few {# botwm} many {# botwm} other {# botwm}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -167,7 +172,7 @@ msgstr "Cynigiodd {opponentName} gêm gyfartal"
 
 #: src/components/Multiplayer.tsx
 msgid "{placed, plural, one {# of {limit} bot} other {# of {limit} bots}}"
-msgstr "{placed, plural, one {# o {limit} bot} other {# o {limit} bot}}"
+msgstr "{placed, plural, zero {# o {limit} bot} one {# o {limit} bot} two {# o {limit} bot} few {# o {limit} bot} many {# o {limit} bot} other {# o {limit} bot}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx
 #: ../../../lib/web/src/components/ui/upload-progress.tsx
@@ -1232,6 +1237,16 @@ msgstr "Methwyd dilysu gyda'r cyfrif hwnnw. Rhowch gynnig arall arni."
 msgid "Countermeasures"
 msgstr "Gwrthfesurau"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Gosod cwrs i'r chwith"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Gosod cwrs i'r dde"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Wedi crashio"
@@ -2173,6 +2188,16 @@ msgstr "Pen"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Tracio pen"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Gosod cyfeiriad i'r chwith"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Gosod cyfeiriad i'r dde"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

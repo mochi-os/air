@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# ընտրված} other {# ընտրված}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} խաղացող} other {#/{2} խաղացող}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# ևս} other {+# ևս}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Չհաջողվեց ստուգել այդ հաշվով։ Խնդրում �
 msgid "Countermeasures"
 msgstr "Հակազդման միջոցներ"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Ընթացքի գծի կարգավորում ձախ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Ընթացքի գծի կարգավորում աջ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Կործանվեց"
@@ -1872,7 +1887,7 @@ msgstr "Չհաջողվեց զրոյացնել հուշումը"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS մուտքի չեղարկումը ձախողվեց"
+msgstr "Չհաջողվեց հետ վերցնել RSS մուտքը"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Գլուխ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Գլխի հետագծում"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Ուղղության կարգավորում ձախ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Ուղղության կարգավորում աջ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -2742,7 +2767,7 @@ msgstr "ՀՐԹԻՌ"
 
 #: src/components/MissionSetup.tsx
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
-msgstr "Հրթիռի մոդել <0>“AIM-120C AMRAAM”</0> ինքնաթիռակիր՝ <1>Pippa</1>-ի կողմից (Sketchfab), արտոնագրված <2>CC BY 4.0</2>-ի ներքո։ Փոփոխված է՝ վերամասշտաբավորված, վերակողմնորոշված և տեղադրման համար կենտրոնացված:"
+msgstr "Հրթիռի մոդել <0>“AIM-120C AMRAAM”</0>՝ <1>Pippa</1>-ի կողմից (Sketchfab), արտոնագրված <2>CC BY 4.0</2>-ի ներքո։ Փոփոխված է՝ վերամասշտաբավորված, վերակողմնորոշված և տեղադրման համար կենտրոնացված։"
 
 #: src/components/GameCanvas.tsx
 msgid "Mission over"
@@ -3718,7 +3743,7 @@ msgstr "Տողերը խմբավորվում են ըստ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS մուտքը չեղարկվել է"
+msgstr "RSS մուտքը հետ է վերցվել"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
@@ -4783,4 +4808,4 @@ msgstr "Մոտեցնել"
 
 #: src/components/SettingsDialog.tsx
 msgid "Zoom out"
-msgstr "Հեռացնել"
+msgstr "Փոքրացնել"

@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
+import * as navigate from './navigation'
 
 // The DDI pages against NATOPS (#24): the EADI (2.13.4.3), the engine monitor
 // display (2.1.1.7.6) and the HSI (2.13.4.7). engine.ts cannot be imported
@@ -19,15 +20,19 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
+// navdefs: the navigation suite the pages read (navigation.ts) - aligned and navigating on the INS with GPS
+// tracking, TACAN steering selected and no waypoints - and what the jet's sensors measure for it.
+const navdefs = `const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.waypoints[0]=null; nav.ins.drift={ x:0, z:0 }; nav.steer="tcn";
+  const nav_sense=()=>({ dt:0, x:ownship.pos?ownship.pos.x:0, z:ownship.pos?ownship.pos.z:0, east:0, south:0, tas:ownship.tas??ownship.speed??0, heading:0, pitch:0, bank:0, airborne:!ownship.grounded, brake:false, power:true, radar:false, deck:false, tacan:null });`
 interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][]; lines: [number, number, number, number, string][]; fills: [number, number, number, number, string][]; fonts: [string, string][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
-  const run = new Function(`const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  const run = new Function('navigate', `const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     ${lift('ddi_legend')} ${lift(name)}
     const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[], lines=[], fills=[], fonts=[]; let style='', fill='', font='', at=[0,0];
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>{ text.push([String(s),px,py]); fonts.push([String(s),font]); }; if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='fillRect') return (a,b,c,d)=>fills.push([a,b,c,d,fill]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>{ moves.push([mx,my]); styled.push([style,mx,my]); at=[mx,my]; }; if(k==='lineTo') return (lx,ly)=>{ lines.push([at[0],at[1],lx,ly,style]); at=[lx,ly]; }; if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:(t,k,v)=>{ if(k==='strokeStyle') style=v; if(k==='fillStyle') fill=v; if(k==='font') font=v; return true; } });
     ${name}(x, ${JSON.stringify(display)}); return { text, rects, arcs, rotate, moves, styled, lines, fills, fonts };`)
-  return run() as Drawn
+  return run(navigate) as Drawn
 }
 // The bank gauge every attitude display reads, lifted from the gauges block and
 // evaluated for a jet facing +x rolled right: the right wing (+z) dips.
@@ -201,7 +206,7 @@ describe('the attitude pages in a right bank', () => {
 // The HUD format on a DDI (#62): the HUD's own furniture, ladder and symbols,
 // drawn through a fixed field about the nose. The recording canvas applies the
 // transforms, so everything is read in display pixels.
-interface Repeat { pitch?: number; bank?: number; gear?: number; master?: string; declutter?: number; reading?: string; climb?: number }
+interface Repeat { pitch?: number; bank?: number; gear?: number; master?: string; declutter?: number; reading?: string; climb?: number; reference?: string; nav?: string }
 interface Shown { text: [string, number, number][]; rects: [number, number, number, number][]; lines: [number, number, number, number][]; arcs: [number, number, number][]; rotations: number[] }
 function repeat(o: Repeat = {}): Shown {
   const r = (o.pitch ?? 0) * Math.PI / 180, b = (o.bank ?? 0) * Math.PI / 180
@@ -213,12 +218,13 @@ function repeat(o: Repeat = {}): Shown {
   const climb = o.climb ?? 0, speed = 150
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
-  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
-  return new Function('THREE', 'ownship', `const D2R=Math.PI/180, HH=900, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
+  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  return new Function('THREE', 'ownship', 'navigate', `const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
     const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
+    ${navdefs} ${o.nav ?? ''}
     ${names.map((n) => lift(n)).join(' ')}
     const text=[], rects=[], lines=[], arcs=[], rotations=[]; let m=[1,0,0,1,0,0], stack=[], at=[0,0];
     const apply=(px,py)=>[m[0]*px+m[2]*py+m[4], m[1]*px+m[3]*py+m[5]];
@@ -234,7 +240,7 @@ function repeat(o: Repeat = {}): Shown {
       if(k==='arc') return (ax,ay,rr)=>arcs.push([...apply(ax,ay),rr*m[0]]);
       if(k==='measureText') return (s)=>({ width:7*String(s).length });
       return ()=>{}; }, set:()=>true });
-    ddi_hud(x); return { text, rects, lines, arcs, rotations };`)(THREE, ownship) as Shown
+    ddi_hud(x); return { text, rects, lines, arcs, rotations };`)(THREE, ownship, navigate) as Shown
 }
 describe('the HUD format on a DDI', () => {
   const ppd = 512 / 26, k = ppd / 20, wly = 256 - 4 * ppd
@@ -636,24 +642,31 @@ describe('the landing record', () => {
   })
 })
 
-// The FPAS display against NATOPS 2.3.1 and figure 2-7, the areas the game can compute.
-interface Fpas { total?: number; pph?: number; gs?: number; mach?: number; grounded?: boolean; home?: string; time?: number }
+// The FPAS display against NATOPS 2.3.1 and figure 2-7.
+interface Fpas { total?: number; pph?: number; gs?: number; mach?: number; grounded?: boolean; home?: string; time?: number; steer?: string; cruise?: string; homing?: number }
 function fpas(o: Fpas = {}): Drawn {
   return page('ddi_fpas', `const ownship={ grounded:${o.grounded ?? false}, gauges:{ fuelRaw:${o.total ?? 8000}, externalRaw:0, ground:${o.gs ?? 400}, mach:${o.mach ?? 0.7} } };
-    const flow_state={ pph:${o.pph ?? 6000} }, sim_time=${o.time ?? 0}, fpas_home=()=>(${o.home ?? '{ dist:160, hours:0.3958, arrive:5620 }'});`)
+    ${navdefs} nav.steer=${JSON.stringify(o.steer ?? 'tcn')}; nav.home=${o.homing ?? 0};
+    const flow_state={ pph:${o.pph ?? 6000} }, sim_time=${o.time ?? 0}, fpas_steer=()=>(${o.home ?? '{ dist:160, hours:0.3958, arrive:5620, name:"TCN" }'}), fpas_cruise=()=>(${o.cruise ?? '{ best:null, optimum:null, tail:0 }'});`)
 }
+// fpasdefs: the FPAS's own functions over stand-ins for the gauges, the burn and the steering
+const fpasdefs = `${navdefs} ${/\nconst fpas=\{[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('fpas_leg')} ${lift('fpas_home')} ${lift('fpas_steer')} ${lift('fpas_press')} ${lift('fpas_cruise')}`
 describe('the FPAS display', () => {
-  it('lays out the CURRENT range and endurance and the steering row as figure 2-7 does, without the areas the game cannot compute', () => {
+  it('lays out the CURRENT and OPTIMUM areas, the steering row and the home waypoint as figure 2-7 does', () => {
     const d = fpas()
     expect(at(d, 'CURRENT')).toEqual([261, 40]); expect(at(d, 'RANGE')).toEqual([261, 68]); expect(at(d, 'ENDURANCE')).toEqual([408, 68])
-    expect(at(d, 'TO 2000 LB')).toEqual([36, 96])
+    expect(d.text.filter(([t]) => t === 'TO 2000 LB').map(([, px, py]) => [px, py])).toEqual([[36, 96], [36, 144], [36, 346]])
+    expect(at(d, 'BEST MACH')).toEqual([36, 120])
     expect(d.text).toContainEqual(['400', 261, 96]) // 6,000 lb spare at 6,000 pph and 400 kt
     expect(d.text).toContainEqual(['1:00', 408, 96])
-    for (const [label, cx] of [['NAV TO', 66], ['TIME', 190], ['FUEL REMAIN', 330], ['LB/NM', 446]] as [string, number][]) expect(at(d, label)).toEqual([cx, 140])
-    expect(d.text).toContainEqual(['TCN', 66, 166])
-    expect(d.text).toContainEqual(['5620', 330, 166])
-    expect(d.text).toContainEqual(['15', 446, 166]) // 6,000 pph over 400 kt
-    for (const gone of ['FPAS', 'BEST MACH', 'OPTIMUM', 'ALTITUDE', 'ENGINES DEAD', 'HOME', 'HOME FUEL', 'FLOW']) expect(texts(d)).not.toContain(gone)
+    for (const [label, cx] of [['NAV TO', 66], ['TIME', 190], ['FUEL REMAIN', 330], ['LB/NM', 446]] as [string, number][]) expect(at(d, label)).toEqual([cx, 176])
+    expect(d.text).toContainEqual(['TCN', 66, 202])
+    expect(d.text).toContainEqual(['5620', 330, 202])
+    expect(d.text).toContainEqual(['15', 446, 202]) // 6,000 pph over 400 kt
+    expect(at(d, 'OPTIMUM')).toEqual([261, 244]); expect(at(d, 'ALTITUDE')).toEqual([36, 298]); expect(at(d, 'MACH')).toEqual([36, 322])
+    expect(at(d, 'HOME')).toEqual([376, 462]); expect(d.text).toContainEqual(['0', 376, 440])
+    expect(at(d, '↓')).toEqual([336, 482]); expect(at(d, '↑')).toEqual([416, 482])
+    for (const gone of ['FPAS', 'ENGINES DEAD', 'HOME FUEL', 'FLOW']) expect(texts(d)).not.toContain(gone)
   })
 
   it('computes to 0 lb below 2,500 lb of fuel', () => {
@@ -667,45 +680,117 @@ describe('the FPAS display', () => {
     const d = fpas({ mach: 0.95 })
     expect(d.text).toContainEqual(['MACH', 261, 96])
     expect(d.text).toContainEqual(['LIM', 408, 96])
-    expect(d.text.some(([, px, py]) => px === 330 && py === 166)).toBe(false)
+    expect(d.text.some(([, px, py]) => px === 330 && py === 202)).toBe(false)
   })
 
   it('shows arrival fuel below zero as 0, and writes the times as figure 2-7 does', () => {
-    expect(fpas({ home: '{ dist:300, hours:0.75, arrive:-400 }' }).text).toContainEqual(['0', 330, 166])
+    expect(fpas({ home: '{ dist:300, hours:0.75, arrive:-400, name:"TCN" }' }).text).toContainEqual(['0', 330, 202])
     const d = fpas()
-    expect(d.text).toContainEqual([':23:45', 190, 166]) // 0.3958 h
+    expect(d.text).toContainEqual([':23:45', 190, 202]) // 0.3958 h
     expect(fpas({ pph: 6000, total: 2000 + 2900 }).text).toContainEqual([':29', 408, 96])
-    expect(fpas({ home: '{ dist:600, hours:1.25, arrive:3000 }' }).text).toContainEqual(['1:15:00', 190, 166])
+    expect(fpas({ home: '{ dist:600, hours:1.25, arrive:3000, name:"TCN" }' }).text).toContainEqual(['1:15:00', 190, 202])
   })
 
   it('flashes NAV TO, the TO legend and the fuel when the arrival fuel is under the reserve', () => {
-    const low = '{ dist:300, hours:0.75, arrive:1500 }'
+    const low = '{ dist:300, hours:0.75, arrive:1500, name:"TCN" }'
     const on = texts(fpas({ home: low, time: 0 })), off = texts(fpas({ home: low, time: 0.3 }))
     for (const s of ['TCN', 'TO 2000 LB', '1500']) { expect(on).toContain(s); expect(off).not.toContain(s) }
     expect(texts(fpas({ time: 0.3 }))).toContain('TCN') // steady when the fuel is enough
   })
 
   it('reads XXXX on the deck or with the engines not burning', () => {
-    const deck = fpas({ grounded: true, home: 'null', gs: 0 })
-    expect(d_at(deck, 261, 96)).toBe('XXXX'); expect(d_at(deck, 408, 96)).toBe('XXXX'); expect(d_at(deck, 190, 166)).toBe('XXXX')
+    const deck = fpas({ grounded: true, home: 'null', gs: 0, cruise: cruise.replace('TAIL', '0') }) // whatever the cruise search would find
+    expect(d_at(deck, 261, 96)).toBe('XXXX'); expect(d_at(deck, 408, 96)).toBe('XXXX'); expect(d_at(deck, 190, 202)).toBe('XXXX')
     expect(d_at(fpas({ pph: 0, home: 'null' }), 408, 96)).toBe('XXXX')
+    for (const y of [120, 144, 298, 322, 346]) for (const x of [261, 408]) expect(d_at(deck, x, y)).toBe('XXXX') // no cruise figures either
   })
 
-  it('steers on the TACAN range, and has no steering without one', () => {
-    const home = (station: string) => new Function(`const ownship={ grounded:false, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }, flow_state={ pph:6000 }, cheat=()=>false, tacan=()=>(${station});
-      ${lift('fpas_home')}\n} return fpas_home();`)()
-    expect(home('{ bearing:0, range:185200, slant:185300 }')).toEqual({ dist: 100, hours: 0.25, arrive: 4500 })
-    expect(home('null')).toBe(null)
-    expect(home('{ bearing:0, range:null, slant:null }')).toBe(null)
+  it('names the waypoint steered to on the steering row, and leaves the row empty with no steering', () => {
+    expect(fpas({ steer: 'wypt', home: '{ dist:40, hours:0.1, arrive:7000, name:"WYPT 3" }' }).text).toContainEqual(['WYPT 3', 66, 202])
+    const none = fpas({ steer: '', home: 'null' })
+    for (const x of [66, 190, 330]) expect(d_at(none, x, 202)).toBeUndefined()
   })
 
-  it('holds the HOME FUEL caution off with the refuelling probe out', () => {
+  // 6,000 lb to the reserve. Best range: 0.5 kg/s is 3,968 lb/h, so 1.512 h at 230 m/s (447 kt) is 676 nm; best
+  // endurance: 0.4 kg/s is 3,175 lb/h, 1:53. The optimum's 0.45 kg/s at 235 m/s gives 767 nm, and 0.36 kg/s 2:06.
+  const cruise = `{ best:{ range:{ flow:0.5, speed:230, mach:0.78, altitude:9000 }, endurance:{ flow:0.4, speed:190, mach:0.64, altitude:9000 } },
+    optimum:{ range:{ flow:0.45, speed:235, mach:0.8, altitude:11277.6 }, endurance:{ flow:0.36, speed:200, mach:0.68, altitude:10058.4 } }, tail:TAIL }`
+  it('shows the best Mach for range and endurance at this altitude, and what each gives (2.3.1.1.2, 2.3.1.1.3)', () => {
+    const d = fpas({ cruise: cruise.replace('TAIL', '0') })
+    expect(d.text).toContainEqual(['.78', 261, 120]); expect(d.text).toContainEqual(['.64', 408, 120])
+    expect(d.text).toContainEqual(['676', 261, 144]); expect(d.text).toContainEqual(['1:53', 408, 144])
+  })
+
+  it('shows the optimum altitude and Mach for range and endurance, and what each gives (2.3.1.1.4, 2.3.1.1.5)', () => {
+    const d = fpas({ cruise: cruise.replace('TAIL', '0') })
+    expect(d.text).toContainEqual(['37000', 261, 298]); expect(d.text).toContainEqual(['33000', 408, 298])
+    expect(d.text).toContainEqual(['.80', 261, 322]); expect(d.text).toContainEqual(['.68', 408, 322])
+    expect(d.text).toContainEqual(['767', 261, 346]); expect(d.text).toContainEqual(['2:06', 408, 346])
+  })
+
+  it('counts the wind along the track in the ranges, and never in the endurances', () => {
+    const d = fpas({ cruise: cruise.replace('TAIL', '-23') }) // 23 m/s on the nose: 207 m/s over the ground
+    expect(d.text).toContainEqual(['608', 261, 144]); expect(d.text).toContainEqual(['1:53', 408, 144])
+  })
+
+  it('finds the leg to a point at the present groundspeed and burn, or none on deck, hovering or not burning', () => {
+    const leg = (own: string, pph = 6000) => new Function('navigate', `const ownship=${own}, flow_state={ pph:${pph} }, cheat=()=>false; ${lift('fpas_leg')} return fpas_leg(185200);`)(navigate)
+    expect(leg('{ grounded:false, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }')).toEqual({ dist: 100, hours: 0.25, arrive: 4500 })
+    expect(leg('{ grounded:true, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }')).toBe(null)
+    expect(leg('{ grounded:false, gauges:{ ground:40, fuelRaw:6000, externalRaw:0 } }')).toBe(null)
+    expect(leg('{ grounded:false, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }', 100)).toBe(null)
+  })
+
+  it('steers to the TACAN on its range or to the waypoint selected, and watches the home waypoint', () => {
+    const run = (body: string) => new Function('navigate', `const ownship={ grounded:false, pos:{ x:0, z:0 }, gauges:{ ground:400, fuelRaw:6000, externalRaw:0 } }, flow_state={ pph:6000 }, cheat=()=>false;
+      let station={ bearing:0, range:185200, slant:185300 }; const tacan=()=>station, hud_steer=()=>({ range:92600, target:false });
+      ${fpasdefs} ${body}`)(navigate)
+    expect(run('return fpas_steer();')).toEqual({ dist: 100, hours: 0.25, arrive: 4500, name: 'TCN' })
+    expect(run('station={ bearing:0, range:null, slant:null }; return fpas_steer();')).toBe(null)
+    expect(run('station=null; return fpas_steer();')).toBe(null)
+    expect(run('nav.steer="wypt"; nav.current=3; return fpas_steer();')).toEqual({ dist: 50, hours: 0.125, arrive: 5250, name: 'WYPT 3' })
+    expect(run('nav.steer=""; return fpas_steer();')).toBe(null)
+    expect(run('return fpas_home();')).toBe(null) // no home waypoint stored
+    expect(run('nav.waypoints[0]={ x:0, z:-370400, elevation:0, name:"", offset:null }; return fpas_home();')).toEqual({ dist: 200, hours: 0.5, arrive: 3000 })
+    expect(run('nav.waypoints[7]={ x:185200, z:0, elevation:0, name:"", offset:null }; nav.home=7; return fpas_home().dist;')).toBeCloseTo(100, 9)
+  })
+
+  it('steps the home waypoint round the waypoints with its arrows, and notes the change', () => {
+    const run = (body: string) => new Function('navigate', `const ownship={ grounded:false, pos:{ x:0, z:0 }, gauges:{} }, flow_state={ pph:0 }, cheat=()=>false, tacan=()=>null, hud_steer=()=>null; let sim_time=40;
+      ${fpasdefs} ${body}`)(navigate)
+    expect(run('return [fpas_press(16), nav.home, fpas.changed, fpas_press(17), fpas_press(17), nav.home, fpas_press(5)];')).toEqual([true, 1, 40, true, true, 59, false])
+    expect(run('nav.home=59; fpas_press(16); return nav.home;')).toBe(0)
+  })
+
+  it('searches the cruise: the best Mach every two seconds, and the optimum from a survey that starts over when done', () => {
+    const run = new Function('navigate', `const ownship={ grounded:false, pos:{ x:0, y:6000, z:0 }, speed:200, gauges:{ ground:400, pitch:0 } }, flow_state={ pph:6000 }, cheat=()=>false, tacan=()=>null, hud_steer=()=>null;
+      let sim_time=0, looks=0; const flight_cruise=(altitude,mach)=>{ looks++; return altitude>12000?null:{ flow:0.5+(mach-0.6)*(mach-0.6)+Math.abs(altitude-9000)/90000, speed:mach*300 }; };
+      ${fpasdefs}
+      const first=fpas_cruise(), counted=looks; fpas_cruise(); const second=looks-counted;
+      sim_time=2.5; fpas_cruise(); const third=looks-counted-second;
+      for(let k=0;k<60;k++) fpas_cruise();
+      return { first, second, third, calls:counted, optimum:fpas.optimum, layers:fpas.survey.altitude };`)(navigate) as { first: { best: { range: navigate.Best; endurance: navigate.Best }; optimum: unknown; tail: number }; second: number; third: number; calls: number; optimum: navigate.Survey; layers: number }
+    expect(run.first.best.endurance.mach).toBeCloseTo(0.6, 9)
+    expect(run.first.best.range.altitude).toBe(6000)
+    expect(run.first.optimum).toBe(null) // the survey has not finished
+    expect(run.first.tail).toBeCloseTo(400 * 0.514444 - 200, 6)
+    expect(run.second).toBeLessThan(run.calls / 1.5) // within two seconds only the survey's next layer is searched
+    expect(run.third).toBeGreaterThan(run.second) // past two seconds the best Mach is found afresh
+    expect(run.optimum.done).toBe(true)
+    expect(run.optimum.endurance?.altitude).toBeCloseTo(30000 * 0.3048, 6) // the layer nearest 9 km
+    expect(run.optimum.endurance?.mach).toBeCloseTo(0.6, 9)
+    expect(run.layers).toBeGreaterThan(0) // and the next survey is under way
+  })
+
+  it('holds the HOME FUEL caution off with the refuelling probe out, and for 5 s after the home waypoint is changed', () => {
     const section = /\n\t\{ const home=fpas_home\(\); if\(home&&home\.arrive<=2000[^\n]*push\("HOME FUEL"\); \}/.exec(source)?.[0] ?? ''
     expect(section).not.toBe('')
-    const run = (probe: number, target: number) => new Function(`const rows=[], push=(k)=>rows.push(k), fpas_home=()=>({ arrive:1800 }), ownship={ probe:${probe}, probeTarget:${target} }; ${section} return rows;`)() as string[]
+    const run = (probe: number, target: number, since = 100) => new Function(`const rows=[], push=(k)=>rows.push(k), fpas_home=()=>({ arrive:1800 }), fpas={ changed:${100 - since} }, sim_time=100, ownship={ probe:${probe}, probeTarget:${target} }; ${section} return rows;`)() as string[]
     expect(run(0, 0)).toEqual(['HOME FUEL'])
     expect(run(1, 1)).toEqual([])
     expect(run(0.3, 1)).toEqual([]) // extending
+    expect(run(0, 0, 4)).toEqual([])
+    expect(run(0, 0, 5)).toEqual(['HOME FUEL'])
   })
 })
 const d_at = (d: Drawn, x: number, y: number) => d.text.find(([, px, py]) => px === x && py === y)?.[0]
@@ -713,14 +798,15 @@ const d_at = (d: Drawn, x: number, y: number) => d.text.find(([, px, py]) => px 
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.
-interface Hsi { altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string; tacan?: string; emcon?: boolean }
+interface Hsi { tas?: number; altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; level?: string; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string; tacan?: string; emcon?: boolean; nav?: string; time?: number; func?: string }
 function hsi(o: Hsi = {}, display = 'left'): Drawn {
   const deg = (v: number | null | undefined, d: number) => v === null ? 'null' : `${(v ?? d)}*D2R`
-  return page('ddi_hsi', `const ownship={ pos:{x:0,y:${o.altitude ?? 1000},z:0}, speed:${o.speed ?? 100}, gauges:{ heading:${deg(o.heading, 0)}, ground:${o.ground ?? 200}, track:${deg(o.track, 0)}, zulu:45296 } };
-    const hsi_state={ scale:${o.scale ?? 40}, dctr:${o.dctr ?? false}, map:${o.map ?? false}, north:${o.north ?? false}, mode:${o.mode ?? false} }, ufc={ func:"" }, CARRIER={ x:${o.east ?? 18520}, z:${-(o.north_m ?? 0)} };
+  return page('ddi_hsi', `const ownship={ pos:{x:0,y:${o.altitude ?? 1000},z:0}, speed:${o.speed ?? 100}, tas:${o.tas ?? 'undefined'}, gauges:{ heading:${deg(o.heading, 0)}, ground:${o.ground ?? 200}, track:${deg(o.track, 0)}, zulu:45296 } };
+    const hsi_state={ scale:${o.scale ?? 40}, dctr:${o.dctr ?? false}, map:${o.map ?? false}, north:${o.north ?? false}, level:${JSON.stringify(o.mode ? 'mode' : o.level ?? '')}, data:"wypt", shown:0, check:false, gps:{ cursor:0, asked:-1e9 } }, ufc={ func:${JSON.stringify(o.func ?? '')} }, CARRIER={ x:${o.east ?? 18520}, z:${-(o.north_m ?? 0)} };
+    const sim_time=${o.time ?? 0}, carrier_given={ heading:0, speed:0 }, hsi_data=()=>{}; ${navdefs} ${o.nav ?? ''}
     const island_polygons=[], airports=[], wrap_axis=${o.wrap ?? '(v)=>v'}, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, timer={ shown:${JSON.stringify(o.timer ?? '')} }, timer_text=()=>"01:30";
     const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...${o.tacan ?? '{}'} } }, emcon=${o.emcon ?? false};
-    ${lift('tacan')} ${lift('time_to_go')}`, display)
+    ${lift('tacan')} ${lift('tacan_variation')} ${lift('time_to_go')}`, display)
 }
 const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-6)
 const polar = (r: number, degrees: number) => [Math.sin(degrees * Math.PI / 180) * r, -Math.cos(degrees * Math.PI / 180) * r]
@@ -737,8 +823,8 @@ describe('the HSI page', () => {
   it('shows the scale as SCL at the top centre, doubled in DCTR, and steps it down on a press', () => {
     expect(at(hsi(), 'SCL/40')).toEqual([256, 30])
     expect(texts(hsi({ dctr: true }))).toContain('SCL/80')
-    const steps = new Function(`const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, mode:false }, ufc_press=()=>{}; ${lift('hsi_press')}
-      const seen=[]; for(let i=0;i<6;i++){ hsi_press(8,"left"); seen.push(hsi_state.scale); } return seen;`)() as number[]
+    const steps = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, level:"" }, ufc_press=()=>{}, ownship={}; ${navdefs} ${lift('hsi_press')}
+      const seen=[]; for(let i=0;i<6;i++){ hsi_press(8,"left"); seen.push(hsi_state.scale); } return seen;`)(navigate) as number[]
     expect(steps).toEqual([20, 10, 5, 160, 80, 40])
   })
 
@@ -776,6 +862,7 @@ describe('the HSI page', () => {
     for (const [p, q] of [[[0, -7], [0, 27]], [[-18, 0], [18, 0]], [[-6, 25], [6, 25]]]) expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [...f(p), ...f(q)]))).toBe(true)
     expect(at(d, '194T')).toEqual([240, 282])
     expect(at(d, '200G')).toEqual([272, 282])
+    expect(texts(hsi({ speed: 100, tas: 120 }))).toContain('233T') // the airspeed through the air, not the speed over the ground
     expect(texts(d).some((s) => s.startsWith('GS'))).toBe(false)
   })
 
@@ -791,9 +878,9 @@ describe('the HSI page', () => {
 
   it('reads the TACAN block as bearing and slant range, TTG at the groundspeed, and the ident, across the world wrap', () => {
     const d = hsi()
-    expect(at(d, '090°/ 10.0')).toEqual([20, 66])
-    expect(at(d, '3:00')).toEqual([120, 90]) // right-aligned under the range
-    expect(at(d, 'NIM')).toEqual([36, 114])
+    expect(at(d, '090°/ 10.0')).toEqual([60, 66])
+    expect(at(d, '3:00')).toEqual([160, 90]) // right-aligned under the range
+    expect(at(d, 'NIM')).toEqual([76, 114])
     expect(texts(hsi({ ground: 20 })).filter((s) => /^\d+:\d\d(:\d\d)?$/.test(s))).toEqual(['12:34:56']) // no TTG at taxi speed, only ZTOD
     expect(texts(hsi({ altitude: 5000 }))).toContain('090°/ 10.4') // slant: 10 nm out and 5 km up
     const wrapped = hsi({ east: 81480, wrap: '(v)=>v>50000?v-100000:v' })
@@ -808,13 +895,13 @@ describe('the HSI page', () => {
     for (const tacan of ['{ on:false }', '{ channel:75 }', '{ band:"Y" }', '{ air:true }']) {
       const d = hsi({ tacan })
       expect(pointer(d), tacan).toBe(false)
-      expect(texts(d).filter((s) => s.includes('°') || s === 'NIM'), tacan).toEqual([])
+      expect(texts(d).filter((s) => s.includes('°') || s === 'NIM'), tacan).toEqual(['000°']) // only the heading selected
     }
     for (const o of [{ tacan: '{ mode:"rcv" }' }, { emcon: true }]) {
       const d = hsi(o)
       expect(pointer(d)).toBe(true)
-      expect(at(d, '090°')).toEqual([20, 66])
-      expect(at(d, 'NIM')).toEqual([36, 114])
+      expect(at(d, '090°')).toEqual([60, 66])
+      expect(at(d, 'NIM')).toEqual([76, 114])
       expect(d.moves.some((m) => near(m, [R / 4, -9]) || near(m, [0, -9]))).toBe(false) // no station without a range, where it lies or at the centre
       expect(texts(d).filter((s) => /^\d+:\d\d$/.test(s))).toEqual([]) // no TTG
     }
@@ -822,11 +909,11 @@ describe('the HSI page', () => {
 
   it('shows ZTOD at the lower left and the timer shown, ET or CD, at the lower right', () => {
     const d = hsi()
-    expect(at(d, '12:34:56')).toEqual([20, 458])
+    expect(at(d, '12:34:56')).toEqual([20, 414])
     expect(texts(d)).not.toContain('ET')
     const et = hsi({ timer: 'et' })
-    expect(at(et, 'ET')).toEqual([452, 434])
-    expect(at(et, '01:30')).toEqual([452, 458])
+    expect(at(et, 'ET')).toEqual([444, 370])
+    expect(at(et, '01:30')).toEqual([444, 392])
     expect(texts(hsi({ timer: 'cd' }))).toContain('CD')
     expect(texts(hsi({ timer: 'ztod' }))).not.toContain('01:30')
   })
@@ -839,7 +926,7 @@ describe('the HSI page', () => {
     const top = hsi({}, 'center')
     expect(at(top, 'MODE')).toEqual([10, 256])
     expect(at(top, 'TIMEUFC')).toEqual([336, 482])
-    for (const gone of ['DCTR', 'MAP', 'T UP', 'HSI', '↑', '↓']) expect(texts(top)).not.toContain(gone)
+    for (const gone of ['DCTR', 'MAP', 'T UP', 'HSI']) expect(texts(top)).not.toContain(gone)
     const sub = hsi({ mode: true }, 'center')
     expect(at(sub, 'T UP')).toEqual([10, 176])
     expect(at(sub, 'DCTR')).toEqual([10, 336])
@@ -848,10 +935,11 @@ describe('the HSI page', () => {
     for (const gone of ['MODE', 'TIMEUFC']) expect(texts(sub)).not.toContain(gone)
     expect(texts(hsi({ mode: true, north: true }))).toContain('N UP')
     expect(texts(hsi({ mode: true }, 'left'))).not.toContain('MAP')
-    const presses = new Function(`const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, dctr:false, map:true, north:false, mode:false }, pressed=[], ufc_press=(b)=>pressed.push(b); ${lift('hsi_press')}
-      const r=[hsi_press(4,"left"), hsi_press(9,"left"), hsi_press(3,"left"), hsi_state.mode, hsi_press(4,"left"), hsi_state.north, hsi_press(2,"left"), hsi_state.dctr,
-        hsi_press(6,"left"), hsi_state.map, hsi_press(6,"center"), hsi_state.map, hsi_press(17,"left"), hsi_press(10,"left"), hsi_state.mode, hsi_press(17,"left"), pressed.join()];
-      return r;`)() as unknown[]
+    const presses = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, dctr:false, map:true, north:false, level:"" }, pressed=[], ufc_press=(b)=>pressed.push(b), ownship={}; ${navdefs} ${lift('hsi_press')}
+      const mode=()=>hsi_state.level==="mode";
+      const r=[hsi_press(4,"left"), hsi_press(2,"left"), hsi_press(3,"left"), mode(), hsi_press(4,"left"), hsi_state.north, hsi_press(2,"left"), hsi_state.dctr,
+        hsi_press(6,"left"), hsi_state.map, hsi_press(6,"center"), hsi_state.map, hsi_press(17,"left"), hsi_press(10,"left"), mode(), hsi_press(17,"left"), pressed.join()];
+      return r;`)(navigate) as unknown[]
     expect(presses).toEqual([false, false, true, true, true, true, true, true, false, true, true, false, false, true, false, true, 'time'])
   })
 
@@ -868,6 +956,435 @@ describe('the HSI page', () => {
   })
 })
 
+// The navigation symbology on the HSI (G3): the top level's options at figure 24-1's pushbuttons, the
+// waypoint, target, course line, heading select marker and sequence drawn from the position the suite
+// keeps, the alignment display (figures 24-3 to 24-6), and the POS and UPDT sublevels (figures 24-10, 24-11).
+describe('the HSI\'s navigation symbology', () => {
+  const R = 164, T = 12
+  const north = 'nav.waypoints[3]={ x:0, z:-18520, elevation:0, name:"", offset:null }; nav.current=3;' // a waypoint 10 nm north
+  const boxed = (d: Drawn, x: number, y: number) => d.rects.some(([rx, ry, , h]) => ry === y - 14 && h === 28 && rx <= x + 6 && rx >= x - 140)
+
+  it('puts the top level\'s options at their pushbuttons, the steering selected boxed', () => {
+    const d = hsi()
+    for (const [label, px, py] of [['POS/INS', 96, 30], ['UPDT', 176, 30], ['SCL/40', 256, 30], ['MK 1', 336, 30], ['DATA', 416, 30], ['TCN', 10, 96], ['MODE', 10, 256], ['WYPT', 502, 96], ['↑', 502, 176], ['↓', 502, 256],
+      ['NAVDSG', 502, 336], ['SEQ1', 502, 416], ['TIMEUFC', 336, 482]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    expect(d.text).toContainEqual(['0', 502, 216]) // the steer-to number between its arrows
+    expect(d.rects).toContainEqual([-11, 82, 42, 28]) // TCN boxed (the recording canvas keeps no alignment, so every box is centred on its legend's anchor)
+    expect(boxed(d, 502, 96)).toBe(false)
+    expect(texts(d)).not.toContain('AUTO')
+    const wypt = hsi({ nav: 'nav.steer="wypt"; nav.current=60; nav.marks[0]={ x:0, z:0, elevation:0, name:"", offset:null }; nav.mark=4; nav.sequence=2; nav.lines=true;' })
+    expect(wypt.rects).toContainEqual([476, 82, 52, 28]); expect(wypt.rects).not.toContainEqual([-11, 82, 42, 28])
+    expect(wypt.text).toContainEqual(['M1', 502, 216]); expect(texts(wypt)).toContain('MK 5'); expect(texts(wypt)).toContain('SEQ3'); expect(boxed(wypt, 502, 416)).toBe(true)
+  })
+
+  it('names the source keeping the position, and offers UPDT only while updates are taken', () => {
+    const aided = hsi({ nav: 'nav.source="ains";' })
+    expect(texts(aided)).toContain('POS/AINS'); expect(texts(aided)).not.toContain('UPDT')
+    expect(texts(hsi({ nav: 'nav.source="adc";' }))).toEqual(expect.arrayContaining(['POS/ADC', 'UPDT']))
+  })
+
+  it('offers AUTO with a sequence of two, boxed when engaged, and not with a target designated', () => {
+    const seq = 'nav.waypoints[1]={ x:1, z:1, elevation:0, name:"", offset:null }; nav.waypoints[2]={ x:2, z:2, elevation:0, name:"", offset:null }; navigate.insert(nav,1); navigate.insert(nav,2);'
+    expect(at(hsi({ nav: seq }), 'AUTO')).toEqual([416, 482])
+    expect(boxed(hsi({ nav: seq }), 416, 482)).toBe(false)
+    expect(boxed(hsi({ nav: seq + 'navigate.automatic(nav);' }), 416, 482)).toBe(true)
+    expect(texts(hsi({ nav: seq + 'nav.current=1; navigate.designate(nav);' }))).not.toContain('AUTO')
+  })
+
+  it('draws the steer-to waypoint where it lies with its bearing pointer inside the rose, and its data at the upper right', () => {
+    const d = hsi({ nav: north })
+    expect(d.arcs).toContainEqual([0, -R / 4, 6])
+    expect(d.moves.some((m) => near(m, polar(R - 4, 0)))).toBe(true) // the pointer's head
+    expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [...polar(R - 4, 180), ...polar(R - 18, 180)]))).toBe(true) // and its tail
+    expect(at(d, '000°/ 10.0')).toEqual([440, 66]); expect(d.text).toContainEqual(['3:00', 440, 90])
+    const far = hsi({ nav: north, scale: 5 })
+    expect(far.arcs).toContainEqual([0, -(R - 26), 6]) // held at the pointer's head beyond the scale
+    expect(texts(hsi({ nav: north + 'nav.waypoints[3].name="PMDY";' }))).toContain('PMDY')
+    expect(hsi().arcs).toEqual([]) // no waypoint stored: no symbol
+  })
+
+  it('draws it from the position kept: an INS error displaces the waypoint, and never the TACAN', () => {
+    const d = hsi({ nav: north + 'nav.ins.error={ x:0, z:-9260 };' }) // the INS believes itself 5 nm north of where it is
+    expect(d.arcs).toContainEqual([0, -R / 8, 6])
+    expect(texts(d)).toContain('000°/ 5.0'); expect(texts(d)).toContain('090°/ 10.0')
+  })
+
+  it('shows the target\'s diamond and TGT boxed once designated, an offset aimpoint with its cross, and O/S in NAVDSG\'s place', () => {
+    const tgt = hsi({ nav: north + 'navigate.designate(nav);' })
+    expect(tgt.arcs).toEqual([])
+    expect(tgt.moves.some((m) => near(m, [0, -R / 4 - 8]))).toBe(true)
+    expect(at(tgt, 'TGT')).toEqual([502, 96]); expect(boxed(tgt, 502, 96)).toBe(true)
+    for (const gone of ['WYPT', 'NAVDSG', 'O/S']) expect(texts(tgt)).not.toContain(gone)
+    const oap = north + 'nav.waypoints[3].offset={ range:9260, bearing:Math.PI/2, elevation:0 };'
+    const before = hsi({ nav: oap })
+    expect(at(before, 'OAP')).toEqual([502, 96]); expect(texts(before)).toContain('NAVDSG')
+    expect(before.lines.some((l) => near(l.slice(0, 4) as number[], [R / 8 - 6, -R / 4, R / 8 + 6, -R / 4]))).toBe(true) // the offset's cross, 5 nm east of the aimpoint
+    const half = hsi({ nav: oap + 'navigate.designate(nav);' })
+    expect(at(half, 'O/S')).toEqual([502, 336]); expect(texts(half)).toContain('OAP'); expect(boxed(half, 502, 96)).toBe(true)
+  })
+
+  it('draws the course line through the waypoint steered to, with the course at the lower right and the distance off it above', () => {
+    const d = hsi({ nav: north + 'nav.steer="wypt"; navigate.set(nav,"course",30);' })
+    expect(d.arcs).toContainEqual([0, 0, R - 2]) // clipped inside the rose
+    const [px, py] = [0, -R / 4], c = Math.sin(30 * Math.PI / 180), u = -Math.cos(30 * Math.PI / 180)
+    expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [px - c * 2 * R, py - u * 2 * R, px + c * 40, py + u * 40]))).toBe(true)
+    expect(at(d, 'CSEL')).toEqual([444, 436]); expect(d.text).toContainEqual(['030°', 444, 458])
+    expect(d.text).toContainEqual(['5.0C', 444, 414]) // 10 nm out, 30° off the line
+    const none = hsi({ nav: north + 'nav.steer="wypt";' })
+    expect(at(none, 'CSEL')).toEqual([444, 436]); expect(none.text.some(([, px2, py2]) => px2 === 444 && (py2 === 458 || py2 === 414))).toBe(false)
+  })
+
+  it('draws the course line through the TACAN station with TACAN steering, and none without its range', () => {
+    const d = hsi({ nav: 'navigate.set(nav,"course",90);' })
+    expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [R / 4 - 2 * R, 0, R / 4 + 40, 0]))).toBe(true)
+    expect(d.text).toContainEqual(['0.0C', 444, 414])
+    expect(hsi({ nav: 'navigate.set(nav,"course",90);', tacan: '{ mode:"rcv" }' }).arcs).toEqual([])
+    const both = hsi({ nav: north + 'navigate.set(nav,"course",90);' }) // a waypoint shown, the TACAN steered to: the line is the TACAN's alone
+    expect(both.lines.some((l) => near(l.slice(0, 4) as number[], [R / 4 - 2 * R, 0, R / 4 + 40, 0]))).toBe(true)
+    expect(both.lines.some((l) => near(l.slice(0, 4) as number[], [-2 * R, -R / 4, 40, -R / 4]))).toBe(false)
+  })
+
+  it('rides the heading select marker on the rose, with HSEL and the heading set at the lower left', () => {
+    const d = hsi({ nav: 'nav.heading=60*D2R;' })
+    const [mx, my] = polar(R + T + 8, 60), c = Math.cos(60 * Math.PI / 180), sn = Math.sin(60 * Math.PI / 180)
+    for (const side of [-1, 1]) expect(d.fills.some(([fx, fy, w, h]) => near([fx, fy, w, h], [mx + side * 6 * c - 3, my + side * 6 * sn - 3, 6, 6]))).toBe(true)
+    expect(at(d, 'HSEL')).toEqual([20, 436]); expect(d.text).toContainEqual(['060°', 20, 458])
+  })
+
+  it('joins the sequence\'s waypoints with lines when SEQ # is boxed', () => {
+    const seq = 'nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:null }; nav.waypoints[2]={ x:18520, z:-18520, elevation:0, name:"", offset:null }; navigate.insert(nav,1); navigate.insert(nav,2);'
+    const leg = (d: Drawn) => d.lines.some((l) => near(l.slice(0, 4) as number[], [0, -R / 4, R / 4, -R / 4]))
+    expect(leg(hsi({ nav: seq }))).toBe(false)
+    expect(leg(hsi({ nav: seq + 'nav.lines=true;' }))).toBe(true)
+  })
+
+  it('reads magnetic with HDG MAG: the rose turned by the variation, no T or TRUE, and the readouts magnetic', () => {
+    const d = hsi({ nav: north + 'nav.magnetic=true; nav.variation=10*D2R;' })
+    expect(d.text.some(([t, fx, fy]) => t === 'N' && near([fx, fy], polar(R + T / 2, 10)))).toBe(true)
+    for (const gone of ['TRUE', 'T']) expect(texts(d)).not.toContain(gone)
+    expect(texts(d)).toContain('350°/ 10.0'); expect(texts(d)).toContain('080°/ 10.0')
+    expect(texts(hsi())).toEqual(expect.arrayContaining(['TRUE', 'T']))
+  })
+
+  it('reads the TACAN against the station\'s own variation with TCN MGVAR, and the course set while steering to it', () => {
+    const stored = 'nav.magnetic=true; nav.variation=10*D2R; nav.stations=[{ channel:74, band:"X", x:18520, z:0, elevation:0, name:"", variation:4*D2R }]; nav.course=90*D2R;'
+    const own = hsi({ nav: stored }), local = hsi({ nav: stored + 'nav.local=true;' })
+    expect(own.text).toContainEqual(['080°/ 10.0', 60, 66]); expect(local.text).toContainEqual(['086°/ 10.0', 60, 66]) // the ship due east
+    expect(own.text).toContainEqual(['080°', 444, 458]); expect(local.text).toContainEqual(['086°', 444, 458])
+    expect(local.text).toContainEqual(['350°', 20, 458]) // the heading selected stays against the aircraft's
+    expect(hsi({ nav: stored + 'nav.local=true; nav.stations[0].channel=12;' }).text).toContainEqual(['080°/ 10.0', 60, 66]) // the station tuned is not the one stored
+    const waypoint = hsi({ nav: stored + 'nav.local=true; nav.waypoints[3]={ x:0, z:-18520, elevation:0, name:"", offset:null }; nav.current=3; nav.steer="wypt";' })
+    expect(waypoint.text).toContainEqual(['080°', 444, 458]) // a waypoint's course is the aircraft's
+  })
+
+  it('shows the groundspeed required for the time on target under the present one', () => {
+    const plan = north + 'navigate.insert(nav,3); nav.target=3; nav.steer="wypt"; nav.tot=45296+120;' // 10 nm in two minutes
+    expect(hsi({ nav: plan }).text).toContainEqual(['300G REQD', 272, 304])
+    expect(texts(hsi({ nav: north })).some((t) => t.endsWith('REQD'))).toBe(false)
+  })
+
+  const aligning = (kind: string, more = '') => `nav.ins.mode="align"; nav.ins.kind="${kind}"; nav.ins.progress=68; nav.ins.time=68; ${more}`
+  it('shows a ground alignment: GRND, the quality counting down, the time, and the position it was given', () => {
+    const d = hsi({ nav: aligning('gnd') })
+    expect(at(d, 'GRND')).toEqual([256, 318])
+    expect(d.text).toContainEqual(['QUAL: 18.8', 256, 342]); expect(d.text).toContainEqual(['TIME: 1:08', 256, 364])
+    expect(d.text).toContainEqual(['N  28°12\'26"', 256, 128]); expect(d.text).toContainEqual(['W 177°22\'25"', 256, 150])
+    expect(texts(d)).not.toContain('NO WYPTS')
+    expect(texts(d)).toContain('TIMEUFC'); expect(texts(d)).not.toContain('MAN') // MAN is a carrier alignment's
+    expect(texts(hsi({ nav: aligning('gnd', 'nav.ins.progress=5;') }))).toContain('QUAL: NO ATT')
+    expect(texts(hsi({ nav: aligning('gnd', 'nav.ins.progress=600;') }))).toContain('QUAL: 0.5 OK')
+  })
+
+  it('flashes the time while the alignment is interrupted', () => {
+    const held = aligning('gnd', 'nav.ins.held=true;')
+    expect(texts(hsi({ nav: held, time: 0.2 }))).toContain('TIME: 1:08')
+    expect(texts(hsi({ nav: held, time: 0.7 }))).not.toContain('TIME: 1:08')
+    expect(texts(hsi({ nav: aligning('gnd'), time: 0.7 }))).toContain('TIME: 1:08')
+  })
+
+  it('shows a carrier alignment with MAN in TIMEUFC\'s place, NO WYPTS after 20 s, and the ship\'s data once manual', () => {
+    const d = hsi({ nav: aligning('cv') })
+    expect(at(d, 'CV RF')).toEqual([256, 318]); expect(d.text).toContainEqual(['NO WYPTS', 256, 386])
+    expect(at(d, 'MAN')).toEqual([336, 482]); expect(texts(d)).not.toContain('TIMEUFC'); expect(boxed(d, 336, 482)).toBe(false)
+    expect(texts(hsi({ nav: aligning('cv', 'nav.ins.time=10;') }))).not.toContain('NO WYPTS')
+    const manual = hsi({ nav: aligning('cv', 'nav.ins.manual=true; carrier_given.heading=70*D2R; carrier_given.speed=17;') })
+    expect(at(manual, 'CV MAN')).toEqual([256, 318]); expect(boxed(manual, 336, 482)).toBe(true)
+    expect(manual.text).toContainEqual(['CV HDG 070°', 256, 172]); expect(manual.text).toContainEqual(['CV SPD 17KTS', 256, 194])
+    expect(texts(d).some((t) => t.startsWith('CV HDG'))).toBe(false)
+  })
+
+  it('offers STD HDG while a stored heading would shorten the alignment, and no AUTO during one', () => {
+    const seq = 'nav.waypoints[1]={ x:1, z:1, elevation:0, name:"", offset:null }; nav.waypoints[2]={ x:2, z:2, elevation:0, name:"", offset:null }; navigate.insert(nav,1); navigate.insert(nav,2);'
+    const d = hsi({ nav: seq + aligning('gnd', 'nav.ins.heading=true;') })
+    expect(at(d, 'STD HDG')).toEqual([176, 482]); expect(texts(d)).not.toContain('AUTO')
+    expect(texts(hsi({ nav: aligning('gnd') }))).not.toContain('STD HDG')
+  })
+
+  it('shows an inflight alignment by its source, without a position', () => {
+    const d = hsi({ nav: aligning('ifa') })
+    expect(at(d, 'IFA GPS')).toEqual([256, 318]); expect(d.text.some(([, px, py]) => px === 256 && py === 128)).toBe(false)
+    expect(texts(hsi({ nav: aligning('ifa', 'nav.ins.radar=true;') }))).toContain('IFA RDR')
+  })
+
+  it('lays out the position keeping options, dimming none it cannot tell and boxing the one in use', () => {
+    const d = hsi({ level: 'pos' })
+    for (const [label, px, py] of [['AINS', 10, 96], ['INS', 96, 30], ['TCN', 176, 30], ['ADC', 256, 30], ['GPS', 336, 30], ['HSI', 416, 30]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    expect(boxed(d, 96, 30)).toBe(true)
+    for (const gone of ['SCL/40', 'POS/INS', 'DATA', 'MODE', 'WYPT']) expect(texts(d)).not.toContain(gone)
+  })
+
+  it('lays out the update options, AUTO alone once boxed, and ACPT and REJ either side of the error found', () => {
+    const d = hsi({ level: 'updt' }, 'center')
+    for (const [label, px, py] of [['TCN', 96, 30], ['DSG', 176, 30], ['AUTO', 256, 30], ['HSI', 416, 30], ['GPS', 10, 176]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    expect(texts(d)).not.toContain('MAP') // no map shown
+    expect(at(hsi({ level: 'updt', map: true }, 'center'), 'MAP')).toEqual([336, 30])
+    expect(texts(hsi({ level: 'updt', map: true }, 'left'))).not.toContain('MAP')
+    expect(texts(d)).not.toContain('CANCEL')
+    expect(at(hsi({ level: 'updt', nav: 'nav.previous={ source:"ins", error:{ x:0, z:0 } };' }), 'CANCEL')).toEqual([10, 256])
+    expect(boxed(hsi({ level: 'updt', nav: 'nav.updating="dsg";' }), 176, 30)).toBe(true)
+    const auto = hsi({ level: 'updt', nav: 'nav.updating="auto";' })
+    expect(texts(auto)).toEqual(expect.arrayContaining(['AUTO', 'HSI'])); for (const gone of ['TCN', 'DSG']) expect(auto.text.some(([t, , py]) => t === gone && py === 30)).toBe(false)
+    const found = hsi({ level: 'updt', nav: 'nav.update={ kind:"tcn", delta:{ x:1852, z:1852 } };' })
+    expect(at(found, 'ACPT')).toEqual([96, 30]); expect(at(found, 'REJ')).toEqual([416, 30])
+    expect(found.text).toContainEqual(['315°/ 1.4NM', 256, 30]) // the computed position north-west of the one kept
+  })
+
+  it('centres the AMPCD\'s map on the position kept, and slews it for a MAP update', () => {
+    const boat = (d: Drawn) => d.fills.find(([, , w, h, ink]) => w === 12 && h === 12 && ink === '#ffd27a')?.slice(0, 2)
+    expect(boat(hsi({ map: true }, 'center'))).toEqual([R / 4 - 6, -6])
+    expect(boat(hsi({ map: true, nav: 'nav.ins.error={ x:9260, z:0 };' }, 'center'))?.[0]).toBeCloseTo(R / 8 - 6, 6)
+    const slewed = hsi({ map: true, nav: 'nav.updating="map"; nav.slew={ x:9260, z:0 };' }, 'center')
+    expect(boat(slewed)?.[0]).toBeCloseTo(R / 4 + R / 8 - 6, 6); expect(at(slewed, 'SLEW')).toEqual([430, 140])
+  })
+})
+
+// The DATA sublevels (figure 24-9 sheets 3 and 5, figures 24-7, 24-8 and 24-18).
+interface Data { tab?: string; check?: boolean; shown?: number; nav?: string; func?: string; back?: string; kind?: string; time?: number; cursor?: number; asked?: number; tas?: number; slew?: boolean; far?: string; reference?: boolean }
+function data(o: Data = {}): Drawn {
+  return page('hsi_data', `const ownship={ pos:{ x:0, y:1000, z:0 }, speed:${o.tas ?? 100}, vely:-2, gauges:{ ground:200, zulu:45296 } };
+    const hsi_state={ data:${JSON.stringify(o.tab ?? 'wypt')}, shown:${o.shown ?? 1}, check:${o.check ?? false}, slew:${o.slew ?? false}, gps:{ cursor:${o.cursor ?? 0}, asked:${o.asked ?? -1e9} } }, ufc={ func:${JSON.stringify(o.func ?? '')}, back:${JSON.stringify(o.back ?? '')}, kind:${JSON.stringify(o.kind ?? '')} };
+    const grid_state={ far:${o.far ?? 'null'}, waypoint:${o.reference ?? false} };
+    const sim_time=${o.time ?? 0}, altitude_set={ radar:200, baro:5000 }; ${navdefs}
+    nav.waypoints[1]={ x:0, z:-18520, elevation:304.8, name:"NIM", offset:null }; ${o.nav ?? ''}`)
+}
+describe('the HSI\'s DATA sublevels', () => {
+  const boxed = (d: Drawn, y: number) => d.rects.some(([, ry, , h]) => ry === y - 14 && h === 28)
+  it('shows a waypoint: its ID and number, position, elevation, the time on target and groundspeed, and the options', () => {
+    const d = data({ nav: 'nav.tot=13*3600+45*60+30; nav.speed=367;' })
+    expect(d.text).toContainEqual(['NIM', 256, 62]); expect(d.text).toContainEqual(['WYPT 1', 256, 84])
+    expect(d.text).toContainEqual(['N  28°22\'25"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'25"', 120, 134]); expect(d.text).toContainEqual(['ELEV 1000 FT', 120, 178])
+    expect(d.text).toContainEqual(['GRID 1RDM634386', 120, 156]) // the grid under the lat/long: proj puts it at 463403 E 3138642 N in zone 1
+    expect(d.text).toContainEqual(['TOT 13:45:30', 60, 302]); expect(d.text).toContainEqual(['GSPD 367', 320, 302])
+    for (const [label, px, py] of [['A/C', 96, 30], ['WYPT', 176, 30], ['TCN', 256, 30], ['HSI', 416, 30], ['NAVCK', 502, 96], ['UFC', 10, 96], ['SLEW', 10, 176], ['GPS', 10, 256], ['SEQUFC', 10, 416], ['REF WP', 502, 336], ['SEQ1', 502, 416], ['↑', 502, 176], ['↓', 502, 256], ['PRECISE', 176, 482]] as [string, number, number][]) {
+      expect(at(d, label), label).toEqual([px, py])
+    }
+    expect(d.text).toContainEqual(['1', 502, 216])
+    expect(d.rects).toContainEqual([150, 16, 52, 28]) // WYPT boxed
+    expect(texts(d).some((t) => t.startsWith('O/S'))).toBe(false)
+  })
+  it('shows an offset aimpoint\'s offset, a mark by its M number, and zeros for a waypoint never stored', () => {
+    const d = data({ nav: 'nav.waypoints[1].offset={ range:19812, bearing:30*D2R, elevation:381 };' })
+    expect(d.text).toContainEqual(['O/S RNG 65000 FT', 120, 208]); expect(d.text).toContainEqual(['O/S BRG 030°00\'00" T', 120, 228]); expect(d.text).toContainEqual(['O/S ELEV 1250 FT', 120, 268])
+    expect(d.text).toContainEqual(['O/S GRID 1RDM733556', 120, 248]) // 65,000 ft on 030 from the waypoint: 473336 E 3155690 N
+    expect(texts(data({ shown: 61, nav: 'nav.marks[1]={ x:0, z:0, elevation:0, name:"", offset:null };' }))).toContain('WYPT M2')
+    expect(data({ shown: 9 }).text).toContainEqual(['ELEV 0 FT', 120, 178])
+  })
+  it('writes the sequence being programmed with its target boxed, and boxes the option holding the UFC', () => {
+    const d = data({ nav: 'navigate.insert(nav,1); navigate.insert(nav,12); navigate.insert(nav,7); nav.target=12;', func: 'seq' })
+    expect(texts(d).filter((t) => /^(\d+|-)$/.test(t)).slice(0, 5)).toEqual(['1', '-', '12', '-', '7'])
+    const twelve = d.text.find(([t, , py]) => t === '12' && py === 328) as [string, number, number]
+    expect(d.rects).toContainEqual([twelve[1] - 3, 317, 26, 22])
+    expect(boxed(d, 416)).toBe(true); expect(boxed(d, 96)).toBe(false)
+    expect(boxed(data({ func: 'wypt' }), 96)).toBe(true); expect(boxed(data({ func: 'offset' }), 96)).toBe(true)
+  })
+  it('shows the aircraft\'s data: the source, the position kept, the wind, the variation, GPS\'s errors and time, and the altitude warnings', () => {
+    const d = data({ tab: 'ac', nav: 'nav.ins.error={ x:0, z:-18520 }; nav.adc.wind={ x:-10.289, z:0 }; nav.variation=(8+52/60)*D2R;' })
+    expect(d.text).toContainEqual(['INS', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'25"', 150, 124])
+    expect(d.text).toContainEqual(['WSPD 20 KT', 150, 172]); expect(d.text).toContainEqual(['WDIR 090°', 150, 196]); expect(d.text).toContainEqual(['MVAR E 8°52\'', 150, 220])
+    expect(d.text).toContainEqual(['GPS HERR 33FT', 150, 262]); expect(d.text).toContainEqual(['GPS VERR 49FT', 150, 286]); expect(d.text).toContainEqual(['GPS TIME 12:34:56Z', 150, 310])
+    expect(d.text).toContainEqual(['WARN ALT', 136, 416]); expect(d.text).toContainEqual(['5000', 96, 462]); expect(d.text).toContainEqual(['200', 176, 462])
+    for (const [label, px, py] of [['UFC', 10, 96], ['NOSEC GPS', 10, 336], ['NORM', 10, 416], ['HDG TRUE', 502, 256], ['LATLN SEC', 502, 416]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    expect(d.rects).toContainEqual([75, 16, 42, 28]) // A/C boxed
+  })
+  it('follows the A/C options: W for a westerly variation, the estimated wind, the phase, the reference and the format', () => {
+    const d = data({ tab: 'ac', nav: 'nav.variation=-10.5*D2R; nav.gps.search=99; nav.ins.mode="gyro"; nav.gps.phase="appr"; nav.magnetic=true; nav.decimal=true; nav.gps.secure=false; nav.source="adc";' })
+    expect(texts(d)).toEqual(expect.arrayContaining(['ADC', "MVAR W 10°30'", 'APPR', 'HDG MAG', 'LATLN DCML', "N  28°12.432'"]))
+    expect(texts(d).some((t) => t.endsWith('EST'))).toBe(true)
+    expect(texts(d).some((t) => t.startsWith('GPS HERR'))).toBe(false) // no satellites
+    expect(boxed(d, 336)).toBe(true) // NOSEC GPS boxed
+    expect(texts(data({ tab: 'ac', nav: 'nav.gps.search=99;' }))).not.toContain('NOSEC GPS') // secure and hearing nothing: the option is gone
+  })
+  it('boxes the altitude warning the UFC is setting', () => {
+    expect(data({ tab: 'ac', func: 'alt', kind: 'radar' }).rects).toContainEqual([147, 428, 58, 24])
+    expect(data({ tab: 'ac', func: 'alt', kind: 'baro' }).rects).toContainEqual([72, 428, 48, 24])
+    expect(data({ tab: 'ac' }).rects.some(([, ry]) => ry === 428)).toBe(false)
+  })
+  it('shows a TACAN station\'s channel, position, elevation and variation, and nothing for a free place', () => {
+    const station = 'nav.stations=[{ channel:74, band:"X", x:0, z:-18520, elevation:20, name:"NIM", variation:7*D2R }];'
+    const d = data({ tab: 'tcn', nav: station })
+    expect(d.text).toContainEqual(['74X', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'25"', 150, 124]); expect(d.text).toContainEqual(['ELEV 66 FT', 150, 172]); expect(d.text).toContainEqual(["MVAR E 7°00'", 150, 196])
+    expect(d.text).toContainEqual(['1', 502, 216]); expect(at(d, 'UFC')).toEqual([10, 96])
+    const free = data({ tab: 'tcn', nav: station + 'nav.station=1;' })
+    expect(free.text).toContainEqual(['2', 502, 216]); expect(texts(free).some((t) => t.startsWith('ELEV'))).toBe(false)
+  })
+  it('writes the waypoint to PRECISE: hundredths of a second and the grid to a metre, with PRECISE boxed', () => {
+    const d = data({ nav: 'nav.precise=true;' })
+    expect(d.text).toContainEqual(['N  28°22\'24.84"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'24.60"', 120, 134]); expect(d.text).toContainEqual(['GRID 1RDM6340338642', 120, 156])
+    expect(d.rects.some(([, ry, , h]) => ry === 468 && h === 28)).toBe(true); expect(data().rects.some(([, ry]) => ry === 468)).toBe(false)
+    expect(texts(data({ nav: 'nav.precise=true; nav.decimal=true;' }))).toContain("N  28°22.414'") // not in decimal minutes
+  })
+  it('writes each length in the unit chosen for it, and the offset\'s bearing against the meridian chosen', () => {
+    const d = data({ nav: 'nav.waypoints[1].offset={ range:19812, bearing:30.2575*D2R, elevation:381 }; nav.units={ waypoint:"feet", offset:"mtrs", station:"feet", range:"nm" }; nav.meridian="magnetic"; nav.variation=7*D2R;' })
+    expect(texts(d)).toEqual(expect.arrayContaining(['ELEV 1000 FT', 'O/S RNG 11 NM', 'O/S BRG 023°15\'27" M', 'O/S ELEV 381 M']))
+    expect(texts(data({ nav: 'nav.units.waypoint="mtrs";' }))).toContain('ELEV 305 M')
+    const yards = data({ nav: 'nav.waypoints[1].offset={ range:914.4, bearing:0, elevation:0 }; nav.units.range="yard"; nav.magnetic=true; nav.variation=7*D2R;' })
+    expect(texts(yards)).toEqual(expect.arrayContaining(['O/S RNG 1000 YD', 'O/S BRG 000°00\'00" T'])) // HDG MAG is the displays' reference, not the offset's
+  })
+  it('flashes an offset grid keyed past its limit in the O/S GRID field, for the waypoint it was keyed for', () => {
+    const far = '{ shown:1, text:"1RFM000000" }', offset = 'nav.waypoints[1].offset={ range:19812, bearing:30*D2R, elevation:0 };'
+    expect(data({ far, time: 0 }).text).toContainEqual(['O/S GRID 1RFM000000', 120, 248]); expect(texts(data({ far, time: 0.5 })).some((t) => t.startsWith('O/S GRID'))).toBe(false)
+    expect(texts(data({ far, time: 0, nav: offset })).filter((t) => t.startsWith('O/S GRID'))).toEqual(['O/S GRID 1RFM000000']) // in place of the offset's own
+    expect(texts(data({ far, time: 0.5, nav: offset })).some((t) => t.startsWith('O/S GRID'))).toBe(false)
+    expect(texts(data({ far: '{ shown:2, text:"1RFM000000" }', time: 0, nav: offset }))).toContain('O/S GRID 1RDM733556')
+  })
+  it('writes no grid for a waypoint past N84', () => {
+    const d = data({ nav: 'const far=navigate.world(85,-177.3735); nav.waypoints[1].x=far.x; nav.waypoints[1].z=far.z;' })
+    expect(texts(d)).toContain('N  85°00\'00"'); expect(texts(d).some((t) => t.startsWith('GRID'))).toBe(false)
+  })
+  it('boxes SLEW with the word at the upper right, REF WP, and the UFC option through its units pages', () => {
+    const d = data({ slew: true, reference: true })
+    expect(d.text).toContainEqual(['SLEW', 452, 62]); expect(boxed(d, 176)).toBe(true); expect(boxed(d, 336)).toBe(true)
+    const plain = data(); expect(texts(plain).filter((t) => t === 'SLEW').length).toBe(1); expect(boxed(plain, 176)).toBe(false); expect(boxed(plain, 336)).toBe(false)
+    expect(boxed(data({ func: 'elevation', back: 'wypt' }), 96)).toBe(true); expect(boxed(data({ func: 'range', back: 'offset' }), 96)).toBe(true); expect(boxed(data({ func: 'elevation', back: 'station' }), 96)).toBe(false)
+    expect(boxed(data({ tab: 'tcn', func: 'elevation', back: 'station' }), 96)).toBe(true); expect(boxed(data({ tab: 'tcn', func: 'elevation', back: 'wypt' }), 96)).toBe(false)
+  })
+  it('runs a long sequence onto a second row, eight to a row', () => {
+    const d = data({ nav: 'for(const n of [2,4,7,11,12,14,17,21,23,36]) navigate.insert(nav,n); nav.target=23;' })
+    const row = (y: number) => d.text.filter(([t, , py]) => py === y && /^\d+$/.test(t)).map(([t]) => t)
+    expect(row(328)).toEqual(['2', '4', '7', '11', '12', '14', '17', '21']); expect(row(350)).toEqual(['23', '36'])
+    const target = d.text.find(([t, , py]) => t === '23' && py === 350) as [string, number, number]
+    expect(d.rects).toContainEqual([target[1] - 3, 339, 26, 22])
+  })
+  it('names the variation the TACAN readouts use on the TACAN data, and a station\'s elevation in its unit', () => {
+    const station = 'nav.stations=[{ channel:74, band:"X", x:0, z:-18520, elevation:20, name:"NIM", variation:7*D2R }];'
+    expect(at(data({ tab: 'tcn', nav: station }), 'AC MGVAR')).toEqual([10, 416]); expect(at(data({ tab: 'tcn', nav: station + 'nav.local=true;' }), 'TCN MGVAR')).toEqual([10, 416])
+    expect(texts(data({ tab: 'tcn', nav: station + 'nav.units.station="mtrs";' }))).toContain('ELEV 20 M')
+  })
+  const points = 'nav.points=[{ name:"ALPHA", x:0, z:-9260, elevation:30.48 }, { name:"NIM", x:0, z:-18520, elevation:20 }];'
+  it('lists the GPS\'s points with the cursor\'s boxed, its data once it has come, and XFER then', () => {
+    const waiting = data({ tab: 'gps', nav: points, time: 10, asked: 8 })
+    expect(waiting.text).toContainEqual(['ALPHA', 70, 68]); expect(waiting.text).toContainEqual(['ALPHA', 80, 206]); expect(waiting.text).toContainEqual(['NIM', 80, 230])
+    expect(waiting.rects).toContainEqual([76, 194, 58, 24])
+    expect(waiting.text.some(([, px, py]) => px === 70 && py === 96)).toBe(false); expect(texts(waiting)).not.toContain('XFER')
+    const ready = data({ tab: 'gps', nav: points, time: 11, asked: 8 })
+    expect(ready.text).toContainEqual(['N  28°17\'25"', 70, 96]); expect(ready.text).toContainEqual(['ELEV 100 FT', 70, 144]); expect(at(ready, 'XFER')).toEqual([10, 96])
+    expect(ready.text).toContainEqual(['WYPT 1', 290, 96]); expect(ready.text).toContainEqual(['NIM', 290, 68]); expect(ready.text).toContainEqual(['PAGE 1', 416, 452])
+    expect(texts(data({ tab: 'gps', nav: points, time: 11, asked: 8, shown: 60 }))).not.toContain('XFER') // not into a mark
+    expect(data({ tab: 'gps', nav: points, time: 11, asked: 8, cursor: 1 }).rects).toContainEqual([76, 218, 38, 24])
+  })
+  it('lays the NAV check out: the INS, GPS and air data velocities, the wind, groundspeed and true airspeed', () => {
+    const d = data({ check: true, tas: 100, nav: 'nav.adc.wind={ x:5.144, z:-10.289 };' })
+    for (const [name, cx] of [['INS', 150], ['GPS', 260], ['ADC', 370]] as [string, number][]) expect(d.text).toContainEqual([name, cx, 90])
+    expect(d.text).toContainEqual(['214', 370, 140]); expect(d.text).toContainEqual(['10', 370, 164]) // air data: 100 m/s north with the wind found
+    expect(d.text).toContainEqual(['20', 150, 300]); expect(d.text).toContainEqual(['10', 150, 324]) // the wind's north and east
+    expect(d.text).toContainEqual(['200', 410, 300]); expect(d.text).toContainEqual(['194', 410, 324])
+    expect(d.rects.some(([, ry]) => ry === 82)).toBe(true) // NAVCK boxed
+    for (const gone of ['UFC', 'SEQUFC', '# INVALID', '* EST']) expect(texts(d)).not.toContain(gone)
+  })
+  it('marks invalid velocities with a #, and an estimated wind with a *', () => {
+    const d = data({ check: true, nav: 'nav.ins.mode="gyro"; nav.gps.search=99;' })
+    expect(texts(d)).toEqual(expect.arrayContaining(['# INVALID', '* EST']))
+    expect(d.text.filter(([t, px]) => t.endsWith('#') && px === 150).length).toBe(3); expect(d.text.filter(([t, px]) => t.endsWith('#') && px === 260).length).toBe(3)
+    expect(d.text.filter(([t, px]) => t.endsWith('#') && px === 370).length).toBe(0)
+  })
+})
+
+// The square identification grid (24.2.5.1.2, figure 24-9 sheet 4). The jet is over the map's origin,
+// 463,347 E 3,120,212 N in square 1R DM; waypoint 1 lies ten miles north of it.
+describe('the square identification grid', () => {
+  const consts = ['grid_state', 'GRID_SHIFTS', 'GRID_BOX'].map((n) => new RegExp(`\\nconst ${n}=[^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
+  const grid = (o: { nav?: string; state?: string; shown?: number } = {}) => page('ddi_grid', `const ownship={ pos:{ x:0, y:1000, z:0 }, speed:100 }, hsi_state={ shown:${o.shown ?? 1} }; ${navdefs}
+    nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:null }; ${o.nav ?? ''}
+    ${consts} ${o.state ?? ''} ${lift('grid_reference')} ${lift('grid_shifts')}`, 'right')
+  const cell = (j: number, i: number) => [76 + (j + 0.5) * 72, 76 + i * 72 + 16]
+  it('rules five squares each way and letters each, north up, the aircraft\'s square in the middle', () => {
+    const d = grid()
+    for (const k of [0, 1, 2, 3, 4, 5]) { expect(d.lines.some(([ax, ay, bx, by]) => ax === 76 + k * 72 && ay === 76 && bx === 76 + k * 72 && by === 436)).toBe(true); expect(d.lines.some(([ax, ay, bx, by]) => ax === 76 && ay === 76 + k * 72 && bx === 436 && by === 76 + k * 72)).toBe(true) }
+    for (const [id, j, i] of [['D M', 2, 2], ['D N', 2, 1], ['D P', 2, 0], ['D L', 2, 3], ['D K', 2, 4], ['B M', 0, 2], ['C M', 1, 2], ['E M', 3, 2], ['F M', 4, 2], ['F P', 4, 0], ['B K', 0, 4]] as [string, number, number][]) expect(d.text, id).toContainEqual([id, ...cell(j, i)])
+    expect(d.text.filter(([t]) => /^[A-Z] [A-Z]$/.test(t)).length).toBe(25)
+    expect(texts(d).some((t) => /^\d+ \d+$/.test(t))).toBe(false) // all one zone: no zone numbers
+  })
+  it('draws the aircraft as a cross, the waypoint shown as a star and its offset as a circle, where they lie', () => {
+    const d = grid({ nav: 'nav.waypoints[1].offset={ range:19812, bearing:30*D2R, elevation:0 };' })
+    const px = 76 + 2.63346877 * 72, py = 76 + (5 - 2.20211791) * 72
+    expect(d.lines.some(([ax, ay, bx, by]) => Math.abs(ax - (px - 9)) < 0.01 && Math.abs(bx - (px + 9)) < 0.01 && Math.abs(ay - py) < 0.01 && Math.abs(by - py) < 0.01)).toBe(true)
+    expect(d.lines.some(([ax, ay, bx, by]) => Math.abs(ax - px) < 0.01 && Math.abs(bx - px) < 0.01 && Math.abs(ay - (py - 9)) < 0.01 && Math.abs(by - (py + 9)) < 0.01)).toBe(true)
+    const wx = 76 + 2.63403 * 72, wy = 76 + (5 - 2.38642) * 72 // 463,403 E 3,138,642 N
+    expect(d.moves.some(([mx, my]) => Math.abs(mx - wx) < 0.05 && Math.abs(my - (wy - 9)) < 0.05)).toBe(true) // the star's top point
+    const ox = 76 + 2.73336 * 72, oy = 76 + (5 - 2.5569) * 72 // 473,336 E 3,155,690 N
+    expect(d.arcs.some(([ax, ay, r]) => Math.abs(ax - ox) < 0.05 && Math.abs(ay - oy) < 0.05 && r === 8)).toBe(true)
+    expect(grid().arcs.some(([, , r]) => r === 8)).toBe(false) // no offset, no circle
+    expect(grid({ shown: 9 }).moves.some(([mx, my]) => Math.abs(mx - wx) < 0.05 && Math.abs(my - (wy - 9)) < 0.05)).toBe(false) // a waypoint never stored draws no star
+  })
+  it('draws the cursor as two bars and boxes the square chosen', () => {
+    const d = grid({ state: 'grid_state.cursor={ x:300, y:200 }; grid_state.chosen={ zone:1, band:"R", id:"EN" };' })
+    expect(d.lines.some(([ax, ay, bx, by]) => ax === 292 && ay === 189 && bx === 292 && by === 211)).toBe(true); expect(d.lines.some(([ax, ay, bx, by]) => ax === 308 && ay === 189 && bx === 308 && by === 211)).toBe(true)
+    const [cx, cy] = cell(3, 1); expect(d.rects).toContainEqual([cx - 26, cy - 13, 52, 26]); expect(d.rects.length).toBe(1)
+    expect(grid({ state: 'grid_state.chosen={ zone:2, band:"R", id:"EN" };' }).rects.length).toBe(0) // the same letters in another zone are another square
+    expect(grid().rects.length).toBe(0)
+  })
+  it('offers the eight grid shifts at their pushbuttons, S where MENU otherwise is, and none once shifted', () => {
+    const d = grid()
+    for (const [label, px, py] of [['N', 256, 30], ['S', 256, 482], ['NW', 10, 96], ['W', 10, 256], ['SW', 10, 416], ['NE', 502, 96], ['E', 502, 256], ['SE', 502, 416]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    const shifted = grid({ state: 'grid_state.shift={ east:0, north:1 };' })
+    for (const label of ['N', 'S', 'NW', 'W', 'SW', 'NE', 'E', 'SE']) expect(texts(shifted)).not.toContain(label)
+    expect(shifted.text).toContainEqual(['D S', ...cell(2, 2)]) // five squares north of M: N, P, Q, R, S
+    expect(shifted.lines.filter(([ax, , bx]) => bx - ax === 18).length).toBe(0) // the aircraft is off this grid
+  })
+  it('marks the zones either side of a zone\'s edge above and below where it crosses', () => {
+    const d = grid({ nav: 'nav.waypoints[1]={ x:-200000, z:0, elevation:0, name:"", offset:null };', state: 'grid_state.waypoint=true;' }) // 200 km west: zone 1's edge, 206 km east of its false origin, runs through the grid
+    const marks = d.text.filter(([t]) => /^\d+ \d+$/.test(t))
+    expect(marks).toEqual([['60 1', 220, 64], ['60 1', 220, 448]]) // between the second and third columns
+    const row = d.text.filter(([t, , py]) => /^[A-Z] [A-Z]$/.test(t) && py === cell(0, 2)[1]).map(([t]) => t[0])
+    expect(row.slice(2)).toEqual(['B', 'C', 'D']); expect(row.slice(0, 2).every((c) => 'STUVWXYZ'.includes(c))).toBe(true) // zone 60's columns are lettered from the third set
+  })
+  it('builds it about the waypoint shown with REF WP boxed', () => {
+    const d = grid({ nav: 'nav.waypoints[1]={ x:200000, z:0, elevation:0, name:"", offset:null };', state: 'grid_state.waypoint=true;' })
+    expect(d.text).toContainEqual(['F M', ...cell(2, 2)]); expect(d.text).toContainEqual(['D M', ...cell(0, 2)])
+    expect(grid({ nav: 'nav.waypoints[1]={ x:200000, z:0, elevation:0, name:"", offset:null };' }).text).toContainEqual(['D M', ...cell(2, 2)])
+    expect(grid({ shown: 9, state: 'grid_state.waypoint=true;' }).text).toContainEqual(['D M', ...cell(2, 2)]) // no waypoint there: the aircraft
+  })
+  it('leaves a row past N84 blank', () => {
+    const d = grid({ nav: 'nav.waypoints[1]={ ...navigate.world(83.5,-177.3735), elevation:0, name:"", offset:null };', state: 'grid_state.waypoint=true;' })
+    const ids = d.text.filter(([t]) => /^[A-Z] [A-Z]$/.test(t))
+    expect(ids.some(([, , py]) => py === cell(0, 0)[1] || py === cell(0, 1)[1])).toBe(false); expect(ids.filter(([, , py]) => py === cell(0, 2)[1]).length).toBe(5)
+    for (const label of ['N']) expect(texts(d)).not.toContain(label)
+    expect(texts(d)).toContain('S')
+  })
+})
+
+// The MUMI display (2.13.1.2.2, figure 2-21).
+describe('the MUMI display', () => {
+  const mumi = (o: { grounded?: boolean; nav?: string; file?: string; at?: number; time?: number } = {}) => page('ddi_mumi', `const ownship={ grounded:${o.grounded ?? true} }, sim_time=${o.time ?? 10};
+    ${navdefs} navigate.load(nav,{ identifier:"MIDWAY", waypoints:[], stations:[], points:[] }); ${o.nav ?? ''}
+    const mumi={ file:${JSON.stringify(o.file ?? '')}, at:${o.at ?? -1e9} }, MUMI_FILES={ 5:"WYPT", 4:"TCN", 20:"GPS WYPT", 19:"GPS ALM" };`)
+  it('shows the memory unit\'s identifier and an option for each file it holds, GPS over WYPT and over ALM', () => {
+    const d = mumi()
+    expect(d.text).toContainEqual(['MU ID MIDWAY', 256, 96])
+    for (const [label, px, py] of [['WYPT', 10, 96], ['TCN', 10, 176], ['WYPT', 96, 482], ['ALM', 176, 482]] as [string, number, number][]) expect(d.text).toContainEqual([label, px, py])
+    expect(d.text.filter(([t]) => t === 'GPS').map(([, px, py]) => [px, py])).toEqual([[176, 460], [96, 460]])
+    expect(d.rects).toEqual([])
+  })
+  it('reads NO IDENT with no user files, and leaves their options off', () => {
+    const d = mumi({ nav: 'nav.memory.files=[];' })
+    expect(texts(d)).toContain('MU ID NO IDENT'); for (const gone of ['WYPT', 'TCN', 'GPS', 'ALM']) expect(texts(d)).not.toContain(gone)
+  })
+  it('boxes an option for the second its file is read', () => {
+    expect(mumi({ file: 'TCN', at: 9.5 }).rects).toContainEqual([-11, 162, 42, 28])
+    expect(mumi({ file: 'TCN', at: 8 }).rects).toEqual([])
+  })
+})
+
 describe('the gauges the pages read', () => {
   it('carry a smoothed yaw rate, vertical speed, air temperature and zulu seconds from the IFEI\'s clock', () => {
     expect(source).toMatch(/heading, yaw:yaw_state\.rate, vspeed:fpm, oat:15-0\.0065\*ownship\.pos\.y, zulu:ifei_zulu\(ifei_view\(\),now\),/)
@@ -879,7 +1396,7 @@ describe('the gauges the pages read', () => {
 // the equipment it reads; ufc_press is one pushbutton against the radios, EMCON and
 // stand-ins for the index, the warning latch and the actions it fires;
 // ufc_button_at maps a panel point to the painted button under it.
-const ufcdefs = ['UFC_PAGES', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
+const ufcdefs = ['UFC_PAGES', 'UFC_ENTRY', 'UFC_UNITS', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
   const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;`).exec(source)?.[0]
   if (!m) throw new Error(`${n} not found in engine.ts`)
   return m
@@ -890,21 +1407,21 @@ interface Face { scratch: string; options: string[] }
 interface Ufc { func: string; entry: string; error: boolean; blink: number }
 interface Tacan { on: boolean; channel: number; band: string; mode: string; air: boolean }
 interface Radios { tacan: Tacan; ils: { on: boolean; channel: number } }
-interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string }
+interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string; precise?: boolean; unit?: string; meridian?: string }
 interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios; face: Face }
 const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', entry: '', error: false, blink: 0, ...over })
 function ufcface(state: Ufc, live: Live = {}, now = 0): Face {
   const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')}
     const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...live.tacan }, ils:{ on:true, channel:11, ...live.ils } };
-    return ufc_face(state, { emcon:!!live.emcon, radios, timer:live.timer ?? "" }, now);`)
+    return ufc_face(state, { ...live, emcon:!!live.emcon, radios, timer:live.timer ?? "" }, now);`)
   return run(state, live, now) as Face
 }
 function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false): Pressed {
   const run = new Function('buttons', 'start', 'index', 'sounding', `${ufcdefs} ${shipdefs}
-    let law_index=index, law_primary=sounding, law_disabled=false, ufc_dirty=false; const RADAR={ emcon:false }, pressed=[];
+    let law_index=index, law_primary=sounding, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, pressed=[], data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, nav={ precise:false, units:{}, meridian:"true" };
     const pit_press=(a)=>pressed.push(a), timer_enter=()=>false, timer={ shown:"" };
     const ufc_update=()=>{}; const performance={ now:()=>1000 };
-    const ufc={ func:"", entry:"", error:false, blink:0, ...start };
+    const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"", ...start };
     ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('ufc_face')}
     for(const b of buttons) ufc_press(b);
     return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, { emcon, radios, timer:"" }, 2000) };`)
@@ -973,6 +1490,25 @@ describe('the IFEI pushbuttons', () => {
     expect(ifeibutton(0.150, -0.265)).toBe(null) // the engine window
     expect(ifeibutton(0.190, -0.160)).toBe(null) // the fuel window
     expect(ifeibutton(0.080, -0.205)).toBe(null)
+  })
+})
+
+describe('the UFC\'s data pages', () => {
+  it('offers the waypoint\'s options, HDTH only with PRECISE, and the offset\'s', () => {
+    expect(ufcface(fresh({ func: 'wypt' })).options).toEqual([' POSN', '', ' ELEV', ' GRID', ' O/S'])
+    expect(ufcface(fresh({ func: 'wypt' }), { precise: true }).options).toEqual([' POSN', ' HDTH', ' ELEV', ' GRID', ' O/S'])
+    expect(ufcface(fresh({ func: 'offset' })).options).toEqual([' RNG', ' BRG', ' ELEV', ' GRID', ''])
+  })
+  it('cues the unit in use on a units page, and reads the bearing\'s meridian in its one option', () => {
+    expect(ufcface(fresh({ func: 'elevation' }), { unit: 'mtrs' }).options).toEqual([' FEET', ':MTRS', '', '', ''])
+    expect(ufcface(fresh({ func: 'elevation' }), { unit: 'feet' }).options).toEqual([':FEET', ' MTRS', '', '', ''])
+    expect(ufcface(fresh({ func: 'range' }), { unit: 'yard' }).options).toEqual([' FEET', ' MTRS', ' NM', ':YARD', ''])
+    expect(ufcface(fresh({ func: 'bearing' }), { meridian: 'true' }).options).toEqual([':TRUE', '', '', '', ''])
+    expect(ufcface(fresh({ func: 'bearing' }), { meridian: 'magnetic' }).options).toEqual([':MAG', '', '', '', ''])
+  })
+  it('runs a precise grid\'s ten digits off the left of the scratchpad', () => {
+    expect(ufcface(fresh({ func: 'wypt', entry: '6340338642' })).scratch).toBe('340338642')
+    expect(ufcface(fresh({ func: 'wypt', entry: '634386' })).scratch).toBe('   634386')
   })
 })
 
@@ -1109,7 +1645,7 @@ describe('the radar silence the game reads', () => {
       'if(RADAR.sil) rows.push([GR,"SIL"]);',
       'RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";',
     ])
-    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(9)
+    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(10) // the tenth: whether the radar can give an inflight alignment its velocities
   })
 })
 
@@ -1121,13 +1657,13 @@ describe('the radar silence the game reads', () => {
 describe('the TIMEUFC page', () => {
   const timers = /\n\/\/ The mission computer's timers[\s\S]*?\n(?=const ufc=\{)/.exec(source)?.[0] ?? ''
   interface Timed { ufc: Ufc; shown: string; et: number; cd: number; running: { et: boolean; cd: boolean }; face: Face }
-  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', `${ufcdefs} ${shipdefs} let sim_time=0; ${timers}
-    let law_primary=false, law_disabled=false, ufc_dirty=false; const RADAR={ emcon:false }, ufc_update=()=>{}, performance={ now:()=>1000 };
-    const ufc={ func:"", entry:"", error:false, blink:0 }, hsi_state={ dctr:false, map:false }, hsi_range=()=>{};
+  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', 'navigate', `${ufcdefs} ${shipdefs} let sim_time=0; ${timers}
+    let law_primary=false, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, ufc_update=()=>{}, performance={ now:()=>1000 }, data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, ownship={};
+    const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"" }, hsi_state={ dctr:false, map:false, level:"" }, hsi_range=()=>{}; ${navdefs}
     ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
     for(const b of buttons){ if(typeof b==="number") sim_time=b; else if(b==="timeufc") hsi_press(17,"left"); else ufc_press(b); }
     return { ufc, shown:timer.shown, et:timer_seconds("et"), cd:timer_seconds("cd"), running:{ et:timer.et.since!==null, cd:timer.cd.since!==null },
-      face:ufc_face(ufc, { emcon, radios, timer:timer.shown }, 0) };`)(buttons) as Timed
+      face:ufc_face(ufc, { emcon, radios, timer:timer.shown }, 0) };`)(buttons, navigate) as Timed
 
   it('is loaded by TIMEUFC, boxed while it holds the UFC, and cleared by a second press', () => {
     expect(timers).not.toBe('')
@@ -1247,9 +1783,9 @@ describe('the DDI view', () => {
 describe('the TAC and SUPT menus', () => {
   const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
-  function run(menu: string, press = 0, designator = 'center') {
+  function run(menu: string, press = 0, designator = 'center', shows = 'hud') {
     return new Function(`let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
-      const ddi_state={ left:{ page:'hud', menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
+      const ddi_state={ left:{ page:${JSON.stringify(shows)}, menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
       function cautions_draw(){} function ddi_show(d,p){ shown=p; }
       ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')} ${lift('diamond')}
       const text=[], rects=[], moves=[];
@@ -1259,6 +1795,11 @@ describe('the TAC and SUPT menus', () => {
   }
   // The TDC assignment diamond (#27, #32): the upper right corner of the display
   // the sensor control switch gave the TDC, and no other.
+  it('writes MENU at its pushbutton on every page but the grid display, whose S shift is there', () => {
+    const labels = (menu: string, shows: string) => run(menu, 0, 'center', shows).text.map((t) => t[0])
+    expect(labels('', 'hud')).toEqual(['MENU']); expect(labels('', 'grid')).toEqual([])
+    expect(labels('tac', 'grid')).toContain('MENU') // its menu, once up, is left the same way
+  })
   it('draws the TDC diamond in the upper right corner of the display that has the TDC', () => {
     expect(run('tac', 0, 'left').moves).toEqual([[476, 30], [488, 42], [476, 54], [464, 42]])
     expect(run('tac', 0, 'right').moves).toEqual([])
@@ -1269,7 +1810,7 @@ describe('the TAC and SUPT menus', () => {
   })
   it('puts each SUPT option at its pushbutton', () => {
     const d = run('supt')
-    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MENU', 256, 482]])
+    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MUMI', 416, 30], ['MENU', 256, 482]])
   })
   it('shows only options the game builds', () => {
     for (const rows of Object.values(menus)) for (const [, , target] of rows) expect(built).toContain(target)

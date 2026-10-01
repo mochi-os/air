@@ -82,6 +82,11 @@ msgstr "{0, plural, one {已選 #} other {已選 #}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, other {#/{2} 名玩家}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, other {+# 項}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -462,7 +467,7 @@ msgstr "任何已登入的人"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
-msgstr "訂閱此來源的一切都將停止接收。之後你可以複製新的網址。"
+msgstr "任何訂閱此訂閱源的程式都將無法再接收更新。之後你可以複製新的網址。"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1231,6 +1236,16 @@ msgstr "無法使用該帳戶進行驗證。請重試。"
 #: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "對抗措施"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "航線設定向左"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "航線設定向右"
 
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
@@ -2173,6 +2188,16 @@ msgstr "頭部"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "頭部追蹤"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "航向設定向左"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "航向設定向右"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3722,7 +3747,7 @@ msgstr "已撤銷 RSS 存取權限"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
-msgstr "RSS 訊息來源"
+msgstr "RSS 訂閱源"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"

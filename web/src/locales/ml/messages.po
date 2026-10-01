@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# തിരഞ്ഞെടുത്തു} other {# ത
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} കളിക്കാരൻ} other {#/{2} കളിക്കാർ}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# കൂടി} other {+# കൂടി}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "ആ അക്കൗണ്ട് ഉപയോഗിച്ച് പരി
 msgid "Countermeasures"
 msgstr "പ്രതിരോധ നടപടികൾ"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "കോഴ്സ് സെറ്റ് ഇടത്തേക്ക്"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "കോഴ്സ് സെറ്റ് വലത്തേക്ക്"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "തകർന്നുവീണു"
@@ -2173,6 +2188,16 @@ msgstr "തല"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ഹെഡ് ട്രാക്കിംഗ്"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "ഹെഡിങ് സെറ്റ് ഇടത്തേക്ക്"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "ഹെഡിങ് സെറ്റ് വലത്തേക്ക്"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3474,7 +3499,7 @@ msgstr "ലോഗിനിലേക്ക് തിരിച്ചുവിട�
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Reduce interest"
-msgstr "പുതുക്കുക"
+msgstr "താൽപ്പര്യം കുറയ്ക്കുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Reference"
@@ -3494,7 +3519,7 @@ msgstr "ബന്ധപ്പെട്ടത്"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Relative (5m, 3h, 2d)"
-msgstr "24 മണിക്കൂറിനുള്ളിൽ ആപേക്ഷികം, അല്ലാത്തപക്ഷം absolute"
+msgstr "ആപേക്ഷികം (5m, 3h, 2d)"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Relative within 24 hours, else absolute"
@@ -3535,12 +3560,12 @@ msgstr "{name} നീക്കം ചെയ്യുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Remove {r}"
-msgstr "{r} ഫിൽട്ടർ നീക്കം ചെയ്യുക"
+msgstr "{r} നീക്കം ചെയ്യുക"
 
 #: ../../../lib/web/src/features/access/access-list.tsx
 #: ../../../lib/web/src/features/access/access-list.tsx
 msgid "Remove access rule"
-msgstr "ആക്സസ് നീക്കം ചെയ്യണോ?"
+msgstr "ആക്സസ് നിയമം നീക്കം ചെയ്യുക"
 
 #. placeholder {0}: formatSubject(removeSubject ?? '', removeData?.name)
 #: ../../../lib/web/src/features/access/access-list.tsx
@@ -3554,7 +3579,7 @@ msgstr "ആക്സസ് നീക്കം ചെയ്യണോ?"
 #: ../../../lib/web/src/components/post-tags.tsx
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Remove interest"
-msgstr "item നീക്കം ചെയ്യുക"
+msgstr "താൽപ്പര്യം നീക്കം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 msgid "Remove item"
@@ -3576,7 +3601,7 @@ msgstr "കോളം പുനർനാമകരണം ചെയ്യുക"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "Rename this board column"
-msgstr "design മാറ്റിസ്ഥാപിക്കണോ?"
+msgstr "ഈ ബോർഡ് കോളത്തിന്റെ പേര് മാറ്റുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Rendering by <0>three.js</0> (MIT licence)."

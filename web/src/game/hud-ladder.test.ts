@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as navigate from './navigation'
 import * as THREE from 'three'
 
 // The pitch ladder rotates about the velocity vector (NATOPS A1-F18AC-NFM-000,
@@ -186,17 +187,47 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
     return source.slice(start, end)
   }
 
+  // the waterline section against the navigation suite: aligned and navigating unless told otherwise
+  const waterline = (pa: boolean, reference = 'auto', change: (nav: navigate.Navigation) => void = () => {}, time = 0) => {
+    const c = record(), nav = navigate.fresh(1)
+    navigate.ready(nav, { x: 0, z: 0 })
+    change(nav)
+    const left = new Function('hctx', 'pa', 'bore', 'hs', 'GR', 'navigate', 'nav', 'reference', 'fpm', 'ghost', 'sim_time',
+      `${section('\t// ---- waterline symbol', '\t// ---- the velocity vector')} return { fpm, ghost };`)(c.hctx, pa, [100, 100], 1, 'g', navigate, nav, reference, [50, 60], [70, 60], time) as { fpm: number[] | null; ghost: number[] | null }
+    return { paths: c.paths, ...left }
+  }
   it('draws the waterline symbol as a W', () => {
-    const c = record()
-    new Function('hctx', 'pa', 'bore', 'hs', 'GR', section('\t// ---- waterline symbol', '\t// ---- the velocity vector'))(c.hctx, true, [100, 100], 1, 'g')
-    const [w] = c.paths
+    const [w] = waterline(true).paths
     expect(w.points.map(([, x, y]) => [x, y])).toEqual([[84, 100], [92, 100], [96, 107], [100, 100], [104, 107], [108, 100], [116, 100]])
+  })
+
+  it('keeps the velocity vector and draws no waterline up and away with the INS navigating', () => {
+    const d = waterline(false)
+    expect(d.paths).toEqual([])
+    expect(d.fpm).toEqual([50, 60]); expect(d.ghost).toEqual([70, 60])
+  })
+
+  it('puts the waterline symbol in the velocity vector\'s place without INS attitude, or with ATT at STBY (2.13.4.8.13)', () => {
+    for (const d of [waterline(false, 'stby'), waterline(false, 'auto', (nav) => { nav.ins.mode = 'off' })]) {
+      expect(d.paths.length).toBe(1)
+      expect(d.paths[0].points[0].slice(1)).toEqual([84, 100])
+      expect(d.fpm).toBeNull(); expect(d.ghost).toBeNull()
+    }
+  })
+
+  it('flashes the velocity vector slowly on air data velocities, and holds it steady on GPS ones', () => {
+    const attitude = (nav: navigate.Navigation) => { nav.ins.mode = 'gyro' }
+    const blind = (nav: navigate.Navigation) => { nav.ins.mode = 'gyro'; nav.gps.search = 500 }
+    expect(waterline(false, 'auto', blind, 0.2).fpm).toEqual([50, 60])
+    expect(waterline(false, 'auto', blind, 0.7).fpm).toBeNull()
+    expect(waterline(false, 'auto', blind, 0.7).paths).toEqual([]) // no waterline: the attitude is still the INS's
+    expect(waterline(false, 'auto', attitude, 0.7).fpm).toEqual([50, 60])
   })
 
   it('draws the ghost as the wings and tail without the circle, solid', () => {
     const c = record()
     new Function('hctx', 'fpm', 'ghost', 'fpm_limited', 'ghost_limited', 'cage', 'bore', 'hs', 'GR', 'sim_time', 'hud_ladder',
-      `${section('\t// ---- the velocity vector, placed above', '\t// ---- E bracket')}`)(c.hctx, [100, 100], [140, 100], false, false, true, [100, 80], 1, 'g', 0, {})
+      `${section('\t// ---- the velocity vector, placed above', '\t// ---- the course line')}`)(c.hctx, [100, 100], [140, 100], false, false, true, [100, 80], 1, 'g', 0, {})
     expect(c.arcs.map(([x, y]) => [x, y])).toEqual([[100, 100]])
     const ghost = c.paths.find(path => path.points.some(([, x]) => x > 125))
     expect(ghost?.points.map(([, x, y]) => [x, y])).toEqual([[134, 100], [126, 100], [146, 100], [154, 100], [140, 94], [140, 88]])

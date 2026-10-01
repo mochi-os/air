@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ} other {#
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} ಆಟಗಾರ} other {#/{2} ಆಟಗಾರರು}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# ಇನ್ನಷ್ಟು} other {+# ಇನ್ನಷ್ಟು}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "ಆ ಖಾತೆಯೊಂದಿಗೆ ಪರಿಶೀಲಿಸಲು ಸ
 msgid "Countermeasures"
 msgstr "ಪ್ರತಿಕ್ರಮಗಳು"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "ಕೋರ್ಸ್ ಸೆಟ್ ಎಡಕ್ಕೆ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "ಕೋರ್ಸ್ ಸೆಟ್ ಬಲಕ್ಕೆ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "ಪತನಗೊಂಡಿತು"
@@ -2173,6 +2188,16 @@ msgstr "ತಲೆ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ಹೆಡ್ ಟ್ರ್ಯಾಕಿಂಗ್"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "ಹೆಡಿಂಗ್ ಸೆಟ್ ಎಡಕ್ಕೆ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "ಹೆಡಿಂಗ್ ಸೆಟ್ ಬಲಕ್ಕೆ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3209,7 +3234,7 @@ msgstr "ವಿರಾಮ"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
-msgstr "ಪಾಸ್ ಮಾಡಲಾಗಿದೆ"
+msgstr "ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"
 
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "People"

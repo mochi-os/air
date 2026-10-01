@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as navigate from './navigation'
 
 // The HUD's timer (NATOPS A1-F18AC-NFM-000 2.13.4.8.11 item 17, 24.2.5.7.4-6):
 // ZTOD, ET or CD at the lower-left corner, one at a time, whichever the UFC's
@@ -117,18 +118,18 @@ describe('the HUD timer', () => {
 // without a TACAN range - the set off, or in RCV or under EMCON (24.4.2, 2.13.5.2).
 describe('the lower-right data block', () => {
   const data = /\n\t\/\/ ---- data blocks: TCN slant range[\s\S]*?(?=\n\t\{ \/\/ The selected weapon and its count)/.exec(source)?.[0] ?? ''
-  const block = (tacan = '{}', emcon = false, wheels = { steering: -1, grounded: false, atc: false }) => new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
+  const block = (tacan = '{}', emcon = false, wheels = { steering: -1, grounded: false, atc: false }) => new Function('navigate', `const text=[], nav={ steer:'tcn', designation:null, course:null }; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
       const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0, steering=${wheels.steering};
       const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 }, grounded:${wheels.grounded} }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
       const radios={ tacan:{ on:true, channel:74, band:'X', mode:'tr', air:false, ...${tacan} } }, emcon=${emcon};
-      ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
+      ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''} ${/\nfunction hud_steer\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
       const marshal={ push:400, commenced:false }, clock_text=(s)=>String(s);
       ${data}
-      return text;`)() as string[]
+      return text;`)(navigate) as string[]
   it('reads the TACAN block as slant range and ident, and draws no push clock', () => {
     expect(data).not.toBe('')
     expect(block()).toEqual(['10.0 NIM'])
-    expect(data).toMatch(/const station=tacan\(\), slant=station&&station\.slant!=null\?station\.slant\/1852:null;/) // the HSI's TACAN fix
+    expect(data).toMatch(/const steer=hud_steer\(\);\n\t\tif\(steer&&steer\.range!=null\)/) // the steering the HSI has selected: here the TACAN's fix
   })
 
   // NWS and NWS HI share ATC's place above the distance display while nosewheel

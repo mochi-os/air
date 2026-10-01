@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# saýlandy} other {# saýlandy}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} oýunçy} other {#/{2} oýunçy}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {ýene +#} other {ýene +#}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Şol hasap bilen barlap bolmady. Täzeden synanyşyň."
 msgid "Countermeasures"
 msgstr "Garşy çäreler"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Ýol çyzygyny çepe sazla"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Ýol çyzygyny saga sazla"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Heläkçilige uçrady"
@@ -1872,7 +1887,7 @@ msgstr "Görkezme täzeden düzülmedi"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS elýeterliligini ýatyrmak başartmady"
+msgstr "RSS elýeterliligini yzyna almak başartmady"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Kelle"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Kelläni yzarlamak"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Ugry çepe sazla"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Ugry saga sazla"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Hatarlary toparlamak"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS elýeterliligi ýatyryldy"
+msgstr "RSS elýeterliligi yzyna alyndy"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

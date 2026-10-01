@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# oyunçu} other {# oyunçu}}"
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# seçildi} other {# seçildi}}"
+msgstr "{0, plural, one {# nəticə} other {# nəticə}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -73,7 +73,7 @@ msgstr "{0, plural, one {# güllə dəydi} other {# güllə dəydi}}"
 #: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# istifadəçi banlandı} other {# istifadəçi banlandı}}"
+msgstr "{0, plural, one {# seçildi} other {# seçildi}}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# istifadəçi banlandı} other {# istifadəçi banland
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} oyunçu} other {#/{2} oyunçu}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# daha} other {+# daha}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -163,7 +168,7 @@ msgstr "{name} matçı"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx
 msgid "{opponentName} offered a draw"
-msgstr "{opponentName} qazandı"
+msgstr "{opponentName} heç-heçə təklif etdi"
 
 #: src/components/Multiplayer.tsx
 msgid "{placed, plural, one {# of {limit} bot} other {# of {limit} bots}}"
@@ -1232,6 +1237,16 @@ msgstr "Bu hesabla doğrulama mümkün olmadı. Zəhmət olmasa, yenidən cəhd 
 msgid "Countermeasures"
 msgstr "Əks tədbirlər"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Kursu sola qur"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Kursu sağa qur"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Qəzaya uğradı"
@@ -1872,7 +1887,7 @@ msgstr "Promptu sıfırlamaq alınmadı"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS girişini ləğv etmək alınmadı"
+msgstr "RSS girişini geri çağırmaq alınmadı"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Baş"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Baş izləmə"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "İstiqaməti sola qur"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "İstiqaməti sağa qur"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Sətirlər qruplaşdır"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS girişi ləğv edildi"
+msgstr "RSS girişi geri çağırıldı"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
@@ -4338,12 +4363,12 @@ msgstr "Yan paneli aç/bağla"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Toggle view options"
-msgstr "Token mübadilə yaddaşına kopyalandı"
+msgstr "Görünüş seçimlərini aç/bağla"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
-msgstr "Token yaradıldı"
+msgstr "İzlənilənlər filtrini aç/bağla"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
@@ -4403,7 +4428,7 @@ msgstr "Trim: sağa yatma"
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 msgid "Try adjusting your search terms"
-msgstr "Fərqli axtarış termini sınayın."
+msgstr "Axtarış sözlərini dəyişməyə cəhd edin"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4422,15 +4447,15 @@ msgstr "Növ"
 
 #: ../../../lib/web/src/components/command-menu.tsx
 msgid "Type a command or search..."
-msgstr "Mesaj yazın…"
+msgstr "Əmr yazın və ya axtarın..."
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
 msgid "Type a message…"
-msgstr "İstifadəçiləri axtarmaq üçün yazın"
+msgstr "Mesaj yazın…"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
-msgstr "Mesajınızı yazın…"
+msgstr "İstifadəçiləri axtarmaq üçün yazın"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search..."
@@ -4573,7 +4598,7 @@ msgstr "Qələbə"
 
 #: ../../../lib/web/src/components/attachment-gallery.tsx
 msgid "Video thumbnail"
-msgstr "Hamısına bax"
+msgstr "Video miniatürü"
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx
@@ -4587,11 +4612,11 @@ msgstr "Görünüş"
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 msgid "View all notifications"
-msgstr "Element təfərrüatlarına baxın və redaktə edin"
+msgstr "Bütün bildirişlərə bax"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "View and edit item details"
-msgstr "Görünüş idarəetmələri"
+msgstr "Element təfərrüatlarına baxın və redaktə edin"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "View controls"

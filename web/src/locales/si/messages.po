@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# තෝරාගත්} other {# තෝරාගත්
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} ක්‍රීඩකයා} other {#/{2} ක්‍රීඩකයන්}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# තවත්} other {+# තවත්}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "එම ගිණුම සමඟ සත්‍යාපනය කළ න�
 msgid "Countermeasures"
 msgstr "ප්‍රතිප්‍රහාර ක්‍රම"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "මාර්ගය වමට සකසන්න"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "මාර්ගය දකුණට සකසන්න"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "කඩා වැටුණි"
@@ -1872,7 +1887,7 @@ msgstr "විමසුම යළි පිහිටුවීමට අසමත
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS ප්‍රවේශය අවලංගු කිරීමට අසමත් විය"
+msgstr "RSS ප්‍රවේශය අහෝසි කිරීමට අසමත් විය"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "හිස"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "හිස ලුහුබැඳීම"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "ගමන් දිශාව වමට සකසන්න"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "ගමන් දිශාව දකුණට සකසන්න"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "පේළි කාණ්ඩගත කරන්නේ"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS ප්‍රවේශය අවලංගු කරන ලදී"
+msgstr "RSS ප්‍රවේශය අහෝසි කරන ලදී"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

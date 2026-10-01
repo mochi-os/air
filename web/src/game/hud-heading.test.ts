@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as navigate from './navigation'
 
 // The heading scale's place on the HUD. ED's manual: "The heading tape is
 // raised +1.25° from its position in NAV master mode when in A/G or A/A" - it
@@ -51,7 +52,7 @@ describe('the heading scale face', () => {
   const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
   const section = source.slice(start, end)
   const cx = 640, hty = 46
-  const draw = (heading: number) => {
+  const draw = (heading: number, magnetic = false) => {
     const text: string[] = [], segments: number[][] = []
     let at = [0, 0], fills = 0
     const hctx = new Proxy({}, { get: (_, k) => {
@@ -62,8 +63,8 @@ describe('the heading scale face', () => {
       return () => {}
     }, set: () => true })
     const radians = heading * Math.PI / 180
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', `${section}`)(
-      hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: Math.sin(radians), z: -Math.cos(radians) } }, false, 'nav')
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'nav', 'hud_steer', `${section}`)(
+      hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: Math.sin(radians), z: -Math.cos(radians) } }, false, 'nav', { magnetic, variation: 7 * Math.PI / 180 }, () => null)
     return { text, segments, fills }
   }
 
@@ -83,6 +84,14 @@ describe('the heading scale face', () => {
     expect(segments).toContainEqual([cx - 5, hty + 5, cx + 5, hty + 5])
     expect(segments).toContainEqual([cx, hty + 5, cx, hty + 13])
     expect(fills).toBe(0)
+  })
+
+  it('reads magnetic with HDG MAG selected, a caret under the heading in place of the T (24.2.5.7)', () => {
+    const { text, segments } = draw(92, true) // 7° of easterly variation: 085 magnetic
+    expect(text).toEqual(['070', '080', '090', '100'])
+    expect(segments).toContainEqual([cx - 5, hty + 11, cx, hty + 4])
+    expect(segments).toContainEqual([cx, hty + 4, cx + 5, hty + 11])
+    expect(segments).not.toContainEqual([cx - 5, hty + 5, cx + 5, hty + 5])
   })
 })
 
@@ -108,26 +117,45 @@ describe('the heading marker and bank scale as figure 2-26 draws them', () => {
   const THREE = { MathUtils: { clamp: (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v)) } }
   const cx = 640, hty = 46, D2R = Math.PI / 180
 
-  // the section against a TACAN stand-in: the station's bearing, or null with none received
-  const scale = (station: { bearing: number } | null) => {
+  // the section against a steering stand-in: the bearing steered to, or null with no steering; the jet heads north along the track given
+  const scale = (steer: { bearing: number; target?: boolean } | null, track = 0, master = 'nav') => {
     const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
     const c = record()
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'tacan', 'THREE', source.slice(start, end))(
-      c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 } }, true, 'nav', () => station, THREE)
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'hud_steer', 'THREE', 'navigate', 'nav', 'D2R', source.slice(start, end))(
+      c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 }, gauges: { heading: 0, track: track * D2R } }, true, master, () => steer, THREE, navigate, { magnetic: false, variation: 0 }, D2R)
     return c
   }
 
-  it('marks the command heading with a short heavy bar under the ticks, on the TACAN bearing', () => {
-    const mx = cx + 12 * 7   // 12°: between the 10° and 15° ticks
-    const marker = scale({ bearing: 12 * D2R }).paths.filter(path => path.points.some(([, x]) => Math.abs(x - mx) < 1e-6))
+  it('marks the command heading with a short heavy bar under the ticks, on the bearing steered to', () => {
+    const mx = cx + 4 * 7   // 4°: inside the 5° the marker reads directly
+    const marker = scale({ bearing: 4 * D2R }).paths.filter(path => path.points.some(([, x]) => Math.abs(x - mx) < 1e-6))
     expect(marker.length).toBe(1)
     expect(marker[0].points.map(([, x, y]) => [Math.round(x), y])).toEqual([[mx, hty + 1], [mx, hty + 6]])
     expect(marker[0].width).toBe(3)
   })
 
-  it('draws no command heading without a TACAN bearing', () => {
+  it('compresses the marker past 5°, to the end of the scale at 30° and beyond (24.2.9.1)', () => {
+    const at = (bearing: number) => scale({ bearing: bearing * D2R }).paths.find(path => path.width === 3)?.points[0][1]
+    expect(at(17.5)).toBeCloseTo(cx + 10 * 7, 6)
+    expect(at(30)).toBeCloseTo(cx + 15 * 7, 6)
+    expect(at(-120)).toBeCloseTo(cx - 15 * 7, 6)
+  })
+
+  it('corrects the marker for wind drift: it shows the ground track\'s error, not the heading\'s', () => {
+    expect(scale({ bearing: 7 * D2R }, 3).paths.find(path => path.width === 3)?.points[0][1]).toBeCloseTo(cx + 4 * 7, 6)
+  })
+
+  it('draws the target\'s diamond in the marker\'s place once a target is designated (24.2.10)', () => {
+    const c = scale({ bearing: 4 * D2R, target: true })
+    expect(c.paths.filter(path => path.width === 3)).toEqual([])
+    const mx = cx + 4 * 7
+    expect(c.paths.some(path => path.points.length === 4 && path.points.every(([, x]) => Math.abs(x - mx) <= 5 + 1e-6) && path.points[0][2] === hty + 2)).toBe(true)
+  })
+
+  it('draws no command heading without steering, nor outside the NAV master mode', () => {
     expect(scale(null).paths.filter(path => path.width === 3)).toEqual([])
-    expect(scale({ bearing: 12 * D2R }).paths.filter(path => path.width === 3).length).toBe(1)
+    expect(scale({ bearing: 4 * D2R }).paths.filter(path => path.width === 3).length).toBe(1)
+    expect(scale({ bearing: 4 * D2R }, 0, '9m').paths.filter(path => path.width === 3)).toEqual([])
   })
 
   const bank = (degrees: number) => {

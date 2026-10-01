@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# נבחר} two {# נבחרו} many {# נבחרו} othe
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} שחקן} two {#/{2} שחקנים} many {#/{2} שחקנים} other {#/{2} שחקנים}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# נוסף} two {+# נוספים} many {+# נוספים} other {+# נוספים}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "{0} היה על {1}, שאינו משויך עוד."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# ציר} other {# צירים}}"
+msgstr "{axisCount, plural, one {# ציר} two {# צירים} other {# צירים}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# לחצן} other {# לחצנים}}"
+msgstr "{buttonCount, plural, one {# לחצן} two {# לחצנים} other {# לחצנים}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -1232,6 +1237,16 @@ msgstr "לא ניתן היה לאמת עם החשבון הזה. נסה שוב."
 msgid "Countermeasures"
 msgstr "אמצעי נגד"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "קביעת נתיב שמאלה"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "קביעת נתיב ימינה"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "התרסק"
@@ -1872,7 +1887,7 @@ msgstr "איפוס הפרומפט נכשל"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "ביטול גישת RSS נכשל"
+msgstr "שלילת גישת RSS נכשלה"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "ראש"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "מעקב ראש"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "קביעת כיוון טיסה שמאלה"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "קביעת כיוון טיסה ימינה"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "קבץ שורות לפי"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "גישת RSS בוטלה"
+msgstr "גישת RSS נשללה"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

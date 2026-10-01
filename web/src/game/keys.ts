@@ -56,6 +56,10 @@ export const KEY_DEFAULTS: Record<string, string> = {
   probe: 'KeyR',
   canopy: 'Shift+KeyC',
   'canopy.jettison': 'None', // the canopy jettison handle (#113): unbound, as a middle click on it pulls it
+  'heading.left': 'None', // the heading and course set switches beside the AMPCD (#8): unbound, as a click on each works it
+  'heading.right': 'None',
+  'course.left': 'None',
+  'course.right': 'None',
   fold: 'Shift+KeyW',
   altitude: 'KeyK',
   reject: 'None',

@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# гравець} few {# гравці} many {# грав
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# результат} few {# результатів} many {# результатів} other {# результатів}}"
+msgstr "{0, plural, one {# результат} few {# результати} many {# результатів} other {# результату}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# вибрано} few {# вибрано} many {# виб
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} гравець} few {#/{2} гравці} many {#/{2} гравців} other {#/{2} гравця}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {ще +#} few {ще +#} many {ще +#} other {ще +#}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "{0} було на {1}, яке тепер не призначене."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# вісь} other {# осі}}"
+msgstr "{axisCount, plural, one {# вісь} few {# осі} many {# осей} other {# осі}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# кнопка} other {# кнопки}}"
+msgstr "{buttonCount, plural, one {# кнопка} few {# кнопки} many {# кнопок} other {# кнопки}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, one {# елемент} few {# елементи} man
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# відповідь} few {ще +# відповідей} many {ще +# відповідей} other {ще +# відповідей}}"
+msgstr "{totalDescendants, plural, one {# відповідь} few {ще +# відповіді} many {ще +# відповідей} other {ще +# відповіді}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -1232,6 +1237,16 @@ msgstr "Не вдалося підтвердити за допомогою ць�
 msgid "Countermeasures"
 msgstr "Засоби протидії"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Задати лінію шляху вліво"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Задати лінію шляху вправо"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Розбився"
@@ -2173,6 +2188,16 @@ msgstr "Голова"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Відстеження голови"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Задати курс вліво"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Задати курс вправо"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

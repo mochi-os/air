@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# selectat} few {# selectate} other {# selectate}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} jucător} few {#/{2} jucători} other {#/{2} de jucători}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# în plus} few {+# în plus} other {+# în plus}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "{0} era pe {1}, care este acum nealocat."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# axă} other {# axe}}"
+msgstr "{axisCount, plural, one {# axă} few {# axe} other {# de axe}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# buton} other {# butoane}}"
+msgstr "{buttonCount, plural, one {# buton} few {# butoane} other {# de butoane}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -1232,6 +1237,16 @@ msgstr "Nu s-a putut verifica cu acel cont. Încearcă din nou."
 msgid "Countermeasures"
 msgstr "Contramăsuri"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Reglare curs spre stânga"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Reglare curs spre dreapta"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "S-a prăbușit"
@@ -2173,6 +2188,16 @@ msgstr "Cap"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Urmărirea capului"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Reglare cap spre stânga"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Reglare cap spre dreapta"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

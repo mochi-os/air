@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# valitud} other {# valitud}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} mängija} other {#/{2} mängijat}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# veel} other {+# veel}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Selle kontoga ei õnnestunud kinnitada. Palun proovi uuesti."
 msgid "Countermeasures"
 msgstr "Vastumeetmed"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Teejoone seadmine vasakule"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Teejoone seadmine paremale"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Kukkus alla"
@@ -1872,7 +1887,7 @@ msgstr "Viiba lähtestamine ebaõnnestus"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS-juurdepääsu tühistamine ebaõnnestus"
+msgstr "RSS-i juurdepääsu äravõtmine ebaõnnestus"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Pea"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Pea jälgimine"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Kursi seadmine vasakule"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Kursi seadmine paremale"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Ridade rühmitamine alusel"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS-juurdepääs tühistatud"
+msgstr "RSS-i juurdepääs võeti ära"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

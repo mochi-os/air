@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -75,6 +75,7 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
+import * as navigate from './navigation'
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
@@ -1297,10 +1298,10 @@ const AIRCRAFT_MODELS={
 	      { name:"cabintemp",    track:/^Knob_TEMPCABIN_RightPanel_AN/i,                drive:"travel" },
 	      { name:"windshield",   track:/^Switch_Windshield_Deice_AN/i,                  drive:"travel" },
 	      { name:"windlever",    track:/^Windshield_Deice_LeverAction_AN/i,             drive:"travel" },
-	      { name:"kymode",       track:/^MODE_C_AN/i,                                   drive:"travel" },     // the KY-58 panel's four knobs
+	      { name:"kymode",       track:/^MODE_C_AN/i,                                   drive:"travel" },     // the KY-58 panel's MODE, fill and power knobs; its VOLUME knob has no node
 	      { name:"kyfill",       track:/^ALL_AN/i,                                      drive:"travel" },
 	      { name:"kypower",      track:/^TD_AN/i,                                       drive:"travel" },
-	      { name:"kyvolume",     track:/^GYRO_TEST_AN/i,                                drive:"travel" },
+	      { name:"insknob",      track:/^GYRO_TEST_AN/i,                                drive:"insknob" },    // the sensor panel's INS mode select knob (24.1.6.1, #24), beside the RADAR knob
 	      { name:"oxygen",       track:/^PRESSURIZATION_SWITCH_OXYGEN_AN/i,             drive:"travel", flip:true },   // its clip runs right to left
 	      { name:"chains",       track:/^Switch_Chains_AN/i,                            drive:"travel" },     // the right console's aft row
 	      { name:"mask",         track:/^Switch_Mask_AN/i,                              drive:"travel" },
@@ -1318,7 +1319,7 @@ const AIRCRAFT_MODELS={
 // TRAVEL: the controls that move and act on nothing (#16, #17, #22, #25), each with its number of
 // positions; a click throws one a position, right toward its clip's end and left back (travel_press).
 const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3, groundfour:3, antiice:3, pitot:2, avcool:2, cabintemp:5, windshield:3, windlever:2,
-	kymode:4, kyfill:5, kypower:3, kyvolume:5, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, floodswitch:2 };
+	kymode:4, kyfill:5, kypower:3, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, floodswitch:2 };
 // TRAVEL_REST: where the pre-flight leaves one that does not rest where the model draws it - the three-position
 // switches centred (ENG CRANK OFF, EXT PWR NORM, GND PWR AUTO, the anti-ice switches OFF), and the two whose
 // clips run the other way (flip) at their drawn end
@@ -1327,7 +1328,7 @@ const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.
 	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
 	hookbypass:"hook.bypass", antiskid:"antiskid", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test",
 	instpnl:"knob.instrument", consoles:"knob.consoles", flood:"knob.flood", warncaut:"knob.warn", symbology:"knob.symbology", indexer:"knob.indexer", ufcbrt:"knob.ufc",
-	attswitch:"attitude", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
+	attswitch:"attitude", insknob:"ins", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
 	wingtanks:"transfer.wing", centretank:"transfer.centre", ...Object.fromEntries(Object.keys(TRAVEL).map(k=>[k,"travel."+k])) };
 // Controls with no animated node (#115, #19, #18, #129), each a point on the panel, group frame: a
 // click within a few pixels of it works it as a switch's click does.
@@ -1339,7 +1340,8 @@ const PIT_SPOTS=[
 	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
 	{ action:"canopy.jettison", at:[6.05,0.175,-0.313] },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
 	{ action:"canopy.crank", at:[5.46,0.28,-0.377] },   // the canopy hand crank under the left sill (2.15.1.1.3, FO-5 sheet 2 item 19), where the model draws only the wall
-	{ action:"seat", at:[5.6,0.22,0.25] } ];   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
+	{ action:"seat", at:[5.6,0.22,0.25] },
+	{ action:"heading.set", at:[6.163,0.211,-0.095] }, { action:"course.set", at:[6.163,0.209,0.091] } ];   // the heading and course set switches at the AMPCD's upper corners (2.13.4.9, 2.13.4.10, #8), painted on the shell: the model's own pair are an older panel's, behind it   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
 // THROTTLE_OFF: a lever's place at OFF, as a fraction of its 40° IDLE to MAX travel: the finger lift raised,
 // it comes 4° aft of IDLE (2.1.1.7.2, #34). The lifts themselves are merged into the grip meshes
 const THROTTLE_OFF=-0.1;
@@ -1506,7 +1508,8 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; });
 		g.userData.handle=["node_50_480","node_51_481"].map(n=>m.getObjectByName(n)).filter(Boolean);   // the gear handle's lever and grip, under its clip's node, for the emergency turn and pull (#128)
 		g.userData.canopy=[]; m.traverse(o=>{ if(/^Canopy_ParentAction_AN_Parent/i.test(o.name)) for(const c of o.children) if(!/^Canopy_Arm/i.test(c.name)) g.userData.canopy.push(c); });   // the canopies the model carries (outside, cockpit and its low detail copy), less the actuator arm that stays with the jet, for the jettison (#113)
-		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean); } }
+		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean);
+		{ const o=m.getObjectByName(INS_KNOB.node); g.userData.insknob=o?{ object:o, rest:o.quaternion.clone() }:null; } } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 // model_of is the airframe the model load hung on the group: the pit's sightline
 // casts test only it. The group also carries effects - the gun's flash, plume
@@ -2219,10 +2222,10 @@ let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence 
 // DDI_MENUS: [pushbutton, legend, page] where figure 2-22's F/A-18C/D formats put
 // them, the game's own pages only - an option for equipment the jet does not carry
 // is left off, as the real format leaves it off (TAC's sensor, weapon and RECCE
-// displays; SUPT's GPS, NETS, MIDS, HMD, BIT, MUMI and UFC BU).
+// displays; SUPT's GPS, NETS, MIDS, HMD, BIT and UFC BU).
 const DDI_MENUS={
 	tac:[ [5,"STORES","sms"],[4,"RDR ATTK","rdr"],[3,"HUD","hud"],[13,"SA","sa"],[17,"EW","ew"] ],
-	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"] ] };
+	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"],[10,"MUMI","mumi"] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -2244,14 +2247,14 @@ function ddi_legend(x,pb,text,on,current){   // on=false: dim, inert; current: b
 	x.restore(); }
 function ddi_press(display,pb){   // true when the press did something (consumes the click)
 	const st=ddi_state[display]; if(!st||!pb) return false;
-	if(pb===18){ st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus
+	if(pb===18&&(st.menu||st.page!=="grid")){ st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus; the grid display has its S shift there instead
 	if(st.menu){ const row=DDI_MENUS[st.menu].find(r=>r[0]===pb);
 		if(row&&row[2]){ ddi_show(display,row[2]); } return !!(row&&row[2]); }   // menu picks record into the master mode's set (#15)
 	const p=DDI_PAGES[st.page];
 	if(p&&p.press&&p.press(pb,display)){ ddi_dirty=true; return true; }   // page-owned pushbuttons
 	return false; }
 let ddi_draws=0;   // dev cadence probe: every face render counts, from both the MFD blit and the full-screen view
-function ddi_render(x,size,display){   // size-agnostic: draws the display's current face into ANY square canvas
+function ddi_render(x,size,display){   // size-agnostic: draws the display's current face into ANY square canvas; MENU at its pushbutton on every page but the grid display, whose S shift is there
 	ddi_draws++;
 	const s=size/512; x.setTransform(s,0,0,s,0,0);
 	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
@@ -2264,7 +2267,7 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
 	if(display==="left") cautions_draw(x);
 	if(display===designator) diamond(x);
-	ddi_legend(x,18,"MENU",true,!!st.menu); }
+	if(st.menu||st.page!=="grid") ddi_legend(x,18,"MENU",true,!!st.menu); }
 // diamond: the TDC assignment diamond in the upper right corner of the display that has the TDC,
 // a dot at its centre
 function diamond(x){ x.save(); x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2;
@@ -2347,27 +2350,234 @@ let adi_source="ins";   // the EADI's attitude source option (2.13.4.3): STBY bo
 function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===16) adi_source="stby"; else return false; return true; }
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
-	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
+	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas,press:fpas_press}, mumi:{draw:ddi_mumi,press:mumi_press}, grid:{draw:ddi_grid,press:grid_press},
 	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
 // HSI page state (#99): one nav picture shared by every display showing the
 // format. scale: the distance to the inside of the rose; north: N UP, else T UP;
-// mode: the MODE sublevel is up (24.1.3.2, figure 24-2); the map underlay is
-// AMPCD-only.
+// level: the sublevel up - "mode" (24.1.3.2, figure 24-2), "pos" the position
+// keeping options (figure 24-10), "updt" the update options (figure 24-11) or
+// "data" the DATA sublevels (figure 24-9), whose tab is data and whose waypoint
+// is shown; check: the NAVCK display over them (figure 24-7); gps: the GPS point
+// display's cursor and when its point was asked for (figure 24-8). The map
+// underlay is AMPCD-only.
 const HSI_SCALES=[5,10,20,40,80,160];
-const hsi_state={ scale:40, dctr:false, map:true, north:false, mode:false };
+const hsi_state={ scale:40, dctr:false, map:true, north:false, level:"", data:"wypt", shown:0, check:false, slew:false, gps:{ cursor:0, asked:-Infinity } };
 function hsi_range(direction){ const i=HSI_SCALES.indexOf(hsi_state.scale);
 	hsi_state.scale=HSI_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,HSI_SCALES.length-1)]; }   // zoom-in steps the scale DOWN
 function hsi_reset(){ hsi_state.scale=40; }   // 0: range to default — DCTR and MAP are pilot layout choices and stay
-function hsi_press(pb,display){
-	if(pb===8){ const i=HSI_SCALES.indexOf(hsi_state.scale); hsi_state.scale=HSI_SCALES[(i+HSI_SCALES.length-1)%HSI_SCALES.length]; return true; }   // SCL: each press steps the scale down, then starts over at 160 (24.1.3.8)
-	if(hsi_state.mode){   // the MODE sublevel (figure 24-2)
+// ---- the navigation suite (navigation.ts; #93, #94, #92, #97) ----
+// nav holds the INS, GPS, position keeping, the waypoints and the steering. A fresh
+// spawn's first frame loads the memory unit's mission data and leaves the suite as
+// the pre-flight does: the INS aligned with its knob at NAV, waypoint 0 the place it
+// aligned, TACAN steering to the ship selected. VARIATION: Midway's magnetic
+// variation, about 7° east.
+const VARIATION=7*D2R;
+let nav=navigate.fresh(1), nav_cold=true, nav_fields=-1, map_name="";
+function nav_reset(){ nav=navigate.fresh(Math.random()*1000,WORLD_WRAP); nav_cold=true; hsi_state.level=""; hsi_state.check=false; hsi_state.shown=0;
+	carrier_given.heading=carrier_given.speed=0; Object.assign(fpas,{ changed:-Infinity, at:-Infinity, best:null, survey:null, optimum:null }); }
+// aboard: on the ship's deck, where its inertial system reaches the jet for a carrier alignment (24.2.3.1.1)
+function aboard(){ return !!ownship.grounded&&Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z))<250; }
+// nav_sense: what the jet's sensors measure now, for the suite's step and its questions. The TACAN
+// gives a fix only from a station in the stored table, received with range.
+function nav_sense(dt){ const gz=ownship.gauges||{}, station=tacan(), t=radios.tacan, stored=nav.stations.find(s=>s.channel===t.channel&&s.band===t.band);
+	return { dt, x:ownship.pos.x, z:ownship.pos.z, east:ownship.velx??ownship.vel_dir.x*ownship.speed, south:ownship.velz??ownship.vel_dir.z*ownship.speed, tas:last_out?airspeed(last_out[STATE.mach]||0,ownship.pos.y):ownship.speed,   // true airspeed through the air, where ownship.speed is over the ground
+		heading:gz.heading||0, pitch:gz.pitch||0, bank:gz.bank||0, airborne:!ownship.grounded, brake:parking, power:buses.ac, radar:!RADAR.silent()&&master==="nav", deck:aboard(),
+		tacan:station&&station.range!=null&&stored?{ x:stored.x, z:stored.z, bearing:station.bearing, range:station.range }:null }; }
+// mission: what the memory unit carries for the map flown (2.13.1.2.1, #97) - the ship as waypoint 1
+// and the first airfield as waypoint 2, the ship's TACAN station, and the ship and every airfield as
+// GPS points.
+function mission(){ const ship={ name:SHIP.ident, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY };
+	const fields=airports.filter(ap=>ap.code).map(ap=>({ name:ap.code, x:ap.x, z:ap.z, elevation:ap.sy-2.2 }));
+	return { identifier:map_name.split(" ")[0].slice(0,8), waypoints:[{ index:1, point:ship },...fields.slice(0,1).map(point=>({ index:2, point }))],
+		stations:[{ channel:SHIP.tacan.channel, band:SHIP.tacan.band, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:SHIP.ident, variation:VARIATION }], points:[ship,...fields] }; }
+// INS_KNOB: the INS mode select knob's node, the axis it turns about in its parent's frame, and the turn
+// between positions. The placard spaces the eight 45° apart from OFF, where the model draws the knob; the
+// model's own clip turns it only 131°, so the node is turned directly (apply_anim).
+const INS_KNOB={ node:"GYRO_TEST_AN_TEST_491", axis:new THREE.Vector3(0,-1,0), step:Math.PI/4, turn:new THREE.Quaternion() };
+// sets: the heading and course set switches held on their keys (2.13.4.9, 2.13.4.10, #8): which way, and since when
+const sets={ heading:{ way:0, since:0 }, course:{ way:0, since:0 } };
+function set_press(which,d){ navigate.set(nav,which,d>0?5:-5); ddi_dirty=true; }   // a click is a short hold: five degrees
+// nav_frame steps the suite: the mission data when it is first there to load, the INS and GPS, AUTO
+// sequential steering's move to the next waypoint, and the set switches held on their keys - a degree
+// on the press, then 30° a second.
+function nav_frame(dt){ const truth=nav_sense(dt);
+	if(nav_cold||nav_fields!==airports.length){ navigate.load(nav,mission()); nav_fields=airports.length; }   // the airfields arrive after the first spawn
+	if(nav_cold){ nav_cold=false; navigate.ready(nav,truth); nav.variation=VARIATION; nav.heading=truth.heading; nav.steer="tcn";
+		if(truth.airborne) nav.waypoints[0]={ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship
+	const before=nav.ins.mode+nav.source+nav.current;
+	navigate.step(nav,truth);
+	if(nav.steer==="wypt") navigate.sequential(nav,navigate.place(nav,truth),(ownship.gauges||{}).track??truth.heading);
+	if(before!==nav.ins.mode+nav.source+nav.current) ddi_dirty=true;
+	const ways={ heading:(held("heading.right")?1:0)-(held("heading.left")?1:0), course:(held("course.right")?1:0)-(held("course.left")?1:0) };
+	for(const which of ["heading","course"]){ const s=sets[which], way=ways[which];
+		if(way&&way!==s.way){ navigate.set(nav,which,way); s.since=sim_time; }
+		else if(way&&sim_time-s.since>0.4) navigate.set(nav,which,way*30*dt);
+		if(way) ddi_dirty=true;
+		s.way=way; } }
+// The DATA sublevels' subjects: the waypoint shown, made when it is first given data, and the
+// TACAN station shown, the table filling in order.
+function waypoint_edit(){ const mark=hsi_state.shown>=navigate.WAYPOINTS, list=mark?nav.marks:nav.waypoints, k=mark?hsi_state.shown-navigate.WAYPOINTS:hsi_state.shown;
+	return list[k]||(list[k]={ x:0, z:0, elevation:0, name:"", offset:null }); }
+function station_edit(){ return nav.stations[nav.station]||(nav.stations[nav.station]={ channel:1, band:"X", x:0, z:0, elevation:0, name:"", variation:nav.variation }); }
+// tacan_variation: the variation the TACAN readouts use - the aircraft's, or with TCN MGVAR selected
+// the one stored with the station tuned (24.4.3.1)
+function tacan_variation(){ const t=radios.tacan, s=nav.local?nav.stations.find(s=>s.channel===t.channel&&s.band===t.band):null; return s&&s.variation!=null?s.variation:nav.variation; }
+// The square identification grid (24.2.5.1.2, figure 24-9 sheet 4): GRID on the UFC puts it on the
+// right DDI - five 100 km squares each way about the reference position, the aircraft's or with
+// REF WP boxed the waypoint's - and it stays until GRID is left. The TDC's cursor picks the square
+// the easting and northing keyed next belong to. The grid shift options, on the pushbuttons and
+// under the cursor, move it a whole grid while the reference is in its centre square and the grid
+// that way exists; GRID or REF WP again builds it about the reference once more. far: an offset
+// keyed past 400,000 ft of its aimpoint, which is not taken and flashes in the O/S GRID field.
+const grid_state={ prior:"", shift:{ east:0, north:0 }, chosen:null, waypoint:false, cursor:{ x:256, y:256 }, far:null };
+const GRID_SHIFTS={ 8:["N",0,1], 18:["S",0,-1], 5:["NW",-1,1], 3:["W",-1,0], 1:["SW",-1,-1], 11:["NE",1,1], 13:["E",1,0], 15:["SE",1,-1] };
+const GRID_BOX={ x:76, y:76, cell:72 };
+function grid_reference(){ const w=grid_state.waypoint?navigate.spot(nav,hsi_state.shown):null; return navigate.coordinates(w||navigate.place(nav,nav_sense(0))); }
+function grid_open(){ const st=ddi_state.right;
+	if(st.page!=="grid") grid_state.prior=st.page;
+	st.page="grid"; st.menu=""; grid_state.shift={ east:0, north:0 }; grid_state.chosen=null; grid_state.cursor={ x:256, y:256 }; ddi_dirty=true; }
+function grid_sync(){ const st=ddi_state.right;   // the display goes with the UFC's GRID option
+	if(st.page==="grid"&&(UFC_PAGES[ufc.func]||[])[ufc.option]!=="GRID"){ st.page=grid_state.prior; ddi_dirty=true; } }
+function grid_shifts(){ const at=grid_reference(), s=grid_state.shift; if(s.east||s.north) return [];
+	return Object.keys(GRID_SHIFTS).map(Number).filter(pb=>navigate.sig(at.latitude,at.longitude,{ east:GRID_SHIFTS[pb][1], north:GRID_SHIFTS[pb][2] }).length>0); }
+function grid_press(pb){ if(!grid_shifts().includes(pb)) return false;
+	grid_state.shift={ east:GRID_SHIFTS[pb][1], north:GRID_SHIFTS[pb][2] }; grid_state.chosen=null; return true; }
+function tdc_grid(){ const st=ddi_state[designator]; return !st.menu&&st.page==="grid"; }
+// grid_designate: the TDC pressed with the cursor where it stands - the grid shift whose legend it
+// is over, else the square under it
+function grid_designate(){ const c=grid_state.cursor, b=GRID_BOX, at=grid_reference(), pb=button_of(c.x,c.y);
+	ddi_dirty=true;
+	if(pb) return grid_press(pb);
+	const column=Math.floor((c.x-b.x)/b.cell), row=Math.floor((c.y-b.y)/b.cell), rows=navigate.sig(at.latitude,at.longitude,grid_state.shift);
+	const found=rows[row]&&rows[row][column]; if(!found) return false;
+	grid_state.chosen=found; return true; }
+function grid_slew(x,y,dt){ const c=grid_state.cursor; c.x=THREE.MathUtils.clamp(c.x+x*256*dt,8,504); c.y=THREE.MathUtils.clamp(c.y-y*256*dt,8,504); ddi_dirty=true; }
+function grid_face(lx,ly){ grid_state.cursor={ x:lx, y:ly }; return grid_designate(); }
+function ddi_grid(x){ const b=GRID_BOX, at=grid_reference(), rows=navigate.sig(at.latitude,at.longitude,grid_state.shift), chosen=grid_state.chosen, c=grid_state.cursor;
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle"; x.textAlign="center"; x.font="20px monospace";
+	for(let k=0;k<=5;k++){ x.beginPath(); x.moveTo(b.x+k*b.cell,b.y); x.lineTo(b.x+k*b.cell,b.y+5*b.cell); x.moveTo(b.x,b.y+k*b.cell); x.lineTo(b.x+5*b.cell,b.y+k*b.cell); x.stroke(); }
+	rows.forEach((row,i)=>row.forEach((q,j)=>{ if(!q) return; const cx=b.x+(j+0.5)*b.cell, cy=b.y+i*b.cell+16;
+		x.fillText(q.id[0]+" "+q.id[1],cx,cy);
+		if(chosen&&chosen.zone===q.zone&&chosen.id===q.id) x.strokeRect(cx-26,cy-13,52,26); }));   // the square the entry goes to
+	x.font="16px monospace";
+	for(const i of [0,4]){ const row=rows[i]||[];   // the grid zones either side of a zone's edge, above and below where it crosses
+		for(let j=0;j<4;j++) if(row[j]&&row[j+1]&&row[j].zone!==row[j+1].zone) x.fillText(row[j].zone+" "+row[j+1].zone,b.x+(j+1)*b.cell,i?b.y+5*b.cell+12:b.y-12); }
+	const mark=(p,draw)=>{ const q=p&&navigate.pin(at.latitude,at.longitude,grid_state.shift,navigate.coordinates(p)); if(!q) return;
+		x.beginPath(); draw(b.x+q.east*b.cell,b.y+(5-q.north)*b.cell); x.stroke(); };
+	const w=navigate.spot(nav,hsi_state.shown);
+	mark(navigate.place(nav,nav_sense(0)),(px,py)=>{ x.moveTo(px-9,py); x.lineTo(px+9,py); x.moveTo(px,py-9); x.lineTo(px,py+9); });   // the aircraft
+	mark(w,(px,py)=>{ for(let k=0;k<5;k++){ const a=k*4*Math.PI/5, sx=px+Math.sin(a)*9, sy=py-Math.cos(a)*9; if(k) x.lineTo(sx,sy); else x.moveTo(sx,sy); } x.closePath(); });   // the reference waypoint: a star
+	mark(w&&w.offset?{ x:w.x+Math.sin(w.offset.bearing)*w.offset.range, z:w.z-Math.cos(w.offset.bearing)*w.offset.range }:null,(px,py)=>{ x.arc(px,py,8,0,Math.PI*2); x.moveTo(px+1.5,py); x.arc(px,py,1.5,0,Math.PI*2); });   // its offset
+	x.beginPath(); x.moveTo(c.x-8,c.y-11); x.lineTo(c.x-8,c.y+11); x.moveTo(c.x+8,c.y-11); x.lineTo(c.x+8,c.y+11); x.stroke();   // the HOTAS cursor
+	for(const pb of grid_shifts()) ddi_legend(x,pb,GRID_SHIFTS[pb][0],true,false); }
+// tdc_hsi: the TDC is on a display showing the HSI. hsi_designate: the TDC pressed there - an AUTO
+// update over the waypoint (24.2.7.4), an offset aimpoint's offset added (24.2.10.1), or an overfly
+// designation (24.2.10.2), which with DSG boxed gives a designation update its position (24.2.7.1).
+function tdc_hsi(){ const st=ddi_state[designator]; return !st.menu&&st.page==="hsi"; }
+function hsi_designate(){ const truth=nav_sense(0), point=navigate.spot(nav,nav.current);
+	if(nav.updating==="auto"){ if(navigate.overhead(nav,truth)) hsi_state.level=""; }
+	else if(nav.updating==="map") return;
+	else if(nav.designation&&nav.designation.stage==="oap") navigate.designate(nav);
+	else if(navigate.overfly(nav,navigate.place(nav,truth))&&nav.updating==="dsg"&&point) navigate.propose(nav,truth,"dsg",point);
+	ddi_dirty=true; }
+// hsi_slew: the TDC slews the map under the designation for a MAP update (24.2.7.3), or with SLEW
+// boxed on the waypoint data under the waypoint shown, which enters its position (24.2.5.1), full deflection
+// crossing the scale in two seconds
+function hsi_slew(x,y,dt){ const entering=hsi_state.slew;
+	if((nav.updating!=="map"&&!entering)||!tdc_hsi()) return;
+	const gz=ownship.gauges||{}, rot=hsi_state.north?0:(gz.track??gz.heading??0), rate=hsi_state.scale*NM/2*dt, c=Math.cos(rot), s=Math.sin(rot), east=(x*c+y*s)*rate, south=(x*s-y*c)*rate;
+	if(entering){ const fresh=!navigate.spot(nav,hsi_state.shown), w=waypoint_edit();   // the map under the waypoint's symbol: its position follows the other way, a new one from where the aircraft is
+		if(fresh){ const here=navigate.place(nav,nav_sense(0)); w.x=here.x; w.z=here.z; }
+		w.x-=east; w.z-=south; }
+	else { nav.slew.x+=east; nav.slew.z+=south; navigate.slewed(nav); }
+	ddi_dirty=true; }
+// hsi_press works the HSI's pushbuttons (figure 24-1). The top level: POS/XXX, UPDT (not offered
+// while the aided INS keeps the position), SCL, MK and DATA along the top; TCN and MODE down the
+// left; the WYPT or OAP option, the arrows either side of the steer-to number, NAVDSG or O/S and
+// SEQ # down the right; TIMEUFC and AUTO along the bottom, with STD HDG and MAN in their places
+// during an alignment (figures 24-3, 24-4). TCN and WYPT select direct steering, each deselecting
+// the other and the course line (24.2.9.1).
+function hsi_press(pb,display){ const truth=nav_sense(0), level=hsi_state.level, aligning=navigate.alignment(nav);
+	if(level==="data") return data_press(pb,display);
+	if(pb===8&&level!=="pos"&&level!=="updt"){ const i=HSI_SCALES.indexOf(hsi_state.scale); hsi_state.scale=HSI_SCALES[(i+HSI_SCALES.length-1)%HSI_SCALES.length]; return true; }   // SCL: each press steps the scale down, then starts over at 160 (24.1.3.8)
+	if(level==="mode"){   // the MODE sublevel (figure 24-2)
 		if(pb===4){ hsi_state.north=!hsi_state.north; return true; }   // T UP and N UP, one option toggling the two (24.1.3.4.1)
 		if(pb===2){ hsi_state.dctr=!hsi_state.dctr; return true; }
 		if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
-		if(pb===10){ hsi_state.mode=false; return true; }   // HSI: back to the top level
+		if(pb===10){ hsi_state.level=""; return true; }   // HSI: back to the top level
 		return false; }
-	if(pb===3){ hsi_state.mode=true; return true; }
-	if(pb===17){ ufc_press("time"); return true; }   // TIMEUFC loads the UFC with the timer options (24.1.3.15)
+	if(level==="pos"){   // the position keeping options (24.2.6): one with data is selected and the top level returns
+		const source={ 5:"ains", 6:"ins", 7:"tcn", 8:"adc", 9:"gps" }[pb];
+		if(source){ if(!navigate.select(nav,truth,source)) return false; hsi_state.level=""; return true; }
+		if(pb===10){ hsi_state.level=""; return true; }
+		return false; }
+	if(level==="updt"){   // the update options (24.2.7)
+		if(nav.update){ if(pb===6) navigate.accept(nav); else if(pb===10) navigate.reject(nav); else return false; hsi_state.level=""; return true; }   // ACPT or REJ, and the HSI returns
+		if(pb===10){ nav.updating=""; hsi_state.level=""; return true; }
+		if(nav.updating==="auto"){ if(pb!==8) return false; nav.updating=""; return true; }   // AUTO boxed: the other options are gone (24.2.7.4)
+		if(pb===6||pb===4) return navigate.propose(nav,truth,pb===6?"tcn":"gps");
+		if(pb===7){ nav.updating=nav.updating==="dsg"?"":"dsg"; return true; }
+		if(pb===8){ nav.updating="auto"; nav.auto=false; return true; }
+		if(pb===9){ if(display!=="center"||!hsi_state.map||!nav.designation) return false; nav.updating="map"; nav.slew={ x:0, z:0 }; designator="center"; return navigate.slewed(nav); }   // MAP: the TDC to the display with the map, to slew it (24.2.7.3)
+		if(pb===3) return navigate.cancel(nav);
+		return false; }
+	if(pb===3){ hsi_state.level="mode"; return true; }
+	if(pb===6){ hsi_state.level="pos"; return true; }
+	if(pb===7){ if(!navigate.updatable(nav)) return false; hsi_state.level="updt"; return true; }
+	if(pb===9){ navigate.mark(nav,navigate.place(nav,truth)); return true; }
+	if(pb===10){ hsi_state.level="data"; hsi_state.data="wypt"; hsi_state.shown=nav.current; hsi_state.check=false; return true; }
+	if(pb===5||pb===11){ const to=pb===5?"tcn":"wypt"; nav.steer=nav.steer===to?"":to; nav.course=null; if(nav.steer!=="wypt") nav.auto=false; return true; }
+	if(pb===12||pb===13){ navigate.advance(nav,pb===12?1:-1); return true; }
+	if(pb===14) return navigate.designate(nav);
+	if(pb===15){ navigate.cycle(nav); return true; }
+	if(pb===16) return !aligning&&navigate.automatic(nav);
+	if(pb===17){   // MAN during a carrier alignment, with the UFC's manual align options (figure 24-3); else TIMEUFC, the UFC's timer options (24.1.3.15)
+		if(aligning&&nav.ins.kind==="cv"){ navigate.manual(nav); if(nav.ins.manual!==(ufc.func==="cv")) ufc_press("cv"); }
+		else ufc_press("time");
+		return true; }
+	if(pb===19) return navigate.stored(nav);
+	return false; }
+// data_press works the DATA sublevels (24.1.3.10, figure 24-9): A/C, WYPT and TCN along the top with HSI to
+// return, NAVCK at the upper right, GPS on the left for the GPS point display (figure 24-8), and each
+// tab's own options - UFC and SEQUFC give the UFC its entry options for the data shown.
+function data_press(pb,display){ const tab=hsi_state.data, count=navigate.WAYPOINTS+navigate.MARKS, g=hsi_state.gps;
+	if(pb===10){ hsi_state.level=""; hsi_state.check=false; hsi_state.slew=false; return true; }
+	if(pb===6||pb===7||pb===8){ hsi_state.data=pb===6?"ac":pb===7?"wypt":"tcn"; hsi_state.check=false; hsi_state.slew=false; return true; }
+	if(pb===11){ hsi_state.check=!hsi_state.check; hsi_state.slew=false; return true; }
+	if(hsi_state.check) return false;
+	if(pb===3&&tab!=="gps"){ hsi_state.data="gps"; hsi_state.slew=false; g.cursor=0; g.asked=sim_time; return true; }
+	if((tab==="wypt"||tab==="gps")&&(pb===12||pb===13)){ hsi_state.shown=(hsi_state.shown+(pb===12?1:count-1))%count; return true; }
+	if(tab==="wypt"){
+		if(pb===5){ ufc_press("wypt"); return true; }
+		if(pb===1){ ufc_press("seq"); return true; }
+		if(pb===15){ nav.sequence=(nav.sequence+1)%navigate.SEQUENCES; return true; }   // the sequence to program (24.2.5.5)
+		if(pb===4){ hsi_state.slew=!hsi_state.slew; if(hsi_state.slew){ designator=display; hsi_state.map=true; } return true; }   // SLEW: the TDC to this display's map, MAP boxed with it (24.1.3.5)
+		if(pb===19){ nav.precise=!nav.precise; ufc_dirty=true; return true; }
+		if(pb===14){ grid_state.waypoint=!grid_state.waypoint; grid_state.shift={ east:0, north:0 }; grid_state.chosen=null; return true; }   // REF WP: the grid about the waypoint shown, not the aircraft
+		return false; }
+	if(tab==="ac"){
+		if(pb===5){ ufc_press("ac"); return true; }
+		if(pb===2){ nav.gps.secure=!nav.gps.secure; nav.gps.search=navigate.ACQUIRE; return true; }   // NOSEC GPS: selecting it starts the satellite acquisition again (24.2.3.4)
+		if(pb===1){ nav.gps.phase=nav.gps.phase==="norm"?"appr":"norm"; return true; }
+		if(pb===13){ nav.magnetic=!nav.magnetic; return true; }
+		if(pb===15){ nav.decimal=!nav.decimal; return true; }
+		if(pb===20||pb===19){ const kind=pb===20?"baro":"radar";   // BARO or RADAR gives the UFC the low altitude warning's ALT option (24.2.5.7.1)
+			if(ufc.func==="alt"&&ufc.kind===kind) ufc_press("alt"); else { if(ufc.func!=="alt") ufc_press("alt"); ufc.kind=kind; ufc.option=0; ufc_dirty=true; }
+			return true; }
+		return false; }
+	if(tab==="tcn"){
+		if(pb===5){ ufc_press("station"); return true; }
+		if(pb===12||pb===13){ const slots=Math.min(nav.stations.length+1,navigate.STATIONS); nav.station=(nav.station+(pb===12?1:slots-1))%slots; return true; }
+		if(pb===1){ nav.local=!nav.local; return true; }   // TCN MGVAR or AC MGVAR (24.4.3.1)
+		return false; }
+	// the GPS point display: the cursor down a column or across to the next, a page at a time, and XFER once the point's data has come
+	const points=nav.points, page=Math.floor(g.cursor/24), pages=Math.max(1,Math.ceil(points.length/24)), here=Math.min(24,points.length-page*24), local=g.cursor-page*24;
+	const move=(to)=>{ g.cursor=to; g.asked=sim_time; return true; };
+	if(!points.length) return false;
+	if(pb===1){ const column=Math.floor(local/8), rows=Math.min(8,here-column*8); return move(page*24+column*8+(local%8+1)%rows); }
+	if(pb===20){ const columns=Math.ceil(here/8), column=(Math.floor(local/8)+1)%columns; return move(page*24+Math.min(column*8+local%8,here-1)); }
+	if(pb===17||pb===16) return move(((page+(pb===17?pages-1:1))%pages)*24);
+	if(pb===5){ if(sim_time-g.asked<3) return false; return navigate.transfer(nav,points[g.cursor].name,hsi_state.shown); }
 	return false; }
 // ---- SA page state (#99 pages): the datalink-style tactical picture, its own
 // scale independent of the HSI's. It shows exactly what the client already
@@ -2607,45 +2817,71 @@ function tacan(){ const t=radios.tacan;
 // time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
 function time_to_go(seconds){ const s=Math.min(Math.round(seconds),8*3600+59*60+59), two=(v)=>String(v).padStart(2,"0");
 	return s>=3600?Math.floor(s/3600)+":"+two(Math.floor(s/60)%60)+":"+two(s%60):Math.floor(s/60)+":"+two(s%60); }
-// ddi_hsi: the HSI (2.13.4.7, figures 2-24 and 24-2). The scale is the distance from
+// ddi_hsi: the HSI (2.13.4.7, figures 2-24, 24-1 and 24-2). The scale is the distance from
 // the aircraft to the inside of the compass rose (24.1.3.8). The rose turns to the
 // ground track (T UP) or to north (N UP), and the lubber line and the aircraft
 // symbol sit at the heading. DCTR puts the aircraft near the bottom with the rose
 // centred on it at twice the radius, so the scale shown doubles (2.13.4.4.1).
+// The navigation symbology is drawn from the position the mission computer keeps
+// (navigation.ts): the stored chart and the waypoints lie where it believes them, so
+// an INS that has drifted shows them displaced, while the TACAN's pointer and symbol
+// are the radio's own. The steer-to waypoint has its symbol and its bearing pointer
+// inside the rose whether or not it is steered to (24.2.9.1), the target's diamond
+// once designated (24.2.10); the course line runs through the point steered to
+// (24.2.9.2), the heading select marker rides the rose (2.13.4.7 item 5), and SEQ #
+// boxed draws the sequence dashed (24.1.3.13). An alignment shows its display at the
+// lower centre (figures 24-3 to 24-6).
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
+	if(hsi_state.level==="data"){ hsi_data(x); return; }
+	const truth=nav_sense(0), here=navigate.place(nav,truth), level=hsi_state.level;
 	const scale=hsi_state.scale, R=164, T=12, cy=hsi_state.dctr?430:260, rose=hsi_state.dctr?2*R:R;
 	const ppm=R/(scale*NM);   // pixels per metre: the selected scale out to the inside of the centred rose
 	const rot=hsi_state.north?0:(gz.track??hdg);   // up on the display: north, or the ground track, the heading standing in below taxi speed
 	const polar=(r,a)=>[Math.sin(a)*r,-Math.cos(a)*r];   // a display angle, clockwise from up
 	const ink=display==="center"?"#ffd24a":"#39e07a";   // the TACAN symbology: green on the monochrome DDIs, colour only on the AMPCD
+	const north=nav.magnetic?nav.variation:0;   // where the rose's north lies: true, or magnetic with HDG MAG selected (24.2.5.7)
+	const face=(v,variation)=>String(Math.round(navigate.shown(nav,v,variation)/D2R+360)%360).padStart(3,"0")+"°";   // a direction as the displays read it
+	const local=tacan_variation();   // TCN MGVAR: the station's own variation for what is read against it (24.4.3.1)
 	// TAMMAC-style underlay, AMPCD only: the same Midway coastline / airport /
-	// carrier set the tactical map draws, ownship-centred and turned as the rose is,
-	// in muted chart colours so the symbology stays on top of it.
-	if(display==="center"&&hsi_state.map){ x.save();
+	// carrier set the tactical map draws, centred on the position kept and turned as
+	// the rose is, in muted chart colours so the symbology stays on top of it. A MAP
+	// update slews it (24.2.7.3).
+	if(display==="center"&&hsi_state.map){ x.save(); const ox=here.x-nav.slew.x, oz=here.z-nav.slew.z;
 		x.beginPath(); x.arc(256,cy,rose+T+30,0,Math.PI*2); x.clip();
 		x.translate(256,cy); x.rotate(-rot);
 		x.fillStyle="#33402f"; x.strokeStyle="#55684e"; x.lineWidth=1.5;
 		for(const polygon of island_polygons||[]){ x.beginPath();
-			for(let k=0;k<polygon.length;k++){ const sx=wrap_axis(polygon[k][0]-ownship.pos.x)*ppm, sy=wrap_axis(polygon[k][1]-ownship.pos.z)*ppm;
+			for(let k=0;k<polygon.length;k++){ const sx=wrap_axis(polygon[k][0]-ox)*ppm, sy=wrap_axis(polygon[k][1]-oz)*ppm;
 				if(k===0) x.moveTo(sx,sy); else x.lineTo(sx,sy); }
 			x.closePath(); x.fill(); x.stroke(); }
 		x.strokeStyle="#8a94a0"; x.lineWidth=3;
-		for(const ap of airports||[]){ const ax=wrap_axis(ap.x-ownship.pos.x)*ppm, az=wrap_axis(ap.z-ownship.pos.z)*ppm, len=Math.max(4,1300*ppm);
+		for(const ap of airports||[]){ const ax=wrap_axis(ap.x-ox)*ppm, az=wrap_axis(ap.z-oz)*ppm, len=Math.max(4,1300*ppm);
 			x.beginPath(); x.moveTo(ax-ap.dir.x*len,az-ap.dir.z*len); x.lineTo(ax+ap.dir.x*len,az+ap.dir.z*len); x.stroke(); }
-		{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;
+		{ const kx=wrap_axis(CARRIER.x-ox)*ppm, kz=wrap_axis(CARRIER.z-oz)*ppm;
 			x.fillStyle="#ffd27a"; x.fillRect(kx-6,kz-6,12,12); }   // the boat, in the AMPCD's colour licence
 		x.restore(); }
-	const station=tacan();
+	const station=tacan(), goal=navigate.goal(nav), point=navigate.spot(nav,nav.current), to=goal?navigate.leg(nav,here,goal):null;
 	x.save(); x.translate(256,cy);
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center"; x.textBaseline="middle";
-	for(let d=0;d<360;d+=10){ const a=d*D2R-rot;   // the rose: a tick every 10°, the figures in their place every 30°, no ring
+	// course: the course line through a point at px,py - an arrow along the selected course to the point, its tail back across the rose
+	const course=(px,py)=>{ const a=nav.course-rot, c=Math.sin(a), s=-Math.cos(a);
+		x.save(); x.beginPath(); x.arc(0,0,rose-2,0,Math.PI*2); x.clip();
+		x.beginPath(); x.moveTo(px-c*2*rose,py-s*2*rose); x.lineTo(px+c*40,py+s*40); x.stroke();
+		x.beginPath(); x.moveTo(px-c*12,py-s*12); x.lineTo(px-c*26-s*7,py-s*26+c*7); x.lineTo(px-c*26+s*7,py-s*26-c*7); x.closePath(); x.fill(); x.restore(); };
+	for(let d=0;d<360;d+=10){ const a=d*D2R+north-rot;   // the rose: a tick every 10°, the figures in their place every 30°, no ring
 		if(d%30){ const [ix,iy]=polar(rose,a), [ox,oy]=polar(rose+T,a); x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke(); }
 		else { const [lx,ly]=polar(rose+T/2,a); x.fillText(d%90===0?"NESW"[d/90]:String(d/10),lx,ly); } }
-	{ const a=hdg-rot, [ix,iy]=polar(rose-18,a), [ox,oy]=polar(rose+T+6,a), [tx,ty]=polar(rose-30,a);   // the lubber line at the heading, the T under it: the game's headings are true (item 13)
+	{ const a=hdg-rot, [ix,iy]=polar(rose-18,a), [ox,oy]=polar(rose+T+6,a), [tx,ty]=polar(rose-30,a);   // the lubber line at the heading, the T under it with true heading selected (item 13)
 		x.beginPath(); x.moveTo(ix,iy); x.lineTo(ox,oy); x.stroke();
-		x.font="16px monospace"; x.fillText("T",tx,ty); }
+		if(!nav.magnetic){ x.font="16px monospace"; x.fillText("T",tx,ty); } }
 	if(gz.track!=null){ const a=gz.track-rot, c=Math.cos(a), s=Math.sin(a), [px,py]=polar(rose-2,a), [mx,my]=polar(rose-10,a), [bx,by]=polar(rose-18,a), [ex,ey]=polar(rose-28,a);   // the ground track pointer, a diamond on a stem: at the top in T UP
 		x.beginPath(); x.moveTo(px,py); x.lineTo(mx+5*c,my+5*s); x.lineTo(bx,by); x.lineTo(mx-5*c,my-5*s); x.closePath(); x.moveTo(bx,by); x.lineTo(ex,ey); x.stroke(); }
+	{ const a=nav.heading-rot, c=Math.cos(a), s=Math.sin(a), [mx,my]=polar(rose+T+8,a);   // the heading select marker on the rose's periphery: two blocks either side of the heading set (item 5)
+		for(const side of [-1,1]) x.fillRect(mx+side*6*c-3,my+side*6*s-3,6,6); }
+	if(nav.lines){ const list=nav.sequences[nav.sequence].map(i=>nav.waypoints[i]).filter(Boolean);   // the sequence's waypoints joined by dashed lines, at every scale (24.1.3.13)
+		x.save(); x.beginPath(); x.arc(0,0,rose-2,0,Math.PI*2); x.clip(); x.setLineDash([8,6]); x.beginPath();
+		list.forEach((p,k)=>{ const l=navigate.leg(nav,here,p), [px,py]=polar(l.range*ppm,l.bearing-rot); if(k) x.lineTo(px,py); else x.moveTo(px,py); });
+		x.stroke(); x.restore(); }
 	if(station){ const a=station.bearing-rot, c=Math.cos(a), s=Math.sin(a);   // the TACAN bearing pointer outside the rose, its tail outside the far side, and the station where it lies (item 4), with a range to place it by
 		x.strokeStyle=ink; x.fillStyle=ink;
 		const [hx,hy]=polar(rose+T+3,a), [kx,ky]=polar(rose+T+17,a);
@@ -2653,29 +2889,189 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 		const [ax,ay]=polar(rose+T+3,a+Math.PI), [zx,zy]=polar(rose+T+17,a+Math.PI);
 		x.lineWidth=4; x.beginPath(); x.moveTo(ax,ay); x.lineTo(zx,zy); x.stroke(); x.lineWidth=2;
 		if(station.range!=null){ const [sx,sy]=polar(Math.min(station.range*ppm,rose),a);   // held at the inside of the rose beyond the scale
-			x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke(); } }
+			x.beginPath(); x.moveTo(sx,sy-9); x.lineTo(sx+8,sy+6); x.lineTo(sx-8,sy+6); x.closePath(); x.stroke();
+			if(nav.steer==="tcn"&&nav.course!==null) course(sx,sy); }   // no course line without the TACAN's range (item 6)
+		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; }
+	if(to){ const a=to.bearing-rot, c=Math.cos(a), s=Math.sin(a), limit=rose-26;   // the waypoint: its bearing pointer inside the rose, and its symbol where it lies, held at the pointer's head beyond the scale (24.2.9.2)
+		const [hx,hy]=polar(rose-4,a), [kx,ky]=polar(rose-18,a);
+		x.beginPath(); x.moveTo(hx,hy); x.lineTo(kx+6*c,ky+6*s); x.lineTo(kx-6*c,ky-6*s); x.closePath(); x.stroke();
+		const [ax,ay]=polar(rose-4,a+Math.PI), [zx,zy]=polar(rose-18,a+Math.PI); x.beginPath(); x.moveTo(ax,ay); x.lineTo(zx,zy); x.stroke();
+		const [sx,sy]=polar(Math.min(to.range*ppm,limit),a);
+		x.beginPath();
+		if(goal.kind==="tgt"){ x.moveTo(sx,sy-8); x.lineTo(sx+8,sy); x.lineTo(sx,sy+8); x.lineTo(sx-8,sy); x.closePath(); }   // the target diamond
+		else x.arc(sx,sy,6,0,Math.PI*2);
+		x.stroke();
+		if(point&&point.offset&&goal.kind!=="tgt"){ const l=navigate.leg(nav,here,navigate.aim(point)), [px,py]=polar(Math.min(l.range*ppm,limit),l.bearing-rot);   // an offset aimpoint's offset, a cross
+			x.beginPath(); x.moveTo(px-6,py); x.lineTo(px+6,py); x.moveTo(px,py-6); x.lineTo(px,py+6); x.stroke(); }
+		if(nav.steer==="wypt"&&nav.course!==null) course(sx,sy); }
 	x.restore();
 	{ const a=hdg-rot, c=Math.cos(a), s=Math.sin(a), f=([px,py])=>[256+c*px-s*py,cy+s*px+c*py];   // the aircraft symbol at the heading: fuselage, wings and tail bar
 		x.strokeStyle="#39e07a"; x.lineWidth=2;
 		for(const [p,q] of [[[0,-7],[0,27]],[[-18,0],[18,0]],[[-6,25],[6,25]]]){ const [px,py]=f(p), [qx,qy]=f(q); x.beginPath(); x.moveTo(px,py); x.lineTo(qx,qy); x.stroke(); } }
 	x.fillStyle="#39e07a"; x.font="18px monospace"; x.textBaseline="middle";
-	x.textAlign="right"; x.fillText(Math.round(ownship.speed*1.94384)+"T",240,cy+22);   // true airspeed left of the symbol, groundspeed right
+	x.textAlign="right"; x.fillText(Math.round(truth.tas*1.94384)+"T",240,cy+22);   // true airspeed left of the symbol, groundspeed right
 	x.textAlign="left"; x.fillText(Math.round(gz.ground||0)+"G",272,cy+22);
-	x.font="20px monospace";
-	if(station){ const nm=station.slant==null?null:station.slant/NM, line=String(Math.round(station.bearing/D2R+360)%360).padStart(3,"0")+"°"+(nm==null?"":"/ "+nm.toFixed(1)), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2); bearing alone without a range   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		x.fillText(line,20,66);
-		if(nm!=null&&(gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),20+w,90); }
-		x.textAlign="left"; x.fillText(SHIP.ident,36,114); }
 	const z=gz.zulu||0, two=(v)=>String(Math.floor(v)).padStart(2,"0");
-	x.fillText(two(z/3600)+":"+two(z/60%60)+":"+two(z%60),20,458);   // ZTOD at the lower left (item 10)
+	{ const need=navigate.required(nav,here,z); if(need!==null) x.fillText(Math.round(need)+"G REQD",272,cy+44); }   // the groundspeed required for the time on target, under the present one (24.2.9.6)
+	x.font="20px monospace";
+	if(station){ const nm=station.slant==null?null:station.slant/NM, line=face(station.bearing,local)+(nm==null?"":"/ "+nm.toFixed(1)), w=x.measureText(line).width;   // the TACAN data at the upper left: bearing and slant range, TTG at the present groundspeed, the ident (item 2); bearing alone without a range   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		x.fillText(line,60,66);
+		if(nm!=null&&(gz.ground||0)>50){ x.textAlign="right"; x.fillText(time_to_go(nm/gz.ground*3600),60+w,90); }
+		x.textAlign="left"; x.fillText(SHIP.ident,76,114); }
+	if(to){ const nm=to.range/NM;   // the waypoint data at the upper right: bearing and range, TTG, and a GPS point's ID (24.2.9.1, 24.1.3.11)
+		x.textAlign="right"; x.fillText(face(to.bearing)+"/ "+nm.toFixed(1),440,66);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		if((gz.ground||0)>50) x.fillText(time_to_go(nm/gz.ground*3600),440,90);
+		if(point&&point.name&&goal.kind!=="tgt") x.fillText(point.name,440,114); }
+	x.textAlign="left";
+	x.fillText(two(z/3600)+":"+two(z/60%60)+":"+two(z%60),20,414);   // ZTOD at the lower left (item 10), over the heading selected
+	x.fillText("HSEL",20,436); x.fillText(face(nav.heading),20,458);
+	x.textAlign="right";
+	if(timer.shown==="et"||timer.shown==="cd"){ x.fillText(timer.shown.toUpperCase(),444,370); x.fillText(timer_text(z),444,392); }   // the timer shown, ET or CD, at the lower right (item 12)
+	x.fillText("CSEL",444,436);   // the course selected at the lower right, and over it the distance off the course line (item 6)
+	if(nav.course!==null&&nav.steer!==""){ x.fillText(face(nav.course,nav.steer==="tcn"?local:undefined),444,458);
+		const line=nav.steer==="tcn"?(station&&station.range!=null?{ bearing:station.bearing, range:station.range }:null):to;
+		if(line) x.fillText(Math.min(99.9,navigate.across(line,nav.course)/NM).toFixed(1)+"C",444,414); }   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
 	x.textAlign="center";
-	if(timer.shown==="et"||timer.shown==="cd"){ x.fillText(timer.shown.toUpperCase(),452,434); x.fillText(timer_text(z),452,458); }   // the timer shown, ET or CD, at the lower right (item 12)
-	x.font="16px monospace"; x.fillText("TRUE",256,52);   // under the scale, with true heading (item 13)
-	ddi_legend(x,8,"SCL/"+(hsi_state.dctr?2*scale:scale),true,false);
-	if(hsi_state.mode){ ddi_legend(x,4,hsi_state.north?"N UP":"T UP",true,false); ddi_legend(x,2,"DCTR",true,hsi_state.dctr);
+	if(!nav.magnetic){ x.font="16px monospace"; x.fillText("TRUE",256,52); x.font="20px monospace"; }   // under the scale, with true heading (item 13)
+	if(nav.updating==="map") x.fillText("SLEW",430,140);
+	const align=navigate.alignment(nav);
+	if(align){ const q=align.quality, title=align.title, w=x.measureText(title).width, s=Math.floor(align.time);   // the alignment display: its kind, QUAL and TIME, the TIME flashing while the alignment is interrupted
+		x.fillText(title,256,318); x.beginPath(); x.moveTo(256-w/2,329); x.lineTo(256+w/2,329); x.stroke();
+		x.fillText("QUAL: "+(q===null?"NO ATT":q.toFixed(1)+(align.complete?" OK":"")),256,342);   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		if(!align.held||(sim_time*2)%2<1) x.fillText("TIME: "+Math.floor(s/60)+":"+two(s%60),256,364);
+		if(nav.ins.kind==="cv"&&align.time>=20) x.fillText("NO WYPTS",256,386);   // the ship sends no waypoints with its alignment data (24.2.3.1.2)
+		if(nav.ins.kind!=="ifa"){ const c=navigate.coordinates(here);   // the position the alignment is given (figures 24-3, 24-4)
+			x.fillText(navigate.angle(c.latitude,"NS",nav.decimal),256,128); x.fillText(navigate.angle(c.longitude,"EW",nav.decimal),256,150);
+			if(nav.ins.manual){ x.fillText("CV HDG "+face(carrier_given.heading),256,172); x.fillText("CV SPD "+Math.round(carrier_given.speed)+"KTS",256,194); } } }
+	if(level==="mode"){ ddi_legend(x,8,"SCL/"+(hsi_state.dctr?2*scale:scale),true,false);
+		ddi_legend(x,4,hsi_state.north?"N UP":"T UP",true,false); ddi_legend(x,2,"DCTR",true,hsi_state.dctr);
 		if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
 		ddi_legend(x,10,"HSI",true,false); }
-	else { ddi_legend(x,3,"MODE",true,false); ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time"); } }   // TIMEUFC boxed while the UFC holds the timer options (figure 24-9)
+	else if(level==="pos"){ const have=navigate.available(nav,truth);   // the position keeping options (figure 24-10)
+		ddi_legend(x,5,"AINS",have.ains,nav.source==="ains"); ddi_legend(x,6,"INS",have.ins,nav.source==="ins"); ddi_legend(x,7,"TCN",have.tcn,nav.source==="tcn");
+		ddi_legend(x,8,"ADC",true,nav.source==="adc"); ddi_legend(x,9,"GPS",have.gps,nav.source==="gps"); ddi_legend(x,10,"HSI",true,false); }
+	else if(level==="updt"){   // the update options, and ACPT and REJ either side of the error found (figure 24-11)
+		const read=navigate.reading(nav);
+		if(read){ ddi_legend(x,6,"ACPT",true,false); ddi_legend(x,10,"REJ",true,false);
+			x.fillText(face(read.bearing)+"/ "+(read.range/NM).toFixed(1)+"NM",256,30); }   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
+		else if(nav.updating==="auto"){ ddi_legend(x,8,"AUTO",true,true); ddi_legend(x,10,"HSI",true,false); }
+		else { ddi_legend(x,6,"TCN",!!truth.tacan,false); ddi_legend(x,4,"GPS",navigate.good(nav.gps),false); ddi_legend(x,7,"DSG",true,nav.updating==="dsg"); ddi_legend(x,8,"AUTO",true,false);
+			if(display==="center"&&hsi_state.map) ddi_legend(x,9,"MAP",!!nav.designation,false);
+			if(nav.previous) ddi_legend(x,3,"CANCEL",true,false);
+			ddi_legend(x,10,"HSI",true,false); } }
+	else { ddi_legend(x,8,"SCL/"+(hsi_state.dctr?2*scale:scale),true,false);
+		ddi_legend(x,6,"POS/"+nav.source.toUpperCase(),true,false); if(navigate.updatable(nav)) ddi_legend(x,7,"UPDT",true,false);
+		ddi_legend(x,9,"MK "+(nav.mark+1),true,false); ddi_legend(x,10,"DATA",true,false);
+		ddi_legend(x,5,"TCN",true,nav.steer==="tcn"); ddi_legend(x,3,"MODE",true,false);
+		ddi_legend(x,11,goal&&goal.kind==="tgt"?"TGT":goal&&goal.kind==="oap"?"OAP":"WYPT",true,nav.steer==="wypt"||!!nav.designation);
+		ddi_legend(x,12,"↑",true,false); ddi_legend(x,13,"↓",true,false);
+		x.textAlign="right"; x.fillText(navigate.label(nav.current),502,216);   // the steer-to number between its arrows (24.1.3.11.1)
+		if(!nav.designation) ddi_legend(x,14,"NAVDSG",!!point,false); else if(nav.designation.stage==="oap") ddi_legend(x,14,"O/S",true,false);
+		ddi_legend(x,15,"SEQ"+(nav.sequence+1),true,nav.lines);
+		if(align&&nav.ins.kind==="cv") ddi_legend(x,17,"MAN",true,nav.ins.manual); else ddi_legend(x,17,"TIMEUFC",true,ufc.func==="time");   // TIMEUFC boxed while the UFC holds the timer options (figure 24-9)
+		if(navigate.storable(nav)) ddi_legend(x,19,"STD HDG",true,false);
+		if(!align&&!nav.designation&&nav.sequences[nav.sequence].length>=2) ddi_legend(x,16,"AUTO",true,nav.auto); } }   // AUTO is offered with a sequence of two or more, and not during an alignment or with a target designated (24.1.3.14)
+// carrier_given: the ship's heading and speed as entered for a manual carrier alignment (24.2.3.1.3)
+const carrier_given={ heading:0, speed:0 };
+// hsi_data: the DATA sublevels (figure 24-9, sheets 3 and 5; figures 24-7, 24-8, 24-18). WYPT: the
+// waypoint shown, with its position, elevation and any offset, the time on target and groundspeed,
+// and the sequence being programmed, its target boxed. A/C: the source keeping the position, the
+// present position, the wind, the magnetic variation, GPS's estimated errors and time while it
+// tracks, and the low altitude warnings. TCN: a stored station. GPS: the GPS's stored points, the one
+// under the cursor with its data once that has come, beside the waypoint it would be transferred to.
+// NAVCK: the INS, GPS and air data velocities side by side, the wind, groundspeed and true airspeed.
+function hsi_data(x){ const tab=hsi_state.data, truth=nav_sense(0), check=hsi_state.check, gz=ownship.gauges||{};
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle"; x.font="18px monospace"; x.textAlign="left";
+	const lat=(p)=>navigate.angle(navigate.coordinates(p).latitude,"NS",nav.decimal,nav.precise), lon=(p)=>navigate.angle(navigate.coordinates(p).longitude,"EW",nav.decimal,nav.precise);
+	const utm=(p)=>{ const c=navigate.coordinates(p); return navigate.grid(c.latitude,c.longitude,nav.precise); };
+	const feet=(m)=>Math.round(m/0.3048)+" FT", two=(v)=>String(Math.floor(v)).padStart(2,"0"), knots=(v)=>String(Math.round(v*1.94384));
+	const face=(v)=>String(Math.round(navigate.shown(nav,v)/D2R+360)%360).padStart(3,"0")+"°";
+	const variation=(v)=>"MVAR "+(v<0?"W":"E")+" "+Math.floor(Math.abs(v)/D2R)+"°"+two(Math.round(Math.abs(v)/D2R*60)%60)+"'";
+	const count=(shown)=>{ ddi_legend(x,12,"↑",true,false); ddi_legend(x,13,"↓",true,false); x.save(); x.font="20px monospace"; x.textAlign="right"; x.fillText(shown,502,216); x.restore(); };
+	ddi_legend(x,6,"A/C",true,tab==="ac"&&!check); ddi_legend(x,7,"WYPT",true,tab==="wypt"&&!check); ddi_legend(x,8,"TCN",true,tab==="tcn"&&!check); ddi_legend(x,10,"HSI",true,false);
+	ddi_legend(x,11,"NAVCK",true,check);
+	if(check){ const air=[truth.tas*Math.cos(truth.pitch)*Math.sin(truth.heading),-truth.tas*Math.cos(truth.pitch)*Math.cos(truth.heading)], up=ownship.vely??0;
+		const inertial=navigate.velocity(nav.ins), satellites=navigate.good(nav.gps), wind=nav.adc.wind;
+		const columns=[["INS",inertial,[-(truth.south+nav.ins.drift.z),truth.east+nav.ins.drift.x,up]],["GPS",satellites,[-truth.south,truth.east,up]],["ADC",true,[-(air[1]+wind.z),air[0]+wind.x,up]]];
+		x.textAlign="center";
+		columns.forEach(([name,valid,v],k)=>{ const cx=150+k*110; x.fillText(name,cx,90); x.fillText("VEL K",cx,112);
+			v.forEach((n,r)=>x.fillText(knots(n)+(valid?"":"#"),cx,140+r*24)); });   // a # beside a velocity that is not valid (24.2.4)
+		if(!inertial||!satellites) x.fillText("# INVALID",260,216);
+		["N","E","UP"].forEach((n,r)=>{ x.fillText(n,70,140+r*24); x.fillText(n,70,300+r*24); });
+		const estimated=!inertial&&!satellites;
+		x.fillText("WIND",150,250); x.fillText("VEL K",150,272);
+		[-wind.z,wind.x,0].forEach((n,r)=>x.fillText(knots(n)+(estimated?"*":""),150,300+r*24));
+		if(estimated) x.fillText("* EST",150,376);
+		x.textAlign="left"; x.fillText("GSPD",250,300); x.fillText("TAS",250,324);
+		x.textAlign="right"; x.fillText(String(Math.round(gz.ground||0)),410,300); x.fillText(knots(truth.tas),410,324);
+		return; }
+	ddi_legend(x,3,"GPS",true,tab==="gps");
+	if(tab==="wypt"){ const w=navigate.spot(nav,hsi_state.shown)||{ x:0, z:0, elevation:0, name:"", offset:null }, list=nav.sequences[nav.sequence], far=grid_state.far&&grid_state.far.shown===hsi_state.shown?grid_state.far:null;
+		x.textAlign="center"; if(w.name) x.fillText(w.name,256,62); x.fillText("WYPT "+navigate.label(hsi_state.shown),256,84);
+		x.textAlign="left"; x.fillText(lat(w),120,112); x.fillText(lon(w),120,134);
+		{ const g=utm(w); if(g) x.fillText("GRID "+g,120,156); }   // the grid under the lat/long, between N84 and S80 (24.2.5.1.2)
+		x.fillText("ELEV "+navigate.measure(w.elevation,nav.units.waypoint),120,178);
+		if(w.offset){ const o=w.offset, b=Math.round(((o.bearing-(nav.meridian==="magnetic"?nav.variation:0))/D2R%360+360)%360*3600)%1296000, tip=utm({ x:w.x+Math.sin(o.bearing)*o.range, z:w.z-Math.cos(o.bearing)*o.range });
+			x.fillText("O/S RNG "+navigate.measure(o.range,nav.units.range),120,208);
+			x.fillText("O/S BRG "+String(Math.floor(b/3600)).padStart(3,"0")+"°"+two(b/60%60)+"'"+two(b%60)+'" '+(nav.meridian==="magnetic"?"M":"T"),120,228);
+			if(tip&&!far) x.fillText("O/S GRID "+tip,120,248);
+			x.fillText("O/S ELEV "+navigate.measure(o.elevation,nav.units.offset),120,268); }
+		if(far&&Math.floor(sim_time*2)%2===0) x.fillText("O/S GRID "+far.text,120,248);   // keyed past 400,000 ft of the aimpoint: flashing, and not taken
+		x.beginPath(); x.moveTo(60,284); x.lineTo(452,284); x.stroke();
+		{ const t=nav.tot??0; x.fillText("TOT "+two(t/3600)+":"+two(t/60%60)+":"+two(t%60),60,302); x.fillText("GSPD "+Math.round(nav.speed),320,302); }
+		for(let from=0;from<list.length;from+=8){ const part=list.slice(from,from+8), widths=part.map(n=>x.measureText(String(n)).width), dash=x.measureText("-").width, total=widths.reduce((a,b)=>a+b,0)+dash*Math.max(0,part.length-1), py=328+from/8*22; let px=256-total/2;   // the sequence, eight to a row, its target boxed
+			part.forEach((n,k)=>{ x.fillText(String(n),px,py); if(n===nav.target) x.strokeRect(px-3,py-11,widths[k]+6,22); px+=widths[k]; if(k<part.length-1){ x.fillText("-",px,py); px+=dash; } }); }
+		if(hsi_state.slew){ x.textAlign="right"; x.fillText("SLEW",452,62); x.textAlign="left"; }   // the TDC is on the map slew (24.1.3)
+		ddi_legend(x,5,"UFC",true,["wypt","offset"].includes(ufc.back||ufc.func)); ddi_legend(x,4,"SLEW",true,hsi_state.slew); ddi_legend(x,1,"SEQUFC",true,ufc.func==="seq");
+		count(navigate.label(hsi_state.shown)); ddi_legend(x,14,"REF WP",true,grid_state.waypoint); ddi_legend(x,15,"SEQ"+(nav.sequence+1),true,false); ddi_legend(x,19,"PRECISE",true,nav.precise); }
+	else if(tab==="ac"){ const here=navigate.place(nav,truth), wind=nav.adc.wind, speed=Math.hypot(wind.x,wind.z), estimated=!navigate.velocity(nav.ins)&&!navigate.good(nav.gps);
+		x.textAlign="center"; x.fillText(nav.source.toUpperCase(),256,92);
+		x.textAlign="left"; x.fillText(lat(here),150,124); x.fillText(lon(here),150,148);
+		x.fillText("WSPD "+knots(speed)+" KT",150,172); x.fillText("WDIR "+face(Math.atan2(-wind.x,wind.z))+(estimated?"  EST":""),150,196); x.fillText(variation(nav.variation),150,220);
+		{ const h=navigate.horizontal(nav.gps), v=navigate.vertical(nav.gps), z=gz.zulu||0;   // GPS's estimated errors and time, while it tracks (24.2.5.6)
+			if(h!==null){ x.fillText("GPS HERR "+Math.round(h/0.3048)+"FT",150,262); x.fillText("GPS VERR "+Math.round(v/0.3048)+"FT",150,286); x.fillText("GPS TIME "+two(z/3600)+":"+two(z/60%60)+":"+two(z%60)+"Z",150,310); } }
+		x.textAlign="center"; x.fillText("WARN ALT",136,416); x.beginPath(); x.moveTo(92,427); x.lineTo(180,427); x.stroke();
+		x.fillText("BARO",96,440); x.fillText("RADAR",176,440); x.fillText(String(altitude_set.baro),96,462); x.fillText(String(altitude_set.radar),176,462);
+		if(ufc.func==="alt"){ const cx=ufc.kind==="baro"?96:176, w=x.measureText(ufc.kind==="baro"?"BARO":"RADAR").width; x.strokeRect(cx-w/2-4,428,w+8,24); }
+		ddi_legend(x,5,"UFC",true,ufc.func==="ac");
+		if(navigate.tracking(nav.gps)||!nav.gps.secure) ddi_legend(x,2,"NOSEC GPS",true,!nav.gps.secure);   // there while GPS hears its satellites (24.2.5.7.2)
+		ddi_legend(x,1,nav.gps.phase==="appr"?"APPR":"NORM",true,false);
+		ddi_legend(x,13,nav.magnetic?"HDG MAG":"HDG TRUE",true,false); ddi_legend(x,15,nav.decimal?"LATLN DCML":"LATLN SEC",true,false); }
+	else if(tab==="tcn"){ const s=nav.stations[nav.station];
+		x.textAlign="center"; if(s) x.fillText(s.channel+s.band,256,92);
+		x.textAlign="left";
+		if(s){ x.fillText(lat(s),150,124); x.fillText(lon(s),150,148); x.fillText("ELEV "+navigate.measure(s.elevation,nav.units.station),150,172); x.fillText(variation(s.variation??nav.variation),150,196); }
+		ddi_legend(x,5,"UFC",true,(ufc.back||ufc.func)==="station"); ddi_legend(x,1,nav.local?"TCN MGVAR":"AC MGVAR",true,false); count(String(nav.station+1)); }
+	else { const points=nav.points, g=hsi_state.gps, chosen=points[g.cursor], ready=sim_time-g.asked>=3, page=Math.floor(g.cursor/24), w=navigate.spot(nav,hsi_state.shown);
+		if(chosen){ x.fillText(chosen.name,70,68);   // the point asked for: its ID at once, its data when it has come
+			if(ready){ x.fillText(lat(chosen),70,96); x.fillText(lon(chosen),70,120); x.fillText("ELEV "+feet(chosen.elevation),70,144); } }
+		if(w&&w.name) x.fillText(w.name,290,68);
+		x.fillText("WYPT "+navigate.label(hsi_state.shown),290,96);
+		if(w){ x.fillText(lat(w),290,120); x.fillText(lon(w),290,144); x.fillText("ELEV "+feet(w.elevation),290,168); }
+		points.slice(page*24,page*24+24).forEach((p,k)=>{ const px=80+Math.floor(k/8)*130, py=206+(k%8)*24; x.fillText(p.name,px,py);
+			if(page*24+k===g.cursor){ const pw=x.measureText(p.name).width; x.strokeRect(px-4,py-12,pw+8,24); } });
+		x.textAlign="center"; x.fillText("PAGE "+(page+1),416,452);
+		if(chosen&&ready&&hsi_state.shown<navigate.WAYPOINTS) ddi_legend(x,5,"XFER",true,false);
+		ddi_legend(x,1,"↓",points.length>0,false); ddi_legend(x,20,"→",points.length>0,false); ddi_legend(x,17,"↑",points.length>24,false); ddi_legend(x,16,"↓",points.length>24,false);
+		count(navigate.label(hsi_state.shown)); } }
+// The MUMI display (2.13.1.2.2, figure 2-21, #80): what the memory unit loaded at power-up. MU ID is the
+// mission's identifier, NO IDENT with no user files; an option stands at its pushbutton for each
+// file the unit holds - WYPT and TCN, with weight on wheels only, and GPS WYPT and GPS ALM - and
+// pressing one reads the file again, the option boxed while it reads.
+const mumi={ file:"", at:-Infinity };
+const MUMI_FILES={ 5:"WYPT", 4:"TCN", 20:"GPS WYPT", 19:"GPS ALM" };
+function mumi_press(pb){ const file=MUMI_FILES[pb];
+	if(!file||!nav.memory.files.includes(file)||(pb<=5&&!ownship.grounded)) return false;
+	navigate.load(nav,mission(),file); mumi.file=file; mumi.at=sim_time; return true; }
+function ddi_mumi(x){ const id=nav.memory.files.length&&nav.memory.identifier?nav.memory.identifier:"NO IDENT", title="MU ID "+id;
+	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2; x.textBaseline="middle"; x.font="20px monospace"; x.textAlign="center";
+	{ const w=x.measureText(title).width; x.fillText(title,256,96); x.beginPath(); x.moveTo(256-w/2,108); x.lineTo(256+w/2,108); x.stroke(); }
+	x.textAlign="left"; x.fillText("MC   13C",150,176); x.fillText("DATA XFER",176,256);
+	x.beginPath(); x.moveTo(120,300); x.lineTo(430,300); x.stroke(); x.fillText("ERRORS:",124,320); x.beginPath(); x.moveTo(120,340); x.lineTo(430,340); x.stroke();
+	for(const [pb,file] of Object.entries(MUMI_FILES)){ if(!nav.memory.files.includes(file)) continue;
+		const words=file.split(" "), reading=mumi.file===file&&sim_time-mumi.at<1;
+		if(words.length>1){ x.textAlign="center"; x.fillText(words[0],96+80*(20-+pb),460); }   // GPS over WYPT and over ALM, as the display stacks them
+		ddi_legend(x,+pb,words[words.length-1],+pb>5||!!ownship.grounded,reading); } }
 // known is the picture the pilot holds, which the SA page and the map draw: a
 // teammate by its datalink position report, a hostile close enough to see as
 // it is, and otherwise a hostile only as the radar holds it - a trackfile at
@@ -2758,30 +3154,51 @@ function ddi_hud(x){
 	hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,boxed,vc,ranged?rng:null,{ fwd, right, up });
 	x.restore();
 	x.restore(); }
-// fpas_home (#54): distance and time to the carrier's TACAN at present groundspeed,
-// and the fuel state on arrival at the present burn. Null on deck, hovering, with
-// the engines not burning, or without a TACAN range.
-function fpas_home(){ const gz=ownship.gauges||{};
-	const gs=gz.ground||0, pph=flow_state.pph, station=tacan();
-	if(ownship.grounded||gs<60||pph<200||cheat("fuel")||!station||station.range==null) return null;
-	const dist=station.range/1852;
-	const hours=dist/gs;
-	const arrive=(gz.fuelRaw||0)+(gz.externalRaw||0)-pph*hours;
-	return { dist, hours, arrive };
-}
-// ddi_fpas: the FPAS display (NATOPS 2.3.1, figure 2-7), the areas the game can compute.
-// CURRENT: the range (nm) and endurance to 2,000 lb - to 0 lb once total fuel is under
-// 2,500 lb (2.3.1.1.2) - at the present burn and groundspeed; over Mach 0.9 the range
-// reads MACH and the endurance LIM (2.3.1.1.3). The steering row to the carrier's TACAN,
-// the game's one station (2.3.1.1.6): the time and the fuel on arrival, 0 rather than
-// negative and blank over Mach 0.9, flashing with NAV TO and the TO legend when under the
-// reserve (2.3.1.4); and the fuel flow in pounds per mile. XXXX where the inputs are not
-// valid - on deck, or the engines not burning. BEST MACH and the OPTIMUM area need a
-// cruise performance search the game does not have (#126), so they are left off.
-// Cockpit text stays English by the annunciator policy.
+// The FPAS's legs (#54, NATOPS 2.3.1): fpas_leg is the time to a point so many metres off at the present
+// groundspeed and the fuel left on arriving at the present burn - null on deck, hovering or with the
+// engines not burning. fpas_home is the leg to the home waypoint, which the HOME FUEL caution watches:
+// waypoint 0 at power-up, stepped with the FPAS display's arrows, and quiet for 5 s after a change
+// (2.3.1.2). fpas_steer is the leg to the waypoint or TACAN station the HSI steers to, with its name
+// for the NAV TO row (2.3.1.1.6).
+const fpas={ changed:-Infinity, at:-Infinity, best:null, survey:null, optimum:null };
+function fpas_leg(metres){ const gz=ownship.gauges||{}, gs=gz.ground||0, pph=flow_state.pph;
+	if(ownship.grounded||gs<60||pph<200||cheat("fuel")) return null;
+	const dist=metres/1852, hours=dist/gs;
+	return { dist, hours, arrive:(gz.fuelRaw||0)+(gz.externalRaw||0)-pph*hours }; }
+function fpas_home(){ const home=nav.waypoints[nav.home];
+	return home?fpas_leg(navigate.leg(nav,navigate.place(nav,nav_sense(0)),home).range):null; }
+function fpas_steer(){
+	if(nav.steer==="tcn"){ const station=tacan(), leg=station&&station.range!=null?fpas_leg(station.range):null; return leg&&{ ...leg, name:"TCN" }; }
+	if(nav.steer!=="wypt") return null;
+	const steer=hud_steer(), leg=steer?fpas_leg(steer.range):null;
+	return leg&&{ ...leg, name:steer.target?"TGT":"WYPT "+navigate.label(nav.current) }; }
+function fpas_press(pb){ if(pb!==16&&pb!==17) return false;   // the home waypoint's arrows, round from the last waypoint to waypoint 0 (2.3.1.2)
+	nav.home=(nav.home+(pb===16?1:navigate.WAYPOINTS-1))%navigate.WAYPOINTS; fpas.changed=sim_time; return true; }
+// fpas_cruise keeps the cruise figures (#126, 2.3.1.1.2 to 2.3.1.1.5): the best Mach at the present
+// altitude, found afresh every two seconds, and the optimum altitude and Mach from a survey of the
+// altitudes that climbs a thousand feet a call and starts over when it finishes. Both search the
+// flight core's own trimmed level flight for the jet as it is (flight_cruise), with the wind along
+// the track counted in the range.
+function fpas_cruise(){ const gz=ownship.gauges||{}, tail=(gz.ground||0)*0.514444-nav_sense(0).tas*Math.cos(gz.pitch||0);
+	if(sim_time-fpas.at>=2||sim_time<fpas.at){ fpas.at=sim_time; fpas.best=navigate.best(flight_cruise,Math.max(0,ownship.pos.y),tail); }
+	if(!fpas.survey||fpas.survey.done){ if(fpas.survey) fpas.optimum=fpas.survey; fpas.survey=navigate.survey(tail); }
+	navigate.sweep(fpas.survey,flight_cruise,1);
+	return { best:fpas.best, optimum:fpas.optimum, tail }; }
+// ddi_fpas: the FPAS display (NATOPS 2.3.1, figure 2-7). CURRENT: the range (nm) and endurance to
+// 2,000 lb - to 0 lb once total fuel is under 2,500 lb (2.3.1.1.2) - at the present burn and
+// groundspeed; over Mach 0.9 the range reads MACH and the endurance LIM (2.3.1.1.3); under them the
+// best Mach for range and for endurance at this altitude, and the range and endurance flown there.
+// The steering row to the waypoint or TACAN station the HSI steers to (2.3.1.1.6): the time and the
+// fuel on arrival, 0 rather than negative and blank over Mach 0.9, flashing with NAV TO and the TO
+// legend when under the reserve (2.3.1.4); and the fuel flow in pounds per mile. OPTIMUM: the
+// altitude and Mach for the most range and for the most endurance, and what each gives. XXXX where
+// the inputs are not valid - on deck, the engines not burning, or no cruise found. The home
+// waypoint and its arrows at the lower right (2.3.1.2). The optimum is for the jet at its present
+// weight; the real one's allowance for the fuel burned on the way is not modelled. Cockpit text
+// stays English by the annunciator policy.
 function ddi_fpas(x,display){ const gz=ownship.gauges||{};
 	const total=(gz.fuelRaw||0)+(gz.externalRaw||0), pph=flow_state.pph, gs=gz.ground||0, mach=gz.mach||0;
-	const reserve=total<2500?0:2000, fast=mach>0.9, burning=pph>200&&!ownship.grounded, home=fpas_home();
+	const reserve=total<2500?0:2000, fast=mach>0.9, burning=pph>200&&!ownship.grounded, home=fpas_steer();
 	const two=(v)=>String(Math.floor(v)).padStart(2,"0");
 	const hours=(h)=>{ const m=Math.round(h*60); return (m>=60?String(Math.floor(m/60)):"")+":"+two(m%60); };   // h:mm, a zero hour left blank (:29)
 	const clock=(h)=>{ const s=Math.round(h*3600); return (s>=3600?String(Math.floor(s/3600)):"")+":"+two(s/60%60)+":"+two(s%60); };   // h:mm:ss the same way (:23:45)
@@ -2789,17 +3206,34 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};
 	x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=1.5; x.textBaseline="middle"; x.font="18px monospace";
 	const under=(text,cx,y)=>{ const w=x.measureText(text).width; x.textAlign="center"; x.fillText(text,cx,y); x.beginPath(); x.moveTo(cx-w/2,y+11); x.lineTo(cx+w/2,y+11); x.stroke(); };
 	under("CURRENT",261,40); under("RANGE",261,68); under("ENDURANCE",408,68);
-	const spare=Math.max(0,total-reserve);
-	x.textAlign="left"; if(lit) x.fillText("TO "+reserve+" LB",36,96);
+	const spare=Math.max(0,total-reserve), legend="TO "+reserve+" LB";
+	const cruise=burning?fpas_cruise():null, tail=cruise?cruise.tail:0;
+	const fraction=(m)=>"."+two(Math.round(m*100));   // a Mach number as the display writes it (.68)
+	const reach=(c)=>String(Math.round(spare/(c.flow*7936.64)*(c.speed+tail)/0.514444));   // the miles a cruise point's flow and groundspeed make of the fuel to the reserve
+	const stay=(c)=>hours(spare/(c.flow*7936.64));
+	x.textAlign="left"; if(lit) x.fillText(legend,36,96);
+	x.fillText("BEST MACH",36,120); if(lit) x.fillText(legend,36,144);
 	x.textAlign="center";
 	x.fillText(fast?"MACH":burning&&gs>60?String(Math.round(spare/pph*gs)):"XXXX",261,96);
 	x.fillText(fast?"LIM":burning?hours(spare/pph):"XXXX",408,96);
-	under("NAV TO",66,140); under("TIME",190,140); under("FUEL REMAIN",330,140); under("LB/NM",446,140);
-	if(lit) x.fillText("TCN",66,166);
-	x.fillText(home?clock(home.hours):"XXXX",190,166);
-	if(!fast&&lit) x.fillText(home?String(Math.max(0,Math.round(home.arrive/10)*10)):"XXXX",330,166);
-	if(burning&&gs>60) x.fillText(String(Math.round(pph/gs)),446,166);   // whenever the engines run and the jet is moving (2.3.1.1.7)
-	x.beginPath(); x.moveTo(24,186); x.lineTo(488,186); x.stroke(); }
+	{ const best=cruise&&cruise.best, far=best&&best.range, long=best&&best.endurance;   // the best Mach at this altitude, and what it gives (2.3.1.1.2, 2.3.1.1.3)
+		x.fillText(far?fraction(far.mach):"XXXX",261,120); x.fillText(long?fraction(long.mach):"XXXX",408,120);
+		x.fillText(far?reach(far):"XXXX",261,144); x.fillText(long?stay(long):"XXXX",408,144); }
+	under("NAV TO",66,176); under("TIME",190,176); under("FUEL REMAIN",330,176); under("LB/NM",446,176);
+	if(lit&&(nav.steer==="tcn"||nav.steer==="wypt")) x.fillText(home?home.name:"XXXX",66,202);
+	if(nav.steer!=="") x.fillText(home?clock(home.hours):"XXXX",190,202);
+	if(nav.steer!==""&&!fast&&lit) x.fillText(home?String(Math.max(0,Math.round(home.arrive/10)*10)):"XXXX",330,202);
+	if(burning&&gs>60) x.fillText(String(Math.round(pph/gs)),446,202);   // whenever the engines run and the jet is moving (2.3.1.1.7)
+	x.beginPath(); x.moveTo(24,222); x.lineTo(488,222); x.stroke();
+	under("OPTIMUM",261,244); under("RANGE",261,270); under("ENDURANCE",408,270);
+	x.textAlign="left"; x.fillText("ALTITUDE",36,298); x.fillText("MACH",36,322); if(lit) x.fillText(legend,36,346);
+	x.textAlign="center";
+	{ const optimum=cruise&&cruise.optimum, far=optimum&&optimum.range, long=optimum&&optimum.endurance, feet=(c)=>String(Math.round(c.altitude/0.3048));   // the optimum altitude and Mach, and what they give (2.3.1.1.4, 2.3.1.1.5)
+		x.fillText(far?feet(far):"XXXX",261,298); x.fillText(long?feet(long):"XXXX",408,298);
+		x.fillText(far?fraction(far.mach):"XXXX",261,322); x.fillText(long?fraction(long.mach):"XXXX",408,322);
+		x.fillText(far?reach(far):"XXXX",261,346); x.fillText(long?stay(long):"XXXX",408,346); }
+	x.fillText(String(nav.home),376,440); x.fillText("HOME",376,462);   // the home waypoint between its arrows (2.3.1.2)
+	ddi_legend(x,17,"\u2193",true,false); ddi_legend(x,16,"\u2191",true,false); }
 const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
 // FLBIT (NATOPS 2.2.10.3): the fuel low level system's BIT, run from the FUEL page.
 // It raises FUEL LO through the whole warning chain - the caution, the FUEL LO light,
@@ -2914,7 +3348,15 @@ const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the optio
 	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.450, z:-0.085 },
 	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 }, { name:"onoff", y:0.351, z:0.062 } ];
 const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
-const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""], time:["","ET","CD","ZTOD",""] };   // IFF, D/L and BCN: no equipment behind them, so blank windows; time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
+const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], bcn:["","","","",""], time:["","ET","CD","ZTOD",""],   // IFF, D/L and BCN: no equipment behind them, so blank windows - time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
+	wypt:["POSN","HDTH","ELEV","GRID","O/S"], offset:["RNG","BRG","ELEV","GRID",""], elevation:["FEET","MTRS","","",""], range:["FEET","MTRS","NM","YARD",""], bearing:["TRUE","","","",""], seq:["GSPD","TGT","TOT","INS","DEL"], ac:["POSN","","WSPD","WDIR","MVAR"], alt:["ALT","","","",""],   // the HSI's DATA sublevels load these (figure 24-9): a waypoint and its offset, a sequence, the aircraft's data, a low altitude warning
+	station:["X","Y","POSN","ELEV","MVAR"], cv:["POSN","","CHDG","CVEL",""] };   // a TACAN station's data (figure 24-18), and a manual carrier alignment's (figure 24-3)
+// UFC_ENTRY: the pages whose options take a keypad entry, the option selected first
+const UFC_ENTRY=new Set(["wypt","offset","elevation","range","bearing","seq","ac","alt","station","cv"]);
+// UFC_UNITS: the options that take their entry on a units page (figure 24-9 sheet 4): an elevation in feet or
+// metres, an offset's range in feet, metres, nautical miles or yards, its bearing true or magnetic - the
+// units page, and which of the units it sets
+const UFC_UNITS={ "wypt ELEV":["elevation","waypoint"], "offset ELEV":["elevation","offset"], "station ELEV":["elevation","station"], "offset RNG":["range","range"], "offset BRG":["bearing",""] };
 // The radios the UFC works (24.4.2, 24.5.4): the TACAN on or off, its channel (1-126)
 // and band (X or Y), T/R or RCV, and A/A for air-to-air; the ILS on or off and its
 // channel (1-20). A spawn finds them as the pre-flight left them, on and tuned to the
@@ -2954,7 +3396,7 @@ function timer_enter(entry){
 		return true; }
 	if(timer.shown!=="et"&&timer.shown!=="cd") return false;
 	timer_run(timer.shown,timer[timer.shown].since===null); return true; }
-const ufc={ func:"", entry:"", error:false, blink:0 };   // the selected function, the keypad entry, the ERROR flash, the blink-once deadline
+const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"", back:"", target:"", unit:"", last:"" };   // the selected function, the keypad entry, the ERROR flash, the blink-once deadline; on the data pages the option selected for entry, a position's hemisphere letter and its latitude while the longitude is keyed, the sequence waypoint an insertion follows, which low altitude warning ALT sets, the page a units page returns to, the option it enters and the unit it sets, and "lon" once a longitude is keyed, for HDTH
 let ufc_dirty=true, ufc_last="";
 // ufc_face: what the windows show, from the panel's state and the equipment it
 // reads (emcon; radios; timer: the timer on the HUD). A colon cues each option
@@ -2964,14 +3406,19 @@ let ufc_dirty=true, ufc_last="";
 // right-aligned - a keyed entry, or the selected radio's channel. ERROR flashes at
 // 2 Hz until cleared (2.13.5.9); a valid entry blanks the window once.
 function ufc_face(state,live,now){ const t=live.radios.tacan, radio=state.func==="tcn"?t:state.func==="ils"?live.radios.ils:null;
-	const cues={ tcn:[t.mode==="tr",t.mode==="rcv",t.air,t.band==="X",t.band==="Y"], ils:[true], time:UFC_PAGES.time.map(o=>!!o&&o.toLowerCase()===live.timer) }[state.func]||[];
-	const options=live.emcon?["E","M","C","O","N"]:(UFC_PAGES[state.func]||["","","","",""]).map((o,i)=>o?(cues[i]?":":" ")+o:"");
+	const cues={ tcn:[t.mode==="tr",t.mode==="rcv",t.air,t.band==="X",t.band==="Y"], ils:[true], time:UFC_PAGES.time.map(o=>!!o&&o.toLowerCase()===live.timer),
+		elevation:UFC_PAGES.elevation.map(o=>!!o&&o.toLowerCase()===live.unit), range:UFC_PAGES.range.map(o=>!!o&&o.toLowerCase()===live.unit), bearing:[true] }[state.func]
+		||(UFC_PAGES[state.func]||[]).map((_,i)=>i===state.option);   // a units page cues the unit in use, a data page the option being entered
+	const names=state.func==="bearing"?[live.meridian==="magnetic"?"MAG":"TRUE","","","",""]:UFC_PAGES[state.func]||["","","","",""];   // BRG's one option reads the meridian in use
+	const options=live.emcon?["E","M","C","O","N"]:names.map((o,i)=>o&&(o!=="HDTH"||live.precise)?(cues[i]?":":" ")+o:"");   // HDTH is there only with PRECISE boxed (24.2.5.1)
 	let scratch;
 	if(state.error) scratch=Math.floor(now*2)%2===0?"ERROR    ":"         ";
 	else if(now<state.blink) scratch="         ";
+	else if(state.letter) scratch=state.letter+state.entry.padStart(8);   // a position: its hemisphere, then degrees, minutes and seconds or thousandths
+	else if(state.entry.length>7) scratch=state.entry.slice(-9).padStart(9);   // a precise grid's ten digits run off the left
 	else scratch=(radio&&radio.on?"ON":"  ")+(state.entry!==""?state.entry:radio?String(radio.channel):"").padStart(7);
 	return { scratch, options }; }
-function ufc_live(){ return { emcon, radios, timer:timer.shown }; }
+function ufc_live(){ return { emcon, radios, timer:timer.shown, precise:nav.precise, unit:nav.units[ufc.unit], meridian:nav.meridian }; }
 function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
 	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
 	return best; }
@@ -2980,9 +3427,77 @@ function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the p
 // false: nothing the page can take.
 function ufc_enter(func,entry){
 	if(func==="time") return timer_enter(entry);
+	if(UFC_ENTRY.has(func)) return data_enter();
 	const limit=func==="tcn"?126:func==="ils"?20:0, channel=+entry;
 	if(!limit||channel<1||channel>limit) return false;
 	radios[func==="tcn"?"tacan":"ils"].channel=channel; return true; }
+// data_enter works ENT on a data page (24.2.5, 24.4.3, 24.2.3.1.4): the entry goes to the option
+// selected. POSN takes the latitude and then the longitude, each led by its hemisphere, for the
+// waypoint or TACAN station shown, or as the aircraft's present position; ELEV, RNG and ALT are
+// feet; BRG degrees, or degrees, minutes and seconds; GSPD and CVEL knots; TOT hours, minutes and
+// seconds; TGT, INS and DEL a waypoint number - INS after one already in the sequence inserts the
+// next entry behind it; MVAR degrees and minutes led by E or W; X and Y a TACAN channel. false: not
+// an entry the option can take, which flashes ERROR. ELEV, RNG and BRG are entered on their units page,
+// in the unit cued there; GRID takes an easting and northing in the square chosen on the grid display; HDTH,
+// with PRECISE boxed, the hundredths of a second. hundredths puts them into an angle of whole seconds,
+// in place of any keyed before.
+function hundredths(angle,value){ const whole=Math.floor(Math.round(Math.abs(angle)*360000)/100); return (angle<0?-1:1)*(whole+value/100)/3600; }
+function data_enter(){ const units=ufc.back!=="", label=units?"":(UFC_PAGES[ufc.func]||[])[ufc.option], entry=ufc.entry, value=+entry, truth=nav_sense(0);
+	if(label==="POSN"){ const part=navigate.entered(ufc.letter,entry,nav.decimal); if(part===null) return false;
+		if(ufc.half===null){ ufc.half=part; return true; }
+		const fix=navigate.world(ufc.half,part); ufc.half=null; ufc.last="lon";
+		if(ufc.func==="wypt"){ const w=waypoint_edit(); w.x=fix.x; w.z=fix.z; }
+		else if(ufc.func==="station"){ const st=station_edit(); st.x=fix.x; st.z=fix.z; }
+		else navigate.locate(nav,truth,fix);
+		return true; }
+	if(label==="HDTH"){   // the hundredths of a second, added to the latitude or longitude just keyed (24.2.5.1)
+		if(!nav.precise||entry===""||value>99) return false;
+		if(ufc.half!==null) ufc.half=hundredths(ufc.half,value);
+		else if(ufc.last==="lon"){ const w=waypoint_edit(), c=navigate.coordinates(w), fix=navigate.world(c.latitude,hundredths(c.longitude,value)); w.x=fix.x; w.z=fix.z; }
+		else return false;
+		ufc.option=0; return true; }
+	if(label==="GRID"){   // the easting and northing in the square chosen on the grid display (24.2.5.1.2): the waypoint's place, or its offset's as a range and bearing from it
+		const at=grid_state.chosen?navigate.ungrid(grid_state.chosen,entry,nav.precise):null; if(!at) return false;
+		const fix=navigate.world(at.latitude,at.longitude), w=waypoint_edit();
+		if(ufc.func==="wypt"){ w.x=fix.x; w.z=fix.z; return true; }
+		const leg=navigate.leg(nav,w,fix), text=navigate.grid(at.latitude,at.longitude,nav.precise);
+		if(navigate.taken(leg.range/0.3048,"feet",true)===null){ grid_state.far={ shown:hsi_state.shown, text }; return true; }   // past 400,000 ft of the aimpoint: not taken, and flashing in the O/S GRID field
+		grid_state.far=null; w.offset={ elevation:0, ...w.offset, range:leg.range, bearing:leg.bearing }; return true; }
+	if(label==="MVAR"){ const whole=Math.floor(value/100), minutes=value%100;
+		if(entry===""||!ufc.letter||minutes>59||whole>180) return false;
+		const angle=(ufc.letter==="W"?-1:1)*(whole+minutes/60)*D2R;
+		if(ufc.func==="station") station_edit().variation=angle; else nav.variation=angle;
+		return true; }
+	if(entry===""||(!units&&!label)) return false;
+	const done=(()=>{ switch(units?ufc.target:ufc.func+" "+label){
+	case "wypt ELEV": waypoint_edit().elevation=navigate.taken(value,nav.units.waypoint,false); return true;
+	case "offset RNG": case "offset BRG": case "offset ELEV": { const w=waypoint_edit(), o=w.offset||{ range:0, bearing:0, elevation:0 };
+		if(ufc.target==="offset RNG"){ const range=navigate.taken(value,nav.units.range,true); if(range===null) return false; o.range=range; }   // inside 400,000 ft of the aimpoint (24.2.5.1.2)
+		else if(ufc.target==="offset ELEV") o.elevation=navigate.taken(value,nav.units.offset,false);
+		else { const whole=entry.length>3?Math.floor(value/10000):value, minutes=entry.length>3?Math.floor(value/100)%100:0, seconds=entry.length>3?value%100:0;
+			if(whole>359||minutes>59||seconds>59) return false;
+			o.bearing=(whole+minutes/60+seconds/3600)*D2R+(nav.meridian==="magnetic"?nav.variation:0); }
+		w.offset=o; return true; }
+	case "seq GSPD": nav.speed=Math.min(999,value); return true;   // past 999 knots, 999 is taken (24.2.5.4)
+	case "seq TGT": nav.target=value!==nav.target&&nav.sequences.some(list=>list.includes(value))?value:null; return true;   // one of a sequence's waypoints; the target again, or one that is in none, clears it (24.2.5.2)
+	case "seq TOT": { const hours=Math.floor(value/10000), minutes=Math.floor(value/100)%100, seconds=value%100;
+		if(hours>23||minutes>59||seconds>59) return false; nav.tot=hours*3600+minutes*60+seconds; return true; }
+	case "seq INS": if(ufc.after===null&&nav.sequences[nav.sequence].includes(value)){ ufc.after=value; return true; }
+		{ const added=navigate.insert(nav,value,ufc.after); ufc.after=null; return added; }
+	case "seq DEL": return navigate.remove(nav,value);
+	case "ac WSPD": case "ac WDIR": { const wind=nav.adc.wind, speed=label==="WSPD"?value*0.514444:Math.hypot(wind.x,wind.z);   // the wind as its speed and the direction it blows from
+		if(label==="WDIR"&&value>359) return false;
+		const from=label==="WDIR"?value*D2R+(nav.magnetic?nav.variation:0):Math.atan2(-wind.x,wind.z);
+		nav.adc.wind={ x:-Math.sin(from)*speed, z:Math.cos(from)*speed }; return true; }
+	case "alt ALT": if(ufc.kind==="baro"&&value>25000) return false;   // to 25,000 ft barometric; a radar setting past 5,000 ft is taken as 5,000 (24.2.5.7.1)
+		altitude_set[ufc.kind]=ufc.kind==="radar"?Math.min(5000,value):value; altitude_armed[ufc.kind]=false; return true;
+	case "station X": case "station Y": if(value<1||value>126) return false; { const st=station_edit(); st.channel=value; st.band=label; } return true;
+	case "station ELEV": station_edit().elevation=navigate.taken(value,nav.units.station,false); return true;
+	case "cv CHDG": if(value>359) return false; carrier_given.heading=value*D2R; navigate.carrier(nav,carrier_given.heading,carrier_given.speed*0.514444); return true;
+	case "cv CVEL": carrier_given.speed=value; navigate.carrier(nav,carrier_given.heading,carrier_given.speed*0.514444); return true; }
+	return false; })();
+	if(done&&units){ ufc.func=ufc.back; ufc.back=""; ufc.option=-1; }   // the entry made, the units page gives way to the one it came from
+	return done; }
 // ufc_press works one pushbutton. Digits fill the entry; CLR clears the entry or
 // the ERROR first and the option windows second (2.13.5.9); ENT sends the entry
 // (ufc_enter). A function selector shows its page, or clears the display when
@@ -2993,17 +3508,30 @@ function ufc_enter(func,entry){
 // options select T/R or RCV, A/A, and the X or Y band; on the TIMEUFC page an option
 // shows or blanks its timer on the HUD.
 function ufc_press(name){ const now=performance.now()/1000;
-	if(/^\d$/.test(name)){ if(!ufc.error&&ufc.entry.length<7) ufc.entry+=name; }
-	else if(name==="clr"){ if(ufc.entry!==""||ufc.error){ ufc.entry=""; ufc.error=false; } else ufc.func=""; }
-	else if(name==="ent"){ if(ufc_enter(ufc.func,ufc.entry)){ ufc.entry=""; ufc.blink=now+0.3; } else ufc.error=true; }
+	if(/^\d$/.test(name)){ const lettered=UFC_ENTRY.has(ufc.func)&&["POSN","MVAR"].includes(UFC_PAGES[ufc.func][ufc.option]);
+		if(ufc.error){ /* ERROR holds the keypad until CLR */ }
+		else if(lettered&&ufc.letter===""){ const letter=(ufc.half===null&&UFC_PAGES[ufc.func][ufc.option]==="POSN"?{ 2:"N", 8:"S" }:{ 6:"E", 4:"W" })[name]; if(letter) ufc.letter=letter; }   // the keypad's N, S, E and W lead a position or a variation
+		else if(ufc.entry.length<(lettered?8:UFC_PAGES[ufc.func]&&UFC_PAGES[ufc.func][ufc.option]==="GRID"?(nav.precise?10:6):7)) ufc.entry+=name; }   // a grid's easting and northing: six digits, ten with PRECISE
+	else if(name==="clr"){ if(ufc.entry!==""||ufc.letter!==""||ufc.error){ ufc.entry=""; ufc.letter=""; ufc.error=false; }
+		else if(ufc.back){ ufc.func=ufc.back; ufc.back=""; ufc.option=-1; }   // a units page back to the page it came from
+		else { ufc.func=""; ufc.option=-1; ufc.half=null; ufc.after=null; } }
+	else if(name==="ent"){ if(ufc_enter(ufc.func,ufc.entry)){ ufc.entry=""; ufc.letter=""; ufc.blink=now+0.3; ddi_dirty=true; } else ufc.error=true; }
 	else if(name==="emcon") emcon_set(!emcon);
 	else if(name==="onoff"){ const radio=ufc.func==="tcn"?radios.tacan:ufc.func==="ils"?radios.ils:null; if(radio) radio.on=!radio.on; }
 	else if(name.startsWith("opt")){ const i=+name.slice(3), t=radios.tacan;
 		if(ufc.func==="ap"&&i===3) law_disabled=law_disabled||law_primary;
 		else if(ufc.func==="tcn"){ if(i<2) t.mode=i?"rcv":"tr"; else if(i===2) t.air=!t.air; else t.band=i===3?"X":"Y"; }
-		else if(ufc.func==="time"&&UFC_PAGES.time[i]){ const kind=UFC_PAGES.time[i].toLowerCase(); timer.shown=timer.shown===kind?"":kind; ufc.entry=""; ufc.error=false; } }
-	else if(name in UFC_PAGES){ ufc.func=ufc.func===name?"":name; ufc.entry=""; ufc.error=false; law_disabled=law_disabled||law_primary; }
-	ufc_dirty=true; ufc_update(true); }
+		else if(ufc.func==="time"&&UFC_PAGES.time[i]){ const kind=UFC_PAGES.time[i].toLowerCase(); timer.shown=timer.shown===kind?"":kind; ufc.entry=""; ufc.error=false; }
+		else if(UFC_ENTRY.has(ufc.func)&&UFC_PAGES[ufc.func][i]&&(UFC_PAGES[ufc.func][i]!=="HDTH"||nav.precise)){ const page=ufc.func, label=UFC_PAGES[page][i], units=UFC_UNITS[page+" "+label];   // a data page (figure 24-9); HDTH is there only with PRECISE
+			if(page==="elevation"||page==="range") nav.units[ufc.unit]=label.toLowerCase();   // a units page: the unit the entry is in
+			else if(page==="bearing") nav.meridian=nav.meridian==="true"?"magnetic":"true";
+			else if(page==="wypt"&&label==="O/S"){ ufc.func="offset"; ufc.option=-1; }   // O/S to the offset's options
+			else if(units){ ufc.back=page; ufc.target=page+" "+label; ufc.func=units[0]; ufc.unit=units[1]; ufc.option=-1; }   // an option with units: to its units page
+			else { ufc.option=i; if(label==="GRID") grid_open(); }   // the option to enter; GRID puts the square identification grid on the right DDI
+			if(label!=="HDTH"){ ufc.half=null; ufc.last=""; }   // HDTH adds to the part of the position just keyed
+			ufc.entry=""; ufc.letter=""; ufc.after=null; ufc.error=false; ddi_dirty=true; } }
+	else if(name in UFC_PAGES){ ufc.func=ufc.func===name?"":name; ufc.entry=""; ufc.letter=""; ufc.half=null; ufc.after=null; ufc.option=-1; ufc.back=""; ufc.last=""; ufc.error=false; law_disabled=law_disabled||law_primary; ddi_dirty=true; }
+	grid_sync(); ufc_dirty=true; ufc_update(true); }
 function build_ufc(g){
 	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
 	const y=(UFC_FACE.y[0]+UFC_FACE.y[1])/2, z=(UFC_FACE.z[0]+UFC_FACE.z[1])/2, w=UFC_FACE.z[1]-UFC_FACE.z[0], h=UFC_FACE.y[1]-UFC_FACE.y[0];
@@ -3043,6 +3571,11 @@ if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.grou
 	const p=new THREE.Vector3(); o.getWorldPosition(p); const at=proj_point(p); ownship.group.worldToLocal(p); return Object.assign(p.toArray().map(n=>+n.toFixed(3)),{ screen:at&&at.map(n=>Math.round(n)) }); };   // i18n-format-ok: dev readout — screen: where the origin lands in css px, for aiming the head at it
 if(DEV_MODE) (globalThis as any).dev_box=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's bounds in the group frame (pit calibration)
 	const b=node_box(ownship.group,o); return b?{ lo:b.lo.toArray().map(n=>+n.toFixed(3)), hi:b.hi.toArray().map(n=>+n.toFixed(3)), parent:o.parent&&o.parent.name, visible:shown(o) }:null; };   // i18n-format-ok: dev readout
+if(DEV_MODE) (globalThis as any).dev_cruise=function(altitude,mach,count){ const t=performance.now(); let last=null; for(let k=0;k<(count||1);k++) last=flight_cruise(altitude,mach); return { cruise:last, each:(performance.now()-t)/(count||1) }; };   // dev: the core's cruise figure at a point, and what a call costs in ms
+if(DEV_MODE) (globalThis as any).dev_suite=function(){ return nav; };   // dev: the navigation suite itself, to read and set headless
+if(DEV_MODE) (globalThis as any).dev_display=function(display,page,presses){ if(page) ddi_show(display,page);   // dev: put a page on a display, press its pushbuttons, and return the face as a PNG data URL and what each press answered
+	const answers=(presses||[]).map(pb=>Array.isArray(pb)?ddi_state[display].page==="grid"&&grid_face(pb[0],pb[1]):ddi_press(display,pb)), c=document.createElement("canvas"); c.width=c.height=512; ddi_render(c.getContext("2d"),512,display);   // a pair is a click on the grid display's face
+	return { answers, face:c.toDataURL("image/png") }; };
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
 // bingo_low: the tank is under the settable bingo bug. FALSE until the jet is
 // flying, because an unread tank is not an empty one: joining a match, the
@@ -4752,7 +5285,7 @@ async function generate_world(){
 		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
 		const map=await (await fetch(base+"map.json")).json();
 		if(Array.isArray(map.origin)) sky_place(map.origin[0],map.origin[1]);   // the stars stand over the map's real position
-		WORLD_WRAP=map.wrap||0;
+		WORLD_WRAP=map.wrap||0; map_name=String(map.name||"").toUpperCase();   // the name is the memory unit's identifier (#97)
 		// --- single Sentinel-2 texture for the ocean AND the islands (reef/lagoon/breakers + land) ---
 		const texture=await new THREE.TextureLoader().loadAsync(base+"map.jpg");
 		texture.flipY=false; texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping; texture.colorSpace=THREE.SRGBColorSpace;
@@ -4768,7 +5301,8 @@ async function generate_world(){
 		const coast=await (await fetch(base+"coastline.json")).json();
 		build_islands(coast.polygons||[], texture, map.region_half);
 		// --- airfields (runway / taxiways / aprons) from OpenStreetMap, per map.json ---
-		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(); build_airfield(af); build_buildings(af); }
+		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(), had=airports.length; build_airfield(af); build_buildings(af);
+			for(let k=had;k<airports.length;k++) airports[k].code=code.toUpperCase(); }   // its code names it among the GPS's points (#105)
 		// The runway loads async, after the initial reset_ownship — a runway start would otherwise fall
 		// through to an air start; re-place on the runway now that it exists.
 		if(mission_start()==="runway" && running && airports.length) reset_ownship();
@@ -6270,6 +6804,7 @@ function pit_click(e){
 	const px=hit.uv.x*512, py=(1-hit.uv.y)*512, pb=button_of(px,py);
 	const st=ddi_state[sc.display];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(px,py)){ ddi_dirty=true; screens_update(); } return; }   // a face click on the attack format is the TDC (#30)
+	if(pb===0&&st&&!st.menu&&st.page==="grid"){ if(grid_face(px,py)){ ddi_dirty=true; screens_update(); } return; }   // and on the square identification grid
 	if(ddi_press(sc.display,pb)) screens_update(); }   // dirty redraw NOW — a press must answer this frame
 // pit_switch finds the switch or handle under the pointer and presses it (#19): a
 // raycast at the switch meshes first, then the nearest switch origin within a few
@@ -6319,6 +6854,9 @@ function pit_press(action,direction){ const d=direction||0;
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
 	case "lights.test": lights_clicked=sim_time; break;
+	case "ins": nav.ins.knob=navigate.KNOB[THREE.MathUtils.clamp(navigate.KNOB.indexOf(nav.ins.knob)+(d<0?-1:1),0,navigate.KNOB.length-1)]; ddi_dirty=true; break;   // the INS mode select knob (24.1.6.1): clockwise from OFF to TEST, a position a click
+	case "heading.set": set_press("heading",d||1); break;   // the set switches, right and left of their centres (2.13.4.9, 2.13.4.10)
+	case "course.set": set_press("course",d||1); break;
 	case "attitude": reference=["ins","auto","stby"][THREE.MathUtils.clamp(["ins","auto","stby"].indexOf(reference)+(d<0?1:-1),0,2)]; break;   // up toward INS
 	case "battery": battery_set(["on","off","oride"][THREE.MathUtils.clamp(["on","off","oride"].indexOf(electrics.battery)+(d<0?1:-1),0,2)]); break;   // ON up, OFF, ORIDE down (FO-5)
 	case "generator.left": electrics.switches[0]=!electrics.switches[0]; break;
@@ -6914,7 +7452,7 @@ function cautions_update(){
 		low=fuel_lo.on; below=internal>0&&internal<BINGO;
 		if(low||flbit_lit()) push("FUEL LO");   // a FLBIT raises it too (2.2.10.3)
 		if(below) push("BINGO"); }   // with FUEL LO when both hold: two conditions, neither hiding the other (2.2.8, 2.2.10.4)
-	{ const home=fpas_home(); if(home&&home.arrive<=2000&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out (2.3.1.2); fpas_home is null with weight on wheels
+	{ const home=fpas_home(); if(home&&home.arrive<=2000&&sim_time-fpas.changed>=5&&(ownship.probe??0)<0.02&&(ownship.probeTarget??0)<0.5) push("HOME FUEL"); }   // never with the probe out, nor for 5 s after the home waypoint is changed (2.3.1.2); fpas_home is null with weight on wheels
 	// Configuration cautions, on the conditions NATOPS gives them, so the cockpit view has what the jet shows
 	// once the banner no longer announces the switches: WING UNLK from the handle leaving LOCK until it is
 	// back in (2.11.1); PARK BRK only with the brake set and both engines above about 80% rpm (2.10.3.4);
@@ -6939,6 +7477,7 @@ function cautions_update(){
 	for(const [key] of rows){ const caption=DDI_CAPTIONS[key]; if(caption) captions.push(caption); }
 	const [genL,genR]=core?generators(core):[true,true], battery=!buses.ac;   // both generators off the line: the jet on its batteries, or dead (#21)
 	if(genR&&!genL) captions.push("L GEN"); if(genL&&!genR) captions.push("R GEN");   // one generator off the line; neither shows in a dual failure (2.5.1.1)
+	for(const caption of navigate.cautions(nav)) captions.push(caption);   // INS ATT, POS/ADC and GPS DEGD (2.13.4.8.13, 24.2.5.7.3, #93, #94)
 	if(brake_accumulator<=ACCUMULATOR.empty) captions.push("BRK ACCUM");   // the brake accumulator down to 1,750 psi, where it may be empty (2.10.3.3)
 	if(battery_switch()) captions.push("BATT SW");   // the battery switch to check (2.5.3.3, #21)
 	if(check_seat()) captions.push("CHECK SEAT");   // the seat not armed with power up on the wheels (2.15.3.5.1, #112)
@@ -7530,6 +8069,9 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		antiskid,   // the ANTI SKID switch (#114)
+		navigation:{ knob:nav.ins.knob, mode:nav.ins.mode, quality:navigate.quality(nav.ins.progress), source:nav.source, error:Math.round(Math.hypot(nav.ins.error.x,nav.ins.error.z)), gps:navigate.tracking(nav.gps),
+			steer:nav.steer, current:nav.current, course:nav.course, heading:nav.heading, designation:nav.designation, level:hsi_state.level, data:hsi_state.data, waypoints:nav.waypoints.map((w,i)=>w?i:-1).filter(i=>i>=0),
+			sequences:nav.sequences, cautions:navigate.cautions(nav), advisories:navigate.advisories(nav), vector:navigate.vector(nav,reference), memory:nav.memory, fpas:{ best:fpas.best, optimum:fpas.optimum } },   // G3: the navigation suite
 		hands:{ pedals:+hotas.pedals.toFixed(2), trigger:hotas.trigger, paddle:hotas.paddle, steering, nws:NWS.mode, nose:nose_loaded(), seat:seat_armed, canopy:canopy_gone, cranked, lifted:lockout.lifted, designator },   // G2: the hands and feet on the controls, nosewheel steering, the seat and canopy, the afterburner lockout and the TDC's display   // i18n-format-ok: dev probe numbers
 		panel:{ buses, battery:electrics.battery, generators:electrics.switches, cutoff:electrics.cutoff, charge:electrics.charge, mech:electrics.mech,   // G1: the panel systems' state
 			bleed:BLEED[ecs.bleed], valves:ecs.valves, through:ecs.through, fire:fire_testing(), reference, rudder:rudder_trim, transfer, inhibit:wing_inhibit, held:wing_held,
@@ -8439,6 +8981,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "warncaut": f=knob_level("warn"); break;
 		case "symbology": f=knob_level("symbology"); break; case "indexer": f=knob_level("indexer"); break; case "ufcbrt": f=knob_level("ufc"); break;
 		case "attswitch": f={ ins:1, auto:0.5, stby:0 }[reference]; break;   // the clips run down to up, STBY to INS, and aft to forward: ORIDE to ON, OFF to NORM, STOP to ORIDE
+		case "insknob": f=0; break;   // its clip held at OFF: the node is turned to its position after the mixer (INS_KNOB)
 		case "battery": f={ on:1, off:0.5, oride:0 }[electrics.battery]; break;
 		case "genleft": f=electrics.switches[0]?1:0; break; case "genright": f=electrics.switches[1]?1:0; break;
 		case "bleed": f=BLEED_DETENTS[ecs.bleed]; break;
@@ -8465,6 +9008,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		HANDLE_TURN.setFromAxisAngle(HANDLE.axis,-Math.min(1,emergency_travel*2)*Math.PI/2);
 		for(const o of g.userData.handle){ o.quaternion.copy(HANDLE_TURN); o.position.copy(HANDLE.centre).sub(HANDLE_AT.copy(HANDLE.centre).applyQuaternion(HANDLE_TURN)).addScaledVector(HANDLE.axis,Math.max(0,emergency_travel*2-1)*HANDLE.pull); } }
 	if(st===ownship&&g.userData.canopy) for(const c of g.userData.canopy) c.visible=!canopy_gone;
+	if(g.userData.insknob){ const k=g.userData.insknob, at=st===ownship?navigate.KNOB.indexOf(nav.ins.knob):3;   // the INS knob at its position, every other jet's at NAV (24.1.6.1, #24)
+		k.object.quaternion.copy(k.rest).premultiply(INS_KNOB.turn.setFromAxisAngle(INS_KNOB.axis,at*INS_KNOB.step)); }
 	if(st===ownship&&g.userData.grip) for(const p of g.userData.grip){ const [forward,up,right]=p.move(); p.object.position.set(p.rest.x-right,p.rest.y+up,p.rest.z+forward); }   // the loose grip switches (GRIP)
 	if(g.userData.glow&&g.userData.glow.length){ const level=(st===ownship)?(ownship.lights?exterior.formation:0):(cfg.tod!=="day"?1:0);   // the formation strips: the ownship's on the FORMATION knob under the master switch (2.6.1.3); other jets' follow day and night
 		for(const mm of g.userData.glow){ const want=level*mm.userData.glowmax; if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
@@ -8606,6 +9151,7 @@ function debris_struck(){ const met=flight_debris_meet(); if(!met||!met.strikes)
 function step_world(dt){ sim_time+=dt;
 	marshal_watch(); pattern_watch(); hints_watch(); timer_update();
 	fly_player(dt); if(!MULTIPLAYER&&!playback&&crash_t<=0&&!cheat("invulnerable")) debris_struck(); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
+	nav_frame(dt);
 	afterburner(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	afterburner(bandit.group,cfg.afterburner&&Math.max(...burners(bandit))>0.15);   // every other jet by its own burner too, where the setting alone used to light it all flight
 	for(const st of remotes.values()) if(st!==bandit&&st.group.visible) afterburner(st.group,cfg.afterburner&&Math.max(...burners(st))>0.15);
@@ -8673,6 +9219,7 @@ function reset_ownship(){
 	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
+	nav_reset();   // the navigation suite as the pre-flight leaves it, readied on the first frame (#93)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	seat_armed=true; canopy_gone=false; cranked=false;   // ...the seat armed and its canopy on (#112, #113)
 	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
@@ -9189,6 +9736,7 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	lx=THREE.MathUtils.clamp(lx,1,511); ly=THREE.MathUtils.clamp(ly,1,511);
 	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
+	if(pb===0&&st&&!st.menu&&st.page==="grid"){ if(grid_face(lx,ly)) ddi_view_last=0; return; }   // and on the square identification grid
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 // The HUD's scale on the glass in the cockpit view, in screen pixels per pixel of
 // the HUD view's layout (whose pixels per degree are HH/45): the true angular
@@ -9322,6 +9870,9 @@ function draw_hud(){
 
 	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost; }   // dev: where the marker was drawn, for the probes
 	hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs);
+	if(nav.designation&&master==="nav"){ const here=navigate.place(nav,nav_sense(0)), d=nav.designation;   // the target diamond on the designated point's line of sight, from the position kept (24.2.10)
+		const sight=new THREE.Vector3(wrap_axis(d.x-here.x),d.elevation-ownship.pos.y,wrap_axis(d.z-here.z)), at=sight.lengthSq()>1?proj_dir(sight.normalize()):null;
+		if(at){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(at[0],at[1]-8*hs); hctx.lineTo(at[0]+8*hs,at[1]); hctx.lineTo(at[0],at[1]+8*hs); hctx.lineTo(at[0]-8*hs,at[1]); hctx.closePath(); hctx.stroke(); } }
 	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	hctx.globalAlpha=1; }
 	if(glass) hctx.restore();
@@ -9734,6 +10285,17 @@ let mission_began=Date.now();   // local session identity for the history's repl
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // the pilot's L&S designation: the contact acquired - a remote's slot in a match, "bandit" alone - or -1 for none. The HUD boxes it and nothing else, like the real jet (the missile's seeker hunts its own cone)
+// hud_steer: the steering the HSI has selected, as the HUD shows it (24.2.9.1, 24.4.5.1): the bearing
+// and range to the TACAN station, or to the waypoint, offset aimpoint or designated target from the
+// position the mission computer keeps, with the data block's label - the station's ident, W, O or M
+// and the number, or TGT. course: the course line selected, if any. null with no steering.
+function hud_steer(){
+	if(nav.designation||nav.steer==="wypt"){ const goal=navigate.goal(nav); if(!goal) return null;
+		const leg=navigate.leg(nav,navigate.place(nav,nav_sense(0)),goal), name=navigate.label(nav.current);
+		return { bearing:leg.bearing, range:leg.range, label:goal.kind==="tgt"?"TGT":(name[0]==="M"?"":goal.kind==="oap"?"O":"W")+name, target:goal.kind==="tgt", goal, course:nav.steer==="wypt"?nav.course:null }; }
+	if(nav.steer==="tcn"){ const station=carrier_ols?tacan():null;
+		return station?{ bearing:station.bearing, range:station.slant, label:SHIP.ident, target:false, goal:null, course:station.range!=null?nav.course:null }:null; }
+	return null; }
 // hud_cluster draws the HUD's instrument furniture (#133): the heading scale, the
 // airspeed and altitude boxes, the ranging data, the vertical velocity, the
 // AoA/Mach/g block, the bank scale, the data blocks, the timer and the breakaway X,
@@ -9749,20 +10311,24 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
 	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
-	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
+	const hdg=((Math.atan2(ownship.fwd.x,-ownship.fwd.z)-(nav.magnetic?nav.variation:0))*180/Math.PI+720)%360; const hppx=7, halfd=15;   // magnetic with HDG MAG selected (24.2.5.7)
 	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
 	const m0=Math.ceil((hdg-halfd)/5)*5;
 	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
 		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
 		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
 	hctx.restore();
-	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); hctx.stroke();   // the T under the current heading
-	const station=carrier_ols&&master==="nav"?tacan():null;
-	if(station){   // command heading marker (NATOPS item 18): TACAN great-circle steering to the carrier, a short heavy bar just under the scale's ticks (figure 2-26); pegs at the window edge when the boat is off-scale. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does — steering home means selecting NAV, or reading the HSI, which keeps its TACAN pointer in every mode
-		const brg=(station.bearing*180/Math.PI+360)%360;
-		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
-		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=3; hctx.beginPath();
-		hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); hctx.stroke(); }
+	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+	if(nav.magnetic){ hctx.moveTo(cx-5,hty+11); hctx.lineTo(cx,hty+4); hctx.lineTo(cx+5,hty+11); }   // a caret with magnetic heading, the T under the current heading with true
+	else { hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); }
+	hctx.stroke();
+	const steer=master==="nav"?hud_steer():null;
+	if(steer){   // command heading marker (NATOPS item 18, 24.2.9.1): great-circle steering to the TACAN station or the waypoint selected on the HSI, a short heavy bar just under the scale's ticks (figure 2-26) - the target's diamond once one is designated (24.2.10). Corrected for wind drift: it shows the ground track's error, itself within 5° and compressed beyond, at the scale's end from 30°. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does
+		const gz=ownship.gauges||{}, mx=cx+navigate.command(navigate.turn(gz.track??gz.heading??0,steer.bearing)/D2R)*hppx;
+		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		if(steer.target){ hctx.lineWidth=1.5; hctx.moveTo(mx,hty+2); hctx.lineTo(mx+5,hty+8); hctx.lineTo(mx,hty+14); hctx.lineTo(mx-5,hty+8); hctx.closePath(); }
+		else { hctx.lineWidth=3; hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); }
+		hctx.stroke(); }
 	hctx.restore(); }
 
 	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
@@ -9772,6 +10338,9 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
 	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
 	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
+	{ const gz=ownship.gauges||{}, need=master==="nav"&&declutter<2?navigate.required(nav,navigate.place(nav,nav_sense(0)),gz.zulu||0):null;   // groundspeed cuing (24.2.9.6): a tick under the airspeed box and an arrowhead left of it when too slow for the time on target, right when too fast, 30 knots at full displacement
+		if(need!==null){ const tx=ax-42, ty=wly+34, at=tx+THREE.MathUtils.clamp(((gz.ground||0)-need)/30,-1,1)*16;
+			hctx.beginPath(); hctx.moveTo(tx,ty); hctx.lineTo(tx,ty+7); hctx.moveTo(at-5,ty+16); hctx.lineTo(at,ty+9); hctx.lineTo(at+5,ty+16); hctx.stroke(); } }
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
@@ -9839,8 +10408,8 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);
 	else if(steering>=0&&ownship.grounded) hctx.fillText(steering>0?"NWS HI":"NWS",lx,cy+7.2*ppdv-17);   // the NWS advisory in the same place while nosewheel steering is engaged (2.10.2, 2.13.4.8.15, #36)   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
-	if(carrier_ols&&master==="nav"&&declutter<2){ const station=tacan(), slant=station&&station.slant!=null?station.slant/1852:null;
-		if(slant!=null) hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
+	if(master==="nav"&&declutter<2){ const steer=hud_steer();
+		if(steer&&steer.range!=null) hctx.fillText((steer.range/1852).toFixed(1)+(steer.label?" "+steer.label:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
 		// count beside it. NAV has no weapon block on the real HUD, so nothing is
@@ -9913,8 +10482,13 @@ function hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs)
 		hctx.moveTo(bore[0]-12*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]); hctx.moveTo(bore[0]+4*hs,bore[1]); hctx.lineTo(bore[0]+12*hs,bore[1]);
 		hctx.moveTo(bore[0],bore[1]-12*hs); hctx.lineTo(bore[0],bore[1]-4*hs); hctx.stroke(); }
 
-	// ---- waterline symbol (landing configuration): a W with level wings (figure 2-26), as the repeater draws it ----
-	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+	// ---- waterline symbol: a W with level wings (figure 2-26), as the repeater draws it - in the landing
+	// configuration, and standing in for the velocity vector when the HUD's attitude is the standby
+	// indicator's: the INS without attitude, or the ATT switch at STBY (2.13.4.8.13). On air data
+	// velocities the velocity vector flashes slowly ----
+	const vector=navigate.vector(nav,reference);
+	if(vector==="waterline") fpm=ghost=null; else if(vector==="flash"&&sim_time%1>=0.5) fpm=ghost=null;
+	if(pa||vector==="waterline"){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(bore[0]-16*hs,bore[1]); hctx.lineTo(bore[0]-8*hs,bore[1]); hctx.lineTo(bore[0]-4*hs,bore[1]+7*hs); hctx.lineTo(bore[0],bore[1]);
 		hctx.lineTo(bore[0]+4*hs,bore[1]+7*hs); hctx.lineTo(bore[0]+8*hs,bore[1]); hctx.lineTo(bore[0]+16*hs,bore[1]); hctx.stroke(); }
 
@@ -9924,6 +10498,17 @@ function hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs)
 		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(fpm); }
 		// The ghost: the wings and tail without the circle (figure 2-26), so it cannot be taken for the caged marker it stands beside.
 		if(ghost&&(!ghost_limited||(sim_time*6)%2<1)){ hctx.strokeStyle=GR; hctx.setLineDash([]); marker(ghost,false); } }
+
+	// ---- the course line's steering arrow (24.2.9.2, figure 24-13), NAV only: the selected course against the
+	// ground track, beside the velocity vector by the angle the aircraft is off the line - full scale at 8°,
+	// where the outer of two dots on that side lies, the inner at 4°; no dots within about 1.25° ----
+	if(fpm&&master==="nav"&&declutter<2){ const steer=hud_steer();
+		if(steer&&steer.course!=null){ const gz=ownship.gauges||{}, off=navigate.deviation(steer.bearing,steer.course), full=40*hs, side=Math.sign(off)||1;
+			const px=fpm[0]+THREE.MathUtils.clamp(off,-8,8)/8*full, a=navigate.turn(gz.track??gz.heading??0,steer.course), c=Math.sin(a), u=-Math.cos(a), len=13*hs;
+			hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+			hctx.moveTo(px-c*len,fpm[1]-u*len); hctx.lineTo(px+c*len,fpm[1]+u*len);
+			hctx.moveTo(px+c*len-(c*5+u*4)*hs,fpm[1]+u*len-(u*5-c*4)*hs); hctx.lineTo(px+c*len,fpm[1]+u*len); hctx.lineTo(px+c*len-(c*5-u*4)*hs,fpm[1]+u*len-(u*5+c*4)*hs); hctx.stroke();
+			if(Math.abs(off)>1.25) for(const k of [0.5,1]){ hctx.beginPath(); hctx.arc(fpm[0]+side*k*full,fpm[1],1.5*hs,0,Math.PI*2); hctx.fill(); } } }
 
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; the bracket moves lower as AOA increases (NATOPS
@@ -10076,6 +10661,7 @@ function acquire_press(){
 // dropping nothing: every trackfile lives on and every launched round keeps
 // its support), otherwise it releases the lock or the L&S outright.
 function undesignate_press(){
+	if(master==="nav"&&navigate.undesignate(nav)){ ddi_dirty=true; return; }   // a navigation designation is dropped first (24.2.10)
 	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.silent()&&RADAR.tracks.length>1&&RADAR.ls!=null){
 		const own=radar_own();
 		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
@@ -10146,10 +10732,11 @@ function sensor(way){
 function antenna_step(d){ RADAR.slew(d); const wheel=pad_levers.antenna; if(wheel){ wheel.armed=false; wheel.rest=undefined; } }
 // tdc_radar: the TDC is on a display showing the attack format, where it moves the cursor
 function tdc_radar(){ const st=ddi_state[designator]; return !st.menu&&st.page==="rdr"; }
-function tdc_press(){ hotas.tdc.at=sim_time; if(tdc_radar()) tdc_designate(); }
+function tdc_press(){ hotas.tdc.at=sim_time; if(tdc_radar()) tdc_designate(); else if(tdc_hsi()) hsi_designate(); else if(tdc_grid()) grid_designate(); }
 // tdc_slew moves the cursor on the attack format with the TDC held (#32): full deflection crosses
 // the scan's width, or its range scale, in two seconds
 function tdc_slew(x,y,dt){ hotas.tdc.x=x; hotas.tdc.y=y;
+	if(x||y){ hsi_slew(x,y,dt); if(tdc_grid()) grid_slew(x,y,dt); }
 	if(!(x||y)||!tdc_radar()) return;
 	const half=RADAR.half(), scaleM=RADAR.scale*NM, c=RADAR.centre.azimuth;
 	radar_cursor.azimuth=THREE.MathUtils.clamp(THREE.MathUtils.clamp(radar_cursor.azimuth,c-half,c+half)+x*half*dt,c-half,c+half);

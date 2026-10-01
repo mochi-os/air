@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# chluicheadair} two {# chluicheadair} few {# cluichead
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# toradh} two {# thoradh} few {# toraidhean} other {# toraidhean}}"
+msgstr "{0, plural, one {# toradh} two {# thoradh} few {# toraidhean} other {# toradh}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# air a thaghadh} two {# air an taghadh} few {# air an 
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} chluicheadair} two {#/{2} chluicheadair} few {#/{2} cluicheadairean} other {#/{2} cluicheadair}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# a bharrachd} two {+# a bharrachd} few {+# a bharrachd} other {+# a bharrachd}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "Bha {0} air {1}, a tha gun cheangal a-nis."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# aiseal} other {# aisealan}}"
+msgstr "{axisCount, plural, one {# aiseal} two {# aiseal} few {# aisealan} other {# aiseal}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# putan} other {# putanan}}"
+msgstr "{buttonCount, plural, one {# phutan} two {# phutan} few {# putanan} other {# putan}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -1232,6 +1237,16 @@ msgstr "Cha b' urrainn dearbhadh leis a' chunntas sin. Feuch ris a-rithist."
 msgid "Countermeasures"
 msgstr "Frith-cheumannan"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Suidhich cùrsa gu clì"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Suidhich cùrsa gu deas"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Air tuiteam"
@@ -2173,6 +2188,16 @@ msgstr "Ceann"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Tracadh a' chinn"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Suidhich cùrsa-stiùiridh gu clì"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Suidhich cùrsa-stiùiridh gu deas"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# انتخاب‌شده} other {# انتخاب‌شده
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} بازیکن} other {#/{2} بازیکن}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# مورد دیگر} other {+# مورد دیگر}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "تأیید با آن حساب ممکن نشد. لطفاً دوباره �
 msgid "Countermeasures"
 msgstr "اقدامات متقابل"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "تنظیم مسیر به چپ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "تنظیم مسیر به راست"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "سقوط کرد"
@@ -1872,7 +1887,7 @@ msgstr "بازنشانی پرامپت ناموفق بود"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "لغو دسترسی RSS ناموفق بود"
+msgstr "ابطال دسترسی RSS ناموفق بود"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "سر"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ردیابی سر"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "تنظیم سمت به چپ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "تنظیم سمت به راست"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "گروه‌بندی ردیف‌ها بر اساس"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "دسترسی RSS لغو شد"
+msgstr "دسترسی RSS ابطال شد"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
