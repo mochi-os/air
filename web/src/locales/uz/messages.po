@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# tanlangan} other {# tanlangan}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} o'yinchi} other {#/{2} o'yinchi}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {yana +#} other {yana +#}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Ushbu hisob bilan tasdiqlab bo‘lmadi. Iltimos, qayta urinib ko‘ring.
 msgid "Countermeasures"
 msgstr "Qarshi choralar"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Yoʻl chizigʻini chapga oʻrnatish"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Yoʻl chizigʻini oʻngga oʻrnatish"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Halokatga uchradi"
@@ -1872,7 +1887,7 @@ msgstr "Soʻrovni tiklab boʻlmadi"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS kirishini bekor qilib bo'lmadi"
+msgstr "RSS kirishini qaytarib olib boʻlmadi"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Bosh"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Bosh kuzatuvi"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Yoʻnalishni chapga oʻrnatish"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Yoʻnalishni oʻngga oʻrnatish"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Qatorlarni guruhlash"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS kirishi bekor qilindi"
+msgstr "RSS kirishi qaytarib olindi"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

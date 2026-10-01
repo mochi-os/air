@@ -82,6 +82,11 @@ msgstr "{0, plural, zero {# atlasīti} one {# atlasīts} other {# atlasīti}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, zero {#/{2} spēlētāju} one {#/{1} spēlētājs} other {#/{2} spēlētāji}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, zero {vēl +#} one {vēl +#} other {vēl +#}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "{0} bija uz {1}, kas tagad nav piesaistīts."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# ass} other {# asis}}"
+msgstr "{axisCount, plural, zero {# asu} one {# ass} other {# asis}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# poga} other {# pogas}}"
+msgstr "{buttonCount, plural, zero {# pogu} one {# poga} other {# pogas}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -1232,6 +1237,16 @@ msgstr "Neizdevās verificēt ar šo kontu. Lūdzu, mēģiniet vēlreiz."
 msgid "Countermeasures"
 msgstr "Pretpasākumi"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Iestatīt ceļa līniju pa kreisi"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Iestatīt ceļa līniju pa labi"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Avarēja"
@@ -2173,6 +2188,16 @@ msgstr "Galva"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Galvas izsekošana"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Iestatīt kursu pa kreisi"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Iestatīt kursu pa labi"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

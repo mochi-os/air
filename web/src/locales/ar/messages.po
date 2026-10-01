@@ -59,12 +59,12 @@ msgstr "{0, plural, zero {# لاعب} one {# لاعب} two {# لاعبان} few 
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, zero {# نتائج} one {نتيجة واحدة} two {# نتائج} few {# نتائج} many {# نتائج} other {# نتائج}}"
+msgstr "{0, plural, zero {لا توجد نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
-msgstr "{0, plural, zero {# إصابات} one {# إصابة} two {# إصابة} few {# إصابات} many {# إصابة} other {# إصابة}}"
+msgstr "{0, plural, zero {# إصابة} one {# إصابة} two {إصابتان} few {# إصابات} many {# إصابة} other {# إصابة}}"
 
 #. placeholder {0}: displayInfo.count
 #. placeholder {0}: selectedIds.length
@@ -81,6 +81,11 @@ msgstr "{0, plural, zero {# محدد} one {# محدد} two {# محدد} few {# �
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, zero {#/{1} لاعب} one {#/{1} لاعب} two {#/{2} لاعبان} few {#/{2} لاعبين} many {#/{2} لاعبًا} other {#/{2} لاعب}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, zero {+# أخرى} one {+# أخرى} two {+# أخرى} few {+# أخرى} many {+# أخرى} other {+# أخرى}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "{0} كان على {1}، الذي صار غير مرتبط الآن."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# محور} other {# محاور}}"
+msgstr "{axisCount, plural, zero {# محور} one {# محور} two {محوران} few {# محاور} many {# محورًا} other {# محور}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# زر} other {# أزرار}}"
+msgstr "{buttonCount, plural, zero {# زر} one {# زر} two {زران} few {# أزرار} many {# زرًا} other {# زر}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, zero {لا عناصر} one {عنصر واحد} two 
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, zero {+# ردود إضافية} one {رد واحد} two {+# ردود إضافية} few {+# ردود إضافية} many {+# ردود إضافية} other {+# ردود إضافية}}"
+msgstr "{totalDescendants, plural, zero {+# رد إضافي} one {رد واحد} two {+# ردان إضافيان} few {+# ردود إضافية} many {+# ردًا إضافيًا} other {+# رد إضافي}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -1232,6 +1237,16 @@ msgstr "تعذّر التحقق باستخدام هذا الحساب. يرجى �
 msgid "Countermeasures"
 msgstr "إجراءات مضادة"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "ضبط المسار لليسار"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "ضبط المسار لليمين"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "تحطّمت الطائرة"
@@ -1872,7 +1887,7 @@ msgstr "فشل إعادة تعيين المطالبة"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "فشل إلغاء وصول RSS"
+msgstr "فشل إبطال وصول RSS"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "الرأس"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "تتبع الرأس"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "ضبط الاتجاه لليسار"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "ضبط الاتجاه لليمين"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "تجميع الصفوف حسب"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "تم إلغاء وصول RSS"
+msgstr "تم إبطال وصول RSS"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

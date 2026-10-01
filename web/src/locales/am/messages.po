@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# ተመርጧል} other {# ተመርጠዋል}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} ተጫዋች} other {#/{2} ተጫዋቾች}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# ተጨማሪ} other {+# ተጨማሪ}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "በዚያ መለያ ማረጋገጥ አልተቻለም። እባክዎ �
 msgid "Countermeasures"
 msgstr "መከላከያ እርምጃዎች"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "የጉዞ መስመር ማስተካከያ ወደ ግራ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "የጉዞ መስመር ማስተካከያ ወደ ቀኝ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "ተከሰከሰ"
@@ -2173,6 +2188,16 @@ msgstr "ራስ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "የራስ ክትትል"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "አቅጣጫ ማስተካከያ ወደ ግራ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "አቅጣጫ ማስተካከያ ወደ ቀኝ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# მოთამაშე} other {# მოთამა
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, other {# პოსტი}}"
+msgstr "{0, plural, one {# შედეგი} other {# შედეგი}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -73,7 +73,7 @@ msgstr "{0, plural, one {მოხვდა # ტყვია} other {მოხ�
 #: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, other {# გაყიდვა}}"
+msgstr "{0, plural, one {# მონიშნული} other {# მონიშნული}}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -81,6 +81,11 @@ msgstr "{0, plural, other {# გაყიდვა}}"
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} მოთამაშე} other {#/{2} მოთამაშე}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# სხვა} other {+# სხვა}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -1232,6 +1237,16 @@ msgstr "ამ ანგარიშით ვერ მოხერხდა �
 msgid "Countermeasures"
 msgstr "საწინააღმდეგო ზომები"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "გზის ხაზის დაყენება მარცხნივ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "გზის ხაზის დაყენება მარჯვნივ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "ჩამოვარდა"
@@ -1872,7 +1887,7 @@ msgstr "მოთხოვნის გადატვირთვა ვერ 
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS წვდომის გაუქმება ვერ მოხერხდა"
+msgstr "RSS წვდომის გაწვევა ვერ მოხერხდა"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "თავი"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "თავის თვალთვალი"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "კურსის დაყენება მარცხნივ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "კურსის დაყენება მარჯვნივ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "სტრიქონების დაჯგუფება"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS წვდომა გაუქმდა"
+msgstr "RSS წვდომა გაწვეულია"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
@@ -4426,15 +4451,15 @@ msgstr "აკრიფეთ ბრძანება ან მოძებნ
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
 msgid "Type a message…"
-msgstr "ჩაწერეთ ბრძანება ან მოძებნეთ…"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search users"
 msgstr "ჩაწერეთ შეტყობინება…"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Type to search users"
+msgstr "აკრიფეთ მომხმარებლების მოსაძებნად"
+
+#: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search..."
-msgstr "მომხმარებლების მოსაძებნად ჩაწერეთ"
+msgstr "აკრიფეთ საძიებლად..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"
@@ -4447,7 +4472,7 @@ msgstr "დისტანციურ სერვერთან დაკა�
 #: ../../../lib/web/src/lib/auth-manager.ts
 #: ../../../lib/web/src/lib/auth-manager.ts
 msgid "Unable to redirect to login. Please try again."
-msgstr "ვერსიის ინფორმაციის ჩატვირთვა ვერ ხერხდება"
+msgstr "შესვლის გვერდზე გადამისამართება ვერ ხერხდება. გთხოვთ, სცადოთ ხელახლა."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Unassigned"
@@ -4561,7 +4586,7 @@ msgstr "შემოწმება"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify email address"
-msgstr "შემოწმება და ჩართვა"
+msgstr "ელფოსტის მისამართის დადასტურება"
 
 #: src/components/MissionSetup.tsx
 msgid "Vertical"
@@ -4587,11 +4612,11 @@ msgstr "ხედი"
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 msgid "View all notifications"
-msgstr "ყველას ნახვა"
+msgstr "ყველა შეტყობინების ნახვა"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "View and edit item details"
-msgstr "ყველა პოსტის ნახვა"
+msgstr "ელემენტის დეტალების ნახვა და რედაქტირება"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "View controls"

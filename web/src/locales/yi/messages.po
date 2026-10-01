@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# אויסגעקליבן} other {# אויסגעקליב
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} שפּילער} other {#/{2} שפּילערס}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# מער} other {+# מער}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "מע האָט נישט געקענט באַשטעטיקן מיט יענע
 msgid "Countermeasures"
 msgstr "קעגן־מיטלען"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "שטעלן קורס לינקס"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "שטעלן קורס רעכטס"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "צעשמעטערט"
@@ -1872,7 +1887,7 @@ msgstr "ניט געלונגען צו אָפּשטעלן פּראָמפּט"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "דורכפֿאַל צו רופֿן צוריק RSS צוטריט"
+msgstr "ניט געלונגען צוריקצונעמען RSS צוטריט"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "קאָפּ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "קאָפּ־נאָכשפּירונג"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "שטעלן ריכטונג לינקס"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "שטעלן ריכטונג רעכטס"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3664,7 +3689,7 @@ msgstr "צוריקנעמען"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Revoke access"
-msgstr "רופֿט צוריק צוטריט"
+msgstr "צוריקנעמען צוטריט"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Revoke RSS access?"
@@ -3718,7 +3743,7 @@ msgstr "רייען גרופּירן לויט"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS צוטריט צוריקגערופֿן"
+msgstr "RSS צוטריט צוריקגענומען"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

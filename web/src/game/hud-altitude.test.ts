@@ -82,8 +82,8 @@ describe('the instrument cluster rides the nose', () => {
     const heading = section('\t// ---- heading scale:', '\t// ---- airspeed box')
     const run = (glass: object | null) => {
       const c = canvas([1, 0, 0, 1, -340, 156]) // the cluster's move onto the nose
-      new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', `${heading}`)(
-        c.hctx, { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }, glass, 0, false, cx, cy, ppdv, 'g', { fwd: { x: 0, z: -1 } }, false, THREE)
+      new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', 'master', 'nav', 'hud_steer', `${heading}`)(
+        c.hctx, { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }, glass, 0, false, cx, cy, ppdv, 'g', { fwd: { x: 0, z: -1 } }, false, THREE, 'nav', { magnetic: false, variation: 0 }, () => null)
       return c.moves[0] // the first tick, at the scale's left end
     }
     expect(run(null)).toEqual([cx - 15 * 7, 46])
@@ -107,7 +107,7 @@ describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
   const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
-  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil;
+  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
     const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0; ${reading}
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];

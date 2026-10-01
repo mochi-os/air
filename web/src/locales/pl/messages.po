@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# gracz} few {# graczy} many {# graczy} other {# gracza
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# wynik} few {# wyników} many {# wyników} other {# wyników}}"
+msgstr "{0, plural, one {# wynik} few {# wyniki} many {# wyników} other {# wyniku}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -73,7 +73,7 @@ msgstr "{0, plural, one {Trafiony # pociskiem} few {Trafiony # pociskami} many {
 #: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# wybrany} few {# wybranych} many {# wybranych} other {# wybranych}}"
+msgstr "{0, plural, one {# wybrany} few {# wybrane} many {# wybranych} other {# wybranych}}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# wybrany} few {# wybranych} many {# wybranych} other {
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} gracz} few {#/{2} graczy} many {#/{2} graczy} other {#/{2} gracza}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# więcej} few {+# więcej} many {+# więcej} other {+# więcej}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "{0} było na {1}, które jest teraz nieprzypisane."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# oś} other {# osie}}"
+msgstr "{axisCount, plural, one {# oś} few {# osie} many {# osi} other {# osie}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# przycisk} other {# przyciski}}"
+msgstr "{buttonCount, plural, one {# przycisk} few {# przyciski} many {# przycisków} other {# przyciski}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, one {# element} few {# elementy} many {# elementów
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# odpowiedź} few {+# kolejnych odpowiedzi} many {+# kolejnych odpowiedzi} other {+# kolejnych odpowiedzi}}"
+msgstr "{totalDescendants, plural, one {# odpowiedź} few {+# kolejne odpowiedzi} many {+# kolejnych odpowiedzi} other {+# kolejnych odpowiedzi}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -1232,6 +1237,16 @@ msgstr "Nie udało się zweryfikować przy użyciu tego konta. Spróbuj ponownie
 msgid "Countermeasures"
 msgstr "Środki przeciwdziałania"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Nastawa linii drogi w lewo"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Nastawa linii drogi w prawo"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Rozbił się"
@@ -2173,6 +2188,16 @@ msgstr "Głowa"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Śledzenie głowy"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Nastawa kursu w lewo"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Nastawa kursu w prawo"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

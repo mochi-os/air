@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# vald} other {# valda}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} spelare} other {#/{2} spelare}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# till} other {+# till}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Det gick inte att verifiera med det kontot. Försök igen."
 msgid "Countermeasures"
 msgstr "Motmedel"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Ställ in kurslinje vänster"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Ställ in kurslinje höger"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Störtade"
@@ -2173,6 +2188,16 @@ msgstr "Huvud"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Huvudspårning"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Ställ in styrkurs vänster"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Ställ in styrkurs höger"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

@@ -59,12 +59,12 @@ msgstr "{0, plural, one {# plejer} two {# plejers} few {# plejers} many {# pleje
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# riżultat} few {# riżultati} many {# riżultati} other {# riżultati}}"
+msgstr "{0, plural, one {# riżultat} two {# riżultati} few {# riżultati} many {# riżultat} other {# riżultat}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
-msgstr "{0, plural, one {Qala' # tir} few {Qala' # tiri} many {Qala' # tir} other {Qala' # tir}}"
+msgstr "{0, plural, one {Qala' # tir} two {Qala' # tiri} few {Qala' # tiri} many {Qala' # tir} other {Qala' # tir}}"
 
 #. placeholder {0}: displayInfo.count
 #. placeholder {0}: selectedIds.length
@@ -80,7 +80,12 @@ msgstr "{0, plural, one {# magħżul} few {# magħżula} many {# magħżula} oth
 #. placeholder {2}: s.capacity
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
-msgstr "{0, plural, one {#/{1} plejer} two {#/{2} plejers} few {#/{2} plejers} many {#/{2} plejers} other {#/{2} plejer}}"
+msgstr "{0, plural, one {#/{1} plejer} two {#/{2} plejers} few {#/{2} plejers} many {#/{2} plejer} other {#/{2} plejer}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# oħra} few {+# oħra} many {+# oħra} other {+# oħra}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "{0} kien fuq {1}, li issa mhux marbut."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# assi} other {# assi}}"
+msgstr "{axisCount, plural, one {# assi} two {# assi} few {# assi} many {# assi} other {# assi}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# buttuna} other {# buttuni}}"
+msgstr "{buttonCount, plural, one {# buttuna} two {# buttuni} few {# buttuni} many {# buttuna} other {# buttuna}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -176,15 +181,15 @@ msgstr "{sentLabel} minn {totalLabel}"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
 msgid "{totalCount, plural, one {# item} other {# items}}"
-msgstr "{totalCount, plural, one {# oġġett} few {# oġġetti} many {# oġġetti} other {# oġġetti}}"
+msgstr "{totalCount, plural, one {# oġġett} two {# oġġetti} few {# oġġetti} many {# oġġett} other {# oġġett}}"
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# tweġiba} few {+# tweġibiet aktar} many {+# tweġibiet aktar} other {+# tweġibiet aktar}}"
+msgstr "{totalDescendants, plural, one {# tweġiba} two {+# tweġibiet aktar} few {+# tweġibiet aktar} many {+# tweġiba aktar} other {+# tweġiba aktar}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
-msgstr "{unreadCount, plural, one {Iftaħ il-menu (# notifika mhux moqrija)} few {Iftaħ il-menu (# notifiki mhux moqrija)} many {Iftaħ il-menu (# notifiki mhux moqrija)} other {Iftaħ il-menu (# notifiki mhux moqrija)}}"
+msgstr "{unreadCount, plural, one {Iftaħ il-menu (# notifika mhux moqrija)} two {Iftaħ il-menu (# notifiki mhux moqrija)} few {Iftaħ il-menu (# notifiki mhux moqrija)} many {Iftaħ il-menu (# notifika mhux moqrija)} other {Iftaħ il-menu (# notifika mhux moqrija)}}"
 
 #: src/components/GameCanvas.tsx
 msgid "{victim} collided with {other}"
@@ -1232,6 +1237,16 @@ msgstr "Ma stajniex nivverifikaw b'dak il-kont. Jekk jogħġbok erġa' pprova."
 msgid "Countermeasures"
 msgstr "Kontromiżuri"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Issettja l-kors lejn ix-xellug"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Issettja l-kors lejn il-lemin"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Iġġarraf"
@@ -2173,6 +2188,16 @@ msgstr "Ras"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Traċċar tar-ras"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Issettja r-rotta tal-pruwa lejn ix-xellug"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Issettja r-rotta tal-pruwa lejn il-lemin"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

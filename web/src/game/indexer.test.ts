@@ -304,6 +304,8 @@ describe('the clickable switches', () => {
       ['instpnl', 'knob.instrument'], ['consoles', 'knob.consoles'], ['flood', 'knob.flood'], ['warncaut', 'knob.warn'], ['symbology', 'knob.symbology'], ['indexer', 'knob.indexer'], ['ufcbrt', 'knob.ufc'],
       ['attswitch', 'attitude'], ['battery', 'battery'], ['genleft', 'generator.left'], ['genright', 'generator.right'], ['bleed', 'bleed'], ['firetest', 'fire.test'], ['ruddertrim', 'rudder.trim'],
       ['wingtanks', 'transfer.wing'], ['centretank', 'transfer.centre'],
+      // G3: the INS mode select knob (#24)
+      ['insknob', 'ins'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
     expect(table.match(/\w+:/g)?.length).toBe(expected.length)

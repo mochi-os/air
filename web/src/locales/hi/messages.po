@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# चयनित} other {# चयनित}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} खिलाड़ी} other {#/{2} खिलाड़ी}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# और} other {+# और}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "उस खाते से सत्यापन नहीं हो स
 msgid "Countermeasures"
 msgstr "प्रतिउपाय"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "कोर्स सेट बाएँ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "कोर्स सेट दाएँ"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "क्रैश हो गया"
@@ -1872,7 +1887,7 @@ msgstr "प्रॉम्प्ट रीसेट करने में व�
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "RSS पहुँच रद्द करने में विफल"
+msgstr "RSS पहुँच वापस लेने में विफल"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "सिर"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "हेड ट्रैकिंग"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "हेडिंग सेट बाएँ"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "हेडिंग सेट दाएँ"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "पंक्तियाँ समूहित करें"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "RSS पहुँच रद्द की गई"
+msgstr "RSS पहुँच वापस ले ली गई"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

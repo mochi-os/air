@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# roghnaithe} two {# roghnaithe} few {# roghnaithe} man
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} imreoir} two {#/{2} imreoir} few {#/{2} imreoir} many {#/{2} n-imreoir} other {#/{2} imreoir}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# eile} two {+# eile} few {+# eile} many {+# eile} other {+# eile}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "Bhí {0} ar {1}, atá gan cheangal anois."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# ais} other {# aiseanna}}"
+msgstr "{axisCount, plural, one {# ais} two {# ais} few {# ais} many {# n-ais} other {# ais}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# cnaipe} other {# cnaipí}}"
+msgstr "{buttonCount, plural, one {# chnaipe} two {# chnaipe} few {# chnaipe} many {# gcnaipe} other {# cnaipe}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -1232,6 +1237,16 @@ msgstr "Níorbh fhéidir fíorú leis an gcuntas sin. Bain triail eile as le do 
 msgid "Countermeasures"
 msgstr "Frithbhearta"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Socraigh cúrsa ar chlé"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Socraigh cúrsa ar dheis"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Tuairteáilte"
@@ -2173,6 +2188,16 @@ msgstr "Ceann"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Rianú cinn"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Socraigh treo ar chlé"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Socraigh treo ar dheis"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

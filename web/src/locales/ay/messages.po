@@ -59,7 +59,7 @@ msgstr "{0, plural, other {# anatiri}}"
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# alja} other {# aljas}}"
+msgstr "{0, plural, one {# resultado} other {# resultadonaka}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -73,7 +73,7 @@ msgstr "{0, plural, one {# balamp nuwat'atawa} other {# balamp nuwat'atawa}}"
 #: ../../../lib/web/src/components/person-picker.tsx
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# tila qhipart'i} other {# tila qhipart'i}}"
+msgstr "{0, plural, one {# ajllita} other {# ajllita}}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# tila qhipart'i} other {# tila qhipart'i}}"
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} anatiri} other {#/{2} anatirinaka}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# juk'ampi} other {+# juk'ampi}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -163,7 +168,7 @@ msgstr "{name}na anatäwipa"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx
 msgid "{opponentName} offered a draw"
-msgstr "{opponentName} resignasta — gantata!"
+msgstr "{opponentName} kikipa anatañ amuyt'awayi"
 
 #: src/components/Multiplayer.tsx
 msgid "{placed, plural, one {# of {limit} bot} other {# of {limit} bots}}"
@@ -1232,6 +1237,16 @@ msgstr "Uka cuentampi jan chiqañchasiñjamäkiti. Mayampi yant'añamawa."
 msgid "Countermeasures"
 msgstr "Jark'aqañ luräwinaka"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Thaki askichaña ch'iqa"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Thaki askichaña kupi"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Avionax tinkuwa"
@@ -2173,6 +2188,16 @@ msgstr "P'iqi"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "P'iqi arknaqaña"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Uñtawi askichaña ch'iqa"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Uñtawi askichaña kupi"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -4338,12 +4363,12 @@ msgstr "Toqe pankha mayjt’ayaña"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Toggle view options"
-msgstr "Uñjat filtro cambiaña"
+msgstr "Uñjañ opcionanak mayjt'ayaña"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
-msgstr "Token clipboard ukar copyata"
+msgstr "Uñch'ukita filtro mayjt'ayaña"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
@@ -4403,7 +4428,7 @@ msgstr "Trim: kupiru"
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 msgid "Try adjusting your search terms"
-msgstr "Mayamp yant'am"
+msgstr "Thaqhañ arunakam mayjt'ayañ yant'am"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4447,7 +4472,7 @@ msgstr "Jan jaya servidorar mayachasiñjamäkiti"
 #: ../../../lib/web/src/lib/auth-manager.ts
 #: ../../../lib/web/src/lib/auth-manager.ts
 msgid "Unable to redirect to login. Please try again."
-msgstr "Feeds servicio ukamp sync lurañ janiw atkiti. Cacheata datos uñstayata."
+msgstr "Mantañ ukar redirigiñ janiw atkiti. Mayamp yant'am."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Unassigned"
@@ -4561,7 +4586,7 @@ msgstr "Verificaña"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx
 msgid "Verify email address"
-msgstr "Passkey ukamp verificaña"
+msgstr "Email dirección uñakipaña"
 
 #: src/components/MissionSetup.tsx
 msgid "Vertical"
@@ -4587,11 +4612,11 @@ msgstr "Uñjäwi"
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 #: ../../../lib/web/src/components/layout/notification-menu.tsx
 msgid "View all notifications"
-msgstr "Taqi posts uñjaña"
+msgstr "Taqi yatiyäwinak uñjaña"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "View and edit item details"
-msgstr "Aka apnaqirin activa sesionanak uñjaña ukat jaytaña."
+msgstr "Item yatiyäwinak uñjaña ukat askichaña"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "View controls"
@@ -4616,7 +4641,7 @@ msgstr "AWQARU SUYT'ASKI"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Watch"
-msgstr "Uñch'ukita"
+msgstr "Uñch'ukiña"
 
 #: src/components/MissionSetup.tsx
 msgid "Watch a bot fly it"
@@ -4625,11 +4650,11 @@ msgstr "Uñjaña bot jalaskiri"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 msgid "Watched"
-msgstr "Uñch'ukita sapa"
+msgstr "Uñch'ukita"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Watched only"
-msgstr "Uñjatakiw"
+msgstr "Uñch'ukitanakaki"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx

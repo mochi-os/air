@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# selezionato} other {# selezionati}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} giocatore} other {#/{2} giocatori}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# altro} other {+# altri}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -1232,6 +1237,16 @@ msgstr "Impossibile verificare con quell'account. Riprova."
 msgid "Countermeasures"
 msgstr "Contromisure"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Regolazione rotta a sinistra"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Regolazione rotta a destra"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Precipitato"
@@ -2173,6 +2188,16 @@ msgstr "Testa"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Tracciamento della testa"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Regolazione prua a sinistra"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Regolazione prua a destra"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

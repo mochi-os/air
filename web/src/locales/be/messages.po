@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# выбрана} few {# выбрана} many {# выб
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} гулец} few {#/{2} гульцы} many {#/{2} гульцоў} other {#/{2} гульца}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {яшчэ +#} few {яшчэ +#} many {яшчэ +#} other {яшчэ +#}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "{0} было на {1}, якое цяпер не прызначана."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# вось} other {# восі}}"
+msgstr "{axisCount, plural, one {# вось} few {# восі} many {# восей} other {# восі}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# кнопка} other {# кнопкі}}"
+msgstr "{buttonCount, plural, one {# кнопка} few {# кнопкі} many {# кнопак} other {# кнопкі}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, one {# элемент} few {# элементы} man
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# адказ} few {+# больш адказаў} many {+# больш адказаў} other {+# больш адказаў}}"
+msgstr "{totalDescendants, plural, one {# адказ} few {яшчэ +# адказы} many {яшчэ +# адказаў} other {яшчэ +# адказу}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -1232,6 +1237,16 @@ msgstr "Не ўдалося пацвердзіць з гэтым уліковы�
 msgid "Countermeasures"
 msgstr "Сродкі супрацьдзеяння"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Задаць лінію шляху ўлева"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Задаць лінію шляху ўправа"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Разбіўся"
@@ -2173,6 +2188,16 @@ msgstr "Галава"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Адсочванне галавы"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Задаць курс улева"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Задаць курс управа"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"

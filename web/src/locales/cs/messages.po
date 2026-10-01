@@ -59,7 +59,7 @@ msgstr "{0, plural, one {# hráč} few {# hráči} many {# hráče} other {# hr�
 #. placeholder {0}: visible.length
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# výsledek} few {# výsledků} other {# výsledků}}"
+msgstr "{0, plural, one {# výsledek} few {# výsledky} other {# výsledků}}"
 
 #. placeholder {0}: over.struck
 #: src/components/GameCanvas.tsx
@@ -81,6 +81,11 @@ msgstr "{0, plural, one {# vybráno} few {# vybráno} other {# vybráno}}"
 #: src/components/Multiplayer.tsx
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} hráč} few {#/{2} hráči} many {#/{2} hráče} other {#/{2} hráčů}}"
+
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {+# další} few {+# další} many {+# dalších} other {+# dalších}}"
 
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
@@ -116,11 +121,11 @@ msgstr "{0} bylo na {1}, které je nyní nepřiřazené."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# osa} other {# osy}}"
+msgstr "{axisCount, plural, one {# osa} few {# osy} other {# os}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# tlačítko} other {# tlačítka}}"
+msgstr "{buttonCount, plural, one {# tlačítko} few {# tlačítka} other {# tlačítek}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, one {# položka} few {# položky} other {# položek
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# odpověď} few {+# dalších odpovědí} other {+# dalších odpovědí}}"
+msgstr "{totalDescendants, plural, one {# odpověď} few {+# další odpovědi} other {+# dalších odpovědí}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -1232,6 +1237,16 @@ msgstr "S tímto účtem se nepodařilo ověřit. Zkuste to prosím znovu."
 msgid "Countermeasures"
 msgstr "Protiopatření"
 
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Nastavení trati vlevo"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Nastavení trati vpravo"
+
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
 msgstr "Zřítil se"
@@ -1872,7 +1887,7 @@ msgstr "Nepodařilo se obnovit prompt"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Failed to revoke RSS access"
-msgstr "Zrušení přístupu RSS se nezdařilo"
+msgstr "Odvolání přístupu RSS se nezdařilo"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Failed to save"
@@ -2173,6 +2188,16 @@ msgstr "Hlava"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Sledování hlavy"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Nastavení kurzu letadla vlevo"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Nastavení kurzu letadla vpravo"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3718,7 +3743,7 @@ msgstr "Seskupit řádky podle"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS access revoked"
-msgstr "Přístup RSS zrušen"
+msgstr "Přístup RSS odvolán"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"

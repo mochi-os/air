@@ -138,6 +138,7 @@ interface Core {
     slope: number,
     fuel: number
   ): number
+  cruise?(altitude: number, mach: number): [number, number] | string
   clear(): string
   hulk(index: number, aircraft: string, stores?: number): boolean
   volley(input: Uint8Array, output: Uint8Array): number
@@ -1114,4 +1115,18 @@ export function flight_approach(
   fuel: number
 ): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
+}
+
+// flight_cruise reports trimmed level flight on dry power at an altitude (m)
+// and Mach number for the jet as it is now - its weight, stores and damage:
+// the fuel flow of all engines, kg/s, and the true airspeed, m/s. The FPAS
+// page searches it for the best Mach and the optimum cruise (NATOPS 2.3.1.1).
+// Null before the core is up, and where the jet cannot fly level on dry power.
+export function flight_cruise(
+  altitude: number,
+  mach: number
+): { flow: number; speed: number } | null {
+  const result = core?.cruise?.(altitude, mach)
+  if (!Array.isArray(result) || !(result[0] >= 0)) return null
+  return { flow: result[0], speed: result[1] }
 }

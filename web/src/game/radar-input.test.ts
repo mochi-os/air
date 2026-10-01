@@ -28,6 +28,7 @@ function lift(name: string): string {
 }
 
 type Rig = {
+  grid: (up: boolean) => unknown[]
   RADAR: Radar
   press(): void
   undesignate(): void
@@ -111,6 +112,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
      const pad_levers={}, hotas={ tdc:{ x:0, y:0, at:-Infinity } };
      const ddi_state={ left:{ page:'sms', menu:'' }, right:{ page:'rdr', menu:'' }, center:{ page:'sa', menu:'' } };
      let designator='right', master='120c', ddi_dirty=false;
+     let grid_up=false; const grid_calls=[]; const tdc_hsi=()=>false, hsi_designate=()=>{}, hsi_slew=()=>{}, tdc_grid=()=>grid_up, grid_designate=()=>grid_calls.push('designate'), grid_slew=(x,y,dt)=>grid_calls.push([x,y,dt]), nav={}, navigate={ undesignate:()=>false };   // the HSI's use of the TDC and the undesignate button is navigation-cockpit.test.ts's
      const contacts=()=>contactList;
      ${code}
      return { RADAR, press:acquire_press, undesignate:undesignate_press,
@@ -119,7 +121,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
        rdrX:(azimuth)=>rdr_x(azimuth,RADAR.half()),
        rdrPress:(pb)=>rdr_press(pb),
        events:()=>radar_events, clock:(t)=>{ sim_time=t; },
-       sensor, slew:tdc_slew, tdc:tdc_press, acm:acm_press, cursor:radar_cursor,
+       sensor, slew:tdc_slew, tdc:tdc_press, acm:acm_press, cursor:radar_cursor, grid:(up)=>{ grid_up=up; return grid_calls; },
        levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; } };`
   )
   return run(Radar, geometry, pick, contacts, BARS) as Rig
@@ -819,6 +821,17 @@ describe('the sensor control switch and the TDC', () => {
     r.set('left', '120c')
     r.tdc()
     expect(r.RADAR.stt).toBeNull() // the TDC on the stores page: nothing to designate
+  })
+
+  it('works the square identification grid\'s cursor when the TDC is on that display, and leaves it alone otherwise', () => {
+    const r = rig()
+    r.set('left', 'nav'); r.show('left', 'sms')
+    const calls = r.grid(false)
+    r.tdc(); r.slew(1, -1, 0.25)
+    expect(calls).toEqual([])
+    r.grid(true)
+    r.tdc(); r.slew(1, -1, 0.25); r.slew(0, 0, 0.25)
+    expect(calls).toEqual(['designate', [1, -1, 0.25]]) // a centred TDC slews nothing
   })
 
   it('takes the antenna back from a wheel bound on the stick when the keys or the EL bezel step it', () => {

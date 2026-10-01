@@ -82,6 +82,11 @@ msgstr "{0, plural, one {# изабрано} few {# изабрана} other {# �
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, one {#/{1} играч} few {#/{2} играча} other {#/{2} играча}}"
 
+#. placeholder {0}: overflow.get(day) ?? 0
+#: ../../../lib/web/src/components/calendar/month-grid.tsx
+msgid "{0, plural, one {+# more} other {+# more}}"
+msgstr "{0, plural, one {још +#} few {још +#} many {још +#} other {још +#}}"
+
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -116,11 +121,11 @@ msgstr "{0} је било на {1}, што сада није додељено."
 
 #: src/components/SettingsDialog.tsx
 msgid "{axisCount, plural, one {# axis} other {# axes}}"
-msgstr "{axisCount, plural, one {# оса} other {# осе}}"
+msgstr "{axisCount, plural, one {# оса} few {# осе} other {# оса}}"
 
 #: src/components/SettingsDialog.tsx
 msgid "{buttonCount, plural, one {# button} other {# buttons}}"
-msgstr "{buttonCount, plural, one {# дугме} other {# дугмади}}"
+msgstr "{buttonCount, plural, one {# дугме} few {# дугмета} other {# дугмади}}"
 
 #: ../../../lib/web/src/lib/locale-format.ts
 msgid "{count, plural, one {#d} other {#d}}"
@@ -180,7 +185,7 @@ msgstr "{totalCount, plural, one {# ставка} few {# ставке} other {# 
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
-msgstr "{totalDescendants, plural, one {# одговор} few {+# додатних одговора} other {+# додатних одговора}}"
+msgstr "{totalDescendants, plural, one {# одговор} few {+# додатна одговора} other {+# додатних одговора}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -462,7 +467,7 @@ msgstr "Свако ко је пријављен"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
-msgstr "Све што је претплаћено на овај извор престаће да га прима. Затим можете копирати нови URL."
+msgstr "Све што је претплаћено на овај фид престаће да га прима. Затим можете копирати нови URL."
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
@@ -1231,6 +1236,16 @@ msgstr "Није било могуће извршити проверу са ти
 #: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Противмере"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set left"
+msgstr "Постави курс лево"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Course set right"
+msgstr "Постави курс десно"
 
 #: src/components/GameCanvas.tsx
 msgid "Crashed"
@@ -2173,6 +2188,16 @@ msgstr "Глава"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Праћење главе"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set left"
+msgstr "Постави правац лево"
+
+#: src/components/SettingsDialog.tsx
+#: src/components/SettingsDialog.tsx
+msgid "Heading set right"
+msgstr "Постави правац десно"
 
 #: src/components/SettingsDialog.tsx
 msgid "High"
@@ -3722,7 +3747,7 @@ msgstr "RSS приступ опозван"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS feed"
-msgstr "RSS извор"
+msgstr "RSS фид"
 
 #: ../../../lib/web/src/components/options-menu.tsx
 msgid "RSS URL copied to clipboard"
