@@ -68,6 +68,8 @@ export const PROFILES: StickProfile[] = [
       trim: '',
       weapon: '8',
       zoom: '',
+      tdc: '',
+      antenna: '',
     }, // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
     // Buttons 2 and 3 as the user flies them (2026-09-10): 2 is the G-limit
     // override and 3 looks at the target - the padlock is a reflex in a merge,
@@ -117,6 +119,8 @@ export const PROFILES: StickProfile[] = [
       trim: '',
       weapon: '',
       zoom: '',
+      tdc: '',
+      antenna: '',
     },
     buttons: {
       fire: '7',
@@ -152,6 +156,8 @@ export const PROFILES: StickProfile[] = [
       trim: '',
       weapon: '',
       zoom: '',
+      tdc: '',
+      antenna: '',
     },
     buttons: { fire: '0' },
   },
@@ -192,7 +198,7 @@ export function profileFor(id: string, mapping = ''): StickProfile {
 // drift: the engine's read, the Joystick tab's row marks, and unreachable()
 // below. (A zoom value ending "+" is also a pair, but that is a property of
 // the VALUE, so reaches() decides it rather than this set.)
-export const PAIRS = new Set(['look', 'trim', 'weapon'])
+export const PAIRS = new Set(['look', 'trim', 'weapon', 'tdc'])
 
 // unreachable names the bound actions this device does not report, sorted and
 // comma-separated, or '' when everything bound is reachable. Recorded into the
