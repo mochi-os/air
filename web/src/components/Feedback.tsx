@@ -28,6 +28,7 @@ import {
   CircleAlert,
   Loader2,
   MessageSquare,
+  Trash2,
 } from 'lucide-react'
 import { feedback_check, feedback_post } from '../game/net'
 import { MenuDialog } from './menu-parts'
@@ -260,6 +261,7 @@ export function FeedbackDialog({
         desc={t`Your text will be lost.`}
         cancelBtnText={t`Keep editing`}
         confirmText={t`Discard`}
+        icon={<Trash2 className='size-4' />}
         destructive
         handleConfirm={finish}
       />

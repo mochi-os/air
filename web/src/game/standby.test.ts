@@ -299,10 +299,19 @@ describe('the standby instrument faces', () => {
   // and the setting window centred below the hub under ALT and IN HG.
   it('graduate the altimeter in 50 ft steps and centre the window under ALT and IN HG', () => {
     const d = face('alt_face', 0, 3001)
-    expect(d.strokes).toBe(20)
+    expect(d.strokes).toBe(22) // the twenty graduations and the counter window's double bar
     for (const n of ['0', '1', '5', '9']) expect(d.text).toContain(n)
     expect(d.text).toEqual(expect.arrayContaining(['ALT', 'IN HG', '3001']))
     expect(d.rects).toContainEqual([128 - 32, 128 + 48, 64, 22]) // the window, centred on the hub's vertical
+  })
+
+  it('read the thousands in a counter window across the upper dial, 9 to 2 o\'clock, beside a fixed 00, as FO-5 item 28 draws it (#124)', () => {
+    const R = 118, window = [128 - 0.64 * R, 128 - 0.47 * R, 1.01 * R, 0.26 * R]
+    const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-9)
+    expect(face('alt_face', 23450, 2992).rects.some((r) => near(r, window))).toBe(true)
+    expect(face('alt_face', 23450, 2992).text.filter((t) => t === '23' || t === '00')).toEqual(['23', '00'])
+    expect(face('alt_face', 800, 2992).text.filter((t) => t === '00')).toEqual(['00', '00']) // below 1,000 ft the drums read 00
+    expect(face('alt_face', 800, 2992).rects.some((r) => near(r, [128 - 58, 128 - 14, 52, 28]))).toBe(false) // the old two-digit box left of the hub is gone
   })
 
   it('put the rate of climb needle at nine o\'clock plus the dial angle', () => {
@@ -365,12 +374,18 @@ describe('the standby instrument faces', () => {
     expect(needle(30)).toBeCloseTo(128 + 24 - 2, 6)    // pegged
   })
 
+  it('show the OFF flag with its ac power and its inverter\'s essential bus both gone, and not otherwise (2.12.2, #116)', () => {
+    expect(face('adi_face', 0, 0, 0, 0, 0, 1).text).toContain('OFF')
+    expect(face('adi_face', 0, 0, 0, 0, 0, 0).text).not.toContain('OFF')
+    expect(face('adi_face', 0, 0, 0, 0, 1, 0).text).not.toContain('OFF') // the TEST switch is no flag
+  })
+
   it('slide the ball along its tube with the slip, to the velocity vector\'s side', () => {
     const ball = (slip: number) => face('adi_face', 0, 0, 0, slip).arcs.find(([, y, r]) => r === 5 && y === 128 + 118 - 7)?.[0]
     expect(ball(0)).toBe(128)
     expect(ball(0.5)).toBe(128 + 12)
     expect(ball(-2)).toBe(128 - 24)
-    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0,sari_testing\(\)\);/)
+    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0,sari_testing\(\),!buses\.essential\);/)
   })
 
   // NATOPS 25.2.4.2: the vertical and horizontal pointers stay stowed, the vertical one behind the pointer
@@ -638,8 +653,9 @@ describe('the radar altimeter height indicator', () => {
   it('shows OFF with the set off, as under EMCON, and not for the radar\'s own silence (NATOPS 2.12.5, 2.13.5.2)', () => {
     const inhibited = /\nfunction radalt_inhibited\(\)[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(inhibited).not.toBe('')
-    const run = (emcon: boolean, on: boolean, sil = false) => new Function('emcon', 'on', 'sil', `const RADAR={ sil, silent:()=>sil||emcon }, radalt_on=on; ${inhibited} return radalt_inhibited();`)(emcon, on, sil) as boolean
+    const run = (emcon: boolean, on: boolean, sil = false, ac = true) => new Function('emcon', 'on', 'sil', 'ac', `const RADAR={ sil, silent:()=>sil||emcon }, radalt_on=on, buses={ ac }; ${inhibited} return radalt_inhibited();`)(emcon, on, sil, ac) as boolean
     expect(run(false, true)).toBe(false)
+    expect(run(false, true, false, false)).toBe(true) // no ac power: the set is off (#116)
     expect(run(true, true)).toBe(true)
     expect(run(false, false)).toBe(true)
     expect(run(false, true, true)).toBe(false)
@@ -658,8 +674,8 @@ describe('the radar altimeter height indicator', () => {
     expect(source).toMatch(/radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"\|\|st==="runway";/)
   })
 
-  it('pushes the knob with the middle button on the face, and presses nothing else with it', () => {
-    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(u&&!playback&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\) pit_press\("radalt\.test",0\); return; \}/)
+  it('pushes the knob with the middle button on the face, and nothing but the push and pull controls with it', () => {
+    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\);\n\t\treturn; \}/)
   })
 })
 

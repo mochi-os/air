@@ -72,7 +72,7 @@ describe('the instrument cluster rides the nose', () => {
     const opening = section('// ---- instrument furniture (#133)', '\tconst ppdv=HH/45;')
     for (const [glass, hs] of [[null, 1], [{}, 0.8]] as [object | null, number][]) {
       const c = canvas()
-      new Function('hctx', 'glass', 'glass_clip', 'flight_symbols', 'bore', 'hs', 'cx', 'cy', 'HH', `${opening} }`)(c.hctx, glass, () => {}, true, [300, 500], hs, cx, cy, HH)
+      new Function('hctx', 'glass', 'glass_clip', 'flight_symbols', 'bore', 'hs', 'cx', 'cy', 'HH', 'sym', `${opening} }`)(c.hctx, glass, () => {}, true, [300, 500], hs, cx, cy, HH, 1)
       const [x, y] = c.point(cx, cy - 4 * ppdv)
       expect([x, y], glass ? 'cockpit' : 'HUD view').toEqual([300, 500])
     }

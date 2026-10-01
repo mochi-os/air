@@ -309,6 +309,10 @@ export interface InputSample {
   reheat: number
   brake: boolean
   bypass: boolean // the ANTI SKID switch OFF (#114): a server that predates it reads nothing, and a sample without it keeps anti-skid on
+  emergency: boolean // the gear handle turned and pulled: the emergency gear extension (#128)
+  mechanical: boolean // MECH ON (#116): the client judges when all electrical power is gone; a sample without it keeps the computers
+  wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
+  centre: number
   gear: boolean
   hook: boolean
   override: boolean
@@ -780,7 +784,7 @@ export class Net {
               let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
               if (i === STATE.loss) v *= 8000 // Loss, kg — BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss (strut damage arrived x8000, Loss unscaled)
               if (i === STATE.loss + 4) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping — BY INDEX for the same reason: "SIZE - 1" silently slid onto the roll-trim datum when buffet and bank were appended
-              if (i === STATE.external) v *= 8000 // external-tank fuel, kg — same scale as Loss
+              if (i === STATE.wing || i === STATE.centre) v *= 8000 // external fuel, wing and centreline, kg — same scale as Loss
               expanded[i] = v
             }
             core = expanded

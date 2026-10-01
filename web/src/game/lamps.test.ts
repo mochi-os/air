@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest'
 // position. engine.ts cannot be imported (WebGL at module scope), so the flap
 // lines of lamps_update are read as text and stepped against stand-ins.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
-const block = /\n\tif\(l\.half\)\{ const slow=[\s\S]*?l\.flaps\.material\.opacity=[^\n]*\n/.exec(source)?.[0] ?? ''
+const block = /\n\tif\(l\.half\)\{ const slow=[\s\S]*?lamp_set\(l\.flaps,[^\n]*\n/.exec(source)?.[0] ?? ''
 
 interface Case { flap: number; kt: number; jam?: number; hyd?: number }
 // Returns the names of the flap lights on for a switch position, an airspeed
@@ -21,9 +21,9 @@ interface Case { flap: number; kt: number; jam?: number; hyd?: number }
 function lit(c: Case): string[] {
   if (!block) throw new Error('flap lamp block not found in engine.ts')
   const run = new Function('c', `const STATE={cas:0, jam:1}, out=[c.kt/1.944, 0,0,0,0,0, c.jam||0];
-    const lamp=()=>({material:{opacity:0}}), l={half:lamp(), full:lamp(), flaps:lamp()}, ownship={ gauges:{ hyd:c.hyd??2.83 } };
+    const lamp_set=(m,on)=>{ m.on=!!on; }, l={half:{}, full:{}, flaps:{}}, ownship={ gauges:{ hyd:c.hyd??2.83 } };
     const flap_select=c.flap; ${block}
-    return Object.keys(l).filter((k)=>l[k].material.opacity>0.5);`)
+    return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
 }
 
@@ -32,6 +32,14 @@ describe('the flap position lights', () => {
     expect(lit({ flap: 1, kt: 150 })).toEqual(['half'])
     expect(lit({ flap: 2, kt: 150 })).toEqual(['full'])
     expect(lit({ flap: 0, kt: 150 })).toEqual([])
+  })
+
+  it('carry their legends, NOSE, LEFT RIGHT, HALF FULL and FLAPS, dark until lit and facing the pilot (FO-5 item 21)', () => {
+    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?\n\tconst hook=/.exec(source)?.[0] ?? ''
+    for (const [name, text, colour] of [['nose', 'NOSE', '#2fd24a'], ['left', 'LEFT', '#2fd24a'], ['right', 'RIGHT', '#2fd24a'], ['half', 'HALF', '#2fd24a'], ['full', 'FULL', '#2fd24a'], ['flaps', 'FLAPS', '#ffc23a']])
+      expect(build, name).toMatch(new RegExp(`lamps\\.${name}=legend\\("${text}","${colour}",0\\.016,0\\.008\\);`))
+    expect(build).toMatch(/lamps\.transit=lamp\(0xe23b2e,0\.011,0\.011\);/) // the handle's light has no legend
+    expect(build).toMatch(/gear\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\); m\.layers\.set\(LAYER_OWN\); \}\); g\.add\(gear\);/) // painted face aft, as the glareshield's
   })
 
   it('show amber FLAPS for flaps without hydraulic pressure (2.8.4.3)', () => {
@@ -52,9 +60,9 @@ describe('the flap position lights', () => {
 
   it('build the three lamps into the gear light unit', () => {
     const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
-    expect(build).toMatch(/lamps\.half=lamp\(0x2fd24a/)
-    expect(build).toMatch(/lamps\.full=lamp\(0x2fd24a/)
-    expect(build).toMatch(/lamps\.flaps=lamp\(0xffc23a/)
+    expect(build).toMatch(/lamps\.half=legend\("HALF","#2fd24a"/)
+    expect(build).toMatch(/lamps\.full=legend\("FULL","#2fd24a"/)
+    expect(build).toMatch(/lamps\.flaps=legend\("FLAPS","#ffc23a"/)
     expect(build).toMatch(/gear\.add\(lamps\.transit,lamps\.nose,lamps\.left,lamps\.right,lamps\.half,lamps\.full,lamps\.flaps\)/)
   })
 })
@@ -140,9 +148,9 @@ describe('the glareshield panels', () => {
 
   it('kept the gear unit as it was', () => {
     const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
-    expect(build).toMatch(/lamps\.half=lamp\(0x2fd24a/)
-    expect(build).toMatch(/lamps\.full=lamp\(0x2fd24a/)
-    expect(build).toMatch(/lamps\.flaps=lamp\(0xffc23a/)
+    expect(build).toMatch(/lamps\.half=legend\("HALF","#2fd24a"/)
+    expect(build).toMatch(/lamps\.full=legend\("FULL","#2fd24a"/)
+    expect(build).toMatch(/lamps\.flaps=legend\("FLAPS","#ffc23a"/)
     expect(build).toMatch(/gear\.add\(lamps\.transit,lamps\.nose,lamps\.left,lamps\.right,lamps\.half,lamps\.full,lamps\.flaps\)/)
   })
 })
@@ -191,7 +199,7 @@ describe('the HOOK light', () => {
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
 interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number[] }
-const generators = /\nfunction generators\(out\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const generators = [/\nfunction generators\(out\)\{[^\n]*\n/, /\nfunction turning\(out,e\)\{[^\n]*\n/].map((re) => re.exec(source)?.[0] ?? '').join('') + 'const electrics={ switches:[true,true] };'
 const fcs = /\nconst FCS_CHANNELS=[^\n]*\nfunction fcs_jammed\(words\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 // The DDI side of the generators (NATOPS 2.5.1.1): cautions_update's L GEN and R
 // GEN captions and its battery state, from the core's spools and harm.
@@ -199,15 +207,15 @@ function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
   const lines = /\n\tconst \[genL,genR\]=core\?generators\(core\):\[true,true\][^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!lines || !generators) throw new Error('generator captions not found in engine.ts')
   return new Function('c', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
-    const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[]; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
+    const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[], buses={ ac:generators(core).some(Boolean) }; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
 }
 function cautionlit(c: Cautions): string[] {
   const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,fcs_jammed\(out\)\);\n/.exec(source)?.[0] ?? ''
   if (!block || !generators || !fcs) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     ${fcs} const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,0,0,0,0,0]; for(const ch of c.jam||[]) out[6+ch]=1;
-    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
-    const l={fuello:{},genL:{},genR:{},fces:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
+    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ ac:true, essential:true }, battery_switch=()=>false; let unpowered=false;
+    const l={fuello:{},genL:{},genR:{},fces:{},battsw:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
 }
@@ -350,24 +358,26 @@ describe('the LOCK and SHOOT lights', () => {
 // The emergency instrument light (NATOPS 2.6.2.8): on with both generators off
 // the line, when the integral lighting goes dark, so the standby instruments
 // stay readable at night. No cockpit control.
-interface Power { spoolL?: number; spoolR?: number; view?: string }
+interface Power { spoolL?: number; spoolR?: number; view?: string; essential?: boolean }
 function emergency(p: Power): { unpowered: boolean; intensity: number } {
   const block = /\n\t\{ const \[genL,genR\]=generators\(out\);[\s\S]*?EMERGENCY_LIGHT:0; \}[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block || !generators) throw new Error('generator block not found in engine.ts')
   const run = new Function('p', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     const out=[p.spoolL??0.7, 0, p.spoolR??0.7, 0, 0, 0];
-    const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5; let unpowered=false;
+    const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ essential:p.essential??true }; let unpowered=false;
     const l={genL:{},genR:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
     return { unpowered, intensity:ownship.group.userData.emergency.intensity };`)
   return run(p) as { unpowered: boolean; intensity: number }
 }
 interface Lights { mode: string; instrument: number; consoles: number; flood: number; warn: number }
-function lights(tod: string, lights: boolean, unpowered: boolean): Lights {
+function lights(tod: string, lights: boolean, unpowered: boolean, turned?: Record<string, number>): Lights {
   const state = /\nconst lighting=\{[^\n]*\n/.exec(source)?.[0] ?? ''
   const fn = /\nfunction lighting_set\(\)\{[\s\S]*?lighting\.warn=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!state || !fn) throw new Error('lighting_set not found in engine.ts')
-  const run = new Function('tod', 'lights', 'unpowered', `const cfg={tod}, ownship={lights}; ${state} ${fn} lighting_set(); return { ...lighting };`)
-  return run(tod, lights, unpowered) as Lights
+  const knob = /\nconst knobs=\{[^\n]*\nfunction knob_level\(k\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!knob) throw new Error('knob_level not found in engine.ts')
+  const run = new Function('tod', 'lights', 'unpowered', 'turned', `const cfg={tod}, ownship={lights}; ${knob} Object.assign(knobs,turned||{}); ${state} ${fn} lighting_set(); return { ...lighting };`)
+  return run(tod, lights, unpowered, turned) as Lights
 }
 function backlight(tod: string, on: boolean, unpowered: boolean): number {
   return lights(tod, on, unpowered).instrument
@@ -404,13 +414,13 @@ describe('the emergency instrument light', () => {
 // button latches the tone off until its condition clears.
 interface Handle { ext: number; t: number; lit?: number; wheels?: boolean; up?: boolean; harm?: number[] }
 function handle(c: Handle): { opacity: number; lit: number; greens: number[] } {
-  const block = /\n\tif\(l\.transit\)\{ const locked=[\s\S]*?l\.right\.material\.opacity=locked\[2\]\?1:0; \}\n/.exec(source)?.[0] ?? ''
+  const block = /\n\tif\(l\.transit\)\{ const locked=[\s\S]*?lamp_set\(l\.right,locked\[2\]\); \}\n/.exec(source)?.[0] ?? ''
   const collapse = /\nconst GEAR_COLLAPSE=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block || !collapse) throw new Error('gear handle light block not found in engine.ts')
   const run = new Function('c', `const ext=c.ext, sim_time=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse}
-    const STATE={ gear_harm:0 }, out=c.harm??[0,0,0], ownship={ gearTarget:c.up?1:0 };
-    const l={transit:{material:{opacity:0}},nose:{material:{}},left:{material:{}},right:{material:{}}}; ${block}
-    return { opacity:l.transit.material.opacity, lit:handle_lit, greens:[l.nose.material.opacity,l.left.material.opacity,l.right.material.opacity] };`)
+    const STATE={ gear_harm:0 }, out=c.harm??[0,0,0], ownship={ gearTarget:c.up?1:0 }, buses={ essential:true };
+    const lamp_set=(m,on)=>{ m.on=!!on; }, l={transit:{material:{opacity:0}},nose:{},left:{},right:{}}; ${block}
+    return { opacity:l.transit.material.opacity, lit:handle_lit, greens:[+!!l.nose.on,+!!l.left.on,+!!l.right.on] };`)
   return run(c) as { opacity: number; lit: number; greens: number[] }
 }
 function tone(lit: number, t: number, wheels: boolean, silenced: boolean): { tone: boolean; silenced: boolean } {
@@ -445,7 +455,8 @@ describe('the gear handle light and tone', () => {
     const lamp = /\n\tconst lamp=\(c,w,h\)=>[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
     const gear = cut('\tconst handle=g.getObjectByName("Gear_handle_483");', '\t// The HOOK light')
     const built = new Function('THREE', `const LAYER_OWN=1, lamps={}, g=new THREE.Group(), node=new THREE.Group(), lever=new THREE.Group();
-      node.name="Gear_handle_483"; lever.name="Gear_handle_AN_handle_482"; node.position.set(6.25,0.076,-0.338); node.add(lever); g.add(node); ${lamp} ${gear}
+      node.name="Gear_handle_483"; lever.name="Gear_handle_AN_handle_482"; node.position.set(6.25,0.076,-0.338); node.add(lever); g.add(node); ${lamp}
+      const legend=()=>new THREE.Mesh(new THREE.PlaneGeometry(0.016,0.008), new THREE.MeshBasicMaterial()); ${gear}
       g.updateMatrixWorld(true); const rest=lamps.transit.getWorldPosition(new THREE.Vector3());
       lever.rotation.z=0.6; g.updateMatrixWorld(true); const up=lamps.transit.getWorldPosition(new THREE.Vector3());
       return { parent:lamps.transit.parent===lever, name:lamps.transit.name, rest, up, silence:g.userData.silence.parent!==lever };`)(THREE) as { parent: boolean; name: string; rest: THREE.Vector3; up: THREE.Vector3; silence: boolean }
@@ -560,14 +571,16 @@ describe('the interior lights panel', () => {
     expect(quad.userData.lit).toBe(0x2fd24a) // the gear and flap lamps carry the colour the dimming scales
   })
 
-  it('drives the panel\'s four knobs and two switches from the levels and dims the lenses by their material colour', () => {
+  it('drives the panel\'s four knobs from where they are turned, lit or not, and its two switches, and dims the lenses by their material colour', () => {
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
-    for (const [name, node] of [['instpnl', 'Knob_INSTPNL_RightPanel_AN'], ['consoles', 'Knob_CONSOLES_RIGHTPANEL_AN'], ['flood', 'Knob_FLOOD_RightPanel_AN'], ['floodswitch', 'Knob_CHART_RightPanel_AN'], ['warncaut', 'Knob_WARN_CAUT_RightPanel_AN'], ['lttest', 'PEDESTAL_LIGHT_AN']])
+    for (const [name, node] of [['instpnl', 'Knob_INSTPNL_RightPanel_AN'], ['consoles', 'Knob_CONSOLES_RIGHTPANEL_AN'], ['flood', 'Knob_FLOOD_RightPanel_AN'], ['warncaut', 'Knob_WARN_CAUT_RightPanel_AN'], ['lttest', 'PEDESTAL_LIGHT_AN']])
       expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+track:/\\^' + node + '/i,\\s+drive:"' + name + '"'))
-    expect(source).toMatch(/case "instpnl": f=lighting\.instrument; break; case "consoles": f=lighting\.consoles; break; case "flood": f=lighting\.flood; break;/)
-    // the FLOOD COCKPIT/CHART switch rests at COCKPIT, the floods on the FLOOD knob (2.6.2.5); the KY-58's MODE knob is no lights control
-    expect(source).toMatch(/case "floodswitch": f=0; break; case "warncaut": f=lighting\.warn; break;/)
-    expect(source).not.toMatch(/track:\/\^MODE_C_AN/)
+    expect(source).toMatch(/case "instpnl": f=knob_level\("instrument"\); break; case "consoles": f=knob_level\("consoles"\); break; case "flood": f=knob_level\("flood"\); break;/)
+    expect(source).toMatch(/case "warncaut": f=knob_level\("warn"\); break;/)
+    // the FLOOD COCKPIT/CHART switch moves and lights nothing, there being no chart light (#23); its clip runs CHART-ward from its drawn COCKPIT, so it rests flipped at its drawn end
+    expect(rig).toMatch(/name:"floodswitch", track:\/\^Knob_CHART_RightPanel_AN\/i,\s+drive:"travel", flip:true \}/)
+    expect(source).toMatch(/const TRAVEL_REST=\{[^\n]*floodswitch:1 \};/)
+    expect(source).not.toMatch(/track:\/\^MODE_C_AN[^\n]*drive:"(?!travel)/)
     expect(source).not.toMatch(/lighting\.chart/)
     expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
     expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
@@ -614,18 +627,19 @@ describe('the lights test', () => {
   const set = /\nfunction lamp_set\(m,on\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Light { on: boolean; swaps: number }
   interface Rig { frame(held: boolean): Record<string, Light> }
-  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number } = {}): Rig => {
+  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number; fire?: boolean; essential?: boolean; batt?: boolean } = {}): Rig => {
     for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
     return new Function('c', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
       const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
       ${test}${set}
       const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
       const plain=()=>({ userData:{ lit:0x2fd24a }, material:{ opacity:0 }, swaps:0 });
-      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot"]) l[n]=lens();
+      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw"]) l[n]=lens();
       for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
       const blank=lens(), tested=[...Object.values(l),blank];
       const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, jammer_armed=false, jammer_loud=()=>false;
       const RWR={contacts:[]}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
+      const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
       const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd:3000 } };
       ${update}
@@ -639,7 +653,16 @@ describe('the lights test', () => {
   it('lights every light while held, those no condition drives and the lens with no legend too', () => {
     const r = rig().frame(true)
     expect(lit(r)).toEqual(Object.keys(r).sort())
-    expect(Object.keys(r).length).toBe(26)
+    expect(Object.keys(r).length).toBe(29)
+  })
+
+  it('lights the three FIRE lights and both BLEEDs through a fire and bleed air test, and BATT SW on its condition (2.14.5, 2.5.3.3)', () => {
+    expect(lit(rig({ fire: true }).frame(false))).toEqual(['apufire', 'bleedL', 'bleedR', 'fireL', 'fireR'])
+    expect(lit(rig({ batt: true }).frame(false))).toEqual(['battsw'])
+  })
+
+  it('lights nothing with the essential bus dead, the test and the latched MASTER CAUTION included (#116)', () => {
+    expect(lit(rig({ essential: false, caution: true, fire: true }).frame(true))).toEqual([])
   })
 
   it('holds a driven light on through the test rather than putting it out and back each frame', () => {

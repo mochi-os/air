@@ -279,7 +279,7 @@ describe('the engine wiring', () => {
   })
 
   it('reads the tanks from the FUEL page\'s apportionment, and gives the ZTOD the IFEI\'s clock, reset on a fresh jet', () => {
-    expect(source).toMatch(/internal, external, tanks:fuel_tanks\(internal,external,fuel_aboard\(\)\) \}; \}/)
+    expect(source).toMatch(/internal, external, tanks:fuel_tanks\(internal,\{ wing:gz\.wingRaw\?\?0, centre:gz\.centreRaw\?\?0 \},fuel_aboard\(\),wing_held\) \}; \}/)
     expect(source).toMatch(/zulu:ifei_zulu\(ifei_view\(\),now\),/)
     expect(source).toMatch(/function ifei_view\(\)\{ ifei_state=ifei_settle\(ifei_state,performance\.now\(\)\/1000,new Date\(\)\);/)
     expect(source).toMatch(/const next=ifei_press\(ifei_view\(\),button,performance\.now\(\)\/1000,hold\|\|0,new Date\(\)\);/)

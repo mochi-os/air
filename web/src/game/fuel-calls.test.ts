@@ -15,14 +15,14 @@ import { describe, expect, it } from 'vitest'
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const block = /\n\t\{ const read=fuel_read, beforeInternal=[\s\S]*?notice\(translate\("FUEL LO"\)\); \} \}/.exec(source)?.[0] ?? ''
 // FUEL LO's condition, either feed tank down to 800 lb in the tanks' apportionment (NATOPS 2.2.8), with what it reads.
-const feeds = [/\nconst FUEL_TANKS=[^\n]*\n/, /\nfunction fuel_tanks\(internal,external,aboard\)\{[\s\S]*?\n(?=\S)/, /\nconst FEED_LOW=[^\n]*\n/, /\nfunction feed_low\(kg\)\{[^\n]*\n/]
-  .map((pattern) => pattern.exec(source)?.[0] ?? '').join('') + 'const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } };'
+const feeds = [/\nconst FUEL_TANKS=[^\n]*\n/, /\nfunction fuel_tanks\(internal,external,aboard,held=null\)\{[\s\S]*?\n(?=\S)/, /\nconst FEED_LOW=[^\n]*\n/, /\nfunction feed_low\(kg\)\{[^\n]*\n/]
+  .map((pattern) => pattern.exec(source)?.[0] ?? '').join('') + 'const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } }, wing_held=null;'
 
 // Feeds the core's tank readings [internal, external] in kg frame by frame and
 // returns the calls made; reset() starts a fresh mission on the same jet.
 function tank() {
   if (!block || !feeds.includes('feed_low')) throw new Error('fuel block not found in engine.ts')
-  const run = new Function('readings', 'reset', `const ownship={}, STATE={fuel:0, external:1}, BINGO=1361, calls=[]; ${feeds}
+  const run = new Function('readings', 'reset', `const ownship={}, STATE={fuel:0, wing:1, centre:2}, BINGO=1361, calls=[]; ${feeds}
     const cheat=()=>false, translate=(t)=>t, notice=(t)=>calls.push(t);
     let fuel_read=false;
     return readings.map((out)=>{ if(out===reset){ fuel_read=false; return null; } ${block} return calls.splice(0); });`)

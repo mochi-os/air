@@ -106,7 +106,7 @@ describe('the messages', () => {
 })
 
 type Row = [string, string, boolean]
-interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean; captions?: string[]; battery?: boolean; grounded?: boolean; rpm?: number; reset?: boolean }
+interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean; captions?: string[]; battery?: boolean; grounded?: boolean; rpm?: number; reset?: boolean; essential?: boolean; fire?: boolean }
 interface Result { tones: string[]; lamp: boolean; active: string[] }
 // Runs cautions_update's tail once per moment, and returns each moment's tones,
 // the MASTER CAUTION lamp and the messages handed to the queue. The fuel is under
@@ -119,16 +119,30 @@ function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
   const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
     const voice={}, gpws={gear:false, call:""}, ownship={ grounded:false, gauges:{} }; ${constants}
+    let buses={ ac:true, essential:true }, firetest=false; const fire_testing=()=>firetest;
     const audio_caution=()=>tones.push("caution"), audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
     function cautions_update(rows,test,m){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO");
       const captions=m.captions??rows.map((r)=>DDI_CAPTIONS[r[0]]).filter(Boolean), battery=!!m.battery; ${tail}
     return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time;
       ownship.grounded=!!m.grounded; ownship.gauges={ rpmL:m.rpm??0, rpmR:m.rpm??0 }; if(m.reset) caution_lamp=false;
+      buses={ ac:!m.battery, essential:m.essential??true }; firetest=!!m.fire;
       cautions_update(m.rows,!!m.test,m); return { tones, lamp:caution_lamp, active:active_passed }; });`)
   return run(SPOKEN, moments) as Result[]
 }
 const row = (key: string, red = false): Row => [key, key, red]
+
+describe('the voice alerts on the panel systems (#17, #116)', () => {
+  it('hands both fire calls to the queue through a fire and bleed air test, on the batteries too (2.14.5, 2.17.3)', () => {
+    expect(cautions([{ rows: [], ready: true, fire: true }])[0].active).toEqual(['ENGINE FIRE LEFT', 'ENGINE FIRE RIGHT'])
+    expect(cautions([{ rows: [], ready: true, fire: true, battery: true }])[0].active).toEqual(['ENGINE FIRE LEFT', 'ENGINE FIRE RIGHT'])
+    expect(cautions([{ rows: [], ready: true }])[0].active).toEqual([])
+  })
+
+  it('says nothing with the essential bus dead', () => {
+    expect(cautions([{ rows: [row('L ENG FIRE', true)], ready: true, fire: true, battery: true, essential: false }])[0].active).toEqual([])
+  })
+})
 
 describe('the voice takes over from the caution tone', () => {
   it('announces a voiced caution in place of the master caution tone, and still lights the lamp', () => {

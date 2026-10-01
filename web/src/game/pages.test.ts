@@ -361,8 +361,8 @@ describe('the engine monitor display', () => {
 // capacities from figure 2-6), and the FLBIT (2.2.10.3).
 const tanksource = (/\nconst FUEL_TANKS=[^\n]*\n/.exec(source)?.[0] ?? '') + lift('fuel_tanks')
 interface Tanks { one: number; four: number; feed: { left: number; right: number }; wing: { left: number; right: number }; external: Record<string, number> }
-function apportion(internal: number, external = 0, aboard: { station: number; capacity: number }[] = []): Tanks {
-  return new Function('internal', 'external', 'aboard', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${tanksource} return fuel_tanks(internal,external,aboard);`)(internal, external, aboard) as Tanks
+function apportion(internal: number, external: { wing?: number; centre?: number } = {}, aboard: { station: number; capacity: number }[] = [], held: number | null = null): Tanks {
+  return new Function('internal', 'external', 'aboard', 'held', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${tanksource} return fuel_tanks(internal,external,aboard,held);`)(internal, external, aboard, held) as Tanks
 }
 const sum = (k: Tanks) => k.one + k.four + k.feed.left + k.feed.right + k.wing.left + k.wing.right
 describe('the fuel tanks, apportioned', () => {
@@ -399,19 +399,32 @@ describe('the fuel tanks, apportioned', () => {
     for (let internal = 0; internal <= 10810; internal += 37) expect(sum(apportion(internal))).toBeCloseTo(internal, 6)
   })
 
-  it('splits the external fuel over the tanks aboard, which transfer together', () => {
-    const wings = apportion(10810, 2240, [{ station: 3, capacity: 2240 }, { station: 7, capacity: 2240 }])
+  it('splits each external quantity over its own tanks, the wing pair together on WING and the centre tank on CTR (2.2.4, #18)', () => {
+    const wings = apportion(10810, { wing: 2240 }, [{ station: 3, capacity: 2240 }, { station: 7, capacity: 2240 }])
     expect(wings.external).toEqual({ 3: 1120, 7: 1120 })
-    expect(apportion(10810, 2240, [{ station: 5, capacity: 2240 }]).external).toEqual({ 5: 2240 })
-    expect(apportion(10810, 0, []).external).toEqual({})
+    expect(apportion(10810, { centre: 2240 }, [{ station: 5, capacity: 2240 }]).external).toEqual({ 5: 2240 })
+    const three = [{ station: 3, capacity: 2240 }, { station: 5, capacity: 2240 }, { station: 7, capacity: 2240 }]
+    expect(apportion(10810, { wing: 0, centre: 1000 }, three).external).toEqual({ 3: 0, 5: 1000, 7: 0 }) // WING at STOP while the centre tank feeds
+    expect(apportion(10810, { wing: 4480, centre: 0 }, three).external).toEqual({ 3: 2240, 5: 0, 7: 2240 })
+    expect(apportion(10810, {}, []).external).toEqual({})
+  })
+
+  it('holds the wings\' fuel under INTR WING\'s INHIBIT, the fuselage tanks giving theirs first (2.2.3.3, #18)', () => {
+    const held = apportion(10810 - 1160, {}, [], 1160), plain = apportion(10810 - 2320)
+    expect([held.wing.left, held.wing.right]).toEqual([580, 580])
+    expect([held.one, held.four, held.feed.left, held.feed.right]).toEqual([plain.one, plain.four, plain.feed.left, plain.feed.right])
+    expect(sum(held)).toBeCloseTo(10810 - 1160, 6)
+    expect([apportion(500, {}, [], 1160).wing.left, apportion(500, {}, [], 1160).one]).toEqual([250, 0]) // never more than is aboard
+    expect(apportion(10810, {}, [], 200).wing.left).toBe(580) // less held than NORM leaves: NORM's order stands
   })
 })
 
 function fuelpage(over: { internal?: number; external?: number; stations?: number[]; time?: number; flbit?: number } = {}): Drawn {
   const stations = over.stations ?? []
   const lo = Object.fromEntries(stations.map((s) => [String(s), { fixture: 'pylon', stores: ['tank'] }]))
-  return page('ddi_fuel', `const ownship={ gauges:{ fuelRaw:${over.internal ?? 10810}, externalRaw:${over.external ?? 0} }, loadout:${JSON.stringify(lo)} };
-    const fuel_state={ bingo:3000 }, sim_time=${over.time ?? 100}, flbit=${over.flbit ?? '-Infinity'}, FLBIT_RESULT=10, stores_catalog=()=>null, loadout=()=>({});
+  const centre = stations.length > 0 && stations.every((s) => s === 5)
+  return page('ddi_fuel', `const ownship={ gauges:{ fuelRaw:${over.internal ?? 10810}, externalRaw:${over.external ?? 0}, wingRaw:${centre ? 0 : over.external ?? 0}, centreRaw:${centre ? over.external ?? 0 : 0} }, loadout:${JSON.stringify(lo)} };
+    const fuel_state={ bingo:3000 }, sim_time=${over.time ?? 100}, flbit=${over.flbit ?? '-Infinity'}, FLBIT_RESULT=10, stores_catalog=()=>null, loadout=()=>({}), wing_held=null;
     ${tanksource} ${lift('fuel_aboard')} ${lift('flbit_running')}`)
 }
 describe('the FUEL display', () => {
@@ -487,11 +500,11 @@ describe('the fuel low BIT', () => {
 
 // The FCS status display against figure 2-16 (C/D) and 2.8.4.7. The core's words:
 // STAB 0/1, AIL 2/3, RUD 4, LEF 5, TEF 6, jams from 10 in the harness's layout.
-function fcspage(words: number[], o: { gross?: number; fuel?: number; aoa?: number; jams?: number[] } = {}): Drawn {
+function fcspage(words: number[], o: { gross?: number; fuel?: number; aoa?: number; jams?: number[]; reference?: string } = {}): Drawn {
   const out = [...words.map((w) => w * Math.PI / 180), 0, 0, 0]
   for (const j of o.jams ?? []) out[10 + j] = 0.9
   return page('ddi_fcs', `const STATE={ stabilator:0, flaperon:2, rudder:4, slat:5, flap:6, jam:10 }, last_out=${JSON.stringify(out)};
-    const ownship={ aoa:${o.aoa ?? 4.2}, gauges:{ fuelRaw:${o.fuel ?? 9000}, externalRaw:0 } }, gross_weight=()=>${o.gross ?? 30000};`)
+    const ownship={ aoa:${o.aoa ?? 4.2}, gauges:{ fuelRaw:${o.fuel ?? 9000}, externalRaw:0 } }, gross_weight=()=>${o.gross ?? 30000}, reference=${JSON.stringify(o.reference ?? 'auto')};`)
 }
 describe('the FCS status display', () => {
   const words = [3, -4, 15, -15, 5, 1, 5, 0, 0, 0] // STAB 3 TED / 4 TEU, AIL 15 TED / 15 TEU, RUD 5 left, LEF 1 LED, TEF 5 TED
@@ -540,6 +553,13 @@ describe('the FCS status display', () => {
     const d = fcspage(words)
     for (const name of ['CAS', 'P', 'R', 'Y', 'N ACC', 'L ACC', 'STICK', 'PEDAL', 'AOA', 'BADSA', 'PROC', 'DEGD']) expect(texts(d)).toContain(name)
     expect(d.rects.filter(([rx, , w, h]) => rx >= 376 && rx < 456 && w === 20 && h === 18)).toHaveLength(44)
+  })
+
+  it('crosses PROC channels 1 and 3 with the ATT switch at STBY, the FCCs off the INS attitude, and nothing at AUTO or INS (2.13.4.8.9, #11)', () => {
+    const crossed = (d: Drawn) => [376, 396, 416, 436].map((left) => line(d, [left + 3, 405, left + 17, 417]) && line(d, [left + 17, 405, left + 3, 417]))
+    expect(crossed(fcspage(words, { reference: 'stby' }))).toEqual([true, false, true, false])
+    expect(crossed(fcspage(words, { reference: 'auto' }))).toEqual([false, false, false, false])
+    expect(crossed(fcspage(words, { reference: 'ins' }))).toEqual([false, false, false, false])
   })
 
   it('shows the FCS\'s own g limit, crossed out under 3,300 lb of fuel or over 44,000 lb gross', () => {
@@ -1228,7 +1248,7 @@ describe('the TAC and SUPT menus', () => {
   const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
   function run(menu: string, press = 0) {
-    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='';
+    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[];
       const ddi_state={ left:{ page:'hud', menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
       function cautions_draw(){} function ddi_show(d,p){ shown=p; }
       ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')}
