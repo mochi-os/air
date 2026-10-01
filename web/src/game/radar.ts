@@ -45,7 +45,7 @@ export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
 const BEAM = 0.0576 // one bar's height, rad (3.3°): the APG-65/73's beam
-const TILT = 1.047 // antenna elevation gimbal, rad (±60°)
+export const TILT = 1.047 // antenna elevation gimbal, rad (±60°)
 const FRAME = 2.5 // s: the longest frame TWS scans, so each trackfile is looked at least this often
 // The EW pieces (#31): a jammer outside burnthrough or a target inside the
 // clutter notch starves the tracker, so the STT goes to MEMORY and breaks if
@@ -187,7 +187,7 @@ export class Radar {
   tracks: Track[] = []
   ls: number | string | null = null // launch & steering trackfile (TWS)
   stt: number | string | null = null // the hard lock
-  acm: 'bst' | 'vacq' = 'bst' // armed ACM condition, used by the acquire flow
+  acm: 'bst' | 'vacq' | 'wacq' = 'bst' // armed ACM condition, used by the acquire flow
   auto = false // the ACM condition is commanded: the radar runs the cone itself and locks the first target in it, until deselected
   memory = 0 // seconds the STT has coasted without real data (0 = tracking); MEM shows past zero
   strobes: number[] = [] // azimuths of jamming emitters this step (#31): bearing-only spokes, range unknown

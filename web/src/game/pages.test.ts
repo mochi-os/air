@@ -215,7 +215,7 @@ function repeat(o: Repeat = {}): Shown {
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
   const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
   return new Function('THREE', 'ownship', `const D2R=Math.PI/180, HH=900, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
-    const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
+    const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
     const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
@@ -1073,7 +1073,7 @@ describe('the UFC pushbuttons', () => {
     expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
-    expect(source).toMatch(/if\(ch===key_of\("atc"\)\) pit_press\("atc",0\);/)
+    expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=sim_time; pit_press\("atc",0\); \}/)
     expect(source).toMatch(/case "atc": if\(atc_on\)\{ atc_on=false; atc_flash=-Infinity; \} else \{ const mode=atc_engage\(\); if\(mode\)\{ atc_on=true;/)
     expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
     expect(source).toMatch(/ufc\.func=""; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true; Object\.assign\(radios,radios_tuned\(\)\); emcon_set\(false\);/)
@@ -1247,16 +1247,22 @@ describe('the DDI view', () => {
 describe('the TAC and SUPT menus', () => {
   const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
-  function run(menu: string, press = 0) {
-    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[];
+  function run(menu: string, press = 0, designator = 'center') {
+    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
       const ddi_state={ left:{ page:'hud', menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
       function cautions_draw(){} function ddi_show(d,p){ shown=p; }
-      ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')}
-      const text=[], rects=[];
-      const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:()=>true });
+      ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')} ${lift('diamond')}
+      const text=[], rects=[], moves=[];
+      const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); if(k==='moveTo'||k==='lineTo') return (px,py)=>moves.push([px,py]); return ()=>{}; }, set:()=>true });
       if(${press}) ddi_press('left',${press}); else ddi_render(x,512,'left');
-      return { text, rects, shown };`)() as { text: [string, number, number][]; rects: [number, number, number, number][]; shown: string }
+      return { text, rects, shown, moves };`)() as { text: [string, number, number][]; rects: [number, number, number, number][]; shown: string; moves: [number, number][] }
   }
+  // The TDC assignment diamond (#27, #32): the upper right corner of the display
+  // the sensor control switch gave the TDC, and no other.
+  it('draws the TDC diamond in the upper right corner of the display that has the TDC', () => {
+    expect(run('tac', 0, 'left').moves).toEqual([[476, 30], [488, 42], [476, 54], [464, 42]])
+    expect(run('tac', 0, 'right').moves).toEqual([])
+  })
   it('puts each TAC option at its pushbutton', () => {
     const d = run('tac')
     expect(d.text.filter((t) => t[0] !== 'TAC')).toEqual([['STORES', 10, 96], ['RDR ATTK', 10, 176], ['HUD', 10, 256], ['SA', 502, 256], ['EW', 336, 482], ['MENU', 256, 482]])

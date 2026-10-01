@@ -37,6 +37,15 @@ type Rig = {
   rdrPress(pb: number): boolean
   events(): string[]
   clock(t: number): void
+  sensor(way: string): void
+  slew(x: number, y: number, dt: number): void
+  tdc(): void
+  acm(): void
+  cursor: { azimuth: number; range: number }
+  state(): { designator: string; master: string }
+  set(designator: string, master: string): void
+  show(display: string, page: string): void
+  levers: Record<string, { armed: boolean; rest?: number }>
 }
 
 // track is a minimal TWS trackfile straight ahead of the ownship at `range`
@@ -75,6 +84,14 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
     lift('rdr_y'),
     lift('rdr_press'),
     lift('rdr_face'),
+    lift('tdc_designate'),
+    lift('antenna_step'),
+    lift('tdc_radar'),
+    lift('tdc_press'),
+    lift('tdc_slew'),
+    lift('sensor'),
+    lift('aacq'),
+    lift('acm_press'),
   ].join('\n')
   const run = new Function(
     'Radar',
@@ -91,6 +108,9 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
      let sim_time=0;
      const radar_cursor={ azimuth:0, range:0 };
      const ownship={ pos:{x:0,y:0,z:0}, fwd:{x:0,y:0,z:-1}, up:{x:0,y:1,z:0}, right:{x:1,y:0,z:0}, gauges:{heading:0} };
+     const pad_levers={}, hotas={ tdc:{ x:0, y:0, at:-Infinity } };
+     const ddi_state={ left:{ page:'sms', menu:'' }, right:{ page:'rdr', menu:'' }, center:{ page:'sa', menu:'' } };
+     let designator='right', master='120c', ddi_dirty=false;
      const contacts=()=>contactList;
      ${code}
      return { RADAR, press:acquire_press, undesignate:undesignate_press,
@@ -98,7 +118,9 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
        rdrClick:(azimuth,range)=>rdr_face(rdr_x(azimuth,RADAR.half()),rdr_y(range,RADAR.scale*NM)),
        rdrX:(azimuth)=>rdr_x(azimuth,RADAR.half()),
        rdrPress:(pb)=>rdr_press(pb),
-       events:()=>radar_events, clock:(t)=>{ sim_time=t; } };`
+       events:()=>radar_events, clock:(t)=>{ sim_time=t; },
+       sensor, slew:tdc_slew, tdc:tdc_press, acm:acm_press, cursor:radar_cursor,
+       levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; } };`
   )
   return run(Radar, geometry, pick, contacts, BARS) as Rig
 }
@@ -661,5 +683,149 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
     z.bandit.group.visible = false
     expect(z.launch_zone()).toBeNull()
     expect(z.heat_zone()).toBeNull()
+  })
+})
+
+// The stick's sensor control switch (#27, NATOPS 2.8.2.2.2) and the throttle's
+// TDC (#32), against the real Radar: in BVR the switch hands the TDC between the
+// displays and commands ACM forward; toward the display that already has the TDC
+// and the attack format it commands AACQ; in ACM it picks BST, VACQ and WACQ,
+// and right returns to search.
+describe('the sensor control switch and the TDC', () => {
+  it('in BVR gives the TDC to the display it points at, aft to the AMPCD, and commands ACM in boresight forward', () => {
+    const r = rig()
+    r.set('center', '120c')
+    r.sensor('left')
+    expect(r.state().designator).toBe('left')
+    r.sensor('aft')
+    expect(r.state().designator).toBe('center')
+    r.sensor('right')
+    expect(r.state().designator).toBe('right')
+    expect(r.RADAR.auto).toBe(false)
+    r.sensor('forward')
+    expect([r.RADAR.auto, r.RADAR.acm]).toEqual([true, 'bst'])
+  })
+
+  it('in ACM selects BST, VACQ and WACQ, and returns to search on the right, the TDC staying where it is', () => {
+    const r = rig()
+    r.RADAR.auto = true
+    r.sensor('aft')
+    expect(r.RADAR.acm).toBe('vacq')
+    r.sensor('left')
+    expect(r.RADAR.acm).toBe('wacq')
+    r.sensor('forward')
+    expect(r.RADAR.acm).toBe('bst')
+    r.sensor('right')
+    expect(r.RADAR.auto).toBe(false)
+    expect(r.state().designator).toBe('right')
+  })
+
+  it('in NAV only assigns the TDC: no ACM forward, no AACQ', () => {
+    const r = rig()
+    r.set('right', 'nav')
+    r.RADAR.mode = 'tws'
+    r.RADAR.tracks = [track('bandit', 8000)]
+    r.sensor('forward')
+    expect(r.RADAR.auto).toBe(false)
+    r.sensor('right')
+    expect(r.RADAR.stt).toBeNull()
+  })
+
+  it('commands AACQ toward the display that has the TDC and the attack format: the target under the cursor, else the nearest', () => {
+    const under = rig()
+    under.RADAR.mode = 'tws'
+    under.RADAR.tracks = [track('near', 8000), track('far', 20000)]
+    under.cursor.azimuth = 0
+    under.cursor.range = 20000
+    under.clock(4)
+    under.sensor('right')
+    expect([under.RADAR.stt, under.RADAR.ls]).toEqual(['far', 'far'])
+    expect(under.events()).toEqual(['4.0|acquire|aacq'])
+    const nearest = rig()
+    nearest.RADAR.mode = 'tws'
+    nearest.RADAR.tracks = [track('far', 20000), track('near', 8000)]
+    nearest.cursor.azimuth = 0.4
+    nearest.cursor.range = 60000
+    nearest.sensor('right')
+    expect(nearest.RADAR.stt).toBe('near')
+  })
+
+  it('gives AACQ nothing to do away from the attack format, or silent', () => {
+    const away = rig()
+    away.RADAR.mode = 'tws'
+    away.RADAR.tracks = [track('bandit', 8000)]
+    away.show('right', 'fuel')
+    away.sensor('right')
+    expect(away.RADAR.stt).toBeNull()
+    const silent = rig()
+    silent.RADAR.mode = 'tws'
+    silent.RADAR.tracks = [track('bandit', 8000)]
+    silent.RADAR.sil = true
+    silent.sensor('right')
+    expect(silent.RADAR.stt).toBeNull()
+  })
+
+  it('acquires in WACQ 30° either side of the nose and 10° about the horizon, to 10 nm', () => {
+    const at = (bearing: number, elevation: number, range: number) => {
+      const b = bearing * Math.PI / 180, e = elevation * Math.PI / 180
+      return { id: 'bandit', x: Math.sin(b) * Math.cos(e) * range, y: Math.sin(e) * range, z: -Math.cos(b) * Math.cos(e) * range }
+    }
+    const locks = (bearing: number, elevation: number, range = 9000) => {
+      const r = rig([at(bearing, elevation, range)])
+      r.RADAR.mode = 'rws'
+      r.RADAR.auto = true
+      r.RADAR.acm = 'wacq'
+      r.press()
+      return r.RADAR.stt
+    }
+    expect(locks(20, 0)).toBe('bandit')
+    expect(locks(-28, 8)).toBe('bandit')
+    expect(locks(35, 0)).toBeNull()
+    expect(locks(0, 12)).toBeNull()
+    expect(locks(0, 0, 19000)).toBeNull()
+  })
+
+  it('steps the ACM legend BST, VACQ, WACQ and back to search', () => {
+    const r = rig()
+    const seen: string[] = []
+    for (let i = 0; i < 4; i++) { r.acm(); seen.push(r.RADAR.auto ? r.RADAR.acm : 'off') }
+    expect(seen).toEqual(['bst', 'vacq', 'wacq', 'off'])
+  })
+
+  it('slews the cursor with the TDC on the attack format, a full deflection crossing the scan in two seconds, and nothing elsewhere', () => {
+    const r = rig()
+    const half = r.RADAR.half(), scale = r.RADAR.scale * 1852
+    r.cursor.azimuth = 0
+    r.cursor.range = scale / 4
+    r.slew(1, 0, 0.5)
+    expect(r.cursor.azimuth).toBeCloseTo(half / 2)
+    r.slew(0, 1, 1)
+    expect(r.cursor.range).toBeCloseTo(scale * 3 / 4)
+    r.slew(1, 1, 10)
+    expect([r.cursor.azimuth, r.cursor.range]).toEqual([half, scale]) // held at the format's edges
+    r.set('left', '120c')
+    r.slew(-1, -1, 1)
+    expect([r.cursor.azimuth, r.cursor.range]).toEqual([half, scale])
+  })
+
+  it('designates under the cursor when the TDC is pressed on the attack format', () => {
+    const r = rig()
+    r.RADAR.mode = 'tws'
+    r.RADAR.tracks = [track('bandit', 9000)]
+    r.cursor.azimuth = 0
+    r.cursor.range = 9000
+    r.tdc()
+    expect(r.RADAR.ls).toBe('bandit')
+    r.set('left', '120c')
+    r.tdc()
+    expect(r.RADAR.stt).toBeNull() // the TDC on the stores page: nothing to designate
+  })
+
+  it('takes the antenna back from a wheel bound on the stick when the keys or the EL bezel step it', () => {
+    const r = rig()
+    r.levers.antenna = { armed: true, rest: 0.5 }
+    r.rdrPress(11)
+    expect(r.levers.antenna.armed).toBe(false)
+    expect(r.RADAR.elevation).toBeCloseTo(5 * Math.PI / 180)
   })
 })

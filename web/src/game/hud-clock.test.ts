@@ -117,9 +117,9 @@ describe('the HUD timer', () => {
 // without a TACAN range - the set off, or in RCV or under EMCON (24.4.2, 2.13.5.2).
 describe('the lower-right data block', () => {
   const data = /\n\t\/\/ ---- data blocks: TCN slant range[\s\S]*?(?=\n\t\{ \/\/ The selected weapon and its count)/.exec(source)?.[0] ?? ''
-  const block = (tacan = '{}', emcon = false) => new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
-      const atc_on=false, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0;
-      const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 } }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
+  const block = (tacan = '{}', emcon = false, wheels = { steering: -1, grounded: false, atc: false }) => new Function(`const text=[]; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
+      const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0, steering=${wheels.steering};
+      const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 }, grounded:${wheels.grounded} }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
       const radios={ tacan:{ on:true, channel:74, band:'X', mode:'tr', air:false, ...${tacan} } }, emcon=${emcon};
       ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
       const marshal={ push:400, commenced:false }, clock_text=(s)=>String(s);
@@ -129,6 +129,17 @@ describe('the lower-right data block', () => {
     expect(data).not.toBe('')
     expect(block()).toEqual(['10.0 NIM'])
     expect(data).toMatch(/const station=tacan\(\), slant=station&&station\.slant!=null\?station\.slant\/1852:null;/) // the HSI's TACAN fix
+  })
+
+  // NWS and NWS HI share ATC's place above the distance display while nosewheel
+  // steering is engaged (NATOPS 2.10.2, 2.13.4.8.15, #36).
+  it('shows NWS or NWS HI above the distance display while steering is engaged, ATC taking the place first', () => {
+    const shown = (steering: number, grounded: boolean, atc = false) => block('{ on:false }', false, { steering, grounded, atc })
+    expect(shown(0, true)).toEqual(['NWS'])
+    expect(shown(1, true)).toEqual(['NWS HI'])
+    expect(shown(-1, true)).toEqual([])
+    expect(shown(0, false)).toEqual([])
+    expect(shown(0, true, true)).toEqual(['ATC'])
   })
 
   it('reads nothing without a TACAN range', () => {

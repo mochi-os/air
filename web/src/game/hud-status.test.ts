@@ -20,7 +20,7 @@ const stackCode = /\n\t\{ const rows=\[\]; {3}\/\/ bottom of the stack first\n[\
 const cautionCode = /\n\tif\(fold_handle!=="lock"\) push\("WING UNLK"\);[\s\S]*?push\("PROBE UNLK"\);/.exec(source)?.[0] ?? ''
 
 interface Jet { hook?: number; gear?: number; speedbrake?: number; fold?: number; foldTarget?: number; canopy?: number; canopyTarget?: number; probe?: number; probeTarget?: number; gauges?: { rpmL: number; rpmR: number } }
-interface World { jet?: Jet; handle?: string; parking?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number; authentic?: boolean }
+interface World { jet?: Jet; handle?: string; parking?: boolean; gone?: boolean; dump?: boolean; secured?: [boolean, boolean]; sil?: boolean; acm?: string | null; jammer?: 'off' | 'armed' | 'loud'; declutter?: number; authentic?: boolean }
 
 // The rows the stack draws for a world, as [colour, text] with GR/AM as names.
 function stack(world: World): string[] {
@@ -37,7 +37,7 @@ function stack(world: World): string[] {
 // The configuration cautions raised for a jet.
 function cautions(world: World): string[] {
   if (!cautionCode) throw new Error('configuration cautions not found in engine.ts')
-  const run = new Function('w', `const ownship={...w.jet}, parking=!!w.parking, fold_handle=w.handle||"lock", rows=[]; const push=k=>rows.push(k);
+  const run = new Function('w', `const ownship={...w.jet}, parking=!!w.parking, fold_handle=w.handle||"lock", canopy_gone=!!w.gone, rows=[]; const push=k=>rows.push(k);
     ${cautionCode}
     return rows;`) as (w: World) => string[]
   return run(world)
@@ -92,6 +92,7 @@ describe('wing fold and the parking brake follow their handles', () => {
     expect(cautions({ jet: { canopyTarget: 1, canopy: 0 } })).toContain('CANOPY')
     expect(cautions({ jet: { canopyTarget: 0, canopy: 0.3 } })).toContain('CANOPY')
     expect(cautions({ jet: { canopyTarget: 0, canopy: 0 } })).not.toContain('CANOPY')
+    expect(cautions({ gone: true, jet: { canopyTarget: 0, canopy: 0 } })).toContain('CANOPY') // jettisoned (#113): never down and locked again
     expect(cautions({ jet: { probeTarget: 1, probe: 1 } })).not.toContain('PROBE UNLK') // extended normally: no light
     expect(cautions({ jet: { probeTarget: 0, probe: 0.5 } })).toContain('PROBE UNLK')
     expect(cautions({ jet: { probeTarget: 0, probe: 0 } })).not.toContain('PROBE UNLK')
@@ -108,6 +109,7 @@ describe('switch states sit on the status stack', () => {
     expect(stack({ jammer: 'loud' })).toContain('AM:XMIT')
     expect(stack({ acm: 'bst' })).toContain('GR:ACM BST')
     expect(stack({ acm: 'vacq' })).toContain('GR:ACM VACQ')
+    expect(stack({ acm: 'wacq' })).toContain('GR:ACM WACQ')
     expect(stack({ declutter: 2 })).toContain('GR:REJ 2')
     expect(stack({})).toEqual([]) // a clean jet in its default switch positions shows nothing
   })

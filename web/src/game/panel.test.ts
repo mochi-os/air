@@ -320,16 +320,32 @@ describe('the ECS and the fire and bleed air test (#14, #17, #22)', () => {
 })
 
 // The caption lines cautions_update adds for the panel systems, run against stand-ins.
-function captions(c: { batt?: boolean; left?: boolean; right?: boolean; mech?: boolean }): string[] {
-  const lines = /\n\tif\(battery_switch\(\)\) captions\.push\("BATT SW"\);[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+function captions(c: { batt?: boolean; left?: boolean; right?: boolean; mech?: boolean; seat?: boolean }): string[] {
+  const lines = /\n\tif\(battery_switch\(\)\) captions\.push\("BATT SW"\);[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!lines) throw new Error('panel captions not found in engine.ts')
-  return new Function('c', `const captions=[], battery_switch=()=>!!c.batt, bleed_open=(side)=>side===0?!c.left:!c.right, electrics={ mech:!!c.mech }; ${lines} return captions;`)(c) as string[]
+  return new Function('c', `const captions=[], battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, bleed_open=(side)=>side===0?!c.left:!c.right, electrics={ mech:!!c.mech }; ${lines} return captions;`)(c) as string[]
+}
+// check_seat: CK SEAT's condition (2.15.3.5.1, #112) - the right throttle at MIL or above,
+// weight on the wheels and the seat not armed.
+function seat(c: { armed?: boolean; grounded?: boolean; throttle?: number; secured?: boolean }): boolean {
+  return new Function('c', `let seat_armed=c.armed??true; const ownship={ grounded:c.grounded??true, throttle:c.throttle??1 }, secured=[false,!!c.secured];
+    ${lift('check_seat')}
+    return check_seat();`)(c) as boolean
 }
 describe('the panel systems\' cautions', () => {
   it('raise BATT SW, L BLD OFF, R BLD OFF and MECH ON on their conditions (2.5.3.3, 2.16.1.3, 2.8.2.10)', () => {
     expect(captions({})).toEqual([])
     expect(captions({ batt: true, left: true, right: true, mech: true })).toEqual(['BATT SW', 'L BLD OFF', 'R BLD OFF', 'MECH ON'])
     expect(captions({ right: true })).toEqual(['R BLD OFF'])
+    expect(captions({ seat: true })).toEqual(['CHECK SEAT'])
+  })
+
+  it('raises CHECK SEAT with the seat safe on the wheels at MIL, and not armed, airborne, below MIL or with the right engine secured', () => {
+    expect(seat({ armed: false })).toBe(true)
+    expect(seat({ armed: true })).toBe(false)
+    expect(seat({ armed: false, grounded: false })).toBe(false)
+    expect(seat({ armed: false, throttle: 0.9 })).toBe(false)
+    expect(seat({ armed: false, secured: true })).toBe(false)
   })
 })
 
@@ -344,7 +360,7 @@ describe('the FCS panel (#19)', () => {
     expect([s.rudder, s.reset]).toEqual([1, false]) // airborne: nothing
     s.ownship.grounded = true; s.press('trim.takeoff', 0)
     expect([s.rudder, s.reset]).toEqual([0, true])
-    expect(source).toMatch(/input\.yaw=THREE\.MathUtils\.clamp\(\(Math\.abs\(py\)>Math\.abs\(key_axes\.yaw\)\?py:key_axes\.yaw\)\+rudder_trim\*RUDDER_TRIM,-1,1\);/)
+    expect(source).toMatch(/hotas\.pedals=Math\.abs\(py\)>Math\.abs\(key_axes\.yaw\)\?py:key_axes\.yaw;\n\tinput\.yaw=THREE\.MathUtils\.clamp\(hotas\.pedals\+rudder_trim\*RUDDER_TRIM,-1,1\);/)
   })
 
   it('crosses PROC 1 and 3 with the ATT switch at STBY, up toward INS', () => {

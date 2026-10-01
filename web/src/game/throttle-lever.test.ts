@@ -90,6 +90,69 @@ describe('the throttle levers', () => {
   it('turn each lever through the whole clip from its own gauge', () => {
     expect(source).toMatch(/\{ name:"throttleA",[^\n]*gain:0\.698, gauge:"throttleL" \}/)
     expect(source).toMatch(/\{ name:"throttleB",[^\n]*gain:0\.698, gauge:"throttleR" \}/)
-    expect(source).toContain('throttleL:throttle_travel(), throttleR:throttle_travel(),')
+    expect(source).toContain('throttleL:secured[0]?THROTTLE_OFF:throttle_travel(), throttleR:secured[1]?THROTTLE_OFF:throttle_travel(),')
   })
 })
+
+// The afterburner lockout (NATOPS 2.1.1.7.2, #118): with weight on the wheels and
+// the launch bar extended or the hook down, the throttles stop at MIL. The keys
+// pass it with a second push straight after the first (the finger lifts raised),
+// a physical lever only at its forward stop (the 32 lb that forces it).
+describe('the afterburner lockout', () => {
+  const state = /\nconst lockout=\{[^\n]*\nfunction locked_out\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const keys = /\n\tconst advancing=keys\.has\(key_of\("throttle\.up"\)\);\n[\s\S]*?\n\tif\(advancing\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  type Throttle = { frame(held: boolean, dt: number): number; pull(): void }
+  const throttle = (w: { bar?: number; hook?: number; ground?: boolean }) => {
+    if (!state || !keys) throw new Error('the lockout not found in engine.ts')
+    return new Function('w', `const keys=new Set(), key_of=(a)=>a, ownship={ throttle:1, burner:0, bar:w.bar??0, hook:w.hook??0 }; let sim_time=0;
+      const on_ground=()=>w.ground??true; ${state}
+      return { frame(held,dt){ if(held) keys.add("throttle.up"); else keys.delete("throttle.up"); sim_time+=dt; ${keys} return ownship.burner; }, pull(){ ownship.burner=0; } };`)(w) as Throttle
+  }
+  const hold = (t: Throttle, seconds: number, held = true) => { let b = 0; for (let i = 0; i < seconds * 10; i++) b = t.frame(held, 0.1); return b }
+
+  it('lets the keys through MIL with nothing extended, and in the air whatever is down', () => {
+    expect(hold(throttle({}), 1)).toBeGreaterThan(0.5)
+    expect(hold(throttle({ hook: 1, ground: false }), 1)).toBeGreaterThan(0.5)
+  })
+
+  it('holds the keys at MIL with the launch bar or the hook down until a second push straight after the first', () => {
+    for (const w of [{ bar: 1 }, { hook: 1 }]) {
+      const t = throttle(w)
+      expect(hold(t, 1), JSON.stringify(w)).toBe(0)
+      hold(t, 0.3, false)
+      expect(hold(t, 1), JSON.stringify(w)).toBeGreaterThan(0.5) // pushed again within half a second: through the detent
+      const slow = throttle(w)
+      hold(slow, 1); hold(slow, 0.8, false)
+      expect(hold(slow, 1), JSON.stringify(w)).toBe(0) // too late: the lifts dropped back
+    }
+  })
+
+  it('drops the finger lifts back once the levers come back to MIL', () => {
+    const t = throttle({ bar: 1 })
+    hold(t, 1); hold(t, 0.3, false)
+    expect(hold(t, 1)).toBeGreaterThan(0.5)
+    t.pull(); hold(t, 1, false)
+    expect(hold(t, 1)).toBe(0)
+  })
+
+  it('takes a physical lever into the burner range only at its forward stop while the lockout is out', () => {
+    expect(source).toMatch(/ownship\.burner=locked_out\(\)&&lever<0\.99\?0:THREE\.MathUtils\.clamp\(\(lever-0\.75\)\/0\.25,0,1\);/)
+    expect(source).toMatch(/ownship\.burner=locked_out\(\)&&power<0\.99\?0:THREE\.MathUtils\.clamp\(\(power-0\.75\)\/0\.25,0,1\);/)
+    const out = (w: { bar?: number; burner?: number; ground?: boolean }) => new Function('w', `const ownship={ bar:w.bar??0, hook:0, burner:w.burner??0 }, on_ground=()=>w.ground??true; ${state} return locked_out();`)(w) as boolean
+    expect(out({ bar: 1 })).toBe(true)
+    expect(out({ bar: 1, burner: 0.2 })).toBe(false) // past the detent there is nothing to hold
+    expect(out({ bar: 1, ground: false })).toBe(false)
+    expect(out({})).toBe(false)
+  })
+})
+
+// A secured engine's lever goes over its finger lift to OFF, 4° aft of IDLE
+// (NATOPS 2.1.1.7.2, #34): the gauge the lever's rig entry turns it by.
+describe('the throttle at OFF', () => {
+  it('stands a secured engine\'s lever aft of IDLE', () => {
+    const off = Number(/\nconst THROTTLE_OFF=(-?[\d.]+);/.exec(source)?.[1])
+    expect(off).toBeCloseTo(-0.1)
+    expect(off * 40).toBeCloseTo(-4) // degrees of the 40° IDLE-to-MAX clip
+  })
+})
+

@@ -137,17 +137,17 @@ describe('the hook bypass wiring', () => {
 const cases = /\/\/ switches from state \(#18\) ---\n([\s\S]*?)\t\t\/\/ --- end switches/.exec(source)?.[1] ?? ''
 interface Craft { canopyTarget?: number; canopy?: number; foldTarget?: number; barTarget?: number; probeTarget?: number; lights?: boolean }
 interface Panel { position: number; formation: number; strobe: string; landing: boolean }
-interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel>; handle?: string }
+interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel>; handle?: string; cranked?: boolean }
 // The exterior lights panel's state and the STROBE switch's positions, aft to forward, as engine.ts declares them.
 const strobe = JSON.parse(/\nconst STROBE=(\[[^\n]*\]);/.exec(source)?.[1] ?? 'null') as string[] | null
 const panel = new Function(`return ${/\nconst exterior=(\{[^\n]*\});/.exec(source)?.[1] ?? 'null'};`)() as Panel | null
 // Runs one drive case for the aircraft st, which is the ownship unless foreign is set.
 function drive(name: string, st: Craft, own: Own = {}, foreign = false): number | undefined {
   if (!cases) throw new Error('switch drive cases not found in engine.ts')
-  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE', 'fold_handle',
+  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE', 'fold_handle', 'cranked',
     `let f; switch(name){ ${cases} } return f;`)
   const ownship = foreign ? {} : st
-  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe, own.handle ?? 'lock') as number | undefined
+  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe, own.handle ?? 'lock', !!own.cranked) as number | undefined
 }
 
 describe('the state-driven switches', () => {
@@ -175,6 +175,7 @@ describe('the state-driven switches', () => {
     expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0.3 })).toBe(0)
     expect(drive('canopyswitch', { canopyTarget: 0, canopy: 0 })).toBe(0.5)
     expect(drive('canopyswitch', {})).toBe(0.5)
+    expect(drive('canopyswitch', { canopyTarget: 1, canopy: 0.3 }, { cranked: true })).toBe(0.5) // the hand crank moves the canopy and leaves the switch at HOLD (#113)
     // the fold handle's clip turns SPREAD counterclockwise to FOLD, HOLD between; LOCK is SPREAD pushed in (foldpull)
     expect(['fold', 'hold', 'spread', 'lock'].map((handle) => drive('foldswitch', {}, { handle }))).toEqual([1, 0.5, 0, 0])
     expect(drive('foldswitch', { foldTarget: 1 }, { handle: 'lock' }, true)).toBe(1) // another jet's follows its wings
@@ -265,28 +266,30 @@ describe('the state-driven switches', () => {
 // pit_press is lifted from engine.ts and run against stand-ins for the state it works.
 const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
 const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const crankfn = /\nfunction canopy_crank\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 const foldfn = /\nconst FOLD_HANDLE=[^\n]*\nlet fold_handle="lock";\nfunction fold_set\(handle\)\{[^\n]*\n(?:\/\/[^\n]*\n)*function fold_turn\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
   hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean; bingo?: boolean; fuellow?: boolean
-  exterior?: Partial<Panel>; handle?: string; fold?: number
+  exterior?: Partial<Panel>; handle?: string; fold?: number; gone?: boolean; essential?: boolean; armed?: boolean; canopy?: number
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
   parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
-  exterior: Panel; clicked: number; handle: string; sari: number
+  exterior: Panel; clicked: number; handle: string; sari: number; gone: boolean; cranked: boolean; armed: boolean
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
   if (!pressfn || !foldfn) throw new Error('pit_press or the fold handle not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
-    const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
+    const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopy:state.canopy??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
+    let canopy_gone=!!state.gone, cranked=false, seat_armed=state.armed??true; const buses={ essential:state.essential??true };
     let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity;
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
-    ${pressfn} ${indexfn} ${foldfn}
+    ${pressfn} ${indexfn} ${foldfn} ${crankfn}
     fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle, sari:sari_clicked };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle, sari:sari_clicked, gone:canopy_gone, cranked, armed:seat_armed };`)
   return run(action, direction, state, panel, strobe) as Pressed
 }
 
@@ -337,6 +340,40 @@ describe('the clickable switches', () => {
     const airborne = press('canopy', 1, { squish: 0, speed: 200 })
     expect(airborne.ownship.canopyTarget).toBe(0)
     expect(airborne.notices).toEqual(['CANOPY LOCKED'])
+  })
+
+  // The canopy's emergency controls (#113, NATOPS 2.15.1.1.3, 2.15.1.2): the
+  // switch runs on the essential bus and drives nothing once the canopy is gone;
+  // the jettison handle fires only on a pull, a middle click or its key, never a
+  // left or right click; the hand crank steps it without power, clockwise (the
+  // right button) closed, on the ground only.
+  it('needs the essential bus for the canopy switch, and leaves it nothing to drive once the canopy is gone', () => {
+    expect(press('canopy', 1, { essential: false }).ownship.canopyTarget).toBe(0)
+    expect(press('canopy', 1, { gone: true }).ownship.canopyTarget).toBe(0)
+    expect(press('canopy', 1).cranked).toBe(false)
+  })
+
+  it('jettisons the canopy on a pull of its handle and on nothing else', () => {
+    expect(press('canopy.jettison', 0).gone).toBe(true)
+    expect(press('canopy.jettison', 1).gone).toBe(false)
+    expect(press('canopy.jettison', -1).gone).toBe(false)
+  })
+
+  it('cranks the canopy a step a click without power, clockwise closed, on the ground only', () => {
+    expect(crankfn).not.toBe('')
+    const open = press('canopy.crank', -1, { essential: false })
+    expect(open.ownship.canopyTarget).toBeCloseTo(0.05)
+    expect(open.cranked).toBe(true)
+    expect(press('canopy.crank', 1, { canopy: 0.5, canopyTarget: 0.5 }).ownship.canopyTarget).toBeCloseTo(0.45) // from where the canopy stands, clockwise toward closed
+    const airborne = press('canopy.crank', -1, { squish: 0, speed: 200 })
+    expect(airborne.ownship.canopyTarget).toBe(0)
+    expect(airborne.notices).toEqual(['CANOPY LOCKED'])
+    expect(press('canopy.crank', -1, { gone: true }).ownship.canopyTarget).toBe(0)
+  })
+
+  it('turns the seat between SAFE and ARMED on either button (#112, 2.15.3.5)', () => {
+    expect(press('seat', 1).armed).toBe(false)
+    expect(press('seat', -1, { armed: false }).armed).toBe(true)
   })
 
   it('work the wing fold handle through FOLD, HOLD, SPREAD and LOCK, a left click counterclockwise and a right clockwise and in', () => {

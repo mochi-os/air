@@ -675,7 +675,7 @@ describe('the radar altimeter height indicator', () => {
   })
 
   it('pushes the knob with the middle button on the face, and nothing but the push and pull controls with it', () => {
-    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\);\n\t\treturn; \}/)
+    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\); else if\(s&&s\.action==="canopy\.jettison"\) pit_press\("canopy\.jettison",0\);\n\t\treturn; \}/)
   })
 })
 

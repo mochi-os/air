@@ -45,6 +45,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   PROBE: msg`PROBE`,
   CANOPY: msg`CANOPY`,
   'CANOPY LOCKED': msg`CANOPY LOCKED`,
+  'SEAT SAFE': msg`SEAT SAFE`,
   WINGS: msg`WINGS`,
   'WINGS LOCKED': msg`WINGS LOCKED`,
   'SPREAD WINGS': msg`SPREAD WINGS`,

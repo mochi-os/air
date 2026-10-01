@@ -313,6 +313,7 @@ export interface InputSample {
   mechanical: boolean // MECH ON (#116): the client judges when all electrical power is gone; a sample without it keeps the computers
   wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
   centre: number
+  steering: number // nosewheel steering (#36): -1 off, 0 LOW, +1 HI; a sample without it keeps LOW
   gear: boolean
   hook: boolean
   override: boolean
@@ -321,6 +322,7 @@ export interface InputSample {
   starboard: boolean
   fire: boolean
   flare: boolean
+  chaff: boolean // the dispense switch forward (#31): chaff singles, an edge like the flare's; a sample without it drops none
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates

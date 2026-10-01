@@ -45,7 +45,8 @@ export const KEY_DEFAULTS: Record<string, string> = {
   atc: 'KeyP',
   lights: 'KeyL',
   'lights.test': 'Shift+KeyL', // the LT TEST switch, held (NATOPS 2.6.2.11)
-  flares: 'KeyC',
+  flares: 'KeyC', // the dispense switch aft (#31): the manual programme, a flare and a chaff bloom
+  chaff: 'KeyZ', // ...and forward: chaff singles
   eject: 'Shift+KeyE',
   map: 'KeyM',
   chat: 'Backquote',
@@ -54,6 +55,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   view: 'None',
   probe: 'KeyR',
   canopy: 'Shift+KeyC',
+  'canopy.jettison': 'None', // the canopy jettison handle (#113): unbound, as a middle click on it pulls it
   fold: 'Shift+KeyW',
   altitude: 'KeyK',
   reject: 'None',
@@ -70,7 +72,15 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'secure.port': 'Shift+KeyZ',
   'secure.starboard': 'Shift+KeyX',
   'radar.silent': 'Shift+KeyR',
-  'radar.acm': 'KeyV',
+  'sensor.forward': 'KeyV', // the stick's sensor control switch (#27): forward is ACM, its one keyboard default; aft, left and right assign the TDC, unbound like the TDC itself, whose slew the mouse is on the attack format
+  'sensor.aft': 'None',
+  'sensor.left': 'None',
+  'sensor.right': 'None',
+  'tdc.up': 'None', // the throttle designator controller (#32): for a stick or throttle with a hat to spare
+  'tdc.down': 'None',
+  'tdc.left': 'None',
+  'tdc.right': 'None',
+  'tdc.designate': 'None',
   'antenna.down': 'KeyT', // the throttle's antenna elevation wheel, a step each press
   'antenna.up': 'Shift+KeyT',
   jammer: 'KeyX', // XMIT on the key marked X (#31): arm the jammer; it radiates only while a threat paints us

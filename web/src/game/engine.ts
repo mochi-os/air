@@ -51,7 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS } from './radar'
+import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
@@ -1307,7 +1307,10 @@ const AIRCRAFT_MODELS={
 	      { name:"smoke",        track:/^Switch_Smoke_AN/i,                             drive:"travel" },
 	      { name:"spare",        track:/^Switch_Spare_AN/i,                             drive:"travel" },
 	      { name:"visors",       track:/^Switch_Visors_AN/i,                            drive:"travel" },
-	      { name:"pedaladjust",  track:/^node95_AN/i,                                   drive:"travel" },     // the rudder pedal adjust handle under the panel (FO-5 item 38)
+	      // the stick's trigger and the rudder pedals (#26, #35), from the hands and feet on them (hotas)
+	      { name:"trigger",      track:/^node95_AN/i,                                   drive:"trigger" },     // figure 2-13: the gun/missile trigger, its clip squeezing it 2.7 cm aft to the second detent
+	      { name:"pedalleft",    track:/^Rudder_Left_AN/i,                              drive:"pedals" },      // the authored pose is full left rudder: the left pedal's clip runs it 10.6 cm aft, the right's 12 cm forward
+	      { name:"pedalright",   track:/^Rudder_Right_AN/i,                             drive:"pedals" },
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 // The clickable rig entries (#19): each names the action a click on its node fires
 // through pit_press. The launch bar switch is listed with no action - its state is
@@ -1315,7 +1318,7 @@ const AIRCRAFT_MODELS={
 // TRAVEL: the controls that move and act on nothing (#16, #17, #22, #25), each with its number of
 // positions; a click throws one a position, right toward its clip's end and left back (travel_press).
 const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3, groundfour:3, antiice:3, pitot:2, avcool:2, cabintemp:5, windshield:3, windlever:2,
-	kymode:4, kyfill:5, kypower:3, kyvolume:5, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, pedaladjust:2, floodswitch:2 };
+	kymode:4, kyfill:5, kypower:3, kyvolume:5, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, floodswitch:2 };
 // TRAVEL_REST: where the pre-flight leaves one that does not rest where the model draws it - the three-position
 // switches centred (ENG CRANK OFF, EXT PWR NORM, GND PWR AUTO, the anti-ice switches OFF), and the two whose
 // clips run the other way (flip) at their drawn end
@@ -1333,7 +1336,64 @@ const PIT_SPOTS=[
 	{ action:"display.right.mode", at:[6.163,0.469,0.208] }, { action:"display.right.brt", at:[6.163,0.288,0.125] },
 	{ action:"display.center.brt", at:[6.163,0.211,0] }, { action:"display.center.mode", at:[6.163,0.205,-0.08] },
 	{ action:"knob.ifei", at:[6.211,0.049,-0.305] }, { action:"clock", at:[6.231,-0.069,0.077] }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
-	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] } ];   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
+	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
+	{ action:"canopy.jettison", at:[6.05,0.175,-0.313] },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
+	{ action:"canopy.crank", at:[5.46,0.28,-0.377] },   // the canopy hand crank under the left sill (2.15.1.1.3, FO-5 sheet 2 item 19), where the model draws only the wall
+	{ action:"seat", at:[5.6,0.22,0.25] } ];   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
+// THROTTLE_OFF: a lever's place at OFF, as a fraction of its 40° IDLE to MAX travel: the finger lift raised,
+// it comes 4° aft of IDLE (2.1.1.7.2, #34). The lifts themselves are merged into the grip meshes
+const THROTTLE_OFF=-0.1;
+// PEDALS: each pedal's clip fraction at full left rudder, centred and at full right rudder (#35), read
+// off the clips, which ease in and out: centred puts the two level, and full rudder moves each 4.3 cm,
+// inside the 4.9 cm the clips leave either way
+const PEDALS={ left:[0.143,0.473,0.768], right:[0.134,0.439,0.687] };
+// hotas: the hands and feet on the controls, as the pit draws them - the pedals' own deflection
+// before the rudder trim, which biases the flight computers and not the pedals (#19); the trigger
+// and paddle held; and when the dispense switch, the ATC button and the TDC were last worked
+const hotas={ pedals:0, trigger:false, paddle:false, dispense:{ way:0, at:-Infinity }, atc:-Infinity, tdc:{ x:0, y:0, at:-Infinity } };
+// GRIP: the grip switches the model draws as loose parts (#26, #30), each sliding a few millimetres
+// from its drawn place with the hand on it, given as [forward, up, right] in metres. Their levers'
+// frames are the group's turned: forward is local +z, up +y, right -x. The grips' other switches
+// are merged into the grip meshes and cannot move.
+const GRIP=[
+	{ node:"node95001_376", move:()=>[hotas.paddle?-0.008:0,0,0] },   // the paddle switch under the trigger (figure 2-13), drawn aft to the grip
+	{ node:"node100_581", move:()=>[0.0015*hotas.tdc.y,-0.0015*hotas.tdc.x,sim_time-hotas.tdc.at<0.25?-0.0015:0] },   // the TDC on the right grip's inboard face: thumb forward slews up and down slews right; pressed, it sinks in
+	{ node:"Push_Spoiler_584", move:()=>[0.004*speedbrake_switch(),0,0] },   // the speedbrake switch under it (2.8.4.8.1)
+	{ node:"node102_582", move:()=>[sim_time-hotas.dispense.at<0.25?0.003*hotas.dispense.way:0,0,0] },   // the dispense switch, top inboard (2.1.1.7.3): forward chaff, aft flares, sprung to the centre
+	{ node:"node98_577", move:()=>[sim_time-hotas.atc<0.25?-0.002:0,0,0] } ];   // the ATC button on the left grip's face (figure 2-2), pressed aft
+// speedbrake_switch: where the speedbrake switch sits (2.8.4.8.1) - aft (-1) while the brake
+// extends, its spring returning it to the centre (0), which holds the brake where it stands, and
+// forward (+1) once the brake is commanded in, its detent keeping it there
+function speedbrake_switch(){ const want=ownship.speedbrakeTarget??0;
+	if(want<0.02) return 1;
+	return want>(ownship.speedbrake??0)+0.02?-1:0; }
+// dispense works the dispense switch (2.1.1.7.3, ALE-47, #31): aft (-1) runs the manual programme,
+// a flare and a chaff bloom each from its own magazine while it lasts (#29, #43); forward (+1)
+// dispenses chaff singles. Weight on the wheels inhibits the dispenser - no pyrotechnics on deck.
+function dispense(way){ hotas.dispense.way=way; hotas.dispense.at=sim_time;
+	if((ownship.squish??0)>=0.1) return;
+	const ammunition=cheat("ammunition"), flare=way<0&&(ownship.flares>0||ammunition), chaff=ownship.chaff>0||ammunition;
+	if(flare){ dispense_flare(ownship); if(!ammunition) ownship.flares--; }
+	if(chaff){ dispense_chaff(ownship); if(!ammunition) ownship.chaff--; }
+	if(!flare&&!chaff) return;
+	if(way<0) flare_flag=true; else chaff_flag=true;
+	audio_flare(); }
+// The ejection seat (2.15.3, #112): the SAFE/ARMED handle forward on the right armrest pins the
+// sears at SAFE, so the ejection handle cannot fire the seat. A jet spawns ARMED, as it is flown.
+// The seat's height, the harness lock and the manual override handle are not modelled.
+let seat_armed=true;
+// check_seat: the CK SEAT caution (2.15.3.5.1): the right throttle at MIL or above, weight on the
+// wheels, and the seat not armed
+function check_seat(){ return !seat_armed&&!!ownship.grounded&&!secured[1]&&(ownship.throttle??0)>=1; }
+// The canopy's emergency system (2.15.1.2, #113): the jettison handle on the left sill, or the
+// ejection handle, fires the canopy away for the rest of the flight; the canopy switch then works
+// nothing and CANOPY stays on. The hand crank under the left sill drives it without power
+// (2.15.1.1.3), clockwise closed, a few turns of its seventy a click.
+let canopy_gone=false;
+let cranked=false;   // the canopy last moved by the crank, which leaves the canopy switch at HOLD
+function canopy_crank(d){ if(canopy_gone) return;
+	if(!((ownship.squish??0)>0.5&&ownship.speed<15)){ notice(translate("CANOPY LOCKED")); return; }
+	cranked=true; ownship.canopyTarget=THREE.MathUtils.clamp((ownship.canopy??0)-0.05*d,0,1); }
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -1341,7 +1401,7 @@ let model_active=false;   // the ownship's aircraft model is ready (loading gate
 const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
 const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
 const SLAT_PA=12*D2R;  // parked/gear-down LEF droop for aircraft without FCS data (NATOPS flaps HALF: LEF 12°) — the ownship's comes live from the alpha schedule
-const _NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
+const _NWS=75*D2R;      // nosewheel steering throw, NWS HI's 75° (Gear.Nose.Steer in the flight core); LOW's 16° is the core's Strut.limit
 // model_cut drops the triangles of one mesh lying wholly inside any of its boxes,
 // given in the GLB's own scene frame. The cockpit shell (Object_1372) is a
 // low-detail copy of the whole pit with one coarse texture. On the main panel it
@@ -1444,7 +1504,9 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			const objects=[...new Set(r.clip.tracks.map(t=>m.getObjectByName(t.name.split(".")[0])))].filter(Boolean), meshes=[];
 			for(const o of objects) o.traverse(c=>{ if(c.isMesh) meshes.push(c); });
 			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; });
-		g.userData.handle=["node_50_480","node_51_481"].map(n=>m.getObjectByName(n)).filter(Boolean); } }   // the gear handle's lever and grip, under its clip's node, for the emergency turn and pull (#128)
+		g.userData.handle=["node_50_480","node_51_481"].map(n=>m.getObjectByName(n)).filter(Boolean);   // the gear handle's lever and grip, under its clip's node, for the emergency turn and pull (#128)
+		g.userData.canopy=[]; m.traverse(o=>{ if(/^Canopy_ParentAction_AN_Parent/i.test(o.name)) for(const c of o.children) if(!/^Canopy_Arm/i.test(c.name)) g.userData.canopy.push(c); });   // the canopies the model carries (outside, cockpit and its low detail copy), less the actuator arm that stays with the jet, for the jettison (#113)
+		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 // model_of is the airframe the model load hung on the group: the pit's sightline
 // casts test only it. The group also carries effects - the gun's flash, plume
@@ -1889,8 +1951,8 @@ function lamps_update(out){
 	lamp_set(l.ai,RWR.contacts.length>0);   // every emitter the RWR hears is an aircraft radar; SAM, AAA and CW have no emitter class to fire on
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
-	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); BATT SW on its conditions (2.5.3.3); CK SEAT, APU ACC, FCS HOT and GEN TIE have no state
-	lamp_set(l.fuello,fuel_low()); lamp_set(l.battsw,battery_switch());
+	// and neither comes on in a dual failure (NATOPS 2.5.1.1); FCES lights with any FCS caution (2.8.4.5.1); BATT SW and CK SEAT on their conditions (2.5.3.3, 2.15.3.5.1); APU ACC, FCS HOT and GEN TIE have no state
+	lamp_set(l.fuello,fuel_low()); lamp_set(l.battsw,battery_switch()); lamp_set(l.ckseat,check_seat());
 	{ const [genL,genR]=generators(out); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
 		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&buses.essential&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // the emergency light is on the essential bus   // only spends when the pit is on screen, like the flood
@@ -2124,6 +2186,7 @@ function build_screens(g){
 // right, 16-20 across the bottom right to left; MENU is PB18 and alternates TAC
 // and SUPT. Legends are cockpit verbatim, English by the annunciator policy.
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
+let designator="right";   // the display the TDC works (#27, #32): the sensor control switch assigns it, and a diamond in that display's upper right corner says so
 // Master-mode display recall (#15): a display configuration per master-mode
 // family (A/A - gun and 9m share - and NAV), restored when the family is
 // selected; page selections record into the current family.
@@ -2200,7 +2263,13 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
 	if(display==="left") cautions_draw(x);
+	if(display===designator) diamond(x);
 	ddi_legend(x,18,"MENU",true,!!st.menu); }
+// diamond: the TDC assignment diamond in the upper right corner of the display that has the TDC,
+// a dot at its centre
+function diamond(x){ x.save(); x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2;
+	x.beginPath(); x.moveTo(476,30); x.lineTo(488,42); x.lineTo(476,54); x.lineTo(464,42); x.closePath(); x.stroke();
+	x.fillRect(474,40,4,4); x.restore(); }
 // The left DDI's caution area (#5, NATOPS 2.20.3.2.1): the slots cautions.ts
 // keeps, drawn over whatever the display shows, from the lower left, three
 // across, a line up per three, above the bottom pushbutton legends, at 150 %
@@ -2332,8 +2401,8 @@ function rdr_press(pb){
 	if(pb===8){ RADAR.sil=!RADAR.sil; return true; }
 	if(pb===9){ acm_press(); return true; }
 	if(pb===10){ const held=RADAR.stt!=null; if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); return true; }   // i18n-format-ok: ACMI event timestamp, not display text
-	if(pb===11){ RADAR.slew(1); return true; }   // EL↑/EL↓ (#30): sanitise high or low — the caret shows what the band covers at the cursor
-	if(pb===12){ RADAR.slew(-1); return true; }
+	if(pb===11){ antenna_step(1); return true; }   // EL↑/EL↓ (#30): sanitise high or low — the caret shows what the band covers at the cursor
+	if(pb===12){ antenna_step(-1); return true; }
 	if(pb===13){ RADAR.bars=(RADAR.bars+1)%RADAR_BARS.length; return true; }   // bars: more cover more altitude and take longer to scan
 	return false; }
 // rdr_face: a click on the scan face is the TDC — move the cursor there and
@@ -2342,13 +2411,16 @@ function rdr_press(pb){
 // target has moved on simply fails, which is the honest lesson about RWS.
 function rdr_face(lx,ly){ if(lx<60||lx>452||ly<54||ly>446) return false;
 	const half=RADAR.half(), scaleM=RADAR.scale*NM;
-	const azimuth=rdr_azimuth(lx,half);
-	const range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM;
-	radar_cursor.azimuth=azimuth; radar_cursor.range=range;
+	radar_cursor.azimuth=rdr_azimuth(lx,half); radar_cursor.range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM;
+	tdc_designate(); return true; }
+// tdc_designate: the TDC pressed with the cursor where it stands (#32) - a click on the face, or
+// the throttle's TDC on the format that has the TDC
+function tdc_designate(){
+	const half=RADAR.half(), scaleM=RADAR.scale*NM, azimuth=radar_cursor.azimuth, range=radar_cursor.range;
 	const own=radar_own();
-	// A click on the scan face lands on the same ladder Enter climbs (#33
-	// debrief), through the same radar_designate(): a first click on a
-	// trackfile claims it, a second click on that SAME one hardens it to STT -
+	// A TDC press lands on the same ladder Enter climbs (#33 debrief),
+	// through the same radar_designate(): a first press on a trackfile
+	// claims it, a second press on that SAME one hardens it to STT -
 	// designate()'s own rule (radar.ts). The state BEFORE the call is the only
 	// place that distinction still exists, so it is read here, not guessed
 	// from the result.
@@ -2357,12 +2429,11 @@ function rdr_face(lx,ly){ if(lx<60||lx>452||ly<54||ly>446) return false;
 		const id=radar_pick(candidates,azimuth,range,half,scaleM);
 		if(id!=null){ const escalate=RADAR.stt!=null||RADAR.ls===id;
 			if(radar_designate(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|${escalate?"stt":"ls"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
-		return true; }
+		return; }
 	const id=radar_pick(RADAR.bricks.map(b=>({ id:b.id, azimuth:b.azimuth, range:b.range })),azimuth,range,half,scaleM);
 	if(id!=null){ const c=contacts().find(k=>k.id===id);
 		if(c){ const g=radar_geometry(own,c,wrap_axis);
-			if(Math.abs(g.azimuth-azimuth)<0.09&&Math.abs(g.range-range)<scaleM*0.12){ if(radar_designate(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); } } }   // RWS: designate() goes straight to STT, no ladder to climb — i18n-format-ok: ACMI event timestamp, not display text
-	return true; }
+			if(Math.abs(g.azimuth-azimuth)<0.09&&Math.abs(g.range-range)<scaleM*0.12){ if(radar_designate(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); } } } }   // RWS: designate() goes straight to STT, no ladder to climb — i18n-format-ok: ACMI event timestamp, not display text
 function rdr_stick(x,px,py,t,own){   // velocity stick: the track's direction relative to own heading, screen-up = same way we point
 	const angle=Math.atan2(t.vx,-t.vz)-own.heading;
 	x.beginPath(); x.moveTo(px,py); x.lineTo(px+Math.sin(angle)*16,py-Math.cos(angle)*16); x.stroke(); }
@@ -2383,7 +2454,7 @@ function ddi_rdr(x){
 	ddi_legend(x,6,RADAR.mode==="rws"?"RWS":"TWS",true,false);
 	ddi_legend(x,7,Math.round(half/D2R)+"°",true,false);   // the EFFECTIVE width — TWS caps the ask
 	ddi_legend(x,8,"SIL",true,RADAR.sil);
-	ddi_legend(x,9,RADAR.acm==="bst"?"BST":"VACQ",true,RADAR.auto);   // boxed while the condition is commanded
+	ddi_legend(x,9,RADAR.acm.toUpperCase(),true,RADAR.auto);   // BST, VACQ or WACQ, boxed while the condition is commanded
 	ddi_legend(x,10,"UNDES",RADAR.stt!=null||RADAR.ls!=null,false);
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
 	ddi_legend(x,11,"EL↑",true,false); ddi_legend(x,12,"EL↓",true,false);
@@ -5510,7 +5581,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
 		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:ifei_zulu(ifei_view(),now),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
-		throttleL:throttle_travel(), throttleR:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX
+		throttleL:secured[0]?THROTTLE_OFF:throttle_travel(), throttleR:secured[1]?THROTTLE_OFF:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX; a secured engine's lever lifted over its detent to OFF (#34)
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
 		asi:dial(ASI_DIAL,cas), altitude,
 		vsi:dial(VSI_DIAL,fpm),
@@ -6056,9 +6127,13 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
 		if(ch===key_of("jammer")) jammer_armed=!jammer_armed;   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")) pit_press("radar",0);   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
-		if(ch===key_of("radar.acm")) acm_press();   // #30: the castle-switch stand-in
-		if(ch===key_of("antenna.up")) RADAR.slew(1);   // the throttle's antenna elevation wheel: point the bars where the target is
-		if(ch===key_of("antenna.down")) RADAR.slew(-1);
+		if(ch===key_of("sensor.forward")) sensor("forward");   // the stick's sensor control switch (#27)
+		if(ch===key_of("sensor.aft")) sensor("aft");
+		if(ch===key_of("sensor.left")) sensor("left");
+		if(ch===key_of("sensor.right")) sensor("right");
+		if(ch===key_of("tdc.designate")) tdc_press();   // the throttle's TDC pressed (#32)
+		if(ch===key_of("antenna.up")) antenna_step(1);   // the throttle's antenna elevation wheel: point the bars where the target is
+		if(ch===key_of("antenna.down")) antenna_step(-1);
 		if(ch===key_of("select")) set_master(next_master());   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN, skipping any weapon with nothing left to fire. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")) pit_press("altitude",0);   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")) pit_press("reject",0);     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
@@ -6067,12 +6142,13 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("probe")) pit_press("probe",0);   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")) pit_press("fold",0);   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
 		if(ch===key_of("canopy")) pit_press("canopy",0);   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
-		if(ch===key_of("flares") && (ownship.flares>0||ownship.chaff>0||cheat("ammunition")) && (ownship.squish??0)<0.1){   // the mixed programme (#29): one key, a flare AND a bloom, each from its own magazine while it lasts (#43)
-			if(ownship.flares>0||cheat("ammunition")){ dispense_flare(ownship); if(!cheat("ammunition")) ownship.flares--; }
-			if(ownship.chaff>0||cheat("ammunition")){ dispense_chaff(ownship); if(!cheat("ammunition")) ownship.chaff--; }
-			flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
+		if(ch===key_of("flares")) dispense(-1);   // the dispense switch aft (#31): the manual programme
+		if(ch===key_of("chaff")) dispense(1);    // ...and forward: chaff singles
 		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
-		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: one deliberate Shift+E chord — the zero-zero seat works everywhere. Moved off plain J (a pilot reaching for "jettison" must never punch out) and off a tap count (untypeable in the Keys tab)
+		if(ch===key_of("canopy.jettison")&&!playback) pit_press("canopy.jettison",0);   // the canopy jettison handle (#113), unbound by default: a middle click on it pulls it
+		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected && !seat_armed) notice(translate("SEAT SAFE"));   // the SAFE/ARMED handle at SAFE pins the sears (#112)
+		else if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){
+			canopy_gone=true;   // the ejection handle fires the canopy away first (2.15.1.2)   // ejection handle: one deliberate Shift+E chord — the zero-zero seat works everywhere. Moved off plain J (a pilot reaching for "jettison" must never punch out) and off a tap count (untypeable in the Keys tab)
 			ejected=true; audio_eject();
 			if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
 			crash_ownship(); }   // the red centre banner announces it — no notice-line duplicate
@@ -6119,7 +6195,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
-		if(ch===key_of("atc")) pit_press("atc",0);   // P: ATC (#202) — approach mode with the flaps down, cruise mode with them at AUTO (atc_engage); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
+		if(ch===key_of("atc")){ hotas.atc=sim_time; pit_press("atc",0); }   // P: ATC (#202) — approach mode with the flaps down, cruise mode with them at AUTO (atc_engage); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
@@ -6165,7 +6241,7 @@ function pit_click(e){
 	if(e.button===1){ const u=ownship.group.userData.radalt;   // the middle button pushes and pulls: the height indicator's knob (2.12.5.4.1), the T/O TRIM button in the RUD TRIM knob (#19) and the gear handle turned and pulled (#128)
 		if(playback) return;
 		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ pit_press("radalt.test",0); return; }
-		const s=pit_target(e); if(s&&s.name==="ruddertrim") pit_press("trim.takeoff",0); else if(s&&s.name==="gearlever") pit_press("gear.emergency",0);
+		const s=pit_target(e); if(s&&s.name==="ruddertrim") pit_press("trim.takeoff",0); else if(s&&s.name==="gearlever") pit_press("gear.emergency",0); else if(s&&s.action==="canopy.jettison") pit_press("canopy.jettison",0);
 		return; }
 	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
 		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
@@ -6221,7 +6297,8 @@ const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
 // control ignores the direction; the three-position ones step without wrapping.
 function pit_press(action,direction){ const d=direction||0;
 	switch(action){
-	case "canopy": if((ownship.squish??0)>0.5 && ownship.speed<15) ownship.canopyTarget=d>0?1:d<0?0:(ownship.canopyTarget??0)>0.5?0:1; else notice(translate("CANOPY LOCKED")); break;   // ground only, taxi speeds (NATOPS 2.15.1.1.1); up is OPEN, down is CLOSE
+	case "canopy": if(canopy_gone||!buses.essential) break;   // the canopy's actuator runs on the essential bus; gone, it has nothing to drive (#113)
+		if((ownship.squish??0)>0.5 && ownship.speed<15){ cranked=false; ownship.canopyTarget=d>0?1:d<0?0:(ownship.canopyTarget??0)>0.5?0:1; } else notice(translate("CANOPY LOCKED")); break;   // ground only, taxi speeds (NATOPS 2.15.1.1.1); up is OPEN, down is CLOSE
 	case "fold": if((ownship.squish??0)>0.5 && ownship.speed<15) fold_turn(d); else notice(translate("WINGS LOCKED")); break;   // counterclockwise to FOLD, clockwise to SPREAD (NATOPS 2.11.1)
 	case "brake.parking":   // the emergency/parking brake handle (2.10.3.3, 2.10.3.4): out to its detent is EMERG, out and turned PARK. A click steps it, out on the right button and in on the left; the key toggles PARK
 		if(d===0){ parking=!parking; pulled=false; }
@@ -6254,6 +6331,9 @@ function pit_press(action,direction){ const d=direction||0;
 	case "transfer.wing": transfer.wing=THREE.MathUtils.clamp(transfer.wing+(d<0?-1:1),-1,1); break;   // up toward ORIDE
 	case "transfer.centre": transfer.centre=THREE.MathUtils.clamp(transfer.centre+(d<0?-1:1),-1,1); break;
 	case "wing.inhibit": wing_inhibit=!wing_inhibit; break;
+	case "canopy.jettison": if(d===0) canopy_gone=true; break;   // pulled, by a middle click or its key: a left or right click only touches it (#113)
+	case "canopy.crank": canopy_crank(d||1); break;
+	case "seat": seat_armed=!seat_armed; break;   // the SAFE/ARMED handle, rotated up and forward to SAFE or aft and down to ARMED (2.15.3.5)
 	case "clock": clock_press(); break;
 	case "gear.emergency": if(!gear_emergency){ gear_emergency=true; brake_accumulator=Math.max(ACCUMULATOR.empty,brake_accumulator/(1+brake_accumulator/ACCUMULATOR.gas)); } break;   // the handle turned and pulled opens the emergency brake accumulator's valve too (2.10.1.6): one application
 	default:
@@ -6343,7 +6423,13 @@ function throttle_from_lever(){   // mission start: seed the throttle from the p
 	const lever=pad_levers.throttle||(pad_levers.throttle={ rest:undefined, armed:false });
 	lever.armed=true; lever.rest=value;
 	const power=1-THREE.MathUtils.clamp((value+1)/2,0,1);
-	ownship.throttle=Math.min(1,power/0.75); ownship.burner=THREE.MathUtils.clamp((power-0.75)/0.25,0,1); }
+	ownship.throttle=Math.min(1,power/0.75); ownship.burner=locked_out()&&power<0.99?0:THREE.MathUtils.clamp((power-0.75)/0.25,0,1); }
+// The afterburner lockout (2.1.1.7.2, #118): with weight on the wheels and the launch bar extended
+// or the hook down, the levers stop at MIL. The keys pass it with a second push straight after the
+// first, the finger lifts raised; a lever only at its forward stop, the 32 lb that forces it. Past
+// the detent the lockout has nothing to hold, so it is judged with the burner out.
+const lockout={ held:false, released:-Infinity, lifted:false };
+function locked_out(){ return on_ground()&&((ownship.bar??0)>0.5||(ownship.hook??0)>0.5)&&(ownship.burner??0)<=0; }
 function pad_lever(pad,entry,name,current){   // "N"/"-N" axis entry -> travel fraction 0..1 (0 = the raw LOW end after the reverse negation), or null when unbound or not holding its control
 	const text=String(entry??""); if(text==="") return null;
 	const index=Math.abs(+text); if(!(pad.axes.length>index)) return null;
@@ -6384,7 +6470,8 @@ function pad_bindings(pad){   // resolved axis/button map for THIS stick: the me
 	return { axes:{ ...defaults.axes, ...(saved.axes||{}) },
 		buttons: saved.buttons&&Object.keys(saved.buttons).length?saved.buttons:defaults.buttons }; }
 const pad_looks={ up:false, down:false, left:false, right:false };
-const pad_trim={ x:0, y:0 };   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)
+const pad_trim={ x:0, y:0 };
+const pad_tdc={ x:0, y:0 };   // the TDC pair's level state (#32): x + right, y + forward   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)
 let pad_weapon="";   // the weapon-select hat's level state: "" centred, else the master it points at — positional select acts on the PRESS edge, so a held castle selects once   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
 let pad_fire=false;   // fire level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
 function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: the worn-pot centring/throw machinery is gone by decree — modern sticks read clean, and every margin only made dead travel
@@ -6423,6 +6510,25 @@ function brakes_step(pedals,dt){ const pump=hydraulic(), backup=pulled||parking,
 	else if(!pump&&!drawn&&brake_accumulator>ACCUMULATOR.empty){ drawn=true; brake_accumulator=Math.max(ACCUMULATOR.empty,brake_accumulator/(1+brake_accumulator/ACCUMULATOR.gas)); }
 	return demand&&(pump||drawn); }
 let reset_flag=false;   // one-shot trim reset, consumed once the core has stepped with it
+// Nosewheel steering (2.10.2, #36): off, where the nosewheel castors, LOW (±16°) or HI (±75°). With
+// the flight control computers running, a press of the NWS button engages LOW and holding it selects
+// HI; with the wing fold handle unlocked, a press from LOW latches HI. The paddle switch disengages
+// it until the button engages it again (#28). The launch bar extended disengages it, though the
+// button held still gives LOW. Power off the aircraft, MECH ON or weight off the nose gear disengage
+// it, and weight coming back onto the nose gear engages LOW. The button is the stick's undesignate
+// button, whose undesignate the mission computer takes as well.
+const NWS={ mode:"low", button:false, paddle:false, nose:false };
+let steering=0;   // the mode the core steers by: -1 off, 0 LOW, +1 HI
+function nose_loaded(){ const s=(ownship.group.userData.spin||[])[2]; return !!ownship.grounded&&(s?(s.depth??0)>0:true); }   // the nose strut carrying load, as the drawn oleo reads it off the core's contact point
+function nws_step(){
+	const button=held("radar.undesignate"), paddle=hotas.paddle, nose=nose_loaded(), powered=buses.essential&&!electrics.mech;
+	if(nose&&!NWS.nose) NWS.mode="low";
+	if(!nose||!powered) NWS.mode="off";
+	else { if(paddle&&!NWS.paddle) NWS.mode="off";
+		if(button&&!NWS.button) NWS.mode=NWS.mode==="off"?"low":NWS.mode==="low"&&fold_handle!=="lock"?"high":NWS.mode; }
+	NWS.button=button; NWS.paddle=paddle; NWS.nose=nose;
+	const mode=!nose||!powered?"off":(ownship.bar??0)>0.5?(button?"low":"off"):button?"high":NWS.mode;
+	steering=mode==="off"?-1:mode==="high"?1:0; }
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
 	if(keys.has(key_of("pitch.up"))) tp+=1;   // pull / nose up
@@ -6459,10 +6565,10 @@ function read_input(dt){
 		py=ax("yaw");
 		{ const p=(test_active||demonstration||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle",1-throttle_travel());   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
-				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
+				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=locked_out()&&lever<0.99?0:THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake",ownship.speedbrakeTarget??0);   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
-		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0;   // level states, re-read below every frame — pad_weapon is NOT among them: it is the castle's last position, kept across frames so a held castle selects on the press edge only
+		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0; pad_tdc.x=pad_tdc.y=0;   // level states, re-read below every frame — pad_weapon is NOT among them: it is the castle's last position, kept across frames so a held castle selects on the press edge only
 		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
 			if(z.endsWith("+")){ const zi=Math.abs(parseInt(z,10));   // "N+": half-axis PAIR wheel — each roll direction sweeps its own axis 0..-1 (thumbwheel style)
 				if(pad.axes.length>zi+1){ const back=Math.max(0,-pad.axes[zi]), fore=Math.max(0,-pad.axes[zi+1]);
@@ -6478,6 +6584,10 @@ function read_input(dt){
 				const want=hy<-0.5?"120c":hy>0.5?"9m":hx<-0.5?"gun":hx>0.5?"nav":"";
 				if(want&&want!==pad_weapon) select_master(want);   // the press edge selects once; a held castle does not re-select every frame
 				pad_weapon=want; } } }
+		{ const h=String(bind.axes.tdc??""); if(h!==""){ const hi=+h;   // the TDC pair (#32): a ministick slewing the cursor, HID y -1 forward
+			if(pad.axes.length>hi+1){ pad_tdc.x=pad_axis(pad,hi); pad_tdc.y=-pad_axis(pad,hi+1); } } }
+		{ const p=pad_lever(pad,bind.axes.antenna,"antenna",(RADAR.elevation/RADAR_TILT+1)/2);   // the antenna elevation wheel (#32): its travel is the gimbal's, taken over like a lever once moved
+			if(p!==null) RADAR.elevation=(p*2-1)*RADAR_TILT; }
 		{ const h=String(bind.axes.look??""); if(h!==""){ const hi=+h;   // the Look pair (HID: x -1 left +1 right, y -1 up +1 down; the 0.5 threshold covers analog ministicks and digital hats alike)
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
@@ -6501,12 +6611,16 @@ function read_input(dt){
 				if(bindText&&bindText!=="None"){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
-	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_weapon=""; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
+	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_weapon=""; pad_tdc.x=pad_tdc.y=0; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
-	input.yaw=THREE.MathUtils.clamp((Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw)+rudder_trim*RUDDER_TRIM,-1,1);   // the RUD TRIM knob's bias on the pedals (#19)
+	hotas.pedals=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
+	input.yaw=THREE.MathUtils.clamp(hotas.pedals+rudder_trim*RUDDER_TRIM,-1,1);   // the RUD TRIM knob's bias on the pedals (#19)
 	if(pad) scan_zoom(pad,pad_bindings(pad));
-	input.guns=(keys.has(key_of("fire"))||pad_fire)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
+	hotas.trigger=keys.has(key_of("fire"))||pad_fire; hotas.paddle=keys.has(key_of("override"));
+	nws_step();
+	tdc_slew((held("tdc.right")?1:0)-(held("tdc.left")?1:0)||pad_tdc.x,(held("tdc.up")?1:0)-(held("tdc.down")?1:0)||pad_tdc.y,dt);
+	input.guns=hotas.trigger&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
@@ -6520,7 +6634,12 @@ function read_input(dt){
 	}
 	const throttling=keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down"));
 	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
-	if(keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
+	const advancing=keys.has(key_of("throttle.up"));
+	if(advancing&&!lockout.held&&sim_time-lockout.released<0.5) lockout.lifted=true;   // a second push straight after the first: the finger lifts raised
+	if(!advancing&&lockout.held) lockout.released=sim_time;
+	lockout.held=advancing;
+	if(!advancing&&(ownship.burner??0)<=0) lockout.lifted=false;
+	if(advancing){ if(ownship.throttle>=1){ if(!locked_out()||lockout.lifted) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); } else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
 	// ATC (#202, NATOPS 2.1.2): approach mode holds on-speed alpha, cruise mode the
 	// true airspeed it engaged at. Either drops out on any manual throttle input (keys
 	// or an armed physical lever), on the FLAP switch moving between AUTO and HALF or
@@ -6803,7 +6922,7 @@ function cautions_update(){
 	// switch at RETRACT. A normally extended probe and the fuel dump switch have no light.
 	if(fold_handle!=="lock") push("WING UNLK");
 	{ const g=ownship.gauges||{}; if(parking&&(g.rpmL??0)>80&&(g.rpmR??0)>80) push("PARK BRK"); }
-	if((ownship.canopyTarget??0)>0.5||(ownship.canopy??0)>0.02) push("CANOPY");
+	if((ownship.canopyTarget??0)>0.5||(ownship.canopy??0)>0.02||canopy_gone) push("CANOPY");
 	if((ownship.probeTarget??0)<0.5&&(ownship.probe??0)>0.02) push("PROBE UNLK");   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
 	if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3) push(["NOSE GEAR","L GEAR","R GEAR"][leg],harm>0.7); }
 	if(core){ if(fcs_jammed(core)) push("FCS");
@@ -6822,6 +6941,7 @@ function cautions_update(){
 	if(genR&&!genL) captions.push("L GEN"); if(genL&&!genR) captions.push("R GEN");   // one generator off the line; neither shows in a dual failure (2.5.1.1)
 	if(brake_accumulator<=ACCUMULATOR.empty) captions.push("BRK ACCUM");   // the brake accumulator down to 1,750 psi, where it may be empty (2.10.3.3)
 	if(battery_switch()) captions.push("BATT SW");   // the battery switch to check (2.5.3.3, #21)
+	if(check_seat()) captions.push("CHECK SEAT");   // the seat not armed with power up on the wheels (2.15.3.5.1, #112)
 	if(!bleed_open(0)) captions.push("L BLD OFF"); if(!bleed_open(1)) captions.push("R BLD OFF");   // a primary bleed valve commanded closed: the knob, a fire test or no ac power (2.16.1, #22)
 	if(electrics.mech) captions.push("MECH ON");   // the stabilators on the mechanical link (2.8.2.10, #21)
 	{ const next=cautions_reconcile(caution_slots,captions.map(c=>[c,c,false])); if(next!==caution_slots){ caution_slots=next; ddi_dirty=true; } }   // the left DDI's slots follow the captions; a change redraws the display now
@@ -7410,6 +7530,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		slots:caution_slots.map(s=>s?s.key:null), lamp:caution_lamp,   // the left DDI's caution slots (#5) and the MASTER CAUTION latch
 		bypass:hook_bypass,   // the hook bypass switch (#7): carrier or field
 		antiskid,   // the ANTI SKID switch (#114)
+		hands:{ pedals:+hotas.pedals.toFixed(2), trigger:hotas.trigger, paddle:hotas.paddle, steering, nws:NWS.mode, nose:nose_loaded(), seat:seat_armed, canopy:canopy_gone, cranked, lifted:lockout.lifted, designator },   // G2: the hands and feet on the controls, nosewheel steering, the seat and canopy, the afterburner lockout and the TDC's display   // i18n-format-ok: dev probe numbers
 		panel:{ buses, battery:electrics.battery, generators:electrics.switches, cutoff:electrics.cutoff, charge:electrics.charge, mech:electrics.mech,   // G1: the panel systems' state
 			bleed:BLEED[ecs.bleed], valves:ecs.valves, through:ecs.through, fire:fire_testing(), reference, rudder:rudder_trim, transfer, inhibit:wing_inhibit, held:wing_held,
 			emergency:gear_emergency, handle:+emergency_travel.toFixed(2), knobs, displays, thrown, elapsed:+clock_elapsed().toFixed(1), symbology:symbology() },   // i18n-format-ok: dev probe numbers
@@ -7663,7 +7784,7 @@ function playback_own(pose,dt){
 	declutter=n("Declutter",declutter)|0;
 	own_burning=n("Burning",0)>0; own_leak=n("Leak",0);
 	ownship.throttle=lever; ownship.burner=heat; flap_select=n("Flaps",flap_select)|0; ownship.hookTarget=n("Hook",0); ownship.rounds=n("Rounds",ownship.rounds??0);
-	last_controls={ pitch:n("Stick",0), roll:n("Lateral",0), yaw:n("Pedal",0), override:n("Override",0)>0 }; input.yaw=last_controls.yaw;   // the hands: the cockpit's stick draws them, and the pedal steers the nosewheel
+	last_controls={ pitch:n("Stick",0), roll:n("Lateral",0), yaw:n("Pedal",0), override:n("Override",0)>0 }; input.yaw=last_controls.yaw; hotas.pedals=input.yaw; hotas.paddle=last_controls.override;   // the hands: the cockpit's stick draws them, and the pedal steers the nosewheel
 	playback_loadout(p);
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	shed_panels(ownship,o);
@@ -7966,7 +8087,7 @@ function fly_player(dt){
 		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
-		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), sequence:++control_sequence };   // the core kicks back while rounds leave
+		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
@@ -8299,7 +8420,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "hookbypass": f=(st===ownship&&hook_bypass==="field")?1:0; break;
 		case "antiskid": f=(st===ownship&&antiskid)?1:0; break;
 		// switches from state (#18) ---
-		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
+		case "canopyswitch": { const up=(st.canopyTarget??0)>0.5, at=st.canopy??0; f=st===ownship&&cranked?0.5:up&&at<0.98?1:!up&&at>0.02?0:0.5; break; }   // OPEN while the canopy rises (solenoid-held on the ground), CLOSE while it lowers (the pilot holds it; it springs back), HOLD otherwise
 		case "foldswitch": f=st===ownship?(fold_handle==="fold"?1:fold_handle==="hold"?0.5:0):(st.foldTarget??0)>0.5?1:0; break;
 		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
 		case "parkpull": f=(st===ownship&&(parking||pulled))?1:0; break;
@@ -8325,6 +8446,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "ruddertrim": f=0.5+0.146*rudder_trim; break;   // the knob's clip turns it 281°, centred on neutral: the trim's stops sit 60° either side, at the placard's L and R
 		case "wingtanks": f=0.5+0.5*transfer.wing; break; case "centretank": f=0.5+0.5*transfer.centre; break;
 		case "travel": f=travel_at(r.name)/(TRAVEL[r.name]-1); break;
+		case "trigger": f=st===ownship&&hotas.trigger?1:0; break;
+		case "pedals": { const p=r.name==="pedalleft"?PEDALS.left:PEDALS.right, d=st===ownship?hotas.pedals:0; f=p[1]+d*(d<0?p[1]-p[0]:p[2]-p[1]); break; }   // right rudder takes the left pedal aft and the right forward, both up their clips
 		case "lttest": f=(st===ownship&&lights_switch())?1:0; break;
 		case "flaplever": f=st===ownship?flap_select/2:(st.gear??1)<0.5?(st.grounded?0.5:1):0; break;   // the FLAP switch (NATOPS 2.8.2.2.1): AUTO, HALF, FULL as selected; other jets send no selection, so theirs follows the gear - AUTO up-and-away, HALF on deck, FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
@@ -8341,6 +8464,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		emergency_travel=THREE.MathUtils.clamp(emergency_travel+(gear_emergency?2:-2)*dt,0,1);
 		HANDLE_TURN.setFromAxisAngle(HANDLE.axis,-Math.min(1,emergency_travel*2)*Math.PI/2);
 		for(const o of g.userData.handle){ o.quaternion.copy(HANDLE_TURN); o.position.copy(HANDLE.centre).sub(HANDLE_AT.copy(HANDLE.centre).applyQuaternion(HANDLE_TURN)).addScaledVector(HANDLE.axis,Math.max(0,emergency_travel*2-1)*HANDLE.pull); } }
+	if(st===ownship&&g.userData.canopy) for(const c of g.userData.canopy) c.visible=!canopy_gone;
+	if(st===ownship&&g.userData.grip) for(const p of g.userData.grip){ const [forward,up,right]=p.move(); p.object.position.set(p.rest.x-right,p.rest.y+up,p.rest.z+forward); }   // the loose grip switches (GRIP)
 	if(g.userData.glow&&g.userData.glow.length){ const level=(st===ownship)?(ownship.lights?exterior.formation:0):(cfg.tod!=="day"?1:0);   // the formation strips: the ownship's on the FORMATION knob under the master switch (2.6.1.3); other jets' follow day and night
 		for(const mm of g.userData.glow){ const want=level*mm.userData.glowmax; if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
 	if(g.userData.burner&&g.userData.burner.length){   // nozzle glow: dark at idle, a dull ember approaching military power, alight with the ACHIEVED reheat stage (the core's ~0.5 s light/quench lag comes free) — no external plume by design
@@ -8430,8 +8555,11 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
 	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
-	if(st===ownship){ const pedal=THREE.MathUtils.clamp(input.yaw??0,-1,1), sp=st.speed||0;   // RAW pedal, like the flight controls: this was the last surviving cfg.sens read on the ownship   // nosewheel steering: mirror the core's authority blend (LOW 22.5° at taxi, HI 75° only near standstill), then slew the drawn wheel at an actuator-like rate — the keyboard pedal is bang-bang and an unslewed wheel snaps
-		const auth=(22.5+(75-22.5)*THREE.MathUtils.clamp(1-sp/2.5,0,1))*D2R;
+	if(st===ownship&&steering<0){ const sp=Math.max(st.speed||0,0.3), rate=(ownship.gauges||{}).yaw||0;   // steering off (#36): the nosewheel castors, trailing the path its leg travels 5.4 m ahead of the mains
+		const target=THREE.MathUtils.clamp(Math.atan2(rate*5.4,sp),-_NWS,_NWS)*(st.squish??0);
+		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-1.5*dt,1.5*dt); }
+	else if(st===ownship){ const pedal=THREE.MathUtils.clamp(input.yaw??0,-1,1), sp=st.speed||0;   // RAW pedal, like the flight controls: this was the last surviving cfg.sens read on the ownship   // nosewheel steering: mirror the core's authority blend (LOW 22.5° at taxi, HI 75° only near standstill), then slew the drawn wheel at an actuator-like rate — the keyboard pedal is bang-bang and an unslewed wheel snaps
+		const auth=steering>0?_NWS:16*D2R;   // the core's throw for the mode (#36): LOW ±16°, HI the leg's 75°
 		const target=pedal*auth*THREE.MathUtils.clamp(1-sp/60,0.1,1)*(st.squish??0);
 		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt); }   // ~23°/s — hydraulic, not snappy
 	{ const rh=(st===ownship)?(ownship.reheats||[0,0]):(cfg.afterburner?burners(st):[0,0]);   // flame discs churn with each engine's reheat: ~0.5 rev/s at min zone to ~3 rev/s at max. Another jet's are its own burner's, not the setting's (which lit them for the whole flight); the setting still puts them out
@@ -8546,6 +8674,7 @@ function reset_ownship(){
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
+	seat_armed=true; canopy_gone=false; cranked=false;   // ...the seat armed and its canopy on (#112, #113)
 	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
 	brake_accumulator=ACCUMULATOR.full; drawn=false;   // a charged brake accumulator, over the 2,600 psi the exterior inspection asks (NATOPS 7.1.2)
 	for(const k of Object.keys(knobs)) knobs[k]=null; for(const k of Object.keys(thrown)) delete thrown[k];   // G1: the panel as the pre-flight leaves it - knobs at their levels, the travel-only controls where the model draws them,
@@ -9392,13 +9521,13 @@ function draw_hud(){
 			if(secured[1]) rows.push([AM,translate("R ENG SECURED")]);
 			if(RADAR.sil) rows.push([GR,"SIL"]);
 			if(jammer_armed) rows.push(jammer_loud()?[AM,"XMIT"]:[GR,"JAM ARM"]);
-			if(RADAR.auto) rows.push([GR,RADAR.acm==="vacq"?"ACM VACQ":"ACM BST"]);
+			if(RADAR.auto) rows.push([GR,"ACM "+RADAR.acm.toUpperCase()]);
 			if(declutter>0) rows.push([GR,"REJ "+declutter]); }
 		hud_stack.right=stack_draw(rows,HW-40,HH-52); }
 	if(!authentic){   // the beacons keep their own group below the configuration, at their own tighter pitch
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
-	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); } }   // below PROBE
+	if((ownship.canopy??0)>0.02||canopy_gone){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); } }   // below PROBE
 
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
@@ -9563,7 +9692,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // multiplayer The server is authoritative; fly_player runs as the local
 // predictor, corrected from snapshots (snap when >20 m off, gentle pull
 // otherwise). Remotes are interpolated ~100 ms behind live.
-let net=null, flare_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
+let net=null, flare_flag=false, chaff_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
 function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
@@ -9708,7 +9837,8 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
+	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);
+	else if(steering>=0&&ownship.grounded) hctx.fillText(steering>0?"NWS HI":"NWS",lx,cy+7.2*ppdv-17);   // the NWS advisory in the same place while nosewheel steering is engaged (2.10.2, 2.13.4.8.15, #36)   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
 	if(carrier_ols&&master==="nav"&&declutter<2){ const station=tacan(), slant=station&&station.slant!=null?station.slant/1852:null;
 		if(slant!=null) hctx.fillText(slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
@@ -9956,7 +10086,9 @@ function undesignate_press(){
 	const held=RADAR.stt!=null;   // which rung this press dropped from, for the label - undesignate() itself has already let go by the time it returns
 	if(radar_undesignate()) radar_events.push(`${sim_time.toFixed(1)}|undesignate|${held?"break":"clear"}`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // acquire_acm: the armed ACM condition's cone (#133). BST: 20° off the nose to
-// 10 nm; VACQ: ±6° azimuth, -8°..+55° in the lift plane, 5 nm. Nearest the axis
+// 10 nm; VACQ: ±6° azimuth, -8°..+55° in the lift plane, 5 nm; WACQ (#27): ±30°
+// azimuth and ±10° about the horizon, space stabilised, 10 nm - the unclassified
+// manual gives no figure for its volume, so this is the game's. Nearest the axis
 // first; repeat presses step the cone, an empty cone undesignates. Radar active
 // -> STT, silent -> visual designation. `auto` (radar_step's pass) takes the
 // first target and never steps or undesignates.
@@ -9966,6 +10098,9 @@ function acquire_acm(auto){
 		const d=Math.hypot(dx,dy,dz)||1; const fx=dx/d, fy=dy/d, fz=dz/d;
 		const nose=ownship.fwd.x*fx+ownship.fwd.y*fy+ownship.fwd.z*fz;
 		if(RADAR.acm==="bst"){ if(d>18520||nose<0.94) continue; }
+		else if(RADAR.acm==="wacq"){ const level=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;   // the volume hangs off the horizon below the nose's heading, whatever the jet's attitude
+			const off=Math.atan2((ownship.fwd.x*fz-ownship.fwd.z*fx)/level,(ownship.fwd.x*fx+ownship.fwd.z*fz)/level);
+			if(d>18520||Math.abs(off)>0.524||Math.abs(Math.asin(THREE.MathUtils.clamp(fy,-1,1)))>0.175) continue; }
 		else { const lift=ownship.up.x*fx+ownship.up.y*fy+ownship.up.z*fz;
 			const side=ownship.right.x*fx+ownship.right.y*fy+ownship.right.z*fz;
 			const elevation=Math.atan2(lift,nose);
@@ -9982,13 +10117,49 @@ function acquire_acm(auto){
 	const id=cone[(at+1)%cone.length].id;
 	designated=id;
 	if(radar_lock(id)&&!auto) radar_events.push(`${sim_time.toFixed(1)}|acquire|cone`); }   // i18n-format-ok: ACMI event timestamp, not display text
-// acm_press: the castle switch — BST commanded, then VACQ, then back to the
-// search radar. The commanded condition acquires by itself (radar_step); Enter
-// still steps the cone and Backspace still undesignates while it holds.
+// acm_press: the attack format's ACM legend — BST commanded, then VACQ, then
+// WACQ, then back to the search radar. The commanded condition acquires by
+// itself (radar_step); Enter still steps the cone and Backspace still
+// undesignates while it holds.
 function acm_press(){
 	if(!RADAR.auto){ RADAR.auto=true; RADAR.acm="bst"; }
 	else if(RADAR.acm==="bst") RADAR.acm="vacq";
+	else if(RADAR.acm==="vacq") RADAR.acm="wacq";
 	else { RADAR.auto=false; RADAR.acm="bst"; } }
+// sensor works the stick's sensor control switch (#27, NATOPS 2.8.2.2.2). In an air-to-air master
+// mode with the radar searching, forward commands ACM in boresight; aft gives the TDC to the AMPCD,
+// left to the left DDI and right to the right DDI, and toward the display that already has it
+// while that display shows the attack format, auto acquisition. In ACM, forward is BST, aft VACQ,
+// left WACQ and right returns to search. NAV keeps only the TDC's assignment: forward gives it to
+// the HUD, which designates nothing in this jet, so it does nothing.
+function sensor(way){
+	const aa=master!=="nav";
+	if(aa&&RADAR.auto){ if(way==="right"){ RADAR.auto=false; RADAR.acm="bst"; } else RADAR.acm=way==="forward"?"bst":way==="aft"?"vacq":"wacq"; return; }
+	if(way==="forward"){ if(aa){ RADAR.auto=true; RADAR.acm="bst"; } return; }
+	const display=way==="aft"?"center":way;
+	if(aa&&display===designator&&ddi_state[display].page==="rdr"&&!ddi_state[display].menu){ aacq(); return; }
+	designator=display; ddi_dirty=true; }
+// aacq: auto acquisition (#27): the target under the TDC if there is one, else the nearest the scan
+// holds, straight to STT
+// antenna_step: the antenna elevation a step up or down, which takes it back from an antenna wheel
+// bound on the stick until that wheel is moved again, as the keys take the throttle from its lever
+function antenna_step(d){ RADAR.slew(d); const wheel=pad_levers.antenna; if(wheel){ wheel.armed=false; wheel.rest=undefined; } }
+// tdc_radar: the TDC is on a display showing the attack format, where it moves the cursor
+function tdc_radar(){ const st=ddi_state[designator]; return !st.menu&&st.page==="rdr"; }
+function tdc_press(){ hotas.tdc.at=sim_time; if(tdc_radar()) tdc_designate(); }
+// tdc_slew moves the cursor on the attack format with the TDC held (#32): full deflection crosses
+// the scan's width, or its range scale, in two seconds
+function tdc_slew(x,y,dt){ hotas.tdc.x=x; hotas.tdc.y=y;
+	if(!(x||y)||!tdc_radar()) return;
+	const half=RADAR.half(), scaleM=RADAR.scale*NM, c=RADAR.centre.azimuth;
+	radar_cursor.azimuth=THREE.MathUtils.clamp(THREE.MathUtils.clamp(radar_cursor.azimuth,c-half,c+half)+x*half*dt,c-half,c+half);
+	radar_cursor.range=THREE.MathUtils.clamp(radar_cursor.range+y*scaleM*0.5*dt,0,scaleM); }
+function aacq(){ const own=radar_own(), half=RADAR.half(), scaleM=RADAR.scale*NM;
+	const seen=RADAR.mode==="tws"?RADAR.tracks.map(t=>{ const g=radar_geometry(own,t,wrap_axis); return { id:t.id, azimuth:g.azimuth, range:g.range }; }):RADAR.bricks.map(b=>({ id:b.id, azimuth:b.azimuth, range:b.range }));
+	const held=seen.filter(c=>c.range<=scaleM&&Math.abs(c.azimuth-RADAR.centre.azimuth)<=half);
+	if(!held.length) return;
+	const id=radar_pick(held,radar_cursor.azimuth,radar_cursor.range,half,scaleM)??held.reduce((a,b)=>b.range<a.range?b:a).id;
+	if(radar_lock(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|aacq`); }   // i18n-format-ok: ACMI event timestamp, not display text
 // default_radar: the set at spawn, as default_master has the weapon up - a
 // merge joust commands boresight at 10 nm, a BVR or AMRAAM fight is TWS at 40
 // nm, free flight searches in RWS.
@@ -10157,14 +10328,14 @@ function net_frame(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
-		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };
+		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
 	// state are the same instant. marked_steps is reset by the mark below, so
 	// this read and that one see the same number.
 	const sequence=net.input({...sample, steps:marked_steps});
-	if(sequence>0){ flare_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; }
+	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).
