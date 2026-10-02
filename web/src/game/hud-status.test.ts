@@ -27,7 +27,7 @@ function stack(world: World): string[] {
   if (!stackCode) throw new Error('status stack not found in engine.ts')
   const run = new Function('w', `const ownship={gear:1,hook:0,...w.jet}, authentic=!!w.authentic, GR="GR", AM="AM", STATE={datum:0,bank:1}, last_out=null, trim_manual=false, stab_cycle=0, flap_select=0;
     const parking=!!w.parking, fuel_dump=!!w.dump, secured=w.secured||[false,false], declutter=w.declutter||0, fold_handle=w.handle||"lock";
-    const RADAR={sil:!!w.sil, auto:!!w.acm, acm:w.acm||"bst"}, jammer_armed=(w.jammer||"off")!=="off", jammer_loud=()=>w.jammer==="loud";
+    const RADAR={sil:!!w.sil, auto:!!w.acm, acm:w.acm||"bst"}, jammer_armed=()=>(w.jammer||"off")!=="off", jammer_loud=()=>w.jammer==="loud";
     const translate=t=>t, hud_stack={}, hctx={}, HW=0, HH=0; let drawn=[];
     const stack_draw=(rows)=>{ drawn=rows.map(([c,t])=>c+":"+t); return drawn; };
     ${stackCode}

@@ -311,6 +311,6 @@ describe('where the rest of the cockpit meets them', () => {
   })
   it('counts the data link and the beacon among the BIT display\'s units', () => {
     expect(source).toMatch(/bcn:radios\.beacon\.on\?"ok":"off", dl:radios\.link\.on\?"ok":"off",/)
-    expect(source).toMatch(/comm:\{ 2:\["D\/L"\] \}/)
+    expect(source).toMatch(/comm:\{ 5:\["CSC"\], 4:\["ICS"\], 3:\["IFF"\], 2:\["D\/L"\], 11:\["COM1"\], 12:\["COM2"\], 15:\["MIDS"\] \}/)
   })
 })

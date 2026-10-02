@@ -51,8 +51,8 @@ describe('equipment status', () => {
   })
   it('reads OFF for the units that say so and NOT RDY for the rest, and NOT RDY for one still coming up', () => {
     const bit = A.fresh()
-    for (const key of ['rdr', 'ralt', 'tcn', 'ils']) expect(A.status(unit(key), { [key]: 'off' }, bit), key).toBe('OFF')
-    for (const key of ['ins', 'gps', 'lddi', 'mc2']) expect(A.status(unit(key), { [key]: 'off' }, bit), key).toBe('NOT RDY')
+    for (const key of ['rdr', 'ralt', 'tcn', 'ils', 'bcn', 'dl', 'iff', 'com1', 'com2', 'l16']) expect(A.status(unit(key), { [key]: 'off' }, bit), key).toBe('OFF') // 2.20.3.2's table: BCN, COM 1, COM 2, D/L, IFF, ILS, MIDS, RALT, RDR and TCN
+    for (const key of ['ins', 'gps', 'lddi', 'mc2', 'ale', 'aspj', 'rwr', 'csc', 'ics']) expect(A.status(unit(key), { [key]: 'off' }, bit), key).toBe('NOT RDY')
     expect(A.status(unit('ins'), { ins: 'wait' }, bit)).toBe('NOT RDY'); expect(A.status(unit('rdr'), { rdr: 'wait' }, bit)).toBe('NOT RDY')
   })
   it('reads IN TEST over a failure, DEGD for one, and RESTRT for a test that could not start', () => {
@@ -77,7 +77,7 @@ describe('equipment status', () => {
     expect(A.reading('nav', {}, bit)).toBe('IN TEST')
     expect(A.reading('nav', { gps: 'degraded' }, bit)).toBe('DEGD')
     expect(A.reading('nav', { gps: 'degraded', ralt: 'off' }, bit)).toBe('OFF'); expect(A.reading('nav', { gps: 'degraded', ins: 'wait' }, bit)).toBe('NOT RDY')
-    expect(A.reading('fcs', {}, A.fresh())).toBe('PBIT GO'); expect(A.reading('comm', {}, A.fresh())).toBe('PBIT GO'); expect(A.reading('comm', { dl: 'off' }, A.fresh())).toBe('NOT RDY')
+    expect(A.reading('fcs', {}, A.fresh())).toBe('PBIT GO'); expect(A.reading('comm', {}, A.fresh())).toBe('PBIT GO'); expect(A.reading('comm', { dl: 'off' }, A.fresh())).toBe('OFF'); expect(A.reading('comm', { ics: 'off', dl: 'off' }, A.fresh())).toBe('NOT RDY')
   })
   it('lists the units with a failure to show, by name, and no others', () => {
     const bit = A.fresh(); bit.tests.tcn = 5; bit.results.fcsb = 'restart'
@@ -87,7 +87,7 @@ describe('equipment status', () => {
   it('puts each group at its pushbutton, and the game\'s units in their groups', () => {
     expect(A.GROUPS.map((g) => [g.label, g.button])).toEqual([['FCS-MC', 5], ['SENSORS', 4], ['STORES', 3], ['COMM', 2], ['NAV', 1], ['DISPLAYS', 11], ['STATUS MONITOR', 12], ['EW', 13]])
     expect(A.within('fcs').map((u) => u.label)).toEqual(['MC1', 'MC2', 'FCSA', 'FCSB']); expect(A.within('nav').map((u) => u.label)).toEqual(['INS', 'ADC', 'ILS', 'BCN', 'RALT', 'TCN', 'GPS'])
-    expect(A.within('displays').map((u) => u.label)).toEqual(['LDDI', 'RDDI', 'MPCD', 'HUD', 'IFEI', 'DMS']); expect(A.within('comm').map((u) => u.label)).toEqual(['D/L'])
+    expect(A.within('displays').map((u) => u.label)).toEqual(['LDDI', 'RDDI', 'MPCD', 'HUD', 'IFEI', 'DMS']); expect(A.within('comm').map((u) => [u.label, u.button])).toEqual([['CSC', 5], ['ICS', 4], ['IFF', 3], ['D/L', 2], ['COM1', 11], ['COM2', 12], ['L16', 15]]) // figure 2-46's COMM sublevel, MIDS at its pushbutton
   })
 })
 

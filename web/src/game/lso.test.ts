@@ -144,7 +144,7 @@ describe('the waveoff', () => {
   it('has PADDLES call it on the radio once, as the call begins', () => {
     expect(call).not.toBe('')
     const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, HINT={ abort:'a', wave:'w' };
-      const performance={ now:()=>1000 }, comm=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
+      const performance={ now:()=>1000 }, radio=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
       for(let i=0;i<frames;i++){ ${call}
       }
       return comms;`)(frames) as string[]

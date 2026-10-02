@@ -260,19 +260,19 @@ describe('the cockpit shell over the lower left panel', () => {
     const n = json.nodes[i], m = n.matrix ? new THREE.Matrix4().fromArray(n.matrix) : new THREE.Matrix4().compose(new THREE.Vector3(...(n.translation ?? [0, 0, 0])), new THREE.Quaternion(...(n.rotation ?? [0, 0, 0, 1])), new THREE.Vector3(...(n.scale ?? [1, 1, 1])))
     return matrix(parent.get(i)).multiply(m)
   }
-  const shell = json.nodes.findIndex((n: { name?: string }) => n.name === 'Object_1372')
-  const primitive = json.meshes[json.nodes[shell].mesh].primitives[0]
-  // the shell as model_cut meets it: one mesh named for its node, in the GLB's scene frame
-  const scene = () => {
+  // a node's mesh as model_cut meets it: one mesh named for its node, in the GLB's scene frame; the shell by default
+  const scene = (name = 'Object_1372') => {
+    const node = json.nodes.findIndex((n: { name?: string }) => n.name === name), primitive = json.meshes[json.nodes[node].mesh].primitives[0]
     const geometry = new THREE.BufferGeometry()
     geometry.setAttribute('position', new THREE.BufferAttribute(read(primitive.attributes.POSITION) as Float32Array, 3))
     geometry.setIndex(new THREE.BufferAttribute(read(primitive.indices), 1))
-    const mesh = new THREE.Mesh(geometry); mesh.name = 'Object_1372'; mesh.applyMatrix4(matrix(shell))
+    const mesh = new THREE.Mesh(geometry); mesh.name = name; mesh.applyMatrix4(matrix(node))
     const root = new THREE.Group(); root.add(mesh); root.updateMatrixWorld(true); return { root, mesh }
   }
   const cutfn = /\nfunction model_cut\(scene, cut\)\{[\s\S]*?\n\treturn \(index\.length-kept\.length\)\/3; \}\n/.exec(source)?.[0] ?? ''
-  const spec = /\n\t\tcut:(\{ node:"Object_1372", boxes:\[[\s\S]*?\} \] \}),/.exec(source)?.[1] ?? ''
-  const cut = (box: string) => { const s = scene(); const n = new Function('THREE', 'scene', `${cutfn} return model_cut(scene, ${box});`)(THREE, s.root) as number; return { ...s, n } }
+  const spec = /\n\t\tcut:\[ (\{ node:"Object_1372", boxes:\[[\s\S]*?\} \] \}),/.exec(source)?.[1] ?? ''
+  const levers = /\n\t\t\t(\{ node:"Object_1101", boxes:\[[\s\S]*?\} \] \}) \],/.exec(source)?.[1] ?? ''   // the second cut: the fixed levers under the faces (G5)
+  const cut = (box: string, name?: string) => { const s = scene(name); const n = new Function('THREE', 'scene', `${cutfn} return model_cut(scene, ${box});`)(THREE, s.root) as number; return { ...s, n } }
   // the first shell triangle between the design eye and a point, if any
   const eye = new THREE.Vector3(0, 1.379, 3.971)
   const blocked = (mesh: THREE.Mesh, point: number[]) => {
@@ -287,7 +287,7 @@ describe('the cockpit shell over the lower left panel', () => {
 
   it('is cut once, on load, before the model is normalised', () => {
     expect(spec).not.toBe('')
-    expect(source).toMatch(/\n\t\t\t\tif\(spec\.cut\) model_cut\(gltf\.scene, spec\.cut\);\n\t\t\t\tconst proto=normalise_model\(gltf\.scene, spec\);/)
+    expect(source).toMatch(/\n\t\t\t\tfor\(const cut of spec\.cut\|\|\[\]\) model_cut\(gltf\.scene, cut\);\n\t\t\t\tconst proto=normalise_model\(gltf\.scene, spec\);/)
   })
 
   it('stood in front of the gauge and the controls, and is cut clear of them', () => {
@@ -304,5 +304,30 @@ describe('the cockpit shell over the lower left panel', () => {
     expect(open.mesh.geometry.index?.count).toBe((2226 - 136) * 3)
     // the AMPCD's aperture on the shell's panel face, which the AMPCD's screen is seated on, stays
     expect(blocked(open.mesh, [0, 0.85, 4.47])).toBe(true)
+  })
+
+  // The levers the model stands on the panels a face is drawn over (faces.ts, G5): the MASTER ARM switch's beside the
+  // left DDI, and the earlier dispenser panel's switches and ECM knob on the pedestal. within counts the mesh's
+  // triangles wholly inside a box, in the GLB's frame; behind are points on the pedestal panel behind three of them.
+  const within = (mesh: THREE.Mesh, lo: number[], hi: number[]) => {
+    const at = mesh.geometry.attributes.position, index = mesh.geometry.index?.array ?? [], box = new THREE.Box3(new THREE.Vector3(...lo), new THREE.Vector3(...hi)), v = new THREE.Vector3()
+    let n = 0
+    for (let t = 0; t < index.length; t += 3) if ([0, 1, 2].every((k) => box.containsPoint(v.fromBufferAttribute(at, index[t + k]).applyMatrix4(mesh.matrixWorld)))) n++
+    return n
+  }
+  const arm = [[0.3107, 1.0068, 4.3864], [0.3495, 1.0699, 4.4738]], pedestal = [[-0.0194, 0.5262, 4.4641], [0.0922, 0.6524, 4.5369]]
+  const behind: Record<string, number[]> = { mode: [-0.0055, 0.615, 4.5369], receiver: [0.0364, 0.589, 4.5369], jammer: [0.0713, 0.602, 4.5369] }
+  it('takes the fixed levers off the panels the faces are drawn on: 242 of that mesh\'s 5,572 triangles', () => {
+    expect(levers).not.toBe('')
+    expect(levers).toContain(JSON.stringify(arm[0]).replace(/"/g, '')); expect(levers).toContain(JSON.stringify(pedestal[1]).replace(/"/g, ''))   // the boxes checked are the boxes cut
+    const whole = scene('Object_1101'), open = cut(levers, 'Object_1101')
+    expect(within(whole.mesh, arm[0], arm[1])).toBeGreaterThan(0); expect(within(open.mesh, arm[0], arm[1])).toBe(0)
+    expect(within(whole.mesh, pedestal[0], pedestal[1])).toBeGreaterThan(0); expect(within(open.mesh, pedestal[0], pedestal[1])).toBe(0)
+    for (const [name, point] of Object.entries(behind)) {
+      expect(blocked(whole.mesh, point), name).toBe(true)
+      expect(blocked(open.mesh, point), name).toBe(false)
+    }
+    expect(open.n).toBe(242)
+    expect(open.mesh.geometry.index?.count).toBe((5572 - 242) * 3)   // the rest of the cockpit's levers stay
   })
 })

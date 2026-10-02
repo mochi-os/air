@@ -126,6 +126,8 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'JETTISON: GEAR': msg`JETTISON: GEAR`,
   'NO TANKS': msg`NO TANKS`,
   'EMERG JETT': msg`EMERG JETT`,
+  'MASTER ARM SAFE': msg`MASTER ARM SAFE`,
+  'DISPENSER OFF': msg`DISPENSER OFF`,
   'PILOT DOWN': msg`PILOT DOWN`,
   WINS: msg`WINS`,
   JOINED: msg`JOINED`,

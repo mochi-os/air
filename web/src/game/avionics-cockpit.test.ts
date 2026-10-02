@@ -8,6 +8,10 @@ import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import * as navigate from './navigation'
 import * as avionics from './avionics'
+import * as countermeasures from './countermeasures'
+import * as communication from './communication'
+import * as identification from './identification'
+import * as mids from './mids'
 
 // The cockpit's side of the mission computers and the BIT display (G4: #95, #90,
 // #96, #79): the MC switch, what each unit is found to be doing, the frame's
@@ -31,20 +35,21 @@ function line(name: string): string {
 const menus = /\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''
 const legends = /\nconst BIT_LEGENDS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''
 const world = `const NM=1852, D2R=Math.PI/180, DDI_ORDER=["left","right","center"], STATE={ jam:0 }, FCS_CHANNELS=[0,1,2,3,4,5];
-  let sim_time=100, ddi_dirty=false, ufc_dirty=false, buses={ ac:true, essential:true }, last_out=[0,0,0,0,0,0], radalt_on=true;
-  const ownship={ grounded:true, torn:false, pos:{ x:0, y:0, z:0 } }, electrics={ mech:false }, displays={ left:{ mode:"auto", brt:1 }, right:{ mode:"auto", brt:1 }, center:{ mode:"day", brt:1 } };
+  let sim_time=100, ddi_dirty=false, ufc_dirty=false, buses={ ac:true, essential:true, left:true, right:true }, last_out=[0,0,0,0,0,0], radalt_on=true;
+  const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }), squawk=identification.fresh(), uhf={ one:communication.fresh(), two:communication.fresh() }, terminal=mids.fresh();
+  const ownship={ grounded:true, torn:false, gearTarget:0, pos:{ x:0, y:0, z:0 } }, electrics={ mech:false }, displays={ left:{ mode:"auto", brt:1 }, right:{ mode:"auto", brt:1 }, center:{ mode:"day", brt:1 } };
   const radios={ tacan:{ on:true }, ils:{ on:true }, link:{ on:true }, beacon:{ on:true } }, knobs={ symbology:1 }, knob_level=(k)=>knobs[k], RADAR={ testing:false };
   const ddi_state={ left:{ page:"fcs", menu:"" }, right:{ page:"bit", menu:"" }, center:{ page:"hsi", menu:"" } }, hsi_state={ level:"", slew:false };
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:false, brake:true, power:true, radar:false, deck:false, tacan:null });`
 const defs = [menus + '\n', legends + '\n', line('mc_switch'), line('bit'), line('bit_state'), line('display_test'), line('ufc_test'), line('PATTERN_BARS')].join('')
 const functions = ['fcs_jams', 'mc', 'pattern_start', 'pattern_stop', 'equipment', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
-  return new Function('navigate', 'avionics', 'THREE', `${world} ${defs} ${functions}
+  return new Function('navigate', 'avionics', 'THREE', 'countermeasures', 'communication', 'identification', 'mids', `${world} ${defs} ${functions}
     const text=[], rects=[], lines=[], arcs=[], fills=[]; let at=[0,0], font="";
     const x=new Proxy({}, { get:(t,k)=>k==="fillText"?(s,px,py)=>text.push([String(s),px,py,font]):k==="strokeRect"?(a,b,c,d)=>rects.push([a,b,c,d]):k==="fillRect"?(a,b,c,d)=>fills.push([a,b,c,d]):k==="arc"?(ax,ay,r)=>arcs.push([ax,ay,r])
       :k==="moveTo"?(px,py)=>{ at=[px,py]; }:k==="lineTo"?(px,py)=>{ lines.push([at[0],at[1],px,py]); at=[px,py]; }:k==="measureText"?(s)=>({ width:10*String(s).length }):()=>{}, set:(t,k,v)=>{ if(k==="font") font=v; return true; } });
     const drawn=()=>({ text:text.map(([s,px,py])=>[s,px,py]), rects, lines, arcs, fills });
-    ${body}`)(navigate, avionics, THREE) as T
+    ${body}`)(navigate, avionics, THREE, countermeasures, communication, identification, mids) as T
 }
 interface Drawn { text: [string, number, number][]; rects: number[][]; lines: number[][]; arcs: number[][]; fills: number[][] }
 const at = (d: Drawn, s: string) => d.text.find((t) => t[0] === s)?.slice(1)
@@ -57,6 +62,10 @@ describe('the MC switch', () => {
     const s = cockpit<string[]>(`const pit_press=(action,d)=>{ switch(action){ ${press} } }; const r=[mc_switch];
       pit_press("computer",-1); r.push(mc_switch); pit_press("computer",-1); r.push(mc_switch); pit_press("computer",1); pit_press("computer",1); r.push(mc_switch); pit_press("computer",1); r.push(mc_switch, String(ddi_dirty)); return r;`)
     expect(s).toEqual(['norm', 'one', 'one', 'two', 'two', 'true'])
+  })
+  it('runs mission computer 1 on the left ac bus and 2 on the right, which differ with the bus tie open (FO-8)', () => {
+    expect(cockpit('buses={ ac:true, essential:true, left:false, right:true }; const a=mc(); buses={ ac:true, essential:true, left:true, right:false }; return [a,mc()];'))
+      .toEqual([{ one: false, two: true }, { one: true, two: false }])
   })
   it('runs each computer with its switch position and the ac buses', () => {
     expect(cockpit('const a=mc(); mc_switch="one"; const b=mc(); mc_switch="two"; const c=mc(); mc_switch="norm"; buses={ ac:false, essential:true }; return [a,b,c,mc()];'))
@@ -82,7 +91,30 @@ describe('what each unit is found to be doing', () => {
   })
   it('finds the SMS degraded once a store has been torn from its rack', () => {
     expect(found('ownship.torn=true;')).toMatchObject({ sms: 'degraded', wpns: 'ok' })
-    expect(source).toMatch(/jettison_stations\(\[station\],"rack"\); ownship\.torn=true; \}/) // a rack that lets go under load
+    expect(source).toMatch(/jettison_stations\(\[station\],"rack"\); ownship\.torn=true; \(ownship\.failures\|\|\(ownship\.failures=\[\]\)\)\.push\(station\); \}/) // a rack that lets go under load, and which station it was
+  })
+  // G5: the units whose controls came with the defensive panels, the radios, the IFF and MIDS
+  it('finds the RWR, the dispenser and the jammer off with their own controls', () => {
+    expect(found('suite.receiver.power=false;')).toMatchObject({ rwr: 'off', ale: 'ok', aspj: 'ok' })
+    expect(found('suite.dispenser="off";')).toMatchObject({ rwr: 'ok', ale: 'off', aspj: 'ok' }); expect(found('suite.dispenser="bypass";').ale).toBe('ok')
+    expect(found('suite.jammer="off";')).toMatchObject({ ale: 'ok', aspj: 'off' }); expect(found('suite.jammer="standby";').aspj).toBe('ok')
+  })
+  it('finds each radio, the IFF and the MIDS terminal off when it is turned off', () => {
+    expect(found('uhf.one.on=false;')).toMatchObject({ com1: 'off', com2: 'ok' }); expect(found('uhf.two.on=false;')).toMatchObject({ com1: 'ok', com2: 'off' })
+    expect(found('squawk.on=false;')).toMatchObject({ iff: 'off', l16: 'ok' }); expect(found('terminal.on=false;')).toMatchObject({ iff: 'ok', l16: 'off' })
+    expect(found('')).toMatchObject({ csc: 'ok', ics: 'ok' })
+  })
+  // The mode 4 codes (23.6.2.2.2), held or lost each frame by the CRYPTO switch, the power and the gear handle.
+  it('erases the mode 4 codes at ZERO, and loses them with the power at NORM', () => {
+    const held = (setup: string) => cockpit<boolean>(`${setup} avionics_frame(0.1); return squawk.held;`)
+    expect(held('')).toBe(true)
+    expect(held('squawk.crypto="zero";')).toBe(false)
+    expect(held('buses={ ac:false, essential:false, left:false, right:false };')).toBe(false)
+    expect(held('buses={ ac:false, essential:true, left:false, right:false };')).toBe(true) // on the battery the set still has power
+  })
+  it('keeps them through a loss of power at HOLD with the gear handle down, and not with it up', () => {
+    const held = (handle: number) => cockpit<boolean>(`squawk.crypto="hold"; ownship.gearTarget=${handle}; buses={ ac:false, essential:false, left:false, right:false }; avionics_frame(0.1); return squawk.held;`)
+    expect(held(0)).toBe(true); expect(held(1)).toBe(false)
   })
   it('finds the INS off, coming up while it aligns, and working once it navigates', () => {
     expect(found('nav.ins.mode="off";').ins).toBe('off'); expect(found('nav.ins.mode="align";').ins).toBe('wait'); expect(found('nav.ins.mode="gyro";').ins).toBe('ok')
@@ -236,7 +268,7 @@ describe('the BIT display', () => {
 describe('what the mission computers take with them', () => {
   it('leaves the g limiter to the paddle switch alone, and holds the missiles on their rails without MC2', () => {
     expect(source).toMatch(/override:keys\.has\(key_of\("override"\)\)&&!\(DEV_MODE&&on_ground\(\)\),/) // without MC1 the limit goes to a fixed 7.5 g, not past it (25.1)
-    const fire = (two: boolean, master: string) => new Function(`let fired=""; const mc=()=>({ one:true, two:${two} }), master=${JSON.stringify(master)}, trigger_amraam=()=>{ fired="amraam"; }, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false;
+    const fire = (two: boolean, master: string) => new Function(`let fired=""; const mc=()=>({ one:true, two:${two} }), master=${JSON.stringify(master)}, trigger_amraam=()=>{ fired="amraam"; }, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false, arms={ arm:true }, notice=()=>{}, translate=(s)=>s;
       const launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ${lift('trigger_missile')}
 } trigger_missile(); return fired;`)() as string // the lift stops at the function's own closing brace, which stands alone
     expect([fire(true, '120c'), fire(true, '9m'), fire(false, '120c'), fire(false, '9m')]).toEqual(['amraam', 'sidewinder', '', ''])

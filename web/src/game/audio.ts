@@ -1272,7 +1272,8 @@ export function audio_flyby(
 // 2 lock. strength (0..1) is how much heat the seeker is drinking — how deep
 // inside its brightness-conditioned reach the target sits — and it makes the
 // growl louder, higher and angrier as the shot improves, in both states.
-export function audio_seeker(state: number, strength = 0): void {
+// level (0..1) is the WPN volume control's.
+export function audio_seeker(state: number, strength = 0, level = 1): void {
   if (!seeker || !context || context.state !== 'running') return
   const t = now()
   const lock = state === 2
@@ -1293,19 +1294,20 @@ export function audio_seeker(state: number, strength = 0): void {
   // A ~3 kHz sine reads far louder than 700 Hz at equal amplitude: the lock
   // level sits lower.
   seeker.gain.gain.setTargetAtTime(
-    state === 0 ? 0 : (lock ? 0.09 : 0.13) * (0.7 + 0.5 * heat),
+    state === 0 ? 0 : (lock ? 0.09 : 0.13) * (0.7 + 0.5 * heat) * level,
     t,
     0.05
   )
 }
 
 // The RWR in the headset (#28): call every frame like the seeker — the lock
-// warble pulses ~8 Hz while an STT holds us.
-export function audio_rwr(lock: boolean): void {
+// warble pulses ~8 Hz while an STT holds us. level (0..1) is the RWR volume
+// control's.
+export function audio_rwr(lock: boolean, level: number): void {
   if (!alr || !context || context.state !== 'running') return
   const t = now()
   alr.gain.gain.setTargetAtTime(
-    lock ? (Math.floor(t * 8) % 2 ? 0.1 : 0.015) : 0,
+    lock ? (Math.floor(t * 8) % 2 ? 0.1 : 0.015) * level : 0,
     t,
     0.02
   )
@@ -1314,8 +1316,8 @@ export function audio_rwr(lock: boolean): void {
 // New-threat chirp (#28): two quick high beeps when a symbol first appears on
 // the ring — rate-limited so a busy sky cannot machine-gun the headset.
 let alrAt = 0
-export function audio_rwr_paint(): void {
-  if (!context || context.state !== 'running') return
+export function audio_rwr_paint(level: number): void {
+  if (!context || context.state !== 'running' || level <= 0) return
   if (now() - alrAt < 0.6) return
   alrAt = now()
   const t = now()
@@ -1327,7 +1329,7 @@ export function audio_rwr_paint(): void {
   osc.connect(gain).connect(bus('alerts'))
   for (const s of [0, 0.14]) {
     gain.gain.setValueAtTime(0.001, t + s)
-    gain.gain.exponentialRampToValueAtTime(0.11, t + s + 0.02)
+    gain.gain.exponentialRampToValueAtTime(0.001 + 0.109 * level, t + s + 0.02)
     gain.gain.exponentialRampToValueAtTime(0.001, t + s + 0.09)
   }
   osc.start(t)

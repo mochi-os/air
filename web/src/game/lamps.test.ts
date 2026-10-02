@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
+import * as countermeasures from './countermeasures'
 
 // The pit's flap position lights (NATOPS 2.8.4.3): HALF and FULL are green
 // for the switch in that position below 250 kt; FLAPS is amber for HALF or
@@ -71,15 +72,21 @@ describe('the flap position lights', () => {
 // FIRE, MASTER CAUTION and the left panel port of the HUD, the right panel,
 // APU FIRE and FIRE starboard. The drivable lamps are stepped from the
 // updater's own lines; the layout is pinned from the builder's source.
-interface Panel { speedbrake?: number; bar?: number; target?: number; armed?: boolean; loud?: boolean; contacts?: number }
+// jammer: the ECM knob's position; painted: a radar has the jet locked or a missile is guiding; tested: seconds since
+// the knob came to BIT; dispensed: seconds since a programme ran; contacts: what
+// the RWR holds, each a lock or a search paint, a missile's seeker or not, heard that long ago; receiver: its POWER.
+interface Panel { speedbrake?: number; bar?: number; target?: number; jammer?: string; painted?: boolean; tested?: number; dispensed?: number; contacts?: { locked?: boolean; missile?: boolean; age?: number }[]; receiver?: boolean; ac?: boolean; master?: string; taping?: string }
 function panel(p: Panel): string[] {
-  const block = /\n\t\/\/ glareshield panels \(#12\)[\s\S]*?lamp_set\(l\.ai,[^\n]*\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('glareshield panel block not found in engine.ts')
-  const run = new Function('p', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0};
-    const jammer_armed=!!p.armed, jammer_loud=()=>!!p.loud, RWR={contacts:new Array(p.contacts||0).fill(0)};
-    const l={spdbrk:{},lbar:{},aspj:{},xmit:{},rec:{},ai:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
+  const block = /\n\t\/\/ glareshield panels \(#12\)[\s\S]*?lamp_set\(l\.rcdr,[^\n]*\n/.exec(source)?.[0] ?? ''
+  const recording = /\nfunction recording\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block || !recording) throw new Error('glareshield panel block not found in engine.ts')
+  const run = new Function('p', 'countermeasures', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0}, sim_time=100, ASPJ_TEST=20;
+    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); suite.jammer=p.jammer||"off"; suite.tested=100-(p.tested??0); if(p.dispensed!==undefined) suite.dispensed=100-p.dispensed; suite.receiver.power=p.receiver??true;
+    const RWR={ time:100, contacts:(p.contacts||[]).map(c=>({ locked:!!c.locked, missile:!!c.missile, at:100-(c.age||0) })), locked:()=>!!p.painted, warned:()=>false };
+    const buses={ ac:p.ac??true }, master=p.master||"nav", taping=p.taping||"automatic"; ${recording}
+    const l={spdbrk:{},lbar:{},aspj:{},xmit:{},rec:{},stby:{},go:{},nogo:{},disp:{},ai:{},rcdr:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
-  return run(p) as string[]
+  return run(p, countermeasures) as string[]
 }
 
 describe('the glareshield panels', () => {
@@ -127,9 +134,27 @@ describe('the glareshield panels', () => {
     expect(panel({ bar: 1 })).toEqual(['lbar'])
   })
 
-  it('show the ASPJ armed as ASPJ ON with REC, radiating as ASPJ ON with XMIT', () => {
-    expect(panel({ armed: true })).toEqual(['aspj', 'rec'])
-    expect(panel({ armed: true, loud: true })).toEqual(['aspj', 'xmit'])
+  it('show the jammer by the ECM knob: STBY, REC alone at REC, ASPJ ON with REC at XMIT, and XMIT while it radiates', () => {
+    expect(panel({ jammer: 'off' })).toEqual([])
+    expect(panel({ jammer: 'standby' })).toEqual(['stby'])
+    expect(panel({ jammer: 'receive' })).toEqual(['aspj', 'rec'])
+    expect(panel({ jammer: 'receive', painted: true })).toEqual(['aspj', 'rec']) // receiving only: it never radiates there
+    expect(panel({ jammer: 'transmit' })).toEqual(['aspj', 'rec'])
+    expect(panel({ jammer: 'transmit', painted: true })).toEqual(['aspj', 'xmit'])
+    expect(panel({ jammer: 'transmit', painted: true, ac: false })).toEqual([])
+  })
+  it('light GO once the knob\'s test at BIT has run, and nothing while it runs; NO GO has no failure to show', () => {
+    expect(panel({ jammer: 'test', tested: 5 })).toEqual([])
+    expect(panel({ jammer: 'test', tested: 21 })).toEqual(['go'])
+    expect(panel({ jammer: 'test', tested: 21, ac: false })).toEqual([])
+    expect(source).toMatch(/\nconst ASPJ_TEST=avionics\.UNITS\.find\(u=>u\.key==="aspj"\)\.seconds;/) // the BIT display's own time for it
+  })
+  it('light DISP for a second after a dispenser programme runs', () => {
+    expect(panel({ dispensed: 0.5 })).toEqual(['disp']); expect(panel({ dispensed: 1.5 })).toEqual([]); expect(panel({})).toEqual([])
+  })
+  it('light RCDR ON while the recorder runs: at MAN, or at AUTO out of the navigation master mode, on ac power', () => {
+    expect(panel({ taping: 'manual' })).toEqual(['rcdr']); expect(panel({ taping: 'automatic' })).toEqual([]); expect(panel({ taping: 'automatic', master: '9m' })).toEqual(['rcdr'])
+    expect(panel({ taping: 'off', master: '9m' })).toEqual([]); expect(panel({ taping: 'manual', ac: false })).toEqual([])
   })
 
   // The lights are the jammer's cockpit indication: the radar attack format
@@ -142,8 +167,11 @@ describe('the glareshield panels', () => {
     expect(page).not.toMatch(/#ffc14d/)
   })
 
-  it('light AI for any radar the RWR hears', () => {
-    expect(panel({ contacts: 2 })).toEqual(['ai'])
+  it('light AI for an air intercept radar locked on, as the RWR hears it, and not for a search paint or a missile', () => {
+    expect(panel({ contacts: [{ locked: true }] })).toEqual(['ai'])
+    expect(panel({ contacts: [{}, {}] })).toEqual([]); expect(panel({ contacts: [{ locked: true, missile: true }] })).toEqual([])
+    expect(panel({ contacts: [{ locked: true, age: 1 }] })).toEqual([]) // a lock no longer heard
+    expect(panel({ contacts: [{ locked: true }], receiver: false })).toEqual([]); expect(panel({ contacts: [{ locked: true }], ac: false })).toEqual([])
   })
 
   it('kept the gear unit as it was', () => {
@@ -198,8 +226,8 @@ describe('the HOOK light', () => {
 // The caution lights panel (FO-5 item 46): FUEL LO on the feed-tank hardware
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
-interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number[]; seat?: boolean }
-const generators = [/\nfunction generators\(out\)\{[^\n]*\n/, /\nfunction turning\(out,e\)\{[^\n]*\n/].map((re) => re.exec(source)?.[0] ?? '').join('') + 'const electrics={ switches:[true,true] };'
+interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number[]; seat?: boolean; accumulator?: boolean; tie?: boolean; ac?: boolean }
+const generators = [/\nfunction generators\(out\)\{[^\n]*\n/, /\nfunction turning\(out,e\)\{[^\n]*\n/].map((re) => re.exec(source)?.[0] ?? '').join('') + 'const electrics={ switches:[true,true], tie:true };'
 const fcs = /\nconst FCS_CHANNELS=[^\n]*\nfunction fcs_jammed\(words\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 // The DDI side of the generators (NATOPS 2.5.1.1): cautions_update's L GEN and R
 // GEN captions and its battery state, from the core's spools and harm.
@@ -214,8 +242,8 @@ function cautionlit(c: Cautions): string[] {
   if (!block || !generators || !fcs) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     ${fcs} const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,0,0,0,0,0]; for(const ch of c.jam||[]) out[6+ch]=1;
-    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ ac:true, essential:true }, battery_switch=()=>false, check_seat=()=>!!c.seat; let unpowered=false;
-    const l={fuello:{},genL:{},genR:{},fces:{},battsw:{},ckseat:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
+    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ ac:c.ac??true, essential:true }, battery_switch=()=>false, check_seat=()=>!!c.seat, accumulator_low=()=>!!c.accumulator; let unpowered=false; electrics.tie=c.tie??true;
+    const l={fuello:{},genL:{},genR:{},fces:{},battsw:{},ckseat:{},apuacc:{},gentie:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
 }
@@ -238,6 +266,13 @@ describe('the caution lights panel', () => {
 
   it('lights CK SEAT on its condition (2.15.3.5.1, #112)', () => {
     expect(cautionlit({ seat: true })).toEqual(['ckseat'])
+  })
+  it('lights APU ACC with the APU accumulator low (2.4.2.2)', () => {
+    expect(cautionlit({ accumulator: true })).toEqual(['apuacc'])
+  })
+  it('lights GEN TIE with the bus tie open, and not in a dual generator failure (2.5.1.1)', () => {
+    expect(cautionlit({ tie: false })).toEqual(['gentie'])
+    expect(cautionlit({ tie: false, ac: false })).toEqual([])
   })
 
   it('lights the generator whose engine has stopped or died, and neither when both have', () => {
@@ -636,16 +671,16 @@ describe('the lights test', () => {
   interface Rig { frame(held: boolean): Record<string, Light> }
   const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number; fire?: boolean; essential?: boolean; batt?: boolean; seat?: boolean } = {}): Rig => {
     for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
-    return new Function('c', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
+    return new Function('c', 'countermeasures', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
       const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
       ${test}${set}
       const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
       const plain=()=>({ userData:{ lit:0x2fd24a }, material:{ opacity:0 }, swaps:0 });
-      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat"]) l[n]=lens();
+      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","nogo","stby","disp","rcdr","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat","apuacc","gentie"]) l[n]=lens();
       for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
       const blank=lens(), tested=[...Object.values(l),blank];
-      const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, jammer_armed=false, jammer_loud=()=>false;
-      const RWR={contacts:[]}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
+      const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false,{ chaff:20, flare:40 }), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{};
+      const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
       const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd:3000 } };
@@ -653,14 +688,14 @@ describe('the lights test', () => {
       return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);
         const seen={ blank }; Object.assign(seen,l); const r={};
         for(const [n,m] of Object.entries(seen)) r[n]={ on:m.userData.lens?m.userData.on:m.material.opacity>0.5, swaps:m.swaps };
-        return r; } };`)(c) as Rig
+        return r; } };`)(c, countermeasures) as Rig
   }
   const lit = (r: Record<string, Light>) => Object.keys(r).filter((n) => r[n].on).sort()
 
   it('lights every light while held, those no condition drives and the lens with no legend too', () => {
     const r = rig().frame(true)
     expect(lit(r)).toEqual(Object.keys(r).sort())
-    expect(Object.keys(r).length).toBe(30)
+    expect(Object.keys(r).length).toBe(36)
   })
 
   it('lights the three FIRE lights and both BLEEDs through a fire and bleed air test, and BATT SW on its condition (2.14.5, 2.5.3.3)', () => {
