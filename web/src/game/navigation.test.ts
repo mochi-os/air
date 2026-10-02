@@ -364,6 +364,16 @@ describe('the HUD flight path', () => {
 })
 
 describe('GPS', () => {
+  it('is inoperable without mission computer 1, and back at once with it', () => {
+    const { nav, t } = flying()
+    expect(N.tracking(nav.gps)).toBe(true)
+    N.step(nav, { ...t, dt: 1, computer: false })
+    expect([N.tracking(nav.gps), N.good(nav.gps), N.horizontal(nav.gps), nav.gps.search]).toEqual([false, false, null, 0]) // the receiver keeps its satellites
+    N.step(nav, { ...t, dt: 1, computer: true })
+    expect(N.tracking(nav.gps)).toBe(true)
+    N.step(nav, { ...t, dt: 1 })
+    expect(N.tracking(nav.gps)).toBe(true) // not said: taken as running
+  })
   it('is good with its errors under 100 ft', () => {
     const nav = cold()
     expect(N.good(nav.gps)).toBe(true)
@@ -392,7 +402,7 @@ describe('GPS', () => {
     nav.gps.phase = 'norm'
     expect(N.cautions(nav)).not.toContain('GPS DEGD')
   })
-  it('advises GPS in the normal phase past 333 m, and NO SEC out of the secure mode', () => {
+  it('advises GPS in the normal phase past 333 m, and nothing for leaving the secure mode, which is a later OFP\'s', () => {
     const { nav } = flying()
     nav.source = 'gps'
     nav.gps.error = { x: 300, z: 0 }
@@ -400,7 +410,7 @@ describe('GPS', () => {
     nav.gps.error = { x: 340, z: 0 }
     expect(N.advisories(nav)).toEqual(['GPS'])
     nav.gps.secure = false
-    expect(N.advisories(nav)).toEqual(['NO SEC', 'GPS'])
+    expect(N.advisories(nav)).toEqual(['GPS'])
   })
 })
 
@@ -463,6 +473,34 @@ describe('position keeping', () => {
 
 describe('position updates', () => {
   const tacan = { x: 0, z: -30000, bearing: 0, range: 30000 }
+  it('keeps the post flight log: the unaided navigation time, and each update\'s error, summed and in size, with the rate it showed', () => {
+    const { nav, t } = flying()
+    expect(nav.log).toEqual(N.record())
+    N.step(nav, { ...t, dt: 1800 })
+    expect(nav.log.navigation).toBe(1800)
+    nav.bias = 0; nav.ins.error = { x: 926, z: 1852 } // half a mile east, a mile south
+    expect(N.propose(nav, { ...t, tacan }, 'tcn')).toBe(true); expect(N.accept(nav)).toBe(true)
+    expect(nav.log.updates).toBe(1); expect(nav.log.error.north).toBeCloseTo(-1852, 6); expect(nav.log.error.east).toBeCloseTo(926, 6)
+    expect(nav.log.cumulative.north).toBeCloseTo(1852, 6); expect(nav.log.rate as number * 3600 / 1852).toBeCloseTo(Math.hypot(1, 0.5) * 2, 6) // nm an hour, over half an hour
+    nav.ins.error = { x: -926, z: 0 }
+    N.propose(nav, { ...t, tacan }, 'tcn'); N.accept(nav)
+    expect(nav.log.updates).toBe(2); expect(nav.log.error.east).toBeCloseTo(0, 6); expect(nav.log.cumulative.east).toBeCloseTo(1852, 6) // summed as they came, and in size
+  })
+  it('counts no navigation time on the aided INS, and logs no update taken on air data', () => {
+    const { nav, t } = flying()
+    nav.ins.knob = 'ifa'
+    N.step(nav, { ...t, dt: 5 }); const held = nav.log.navigation; N.step(nav, { ...t, dt: 100 })
+    expect(nav.ins.aided.held).toBe(true); expect(nav.log.navigation).toBe(held)
+    const other = flying(); other.nav.source = 'adc'; other.nav.bias = 0; other.nav.adc.error = { x: 500, z: 0 }
+    N.propose(other.nav, { ...other.t, tacan }, 'tcn'); N.accept(other.nav)
+    expect(other.nav.log.updates).toBe(0)
+  })
+  it('starts the log afresh with an alignment, and keeps the time it took', () => {
+    const nav = cold(); nav.log.updates = 3
+    nav.ins.knob = 'gnd'
+    for (let k = 0; k < 30; k++) N.step(nav, truth({ dt: 1, brake: true, power: true }))
+    expect(nav.log.updates).toBe(0); expect(nav.log.alignment).toBe(nav.ins.time); expect(nav.log.alignment).toBeGreaterThan(20)
+  })
   it('a TACAN update shows the error and ACPT takes the TACAN position', () => {
     const { nav, t } = flying()
     const with_ = { ...t, tacan }
@@ -1049,5 +1087,107 @@ describe('units and PRECISE', () => {
     expect(N.angle(35 + 41 / 60 + 33.27 / 3600, 'NS', false, true)).toBe('N  35°41\'33.27"')
     expect(N.angle(-(117 + 41 / 60 + 7.44 / 3600), 'EW', false, true)).toBe('W 117°41\'07.44"')
     expect(N.angle(28.2072, 'NS', true, true)).toBe("N  28°12.432'") // decimal minutes are not made precise
+  })
+})
+
+// Coupled steering (#100, NATOPS 2.9.2.6, 24.2.8, 24.2.9.3, 24.2.9.5, 24.4.5.2): what the steering boxed on the HSI
+// gives the autopilot to fly, and the lead turn of a coupled sequence. The jet is at the origin unless said, x
+// east and z south; tracks and courses in radians, true.
+describe('coupled steering', () => {
+  const suite = (plan: (nav: N.Navigation) => void = () => {}) => { const nav = N.fresh(1); N.ready(nav, { x: 0, z: 0 }); plan(nav); return nav }
+  const here = { x: 0, z: 0 }
+  const degrees = (c: N.Coupling | null) => Math.round(((c as N.Coupling).track / D) * 100) / 100
+  it('starts with the bank limit at NAV', () => {
+    expect(N.fresh(1).limit).toBe('nav')
+  })
+  it('gives nothing with no steering boxed, no point to fly to, or a target designated', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(4000, -4000); n.current = 1 })
+    expect(N.coupling(nav, here, 0, 200, null)).toBeNull() // nothing boxed
+    nav.steer = 'wypt'
+    expect(N.coupling(nav, here, 0, 200, null)).not.toBeNull()
+    nav.designation = { x: 9000, z: 0, elevation: 0, stage: 'tgt' }
+    expect(N.coupling(nav, here, 0, 200, null)).toBeNull() // waypoint steering does not couple with a ground point designated
+    nav.designation = null; nav.current = 5
+    expect(N.coupling(nav, here, 0, 200, null)).toBeNull()
+    nav.steer = 'tcn'
+    expect(N.coupling(nav, here, 0, 200, null)).toBeNull() // no station received
+  })
+  it('flies straight at a waypoint with no course line, and says when it has been reached', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(4000, -4000); n.current = 1; n.steer = 'wypt' })
+    expect(N.coupling(nav, here, 0, 200, null)).toEqual({ track: 45 * D, label: 'WYPT', passed: false })
+    const close = { x: 4000, z: -4000 + 900 } // the point 900 m ahead, flying north
+    expect((N.coupling(nav, close, 0, 200, null) as N.Coupling).passed).toBe(false)
+    expect((N.coupling(nav, { x: 4000, z: -4000 - 900 }, 0, 200, null) as N.Coupling).passed).toBe(true) // 900 m behind
+    expect((N.coupling(nav, { x: 4000, z: -4000 - 2000 }, 0, 200, null) as N.Coupling).passed).toBe(false) // behind, but not inside a mile of it
+    expect((N.coupling(nav, { x: 4000 + 900, z: -4000 }, 0, 200, null) as N.Coupling).passed).toBe(false) // abeam on the left wing: exactly 90° is not yet behind
+  })
+  it('cuts at a course line from either side, 45° at most, and less as the line nears', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(0, -30000); n.current = 1; n.steer = 'wypt'; n.course = 0 })
+    const from = (x: number, speed = 100) => degrees(N.coupling(nav, { x, z: 0 }, 0, speed, null))
+    expect(from(0)).toBe(0)
+    expect(from(-20000)).toBe(45); expect(from(20000)).toBe(315) // west of the line: fly north-east
+    expect(from(-1500)).toBe(45); expect(from(-750)).toBeCloseTo(Math.atan(0.5) / D, 2) // slow, the lead is its least: 1,500 m
+    expect(from(-150)).toBeGreaterThan(0); expect(from(-150)).toBeLessThan(from(-750))
+  })
+  it('lengthens the lead with the square of the speed, as the room to turn grows', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(0, -30000); n.current = 1; n.steer = 'wypt'; n.course = 0 })
+    const cut = (speed: number) => (N.coupling(nav, { x: -1000, z: 0 }, 0, speed, null) as N.Coupling).track
+    expect(cut(200)).toBeCloseTo(Math.atan(1000 / ((1.2 * 200 * 200) / 9.80665)), 9)
+    expect(cut(240)).toBeCloseTo(Math.atan(1000 / ((1.2 * 240 * 240) / 9.80665)), 9)
+    expect(cut(100)).toBeCloseTo(Math.atan(1000 / 1500), 9) // under 1,500 m of lead: the least
+  })
+  it('flies on along the line past the point, and never calls it reached', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(0, -30000); n.current = 1; n.steer = 'wypt'; n.course = 0 })
+    const past = N.coupling(nav, { x: 300, z: -40000 }, 0, 100, null) as N.Coupling
+    expect(past.passed).toBe(false)
+    expect(past.track).toBeCloseTo(2 * Math.PI - Math.atan(300 / 1500), 9) // east of the outbound line: back west onto it
+  })
+  it('takes the TACAN station by the bearing and range received, with its course line', () => {
+    const nav = suite((n) => { n.steer = 'tcn' })
+    expect(N.coupling(nav, here, 0, 100, { bearing: 80 * D, range: 20000 })).toEqual({ track: 80 * D, label: 'TCN', passed: false })
+    nav.course = 90 * D
+    const c = N.coupling(nav, here, 0, 100, { bearing: 88 * D, range: 20000 }) as N.Coupling
+    expect(c.track).toBeCloseTo(90 * D - Math.atan((Math.sin(2 * D) * 20000) / 1500), 9); expect(c.label).toBe('TCN') // the line lies 700 m to the left: north of east
+    nav.designation = { x: 1, z: 1, elevation: 0, stage: 'tgt' }
+    expect(N.coupling(nav, here, 0, 100, { bearing: 80 * D, range: 20000 })).not.toBeNull() // a designation is the waypoint steering's bar
+  })
+  it('names a sequence by its number, and flies the course from the waypoint before', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(0, -10000); n.waypoints[2] = point(20000, -10000); n.sequences[1] = [1, 2]; n.sequence = 1; n.current = 1; n.steer = 'wypt'; n.auto = true })
+    expect(N.coupling(nav, here, 0, 100, null)).toEqual({ track: 0, label: 'SEQ2', passed: false }) // the first is flown direct
+    nav.current = 2
+    const c = N.coupling(nav, { x: 5000, z: -9000 }, 0, 100, null) as N.Coupling
+    expect(c.label).toBe('SEQ2'); expect(c.passed).toBe(false)
+    expect(c.track).toBeCloseTo(90 * D - Math.atan(1000 / 1500), 9) // a kilometre south of the leg from 1 to 2: a cut north of east
+    nav.course = 45 * D
+    expect((N.coupling(nav, { x: 20000, z: -10000 + 3000 }, 0, 100, null) as N.Coupling).track).toBeCloseTo(0, 9) // a course line selected is flown in the leg's place: 045 through the point, cut at 45° from the south
+  })
+  it('turns ahead of a coupled sequence\'s waypoint, where a turn of the bank allowed rolls out on the next course', () => {
+    const plan = (n: N.Navigation) => { n.waypoints[1] = point(0, -20000); n.waypoints[2] = point(20000, -20000); n.waypoints[3] = point(20000, -40000); n.sequences[0] = [1, 2, 3]; n.current = 1; n.steer = 'wypt'; n.auto = true }
+    const radius = (200 * 200) / (9.80665 * Math.tan(30 * D)), lead = radius + 200 * 4 // a 90° turn: its radius, and four seconds to roll into it
+    const short = suite(plan), there = suite((n) => { plan(n); n.course = 1 }) // a course line selected through the waypoint goes with it
+    expect(N.anticipate(short, { x: 0, z: -20000 + lead + 50 }, 200, 30 * D)).toBe(false); expect(short.current).toBe(1)
+    expect(N.anticipate(there, { x: 0, z: -20000 + lead - 50 }, 200, 30 * D)).toBe(true); expect([there.current, there.course]).toEqual([2, null])
+    const steep = suite(plan) // TAC's 60° turns far tighter
+    expect(N.anticipate(steep, { x: 0, z: -20000 + 4000 }, 200, 60 * D)).toBe(false); expect(N.anticipate(steep, { x: 0, z: -20000 + 3000 }, 200, 60 * D)).toBe(true)
+  })
+  it('turns no earlier than the 5 nm at which the sequence moves on by itself, however sharp the corner', () => {
+    const nav = suite((n) => { n.waypoints[1] = point(0, -20000); n.waypoints[2] = point(100, 20000); n.sequences[0] = [1, 2]; n.current = 1; n.steer = 'wypt'; n.auto = true })
+    expect(N.anticipate(nav, { x: 0, z: -20000 + 5.1 * NM }, 200, 30 * D)).toBe(false)
+    expect(N.anticipate(nav, { x: 0, z: -20000 + 4.9 * NM }, 200, 30 * D)).toBe(true)
+  })
+  it('flies over a waypoint with OVFLY boxed, flies to the last, and leaves uncoupled steering alone', () => {
+    const plan = (n: N.Navigation) => { n.waypoints[1] = point(0, -20000); n.waypoints[2] = point(20000, -20000); n.sequences[0] = [1, 2]; n.current = 1; n.steer = 'wypt'; n.auto = true }
+    const near = { x: 0, z: -20000 + 2000 }
+    const over = suite((n) => { plan(n); (n.waypoints[1] as N.Waypoint).overfly = true })
+    expect(N.anticipate(over, near, 200, 30 * D)).toBe(false); expect(over.current).toBe(1)
+    const last = suite((n) => { plan(n); n.current = 2 })
+    expect(N.anticipate(last, { x: 19000, z: -20000 }, 200, 30 * D)).toBe(false)
+    const manual = suite((n) => { plan(n); n.auto = false })
+    expect(N.anticipate(manual, near, 200, 30 * D)).toBe(false)
+    const station = suite((n) => { plan(n); n.steer = 'tcn' })
+    expect(N.anticipate(station, near, 200, 30 * D)).toBe(false)
+    const marking = suite((n) => { plan(n); n.updating = 'dsg' }) // an overfly designation in hand holds the sequence (24.2.9.4)
+    expect(N.anticipate(marking, near, 200, 30 * D)).toBe(false)
+    expect(N.anticipate(suite(plan), near, 200, 30 * D)).toBe(true)
   })
 })

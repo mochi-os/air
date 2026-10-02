@@ -82,7 +82,7 @@ describe('the instrument cluster rides the nose', () => {
     const heading = section('\t// ---- heading scale:', '\t// ---- airspeed box')
     const run = (glass: object | null) => {
       const c = canvas([1, 0, 0, 1, -340, 156]) // the cluster's move onto the nose
-      new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', 'master', 'nav', 'hud_steer', `${heading}`)(
+      new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', 'master', 'nav', 'hud_steer', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${heading}`)(
         c.hctx, { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }, glass, 0, false, cx, cy, ppdv, 'g', { fwd: { x: 0, z: -1 } }, false, THREE, 'nav', { magnetic: false, variation: 0 }, () => null)
       return c.moves[0] // the first tick, at the scale's left end
     }

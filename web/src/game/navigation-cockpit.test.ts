@@ -38,7 +38,8 @@ const world = `const D2R=Math.PI/180, NM=1852;
   const airports=[{ x:-1429, z:3537, sy:5.7, code:"PMDY" }, { x:9, z:9, sy:3 }], radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false }, ils:{ on:true, channel:11 } };
   const keys_down=new Set(), held=(a)=>keys_down.has(a), airspeed=(mach)=>mach*340, emcon_set=()=>{}, ufc_update=()=>{}, performance={ now:()=>1000 }, timer_enter=()=>false, timer={ shown:"" };
   const ddi_state={ left:{ page:"fpas", menu:"" }, right:{ page:"rdr", menu:"" }, center:{ page:"hsi", menu:"" } };
-  const altitude_set={ radar:0, baro:5000 }, altitude_armed={ radar:true, baro:true };`
+  const altitude_set={ radar:0, baro:5000 }, altitude_armed={ radar:true, baro:true };
+  let computers={ one:true, two:true }, acl=0; const mc=()=>computers, acl_select=()=>{ acl++; };`
 const defs = [line('HSI_SCALES'), line('hsi_state'), line('VARIATION'), line('nav'), line('INS_KNOB'), line('sets'), line('carrier_given'), line('mumi'), line('MUMI_FILES'), line('fpas'), pages, line('UFC_ENTRY'), line('UFC_UNITS'), line('ufc'), line('grid_state'), line('GRID_SHIFTS'), line('GRID_BOX')].join('')
 const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
@@ -54,6 +55,9 @@ describe('what the jet tells the suite', () => {
   it('measures position, velocities, attitude and the switches that matter to an alignment', () => {
     const t = cockpit<navigate.Truth>('parking=true; ownship.gauges.bank=0.3; return nav_sense(0.25);')
     expect(t).toMatchObject({ dt: 0.25, x: 0, z: 0, east: 0, south: -200, tas: 200, heading: 0, bank: 0.3, airborne: true, brake: true, power: true, radar: true, deck: false })
+  })
+  it('says whether mission computer 1 is running, for the GPS that works through it', () => {
+    expect(cockpit<boolean[]>('const a=nav_sense(0).computer; computers={ one:false, two:true }; return [a, nav_sense(0).computer];')).toEqual([true, false])
   })
   it('takes true airspeed from the core\'s Mach number, not the speed over the ground', () => {
     expect(cockpit<number>('last_out=[0.5]; return nav_sense(0).tas;')).toBe(170)
@@ -442,7 +446,7 @@ describe('grid coordinates through the UFC and the grid display', () => {
     expect(entry('nav.waypoints[1]=navigate.world(83.5,-177.3735); nav.waypoints[1].offset=null; p(12); p(14); p(5); keys("opt3"); return [grid_face(256,76+0.5*72), grid_state.chosen, grid_face(60,256), grid_face(256,256), grid_state.chosen.band];')).toEqual([false, null, false, true, 'X'])
   })
   it('puts the grid\'s S shift where MENU is on every other display', () => {
-    const s = entry(`${lift('ddi_press')} const DDI_MENUS={ tac:[], supt:[] }, DDI_PAGES={ grid:{ press:grid_press }, rdr:{} }, ddi_show=()=>{};
+    const s = entry(`${lift('ddi_press')} const DDI_MENUS={ tac:[], supt:[] }, DDI_PAGES={ grid:{ press:grid_press }, rdr:{} }, ddi_show=()=>{}, caution_page=()=>null, avionics={ standby:()=>false, offered:()=>true }, display_test={ on:false };
       const menu=[ddi_press("right",18), ddi_state.right.menu]; ddi_press("right",18); ddi_state.right.menu=""; p(5); keys("opt3"); const south=[ddi_press("right",18), ddi_state.right.menu, grid_state.shift.north];
       ddi_state.right.menu="tac"; ddi_press("right",18); return [menu, south, ddi_state.right.menu];`)
     expect(s).toEqual([[true, 'tac'], [true, '', -1], 'supt'])
@@ -620,5 +624,37 @@ describe('the suite\'s cautions on the DDI', () => {
   it('are added to the caution captions', () => {
     expect(source).toMatch(/\n\tfor\(const caption of navigate\.cautions\(nav\)\) captions\.push\(caption\);/)
     expect(cockpit('nav.ins.knob="off"; nav_frame(0.1); return navigate.cautions(nav);')).toEqual(['INS ATT'])
+  })
+})
+
+describe('the HSI and the HUD without mission computer 1 (25.1.2)', () => {
+  it('takes only the scale, the TACAN and ACL on the backup HSI, and the orientation and decentre on its MODE sublevel', () => {
+    const top = cockpit<unknown[]>('computers={ one:false, two:true }; const r=[]; for(let pb=1;pb<=20;pb++){ hsi_state.level=""; if(hsi_press(pb,"center")) r.push(pb); } return r;')
+    expect(top).toEqual([1, 3, 5, 8])
+    const mode = cockpit<unknown[]>('computers={ one:false, two:true }; const r=[]; for(let pb=1;pb<=20;pb++){ hsi_state.level="mode"; if(hsi_press(pb,"center")) r.push(pb); } return r;')
+    expect(mode).toEqual([2, 4, 8, 10]) // no MAP
+    expect(cockpit('const r=[]; for(const pb of [6,9,10]){ hsi_state.level=""; r.push(hsi_press(pb,"center")); } return r;')).toEqual([true, true, true]) // with it: POS, MK and DATA
+  })
+  it('takes the steering off the HUD, the TACAN\'s too', () => {
+    expect(cockpit('return !!hud_steer();')).toBe(true)
+    expect(cockpit('computers={ one:false, two:true }; return hud_steer();')).toBeNull()
+    expect(cockpit('computers={ one:false, two:true }; nav.steer="wypt"; nav.waypoints[1]=point(5000,0); nav.current=1; return hud_steer();')).toBeNull()
+  })
+})
+
+describe('the autopilot\'s options on the HSI', () => {
+  it('boxes ACL from the top level\'s lower left pushbutton, in the NAV master mode only (24.1.3.19, 24.6.1)', () => {
+    expect(cockpit('const pressed=hsi_press(1,"center"); return [pressed, acl];')).toEqual([true, 1])
+    expect(cockpit('master="gun"; const pressed=hsi_press(1,"center"); return [pressed, acl];')).toEqual([false, 0])
+    expect(cockpit('hsi_state.level="mode"; hsi_press(1,"center"); return acl;')).toBe(0) // the MODE sublevel has nothing there
+  })
+  it('toggles the bank limit between NAV and TAC on the A/C data (24.2.8)', () => {
+    expect(cockpit('hsi_state.level="data"; hsi_state.data="ac"; const a=[hsi_press(4,"center"), nav.limit]; hsi_press(4,"center"); return [a, nav.limit];')).toEqual([[true, 'tac'], 'nav'])
+  })
+  it('boxes OVFLY for the waypoint shown on the waypoint data, and for no waypoint that is not there', () => {
+    const s = cockpit<unknown[]>(`nav.waypoints[4]=point(1000,1000); hsi_state.level="data"; hsi_state.data="wypt"; hsi_state.shown=4; const on=[hsi_press(16,"center"), nav.waypoints[4].overfly];
+      hsi_press(16,"center"); hsi_state.shown=9; return [on, nav.waypoints[4].overfly, hsi_press(16,"center")];`)
+    expect(s).toEqual([[true, true], false, false])
+    expect(cockpit('nav.waypoints[4]=point(1000,1000); hsi_state.level="data"; hsi_state.data="wypt"; hsi_state.shown=4; hsi_press(4,"center"); return [nav.limit, hsi_state.slew];')).toEqual(['nav', true]) // there, the same pushbutton is SLEW
   })
 })

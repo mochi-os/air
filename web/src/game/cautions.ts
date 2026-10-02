@@ -11,6 +11,11 @@
 // rest left and down. With every slot taken a new caution waits for space at the
 // end, unless it is a priority caution, for which the oldest non-priority one
 // gives way. Pure, so the engine feeds it rows and draws what comes back.
+//
+// The advisories take one line beneath them the same way: in the order they
+// came, a cleared one leaving its place blank until MASTER CAUTION packs the
+// rest. Both go with the display that carries them (host), and past three
+// lines of cautions MC OFP 13C gives them a display of their own (dedicated).
 
 export const ACROSS = 3
 const LINES = 7
@@ -65,4 +70,22 @@ export function lines(slots: Slots): Slots[] {
   const out: Slots[] = []
   for (let i = 0; i < slots.length; i += ACROSS) out.push(slots.slice(i, i + ACROSS))
   return out
+}
+
+// host: the display that carries the cautions and advisories (2.20.3.2.1) - the
+// left DDI; the centre display while the left one is off or shows BIT (busy);
+// the right DDI with the left and the centre both off. A left DDI busy with
+// BIT keeps them when it is the only display lit.
+export type Display = 'left' | 'center' | 'right'
+export function host(lit: Record<Display, boolean>, busy: boolean): Display | null {
+  if (lit.left && !busy) return 'left'
+  if (lit.center) return 'center'
+  if (lit.right) return 'right'
+  return lit.left ? 'left' : null
+}
+
+// dedicated: with more than three lines of cautions the caution display takes
+// the HSI's place (2.20.3.2.1, MC OFP 13C AND UP).
+export function dedicated(slots: Slots): boolean {
+  return lines(slots).length > 3
 }

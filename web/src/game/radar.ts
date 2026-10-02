@@ -175,6 +175,7 @@ export class Radar {
   sil = false // the radar's own silence: SIL on its page, or the knob at STBY
   emcon = false // the UFC's EMCON, which silences it whatever SIL says (NATOPS 2.13.5.2)
   unpowered = false // no ac power on the aircraft (engine.ts power_step, #116)
+  testing = false // in initiated BIT (avionics.ts): the set is not doing its work
   width = 0 // index into WIDTHS
   bars = 2 // index into BARS: four
   bar = 0 // the bar this sweep scans, 0 the top
@@ -261,7 +262,7 @@ export class Radar {
   // silent: the radar is not transmitting, from its own silence, from EMCON or
   // for want of ac power (#116).
   silent(): boolean {
-    return this.sil || this.emcon || this.unpowered
+    return this.sil || this.emcon || this.unpowered || this.testing
   }
 
   // emitter: the wire truth of what this radar is doing — 0 silent, 1 search,

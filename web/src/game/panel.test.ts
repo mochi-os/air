@@ -48,14 +48,15 @@ function system(o: { tod?: string; grounded?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
   return new Function('THREE', 'STATE', 'o', `let sim_time=0, reset_flag=false, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
-    const on_ground=()=>ownship.grounded, set_master=()=>{}, notice=()=>{}, translate=(t)=>t;
+    const on_ground=()=>ownship.grounded, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; power_step(out); }, at(t){ sim_time=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
       get reference(){ return reference; }, get emergency(){ return gear_emergency; }, get inhibit(){ return wing_inhibit; }, get held(){ return wing_held; }, set inhibit(v){ wing_inhibit=v; },
-      get cabin(){ return cabin_feet; }, set unpowered(v){ unpowered=v; }, get sari(){ return sari_clicked; }, get radalt(){ return radalt_test; } };`)(THREE, STATE, o)
+      get cabin(){ return cabin_feet; }, set unpowered(v){ unpowered=v; }, get sari(){ return sari_clicked; }, get radalt(){ return radalt_test; },
+      buttons, set out(v){ last_out=v; } };`)(THREE, STATE, o)
 }
 
 describe('the electrical power panel (#21, #116)', () => {
@@ -361,6 +362,20 @@ describe('the FCS panel (#19)', () => {
     s.ownship.grounded = true; s.press('trim.takeoff', 0)
     expect([s.rudder, s.reset]).toEqual([0, true])
     expect(source).toMatch(/hotas\.pedals=Math\.abs\(py\)>Math\.abs\(key_axes\.yaw\)\?py:key_axes\.yaw;\n\tinput\.yaw=THREE\.MathUtils\.clamp\(hotas\.pedals\+rudder_trim\*RUDDER_TRIM,-1,1\);/)
+  })
+
+  it('times the T/O TRIM and FCS RESET presses for their advisories, and notes the failures a reset leaves standing', () => {
+    const s = system()
+    s.at(40); s.press('trim.takeoff', 0)
+    expect(s.buttons.trim).toBe(-Infinity) // airborne: the button trims nothing, and advises nothing
+    s.ownship.grounded = true; s.at(41); s.press('trim.takeoff', 0)
+    expect(s.buttons.trim).toBe(41)
+    s.step(42, running); s.at(50); s.press('fcs.reset', 1)
+    expect([s.buttons.reset, s.buttons.jams, s.buttons.standing]).toEqual([50, 0, false]) // nothing failed: a clean reset
+    s.out = { jams: 2 }; s.at(60); s.press('fcs.reset', 1)
+    expect([s.buttons.reset, s.buttons.jams, s.buttons.standing]).toEqual([60, 2, true]) // two channels still failed: the caution comes off for those two
+    s.buses = { ac: false, essential: false }; s.at(70); s.press('fcs.reset', 1)
+    expect(s.buttons.reset).toBe(60) // no power, no reset
   })
 
   it('crosses PROC 1 and 3 with the ATT switch at STBY, up toward INS', () => {

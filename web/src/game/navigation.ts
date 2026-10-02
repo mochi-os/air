@@ -119,9 +119,10 @@ export interface Gps {
   phase: 'norm' | 'appr'
   error: Fix // GPS position less the true one
   over: number // seconds the horizontal error has been past the APPR limit
+  linked: boolean // mission computer 1 is there to use it: without MC1 the GPS function is inoperable (figure 12-1, MC 1)
 }
 export function tracking(gps: Gps): boolean {
-  return gps.on && gps.search <= 0
+  return gps.on && gps.linked && gps.search <= 0
 }
 // horizontal and vertical: the estimated errors as the A/C data display reads
 // them, metres; null when no satellites are tracked.
@@ -153,6 +154,7 @@ export interface Waypoint extends Fix {
   elevation: number
   name: string // a GPS point's ID code, kept when one is transferred (24.2.5.1.1)
   offset: Offset | null // an offset makes it an offset aimpoint
+  overfly?: boolean // OVFLY boxed: coupled sequential steering flies over it before turning for the next (2.9, 24.2.9.5)
 }
 export interface Station extends Fix {
   channel: number
@@ -179,6 +181,7 @@ export interface Update {
 export interface Navigation {
   ins: Ins
   gps: Gps
+  log: Log
   adc: { error: Fix; wind: Fix }
   source: Source
   reverted: boolean // position keeping fell to the ADC by itself: POS/ADC
@@ -215,6 +218,7 @@ export interface Navigation {
   meridian: 'true' | 'magnetic' // what an offset's bearing is entered and shown against
   local: boolean // TCN MGVAR: the TACAN station's own variation for its readouts, not the aircraft's (24.4.3.1)
   home: number // the FPAS home waypoint
+  limit: 'nav' | 'tac' // BLIM: the bank coupled steering may use (24.2.8)
   span: number // the world's wrap, 0 for none
 }
 
@@ -233,6 +237,23 @@ export interface Truth extends Fix {
   radar: boolean // the radar can give the INS its velocities (operating, NAV master mode)
   deck: boolean // aboard the ship: its inertial system reaches the jet
   tacan: (Fix & { bearing: number; range: number }) | null // a stored station received with range: where it is, and what the set reads
+  computer?: boolean // mission computer 1 is running; taken as running when not said
+}
+// Log: what the INS keeps of a flight for its post flight data (2.20.6.3,
+// figure 2-50) - the seconds its alignment took and the seconds it has
+// navigated unaided, the updates accepted with the errors they found, north
+// and east, summed as they came and summed in size, metres, and the position
+// error rate the last one showed, m/s.
+export interface Log {
+  alignment: number
+  navigation: number
+  updates: number
+  error: { north: number; east: number }
+  cumulative: { north: number; east: number }
+  rate: number | null
+}
+export function record(): Log {
+  return { alignment: 0, navigation: 0, updates: 0, error: { north: 0, east: 0 }, cumulative: { north: 0, east: 0 }, rate: null }
 }
 
 const none = (): Fix => ({ x: 0, z: 0 })
@@ -248,14 +269,14 @@ export function fresh(seed: number, span = 0): Navigation {
     knob: 'off', applied: 'off', mode: 'off', kind: '', manual: false, stored: false, heading: false, time: 0, progress: 0, held: false, radar: false, lapse: 0,
     partial: false, dark: Infinity, error: none(), drift: none(), angle: noise(seed) * TURN, motion: none(), aided: { position: 0, velocity: 0, held: false },
   }
-  const gps: Gps = { on: false, search: ACQUIRE, secure: true, phase: 'norm', error: polar(noise(seed + 1) * TURN, HERR), over: 0 }
+  const gps: Gps = { on: false, search: ACQUIRE, secure: true, phase: 'norm', error: polar(noise(seed + 1) * TURN, HERR), over: 0, linked: true }
   return {
-    ins, gps, adc: { error: none(), wind: none() }, source: 'adc', reverted: false, bias: (noise(seed + 2) - 0.5) * (Math.PI / 180),
+    ins, gps, log: record(), adc: { error: none(), wind: none() }, source: 'adc', reverted: false, bias: (noise(seed + 2) - 0.5) * (Math.PI / 180),
     waypoints: Array.from({ length: WAYPOINTS }, () => null), marks: Array.from({ length: MARKS }, () => null), mark: 0, current: 0,
     steer: '', course: null, kept: 0, heading: 0, sequences: Array.from({ length: SEQUENCES }, () => []), sequence: 0, lines: false, auto: false,
     designation: null, target: null, tot: null, speed: 0, updating: '', update: null, previous: null, slew: none(),
     stations: [], station: 0, points: [], memory: { identifier: '', files: [], loaded: [] },
-    magnetic: false, variation: 0, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, span,
+    magnetic: false, variation: 0, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, limit: 'nav', span,
   }
 }
 
@@ -305,6 +326,7 @@ function begin(nav: Navigation, truth: Truth, kind: 'cv' | 'gnd'): void {
   ins.manual = false
   ins.stored = false
   ins.partial = false
+  nav.log = record()
   const zero = nav.waypoints[0]
   ins.error = kind === 'gnd' && zero ? { x: wrap(zero.x - truth.x, nav.span), z: wrap(zero.z - truth.z, nav.span) } : none()
 }
@@ -455,14 +477,17 @@ export function step(nav: Navigation, truth: Truth): void {
     gps.on = true
     gps.search = Math.max(0, gps.search - dt)
   }
+  gps.linked = truth.computer !== false
   const h = horizontal(gps)
   gps.over = h !== null && h > APPR ? gps.over + dt : 0
   // the INS: a power loss shuts it down, and its time at OFF starts over, so it wants the knob there before it restarts (24.2.3.1.2)
   if (!truth.power && ins.mode !== 'off') shut(ins)
   if (ins.knob === 'off') ins.dark += dt
   if (ins.knob !== ins.applied || (ins.mode === 'off' && ins.knob !== 'off')) apply(nav, truth)
-  if (ins.mode === 'align') align(nav, truth)
-  else if (ins.mode !== 'off' && ins.mode !== 'nav' && ins.progress < LEVEL) ins.progress += dt // an attitude-only mode levels its platform too
+  if (ins.mode === 'align') {
+    align(nav, truth)
+    nav.log.alignment = ins.time
+  } else if (ins.mode !== 'off' && ins.mode !== 'nav' && ins.progress < LEVEL) ins.progress += dt // an attitude-only mode levels its platform too
   if (ins.mode === 'nav') {
     const aided = ins.knob === 'ifa' && good(gps) && !ins.partial
     if (aided) {
@@ -481,6 +506,7 @@ export function step(nav: Navigation, truth: Truth): void {
     if (!ins.aided.held) {
       ins.error.x += ins.drift.x * dt
       ins.error.z += ins.drift.z * dt
+      nav.log.navigation += dt // the time flown on the aided INS is not counted (2.20.6.3)
     }
   }
   // position keeping: a source that has lost its data gives way down the hierarchy (24.2.6)
@@ -554,12 +580,11 @@ export function cautions(nav: Navigation): string[] {
   return out
 }
 // advisories: ALGN for an INS navigating on an incomplete alignment
-// (24.2.3.3), NO SEC with GPS out of its secure mode (24.2.1.3.3), GPS in the
-// normal phase with its error past 333 m.
+// (24.2.3.3), and GPS in the normal phase with its error past 333 m
+// (24.2.5.7.3). NOSEC is MC OFP 15C's (24.2.1.3.3), not this jet's.
 export function advisories(nav: Navigation): string[] {
   const out: string[] = []
   if (nav.ins.partial && (nav.ins.mode === 'nav' || nav.ins.mode === 'gyro')) out.push('ALGN')
-  if (!nav.gps.secure) out.push('NO SEC')
   const h = horizontal(nav.gps)
   if (nav.source === 'gps' && nav.gps.phase === 'norm' && h !== null && h > NORM) out.push('GPS')
   return out
@@ -723,6 +748,81 @@ export function sequential(nav: Navigation, here: Fix, track: number): boolean {
   }
   return true
 }
+// ---- coupled steering (2.9.2.6, 24.2.8, 24.2.9.3, 24.2.9.5, 24.4.5.2) ----
+
+// What the flight controls couple to in azimuth: the track to fly, what CPL
+// reads beside it on the HUD and HSI, and whether a point with no course line
+// through it has been reached, where the steering uncouples.
+export interface Coupling {
+  track: number
+  label: string
+  passed: boolean
+}
+// A course line is closed at up to 45°, the cut easing off inside a lead of
+// it that grows with the square of the speed, as the room a turn needs does:
+// short of that the capture swings through the line. A point flown direct is
+// reached inside REACH with it gone behind the wing.
+const INTERCEPT = Math.PI / 4
+const LEAD = 1500
+const SWING = 1.2 // the lead, in v²/g
+const ROLL = 4 // seconds to bank into a turn
+const REACH = NM
+const GRAVITY = 9.80665
+// inbound: the course a sequence flies into its steer-to waypoint, from the
+// one before it; null at the first, which is flown direct.
+function inbound(nav: Navigation): number | null {
+  const list = nav.sequences[nav.sequence]
+  const at = list.indexOf(nav.current)
+  const from = at > 0 ? spot(nav, list[at - 1]) : null
+  const point = spot(nav, nav.current)
+  return from && point ? leg(nav, from, point).bearing : null
+}
+// coupling: what the steering boxed on the HSI gives the autopilot - the
+// waypoint or offset aimpoint, the sequence with AUTO boxed, or the TACAN
+// station (its bearing and range as the receiver has them); null with none
+// boxed, no point to fly to, or a target designated, which waypoint steering
+// does not couple to. Direct, it flies at the point; with a course line it
+// captures the line and flies it on past the point. A sequence flies the
+// course from each waypoint to the next. speed: over the ground, m/s.
+export function coupling(nav: Navigation, here: Fix, track: number, speed: number, station: Leg | null): Coupling | null {
+  let to: Leg | null = null
+  let label = 'TCN'
+  let course = nav.course
+  if (nav.steer === 'tcn') to = station
+  else if (nav.steer === 'wypt' && !nav.designation) {
+    const point = spot(nav, nav.current)
+    to = point && leg(nav, here, point)
+    label = nav.auto ? 'SEQ' + (nav.sequence + 1) : 'WYPT'
+    if (course === null && nav.auto) course = inbound(nav)
+  }
+  if (!to) return null
+  if (course === null) return { track: to.bearing, label, passed: to.range < REACH && Math.abs(turn(track, to.bearing)) > Math.PI / 2 }
+  const off = Math.sin(turn(course, to.bearing)) * to.range // the line's distance to the right
+  const cut = Math.max(-INTERCEPT, Math.min(INTERCEPT, Math.atan(off / Math.max(LEAD, (SWING * speed * speed) / GRAVITY))))
+  return { track: (course + cut + TURN) % TURN, label, passed: false }
+}
+// anticipate turns coupled sequential steering ahead of its waypoint onto the
+// course to the next (24.2.9.5): a turn of the bank allowed, begun where it
+// rolls out on the new course with ROLL seconds to bank into it - never
+// further out than the 5 nm at which the sequence moves on by itself. A waypoint with OVFLY boxed is flown over
+// first, and the last of the sequence is flown to. speed in m/s, bank in
+// radians. true: the next waypoint is now the steer-to point.
+export function anticipate(nav: Navigation, here: Fix, speed: number, bank: number): boolean {
+  if (!nav.auto || nav.steer !== 'wypt' || nav.updating === 'dsg') return false
+  const list = nav.sequences[nav.sequence]
+  const at = list.indexOf(nav.current)
+  const point = spot(nav, nav.current)
+  const next = at >= 0 && at < list.length - 1 ? spot(nav, list[at + 1]) : null
+  if (!point || !next || point.overfly) return false
+  const to = leg(nav, here, point)
+  const bend = Math.abs(turn(inbound(nav) ?? to.bearing, leg(nav, point, next).bearing))
+  const radius = (speed * speed) / (GRAVITY * Math.tan(bank))
+  if (to.range > Math.min(5 * NM, radius * Math.tan(bend / 2) + speed * ROLL)) return false
+  nav.current = list[at + 1]
+  nav.course = null
+  return true
+}
+
 // required: the groundspeed to make the time on target, knots (24.2.9.6), or
 // null without a target in a sequence and a TOT. Direct to the target it is the
 // distance over the time left; with AUTO boxed the sequence's path, the final
@@ -842,6 +942,15 @@ export function reading(nav: Navigation): Leg | null {
 export function accept(nav: Navigation): boolean {
   const u = nav.update
   if (!u || !updatable(nav)) return false
+  if (nav.source === 'ins') {
+    const log = nav.log
+    log.updates++
+    log.error.north -= u.delta.z
+    log.error.east += u.delta.x
+    log.cumulative.north += Math.abs(u.delta.z)
+    log.cumulative.east += Math.abs(u.delta.x)
+    log.rate = log.navigation > 0 ? Math.hypot(u.delta.x, u.delta.z) / log.navigation : null
+  }
   shift(nav, { x: -u.delta.x, z: -u.delta.z })
   nav.update = null
   nav.updating = ''

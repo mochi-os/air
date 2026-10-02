@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import * as navigate from './navigation'
+import * as avionics from './avionics'
+import * as autopilot from './autopilot'
 
 // The DDI pages against NATOPS (#24): the EADI (2.13.4.3), the engine monitor
 // display (2.1.1.7.6) and the HSI (2.13.4.7). engine.ts cannot be imported
@@ -26,7 +28,7 @@ const navdefs = `const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); 
   const nav_sense=()=>({ dt:0, x:ownship.pos?ownship.pos.x:0, z:ownship.pos?ownship.pos.z:0, east:0, south:0, tas:ownship.tas??ownship.speed??0, heading:0, pitch:0, bank:0, airborne:!ownship.grounded, brake:false, power:true, radar:false, deck:false, tacan:null });`
 interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][]; lines: [number, number, number, number, string][]; fills: [number, number, number, number, string][]; fonts: [string, string][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
-  const run = new Function('navigate', `const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  const run = new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const master="nav"; const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     ${lift('ddi_legend')} ${lift(name)}
     const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[], lines=[], fills=[], fonts=[]; let style='', fill='', font='', at=[0,0];
@@ -219,7 +221,7 @@ function repeat(o: Repeat = {}): Shown {
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
   const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
-  return new Function('THREE', 'ownship', 'navigate', `const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
+  return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }); const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
@@ -798,15 +800,15 @@ const d_at = (d: Drawn, x: number, y: number) => d.text.find(([, px, py]) => px 
 // The HSI against 2.13.4.7, 24.1.3 and figures 2-24 and 24-2. Marks inside the
 // rose are recorded relative to the aircraft (the translated frame); the aircraft
 // symbol and the text on the page.
-interface Hsi { tas?: number; altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; level?: string; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string; tacan?: string; emcon?: boolean; nav?: string; time?: number; func?: string }
+interface Hsi { computer?: boolean; tas?: number; altitude?: number; heading?: number; track?: number | null; ground?: number; speed?: number; scale?: number; dctr?: boolean; north?: boolean; mode?: boolean; level?: string; map?: boolean; timer?: string; east?: number; north_m?: number; wrap?: string; tacan?: string; emcon?: boolean; nav?: string; time?: number; func?: string }
 function hsi(o: Hsi = {}, display = 'left'): Drawn {
   const deg = (v: number | null | undefined, d: number) => v === null ? 'null' : `${(v ?? d)}*D2R`
   return page('ddi_hsi', `const ownship={ pos:{x:0,y:${o.altitude ?? 1000},z:0}, speed:${o.speed ?? 100}, tas:${o.tas ?? 'undefined'}, gauges:{ heading:${deg(o.heading, 0)}, ground:${o.ground ?? 200}, track:${deg(o.track, 0)}, zulu:45296 } };
     const hsi_state={ scale:${o.scale ?? 40}, dctr:${o.dctr ?? false}, map:${o.map ?? false}, north:${o.north ?? false}, level:${JSON.stringify(o.mode ? 'mode' : o.level ?? '')}, data:"wypt", shown:0, check:false, gps:{ cursor:0, asked:-1e9 } }, ufc={ func:${JSON.stringify(o.func ?? '')} }, CARRIER={ x:${o.east ?? 18520}, z:${-(o.north_m ?? 0)} };
-    const sim_time=${o.time ?? 0}, carrier_given={ heading:0, speed:0 }, hsi_data=()=>{}; ${navdefs} ${o.nav ?? ''}
+    const sim_time=${o.time ?? 0}, carrier_given={ heading:0, speed:0 }, hsi_data=()=>{ throw new Error("the data sublevel drawn"); }, mc=()=>({ one:${o.computer ?? true}, two:true }); ${navdefs} ${o.nav ?? ''}
     const island_polygons=[], airports=[], wrap_axis=${o.wrap ?? '(v)=>v'}, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, timer={ shown:${JSON.stringify(o.timer ?? '')} }, timer_text=()=>"01:30";
     const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...${o.tacan ?? '{}'} } }, emcon=${o.emcon ?? false};
-    ${lift('tacan')} ${lift('tacan_variation')} ${lift('time_to_go')}`, display)
+    ${lift('tacan')} ${lift('tacan_variation')} ${lift('hsi_chart')} ${lift('time_to_go')}`, display)
 }
 const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-6)
 const polar = (r: number, degrees: number) => [Math.sin(degrees * Math.PI / 180) * r, -Math.cos(degrees * Math.PI / 180) * r]
@@ -823,7 +825,7 @@ describe('the HSI page', () => {
   it('shows the scale as SCL at the top centre, doubled in DCTR, and steps it down on a press', () => {
     expect(at(hsi(), 'SCL/40')).toEqual([256, 30])
     expect(texts(hsi({ dctr: true }))).toContain('SCL/80')
-    const steps = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, level:"" }, ufc_press=()=>{}, ownship={}; ${navdefs} ${lift('hsi_press')}
+    const steps = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, level:"" }, ufc_press=()=>{}, ownship={}, mc=()=>({ one:true, two:true }); ${navdefs} ${lift('hsi_press')}
       const seen=[]; for(let i=0;i<6;i++){ hsi_press(8,"left"); seen.push(hsi_state.scale); } return seen;`)(navigate) as number[]
     expect(steps).toEqual([20, 10, 5, 160, 80, 40])
   })
@@ -909,7 +911,7 @@ describe('the HSI page', () => {
 
   it('shows ZTOD at the lower left and the timer shown, ET or CD, at the lower right', () => {
     const d = hsi()
-    expect(at(d, '12:34:56')).toEqual([20, 414])
+    expect(at(d, '12:34:56')).toEqual([56, 414]) // clear of ACL's legend at the pushbutton beside it
     expect(texts(d)).not.toContain('ET')
     const et = hsi({ timer: 'et' })
     expect(at(et, 'ET')).toEqual([444, 370])
@@ -935,7 +937,7 @@ describe('the HSI page', () => {
     for (const gone of ['MODE', 'TIMEUFC']) expect(texts(sub)).not.toContain(gone)
     expect(texts(hsi({ mode: true, north: true }))).toContain('N UP')
     expect(texts(hsi({ mode: true }, 'left'))).not.toContain('MAP')
-    const presses = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, dctr:false, map:true, north:false, level:"" }, pressed=[], ufc_press=(b)=>pressed.push(b), ownship={}; ${navdefs} ${lift('hsi_press')}
+    const presses = new Function('navigate', `const HSI_SCALES=[5,10,20,40,80,160], hsi_state={ scale:40, dctr:false, map:true, north:false, level:"" }, pressed=[], mc=()=>({ one:true, two:true }), ufc_press=(b)=>pressed.push(b), ownship={}; ${navdefs} ${lift('hsi_press')}
       const mode=()=>hsi_state.level==="mode";
       const r=[hsi_press(4,"left"), hsi_press(2,"left"), hsi_press(3,"left"), mode(), hsi_press(4,"left"), hsi_state.north, hsi_press(2,"left"), hsi_state.dctr,
         hsi_press(6,"left"), hsi_state.map, hsi_press(6,"center"), hsi_state.map, hsi_press(17,"left"), hsi_press(10,"left"), mode(), hsi_press(17,"left"), pressed.join()];
@@ -964,6 +966,35 @@ describe('the HSI\'s navigation symbology', () => {
   const north = 'nav.waypoints[3]={ x:0, z:-18520, elevation:0, name:"", offset:null }; nav.current=3;' // a waypoint 10 nm north
   const boxed = (d: Drawn, x: number, y: number) => d.rects.some(([rx, ry, , h]) => ry === y - 14 && h === 28 && rx <= x + 6 && rx >= x - 140)
 
+  it('is MC2\'s backup without mission computer 1: the rose, the TACAN and the scale, and no map, waypoint, sequence or data (25.1.2)', () => {
+    const plan = 'nav.steer="wypt"; nav.waypoints[1]={ x:9260, z:0, elevation:0, name:"ALPHA", offset:null }; nav.waypoints[2]={ x:0, z:-9260, elevation:0, name:"", offset:null }; nav.current=1; nav.sequences[0]=[1,2]; nav.lines=true; nav.course=1; nav.target=1; nav.tot=50000;'
+    const full = hsi({ nav: plan, map: true }, 'center'), backup = hsi({ nav: plan, map: true, computer: false }, 'center')
+    expect(texts(full)).toEqual(expect.arrayContaining(['POS/INS', 'DATA', 'MK 1', 'WYPT', 'SEQ1', 'ALPHA'])); expect(full.fills.length).toBeGreaterThan(backup.fills.length) // the chart
+    for (const gone of ['POS/INS', 'UPDT', 'DATA', 'MK 1', 'WYPT', 'NAVDSG', 'SEQ1', 'TIMEUFC', 'AUTO', 'ALPHA', '↑', '↓']) expect(texts(backup), gone).not.toContain(gone)
+    expect(texts(backup).some((t) => t.endsWith('G REQD'))).toBe(false); expect(texts(full).some((t) => t.endsWith('G REQD'))).toBe(true)
+    for (const [label, px, py] of [['SCL/40', 256, 30], ['TCN', 10, 96], ['MODE', 10, 256], ['ACL', 10, 416]] as [string, number, number][]) expect(at(backup, label), label).toEqual([px, py])
+    expect(texts(backup)).toEqual(expect.arrayContaining(['NIM', 'HSEL'])) // the TACAN block and the heading set stay
+    expect(full.lines.length).toBeGreaterThan(backup.lines.length) // the waypoint's pointer, its course line and the sequence's lines
+    expect(hsi({ nav: plan, computer: false }).lines.length).toBe(hsi({ nav: plan + ' nav.lines=false;', computer: false }).lines.length) // no sequence drawn
+    expect(texts(hsi({ level: 'data', computer: false }))).toContain('SCL/40') // no data sublevel: the top level
+    expect(texts(hsi({ mode: true, computer: false }, 'center'))).not.toContain('MAP'); expect(texts(hsi({ mode: true }, 'center'))).toContain('MAP')
+  })
+  it('offers ACL at the lower left in the NAV master mode, boxed while it is selected (24.1.3.19, 24.6.1)', () => {
+    expect(at(hsi(), 'ACL')).toEqual([10, 416]); expect(boxed(hsi(), 10, 416)).toBe(false)
+    expect(boxed(hsi({ nav: 'link.selected=true;' }), 10, 416)).toBe(true)
+    expect(source).toMatch(/\n\tif\(!level&&master==="nav"\) ddi_legend\(x,1,"ACL",true,link\.selected\); \}/)
+    expect(texts(hsi({ level: 'pos' }))).not.toContain('ACL'); expect(texts(hsi({ level: 'updt' }))).not.toContain('ACL')
+    expect(texts(hsi({ mode: true }))).not.toContain('ACL') // the top level's
+  })
+  it('writes CPL and the steering\'s source either side of the aircraft symbol while coupled to it (2.13.4.7 item 8)', () => {
+    expect(texts(hsi())).not.toContain('CPL')
+    const d = hsi({ nav: 'autopilot.cue=()=>true; coupled="CPL SEQ2";' })
+    const left = at(d, 'CPL') as number[], right = at(d, 'SEQ2') as number[]
+    expect([left[0], right[0]]).toEqual([226, 286]); expect(left[1]).toBe(right[1])
+    expect(d.text.filter(([t]) => t === 'CPL').length).toBe(1)
+    expect(texts(hsi({ nav: 'autopilot.cue=()=>true; hold.source="bank"; coupled="CPLD P/R";' }))).not.toContain('CPL') // the carrier's couple is the HUD's to show
+    expect(texts(hsi({ nav: 'autopilot.cue=()=>true; hold.source="heading"; coupled="CPLD HDG";' }))).not.toContain('CPL')
+  })
   it('puts the top level\'s options at their pushbuttons, the steering selected boxed', () => {
     const d = hsi()
     for (const [label, px, py] of [['POS/INS', 96, 30], ['UPDT', 176, 30], ['SCL/40', 256, 30], ['MK 1', 336, 30], ['DATA', 416, 30], ['TCN', 10, 96], ['MODE', 10, 256], ['WYPT', 502, 96], ['↑', 502, 176], ['↓', 502, 256],
@@ -1048,7 +1079,7 @@ describe('the HSI\'s navigation symbology', () => {
     const d = hsi({ nav: 'nav.heading=60*D2R;' })
     const [mx, my] = polar(R + T + 8, 60), c = Math.cos(60 * Math.PI / 180), sn = Math.sin(60 * Math.PI / 180)
     for (const side of [-1, 1]) expect(d.fills.some(([fx, fy, w, h]) => near([fx, fy, w, h], [mx + side * 6 * c - 3, my + side * 6 * sn - 3, 6, 6]))).toBe(true)
-    expect(at(d, 'HSEL')).toEqual([20, 436]); expect(d.text).toContainEqual(['060°', 20, 458])
+    expect(at(d, 'HSEL')).toEqual([56, 436]); expect(d.text).toContainEqual(['060°', 56, 458])
   })
 
   it('joins the sequence\'s waypoints with lines when SEQ # is boxed', () => {
@@ -1071,7 +1102,7 @@ describe('the HSI\'s navigation symbology', () => {
     const own = hsi({ nav: stored }), local = hsi({ nav: stored + 'nav.local=true;' })
     expect(own.text).toContainEqual(['080°/ 10.0', 60, 66]); expect(local.text).toContainEqual(['086°/ 10.0', 60, 66]) // the ship due east
     expect(own.text).toContainEqual(['080°', 444, 458]); expect(local.text).toContainEqual(['086°', 444, 458])
-    expect(local.text).toContainEqual(['350°', 20, 458]) // the heading selected stays against the aircraft's
+    expect(local.text).toContainEqual(['350°', 56, 458]) // the heading selected stays against the aircraft's
     expect(hsi({ nav: stored + 'nav.local=true; nav.stations[0].channel=12;' }).text).toContainEqual(['080°/ 10.0', 60, 66]) // the station tuned is not the one stored
     const waypoint = hsi({ nav: stored + 'nav.local=true; nav.waypoints[3]={ x:0, z:-18520, elevation:0, name:"", offset:null }; nav.current=3; nav.steer="wypt";' })
     expect(waypoint.text).toContainEqual(['080°', 444, 458]) // a waypoint's course is the aircraft's
@@ -1169,6 +1200,16 @@ function data(o: Data = {}): Drawn {
 }
 describe('the HSI\'s DATA sublevels', () => {
   const boxed = (d: Drawn, y: number) => d.rects.some(([, ry, , h]) => ry === y - 14 && h === 28)
+  it('offers the bank limit on the A/C data, NAV or TAC, under UFC (24.2.8, figure 24-9 sheet 5)', () => {
+    expect(at(data({ tab: 'ac' }), 'NAV BLIM')).toEqual([10, 176]); expect(texts(data({ tab: 'ac' }))).not.toContain('TAC BLIM')
+    expect(at(data({ tab: 'ac', nav: 'nav.limit="tac";' }), 'TAC BLIM')).toEqual([10, 176])
+    expect(texts(data())).not.toContain('NAV BLIM') // the A/C data's, not the waypoint's
+  })
+  it('offers OVFLY on the waypoint data, boxed for a waypoint to be flown over (2.9, 24.2.9.5)', () => {
+    expect(at(data(), 'OVFLY')).toEqual([416, 482]); expect(boxed(data(), 482)).toBe(false)
+    expect(boxed(data({ nav: 'nav.waypoints[1].overfly=true;' }), 482)).toBe(true)
+    expect(texts(data({ tab: 'ac' }))).not.toContain('OVFLY')
+  })
   it('shows a waypoint: its ID and number, position, elevation, the time on target and groundspeed, and the options', () => {
     const d = data({ nav: 'nav.tot=13*3600+45*60+30; nav.speed=367;' })
     expect(d.text).toContainEqual(['NIM', 256, 62]); expect(d.text).toContainEqual(['WYPT 1', 256, 84])
@@ -1403,29 +1444,37 @@ const ufcdefs = ['UFC_PAGES', 'UFC_ENTRY', 'UFC_UNITS', 'UFC_BUTTONS', 'UFC_RADI
 }).join('\n')
 const radiodefs = /\n\/\/ The radios the UFC works[\s\S]*?\nfunction emcon_set[^\n]*\n/.exec(source)?.[0] ?? ''
 const shipdefs = 'const SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" }, icls:11 };'
+// The autopilot behind the A/P page: the real module, over a jet flying level at 3,000 m and 150 m/s with
+// the radar altimeter reading, nothing to couple to unless the test gives a couple.
+const pilotdefs = `const hold=autopilot.fresh(); let coupled="", couple=null; const couple_now=()=>couple&&{ couple, label:"CPL WYPT", passed:false };
+  const autopilot_sense=(now)=>({ time:0, pitch:2, bank:0, heading:90, track:90, altitude:3000, height:900, vertical:0, cas:150, roll:0, rate:0, approach:false, airborne:true, attitude:true, computer:true,
+    stick:{ pitch:0, roll:0 }, trim:{ pitch:0, roll:0 }, selected:120, couple:now?now.couple:null, limit:"nav", ...flying });`
+interface Flown { engaged: boolean; modes: Record<string, boolean>; caution: number; altitude: number; source: string }
 interface Face { scratch: string; options: string[] }
 interface Ufc { func: string; entry: string; error: boolean; blink: number }
 interface Tacan { on: boolean; channel: number; band: string; mode: string; air: boolean }
 interface Radios { tacan: Tacan; ils: { on: boolean; channel: number } }
-interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string; precise?: boolean; unit?: string; meridian?: string }
-interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios; face: Face }
+interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string; precise?: boolean; unit?: string; meridian?: string; test?: number; modes?: string[]; offered?: string[]; link?: boolean; beacon?: boolean }
+interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios & { link: { on: boolean }; beacon: { on: boolean } }; face: Face; hold: Flown; coupled: string }
 const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', entry: '', error: false, blink: 0, ...over })
 function ufcface(state: Ufc, live: Live = {}, now = 0): Face {
-  const run = new Function('state', 'live', 'now', `${ufcdefs} ${lift('ufc_face')}
-    const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...live.tacan }, ils:{ on:true, channel:11, ...live.ils } };
-    return ufc_face(state, { ...live, emcon:!!live.emcon, radios, timer:live.timer ?? "" }, now);`)
-  return run(state, live, now) as Face
+  const run = new Function('state', 'live', 'now', 'autopilot', `${ufcdefs} ${lift('ufc_face')}
+    const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...live.tacan }, ils:{ on:true, channel:11, ...live.ils }, link:{ on:live.link??true }, beacon:{ on:live.beacon??true } };
+    const set=(names)=>Object.fromEntries(autopilot.MODES.map(m=>[m,names.includes(m)]));
+    return ufc_face(state, { ...live, emcon:!!live.emcon, radios, timer:live.timer ?? "", autopilot:{ modes:set(live.modes??[]), offered:set(live.offered??["attitude","select","barometric","radar"]) } }, now);`)
+  return run(state, live, now, autopilot) as Face
 }
-function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false): Pressed {
-  const run = new Function('buttons', 'start', 'index', 'sounding', `${ufcdefs} ${shipdefs}
+function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false, flying: Record<string, unknown> = {}, couple: autopilot.Couple | null = null): Pressed {
+  const run = new Function('buttons', 'start', 'index', 'sounding', 'autopilot', 'flying', 'given', `${ufcdefs} ${shipdefs} ${pilotdefs} couple=given;
     let law_index=index, law_primary=sounding, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, pressed=[], data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, nav={ precise:false, units:{}, meridian:"true" };
     const pit_press=(a)=>pressed.push(a), timer_enter=()=>false, timer={ shown:"" };
     const ufc_update=()=>{}; const performance={ now:()=>1000 };
     const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"", ...start };
     ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('ufc_face')}
+    ${lift('ufc_live')} const sim_time=0, ufc_test={ at:-Infinity };
     for(const b of buttons) ufc_press(b);
-    return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, { emcon, radios, timer:"" }, 2000) };`)
-  return run(buttons, start, index, sounding) as Pressed
+    return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, ufc_live(), 2000), hold, coupled };`)
+  return run(buttons, start, index, sounding, autopilot, flying, couple) as Pressed
 }
 function ufcbutton(y: number, z: number): string | null {
   const run = new Function('y', 'z', `${ufcdefs} ${lift('ufc_button_at')} return ufc_button_at(y, z);`)
@@ -1438,9 +1487,15 @@ describe('the UFC windows', () => {
     expect(ufcface(fresh())).toEqual({ scratch: blank, options: ['', '', '', '', ''] })
   })
 
-  it('show the autopilot page uncued, the scratchpad holding only a keyed entry: no autopilot stands behind it', () => {
-    expect(ufcface(fresh({ func: 'ap' }))).toEqual({ scratch: blank, options: [' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'] })
+  it('show the autopilot\'s options that are available, a colon ahead of each selected, the scratchpad holding only a keyed entry (2.9)', () => {
+    expect(ufcface(fresh({ func: 'ap' }))).toEqual({ scratch: blank, options: [' ATTH', ' HSEL', ' BALT', ' RALT', ''] }) // nothing to couple to: no CPL
+    expect(ufcface(fresh({ func: 'ap' }), { offered: ['attitude', 'select', 'barometric', 'radar', 'coupled'], modes: ['select', 'barometric'] }).options).toEqual([' ATTH', ':HSEL', ':BALT', ' RALT', ' CPL'])
+    expect(ufcface(fresh({ func: 'ap' }), { offered: ['barometric', 'coupled'], modes: ['coupled'] }).options).toEqual(['', '', ' BALT', '', ':CPL']) // coupled: no ATTH or HSEL, and no RALT out of the altimeter's reach
     expect(ufcface(fresh({ func: 'ap', entry: '500' })).scratch).toBe('      500')
+  })
+  it('show the data link and the radar beacon ON, with no channel to read (24.6.1.2.1)', () => {
+    expect(ufcface(fresh({ func: 'dl' }))).toEqual({ scratch: 'ON       ', options: ['', '', '', '', ''] }); expect(ufcface(fresh({ func: 'dl' }), { link: false }).scratch).toBe(blank)
+    expect(ufcface(fresh({ func: 'bcn' })).scratch).toBe('ON       '); expect(ufcface(fresh({ func: 'bcn' }), { beacon: false }).scratch).toBe(blank)
   })
 
   it('show the TACAN ON with its channel, cueing its mode, A/A and band (NATOPS 24.4.2, 2.13.5.6)', () => {
@@ -1506,6 +1561,11 @@ describe('the UFC\'s data pages', () => {
     expect(ufcface(fresh({ func: 'bearing' }), { meridian: 'true' }).options).toEqual([':TRUE', '', '', '', ''])
     expect(ufcface(fresh({ func: 'bearing' }), { meridian: 'magnetic' }).options).toEqual([':MAG', '', '', '', ''])
   })
+  it('lights the outer segments for five seconds and the inner for the next five in its test, every option cue with them (figure 2-48)', () => {
+    expect(ufcface(fresh({ func: 'tcn', entry: '12' }), { test: 1 })).toEqual({ scratch: '008888888', options: Array(5).fill(':0000') })
+    expect(ufcface(fresh(), { test: 2 })).toEqual({ scratch: '**8888888', options: Array(5).fill(':****') })
+    expect(ufcface(fresh(), { test: 0 }).scratch).toBe('         ')
+  })
   it('runs a precise grid\'s ten digits off the left of the scratchpad', () => {
     expect(ufcface(fresh({ func: 'wypt', entry: '6340338642' })).scratch).toBe('340338642')
     expect(ufcface(fresh({ func: 'wypt', entry: '634386' })).scratch).toBe('   634386')
@@ -1552,7 +1612,37 @@ describe('the UFC pushbuttons', () => {
     expect(ufcpress(['1', 'clr'], { func: 'ap' }, 200, true).disabled).toBe(false) // the keypad is not a mode change
     expect(ufcpress(['opt2'], { func: 'ap' }, 200, true).disabled).toBe(false) // BALT is not :RALT
     expect(ufcpress(['opt3'], { func: 'tcn' }, 200, true).disabled).toBe(false) // nor is the TACAN's X
-    expect(ufcpress(['ap', 'opt3']).face.options).toEqual([' ATTH', ' HSEL', ' BALT', ' RALT', ' CPL'])
+  })
+  it('engage the basic autopilot with ON/OFF on the A/P page, and take everything off with it again (2.9.2.1)', () => {
+    const on = ufcpress(['ap', 'onoff'])
+    expect([on.hold.engaged, on.hold.modes, on.face.options]).toEqual([true, { attitude: false, select: false, barometric: false, radar: false, coupled: false }, [' ATTH', ' HSEL', ' BALT', ' RALT', '']])
+    const off = ufcpress(['ap', 'opt2', 'onoff'])
+    expect([off.hold.engaged, off.hold.modes.barometric]).toEqual([false, false])
+    expect(ufcpress(['ap', 'onoff'], {}, 200, false, { bank: 75 }).hold).toMatchObject({ engaged: false, caution: 10 }) // past 70° of bank it does not engage: AUTO PILOT
+  })
+  it('select a mode with its option, the autopilot coming on with it, and deselect it with a second press (2.9.2.1)', () => {
+    const balt = ufcpress(['ap', 'opt2'])
+    expect([balt.hold.engaged, balt.hold.modes.barometric, balt.hold.altitude, balt.face.options]).toEqual([true, true, 3000, [' ATTH', ' HSEL', ':BALT', ' RALT', '']])
+    expect(ufcpress(['ap', 'opt3']).hold).toMatchObject({ modes: { radar: true }, altitude: 900 }); expect(ufcpress(['ap', 'opt2', 'opt3']).hold.modes).toMatchObject({ barometric: false, radar: true })
+    expect(ufcpress(['ap', 'opt0', 'opt1']).hold.modes).toMatchObject({ attitude: false, select: true })
+    const again = ufcpress(['ap', 'opt2', 'opt2'])
+    expect([again.hold.engaged, again.hold.modes.barometric]).toEqual([true, false]) // the basic autopilot stays
+  })
+  it('take no press on an option that is not displayed, and raise no caution for it', () => {
+    const none = ufcpress(['ap', 'opt4'])
+    expect([none.hold.engaged, none.hold.caution]).toEqual([false, -Infinity])
+    expect(ufcpress(['ap', 'opt3'], {}, 200, false, { height: null }).hold.engaged).toBe(false) // no radar altitude: no RALT
+  })
+  it('couple with CPL to the steering there is, taking its label for the HUD and HSI, and uncouple with a second press (2.9.2.6)', () => {
+    const steering: autopilot.Couple = { axis: 'track', value: 45, vertical: null }
+    const on = ufcpress(['ap', 'opt0', 'opt4'], {}, 200, false, {}, steering)
+    expect([on.hold.modes, on.hold.source, on.coupled, on.face.options]).toEqual([{ attitude: false, select: false, barometric: false, radar: false, coupled: true }, 'track', 'CPL WYPT', ['', '', ' BALT', ' RALT', ':CPL']])
+    const off = ufcpress(['ap', 'opt4', 'opt4'], {}, 200, false, {}, steering)
+    expect([off.hold.engaged, off.hold.modes.coupled, off.hold.caution]).toEqual([true, false, -Infinity]) // the pilot's own deselection: no caution
+  })
+  it('turn the data link and the radar beacon on and off with ON/OFF', () => {
+    expect(ufcpress(['dl', 'onoff']).radios.link.on).toBe(false); expect(ufcpress(['bcn', 'onoff']).radios.beacon.on).toBe(false)
+    expect(ufcpress(['dl', 'onoff', 'onoff']).radios.link.on).toBe(true); expect(ufcpress(['dl', 'onoff']).radios.beacon.on).toBe(true)
   })
 
   it('show the autopilot page from A/P without engaging ATC, which is the throttle\'s, and clear it on a second press', () => {
@@ -1567,7 +1657,7 @@ describe('the UFC pushbuttons', () => {
     expect(ufcpress(['tcn', 'onoff']).face.scratch).toBe('       74')
     expect(ufcpress(['tcn', 'onoff', 'onoff']).radios.tacan.on).toBe(true)
     expect(ufcpress(['ils', 'onoff']).radios).toEqual({ ...ufcpress([]).radios, ils: { on: false, channel: 11 } })
-    for (const func of ['', 'ap', 'iff', 'dl', 'bcn', 'time']) expect(ufcpress(['onoff'], { func }).radios, func).toEqual(ufcpress([]).radios)
+    for (const func of ['', 'ap', 'iff', 'time']) expect(ufcpress(['onoff'], { func }).radios, func).toEqual(ufcpress([]).radios)
   })
 
   it('select T/R or RCV, A/A and the X or Y band from the TCN options (24.4.2)', () => {
@@ -1657,13 +1747,13 @@ describe('the radar silence the game reads', () => {
 describe('the TIMEUFC page', () => {
   const timers = /\n\/\/ The mission computer's timers[\s\S]*?\n(?=const ufc=\{)/.exec(source)?.[0] ?? ''
   interface Timed { ufc: Ufc; shown: string; et: number; cd: number; running: { et: boolean; cd: boolean }; face: Face }
-  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', 'navigate', `${ufcdefs} ${shipdefs} let sim_time=0; ${timers}
+  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', 'navigate', 'autopilot', `${ufcdefs} ${shipdefs} const flying={}; ${pilotdefs} const master="nav", link={ selected:false }, mc=()=>({ one:true, two:true }); let sim_time=0; ${timers}
     let law_primary=false, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, ufc_update=()=>{}, performance={ now:()=>1000 }, data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, ownship={};
     const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"" }, hsi_state={ dctr:false, map:false, level:"" }, hsi_range=()=>{}; ${navdefs}
     ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
     for(const b of buttons){ if(typeof b==="number") sim_time=b; else if(b==="timeufc") hsi_press(17,"left"); else ufc_press(b); }
     return { ufc, shown:timer.shown, et:timer_seconds("et"), cd:timer_seconds("cd"), running:{ et:timer.et.since!==null, cd:timer.cd.since!==null },
-      face:ufc_face(ufc, { emcon, radios, timer:timer.shown }, 0) };`)(buttons, navigate) as Timed
+      face:ufc_face(ufc, { emcon, radios, timer:timer.shown, autopilot:{ modes:hold.modes, offered:{} } }, 0) };`)(buttons, navigate, autopilot) as Timed
 
   it('is loaded by TIMEUFC, boxed while it holds the UFC, and cleared by a second press', () => {
     expect(timers).not.toBe('')
@@ -1783,15 +1873,16 @@ describe('the DDI view', () => {
 describe('the TAC and SUPT menus', () => {
   const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
-  function run(menu: string, press = 0, designator = 'center', shows = 'hud') {
-    return new Function(`let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
+  function run(menu: string, press = 0, designator = 'center', shows = 'hud', computers = { one: true, two: true }, time = 0) {
+    return new Function('avionics', `let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
+      const sim_time=${time}, mc=()=>(${JSON.stringify(computers)}), display_test={ on:false };
       const ddi_state={ left:{ page:${JSON.stringify(shows)}, menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
-      function cautions_draw(){} function ddi_show(d,p){ shown=p; }
+      function cautions_draw(){} function ddi_show(d,p){ shown=p; } const caution_page=()=>null, caution_host=()=>null;
       ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')} ${lift('diamond')}
       const text=[], rects=[], moves=[];
       const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([String(s),px,py]); if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='measureText') return (s)=>({ width:10*String(s).length }); if(k==='moveTo'||k==='lineTo') return (px,py)=>moves.push([px,py]); return ()=>{}; }, set:()=>true });
       if(${press}) ddi_press('left',${press}); else ddi_render(x,512,'left');
-      return { text, rects, shown, moves };`)() as { text: [string, number, number][]; rects: [number, number, number, number][]; shown: string; moves: [number, number][] }
+      return { text, rects, shown, moves };`)(avionics) as { text: [string, number, number][]; rects: [number, number, number, number][]; shown: string; moves: [number, number][] }
   }
   // The TDC assignment diamond (#27, #32): the upper right corner of the display
   // the sensor control switch gave the TDC, and no other.
@@ -1799,6 +1890,19 @@ describe('the TAC and SUPT menus', () => {
     const labels = (menu: string, shows: string) => run(menu, 0, 'center', shows).text.map((t) => t[0])
     expect(labels('', 'hud')).toEqual(['MENU']); expect(labels('', 'grid')).toEqual([])
     expect(labels('tac', 'grid')).toContain('MENU') // its menu, once up, is left the same way
+  })
+  const names = (menu: string, computers: { one: boolean; two: boolean }) => run(menu, 0, 'center', 'hud', computers).text.map((t) => t[0]).filter((t) => t !== 'TAC' && t !== 'SUPT' && t !== 'MENU')
+  it('loses SA and all of SUPT but HSI without mission computer 1, and STORES without mission computer 2 (2.13.4.2.1)', () => {
+    expect(names('tac', { one: false, two: true })).toEqual(['STORES', 'RDR ATTK', 'HUD', 'EW']); expect(names('supt', { one: false, two: true })).toEqual(['HSI'])
+    expect(names('tac', { one: true, two: false })).toEqual(['RDR ATTK', 'HUD', 'SA', 'EW']); expect(names('supt', { one: true, two: false }).length).toBe(9)
+    expect(run('supt', 1, 'center', 'hud', { one: false, two: true }).shown).toBe(''); expect(run('supt', 2, 'center', 'hud', { one: false, two: true }).shown).toBe('hsi') // an option that is gone opens nothing
+    expect(run('tac', 5, 'center', 'hud', { one: true, two: false }).shown).toBe('')
+  })
+  it('shows only a flashing STANDBY with neither mission computer, and takes no press (2.13.4.2.1)', () => {
+    const neither = { one: false, two: false }
+    expect(run('', 0, 'center', 'hud', neither, 0).text).toEqual([['STANDBY', 256, 256]]); expect(run('', 0, 'center', 'hud', neither, 0.5).text).toEqual([])
+    expect(run('tac', 0, 'center', 'hud', neither, 0).text).toEqual([['STANDBY', 256, 256]]) // whatever it was showing
+    expect(run('supt', 2, 'center', 'hud', neither).shown).toBe('')
   })
   it('draws the TDC diamond in the upper right corner of the display that has the TDC', () => {
     expect(run('tac', 0, 'left').moves).toEqual([[476, 30], [488, 42], [476, 54], [464, 42]])
@@ -1810,7 +1914,7 @@ describe('the TAC and SUPT menus', () => {
   })
   it('puts each SUPT option at its pushbutton', () => {
     const d = run('supt')
-    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MUMI', 416, 30], ['MENU', 256, 482]])
+    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MUMI', 416, 30], ['BIT', 256, 30], ['MENU', 256, 482]])
   })
   it('shows only options the game builds', () => {
     for (const rows of Object.values(menus)) for (const [, , target] of rows) expect(built).toContain(target)
