@@ -63,7 +63,7 @@ describe('the heading scale face', () => {
       return () => {}
     }, set: () => true })
     const radians = heading * Math.PI / 180
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'nav', 'hud_steer', `${section}`)(
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'nav', 'hud_steer', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${section}`)(
       hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: Math.sin(radians), z: -Math.cos(radians) } }, false, 'nav', { magnetic, variation: 7 * Math.PI / 180 }, () => null)
     return { text, segments, fills }
   }
@@ -121,7 +121,7 @@ describe('the heading marker and bank scale as figure 2-26 draws them', () => {
   const scale = (steer: { bearing: number; target?: boolean } | null, track = 0, master = 'nav') => {
     const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
     const c = record()
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'hud_steer', 'THREE', 'navigate', 'nav', 'D2R', source.slice(start, end))(
+    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'hud_steer', 'THREE', 'navigate', 'nav', 'D2R', 'const link={ selected:false, five:null, six:null }, hold={ modes:{ coupled:false }, source:"track" }; ' + source.slice(start, end))(
       c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 }, gauges: { heading: 0, track: track * D2R } }, true, master, () => steer, THREE, navigate, { magnetic: false, variation: 0 }, D2R)
     return c
   }

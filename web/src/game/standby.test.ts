@@ -146,15 +146,15 @@ function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: numbe
 interface Frame { gear?: number; agl: number; index?: number; silent?: boolean; disable?: boolean; escape?: boolean; bank?: number; knots?: number; wheels?: number }
 interface Heard { whoop: boolean; gpws: boolean; call: string }
 const lowblock = /\n\t\t\tlaw_active=closure&&flying[^\n]*\n[\s\S]*?law_calls\+\+; \}[^\n]*\n/.exec(source)?.[0] ?? ''
-function warned(frames: Frame[]): Heard[] {
+function warned(frames: Frame[], computer = true): Heard[] {
   if (!lowblock) throw new Error('low-altitude warnings not found in engine.ts')
-  const run = new Function('frames', `const D2R=Math.PI/180, flying=true, sim_time=100, RADAR={ sil:false }, radalt_inhibited=()=>RADAR.sil, ownship={ gear:1, cas:0, right:{ y:0 }, up:{ y:1 } }, gpws={ wheels:-Infinity, call:"" };
+  const run = new Function('frames', 'computer', `const D2R=Math.PI/180, flying=true, sim_time=100, RADAR={ sil:false }, mc=()=>({ one:computer, two:true }), radalt_inhibited=()=>RADAR.sil, ownship={ gear:1, cas:0, right:{ y:0 }, up:{ y:1 } }, gpws={ wheels:-Infinity, call:"" };
     let closure=false, law_active=false, law_primary=false, law_disabled=false, law_index=200, law_calls=0, sounded=false; const audio_law=()=>{ sounded=true; };
     return frames.map((f)=>{ ownship.gear=f.gear??1; RADAR.sil=!!f.silent; law_index=f.index??200; const agl=f.agl; sounded=false; closure=!!f.escape;
       const r=(f.bank??0)*D2R; ownship.right.y=-Math.sin(r); ownship.up.y=Math.cos(r); ownship.cas=(f.knots??300)/1.94384; gpws.wheels=f.wheels===undefined?-Infinity:sim_time-f.wheels;
       if(f.disable) law_disabled=law_disabled||law_primary;
       ${lowblock} return { whoop:sounded, gpws:law_active, call:gpws.call }; });`)
-  return run(frames) as Heard[]
+  return run(frames, computer) as Heard[]
 }
 function primary(frames: Frame[]): boolean[] {
   return warned(frames).map((h) => h.whoop)
@@ -178,6 +178,14 @@ describe('the radar altimeter under EMCON', () => {
   it('withholds the primary low-altitude warning while silent', () => {
     expect(primary([{ agl: 100 }])).toEqual([true])
     expect(primary([{ agl: 100, silent: true }])).toEqual([false])
+  })
+})
+
+describe('the warnings mission computer 1 runs', () => {
+  it('does not sound the low altitude warning, nor the GPWS, with MC1 off (2.12.5.1, 2.17.5.1)', () => {
+    expect(warned([{ agl: 150 }])[0].whoop).toBe(true); expect(warned([{ agl: 150 }], false)[0].whoop).toBe(false)
+    const escape = { agl: 150, escape: true, gear: 0 }
+    expect(warned([escape])[0]).toMatchObject({ gpws: true, call: 'PULL UP' }); expect(warned([escape], false)[0]).toMatchObject({ gpws: false, call: '' })
   })
 })
 

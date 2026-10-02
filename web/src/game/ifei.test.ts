@@ -351,7 +351,9 @@ describe('the lights test face', () => {
     const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
     const line = /\nfunction ifei_current\(\)\{[^\n]*\n/.exec(engine)?.[0] ?? ''
     expect(line).not.toBe('')
-    const shown = (on: boolean) => new Function('on', `const lamps_testing=on, ifei_test=()=>"test", ifei_face=()=>"face", ifei_reading=()=>0, ifei_view=()=>0; ${line} return ifei_current();`)(on) as string
+    const shown = (on: boolean, bit = false) => new Function('on', 'bit', `const lamps_testing=on, ifei_test=()=>"test", ifei_face=(r)=>r.rpm?r:"face", ifei_reading=()=>({ fuel:1 }), ifei_view=()=>0, avionics={ testing:(b,k)=>b&&k==="ifei" }; ${line} return ifei_current();`)(on, bit)
     expect([shown(true), shown(false)]).toEqual(['test', 'face'])
+    expect(shown(false, true)).toEqual({ fuel: 1, rpm: [50, 50], egt: [555, 555], flow: [5200, 5200], noz: [40, 40], oil: [150, 150] }) // its initiated BIT: the test figures of 2.20.3.10.2, the fuel as it is
+    expect(shown(true, true)).toBe('test')
   })
 })

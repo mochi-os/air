@@ -118,8 +118,8 @@ describe('the HUD timer', () => {
 // without a TACAN range - the set off, or in RCV or under EMCON (24.4.2, 2.13.5.2).
 describe('the lower-right data block', () => {
   const data = /\n\t\/\/ ---- data blocks: TCN slant range[\s\S]*?(?=\n\t\{ \/\/ The selected weapon and its count)/.exec(source)?.[0] ?? ''
-  const block = (tacan = '{}', emcon = false, wheels = { steering: -1, grounded: false, atc: false }) => new Function('navigate', `const text=[], nav={ steer:'tcn', designation:null, course:null }; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
-      const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=100, lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0, steering=${wheels.steering};
+  const block = (tacan = '{}', emcon = false, wheels: { steering: number; grounded: boolean; atc: boolean; time?: number; computer?: boolean } = { steering: -1, grounded: false, atc: false }) => new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const text=[], nav={ steer:'tcn', designation:null, course:null }; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
+      const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=${wheels.time ?? 100}, mc=()=>({ one:${wheels.computer ?? true}, two:true }), lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0, steering=${wheels.steering};
       const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 }, grounded:${wheels.grounded} }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
       const radios={ tacan:{ on:true, channel:74, band:'X', mode:'tr', air:false, ...${tacan} } }, emcon=${emcon};
       ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''} ${/\nfunction hud_steer\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
@@ -141,6 +141,10 @@ describe('the lower-right data block', () => {
     expect(shown(-1, true)).toEqual([])
     expect(shown(0, false)).toEqual([])
     expect(shown(0, true, true)).toEqual(['ATC'])
+  })
+  it('flashes the NWS cue with mission computer 1 failed (15.40)', () => {
+    const at = (time: number, computer: boolean) => block('{ on:false }', false, { steering: 0, grounded: true, atc: false, time, computer })
+    expect([at(100, false), at(100.3, false), at(100.5, false)]).toEqual([['NWS'], [], ['NWS']]); expect(at(100.3, true)).toEqual(['NWS'])
   })
 
   it('reads nothing without a TACAN range', () => {

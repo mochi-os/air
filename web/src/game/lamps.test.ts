@@ -253,10 +253,13 @@ describe('the caution lights panel', () => {
   })
 
   it('raises the DDI FCS caution on the same flight control channels', () => {
-    const line = /\n\tif\(core\)\{ if\(fcs_jammed\(core\)\) push\("FCS"\);/.exec(source)?.[0] ?? ''
-    expect(line).not.toBe('')
-    const raised = (channel: number) => new Function('channel', `const STATE={ jam:0 }; ${fcs} const core=[0,0,0,0,0,0,0,0], rows=[], push=(k)=>rows.push(k); core[channel]=1; ${line} } return rows;`)(channel) as string[]
-    expect([raised(4), raised(6)]).toEqual([['FCS'], []])
+    const line = /\n\tif\(core\)\{ if\(fcs_jams\(core\)>buttons\.jams\) push\("FCS"\);/.exec(source)?.[0] ?? ''
+    const jams = /\nfunction fcs_jams\(words\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe(''); expect(jams).not.toBe('')
+    const raised = (channels: number[], reset = 0, restricted = 1) => new Function('channels', 'reset', 'restricted', `const STATE={ jam:0 }, buttons={ jams:reset }; ${fcs} ${jams} const core=[0,0,0,0,0,0,0,0], rows=[], push=(k)=>rows.push(k); for(const c of channels) core[c]=restricted; ${line} } return rows;`)(channels, reset, restricted) as string[]
+    expect([raised([4]), raised([6])]).toEqual([['FCS'], []])
+    expect([raised([4], 0, 0.3), raised([4], 0, 0.15)]).toEqual([['FCS'], []]) // a channel restricted past a fifth is failed
+    expect([raised([4], 1), raised([4, 5], 1)]).toEqual([[], ['FCS']]) // FCS RESET takes it off with the failure standing, and another failure brings it back (2.8.4.5.2)
   })
 
   // The model's painted caution lenses, their centres in the group frame: each
@@ -499,18 +502,18 @@ describe('the gear handle light and tone', () => {
 // targets (#20): the light's press is one function the key and the click
 // share (NATOPS 2.17.2.1), and the button next to the gear handle has a key
 // and a quad in the gear unit.
-function caution_press(lit: boolean): { lamp: boolean; restacked: boolean; dirty: boolean } {
+function caution_press(lit: boolean): { lamp: boolean; restacked: number; dirty: boolean } {
   const fn = /\nfunction caution_press\(\)\{[^\n]*\}\n/.exec(source)?.[0] ?? ''
   if (!fn) throw new Error('caution_press not found in engine.ts')
-  const run = new Function('lit', `let caution_lamp=lit, caution_slots=['a'], ddi_dirty=false, restacked=false; const cautions_restack=(s)=>{ restacked=true; return s; };
+  const run = new Function('lit', `let caution_lamp=lit, caution_slots=['a'], advisory_slots=['b'], ddi_dirty=false, restacked=0; const cautions_restack=(s)=>{ restacked++; return s; };
     ${fn} caution_press(); return { lamp:caution_lamp, restacked, dirty:ddi_dirty };`)
-  return run(lit) as { lamp: boolean; restacked: boolean; dirty: boolean }
+  return run(lit) as { lamp: boolean; restacked: number; dirty: boolean }
 }
 
 describe('the MASTER CAUTION and silence button clicks', () => {
   it('clear the lit light, and pack the slots when it is out', () => {
-    expect(caution_press(true)).toEqual({ lamp: false, restacked: false, dirty: false })
-    expect(caution_press(false)).toEqual({ lamp: false, restacked: true, dirty: true })
+    expect(caution_press(true)).toEqual({ lamp: false, restacked: 0, dirty: false })
+    expect(caution_press(false)).toEqual({ lamp: false, restacked: 2, dirty: true }) // the cautions and the advisory line both
   })
 
   it('share the press between the key and the click, and count silence presses', () => {
