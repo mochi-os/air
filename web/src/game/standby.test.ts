@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as countermeasures from './countermeasures'
 
 // The standby attitude reference indicator (NATOPS 2.12.2) carries pitch,
 // roll, an OFF flag and a needle and ball - no ILS bars. The model has
@@ -38,7 +39,7 @@ describe('the standby attitude indicator', () => {
     // on the right windshield arch's foot beside the right DDI, which is where
     // the model spins its card. Nothing re-seats it.
     expect(source).not.toMatch(/function mount_compass\(/)
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
   })
@@ -73,14 +74,16 @@ describe('the standby attitude indicator', () => {
 // panel's housing, so the two cannot drift. The function runs against a
 // recording context.
 interface Emitter { bearing: number; at?: number; locked?: boolean; missile?: boolean }
-function ew_calls(cx: number, cy: number, R: number, contacts: Emitter[]): { text: [string, number, number][]; arcs: [number, number, number][] } {
+// receiver: the control indicator's switches (#9), as countermeasures.ts holds them; the set is on by default.
+function ew_calls(cx: number, cy: number, R: number, contacts: Emitter[], receiver: Partial<countermeasures.Receiver> = {}): { text: [string, number, number][]; arcs: [number, number, number][] } {
   const fn = /\nfunction ew_draw\(x,cx,cy,R,size\)\{[\s\S]*?\n\tx\.globalAlpha=1; \}\n/.exec(source)?.[0] ?? ''
   if (!fn) throw new Error('ew_draw not found in engine.ts')
-  const run = new Function('cx', 'cy', 'R', 'contacts', `const D2R=Math.PI/180, RWR={contacts, time:10}, ownship={gauges:{heading:0}};
+  const run = new Function('cx', 'cy', 'R', 'contacts', 'countermeasures', 'receiver', `const D2R=Math.PI/180, RWR={contacts:contacts.map(c=>({ at:10, ...c })), time:10}, ownship={gauges:{heading:0}};
+    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); Object.assign(suite.receiver,receiver);
     const text=[], arcs=[];
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([s,px,py]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); return ()=>{}; }, set:()=>true });
     ${fn} ew_draw(x,cx,cy,R,18); return { text, arcs };`)
-  return run(cx, cy, R, contacts) as { text: [string, number, number][]; arcs: [number, number, number][] }
+  return run(cx, cy, R, contacts, countermeasures, receiver) as { text: [string, number, number][]; arcs: [number, number, number][] }
 }
 const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
 
@@ -101,6 +104,28 @@ describe('the ALR-67 azimuth indicator', () => {
     const missile = ew_calls(80, 80, 68, [{ bearing: 0, missile: true }])
     expect(missile.text[0][0]).toBe('M')
     expect(missile.arcs.slice(2).map((a) => a[2])).toEqual([13 * 68 / 190, 17 * 68 / 190])
+  })
+
+  // The control indicator's switches (#9): POWER, DISPLAY's LIMIT and OFFSET.
+  it('draws nothing with the set\'s POWER off', () => {
+    expect(ew_calls(80, 80, 68, [{ bearing: 0, locked: true }], { power: false }).text).toEqual([])
+    expect(ew_calls(80, 80, 68, [{ bearing: 0, locked: true }]).text).toHaveLength(1)
+  })
+  it('draws the six emitters of the highest priority with LIMIT, a missile and a lock before the search radars', () => {
+    const many: Emitter[] = [...Array.from({ length: 7 }, (_, k) => ({ bearing: k * 0.5, at: k })), { bearing: 4, missile: true, at: 0 }, { bearing: 5, locked: true, at: 0 }]
+    expect(ew_calls(80, 80, 68, many).text).toHaveLength(9)
+    const limited = ew_calls(80, 80, 68, many, { limit: true })
+    expect(limited.text).toHaveLength(6)
+    expect(limited.text.filter((t) => t[0] === 'M')).toHaveLength(1)
+    expect(limited.arcs.slice(2)).toHaveLength(3) // the lock's ring and the missile's two
+  })
+  it('moves two symbols on one ring apart with OFFSET, and leaves them on one another without', () => {
+    const pair: Emitter[] = [{ bearing: Math.PI / 2 }, { bearing: Math.PI / 2 }]
+    const on = ew_calls(80, 80, 68, pair).text, apart = ew_calls(80, 80, 68, pair, { offset: true }).text
+    expect(near(on[0][2], on[1][2])).toBe(true)
+    expect(Math.abs(apart[0][2] - apart[1][2])).toBeCloseTo(2 * 0.74 * 68 * Math.sin(countermeasures.APART / 2), 6) // twelve degrees between them, about the bearing they share
+    const rings = ew_calls(80, 80, 68, [{ bearing: Math.PI / 2 }, { bearing: Math.PI / 2, locked: true }], { offset: true }).text
+    expect(near(rings[0][2], rings[1][2])).toBe(true) // on different rings they do not overlap
   })
 
   it('is drawn through the shared function by the EW page and by the disc', () => {
@@ -683,7 +708,7 @@ describe('the radar altimeter height indicator', () => {
   })
 
   it('pushes the knob with the middle button on the face, and nothing but the push and pull controls with it', () => {
-    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\); else if\(s&&s\.action==="canopy\.jettison"\) pit_press\("canopy\.jettison",0\);\n\t\treturn; \}/)
+    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\); else if\(s&&s\.action==="canopy\.jettison"\) pit_press\("canopy\.jettison",0\); else if\(s&&s\.hold\) pit_press\(s\.hold,0\);[^\n]*\n\t\treturn; \}/)
   })
 })
 

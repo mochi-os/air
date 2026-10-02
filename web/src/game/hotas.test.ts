@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as countermeasures from './countermeasures'
 import { describe, expect, it } from 'vitest'
 
 // The hands and feet on the controls (G2): the stick's trigger and paddle, the
@@ -128,17 +129,18 @@ describe('the grips\' loose switches', () => {
 // programme, a flare and a chaff bloom; forward dispenses chaff singles. Weight
 // on the wheels inhibits it.
 describe('the dispense switch', () => {
-  type Dispensed = { flares: number; chaff: number; flare: boolean; bloom: boolean; dropped: string[]; way: number }
-  function dispense(way: number, o: { flares?: number; chaff?: number; squish?: number; cheat?: boolean } = {}): Dispensed {
-    return new Function('way', 'o', `const sim_time=5, ownship={ flares:o.flares??10, chaff:o.chaff??10, squish:o.squish??0 }, dropped=[];
+  type Dispensed = { flares: number; chaff: number; flare: boolean; bloom: boolean; dropped: string[]; way: number; said: string[]; lit: boolean }
+  function dispense(way: number, o: { flares?: number; chaff?: number; squish?: number; cheat?: boolean; dispenser?: string } = {}): Dispensed {
+    return new Function('way', 'o', 'countermeasures', `const sim_time=5, ownship={ flares:o.flares??10, chaff:o.chaff??10, squish:o.squish??0 }, dropped=[], said=[];
       let flare_flag=false, chaff_flag=false; ${constant('hotas')}
-      const cheat=()=>!!o.cheat, dispense_flare=()=>dropped.push('flare'), dispense_chaff=()=>dropped.push('chaff'), audio_flare=()=>{};
+      const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); suite.dispenser=o.dispenser||"on";
+      const cheat=()=>!!o.cheat, dispense_flare=()=>dropped.push('flare'), dispense_chaff=()=>dropped.push('chaff'), audio_flare=()=>{}, notice=(text)=>said.push(text), translate=(s)=>s;
       ${lift('dispense')} dispense(way);
-      return { flares:ownship.flares, chaff:ownship.chaff, flare:flare_flag, bloom:chaff_flag, dropped, way:hotas.dispense.way };`)(way, o) as Dispensed
+      return { flares:ownship.flares, chaff:ownship.chaff, flare:flare_flag, bloom:chaff_flag, dropped, way:hotas.dispense.way, said, lit:countermeasures.dispensing(suite,sim_time) };`)(way, o, countermeasures) as Dispensed
   }
   it('runs the programme aft, a flare and a chaff bloom, and dispenses chaff alone forward', () => {
-    expect(dispense(-1)).toEqual({ flares: 9, chaff: 9, flare: true, bloom: false, dropped: ['flare', 'chaff'], way: -1 })
-    expect(dispense(1)).toEqual({ flares: 10, chaff: 9, flare: false, bloom: true, dropped: ['chaff'], way: 1 })
+    expect(dispense(-1)).toEqual({ flares: 9, chaff: 9, flare: true, bloom: false, dropped: ['flare', 'chaff'], way: -1, said: [], lit: true })
+    expect(dispense(1)).toEqual({ flares: 10, chaff: 9, flare: false, bloom: true, dropped: ['chaff'], way: 1, said: [], lit: false })
   })
 
   it('keeps each half of the programme on its own magazine, and does nothing empty or on the wheels', () => {
@@ -146,6 +148,22 @@ describe('the dispense switch', () => {
     expect(dispense(1, { chaff: 0 })).toMatchObject({ dropped: [], bloom: false })
     const deck = dispense(-1, { squish: 1 })
     expect(deck).toMatchObject({ dropped: [], flare: false, flares: 10, way: -1 }) // the switch still moves
+  })
+
+  it('dispenses nothing with the DISPENSER switch at OFF, and says so', () => {
+    expect(dispense(-1, { dispenser: 'off' })).toMatchObject({ dropped: [], flare: false, bloom: false, flares: 10, chaff: 10, said: ['DISPENSER OFF'], way: -1 })
+    expect(dispense(-1, { dispenser: 'off', squish: 1 }).said).toEqual([]) // on the wheels the inhibit is the reason, not the switch
+    expect(dispense(-1).said).toEqual([])
+  })
+  it('releases a flare alone aft and a bundle alone forward at BYPASS, with no programme light', () => {
+    expect(dispense(-1, { dispenser: 'bypass' })).toMatchObject({ dropped: ['flare'], flare: true, bloom: false, flares: 9, chaff: 10, lit: false })
+    expect(dispense(1, { dispenser: 'bypass' })).toMatchObject({ dropped: ['chaff'], flare: false, bloom: true, flares: 10, chaff: 9 })
+    expect(source).toMatch(/solo:suite\.dispenser==="bypass",/) // the server drops no bundle beside a flare sent solo
+  })
+  it('runs the programme from the console\'s dispense button, which is not the throttle\'s switch', () => {
+    expect(dispense(0)).toMatchObject({ dropped: ['flare', 'chaff'], flare: true, way: 0, lit: true })
+    expect(dispense(0, { dispenser: 'bypass' }).dropped).toEqual([])
+    expect(source).toMatch(/\n\tcase "dispense": dispense\(0\); break;/)
   })
 
   it('binds aft to the flares key and forward to the chaff key, and sends the chaff edge on the wire', () => {

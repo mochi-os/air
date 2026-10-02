@@ -12,6 +12,8 @@ import { cbor_encode, cbor_decode } from './cbor'
 import { parseDarts, type Dart } from './darts'
 import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
+import { queue, type Queued } from './batch'
+import { read as status_read, type Status } from './mids'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
 
 export { crossHost } from './host'
@@ -326,6 +328,9 @@ export interface InputSample {
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
+  solo: boolean // the dispenser at BYPASS: a flare edge releases the flare alone; a server that predates it drops the chaff bundle too
+  extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay
+  status: Status // this aircraft's identification and link status, relayed to the session (mids.ts): a server that predates it reads nothing
   // How many fixed 1/60 steps the core integrated this sample for (#176). The
   // client has always recorded it against the mark ring; sending it lets the
   // server apply the sample for the same number of ticks, so the state the
@@ -397,6 +402,7 @@ export class Net {
   >() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
+  statuses = new Map<number, Status>() // slot -> its IFF and Link 16 status (status events); a slot with none is taken as STANDING
   racks = new Map<
     number,
     Record<string, { fixture: string; stores: string[] }>
@@ -410,7 +416,7 @@ export class Net {
   private corrected = 0 // highest acknowledged sequence already reconciled
   cored = false // the server has sent at least one own-state core
   private sequence = 0
-  private batch: (InputSample & { sequence: number })[] = []
+  private batch: Queued[] = []
   private last = 0 // last input send, performance.now()
   private closed = false
 
@@ -428,8 +434,7 @@ export class Net {
     if (now - this.last < 1000 / 60 - 1) return 0
     this.last = now
     this.sequence++
-    this.batch.push({ ...sample, sequence: this.sequence })
-    if (this.batch.length > 3) this.batch.shift()
+    queue(this.batch, sample, this.sequence)
     try {
       this.datagrams?.write(cbor_encode({ kind: 'input', inputs: this.batch }))
     } catch {
@@ -819,6 +824,7 @@ export class Net {
             this.racksRevision++
           }
         }
+        if (ev.kind === 'status' && validSlot(ev.slot)) this.statuses.set(ev.slot as number, status_read(ev, MAX_SLOT))
         if (ev.kind === 'kill' && ev.score) this.score = finiteScore(ev.score)
         if (ev.kind === 'kill' && validSlot(ev.slot)) {
           // scores are counted, not shipped per snapshot (#81)

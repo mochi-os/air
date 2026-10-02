@@ -7,6 +7,9 @@ import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import { Radar, SCALES, BARS, boresight, geometry, pick, type Track } from './radar'
+import * as identification from './identification'
+import * as mids from './mids'
+import * as countermeasures from './countermeasures'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -536,21 +539,27 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
 describe('the known picture: what the SA page and the map draw', () => {
   // known lifted with the bandit alone, or a match with the pilot on blue, a
   // blue teammate (slot 2) and a red hostile (slot 3); the pilot at the origin.
+  // The identification and link helpers run as they are, on the real modules; statuses is what the session has relayed
+  // of each slot, none for an aircraft nobody has reported for. The teammate flies level, 1,000 m below the pilot.
   type Mark = { x: number; z: number; fx: number; fz: number; team: string; name: string }
+  type Page = { RADAR: Radar; known(): Mark[]; statuses: Map<number, mids.Status>; squawk: identification.Identification; terminal: mids.Terminal; power(ac: boolean): void; emission(on: boolean): void; challenges(): { challenged: boolean; answered: boolean }; status(): mids.Status; lit(slot: number, visible: boolean): void }
   function page(multiplayer: boolean, night = false, far = 100000) {
     return new Function(
-      'Radar',
-      `const RADAR=new Radar();
-       const MULTIPLAYER=${multiplayer}, net=MULTIPLAYER?{ slot:1, teams:new Map([[1,'blue'],[2,'blue'],[3,'red']]) }:null;
-       const cfg={ tod:${night}?'night':'day' }, ownship={ pos:{ x:0, y:0, z:0 } }, wrap_axis=(v)=>v;
+      'Radar', 'identification', 'mids',
+      `const RADAR=new Radar(), statuses=new Map(), squawk=identification.fresh(), terminal=mids.fresh(), world_up={ x:0, y:1, z:0 };
+       let buses={ ac:true }, emcon=false;
+       const MULTIPLAYER=${multiplayer}, net=MULTIPLAYER?{ slot:1, teams:new Map([[1,'blue'],[2,'blue'],[3,'red']]), statuses }:null;
+       const cfg={ tod:${night}?'night':'day' }, ownship={ pos:{ x:0, y:0, z:0 }, up:{ x:0, y:1, z:0 } }, wrap_axis=(v)=>v;
        const jets=MULTIPLAYER
-         ?[{ id:2, x:100, y:0, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
+         ?[{ id:2, x:100, y:-1000, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
          :[{ id:'bandit', x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'', team:'' }];
-       const contacts=()=>jets;
+       const contacts=()=>jets, remotes=new Map(jets.map(j=>[j.id,{ pos:{ x:j.x, y:j.y, z:j.z }, up:{ x:0, y:1, z:0 }, group:{ visible:true } }]));
+       ${['own_team', 'status_of', 'link_sense', 'link_picture16', 'overhead', 'identified', 'challenges', 'status_own'].map(lift).join('\n')}
        ${lift('known').replace(/^function known/, 'const SIGHT=12000; function known')}
-       return { RADAR, known };`
-    )(Radar) as { RADAR: Radar; known(): Mark[] }
+       return { RADAR, known, statuses, squawk, terminal, power(ac){ buses={ ac }; }, emission(on){ emcon=on; }, challenges, status:status_own, lit(slot,visible){ remotes.get(slot).group.visible=visible; } };`
+    )(Radar, identification, mids) as Page
   }
+  const standing = (over: Partial<mids.Status> = {}): mids.Status => ({ ...mids.STANDING, ...over })
   const track = (id: number | string, z: number, at = 0) => ({ id, x: 0, y: 0, z, vx: 0, vy: 0, vz: 250, at, hits: 1 })
   const paint = (id: number | string, z: number, at: number) => ({ id, azimuth: 0, range: -z, at, x: 0, z })
 
@@ -593,8 +602,132 @@ describe('the known picture: what the SA page and the map draw', () => {
     p.RADAR.tracks = [track(3, -30000), track(2, -50000)] // the teammate's own trackfile adds nothing
     expect(p.known()).toEqual([
       { x: 100, z: -50000, fx: 1, fz: 0, team: 'blue', name: 'two' },
-      { x: 0, z: -30000, fx: 0, fz: 250, team: 'red', name: '' },
+      { x: 0, z: -30000, fx: 0, fz: 250, team: '', name: '' }, // the radar gives a track no side
     ])
+  })
+
+  // Link 16 (#99): a member of the side is on the page by its own report, sent by its terminal and taken by the pilot's.
+  it('takes a teammate off the link picture once its terminal stops sending, or the pilot\'s stops receiving', () => {
+    const p = page(true)
+    p.statuses.set(2, standing({ link: false }))
+    expect(p.known()).toEqual([])
+    p.statuses.set(2, standing())
+    expect(p.known()).toHaveLength(1)
+    p.terminal.on = false
+    expect(p.known()).toEqual([])
+    p.terminal.on = true; p.power(false)
+    expect(p.known()).toEqual([])
+    p.power(true); p.squawk.held = false // the crypto variables zeroed
+    expect(p.known()).toEqual([])
+  })
+  it('goes on receiving the link in EMCON', () => {
+    const p = page(true)
+    p.emission(true)
+    expect(p.known().map((m) => m.name)).toEqual(['two'])
+  })
+  it('adds the tracks a member\'s radar holds, where the pilot holds nothing of his own, with no side and no name', () => {
+    const p = page(true)
+    p.statuses.set(2, standing({ tracks: [3, 1, 2] })) // the hostile, the pilot himself and the member
+    expect(p.known()).toEqual([{ x: 100, z: -50000, fx: 1, fz: 0, team: 'blue', name: 'two' }, { x: 0, z: -100000, fx: 0, fz: 1, team: '', name: '' }])
+    p.RADAR.tracks = [track(3, -30000)]
+    expect(p.known().map((m) => m.z)).toEqual([-50000, -30000]) // his own trackfile, once
+    p.RADAR.tracks = []; p.statuses.set(2, standing({ tracks: [3], link: false }))
+    expect(p.known()).toEqual([]) // a member not sending gives nothing
+  })
+
+  // IFF (#98): off the link, a track gets a side only by answering the pilot's mode 4 challenge.
+  it('gives a tracked teammate off the link its side by its answer to a mode 4 challenge, and no name', () => {
+    const p = page(true)
+    p.statuses.set(2, standing({ link: false }))
+    p.RADAR.tracks = [track(2, -50000)]
+    expect(p.known()).toEqual([{ x: 0, z: -50000, fx: 0, fz: 250, team: 'blue', name: '' }])
+  })
+  it('gives it no side when it does not answer: its transponder off, or the answering antenna on the far side', () => {
+    const p = page(true)
+    p.RADAR.tracks = [track(2, -50000)]
+    const team = (status: Partial<mids.Status>) => { p.statuses.set(2, standing({ link: false, ...status })); return p.known()[0].team }
+    expect(team({ reply: false })).toBe('')
+    expect(team({ antenna: 'lower' })).toBe('') // the pilot is above it
+    expect(team({ antenna: 'upper' })).toBe('blue')
+    expect(team({ antenna: 'both' })).toBe('blue')
+  })
+  it('gives it no side when the pilot does not challenge: the interrogator off, mode 4 disabled, the codes gone, EMCON, or no ac power', () => {
+    const fresh = () => { const p = page(true); p.statuses.set(2, standing({ link: false })); p.RADAR.tracks = [track(2, -50000)]; return p }
+    const team = (set: (p: Page) => void) => { const p = fresh(); set(p); return p.known()[0].team }
+    expect(team(() => {})).toBe('blue')
+    expect(team((p) => { p.squawk.on = false })).toBe('')
+    expect(team((p) => { p.squawk.interrogator.modes.four = false })).toBe('')
+    expect(team((p) => { p.squawk.held = false })).toBe('')
+    expect(team((p) => { p.emission(true) })).toBe('')
+    expect(team((p) => { p.power(false) })).toBe('')
+    expect(team((p) => { p.squawk.transponder.modes.four = false })).toBe('blue') // his own answering is another matter
+  })
+  it('never gives a hostile a side, whatever it reports', () => {
+    const p = page(true)
+    p.statuses.set(3, standing())
+    p.RADAR.tracks = [track(3, -30000)]
+    expect(p.known().find((m) => m.z === -30000)?.team).toBe('')
+  })
+  it('gives nothing a side with the bandit alone, where there are no sides', () => {
+    const p = page(false)
+    p.RADAR.tracks = [track('bandit', -80000)]
+    expect(p.known().map((m) => m.team)).toEqual([''])
+  })
+
+  // The challenges arriving (23.6.2.2.1, 23.6.2.3): from a member of the side challenging in mode 4 whose radar holds
+  // the pilot; answered when his transponder replies to every one of them.
+  it('counts a valid challenge from a member whose radar holds the pilot, and its answer', () => {
+    const p = page(true)
+    expect(p.challenges()).toEqual({ challenged: false, answered: false })
+    p.statuses.set(2, standing({ tracks: [1] }))
+    expect(p.challenges()).toEqual({ challenged: true, answered: true })
+    p.statuses.set(2, standing({ tracks: [1], challenge: false }))
+    expect(p.challenges().challenged).toBe(false)
+    p.statuses.set(3, standing({ tracks: [1] })) // a hostile's challenge is not a valid one
+    expect(p.challenges().challenged).toBe(false)
+  })
+  it('leaves a challenge unanswered with the transponder not replying, or its antenna on the far side', () => {
+    const p = page(true)
+    p.statuses.set(2, standing({ tracks: [1] }))
+    p.squawk.transponder.modes.four = false
+    expect(p.challenges()).toEqual({ challenged: true, answered: false })
+    p.squawk.transponder.modes.four = true; p.squawk.antenna = 'upper' // the challenger is below
+    expect(p.challenges().answered).toBe(false)
+    p.squawk.antenna = 'lower'
+    expect(p.challenges().answered).toBe(true)
+    p.emission(true)
+    expect(p.challenges().answered).toBe(false)
+  })
+  it('counts no challenge from an aircraft that is not flying', () => {
+    const p = page(true)
+    p.statuses.set(2, standing({ tracks: [1] })); p.lit(2, false)
+    expect(p.challenges().challenged).toBe(false)
+  })
+
+  // What the session is told of this aircraft, for the others' pictures.
+  it('reports its own transponder, interrogator, terminal, antenna and radar tracks', () => {
+    const p = page(true)
+    p.RADAR.tracks = [track(2, -50000)]; p.RADAR.stt = 3 // a trackfile, and the single target track
+    expect(p.status()).toEqual({ reply: true, challenge: true, link: true, antenna: 'both', tracks: [2, 3] })
+    p.RADAR.tracks = [track(3, -30000), track(2, -50000)]
+    expect(p.status().tracks).toEqual([3, 2]) // each once
+    p.emission(true); p.squawk.antenna = 'upper'
+    expect(p.status()).toEqual({ reply: false, challenge: false, link: false, antenna: 'upper', tracks: [3, 2] })
+    p.emission(false); p.terminal.on = false; p.squawk.transponder.modes.four = false
+    expect(p.status()).toMatchObject({ reply: false, challenge: true, link: false })
+  })
+  it('reports no more than sixteen tracks, and none that is not a slot', () => {
+    const p = page(true)
+    p.RADAR.tracks = Array.from({ length: 20 }, (_, k) => track(k + 2, -30000))
+    expect(p.status().tracks).toHaveLength(16)
+    const solo = page(false)
+    solo.RADAR.tracks = [track('bandit', -30000)]
+    expect(solo.status().tracks).toEqual([])
+  })
+  it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
+    expect(source).toMatch(/solo:suite\.dispenser==="bypass", extinguish:extinguish_flag, status:status_own\(\) \};/)
+    const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
+    expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
   })
   it('draws the SA page and the map from it, a paint with no heading as a plain mark', () => {
     const sa = lift('ddi_sa'), map = lift('draw_map')
@@ -603,6 +736,44 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(map).toContain('for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,')
     expect(map).toMatch(/if\(!fx&&!fz\)\{ [^\n]*mctx\.arc\(x2,y2,5,0,Math\.PI\*2\); mctx\.stroke\(\); return; \}/)
     expect(map).not.toMatch(/remotes\.entries\(\)|bandit\.pos/)
+  })
+
+  // The SA page's other marks (#110): the air-to-air waypoint, and at the rim the bearings the RWR hears. The page
+  // runs against a recording context, the picture empty, at the 40 nm scale: 196 px to 20 nm.
+  type Emitter = { bearing: number; at: number; locked?: boolean; missile?: boolean }
+  function sa(o: { air?: number | null; waypoint?: { x: number; z: number } | null; emitters?: Emitter[]; power?: boolean; limit?: boolean; heading?: number } = {}) {
+    return new Function('o', 'countermeasures', `const NM=1852, D2R=Math.PI/180, sa_state={ scale:40 }, wrap_axis=(v)=>v, CARRIER={ x:1e7, z:1e7 }, known=()=>[], link={ selected:false }, ddi_legend=()=>{};
+      const ownship={ pos:{ x:0, y:0, z:0 }, gauges:{ heading:o.heading||0 } }, hsi_state={ air:o.air??null }, nav={}, navigate={ spot:(n,i)=>i===3?o.waypoint:null };
+      const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); suite.receiver.power=o.power??true; suite.receiver.limit=!!o.limit; const RWR={ time:10, contacts:o.emitters||[] };
+      const arcs=[], text=[], shifts=[], turns=[];
+      const x=new Proxy({}, { get:(t,k)=>k==="arc"?(ax,ay,r)=>arcs.push([Math.round(ax),Math.round(ay),r]):k==="fillText"?(w,px,py)=>text.push([String(w),px,py]):k==="translate"?(px,py)=>shifts.push([Math.round(px)+0,Math.round(py)+0]):k==="rotate"?(a)=>turns.push(a):()=>{}, set:()=>true });
+      ${lift('ddi_sa')}
+      ddi_sa(x,"left"); return { arcs, text, shifts, turns };`)(o, countermeasures) as { arcs: number[][]; text: [string, number, number][]; shifts: number[][]; turns: number[] }
+  }
+  const rings = (d: ReturnType<typeof sa>) => d.arcs.filter((a) => a[2] === 8)
+  it('marks the air-to-air waypoint with a ring where it lies, north up the page', () => {
+    expect(rings(sa())).toEqual([])
+    expect(rings(sa({ air: 3, waypoint: { x: 10 * 1852, z: -10 * 1852 } }))).toEqual([[98, -98, 8]]) // ten miles east and ten north: half the scale each way
+  })
+  it('marks none with no waypoint made the A/A waypoint, one that holds nothing, or one off the scale', () => {
+    expect(rings(sa({ air: null, waypoint: { x: 0, z: -18520 } }))).toEqual([])
+    expect(rings(sa({ air: 3, waypoint: null }))).toEqual([])
+    expect(rings(sa({ air: 3, waypoint: { x: 0, z: -25 * 1852 } }))).toEqual([])
+  })
+  // each emitter is written at a translate of its own: the first is the page's centre
+  const emitters = (d: ReturnType<typeof sa>) => d.shifts.slice(1).map((at, k) => [d.text.filter((t) => t[0] === '18' || t[0] === 'M')[k][0], ...at])
+  it('writes each bearing the RWR hears just inside the rim, at its true bearing, a missile as M', () => {
+    const d = sa({ emitters: [{ bearing: Math.PI / 2, at: 10 }, { bearing: Math.PI, at: 10, missile: true }] })
+    expect(emitters(d)).toEqual([['M', 0, 180], ['18', 180, 0]]) // the missile first, by priority: due south, and the search radar due east
+  })
+  it('keeps the bearings upright as the page turns with the heading', () => {
+    expect(sa({ heading: 0.5, emitters: [{ bearing: 0, at: 10 }] }).turns).toEqual([-0.5, 0.5]) // the page turned to the heading, the symbol turned back
+  })
+  it('writes none with the RWR off, and the six of highest priority with its DISPLAY at LIMIT', () => {
+    const eight: Emitter[] = Array.from({ length: 8 }, (_, k) => ({ bearing: k * 0.4, at: k }))
+    expect(emitters(sa({ emitters: eight }))).toHaveLength(8)
+    expect(emitters(sa({ emitters: eight, power: false }))).toEqual([])
+    expect(emitters(sa({ emitters: eight, limit: true }))).toHaveLength(6)
   })
 })
 

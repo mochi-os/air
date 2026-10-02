@@ -1004,7 +1004,7 @@ export interface Mission {
 }
 // FILES: the memory unit's files the game's mission carries, each to the MUMI
 // display's option (figure 2-21).
-export const FILES = ['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM'] as const
+export const FILES = ['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM', 'IFF', 'COMM'] as const
 // load reads one file from the memory unit, or with none named all of them, as
 // the automatic load at power-up does.
 export function load(nav: Navigation, mission: Mission, file: string | null = null): void {

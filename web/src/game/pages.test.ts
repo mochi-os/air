@@ -9,6 +9,9 @@ import * as THREE from 'three'
 import * as navigate from './navigation'
 import * as avionics from './avionics'
 import * as autopilot from './autopilot'
+import * as communication from './communication'
+import * as identification from './identification'
+import * as mids from './mids'
 
 // The DDI pages against NATOPS (#24): the EADI (2.13.4.3), the engine monitor
 // display (2.1.1.7.6) and the HSI (2.13.4.7). engine.ts cannot be imported
@@ -1451,30 +1454,44 @@ const pilotdefs = `const hold=autopilot.fresh(); let coupled="", couple=null; co
     stick:{ pitch:0, roll:0 }, trim:{ pitch:0, roll:0 }, selected:120, couple:now?now.couple:null, limit:"nav", ...flying });`
 interface Flown { engaged: boolean; modes: Record<string, boolean>; caution: number; altitude: number; source: string }
 interface Face { scratch: string; options: string[] }
+interface Whole extends Face { windows: string[] }
+// The comm radios, the IFF and the Link 16 terminal behind the UFC (G5: #20, #98, #99): the real modules, with the
+// ship's four preset frequencies loaded and the codes 11, 0000 and 1200.
+const commdefs = `const uhf={ one:communication.fresh([305000,262500,275800,318500]), two:communication.fresh([305000,262500,275800,318500]), panel:communication.panel(11), keypad:communication.backup(), pulled:"" };
+  uhf.two.channel=2; const squawk=identification.fresh({ one:"11", two:"0000", three:"1200" }), terminal=mids.fresh();`
 interface Ufc { func: string; entry: string; error: boolean; blink: number }
 interface Tacan { on: boolean; channel: number; band: string; mode: string; air: boolean }
 interface Radios { tacan: Tacan; ils: { on: boolean; channel: number } }
-interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string; precise?: boolean; unit?: string; meridian?: string; test?: number; modes?: string[]; offered?: string[]; link?: boolean; beacon?: boolean }
-interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios & { link: { on: boolean }; beacon: { on: boolean } }; face: Face; hold: Flown; coupled: string }
+interface Live { emcon?: boolean; tacan?: Partial<Tacan>; ils?: Partial<Radios['ils']>; timer?: string; precise?: boolean; unit?: string; meridian?: string; test?: number; modes?: string[]; offered?: string[]; link?: boolean; beacon?: boolean; pulled?: string; setup?: string }
+interface Pressed { ufc: Ufc; index: number; disabled: boolean; pressed: string[]; emcon: boolean; radar: boolean; radios: Radios & { link: { on: boolean }; beacon: { on: boolean } }; face: Whole; hold: Flown; coupled: string
+  uhf: { one: communication.Radio; two: communication.Radio; pulled: string }; squawk: identification.Identification; terminal: mids.Terminal }
 const fresh = (over: Partial<Ufc> = {}): Ufc => ({ func: '', entry: '', error: false, blink: 0, ...over })
-function ufcface(state: Ufc, live: Live = {}, now = 0): Face {
-  const run = new Function('state', 'live', 'now', 'autopilot', `${ufcdefs} ${lift('ufc_face')}
+// ufcwhole: every window of the face - the scratchpad, the five options and the two comm channel windows; live.pulled
+// is the comm channel selector pulled, and live.setup runs against the radios, the IFF and the terminal first.
+function ufcwhole(state: Ufc, live: Live = {}, now = 0): Whole {
+  const run = new Function('state', 'live', 'now', 'autopilot', 'communication', 'identification', 'mids', `${ufcdefs} ${commdefs} ${lift('ufc_face')}
+    uhf.pulled=live.pulled||""; ${live.setup ?? ''}
     const radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false, ...live.tacan }, ils:{ on:true, channel:11, ...live.ils }, link:{ on:live.link??true }, beacon:{ on:live.beacon??true } };
     const set=(names)=>Object.fromEntries(autopilot.MODES.map(m=>[m,names.includes(m)]));
-    return ufc_face(state, { ...live, emcon:!!live.emcon, radios, timer:live.timer ?? "", autopilot:{ modes:set(live.modes??[]), offered:set(live.offered??["attitude","select","barometric","radar"]) } }, now);`)
-  return run(state, live, now, autopilot) as Face
+    return ufc_face(state, { ...live, emcon:!!live.emcon, radios, comm:uhf, squawk, terminal, timer:live.timer ?? "", autopilot:{ modes:set(live.modes??[]), offered:set(live.offered??["attitude","select","barometric","radar"]) } }, now);`)
+  return run(state, live, now, autopilot, communication, identification, mids) as Whole
+}
+// ufcface: the scratchpad and the options, which is all a page that is not a radio's changes
+function ufcface(state: Ufc, live: Live = {}, now = 0): Face {
+  const { scratch, options } = ufcwhole(state, live, now)
+  return { scratch, options }
 }
 function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, sounding = false, flying: Record<string, unknown> = {}, couple: autopilot.Couple | null = null): Pressed {
-  const run = new Function('buttons', 'start', 'index', 'sounding', 'autopilot', 'flying', 'given', `${ufcdefs} ${shipdefs} ${pilotdefs} couple=given;
+  const run = new Function('buttons', 'start', 'index', 'sounding', 'autopilot', 'flying', 'given', 'communication', 'identification', 'mids', `${ufcdefs} ${shipdefs} ${pilotdefs} ${commdefs} couple=given;
     let law_index=index, law_primary=sounding, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, pressed=[], data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, nav={ precise:false, units:{}, meridian:"true" };
     const pit_press=(a)=>pressed.push(a), timer_enter=()=>false, timer={ shown:"" };
     const ufc_update=()=>{}; const performance={ now:()=>1000 };
     const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"", ...start };
-    ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('ufc_face')}
+    ${radiodefs} ${lift('ufc_enter')} ${lift('comm_knob')} ${lift('ufc_press')} ${lift('ufc_face')}
     ${lift('ufc_live')} const sim_time=0, ufc_test={ at:-Infinity };
-    for(const b of buttons) ufc_press(b);
-    return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, ufc_live(), 2000), hold, coupled };`)
-  return run(buttons, start, index, sounding, autopilot, flying, couple) as Pressed
+    for(const b of buttons){ const knob=/^(one|two)([+-]?)$/.exec(b); if(knob) comm_knob(knob[1],knob[2]==="+"?1:knob[2]==="-"?-1:0); else ufc_press(b); }   // one, two: a comm channel selector pulled; one+, one-: turned
+    return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, ufc_live(), 2000), hold, coupled, uhf, squawk, terminal };`)
+  return run(buttons, start, index, sounding, autopilot, flying, couple, communication, identification, mids) as Pressed
 }
 function ufcbutton(y: number, z: number): string | null {
   const run = new Function('y', 'z', `${ufcdefs} ${lift('ufc_button_at')} return ufc_button_at(y, z);`)
@@ -1493,8 +1510,9 @@ describe('the UFC windows', () => {
     expect(ufcface(fresh({ func: 'ap' }), { offered: ['barometric', 'coupled'], modes: ['coupled'] }).options).toEqual(['', '', ' BALT', '', ':CPL']) // coupled: no ATTH or HSEL, and no RALT out of the altimeter's reach
     expect(ufcface(fresh({ func: 'ap', entry: '500' })).scratch).toBe('      500')
   })
-  it('show the data link and the radar beacon ON, with no channel to read (24.6.1.2.1)', () => {
-    expect(ufcface(fresh({ func: 'dl' }))).toEqual({ scratch: 'ON       ', options: ['', '', '', '', ''] }); expect(ufcface(fresh({ func: 'dl' }), { link: false }).scratch).toBe(blank)
+  it('show the data link and the radar beacon ON, the data link with its link\'s number (2.13.5, 24.6.1.2.1)', () => {
+    expect(ufcface(fresh({ func: 'dl' }))).toEqual({ scratch: 'ON      4', options: ['', '', '', '', ''] }); expect(ufcface(fresh({ func: 'dl' }), { link: false }).scratch).toBe('        4')
+    expect(ufcface(fresh({ func: 'link' }))).toEqual({ scratch: 'ON     16', options: ['', '', '', '', ''] }); expect(ufcface(fresh({ func: 'link' }), { setup: 'terminal.on=false;' }).scratch).toBe('       16') // D/L's second display, the MIDS terminal's
     expect(ufcface(fresh({ func: 'bcn' })).scratch).toBe('ON       '); expect(ufcface(fresh({ func: 'bcn' }), { beacon: false }).scratch).toBe(blank)
   })
 
@@ -1569,6 +1587,128 @@ describe('the UFC\'s data pages', () => {
   it('runs a precise grid\'s ten digits off the left of the scratchpad', () => {
     expect(ufcface(fresh({ func: 'wypt', entry: '6340338642' })).scratch).toBe('340338642')
     expect(ufcface(fresh({ func: 'wypt', entry: '634386' })).scratch).toBe('   634386')
+  })
+})
+
+// The comm channel display windows and the comm display (23.2.1.1, figures 23-1 and 23-2; #20).
+describe('the UFC\'s comm windows and display', () => {
+  it('shows each radio\'s channel in the window by its selector: a preset\'s number, G or M', () => {
+    expect(ufcwhole(fresh()).windows).toEqual(['1', '2'])
+    expect(ufcwhole(fresh(), { setup: 'uhf.one.channel="G"; uhf.two.channel="M";' }).windows).toEqual(['G', 'M'])
+    expect(ufcwhole(fresh(), { setup: 'uhf.one.channel=20;' }).windows).toEqual(['20', '2'])
+  })
+  it('blanks the window of a radio that is off', () => {
+    expect(ufcwhole(fresh(), { setup: 'uhf.two.on=false;' }).windows).toEqual(['1', ''])
+  })
+  it('lights the windows\' segments in the UFC\'s test with the rest', () => {
+    expect(ufcwhole(fresh(), { test: 1 }).windows).toEqual(['00', '00']); expect(ufcwhole(fresh(), { test: 2 }).windows).toEqual(['**', '**'])
+  })
+  it('shows the channel and its frequency in the scratchpad with a selector pulled, and GRCV, SQCH, CPHR and the modulation as options', () => {
+    expect(ufcwhole(fresh({ func: 'comm' }), { pulled: 'one' })).toEqual({ scratch: ' 1 305.000', options: [':GRCV', ':SQCH', ' CPHR', ':AM', ''], windows: ['1', '2'] })
+    expect(ufcface(fresh({ func: 'comm' }), { pulled: 'two' }).scratch).toBe(' 2 262.500')
+    expect(ufcface(fresh({ func: 'comm' }), { pulled: 'one', setup: 'uhf.one.channel="M";' }).scratch).toBe('M- 225.000')
+    expect(ufcface(fresh({ func: 'comm' }), { pulled: 'one', setup: 'uhf.one.channel="G";' }).scratch).toBe('G- 243.000')
+  })
+  it('cues each option that is on with its colon, and leaves the modulation window blank where the band leaves no choice', () => {
+    expect(ufcface(fresh({ func: 'comm' }), { pulled: 'one', setup: 'uhf.one.receiver=false; uhf.one.cipher=true; uhf.one.choice="fm";' }).options).toEqual([' GRCV', ':SQCH', ':CPHR', ':FM', ''])
+    expect(ufcface(fresh({ func: 'comm' }), { pulled: 'one', setup: 'uhf.one.channel="M"; uhf.one.manual=121500;' }).options[3]).toBe('') // VHF AM
+  })
+  it('shows the frequency being keyed after the channel', () => {
+    expect(ufcface(fresh({ func: 'comm', entry: '2513' }), { pulled: 'one' }).scratch).toBe(' 1   2513')
+  })
+  it('comes up when a channel selector is pulled, goes to the other radio when its is, and off when the same one is pulled again', () => {
+    expect(ufcpress(['one'])).toMatchObject({ ufc: { func: 'comm' }, uhf: { pulled: 'one' } })
+    expect(ufcpress(['one', 'two'])).toMatchObject({ ufc: { func: 'comm' }, uhf: { pulled: 'two' } })
+    expect(ufcpress(['one', 'one'])).toMatchObject({ ufc: { func: '' }, uhf: { pulled: '' } })
+    expect(ufcpress(['one', 'two']).face.scratch).toBe(' 2 262.500')
+  })
+  it('gives way to a function selector, and to CLR pressed on an empty scratchpad', () => {
+    expect(ufcpress(['one', 'tcn'])).toMatchObject({ ufc: { func: 'tcn' }, uhf: { pulled: '' } })
+    expect(ufcpress(['one', '2', 'clr'])).toMatchObject({ ufc: { func: 'comm', entry: '' }, uhf: { pulled: 'one' } })
+    expect(ufcpress(['one', '2', 'clr', 'clr'])).toMatchObject({ ufc: { func: '' }, uhf: { pulled: '' } })
+  })
+  it('steps the channel as a selector is turned, the window following it', () => {
+    const turned = ufcpress(['one+', 'one+', 'two-'])
+    expect([turned.uhf.one.channel, turned.uhf.two.channel, turned.face.windows]).toEqual([3, 1, ['3', '1']])
+    expect(ufcpress(['one+']).ufc.func).toBe('') // turning brings no display up
+  })
+  it('takes six digits and stores them with ENT in the channel selected, blinking once (23.2.2)', () => {
+    const keyed = ufcpress(['one', '2', '5', '1', '0', '0', '0', '9', 'ent'])
+    expect(keyed.uhf.one.presets[0]).toBe(251000); expect(keyed.ufc).toMatchObject({ entry: '', error: false, blink: 1.3 })
+    expect(keyed.uhf.two.presets[0]).toBe(305000) // the other radio's preset 1 is its own
+    expect(ufcpress(['one', 'one-', '2', '5', '1', '0', '0', '0', 'ent']).uhf.one.manual).toBe(251000) // back one from preset 1: M
+    expect(ufcpress(['two', '1', '2', '1', '5', '0', '0', 'ent']).uhf.two.presets[1]).toBe(121500)
+  })
+  it('flags ERROR for an entry that is not a frequency the radio tunes', () => {
+    expect(ufcpress(['one', '1', '2', '3', 'ent']).ufc.error).toBe(true)
+    expect(ufcpress(['one', '2', '5', '1', '0', '1', '0', 'ent'])).toMatchObject({ ufc: { error: true }, uhf: { one: { presets: { 0: 305000 } } } }) // off the 25 kHz spacing
+    expect(ufcpress(['one', '1', '0', '0', '0', '0', '0', 'ent']).ufc.error).toBe(true) // between the bands
+  })
+  it('turns each option on and off with its pushbutton, the modulation only where there is a choice', () => {
+    expect(ufcpress(['one', 'opt0', 'opt1', 'opt2', 'opt3']).uhf.one).toMatchObject({ receiver: false, squelch: false, cipher: true, choice: 'fm' })
+    expect(ufcpress(['two', 'opt0']).uhf).toMatchObject({ one: { receiver: true }, two: { receiver: false } })
+    expect(ufcpress(['one', 'one-', 'one-', 'opt3']).uhf.one.choice).toBe('fm') // G, 243.0: UHF
+  })
+})
+
+// The IFF displays (23.6.1.2, 23.6.2.1, figure 23-8; #98).
+describe('the UFC\'s IFF displays', () => {
+  it('bring up the transponder with XP, mode 3 and its code, and each mode as an option, a colon before those enabled', () => {
+    const d = ufcpress(['iff'])
+    expect(d.ufc.func).toBe('iff'); expect(d.squawk.shown).toBe('transponder')
+    expect(d.face).toMatchObject({ scratch: 'XP 3-1200', options: [':1-11', ':2', ':3 C', ':4A', ''] })
+  })
+  it('change to the interrogator, AI, on a second press of IFF, and back on a third', () => {
+    expect(ufcpress(['iff', 'iff'])).toMatchObject({ ufc: { func: 'iff' }, squawk: { shown: 'interrogator' }, face: { scratch: 'AI 3-1200' } })
+    expect(ufcpress(['iff', 'iff', 'iff']).squawk.shown).toBe('transponder')
+    expect(ufcpress(['iff', 'iff', 'tcn', 'iff']).squawk.shown).toBe('transponder') // from another page it is the transponder's again
+  })
+  it('enable and disable modes 1 and 2 with their options, each putting its code in the scratchpad', () => {
+    const one = ufcpress(['iff', 'opt0'])
+    expect(one.squawk.transponder.modes.one).toBe(false); expect(one.face).toMatchObject({ scratch: 'XP   1-11', options: [' 1-11', ':2', ':3 C', ':4A', ''] })
+    expect(ufcpress(['iff', 'opt1']).face).toMatchObject({ scratch: 'XP 2-0000', options: [':1-11', ' 2', ':3 C', ':4A', ''] })
+    expect(ufcpress(['iff', 'iff', 'opt0']).squawk).toMatchObject({ transponder: { modes: { one: true } }, interrogator: { modes: { one: false } } }) // each set its own
+  })
+  it('step mode 3 and C through 3 alone, both off and both on, and mode 4 through 4B and back', () => {
+    const third = (n: number) => ufcpress(['iff', ...Array(n).fill('opt2')]).face.options[2], fourth = (n: number) => ufcpress(['iff', ...Array(n).fill('opt3')]).face.options[3]
+    expect([0, 1, 2, 3].map(third)).toEqual([':3 C', ':3', ' 3 C', ':3 C'])
+    expect([0, 1, 2, 3, 4].map(fourth)).toEqual([':4A', ' 4B', ':4B', ' 4A', ':4A'])
+  })
+  it('take a keyed code with ENT for the mode in the scratchpad: four octal digits, or mode 1\'s two', () => {
+    const three = ufcpress(['iff', '7', '7', '0', '0', '1', 'ent'])
+    expect(three.squawk.transponder.codes.three).toBe('7700'); expect(three.squawk.interrogator.codes.three).toBe('1200'); expect(three.ufc).toMatchObject({ entry: '', error: false })
+    expect(ufcpress(['iff', 'opt1', '1', '2', '3', '4', 'ent']).squawk.transponder.codes.two).toBe('1234')
+    expect(ufcpress(['iff', 'opt0', '7', '3', '5', 'ent']).squawk.transponder.codes.one).toBe('73') // two digits and no more
+  })
+  it('flag ERROR for a code that is not one', () => {
+    expect(ufcpress(['iff', '1', '2', '8', '0', 'ent'])).toMatchObject({ ufc: { error: true }, squawk: { transponder: { codes: { three: '1200' } } } })
+    expect(ufcpress(['iff', 'opt0', '4', '4', 'ent']).ufc.error).toBe(true) // mode 1's second digit runs to 3
+    expect(ufcpress(['iff', '7', '7', 'ent']).ufc.error).toBe(true)
+  })
+  it('show the code being keyed in place of the one held', () => {
+    expect(ufcpress(['iff', '7', '7']).face.scratch).toBe('XP   3-77')
+  })
+  it('turn the set off and on with ON/OFF, the XP or AI going with it', () => {
+    const off = ufcpress(['iff', 'onoff'])
+    expect(off.squawk.on).toBe(false); expect(off.face.scratch).toBe('   3-1200')
+    expect(ufcpress(['iff', 'onoff', 'onoff']).squawk.on).toBe(true)
+  })
+  it('drop mode 4\'s option once its codes are gone', () => {
+    expect(ufcwhole(fresh({ func: 'iff' }), { setup: 'squawk.held=false;' }).options).toEqual([':1-11', ':2', ':3 C', '', ''])
+  })
+})
+
+// D/L with MIDS aboard (AFC 270, 2.13.5; #99): the key changes between the Link 4 and Link 16 displays.
+describe('the UFC\'s D/L key', () => {
+  it('brings up Link 4, then Link 16, then Link 4 again', () => {
+    expect(ufcpress(['dl']).ufc.func).toBe('dl'); expect(ufcpress(['dl', 'dl']).ufc.func).toBe('link'); expect(ufcpress(['dl', 'dl', 'dl']).ufc.func).toBe('dl')
+    expect(ufcpress(['tcn', 'dl']).ufc.func).toBe('dl') // from another page: Link 4 first
+  })
+  it('turns the MIDS terminal on and off with ON/OFF on its Link 16 display, and the Link 4 data link on its own', () => {
+    const link = ufcpress(['dl', 'dl', 'onoff'])
+    expect([link.terminal.on, link.radios.link.on, link.face.scratch]).toEqual([false, true, '       16'])
+    const four = ufcpress(['dl', 'onoff'])
+    expect([four.terminal.on, four.radios.link.on, four.face.scratch]).toEqual([true, false, '        4'])
   })
 })
 
@@ -1686,7 +1826,9 @@ describe('the UFC pushbuttons', () => {
     expect(ufcbutton(0.386, -0.018)).toBe('ent')
     expect(ufcbutton(0.351, -0.065)).toBe('ap')
     expect(ufcbutton(0.412, 0.006)).toBe('opt3')
-    expect(ufcbutton(0.450, -0.085)).toBe('emcon')
+    expect(ufcbutton(0.447, 0.086)).toBe('emcon') // second down the right column (figure 23-1)
+    expect(ufcbutton(0.477, -0.088)).toBe('ip') // at the head of the left
+    expect(ufcbutton(0.450, -0.085)).toBe(null) // the ADF switch, which is no pushbutton
     expect(ufcbutton(0.351, 0.041)).toBe('bcn')
     expect(ufcbutton(0.351, 0.062)).toBe('onoff')
     expect(ufcbutton(0.453 + 0.008, -0.061)).toBe('1')
@@ -1695,7 +1837,7 @@ describe('the UFC pushbuttons', () => {
   })
 
   it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
     expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
@@ -1710,13 +1852,18 @@ describe('the UFC pushbuttons', () => {
 // The ICLS needles and bars live only with the ILS on and tuned to the ship (24.5.4),
 // on an approach the stand-in geometry puts the jet on.
 describe('the ILS needles', () => {
-  const needles = (ils: string) => new Function(`const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } }, SHIP={ icls:11 }, radios={ ils:${ils} };
+  const needles = (ils: string, panel = '') => new Function('communication', `const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } }, SHIP={ icls:11 }, radios={ ils:${ils} }, uhf={ panel:communication.panel(11) }; ${panel}
     const carrier_ols={ tdx:0, tdz:0, dy:0 }, ownship={ pos:{ x:0, y:100, z:1000 }, fwd:{ x:0, z:-1 }, gearTarget:0 }, ols_dev=()=>({ along:1000, dist:1000, lat:0, dev:0.4 });
-    ${lift('approach_deviation')} return approach_deviation();`)()
+    ${lift('approach_deviation')} return approach_deviation();`)(communication)
   it('live only with the ILS on and on the ship\'s channel', () => {
     expect(needles('{ on:true, channel:11 }')).toEqual({ az: 0, gs: 0.5 })
     expect(needles('{ on:false, channel:11 }')).toBe(null)
     expect(needles('{ on:true, channel:12 }')).toBe(null)
+  })
+  it('take the channel from the communication panel\'s own selector with its ILS switch at MAN (23.1)', () => {
+    expect(needles('{ on:true, channel:11 }', 'uhf.panel.landing="manual"; uhf.panel.channel=7;')).toBe(null)
+    expect(needles('{ on:true, channel:12 }', 'uhf.panel.landing="manual"; uhf.panel.channel=11;')).toEqual({ az: 0, gs: 0.5 })
+    expect(needles('{ on:true, channel:12 }', 'uhf.panel.channel=11;')).toBe(null) // at UFC the panel's selector counts for nothing
   })
 })
 
@@ -1747,13 +1894,13 @@ describe('the radar silence the game reads', () => {
 describe('the TIMEUFC page', () => {
   const timers = /\n\/\/ The mission computer's timers[\s\S]*?\n(?=const ufc=\{)/.exec(source)?.[0] ?? ''
   interface Timed { ufc: Ufc; shown: string; et: number; cd: number; running: { et: boolean; cd: boolean }; face: Face }
-  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', 'navigate', 'autopilot', `${ufcdefs} ${shipdefs} const flying={}; ${pilotdefs} const master="nav", link={ selected:false }, mc=()=>({ one:true, two:true }); let sim_time=0; ${timers}
+  const timeufc = (buttons: (string | number)[]): Timed => new Function('buttons', 'navigate', 'autopilot', 'communication', 'identification', 'mids', `${ufcdefs} ${shipdefs} const flying={}; ${pilotdefs} ${commdefs} const master="nav", link={ selected:false }, mc=()=>({ one:true, two:true }); let sim_time=0; ${timers}
     let law_primary=false, law_disabled=false, ufc_dirty=false, ddi_dirty=false; const RADAR={ emcon:false }, ufc_update=()=>{}, performance={ now:()=>1000 }, data_enter=()=>false, grid_sync=()=>{}, grid_open=()=>{}, ownship={};
     const ufc={ func:"", entry:"", error:false, blink:0, option:-1, letter:"", half:null, after:null, kind:"" }, hsi_state={ dctr:false, map:false, level:"" }, hsi_range=()=>{}; ${navdefs}
     ${radiodefs} ${lift('ufc_enter')} ${lift('ufc_press')} ${lift('hsi_press')} ${lift('ufc_face')}
     for(const b of buttons){ if(typeof b==="number") sim_time=b; else if(b==="timeufc") hsi_press(17,"left"); else ufc_press(b); }
     return { ufc, shown:timer.shown, et:timer_seconds("et"), cd:timer_seconds("cd"), running:{ et:timer.et.since!==null, cd:timer.cd.since!==null },
-      face:ufc_face(ufc, { emcon, radios, timer:timer.shown, autopilot:{ modes:hold.modes, offered:{} } }, 0) };`)(buttons, navigate, autopilot) as Timed
+      face:ufc_face(ufc, { emcon, radios, comm:uhf, squawk, terminal, timer:timer.shown, autopilot:{ modes:hold.modes, offered:{} } }, 0) };`)(buttons, navigate, autopilot, communication, identification, mids) as Timed
 
   it('is loaded by TIMEUFC, boxed while it holds the UFC, and cleared by a second press', () => {
     expect(timers).not.toBe('')
@@ -1894,7 +2041,7 @@ describe('the TAC and SUPT menus', () => {
   const names = (menu: string, computers: { one: boolean; two: boolean }) => run(menu, 0, 'center', 'hud', computers).text.map((t) => t[0]).filter((t) => t !== 'TAC' && t !== 'SUPT' && t !== 'MENU')
   it('loses SA and all of SUPT but HSI without mission computer 1, and STORES without mission computer 2 (2.13.4.2.1)', () => {
     expect(names('tac', { one: false, two: true })).toEqual(['STORES', 'RDR ATTK', 'HUD', 'EW']); expect(names('supt', { one: false, two: true })).toEqual(['HSI'])
-    expect(names('tac', { one: true, two: false })).toEqual(['RDR ATTK', 'HUD', 'SA', 'EW']); expect(names('supt', { one: true, two: false }).length).toBe(9)
+    expect(names('tac', { one: true, two: false })).toEqual(['RDR ATTK', 'HUD', 'SA', 'EW']); expect(names('supt', { one: true, two: false }).length).toBe(11)
     expect(run('supt', 1, 'center', 'hud', { one: false, two: true }).shown).toBe(''); expect(run('supt', 2, 'center', 'hud', { one: false, two: true }).shown).toBe('hsi') // an option that is gone opens nothing
     expect(run('tac', 5, 'center', 'hud', { one: true, two: false }).shown).toBe('')
   })
@@ -1914,10 +2061,19 @@ describe('the TAC and SUPT menus', () => {
   })
   it('puts each SUPT option at its pushbutton', () => {
     const d = run('supt')
-    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['MUMI', 416, 30], ['BIT', 256, 30], ['MENU', 256, 482]])
+    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['GPS', 10, 96], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['UFC BU', 416, 482], ['MUMI', 416, 30], ['BIT', 256, 30], ['MENU', 256, 482]])
+  })
+  // GPS (figure 2-22, pushbutton 5) has no page of its own: it is the HSI on its GPS point data display (figure 24-8).
+  it('opens the HSI on its GPS point data display from GPS, whatever the DATA sublevel was showing', () => {
+    const gps = (data: string) => new Function('avionics', `let ddi_dirty=false, shown="", pressed=[]; const mc=()=>({ one:true, two:true }), display_test={ on:false }, ddi_state={ left:{ page:"hud", menu:"supt" } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
+      const hsi_state={ level:"", check:true, data:${JSON.stringify(data)} }, ddi_show=(d,p)=>{ shown=p; }, caution_page=()=>null, data_press=(pb)=>{ pressed.push(pb); hsi_state.data="gps"; return true; };
+      ${lift('ddi_press')} const took=ddi_press("left",5); return { took, shown, pressed, ...hsi_state };`)(avionics)
+    expect(gps('wypt')).toEqual({ took: true, shown: 'hsi', pressed: [3], level: 'data', check: false, data: 'gps' })
+    expect(gps('gps')).toMatchObject({ took: true, shown: 'hsi', pressed: [], data: 'gps' }) // already there: its own pushbutton 3 is another option
   })
   it('shows only options the game builds', () => {
-    for (const rows of Object.values(menus)) for (const [, , target] of rows) expect(built).toContain(target)
+    for (const rows of Object.values(menus)) for (const [, , target] of rows) if (target !== 'gps') expect(built).toContain(target)
+    expect(built).toContain('backup')
   })
   it('opens the page at the pushbutton the jet has it on', () => {
     expect(run('tac', 5).shown).toBe('sms')

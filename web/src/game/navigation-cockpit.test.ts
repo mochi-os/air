@@ -7,6 +7,9 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import * as navigate from './navigation'
+import * as communication from './communication'
+import * as identification from './identification'
+import * as mids from './mids'
 
 // The cockpit's side of the navigation suite (G3): the engine's glue between the
 // jet and navigation.ts, the INS knob and the set switches, the HSI's pushbuttons
@@ -39,16 +42,17 @@ const world = `const D2R=Math.PI/180, NM=1852;
   const keys_down=new Set(), held=(a)=>keys_down.has(a), airspeed=(mach)=>mach*340, emcon_set=()=>{}, ufc_update=()=>{}, performance={ now:()=>1000 }, timer_enter=()=>false, timer={ shown:"" };
   const ddi_state={ left:{ page:"fpas", menu:"" }, right:{ page:"rdr", menu:"" }, center:{ page:"hsi", menu:"" } };
   const altitude_set={ radar:0, baro:5000 }, altitude_armed={ radar:true, baro:true };
-  let computers={ one:true, two:true }, acl=0; const mc=()=>computers, acl_select=()=>{ acl++; };`
+  let computers={ one:true, two:true }, acl=0; const mc=()=>computers, acl_select=()=>{ acl++; };
+  const uhf={ one:communication.fresh(), two:communication.fresh(), panel:communication.panel(11), keypad:communication.backup(), pulled:"" }, squawk=identification.fresh(), terminal=mids.fresh();`
 const defs = [line('HSI_SCALES'), line('hsi_state'), line('VARIATION'), line('nav'), line('INS_KNOB'), line('sets'), line('carrier_given'), line('mumi'), line('MUMI_FILES'), line('fpas'), pages, line('UFC_ENTRY'), line('UFC_UNITS'), line('ufc'), line('grid_state'), line('GRID_SHIFTS'), line('GRID_BOX')].join('')
 const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
 // cockpit runs a body against the engine's navigation glue, booted as a spawn in the air is unless raw
 function cockpit<T>(body: string, raw = false): T {
-  return new Function('navigate', 'THREE', `${world} ${defs} ${functions}
+  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', `${world} ${defs} ${functions}
     map_name="MIDWAY ATOLL"; const point=(x,z,more)=>({ x, z, elevation:0, name:"", offset:null, ...more }), keys=(...b)=>{ for(const k of b) ufc_press(k); };
     ${raw ? '' : 'nav_reset(); nav_frame(0.1);'}
-    ${body}`)(navigate, THREE) as T
+    ${body}`)(navigate, THREE, communication, identification, mids) as T
 }
 
 describe('what the jet tells the suite', () => {
@@ -94,7 +98,7 @@ describe('a spawn', () => {
       'ownship.gauges.heading=1; nav_reset(); nav_frame(0.1); return { knob:nav.ins.knob, mode:nav.ins.mode, source:nav.source, steer:nav.steer, variation:nav.variation, heading:nav.heading, identifier:nav.memory.identifier, loaded:nav.memory.loaded, one:nav.waypoints[1], two:nav.waypoints[2], stations:nav.stations.length, points:nav.points.length, cautions:navigate.cautions(nav) };')
     expect(s).toMatchObject({ knob: 'nav', mode: 'nav', source: 'ins', steer: 'tcn', heading: 1, identifier: 'MIDWAY', stations: 1, points: 2, cautions: [] })
     expect(s.variation).toBeCloseTo(7 * D, 9)
-    expect(s.loaded).toEqual(['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM'])
+    expect(s.loaded).toEqual(['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM', 'IFF', 'COMM']) // the mission's IFF codes and comm presets with them (23.6.1.5.1, G5)
     expect(s.one).toMatchObject({ x: -18500, z: 7500, name: 'NIM' }); expect(s.two).toMatchObject({ name: 'PMDY' })
   })
   it('stores the place it aligned in waypoint 0: where it stands on the ground, the ship for a start in the air', () => {
@@ -278,8 +282,12 @@ describe('the DATA sublevels\' pushbuttons', () => {
     expect(data('const r=[p(13), hsi_state.shown, p(12), p(12), hsi_state.shown, nav.current]; return r;')).toEqual([true, 68, true, true, 1, 0])
   })
   it('gives the UFC the waypoint and sequence options, and steps the sequence to program', () => {
-    expect(data('const r=[p(5), ufc.func, p(1), ufc.func, p(1), ufc.func, p(15), nav.sequence, nav.lines, p(15), p(15), nav.sequence, p(2)]; return r;'))
-      .toEqual([true, 'wypt', true, 'seq', true, '', true, 1, false, true, true, 0, false])
+    expect(data('const r=[p(5), ufc.func, p(1), ufc.func, p(1), ufc.func, p(15), nav.sequence, nav.lines, p(15), p(15), nav.sequence, p(3)&&hsi_state.data]; return r;'))
+      .toEqual([true, 'wypt', true, 'seq', true, '', true, 1, false, true, true, 0, 'gps'])
+  })
+  it('makes the waypoint shown the air-to-air waypoint with A/A WP, and takes it off with a second press (figure 24-9 sheet 3)', () => {
+    expect(data('const r=[hsi_state.air, p(2), hsi_state.air, p(12), p(2), hsi_state.air, p(2), hsi_state.air]; return r;')).toEqual([null, true, 0, true, true, 1, true, null])
+    expect(cockpit('hsi_state.air=3; nav_reset(); return hsi_state.air;')).toBeNull() // a new flight has none
   })
   it('works the A/C options: the UFC, NOSEC GPS restarting acquisition, the flight phase, the heading reference and the lat/long format', () => {
     expect(data(`p(6); const r=[p(5), ufc.func, p(2), nav.gps.secure, nav.gps.search, p(2), nav.gps.secure, p(1), nav.gps.phase, p(1), nav.gps.phase, p(13), nav.magnetic, p(15), nav.decimal, p(12)]; return r;`))

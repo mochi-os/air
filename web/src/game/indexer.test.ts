@@ -306,6 +306,8 @@ describe('the clickable switches', () => {
       ['wingtanks', 'transfer.wing'], ['centretank', 'transfer.centre'],
       // G3: the INS mode select knob (#24)
       ['insknob', 'ins'],
+      // G5: the communication panel's RWR and WPN volume controls (#20)
+      ['volumereceiver', 'volume.receiver'], ['volumeweapon', 'volume.weapon'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
     expect(table.match(/\w+:/g)?.length).toBe(expected.length)

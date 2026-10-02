@@ -4,6 +4,8 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as countermeasures from './countermeasures'
+import * as identification from './identification'
 import { describe, expect, it } from 'vitest'
 import { ACROSS, PRIORITY, SLOTS, dedicated, host, lines, reconcile, restack, type Row, type Slots } from './cautions'
 
@@ -156,12 +158,14 @@ describe('the advisory line', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
   const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
   const consts = /\nconst buttons=\{[^\n]*\n/.exec(source)?.[0] ?? '', on = /\nconst ANTIICE_ON=[^\n]*\n/.exec(source)?.[0] ?? ''
-  interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean }
-  const advised = (o: Jet = {}) => (new Function('o', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
-    const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
+  interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean; chaff?: number; flares?: number; dispenser?: string; challenged?: boolean; answered?: boolean; alert?: string }
+  const advised = (o: Jet = {}) => (new Function('o', 'countermeasures', 'identification', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
+    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }), squawk=identification.fresh(), challenges=()=>({ challenged:!!o.challenged, answered:!!o.answered });
+    if(o.dispenser) suite.dispenser=o.dispenser; if(o.alert) squawk.alert=o.alert;
+    const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, chaff:o.chaff??20, flares:o.flares??40, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
     const secured=o.secured||[false,false], antiskid=o.skid??true, reference=o.reference||"auto";
     buttons.trim=o.trim??-Infinity; buttons.reset=o.reset??-Infinity; buttons.standing=!!o.standing; const bit={ advisory:!!o.failure };
-    ${lift('advisories_now')} return advisories_now();`)(o) as [string, string][]).map(([key]) => key)
+    ${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification) as [string, string][]).map(([key]) => key)
   it('advises nothing in a healthy jet, and passes on what the navigation suite advises', () => {
     expect(consts).not.toBe(''); expect(on).not.toBe('')
     expect(advised()).toEqual([]); expect(advised({ suite: ['ALGN', 'GPS'] })).toEqual(['ALGN', 'GPS'])
@@ -186,6 +190,14 @@ describe('the advisory line', () => {
   })
   it('advises BIT while an equipment failure has not been looked at', () => {
     expect(advised({ failure: true })).toEqual(['BIT'])
+  })
+  it('advises D LOW at a magazine\'s bingo, and not with the dispenser off (2.13.12.1)', () => {
+    expect(advised({ chaff: 5 })).toEqual(['D LOW']); expect(advised({ flares: 10 })).toEqual(['D LOW']); expect(advised({ chaff: 6, flares: 11 })).toEqual([])
+    expect(advised({ chaff: 5, dispenser: 'off' })).toEqual([])
+  })
+  it('advises M4 OK while the transponder answers a valid mode 4 challenge, and not with the MODE 4 switch OFF', () => {
+    expect(advised({ challenged: true, answered: true })).toEqual(['M4 OK']); expect(advised({ challenged: true })).toEqual([]); expect(advised({ answered: true })).toEqual([])
+    expect(advised({ challenged: true, answered: true, alert: 'off' })).toEqual([])
   })
   it('advises HIAOA while the flight control computers have no INS attitude', () => {
     expect(advised({ attitude: false })).toEqual(['HIAOA']); expect(advised({ reference: 'stby' })).toEqual(['HIAOA']); expect(advised({ reference: 'ins' })).toEqual([])
@@ -224,6 +236,34 @@ describe('the advisory line', () => {
 
   it('follows what is advised each sim step, and packs with the cautions on MASTER CAUTION', () => {
     expect(source).toMatch(/const next=cautions_reconcile\(advisory_slots,avionics\.advised\(advisories_now\(\),computing\)\.map\(\(\[key,label\]\)=>\[key,label,false\]\)\); if\(next!==advisory_slots\)\{ advisory_slots=next; ddi_dirty=true; \} \}/)
+  })
+})
+
+// The IFF's cautions (23.6.2.3, 23.6.2.4; #98) and the APU accumulator's (2.4.2.2), as the caution step raises them.
+describe('the IFF and APU accumulator cautions', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lines = /\n\t\{ const c=challenges\(\); for\(const caption of identification\.cautions[^\n]*\n\tif\(accumulator_low\(\)\) captions\.push\("APU ACCUM"\);[^\n]*\n/.exec(source)?.[0] ?? ''
+  interface Set { held?: boolean; on?: boolean; alert?: string; challenged?: boolean; answered?: boolean; low?: boolean }
+  const raised = (o: Set = {}) => new Function('o', 'identification', `const squawk=identification.fresh(), captions=[], challenges=()=>({ challenged:!!o.challenged, answered:!!o.answered }), accumulator_low=()=>!!o.low;
+    squawk.held=o.held??true; squawk.on=o.on??true; if(o.alert) squawk.alert=o.alert; ${lines} return captions;`)(o, identification) as string[]
+  it('raises nothing with the codes held and no challenge unanswered', () => {
+    expect(lines).not.toBe('')
+    expect(raised()).toEqual([]); expect(raised({ challenged: true, answered: true })).toEqual([])
+  })
+  it('raises IFF 4 for a valid mode 4 challenge left unanswered', () => {
+    expect(raised({ challenged: true })).toEqual(['IFF 4'])
+  })
+  it('raises IFF 4 and IFFAI with the mode 4 codes gone', () => {
+    expect(raised({ held: false })).toEqual(['IFF 4', 'IFFAI'])
+  })
+  it('silences IFF 4, and not IFFAI, with the MODE 4 switch OFF', () => {
+    expect(raised({ challenged: true, alert: 'off' })).toEqual([]); expect(raised({ held: false, alert: 'off' })).toEqual(['IFFAI'])
+  })
+  it('raises neither with the set off', () => {
+    expect(raised({ held: false, challenged: true, on: false })).toEqual([])
+  })
+  it('raises APU ACCUM with the APU accumulator low', () => {
+    expect(raised({ low: true })).toEqual(['APU ACCUM']); expect(raised({ low: true, held: false })).toEqual(['IFF 4', 'IFFAI', 'APU ACCUM'])
   })
 })
 

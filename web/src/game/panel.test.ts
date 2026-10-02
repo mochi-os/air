@@ -44,11 +44,11 @@ const running = words(), stopped = words({ spoolL: 0, spoolR: 0 })
 
 // deno-lint-ignore no-explicit-any
 type System = any
-function system(o: { tod?: string; grounded?: boolean } = {}): System {
+function system(o: { tod?: string; grounded?: boolean; parking?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
   return new Function('THREE', 'STATE', 'o', `let sim_time=0, reset_flag=false, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
-    const on_ground=()=>ownship.grounded, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
+    const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; power_step(out); }, at(t){ sim_time=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, clock_elapsed, travel_at, lighting_set,
@@ -63,18 +63,56 @@ describe('the electrical power panel (#21, #116)', () => {
   it('powers every bus from either generator, each GEN switch taking its own off the line', () => {
     const s = system()
     s.step(0, running)
-    expect(s.buses).toEqual({ ac: true, essential: true })
+    expect(s.buses).toEqual({ ac: true, essential: true, left: true, right: true })
     s.press('generator.left', 1); s.step(1, running)
     expect(s.generators(running)).toEqual([false, true])
     expect(s.buses.ac).toBe(true)
     s.press('generator.right', -1); s.step(2, running)
-    expect(s.buses).toEqual({ ac: false, essential: true }) // on the batteries
+    expect(s.buses).toEqual({ ac: false, essential: true, left: false, right: false }) // on the batteries
     expect(s.RADAR.unpowered).toBe(true)
     s.press('generator.left', 0); s.step(3, running)
-    expect(s.buses).toEqual({ ac: true, essential: true })
+    expect(s.buses).toEqual({ ac: true, essential: true, left: true, right: true })
     expect(s.RADAR.unpowered).toBe(false)
     s.press('generator.right', 0)
     expect(s.generators(words({ spoolL: 0 }))).toEqual([false, true]) // a stopped engine takes its generator with it
+  })
+
+  // The bus tie (2.5.1.1, 2.5.1.3, FO-8): tied, either generator feeds both 115 volt ac buses; a ground start with the
+  // parking brake released opens it, each bus is then its own generator's, and the GEN TIE CONTROL switch closes it.
+  it('feeds both ac buses from one generator through the bus tie', () => {
+    const s = system()
+    s.step(0, words({ spoolL: 0 }))
+    expect(s.electrics.tie).toBe(true)
+    expect(s.buses).toMatchObject({ ac: true, left: true, right: true })
+  })
+  it('opens the bus tie on a ground start with the parking brake released, and leaves a dead generator\'s bus dead', () => {
+    const s = system({ grounded: true, parking: false })
+    s.step(0, running); s.step(1, stopped); s.step(2, words({ spoolL: 0 }))
+    expect(s.electrics.tie).toBe(false)
+    expect(s.buses).toMatchObject({ ac: true, left: false, right: true })
+    s.step(3, running)
+    expect(s.buses).toMatchObject({ left: true, right: true }) // each on its own generator
+    expect(s.electrics.tie).toBe(false) // and the tie stays open until it is reset
+  })
+  it('keeps the bus tie closed for a start with the parking brake set, or in the air', () => {
+    const set = system({ grounded: true, parking: true })
+    set.step(0, running); set.step(1, stopped); set.step(2, words({ spoolL: 0 }))
+    expect(set.electrics.tie).toBe(true)
+    const air = system({ grounded: false, parking: false })
+    air.step(0, running); air.step(1, stopped); air.step(2, words({ spoolL: 0 }))
+    expect(air.electrics.tie).toBe(true)
+  })
+  it('does not take a spawn\'s engines, which need a moment to read as turning, for an engine start', () => {
+    const s = system({ grounded: true, parking: false })
+    s.step(0, stopped); s.step(5, running)
+    expect(s.electrics.tie).toBe(true)
+    expect(s.buses).toMatchObject({ ac: true, left: true, right: true })
+  })
+  it('closes the bus tie again with the GEN TIE CONTROL switch cycled', () => {
+    const s = system({ grounded: true, parking: false })
+    s.step(0, running); s.step(1, stopped); s.step(2, words({ spoolL: 0 })); const open = s.electrics.tie; s.press('generator.tie', 0); s.step(3, words({ spoolL: 0 }))
+    expect([open, s.electrics.tie]).toEqual([false, true])
+    expect(s.buses).toMatchObject({ left: true, right: true })
   })
 
   it('carries the essential bus on the U battery, then the E, for about 20 minutes, and recharges them', () => {
@@ -201,6 +239,14 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
     expect(day.lighting.warn).toBe(1)
   })
 
+  it('take each DDI off with its own side\'s ac bus, the AMPCD staying on either (FO-8)', () => {
+    const s = system({ grounded: true, parking: false })
+    s.step(0, running); s.step(1, stopped); s.step(2, words({ spoolL: 0 })) // a ground start that opened the bus tie, the left generator not turning
+    expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([0, 1, 1])
+    s.step(3, words({ spoolR: 0 }))
+    expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([1, 0, 1])
+  })
+
   it('light each DDI from its selector and BRT knob, the AMPCD from its OFF/BRT knob and NGT/DAY rocker, none without ac power', () => {
     const s = system()
     expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([1, 1, 1])
@@ -238,7 +284,7 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
   })
 
   it('dark the azimuth indicator without ac power', () => {
-    expect(source).toMatch(/if\(u\.rwr\) u\.rwr\.mesh\.material\.color\.setScalar\(buses\.ac\?1:0\);/)
+    expect(source).toMatch(/if\(u\.rwr\) u\.rwr\.mesh\.material\.color\.setScalar\(buses\.ac&&suite\.receiver\.power\?1:0\);/) // and with the control indicator's POWER off (#9)
   })
 
   it('light the UFC and the IFEI from their BRT knobs, the IFEI\'s under NITE only', () => {

@@ -91,11 +91,17 @@ export const UNITS: readonly Unit[] = [
   unit('rdr', 'RDR', 'sensors', 5, 120, { dark: true }),
   unit('sms', 'SMS', 'stores', 5, 150, { ground: true }),
   unit('wpns', 'WPNS', 'stores', 0, 30),
-  unit('dl', 'D/L', 'comm', 2, 20),
+  unit('csc', 'CSC', 'comm', 5, 20, { ground: true }),
+  unit('ics', 'ICS', 'comm', 4, 20),
+  unit('iff', 'IFF', 'comm', 3, 20, { dark: true }),
+  unit('dl', 'D/L', 'comm', 2, 20, { dark: true }),
+  unit('com1', 'COM1', 'comm', 11, 20, { dark: true }),
+  unit('com2', 'COM2', 'comm', 12, 20, { dark: true }),
+  unit('l16', 'L16', 'comm', 15, 20, { dark: true }), // the MIDS terminal's Link 16, at the MIDS pushbutton
   unit('ins', 'INS', 'nav', 5, 600, { ground: true }),
   unit('adc', 'ADC', 'nav', 4, 45, { ground: true }),
   unit('ils', 'ILS', 'nav', 3, 20, { dark: true }),
-  unit('bcn', 'BCN', 'nav', 3, 20), // the radar beacon, tested with the ILS (24.5.3)
+  unit('bcn', 'BCN', 'nav', 3, 20, { dark: true }), // the radar beacon, tested with the ILS (24.5.3)
   unit('ralt', 'RALT', 'nav', 2, 15, { dark: true }),
   unit('tcn', 'TCN', 'nav', 1, 30, { dark: true }),
   unit('gps', 'GPS', 'nav', 13, 40),
