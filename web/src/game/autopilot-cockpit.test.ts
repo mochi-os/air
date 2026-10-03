@@ -177,8 +177,8 @@ describe('the frame', () => {
   it('gives the reset to the core for the frame it steps, and to the server until a datagram has carried it', () => {
     expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_flag, reverted:!mc\(\)\.one, held:wing_kept\(\), flap:flap_select,\n\t\tlaunch:launch_flag,/)
     expect(source).toMatch(/if\(flight_steps\.value>0\)\{ launch_flag=false; reset_flag=false; onspeed_flag=false; \}/)
-    expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_owed, reverted:c\?c\.reverted:!mc\(\)\.one, held:c\?c\.held:wing_kept\(\), flap:flap_select,/)
-    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; [^}]*extinguish_flag=false; onspeed_owed=false; \}/)
+    expect(source).toMatch(/reset:reset_owed, onspeed:onspeed_owed, reverted:c\?c\.reverted:!mc\(\)\.one, held:c\?c\.held:wing_kept\(\), flap:flap_select,/)
+    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; [^}]*extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
   })
   it('packs the reset, the reversion and the held fuel as the core reads them: flags 32768 and 16384, and word 15', () => {
     const bridge = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')

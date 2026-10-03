@@ -7174,7 +7174,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("flaps.extend")) pit_press("flaps",-1);   // no notice: the legend shows the selection AND its travel now (#199), and the centre banner is for what the glass cannot say   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
 		if(ch===key_of("flaps.retract")) pit_press("flaps",1);   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
 		if(ch===key_of("brake.parking")) pit_press("brake.parking",0);   // Shift+B: strictly manual, like the real handle
-		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
+		if(ch===key_of("trim.reset")){ trim_reset(); }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear")) pit_press("gear",0);
 		if(ch===key_of("gear.emergency")&&!playback) pit_press("gear.emergency",0);   // the gear handle turned and pulled (#128), unbound by default: a middle click on the handle does it   // G: landing gear up/down — only once airborne, never on deck/runway; the SOUND follows the real transit in the audio block (#88), not the switch
 		if(ch===key_of("caution.reset")) caution_press();
@@ -7335,7 +7335,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "bleed": bleed_turn(d||1); break;
 	case "fire.test": fire_switch(d||1); break;
 	case "rudder.trim": rudder_trim=THREE.MathUtils.clamp(rudder_trim+(d<0?-0.25:0.25),-1,1); break;
-	case "trim.takeoff": if(ownship.grounded){ reset_flag=true; rudder_trim=0; buttons.trim=sim_time; } break;
+	case "trim.takeoff": if(ownship.grounded){ trim_reset(); rudder_trim=0; buttons.trim=sim_time; } break;
 	case "fcs.reset": if(buses.essential){ electrics.mech=false; buttons.reset=sim_time; buttons.jams=last_out?fcs_jams(last_out):0; buttons.standing=buttons.jams>0; } break;
 	case "transfer.wing": transfer.wing=THREE.MathUtils.clamp(transfer.wing+(d<0?-1:1),-1,1); break;   // up toward ORIDE
 	case "transfer.centre": transfer.centre=THREE.MathUtils.clamp(transfer.centre+(d<0?-1:1),-1,1); break;
@@ -7564,7 +7564,8 @@ function accumulator_low(){ return apu_accumulator<ACCUMULATOR_LOW; }
 // OFF never. recording drives the RCDR ON light (2.13.8.10); the game's own flight recorder is another thing.
 let taping="automatic";
 function recording(){ return buses.ac&&(taping==="manual"||(taping==="automatic"&&master!=="nav")); }
-let reset_flag=false;   // one-shot trim reset, consumed once the core has stepped with it
+let reset_flag=false, reset_owed=false;   // one-shot trim reset: the flag until the core here has stepped with it, owed until a datagram has carried it to the server's
+function trim_reset(){ reset_flag=true; reset_owed=MULTIPLAYER; }   // the sample is built after the core's step has cleared the flag, so a match's server is told from its own latch
 // Nosewheel steering (2.10.2, #36): off, where the nosewheel castors, LOW (±16°) or HI (±75°). With
 // the flight control computers running, a press of the NWS button engages LOW and holding it selects
 // HI; with the wing fold handle unlocked, a press from LOW latches HI. The paddle switch disengages
@@ -7659,7 +7660,7 @@ function read_input(dt){
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			// A KEYLESS action cannot be replayed. "None" is truthy, so the generic path below dispatched a synthetic event carrying the code "None", and EVERY unbound action matched it at once — a stick button bound to Cycle view also toggled the HUD reject switch and zeroed the trim. These two are the keyless actions a stick may reasonably carry, so they fire directly on the press edge, the same shape as guns and the zoom notches above; that also hands trim reset to the stick without inventing a keyboard chord for an action deliberately left unbound.
 			if(action==="view"||action==="trim.reset"||action==="gear.emergency"){ const edge=pad_buttons[action+"/"+b]||false;
-				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else reset_flag=true; }
+				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else trim_reset(); }
 				pad_buttons[action+"/"+b]=down; continue; }
 			const was=pad_buttons[action+"/"+b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[action+"/"+b]=down; const bindText=key_of(action);
@@ -9115,6 +9116,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
+		flight_stores(own_mask());   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
 			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
@@ -11526,7 +11528,7 @@ function net_frame(dt){
 	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:suite.dispenser==="bypass", extinguish:extinguish_flag, status:status_own() };
@@ -11535,7 +11537,7 @@ function net_frame(dt){
 	// state are the same instant. marked_steps is reset by the mark below, so
 	// this read and that one see the same number.
 	const sequence=net.input({...sample, steps:marked_steps});
-	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; }
+	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).

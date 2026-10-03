@@ -44,16 +44,16 @@ const running = words(), stopped = words({ spoolL: 0, spoolR: 0 })
 
 // deno-lint-ignore no-explicit-any
 type System = any
-function system(o: { tod?: string; grounded?: boolean; parking?: boolean } = {}): System {
+function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multiplayer?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
-  return new Function('THREE', 'STATE', 'o', `let sim_time=0, reset_flag=false, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
+  return new Function('THREE', 'STATE', 'o', `let sim_time=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
-    ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${press}
+    ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; power_step(out); }, at(t){ sim_time=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
-      get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
+      get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
       get reference(){ return reference; }, get emergency(){ return gear_emergency; }, get inhibit(){ return wing_inhibit; }, get held(){ return wing_held; }, set inhibit(v){ wing_inhibit=v; },
       get cabin(){ return cabin_feet; }, set unpowered(v){ unpowered=v; }, get sari(){ return sari_clicked; }, get radalt(){ return radalt_test; },
       buttons, set out(v){ last_out=v; } };`)(THREE, STATE, o)
@@ -128,6 +128,9 @@ describe('the electrical power panel (#21, #116)', () => {
     const idle = pushed(0)
     expect(idle).toEqual([0.04, 0, 0.04, 0])
     expect(system().generators(words({ spoolL: idle[0], spoolR: idle[2] }))).toEqual([true, true])
+  })
+  it('trims an air start with its loadout on, as a Case II start (#138)', () => {
+    expect(source).toMatch(/if\(!test_active && ownship\.speed>50 && !ownship\.grounded\)\{\n\t\tflight_stores\(own_mask\(\)\);[^\n]*\n\t\tflight_level\(/)
   })
   it('trims a Case II start with its loadout on (#132)', () => {
     expect(source).toMatch(/mission_start\(\)==="case2"\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\);\n\t\township\.throttle=flight_approach\(/)
@@ -417,6 +420,31 @@ describe('the panel systems\' cautions', () => {
   })
 })
 
+// The trim reset in a match (#139): the wire sample is built after the core's step has cleared the reset flag, so
+// the reset is owed to the server from its own latch until a datagram has carried it.
+describe('the trim reset in a match', () => {
+  it('owes the reset to the server in a match, and to nobody in single player', () => {
+    const match = system({ grounded: true, multiplayer: true })
+    match.press('trim.takeoff', 0)
+    expect([match.reset, match.owed]).toEqual([true, true])
+    const alone = system({ grounded: true })
+    alone.press('trim.takeoff', 0)
+    expect([alone.reset, alone.owed]).toEqual([true, false])
+  })
+  it('is raised the one way from the key, the T/O TRIM button and a stick button', () => {
+    expect(source).toMatch(/if\(ch===key_of\("trim\.reset"\)\)\{ trim_reset\(\); \}/)
+    expect(source).toMatch(/case "trim\.takeoff": if\(ownship\.grounded\)\{ trim_reset\(\); rudder_trim=0;/)
+    expect(source).toMatch(/else if\(action==="gear\.emergency"\) pit_press\("gear\.emergency",0\); else trim_reset\(\); \}/)
+    expect(source.match(/reset_flag=true/g)).toHaveLength(1) // trim_reset's own, and nowhere around it
+    expect(source).toMatch(/\nfunction trim_reset\(\)\{ reset_flag=true; reset_owed=MULTIPLAYER; \}/)
+  })
+  it('sends the latch, and pays it with the datagram that carries it', () => {
+    expect(source).toMatch(/lean:input\.lean\|\|0, reset:reset_owed, onspeed:onspeed_owed,/)
+    expect(source).toMatch(/if\(sequence>0\)\{ [^}]*reset_owed=false; \}/)
+    expect(source).toMatch(/if\(flight_steps\.value>0\)\{ launch_flag=false; reset_flag=false;/) // the core's own edge, cleared once it has stepped
+  })
+})
+
 describe('the FCS panel (#19)', () => {
   it('trims the rudder a quarter of the way to a stop a click, and T/O TRIM centres it and re-datums the trim on the wheels only', () => {
     const s = system()
@@ -427,7 +455,7 @@ describe('the FCS panel (#19)', () => {
     s.press('trim.takeoff', 0)
     expect([s.rudder, s.reset]).toEqual([1, false]) // airborne: nothing
     s.ownship.grounded = true; s.press('trim.takeoff', 0)
-    expect([s.rudder, s.reset]).toEqual([0, true])
+    expect([s.rudder, s.reset, s.owed]).toEqual([0, true, false]) // single player: no server to tell
     expect(source).toMatch(/hotas\.pedals=Math\.abs\(py\)>Math\.abs\(key_axes\.yaw\)\?py:key_axes\.yaw;\n\tinput\.yaw=THREE\.MathUtils\.clamp\(hotas\.pedals\+rudder_trim\*RUDDER_TRIM,-1,1\);/)
   })
 
