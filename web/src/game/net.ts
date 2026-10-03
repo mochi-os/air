@@ -316,8 +316,14 @@ export interface InputSample {
   wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
   centre: number
   steering: number // nosewheel steering (#36): -1 off, 0 LOW, +1 HI; a sample without it keeps LOW
+  trim: number // the trim switch held: pitch, + nose up
+  lean: number // and roll, + right wing down
+  reset: boolean // the trim reset, an edge
+  flap: number // the flap switch: 0 AUTO, 1 HALF, 2 FULL
   gear: boolean
   hook: boolean
+  probe: boolean // the refuelling probe out
+  eject: boolean // the ejection handle, an edge
   override: boolean
   dump: boolean
   port: boolean // per-engine fuel OFF, engine 0
@@ -330,6 +336,9 @@ export interface InputSample {
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
   solo: boolean // the dispenser at BYPASS: a flare edge releases the flare alone; a server that predates it drops the chaff bundle too
   extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay
+  onspeed: boolean // the pitch trim alone back to on-speed, an edge; a server that predates it leaves the trim where it was
+  reverted: boolean // mission computer 1 lost: the server's limiter drops its weight schedule and the stores' roll limit, as the client's has
+  held: number // wing fuel held at INHIBIT, kg; a server that predates it burns the wings' fuel with the rest
   status: Status // this aircraft's identification and link status, relayed to the session (mids.ts): a server that predates it reads nothing
   // How many fixed 1/60 steps the core integrated this sample for (#176). The
   // client has always recorded it against the mark ring; sending it lets the

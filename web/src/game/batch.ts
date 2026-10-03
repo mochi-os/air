@@ -20,12 +20,14 @@ export const DEPTH = 3
 // BUDGET: the bytes the encoded datagram must stay within, clear of the limit.
 export const BUDGET = 1100
 
-// queue adds a sample to the batch. solo and extinguish go only when set, a
-// server reading their absence as false; the status goes packed, on the newest
-// sample alone, which is the one the server reads it from.
+// queue adds a sample to the batch. solo, extinguish, onspeed and reverted go
+// only when set, and held only when fuel is, a server reading their absence as
+// false and none; the status goes packed, on the newest sample alone, which is
+// the one the server reads it from.
 export function queue(batch: Queued[], sample: InputSample, sequence: number): void {
-  const { solo, extinguish, status, ...rest } = sample
+  const { solo, extinguish, onspeed, reverted, held, status, ...rest } = sample
   for (const earlier of batch) delete earlier.status
-  batch.push({ ...rest, ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), status: pack(status), sequence })
+  const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(held > 0 ? { held } : {}) }
+  batch.push({ ...rest, ...rare, status: pack(status), sequence })
   if (batch.length > DEPTH) batch.shift()
 }

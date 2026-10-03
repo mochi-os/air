@@ -1169,6 +1169,7 @@ const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
+		pedestalHide:/^(Control_Column_380|Object_1357|Object_1369)$/,   // the stick and the pilot's body and arms: between the eye and the pedestal's controls, and gone while the pilot looks down at them (pedestal_step)
 		cut:[ { node:"Object_1372", boxes:[   // see model_cut: the cockpit shell's blocks over the modelled panels
 			{ lo:[0.275,0.325,4.165], hi:[0.525,0.852,4.508] },     // the lower left panel: brake gauge, HOOK BYPASS, LDG/TAXI, fire test and ground power
 			{ lo:[-0.125,0.320,4.340], hi:[0.125,0.715,4.800] },    // the pedestal under the AMPCD: the clock and the cockpit altimeter
@@ -1527,6 +1528,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	g.userData.glow=[...glow.values()]; g.userData.burner=[...burner.values()];
 	if(spec.cockpitHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.cockpitHide.test(o.name)) hide.push(o); });
 		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask)
+	if(spec.pedestalHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.pedestalHide.test(o.name)) hide.push(o); }); g.userData.pedestalHide=hide; }
 	g.add(m);
 	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
@@ -2391,6 +2393,7 @@ const ufc_test={ at:-Infinity };
 // hold: the autopilot's modes and references (autopilot.ts). link: the Link 4 ACL mode with the carrier's
 // side of it (datalink.ts). coupled: what CPL last coupled to, as the HUD and HSI word it.
 const hold=autopilot.fresh(), link=datalink.fresh(); let coupled="";
+let hold_was=false, onspeed_flag=false, onspeed_owed=false;   // the autopilot as the last frame left it, and the one-shot pitch trim reset its disengagement asks of the core (2.9.2.1): the flag until the core here has stepped with it, owed until a datagram has carried it to the server's
 // link_picture: where the jet is on the carrier's approach and what its own equipment can do, for the data
 // link - the hook against the touchdown point, as the lens has it (ols_dev).
 function link_picture(){ const g=demonstration_picture().groove, o=carrier_ols;
@@ -2433,6 +2436,8 @@ function autopilot_frame(dt){ const before=JSON.stringify([hold.engaged,hold.mod
 	const c=autopilot.step(hold,s,dt);
 	if(c.pitch!==null){ input.pitch=c.pitch; input.trim=0; }
 	if(c.roll!==null){ input.roll=c.roll; input.lean=0; }
+	if(autopilot.retrimmed(hold_was,hold,s.approach,ownship.aoa??0)){ onspeed_flag=true; onspeed_owed=MULTIPLAYER; }   // off since the last frame, however it came off: a mode deselected at the UFC between frames counts
+	hold_was=hold.engaged;
 	if(before!==JSON.stringify([hold.engaged,hold.modes,sim_time<hold.caution,link.shown,link.changed])){ ddi_dirty=true; ufc_dirty=true; } }
 function pattern_start(){ display_test.on=true; display_test.at=sim_time; display_test.pressed={ left:[], right:[], center:[] }; ddi_dirty=true; }
 function pattern_stop(){ display_test.on=false; avionics.stop(bit); ddi_dirty=true; }
@@ -4175,8 +4180,9 @@ function ddi_fcs(x,display){ const o=last_out||[], gz=ownship.gauges||{};
 		if(jammed){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;
 			x.beginPath(); x.moveTo(xx+10,y-11); x.lineTo(xx+40,y+11); x.moveTo(xx+40,y-11); x.lineTo(xx+10,y+11); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
-	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,deg(STATE.flap),deg(STATE.flap),false,false,false],
-		["AIL",128,deg(STATE.flaperon),deg(STATE.flaperon+1),false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
+	const flap=o[STATE.flap]||0, tef=flap_shown(flap)/D2R, droop=(droop_shown(flap)-flap)/D2R;   // the jet's flap and aileron droop for the core's (flap_shown)
+	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,tef,tef,false,false,false],
+		["AIL",128,deg(STATE.flaperon)+droop,deg(STATE.flaperon+1)+droop,false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
 		["STAB",176,deg(STATE.stabilator),deg(STATE.stabilator+1),false,jam(0),jam(1)]];
 	for(const [label,y,L,R,sideways,jamL,jamR] of rows){
 		x.textAlign="center"; x.font="18px monospace"; x.fillText(label,256,y);
@@ -5615,6 +5621,7 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
+const PEDESTAL_DOWN=-20*D2R, PEDESTAL_UP=-15*D2R; let pedestal_clear=false;   // the head's elevation that clears the stick from in front of the pedestal, the one that brings it back, and whether it is cleared (pedestal_step); here, with the ownship, because a model applied early finds cockpit_hidden
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
 function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): six for Fox 2, zero for Gun or a guns-only match
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1;
@@ -6443,9 +6450,11 @@ let gear_emergency=false;   // the gear handle turned and pulled (#128, 2.10.1.6
 let emergency_travel=0;   // the handle's drawn turn and pull, 0..1
 const transfer={ wing:0, centre:0 };   // the EXT TANKS switches (#18, 2.2.4): -1 STOP, 0 NORM, 1 ORIDE
 // INTR WING (#18, 2.2.3.3): INHIBIT holds the internal wing tanks' fuel, so the fuselage tanks give theirs
-// first; back at NORM the wings transfer again. The core burns one internal quantity, so the game has no
-// trapped wing fuel: wing_held only apportions the FUEL page's and the IFEI's tanks.
+// first; back at NORM the wings transfer again. wing_held apportions the FUEL page's and the IFEI's tanks,
+// and the core is told it (wing_kept), so the engines burn down to it and flame out with it aboard. NATOPS
+// has gravity move "some wing fuel at a reduced rate and quantity" to tank 4 and gives neither, so none moves.
 let wing_inhibit=false, wing_held=null;
+function wing_kept(){ return wing_held?Math.round(wing_held/2.2046):0; }   // kg, whole: the core here and the server's are told the same number
 const WING_TRANSFER=15;   // lb/s, both wings' transfer back to the fuselage tanks after INHIBIT
 function wing_step(internal,dt){ const T=FUEL_TANKS, free=2*T.wing-Math.min(Math.max(0,T.one+T.four+T.feed.left+T.feed.right+2*T.wing-internal),2*T.wing);
 	if(wing_inhibit) wing_held=Math.min(wing_held??free,internal);
@@ -7896,6 +7905,11 @@ let atc_speed=null, atc_last=0;   // cruise mode's engaged true airspeed, knots 
 // a camber model whose FULL is 26° where the jet's is 45° (fa18c.go Droop.Angle), and its HALF two thirds of
 // that, so the jet's 27° is three fifths of the core's FULL: both HALF and FULL are down, a flap in transit not yet.
 const TEF_FULL=26*D2R, TEF_DOWN=TEF_FULL*27/45;
+// What the FCS display writes for that flap (2.8.3): the jet's angle, 45° at FULL and 30° at HALF, which one scale
+// gives. The ailerons droop with the flaps, to 30° at HALF and 42° at FULL: droop_shown is the jet's droop for the
+// core's, and the AIL row adds each aileron's own deflection to it.
+function flap_shown(flap){ return flap*45*D2R/TEF_FULL; }
+function droop_shown(flap){ const half=TEF_FULL*2/3; return flap<=half?flap*30*D2R/half:30*D2R+(flap-half)*12*D2R/(TEF_FULL-half); }
 // atc_engage: the mode the ATC button engages (NATOPS 2.1.2): approach with the FLAP switch at HALF or FULL and
 // the trailing-edge flaps down 27° or more (2.1.2.1), cruise with it at AUTO (2.1.2.2); none on the deck.
 function atc_engage(){ if(on_ground()) return null;
@@ -9084,6 +9098,7 @@ function on_strip(p){   // point inside any paved capsule (the airfield strips; 
 		if((p.x-qx)*(p.x-qx)+(p.z-qz)*(p.z-qz)<=w*w) return true; }
 	return false;
 }
+const IDLE=0.04;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
@@ -9093,15 +9108,17 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		// droop schedule, so the client supplies only where and which way - constants
 		// carried here went stale and ballooned off the glideslope. Case II trims
 		// level (slope 0) at 1,200 ft on the final bearing; the intercept ~3 nm ahead
-		// is the pilot's (CV-1).
+		// is the pilot's (CV-1). The trim is of the jet as loaded: the loadout goes on first, or its weight and
+		// drag arrive on the first frame and sink the hands-off start 70 m in 25 s.
+		flight_stores(own_mask());
 		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL());
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
-			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor (0.04) back to a lever position
-				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-0.04)/0.96)); } }
+			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
+				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } }
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
@@ -9119,7 +9136,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
 	if(b[STATE.time]===0 || b[STATE.fuel]<500){ b[STATE.fuel]=FUEL(); if(stores_book) external_fill(b); }   // a NEVER-STEPPED core boots with the airframe's full 4,900 kg tank — without the time gate the menu's fuel load never reached ground starts (carrier/runway read 10,800 lb whatever the slider said); mid-mission resets still keep their burned-down tank. Externals mount full (#17): the same push seeds the tanks, but ONLY once the catalog is readable — an early push wrote a not-yet-derivable 0 OVER the fill the mask transition had already made, and no transition remained to refill it (the EXT 0 carrier boots)
-	b[STATE.engine]=ownship.throttle; b[STATE.engine+1]=0; b[STATE.engine+2]=ownship.throttle; b[STATE.engine+3]=0;
+	{ const spool=IDLE+(1-IDLE)*(ownship.throttle??0); b[STATE.engine]=spool; b[STATE.engine+1]=0; b[STATE.engine+2]=spool; b[STATE.engine+3]=0; }   // the engines running at the lever's power: handed the lever itself, a jet at IDLE began with its engines stopped, and its generators off the line for the second they took to spool up
 	for(let i=STATE.stabilator;i<=STATE.normal;i++) b[i]=0;   // surfaces + controller memories
 	b[STATE.demand]=1; b[STATE.normal]=1;
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;
@@ -9178,12 +9195,12 @@ function fly_player(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
-		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
+		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_flag, reverted:!mc().one, held:wing_kept(), flap:flap_select,
 		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
 		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
-	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
+	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; onspeed_flag=false; }   // the edges were consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
 	sync_core(out); last_out=out;
 	emergency_update(dt, keys.has(key_of("jettison.emergency"))||sim_time-emergency_clicked<EMERGENCY_HOLD);   // #18: the held striped button — pairs release while held
@@ -9932,7 +9949,7 @@ function update_camera(dt){
 		if(buffet_rot>1e-5) camera.quaternion.multiply(_headq.setFromAxisAngle(_zaxis,(Math.random()*2-1)*buffet_rot)).multiply(_pitq.setFromAxisAngle(_yaxis,(Math.random()*2-1)*buffet_rot));   // the temps are free again after the compose consumed them
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
-		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
+		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye); pedestal_step();
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el+PIT_REST)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
 		}
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
@@ -10780,7 +10797,17 @@ if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 }
 
 // ============================================================================ UI / menu
-function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit"; }   // hide the pilot's head in first person; every external view keeps him
+function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit";   // hide the pilot's head in first person; every external view keeps him
+	pedestal_clear=false; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=true; }   // and the stick and his arms drawn until the next frame's look says otherwise: a view switch and a fresh model both start from here
+// The pedestal under the AMPCD carries the dispenser switch, the ECM knob and the RWR control indicator
+// (FACE_SEATS.defence), and from the design eye the stick and the pilot's hand on it stand in front of
+// them. A pilot looks past his own hand: with the head pitched down at the pedestal the stick and the
+// pilot's body are not drawn, and they return when the head comes back up. The two angles are the head's
+// elevation from its rest - the face comes into the lower quarter of the view near 20 degrees down - and
+// are apart so a head held at the edge does not flicker (PEDESTAL_DOWN, PEDESTAL_UP, beside the ownship).
+function lowered(clear,elevation){ return elevation<(clear?PEDESTAL_UP:PEDESTAL_DOWN); }
+function pedestal_step(){ const clear=cfg.view==="cockpit"&&lowered(pedestal_clear,head_el); if(clear===pedestal_clear) return;
+	pedestal_clear=clear; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=!clear; }
 function set_view(v){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
 		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
@@ -11499,7 +11526,7 @@ function net_frame(dt){
 	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:suite.dispenser==="bypass", extinguish:extinguish_flag, status:status_own() };
@@ -11508,7 +11535,7 @@ function net_frame(dt){
 	// state are the same instant. marked_steps is reset by the mark below, so
 	// this read and that one see the same number.
 	const sequence=net.input({...sample, steps:marked_steps});
-	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; }
+	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).

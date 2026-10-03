@@ -26,15 +26,15 @@ function lift(name: string): string {
 const D = Math.PI / 180, FOOT = 0.3048
 // The jet: 13 km astern on the final bearing of 060 at 1,200 ft over the deck, on speed with full flaps and the
 // ATC, everything on; the suite aligned with the steering on the TACAN.
-const world = `const D2R=Math.PI/180, HOOK_AFT=9, HOOK_DROP=4;
+const world = `const D2R=Math.PI/180, HOOK_AFT=9, HOOK_DROP=4; let MULTIPLAYER=false;
   let sim_time=100, master="nav", emcon=false, flap_select=2, atc_on=true, atc_speed=null, demonstration=null, ddi_dirty=false, ufc_dirty=false, law=true, inhibited=false, surface=-1e9, station={ bearing:1, range:20000 }, computers={ one:true, two:true };
   let carrier_ols={ dy:20 }; const shown=[], mc=()=>computers, buses={ ac:true }, radios={ tacan:{ on:true }, ils:{ on:false, channel:11 }, link:{ on:false }, beacon:{ on:false } }, hotas={ paddle:false }, input={ pitch:0, roll:0, trim:0, lean:0 };
-  const ownship={ pos:{ x:0, y:20+4+1200*0.3048, z:0 }, grounded:false, waving:false, speed:70, gauges:{ track:61*D2R } };
+  const ownship={ pos:{ x:0, y:20+4+1200*0.3048, z:0 }, grounded:false, waving:false, speed:70, aoa:8.1, gauges:{ track:61*D2R } };
   let picture={ pitch:2, bank:0, heading:60, track:61, altitude:ownship.pos.y, vertical:0, cas:70, roll:0.01, rate:0.02, groove:{ along:13000-9, right:0, heading:60 } };
   const demonstration_picture=()=>picture, trim_law=()=>law, on_ground=()=>!!ownship.grounded, radalt_inhibited=()=>inhibited, ground_height=()=>surface, ddi_show=(d,p)=>shown.push([d,p]), tacan=()=>station;
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.gps.error={ x:0, z:0 }; nav.ins.error={ x:0, z:0 }; nav.steer="tcn";
   const nav_sense=()=>({ dt:0, x:ownship.pos.x, z:ownship.pos.z, east:0, south:-70, tas:70, heading:60*D2R, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });`
-const state = /\nconst hold=autopilot\.fresh\(\), link=datalink\.fresh\(\); let coupled="";\n/.exec(source)?.[0] ?? ''
+const state = /\nconst hold=autopilot\.fresh\(\), link=datalink\.fresh\(\); let coupled="";\nlet hold_was=false, onspeed_flag=false, onspeed_owed=false;[^\n]*\n/.exec(source)?.[0] ?? ''
 const functions = ['link_picture', 'couple_now', 'autopilot_sense', 'acl_select', 'autopilot_frame', 'link_draw', 'hud_link', 'hud_coupled'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
   if (!state) throw new Error('the autopilot state not found in engine.ts')
@@ -152,6 +152,39 @@ describe('the frame', () => {
       const s = cockpit<unknown[]>(`autopilot.select(hold,"barometric",autopilot_sense(null)); hold.caution=200; ${how} input.pitch=0.1; autopilot_frame(1/60); return [hold.engaged, hold.modes.barometric, hold.caution, input.pitch];`)
       expect(s, how).toEqual([false, false, -Infinity, 0.1])
     }
+  })
+  // 2.9.2.1 note: the pitch trim is reset to on-speed anytime the autopilot is disengaged in the landing
+  // configuration above 6 degrees. The core is asked once, and in a match the server's is owed the same.
+  const engaged = 'autopilot.select(hold,"barometric",autopilot_sense(null)); autopilot_frame(1/60);'
+  const flags = 'return [onspeed_flag, onspeed_owed, hold_was];'
+  it('asks the core for the pitch trim\'s reset when the paddle takes the autopilot off in the landing configuration', () => {
+    expect(cockpit(`${engaged} ${flags}`)).toEqual([false, false, true]) // engaged: nothing asked
+    expect(cockpit(`${engaged} hotas.paddle=true; autopilot_frame(1/60); ${flags}`)).toEqual([true, false, false])
+    expect(cockpit(`MULTIPLAYER=true; ${engaged} hotas.paddle=true; autopilot_frame(1/60); ${flags}`)).toEqual([true, true, false])
+  })
+  it('asks once: the frames after find it already off', () => {
+    expect(cockpit(`${engaged} hotas.paddle=true; autopilot_frame(1/60); onspeed_flag=false; autopilot_frame(1/60); autopilot_frame(1/60); ${flags}`)).toEqual([false, false, false])
+  })
+  it('asks when the modes are deselected between frames, and when the autopilot lets go by itself', () => {
+    expect(cockpit(`${engaged} autopilot.paddle(hold); autopilot_frame(1/60); ${flags}`)).toEqual([true, false, false])
+    expect(cockpit(`${engaged} computers={ one:false, two:true }; autopilot_frame(1/60); return [hold.engaged, onspeed_flag];`)).toEqual([false, true])
+  })
+  it('does not ask up and away, nor at 6 degrees of angle of attack and under', () => {
+    expect(cockpit(`${engaged} law=false; hotas.paddle=true; autopilot_frame(1/60); ${flags}`)).toEqual([false, false, false])
+    expect(cockpit(`${engaged} ownship.aoa=6; hotas.paddle=true; autopilot_frame(1/60); ${flags}`)).toEqual([false, false, false])
+    expect(cockpit(`${engaged} ownship.aoa=6.5; hotas.paddle=true; autopilot_frame(1/60); return onspeed_flag;`)).toBe(true)
+  })
+  it('gives the reset to the core for the frame it steps, and to the server until a datagram has carried it', () => {
+    expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_flag, reverted:!mc\(\)\.one, held:wing_kept\(\), flap:flap_select,\n\t\tlaunch:launch_flag,/)
+    expect(source).toMatch(/if\(flight_steps\.value>0\)\{ launch_flag=false; reset_flag=false; onspeed_flag=false; \}/)
+    expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_owed, reverted:c\?c\.reverted:!mc\(\)\.one, held:c\?c\.held:wing_kept\(\), flap:flap_select,/)
+    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; [^}]*extinguish_flag=false; onspeed_owed=false; \}/)
+  })
+  it('packs the reset, the reversion and the held fuel as the core reads them: flags 32768 and 16384, and word 15', () => {
+    const bridge = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')
+    expect(bridge).toMatch(/\nconst input = new Float64Array\(16\)\n/)
+    expect(bridge).toMatch(/\n {4}\(controls\.onspeed \? 32768 : 0\) \|\n {4}\(controls\.reverted \? 16384 : 0\) \|\n/)
+    expect(bridge).toMatch(/\n {2}input\[15\] = controls\.held\n/)
   })
   it('unboxes ACL when the master mode leaves NAV (24.6.1)', () => {
     expect(cockpit('boxed(); master="gun"; autopilot_frame(1/60); return [link.selected, link.five];')).toEqual([false, null])

@@ -121,7 +121,7 @@ describe('the ATC advisory', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
   const press = /\n\tcase "atc":[^\n]*\n[^\n]*break;[^\n]*\n/.exec(source)?.[0] ?? ''
   const drop = /\n\tif\(atc_on\)\{[^\n]*\n[\s\S]*?\n\t\}\n/.exec(source)?.[0] ?? ''
-  const engage = /\nconst TEF_FULL=[^\n]*\n[^\n]*\n[^\n]*\nfunction atc_engage\(\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  const engage = /\nconst TEF_FULL=[^\n]*\n(?:[^\n]*\n)*?function atc_engage\(\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   const draw = /\n\thctx\.font="13px 'Hornet Display', monospace"; hctx\.textAlign="left"; hctx\.fillStyle=GR;\n\tif\(atc_on[^\n]*\n/.exec(source)?.[0] ?? ''
 
   // The engage: the FLAP switch (flap_select: 0 AUTO, 1 HALF, 2 FULL) and the trailing-edge flaps' travel, degrees of the

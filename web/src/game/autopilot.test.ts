@@ -137,6 +137,31 @@ describe('the paddle switch', () => {
   })
 })
 
+describe('the pitch trim reset on disengagement', () => {
+  // 2.9.2.1 note: reset to on-speed anytime the autopilot is disengaged in the
+  // landing configuration, if the angle of attack is greater than 6 degrees.
+  it('is asked for when the autopilot comes off in the landing configuration above 6 degrees', () => {
+    const ap = on('barometric')(level)
+    expect(P.retrimmed(false, ap, true, 8.1)).toBe(false) // engaged: nothing has come off
+    expect(P.retrimmed(true, ap, true, 8.1)).toBe(false)
+    P.paddle(ap)
+    expect(P.retrimmed(true, ap, true, 8.1)).toBe(true)
+    expect(P.retrimmed(false, ap, true, 8.1)).toBe(false) // and once only: the frame after, it was not engaged
+  })
+  it('is not asked for up and away, nor at 6 degrees and under', () => {
+    const ap = P.fresh()
+    expect(P.RETRIM).toBe(6)
+    expect(P.retrimmed(true, ap, false, 8.1)).toBe(false)
+    expect([P.retrimmed(true, ap, true, 6), P.retrimmed(true, ap, true, 6.01), P.retrimmed(true, ap, true, 3)]).toEqual([false, true, false])
+  })
+  it('follows a disengagement the autopilot makes by itself', () => {
+    const ap = on('barometric')(level)
+    P.step(ap, jet({ computer: false }), 1 / 60) // mission computer 1 lost: it lets go
+    expect(ap.engaged).toBe(false)
+    expect(P.retrimmed(true, ap, true, 8.1)).toBe(true)
+  })
+})
+
 describe('what makes it let go', () => {
   const dt = 1 / 60
   it('gives no stick while it is off', () => {

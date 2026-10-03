@@ -87,6 +87,9 @@ export interface Controls {
   trim: number // -1..1 held pitch-trim rate, +1 = nose-up
   lean: number // -1..1 held roll-trim rate, +1 = right wing down
   reset: boolean // one-shot: zero the trim datums, re-datum the hold
+  onspeed: boolean // one-shot: the pitch trim alone back to on-speed (NATOPS 2.9.2.1: the autopilot disengaged in the landing configuration)
+  reverted: boolean // mission computer 1 lost: the g limiter at 7.5 g whatever the weight, and no roll rate limiting for stores (NATOPS 2.8.2.2, 25.1)
+  held: number // internal wing fuel the INTR WING switch at INHIBIT holds out of the feed, kg (NATOPS 2.2.3.3)
   flap: number // flap switch: 0 AUTO, 1 HALF, 2 FULL
   brake: boolean
   bypass: boolean // the ANTI SKID switch OFF: the pedals get the full pressure, and the core blows the main tyres braking at speed
@@ -177,7 +180,7 @@ let failure: string | null = null
 
 // Preallocated boundary buffers: the same memory every frame, viewed as
 // bytes for the copy and floats for access.
-const input = new Float64Array(15)
+const input = new Float64Array(16)
 const input_bytes = new Uint8Array(input.buffer)
 const output = new Float64Array(SIZE + EXTRA)
 const output_bytes = new Uint8Array(output.buffer)
@@ -292,6 +295,8 @@ function fill(controls: Controls, count: number): void {
     (controls.override ? 32 : 0) |
     (controls.probe ? 64 : 0) |
     (controls.reset ? 128 : 0) |
+    (controls.onspeed ? 32768 : 0) |
+    (controls.reverted ? 16384 : 0) |
     (controls.dump ? 1 : 0) |
     (controls.port ? 256 : 0) |
     (controls.starboard ? 512 : 0) |
@@ -305,6 +310,7 @@ function fill(controls: Controls, count: number): void {
   input[12] = controls.transfer[0]
   input[13] = controls.transfer[1]
   input[14] = controls.steering
+  input[15] = controls.held
 }
 
 let accumulator = 0
