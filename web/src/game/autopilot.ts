@@ -272,6 +272,17 @@ export function paddle(ap: Autopilot): void {
   ap.caution = ap.flash = -Infinity
 }
 
+// RETRIM: the angle of attack, degrees, above which a disengagement in the
+// landing configuration resets the pitch trim.
+export const RETRIM = 6
+// retrimmed: the autopilot has just come off - by the paddle, by itself or by
+// its modes deselected - in the landing configuration above 6 degrees of angle
+// of attack, where the pitch trim is reset to on-speed (2.9.2.1 note). was:
+// whether it was engaged the frame before.
+export function retrimmed(was: boolean, ap: Autopilot, approach: boolean, alpha: number): boolean {
+  return was && !ap.engaged && approach && alpha > RETRIM
+}
+
 // cautions and advisories, as the DDI words them (2.9.1).
 export function cautions(ap: Autopilot, time: number): string[] {
   return time < ap.caution ? ['AUTO PILOT'] : []

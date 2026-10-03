@@ -51,7 +51,7 @@ function system(o: { tod?: string; grounded?: boolean; parking?: boolean } = {})
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; power_step(out); }, at(t){ sim_time=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
-      battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, clock_elapsed, travel_at, lighting_set,
+      battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
       get reference(){ return reference; }, get emergency(){ return gear_emergency; }, get inhibit(){ return wing_inhibit; }, get held(){ return wing_held; }, set inhibit(v){ wing_inhibit=v; },
@@ -113,6 +113,27 @@ describe('the electrical power panel (#21, #116)', () => {
     s.step(0, running); s.step(1, stopped); s.step(2, words({ spoolL: 0 })); const open = s.electrics.tie; s.press('generator.tie', 0); s.step(3, words({ spoolL: 0 }))
     expect([open, s.electrics.tie]).toEqual([false, true])
     expect(s.buses).toMatchObject({ left: true, right: true })
+  })
+
+  // A jet handed over on the ground has its engines running (flight_push): at the lever's power, which at IDLE is
+  // the core's idle spool and not zero. Handed the lever itself, a runway start began with both generators off the
+  // line for the 1.3 seconds its engines took to spool up.
+  const pushed = (throttle: number) => new Function(`const STATE={ position:0, velocity:3, attitude:6, omega:10, fuel:13, engine:14, stabilator:22, demand:33, normal:34, extension:35, catapult:36, stroke:37, wire:38, wow:39, contact:40, touch:41, engine_harm:45, stress:54, time:55, element:57, gear_harm:106 };
+    let flight_active=true, prev_wire=0, test_active=false, sent=null; const b=new Float64Array(117);
+    const ownship={ flown:true, grounded:true, speed:0, throttle:${throttle}, pos:{ x:0, y:10, z:0 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
+    const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null;
+    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
+} flight_push(); return sent.slice(14,18);`)() as number[] // the lift stops at the function's own closing brace, which stands alone
+  it('hands a ground start its engines turning: both generators on the line from the first frame', () => {
+    const idle = pushed(0)
+    expect(idle).toEqual([0.04, 0, 0.04, 0])
+    expect(system().generators(words({ spoolL: idle[0], spoolR: idle[2] }))).toEqual([true, true])
+  })
+  it('trims a Case II start with its loadout on (#132)', () => {
+    expect(source).toMatch(/mission_start\(\)==="case2"\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\);\n\t\township\.throttle=flight_approach\(/)
+  })
+  it('hands it the lever\'s power above idle', () => {
+    expect(pushed(0.5)[0]).toBeCloseTo(0.52, 9); expect(pushed(1)[0]).toBeCloseTo(1, 9)
   })
 
   it('carries the essential bus on the U battery, then the E, for about 20 minutes, and recharges them', () => {
@@ -456,6 +477,18 @@ describe('the fuel panel (#18)', () => {
     s.wing_step(9000, 100)
     expect(s.held).toBeNull() // back to NORM's order: at 9,000 lb the wings are empty
   })
+  it('tells the core what the wings hold, in whole kilograms, and nothing at NORM (#130)', () => {
+    const s = system()
+    expect(s.wing_kept()).toBe(0)
+    s.press('wing.inhibit', 0)
+    s.wing_step(10810, 1)
+    expect(s.wing_kept()).toBe(526) // 1,160 lb, both wings full
+    s.wing_step(400, 1)
+    expect(s.wing_kept()).toBe(181) // all that is aboard is in the wings: 400 lb
+    s.press('wing.inhibit', 0)
+    s.wing_step(9000, 10); s.wing_step(9000, 100)
+    expect(s.wing_kept()).toBe(0)
+  })
 })
 
 describe('the emergency gear extension (#128)', () => {
@@ -596,5 +629,59 @@ describe('the spin recovery display (#12, figure 2-14)', () => {
     const right = draw(words({ spin: 1, recovery: 1 }))
     expect(right.text.map((t) => t[0])).toEqual(expect.arrayContaining(['SPIN MODE', 'ENGAGED', 'RIGHT']))
     expect(right.text.find((t) => t[0] === 'RIGHT')![1]).toBeGreaterThan(256)
+  })
+})
+
+// The pedestal under the AMPCD carries the dispenser switch, the ECM knob and the RWR control indicator, and
+// from the design eye the stick and the pilot's hand stand in front of them (#136): looking down at it the
+// stick and the pilot's body are not drawn, and they come back when the head comes up.
+describe('the pedestal behind the stick', () => {
+  const D = Math.PI / 180
+  const state = /\nconst PEDESTAL_DOWN=[^;]*; let pedestal_clear=false;/.exec(source)?.[0] ?? ''
+  function view() {
+    if (!state) throw new Error('the pedestal state not found in engine.ts')
+    return new Function(`const D2R=Math.PI/180, cfg={ view:"cockpit" }; let head_el=0;
+      const node=()=>({ visible:true }), ownship={ group:{ userData:{ cockpitHide:[node()], pedestalHide:[node(),node(),node()] } } };
+      ${state}
+      ${lift('cockpit_hidden')}
+      ${lift('lowered')}
+      ${lift('pedestal_step')}
+      return { cfg, lowered, step(el){ head_el=el; pedestal_step(); return ownship.group.userData.pedestalHide.map((o)=>o.visible); }, hidden:cockpit_hidden,
+        head:()=>ownship.group.userData.cockpitHide[0].visible, drawn:()=>ownship.group.userData.pedestalHide.map((o)=>o.visible), fresh(){ ownship.group.userData.pedestalHide=[node(),node(),node()]; } };`)()
+  }
+  const all = [true, true, true], none = [false, false, false]
+  it('clears at 20 degrees down and comes back at 15, so a head held at the edge does not flicker', () => {
+    const v = view()
+    expect([v.lowered(false, -19 * D), v.lowered(false, -21 * D)]).toEqual([false, true])
+    expect([v.lowered(true, -16 * D), v.lowered(true, -14 * D)]).toEqual([true, false])
+  })
+  it('stops drawing the stick and the pilot\'s body while the head is down at the pedestal, and draws them again when it comes up', () => {
+    const v = view()
+    expect(v.step(0)).toEqual(all); expect(v.step(-19 * D)).toEqual(all)
+    expect(v.step(-25 * D)).toEqual(none)
+    expect(v.step(-17 * D)).toEqual(none) // between the two angles: as it was
+    expect(v.step(-10 * D)).toEqual(all)
+    expect(v.step(-17 * D)).toEqual(all)
+  })
+  it('draws them in every other view, wherever the head was left', () => {
+    const v = view()
+    expect(v.step(-40 * D)).toEqual(none)
+    v.cfg.view = 'chase'; v.hidden()
+    expect(v.drawn()).toEqual(all); expect(v.head()).toBe(true)
+    expect(v.step(-40 * D)).toEqual(all)
+    v.cfg.view = 'cockpit'; v.hidden()
+    expect(v.head()).toBe(false); expect(v.step(-40 * D)).toEqual(none)
+  })
+  it('clears a model applied while the head is down', () => {
+    const v = view()
+    expect(v.step(-30 * D)).toEqual(none)
+    v.fresh(); v.hidden() // a model (re)applied: its nodes are new, and drawn
+    expect(v.drawn()).toEqual(all)
+    expect(v.step(-30 * D)).toEqual(none)
+  })
+  it('is the stick and the pilot\'s body, looked for as the cockpit view composes its camera', () => {
+    expect(source).toMatch(/pedestalHide:\/\^\(Control_Column_380\|Object_1357\|Object_1369\)\$\/,/)
+    expect(source).toMatch(/if\(spec\.pedestalHide\)\{ const hide=\[\]; m\.traverse\(o=>\{ if\(o\.name&&spec\.pedestalHide\.test\(o\.name\)\) hide\.push\(o\); \}\); g\.userData\.pedestalHide=hide; \}/)
+    expect(source).toMatch(/else if\(cfg\.view==="cockpit"\)\{ const at=ownship\.group\.userData\.eye[^\n]*\n\t\tconst eye=[^\n]*camera\.position\.copy\(eye\); pedestal_step\(\);\n/)
   })
 })

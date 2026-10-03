@@ -22,9 +22,9 @@ const assets = fileURLToPath(new URL('../assets/', import.meta.url))
 const built = existsSync(assets + 'flight.wasm') && existsSync(assets + 'wasm_exec.js')
 interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string }
 let core: Core
-// The core's frame: fifteen input words and the state with its instrument tail (flight.ts).
+// The core's frame: sixteen input words and the state with its instrument tail (flight.ts).
 const SIZE = 117, TAIL = 8, ALPHA = 117, CAS = 121
-const input = new Float64Array(15), out = new Float64Array(SIZE + TAIL), sent = new Uint8Array(input.buffer), read = new Uint8Array(out.buffer)
+const input = new Float64Array(16), out = new Float64Array(SIZE + TAIL), sent = new Uint8Array(input.buffer), read = new Uint8Array(out.buffer)
 const D = Math.PI / 180, FOOT = 0.3048, DT = 1 / 60
 function turned(q: number[], v: number[]): number[] {
   const [w, x, y, z] = q, [a, b, c] = v
@@ -216,4 +216,51 @@ describe.skipIf(!built)('the autopilot against the flight core', () => {
     expect(t.vertical).toBeLessThan(-3); expect(t.vertical).toBeGreaterThan(-5); expect(Math.abs(t.bank)).toBeLessThan(1)
     expect(Math.max(...log.map((s) => Math.abs(s.bank)))).toBeLessThan(21) // the SPN-42 asks no more than 20°
   }, 60000)
+
+  // What the cockpit's systems tell the core through the frame's input words (flight.ts fill, the wasm's
+  // controls): the wings' held fuel in word 15, mission computer 1 lost as flag 16384, and the pitch
+  // trim's reset to on-speed as flag 32768.
+  describe('the systems the cockpit tells the core of', () => {
+    const FUEL = 13, SPOOL = 14, NORMAL = 34, DATUM = 110, BANK = 112, GEAR = 4, RESET = 128, REVERTED = 16384, ONSPEED = 32768
+    const start = (altitude: number, speed: number, fuel: number) => {
+      core.init(JSON.stringify({ aircraft: 'fa18c', environment: { seed: 1 }, world: { sea: 3 } }))
+      core.level(0, altitude, 0, 0, -1, speed, fuel)
+      input.fill(0); input[7] = 4
+    }
+    const run = (frames: number, each?: () => void) => { for (let k = 0; k < frames; k++) { input[6]++; core.frame(sent, read); each?.() } }
+
+    it('leaves the fuel INTR WING holds in the wings unburned, the engines flaming out with it aboard (#130)', () => {
+      const left = (held: number) => { start(6000, 220, 504); input[3] = 1; input[15] = held; run(1200); return [out[FUEL], out[SPOOL]] }
+      const [free, turning] = left(0), [kept, stopped] = left(500)
+      expect(free).toBeLessThan(490); expect(turning).toBeGreaterThan(0.9)
+      expect(kept).toBeCloseTo(500, 6); expect(stopped).toBeLessThan(0.2)
+    }, 60000)
+
+    it('pulls to the 7.5 g placard at full tanks without mission computer 1, where the schedule holds it under (#134)', () => {
+      const pull = (flags: number) => {
+        start(2000, 250, 4900); input[3] = 1; input[8] = 1; input[5] = flags; run(120)
+        let peak = 0
+        input[0] = 1; run(360, () => { peak = Math.max(peak, out[NORMAL]) })
+        return peak
+      }
+      const scheduled = pull(0), reverted = pull(REVERTED)
+      expect(scheduled).toBeLessThan(7.15)
+      expect(reverted).toBeGreaterThan(7.15); expect(reverted).toBeLessThan(8.1)
+      expect(reverted - scheduled).toBeGreaterThan(0.25)
+    }, 60000)
+
+    it('puts the pitch trim back to on-speed and keeps the roll trim, where the trim reset zeroes both (#135)', () => {
+      const trimmed = (flag: number) => {
+        start(600, 72, 2000); input[3] = 0.5; input[5] = GEAR; input[10] = 2; input[9] = 1; input[11] = 1; run(60)
+        const walked = [out[DATUM], out[BANK]]
+        input[9] = 0; input[11] = 0; input[5] = GEAR | flag; run(1)
+        return { walked, left: [out[DATUM], out[BANK]] }
+      }
+      const kept = trimmed(0), onspeed = trimmed(ONSPEED), reset = trimmed(RESET)
+      expect(kept.walked[0]).toBeGreaterThan(0.005); expect(kept.walked[1]).toBeGreaterThan(0.005)
+      expect(kept.left).toEqual(kept.walked)
+      expect(onspeed.left).toEqual([0, onspeed.walked[1]])
+      expect(reset.left).toEqual([0, 0])
+    }, 60000)
+  })
 })

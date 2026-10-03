@@ -13,8 +13,8 @@ import type { InputSample } from './net'
 // stays inside what a datagram carries.
 const sample = (over: Partial<InputSample> = {}): InputSample => ({
   pitch: -0.123456789, roll: 0.123456789, yaw: 0.0123456789, throttle: 0.87654321, speedbrake: 0.25, reheat: 0.5, brake: false, bypass: false, emergency: false, mechanical: false,
-  wing: 0, centre: 0, steering: 0, gear: false, hook: false, override: false, dump: false, port: false, starboard: false, fire: false, flare: false, chaff: false, missile: false, radar: false, jammer: false,
-  solo: false, extinguish: false, status: { reply: true, challenge: true, link: true, antenna: 'both', tracks: [] }, steps: 1, ...over,
+  wing: 0, centre: 0, steering: 0, trim: 0, lean: 0, reset: false, flap: 0, gear: false, hook: false, probe: false, eject: false, override: false, dump: false, port: false, starboard: false, fire: false, flare: false, chaff: false, missile: false, radar: false, jammer: false,
+  solo: false, extinguish: false, onspeed: false, reverted: false, held: 0, status: { reply: true, challenge: true, link: true, antenna: 'both', tracks: [] }, steps: 1, ...over,
 })
 const filled = (samples: InputSample[]) => { const batch: Queued[] = []; samples.forEach((s, k) => queue(batch, s, 100 + k)); return batch }
 
@@ -35,19 +35,40 @@ describe('the input batch', () => {
     expect([set.solo, set.extinguish]).toEqual([true, true])
     expect(filled([sample({ solo: true })])[0]).not.toHaveProperty('extinguish')
   })
+  it('leaves the trim reset, the reversion and the held fuel out unless there is one', () => {
+    const [plain] = filled([sample()])
+    expect('onspeed' in plain || 'reverted' in plain || 'held' in plain).toBe(false)
+    const [set] = filled([sample({ onspeed: true, reverted: true, held: 263 })])
+    expect([set.onspeed, set.reverted, set.held]).toEqual([true, true, 263])
+    const [one] = filled([sample({ reverted: true })])
+    expect(['onspeed' in one, one.reverted, 'held' in one]).toEqual([false, true, false])
+    expect(filled([sample({ onspeed: true })])[0]).not.toHaveProperty('reverted')
+    expect(filled([sample({ held: 1 })])[0].held).toBe(1)
+  })
   it('carries the status packed, on the newest sample alone', () => {
     const tracking = { reply: true, challenge: false, link: true, antenna: 'upper' as const, tracks: [4, 9] }
     const batch = filled([sample(), sample(), sample({ status: tracking })])
     expect(batch.map((s) => s.status)).toEqual([undefined, undefined, [13, 4, 9]])
     expect('status' in batch[0]).toBe(false) // gone, not sent as an empty field
   })
-  it('stays inside a datagram with sixteen tracks and every flag set', () => {
+  it('stays inside a datagram with sixteen tracks, every level set and every edge on its sample', () => {
+    // The levels - the dispenser at BYPASS, mission computer 1 lost, both wings' fuel held - ride every
+    // sample; an edge is one sample's, and the datagram carries that sample once.
     const tracks = Array.from({ length: 16 }, (_, k) => 40 + k)
-    const worst = sample({ solo: true, extinguish: true, status: { reply: true, challenge: true, link: true, antenna: 'lower', tracks } })
-    const size = cbor_encode({ kind: 'input', inputs: filled([worst, worst, worst]) }).length
+    const level = sample({ solo: true, reverted: true, held: 526, trim: 1, lean: -1, status: { reply: true, challenge: true, link: true, antenna: 'lower', tracks } })
+    const edge = { ...level, extinguish: true, onspeed: true }
+    const size = cbor_encode({ kind: 'input', inputs: filled([edge, level, level]) }).length
     expect(BUDGET).toBe(1100)
     expect(size).toBeLessThanOrEqual(BUDGET)
-    expect(size - cbor_encode({ kind: 'input', inputs: filled([sample(), sample(), sample()]) }).length).toBeLessThan(100) // what the worst status and both flags cost over a quiet one
+    expect(size).toBeGreaterThan(BUDGET - 60) // which is most of the room: a field added to every sample has to be paid for
+    expect(size - cbor_encode({ kind: 'input', inputs: filled([sample(), sample(), sample()]) }).length).toBeLessThan(130) // what the worst costs over a quiet one
+  })
+  it('measures the sample the engine sends: the same fields, no more and no fewer', () => {
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    const literal = /\n\tconst sample=\{ ([\s\S]*?) \};\n/.exec(engine)?.[1] ?? ''
+    const sent = [...literal.replace(/\/\/[^\n]*/g, '').matchAll(/(?:^|[,{]\s*)([a-z]+)(?=[:,]|\s*$)/g)].map((m) => m[1])
+    expect(sent.length).toBeGreaterThan(30)
+    expect([...sent, 'steps'].sort()).toEqual(Object.keys(sample()).sort())
   })
   it('is what the session sends', () => {
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
