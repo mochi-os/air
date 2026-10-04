@@ -28,7 +28,7 @@ interface Jet { airborne?: boolean; ac?: boolean; painted?: boolean; warned?: bo
 function cockpit<T>(body: string, o: Jet = {}): T {
   if (!press) throw new Error('pit_press not found in engine.ts')
   return new Function('o', 'countermeasures', 'communication', `let sim_time=50; const buses={ ac:o.ac??true }, RWR={ locked:()=>!!o.painted, warned:()=>!!o.warned };
-    const suite=countermeasures.fresh(o.airborne??true,{ chaff:20, flare:40 }), ran=[], dispense=(way)=>ran.push(way);
+    const suite=countermeasures.fresh(o.airborne??true), ran=[], dispense=(way)=>ran.push(way);
     ${lift('jammer_armed')}
     ${lift('jammer_loud')}
     ${press}

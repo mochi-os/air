@@ -160,7 +160,7 @@ describe('the advisory line', () => {
   const consts = /\nconst buttons=\{[^\n]*\n/.exec(source)?.[0] ?? '', on = /\nconst ANTIICE_ON=[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean; chaff?: number; flares?: number; dispenser?: string; challenged?: boolean; answered?: boolean; alert?: string }
   const advised = (o: Jet = {}) => (new Function('o', 'countermeasures', 'identification', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
-    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }), squawk=identification.fresh(), challenges=()=>({ challenged:!!o.challenged, answered:!!o.answered });
+    const suite=countermeasures.fresh(true), dispenser_programme=()=>countermeasures.PROGRAMMES.mixed, squawk=identification.fresh(), challenges=()=>({ challenged:!!o.challenged, answered:!!o.answered });
     if(o.dispenser) suite.dispenser=o.dispenser; if(o.alert) squawk.alert=o.alert;
     const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, chaff:o.chaff??20, flares:o.flares??40, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
     const secured=o.secured||[false,false], antiskid=o.skid??true, reference=o.reference||"auto";
@@ -192,8 +192,9 @@ describe('the advisory line', () => {
     expect(advised({ failure: true })).toEqual(['BIT'])
   })
   it('advises D LOW at a magazine\'s bingo, and not with the dispenser off (2.13.12.1)', () => {
-    expect(advised({ chaff: 5 })).toEqual(['D LOW']); expect(advised({ flares: 10 })).toEqual(['D LOW']); expect(advised({ chaff: 6, flares: 11 })).toEqual([])
-    expect(advised({ chaff: 5, dispenser: 'off' })).toEqual([])
+    expect(advised({ chaff: 4 })).toEqual(['D LOW']); expect(advised({ flares: 6 })).toEqual(['D LOW']); expect(advised({ chaff: 5, flares: 7 })).toEqual([]) // the mixed programme's two left: 4 bundles, 6 flares
+    expect(advised({ chaff: 4, dispenser: 'off' })).toEqual([])
+    expect(source).toMatch(/countermeasures\.advisories\(suite,\{ chaff:ownship\.chaff\|0, flare:ownship\.flares\|0 \},dispenser_programme\(\)\)/) // the match's programme sets the levels
   })
   it('advises M4 OK while the transponder answers a valid mode 4 challenge, and not with the MODE 4 switch OFF', () => {
     expect(advised({ challenged: true, answered: true })).toEqual(['M4 OK']); expect(advised({ challenged: true })).toEqual([]); expect(advised({ answered: true })).toEqual([])

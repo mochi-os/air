@@ -8,78 +8,164 @@ import type { RwrContact } from './rwr'
 
 // The dispenser/EMC panel and the RWR control indicator (#10, #9, FO-5 items 35
 // and 36, NATOPS 2.13.12).
-const LOAD = { chaff: 20, flare: 40 }
-const air = () => C.fresh(true, LOAD)
+const air = () => C.fresh(true)
 const D = Math.PI / 180
+const { heat, mixed, radar } = C.PROGRAMMES
+// run: a programme pressed at t=5 on a dispenser at ON, stepped at 60 Hz to t=12 - what left when.
+function run(p: C.Programme, s = air()): [number, number, number][] {
+  const out: [number, number, number][] = []
+  const first = C.dispense(s, -1, false, 5, p)
+  if (first) out.push([5, first.flare, first.chaff])
+  for (let k = 1; k <= 7 * 60; k++) {
+    const now = 5 + k / 60, drop = C.due(s, now, false)
+    if (drop) out.push([Math.round(now * 1000) / 1000, drop.flare, drop.chaff])
+  }
+  return out
+}
 
 describe('a spawn', () => {
   it('finds the dispenser on and the jammer listening in the air', () => {
     const s = air()
-    expect([s.dispenser, s.jammer, s.receiver.power]).toEqual(['on', 'receive', true])
+    expect([s.dispenser, s.jammer, s.receiver.power, s.running]).toEqual(['on', 'receive', true, null])
   })
   it('finds both off on the deck, the RWR on', () => {
-    const s = C.fresh(false, LOAD)
+    const s = C.fresh(false)
     expect([s.dispenser, s.jammer, s.receiver.power]).toEqual(['off', 'off', true])
   })
-  it('carries a bingo level of a quarter of each magazine', () => {
-    expect(air().bingo).toEqual({ chaff: 5, flare: 10 })
+})
+
+describe('the programmes', () => {
+  it('puts flares a second apart, past the seeker\'s 0.8 s look at each, and chaff two seconds apart, a bloom\'s life', () => {
+    for (const p of [heat, mixed, radar]) {
+      if (p.flare.count) expect(p.flare.interval).toBe(1)
+      if (p.chaff.count) expect(p.chaff.interval).toBe(2)
+    }
+    expect([heat.flare.count, heat.chaff.count]).toEqual([4, 0])
+    expect([mixed.flare.count, mixed.chaff.count]).toEqual([3, 2])
+    expect([radar.flare.count, radar.chaff.count]).toEqual([2, 3])
+  })
+  it('chooses by what can be fired at the jet: heat missiles alone, both, or the radar round first beyond visual range', () => {
+    expect(C.programme('fox2', false)).toBe(heat)
+    expect(C.programme('guns', false)).toBe(heat) // nothing to decoy: the switch runs the same everywhere
+    expect(C.programme('open', false)).toBe(mixed)
+    expect(C.programme('open', true)).toBe(radar)
+    expect(C.programme('fox2', true)).toBe(heat) // a BVR start without radar missiles has none to decoy
+  })
+  it('sets D LOW at two programmes left of each category it releases, and at empty for one it does not', () => {
+    expect(C.bingo(heat)).toEqual({ flare: 8, chaff: 0 })
+    expect(C.bingo(mixed)).toEqual({ flare: 6, chaff: 4 })
+    expect(C.bingo(radar)).toEqual({ flare: 4, chaff: 6 })
   })
 })
 
 describe('the DISPENSER switch', () => {
   it('dispenses nothing at OFF', () => {
     const s = air(); s.dispenser = 'off'
-    expect(C.dispense(s, -1, false, 5)).toBeNull()
-    expect(C.dispense(s, 1, false, 5)).toBeNull()
+    expect(C.dispense(s, -1, false, 5, mixed)).toBeNull()
+    expect(C.dispense(s, 1, false, 5, mixed)).toBeNull()
+    expect(s.running).toBeNull()
   })
-  it('runs the programme aft and gives a chaff single forward at ON', () => {
+  it('runs the heat programme aft: four flares a second apart, the first at the press', () => {
+    expect(run(heat)).toEqual([[5, 1, 0], [6, 1, 0], [7, 1, 0], [8, 1, 0]])
+  })
+  it('runs the mixed programme: three flares a second apart, two bundles two seconds apart', () => {
+    expect(run(mixed)).toEqual([[5, 1, 1], [6, 1, 0], [7, 1, 1]])
+  })
+  it('runs the radar programme: three bundles two seconds apart, two flares a second apart', () => {
+    expect(run(radar)).toEqual([[5, 1, 1], [6, 1, 0], [7, 0, 1], [9, 0, 1]])
+  })
+  it('gives a chaff single forward at ON, whatever the programme', () => {
     const s = air()
-    expect(C.dispense(s, -1, false, 5)).toEqual({ flare: 1, chaff: 1, programme: true })
-    expect(C.dispense(s, 1, false, 6)).toEqual({ flare: 0, chaff: 1, programme: false })
+    expect(C.dispense(s, 1, false, 5, heat)).toEqual({ flare: 0, chaff: 1, programme: false })
+    expect(s.running).toBeNull()
   })
   it('runs the programme from the console button at ON', () => {
-    expect(C.dispense(air(), 0, false, 5)).toEqual({ flare: 1, chaff: 1, programme: true })
+    expect(C.dispense(air(), 0, false, 5, heat)).toEqual({ flare: 1, chaff: 0, programme: true })
+  })
+  it('adds nothing for a press while a programme runs, and runs it again once it has ended', () => {
+    const s = air()
+    C.dispense(s, -1, false, 5, heat)
+    expect(C.dispense(s, -1, false, 5.5, heat)).toBeNull()
+    for (const now of [6, 7, 8]) C.due(s, now, false)
+    expect(s.running).toBeNull()
+    expect(C.dispense(s, -1, false, 9, heat)).toEqual({ flare: 1, chaff: 0, programme: true })
+  })
+  it('stops the programme when the dispenser leaves ON or the wheels touch', () => {
+    for (const stop of [(s: C.Suite) => { s.dispenser = 'off' }, (s: C.Suite) => { s.dispenser = 'bypass' }]) {
+      const s = air()
+      C.dispense(s, -1, false, 5, heat)
+      stop(s)
+      expect(C.due(s, 6, false)).toBeNull()
+      expect(s.running).toBeNull()
+    }
+    const s = air()
+    C.dispense(s, -1, false, 5, heat)
+    expect(C.due(s, 6, true)).toBeNull()
+    expect(s.running).toBeNull()
+  })
+  it('lets a release a frame late go on the next, one of each at a time', () => {
+    const s = air()
+    C.dispense(s, -1, false, 5, heat)
+    expect(C.due(s, 8.5, false)).toEqual({ flare: 1, chaff: 0, programme: true }) // three were due; one goes
+    expect(C.due(s, 8.5, false)).toEqual({ flare: 1, chaff: 0, programme: true })
+    expect(C.due(s, 8.5, false)).toEqual({ flare: 1, chaff: 0, programme: true })
+    expect(C.due(s, 8.5, false)).toBeNull()
   })
   it('goes round the programmer at BYPASS: a flare aft, a bundle forward, nothing from the button', () => {
     const s = air(); s.dispenser = 'bypass'
-    expect(C.dispense(s, -1, false, 5)).toEqual({ flare: 1, chaff: 0, programme: false })
-    expect(C.dispense(s, 1, false, 5)).toEqual({ flare: 0, chaff: 1, programme: false })
-    expect(C.dispense(s, 0, false, 5)).toBeNull()
+    expect(C.dispense(s, -1, false, 5, mixed)).toEqual({ flare: 1, chaff: 0, programme: false })
+    expect(C.dispense(s, 1, false, 5, mixed)).toEqual({ flare: 0, chaff: 1, programme: false })
+    expect(C.dispense(s, 0, false, 5, mixed)).toBeNull()
+    expect(s.running).toBeNull()
   })
   it('is inhibited with weight on wheels', () => {
-    expect(C.dispense(air(), -1, true, 5)).toBeNull()
+    expect(C.dispense(air(), -1, true, 5, mixed)).toBeNull()
   })
-  it('lights DISP for a second after a programme, and not for a single', () => {
+  it('lights DISP while a programme runs and for a second after its last release, and not for a single', () => {
     const s = air()
-    C.dispense(s, 1, false, 5)
-    expect(C.dispensing(s, 5.1)).toBe(false)
-    C.dispense(s, -1, false, 6)
-    expect(C.dispensing(s, 6.9)).toBe(true)
-    expect(C.dispensing(s, 7)).toBe(false)
+    C.dispense(s, 1, false, 4, heat)
+    expect(C.dispensing(s, 4.1)).toBe(false)
+    C.dispense(s, -1, false, 5, heat)
+    for (const now of [5.5, 6, 6.5, 7, 7.5, 8]) {
+      C.due(s, now, false)
+      expect(C.dispensing(s, now), `at ${now}`).toBe(true)
+    }
+    expect(s.running).toBeNull()
+    expect(C.dispensing(s, 8.99)).toBe(true)
+    const r = air() // and across a gap longer than the light's second: the radar programme's last two bundles, two seconds apart
+    C.dispense(r, -1, false, 5, radar)
+    for (const now of [6, 7]) C.due(r, now, false)
+    expect(C.dispensing(r, 8.5)).toBe(true)
+    expect(C.dispensing(s, 9.01)).toBe(false)
   })
   it('does not light DISP for a release that went round the programmer', () => {
     const s = air(); s.dispenser = 'bypass'
-    C.dispense(s, -1, false, 5)
+    C.dispense(s, -1, false, 5, mixed)
     expect(C.dispensing(s, 5.1)).toBe(false)
   })
 })
 
 describe('the dispenser advisories', () => {
-  it('show D LOW with either category at its bingo level', () => {
+  it('show D LOW with either category at its bingo level, two programmes left', () => {
     const s = air()
-    expect(C.advisories(s, { chaff: 6, flare: 11 })).toEqual([])
-    expect(C.advisories(s, { chaff: 5, flare: 11 })).toEqual(['D LOW'])
-    expect(C.advisories(s, { chaff: 6, flare: 10 })).toEqual(['D LOW'])
+    expect(C.advisories(s, { chaff: 5, flare: 7 }, mixed)).toEqual([])
+    expect(C.advisories(s, { chaff: 4, flare: 7 }, mixed)).toEqual(['D LOW'])
+    expect(C.advisories(s, { chaff: 5, flare: 6 }, mixed)).toEqual(['D LOW'])
+  })
+  it('show D LOW for a category the programme leaves alone only once it is empty', () => {
+    const s = air()
+    expect(C.advisories(s, { chaff: 1, flare: 9 }, heat)).toEqual([])
+    expect(C.advisories(s, { chaff: 0, flare: 9 }, heat)).toEqual(['D LOW'])
   })
   it('show nothing from a set that is off', () => {
     const s = air(); s.dispenser = 'off'
-    expect(C.advisories(s, { chaff: 0, flare: 0 })).toEqual([])
+    expect(C.advisories(s, { chaff: 0, flare: 0 }, mixed)).toEqual([])
   })
 })
 
 describe('the ECM knob', () => {
   it('steps OFF, STBY, BIT, REC, XMIT and stops at its ends', () => {
-    const s = C.fresh(false, LOAD), seen: string[] = []
+    const s = C.fresh(false), seen: string[] = []
     for (let k = 0; k < 5; k++) { C.turn(s, 1, k); seen.push(s.jammer) }
     expect(seen).toEqual(['standby', 'test', 'receive', 'transmit', 'transmit'])
     for (let k = 0; k < 6; k++) C.turn(s, -1, 10)
@@ -100,7 +186,7 @@ describe('the ECM knob', () => {
     expect(C.radiating(s, true, false)).toBe(false)
   })
   it('goes to XMIT on its key from any position, and back to REC', () => {
-    const s = C.fresh(false, LOAD)
+    const s = C.fresh(false)
     C.toggle(s); expect(s.jammer).toBe('transmit')
     C.toggle(s); expect(s.jammer).toBe('receive')
   })
@@ -131,7 +217,7 @@ describe('the jammer lights', () => {
     expect(at('test', false, 60)).toEqual({ ...dark, go: true })
   })
   it('time the test from the knob reaching BIT', () => {
-    const s = C.fresh(false, LOAD)
+    const s = C.fresh(false)
     C.turn(s, 1, 10); C.turn(s, 1, 20)
     expect(s.tested).toBe(20)
     C.turn(s, 1, 30); C.turn(s, -1, 40)

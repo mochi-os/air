@@ -201,8 +201,8 @@ describe('the FIRE EXTGH pushbutton', () => {
   })
   it('reaches the damage model: alone as its third bit, in a match as the sample\'s extinguish flag, sent once', () => {
     expect(source).toMatch(/battle_progress\(ownship\.throttle,battle_tick\+\+,battle_reset,\(secured\[0\]\?1:0\)\|\(secured\[1\]\?2:0\)\|\(extinguish_flag\?4:0\)\); battle_reset=false; extinguish_flag=false;/)
-    expect(source).toMatch(/eject:eject_flag, solo:suite\.dispenser==="bypass", extinguish:extinguish_flag, /)
-    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
+    expect(source).toMatch(/eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, /)
+    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
   })
 })
 
@@ -242,7 +242,7 @@ describe('the panels drawn over the model', () => {
     if (!seats || !mark) throw new Error('the face seats not found in engine.ts')
     return new Function('o', 'THREE', 'faces', 'armament', 'countermeasures', `const LAYER_OWN=1, D2R=Math.PI/180, _v=new THREE.Vector3(), secured=o.pushed||[false,false];
       let sim_time=10, lamps_testing=!!o.testing, master=o.master||"nav", drawn=[], buses={ essential:o.essential??true };
-      const arms=armament.fresh(true), suite=countermeasures.fresh(true,{ chaff:20, flare:40 });
+      const arms=armament.fresh(true), suite=countermeasures.fresh(true);
       const document={ createElement:()=>({ width:0, height:0, getContext(){ const canvas=this; return new Proxy({}, { get:(t,k)=>k==="clearRect"?()=>drawn.push(canvas.width):()=>{}, set:()=>true }); } }) };
       const g=new THREE.Group(), ownship={ group:g }, _click_ray={ intersectObjects:(meshes)=>hit?[{ object:meshes[hit.face], uv:{ x:hit.u, y:hit.v } }]:[] }; let hit=null;
       ${seats} ${mark} ${lift('seat_pose')} ${line('faces_key')}

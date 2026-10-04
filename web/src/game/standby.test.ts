@@ -79,7 +79,7 @@ function ew_calls(cx: number, cy: number, R: number, contacts: Emitter[], receiv
   const fn = /\nfunction ew_draw\(x,cx,cy,R,size\)\{[\s\S]*?\n\tx\.globalAlpha=1; \}\n/.exec(source)?.[0] ?? ''
   if (!fn) throw new Error('ew_draw not found in engine.ts')
   const run = new Function('cx', 'cy', 'R', 'contacts', 'countermeasures', 'receiver', `const D2R=Math.PI/180, RWR={contacts:contacts.map(c=>({ at:10, ...c })), time:10}, ownship={gauges:{heading:0}};
-    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); Object.assign(suite.receiver,receiver);
+    const suite=countermeasures.fresh(true); Object.assign(suite.receiver,receiver);
     const text=[], arcs=[];
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>text.push([s,px,py]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); return ()=>{}; }, set:()=>true });
     ${fn} ew_draw(x,cx,cy,R,18); return { text, arcs };`)
