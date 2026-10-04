@@ -20,7 +20,7 @@ import { atc_step, cruise_step } from './atc'
 // skipped.
 const assets = fileURLToPath(new URL('../assets/', import.meta.url))
 const built = existsSync(assets + 'flight.wasm') && existsSync(assets + 'wasm_exec.js')
-interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string }
+interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string; climb(altitude: number): [number, number, number] }
 let core: Core
 // The core's frame: sixteen input words and the state with its instrument tail (flight.ts).
 const SIZE = 117, TAIL = 8, ALPHA = 117, CAS = 121
@@ -247,6 +247,17 @@ describe.skipIf(!built)('the autopilot against the flight core', () => {
       expect(scheduled).toBeLessThan(7.15)
       expect(reverted).toBeGreaterThan(7.15); expect(reverted).toBeLessThan(8.1)
       expect(reverted - scheduled).toBeGreaterThan(0.25)
+    }, 60000)
+
+    it('gives the FPAS the best climb on military power through the bridge: true and calibrated airspeed and rate (#131)', () => {
+      start(3048, 200, 1500)
+      const [speed, rate, calibrated] = core.climb(3048)
+      expect(speed).toBeGreaterThan(200); expect(speed).toBeLessThan(300)
+      expect(rate).toBeGreaterThan(50)
+      expect(calibrated).toBeLessThan(speed); expect(calibrated).toBeGreaterThan(speed * 0.8) // 10,000 ft reads about 15% under true
+      start(3048, 200, 4900)
+      expect(core.climb(3048)[1]).toBeLessThan(rate) // heavier, slower to climb
+      expect(core.climb(25000)).toEqual([0, -1, 0]) // out of the air the core models: no climb
     }, 60000)
 
     it('puts the pitch trim back to on-speed and keeps the roll trim, where the trim reset zeroes both (#135)', () => {

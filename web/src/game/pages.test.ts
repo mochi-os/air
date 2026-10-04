@@ -224,7 +224,7 @@ function repeat(o: Repeat = {}): Shown {
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
   const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
-  return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }); const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
+  return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
@@ -660,11 +660,11 @@ describe('the landing record', () => {
 })
 
 // The FPAS display against NATOPS 2.3.1 and figure 2-7.
-interface Fpas { total?: number; pph?: number; gs?: number; mach?: number; grounded?: boolean; home?: string; time?: number; steer?: string; cruise?: string; homing?: number }
+interface Fpas { total?: number; pph?: number; gs?: number; mach?: number; grounded?: boolean; home?: string; time?: number; steer?: string; cruise?: string; homing?: number; climbing?: boolean }
 function fpas(o: Fpas = {}): Drawn {
   return page('ddi_fpas', `const ownship={ grounded:${o.grounded ?? false}, gauges:{ fuelRaw:${o.total ?? 8000}, externalRaw:0, ground:${o.gs ?? 400}, mach:${o.mach ?? 0.7} } };
     ${navdefs} nav.steer=${JSON.stringify(o.steer ?? 'tcn')}; nav.home=${o.homing ?? 0};
-    const flow_state={ pph:${o.pph ?? 6000} }, sim_time=${o.time ?? 0}, fpas_steer=()=>(${o.home ?? '{ dist:160, hours:0.3958, arrive:5620, name:"TCN" }'}), fpas_cruise=()=>(${o.cruise ?? '{ best:null, optimum:null, tail:0 }'});`)
+    const fpas={ climb:${o.climbing ?? false} }, flow_state={ pph:${o.pph ?? 6000} }, sim_time=${o.time ?? 0}, fpas_steer=()=>(${o.home ?? '{ dist:160, hours:0.3958, arrive:5620, name:"TCN" }'}), fpas_cruise=()=>(${o.cruise ?? '{ best:null, optimum:null, tail:0 }'});`)
 }
 // fpasdefs: the FPAS's own functions over stand-ins for the gauges, the burn and the steering
 const fpasdefs = `${navdefs} ${/\nconst fpas=\{[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('fpas_leg')} ${lift('fpas_home')} ${lift('fpas_steer')} ${lift('fpas_press')} ${lift('fpas_cruise')}`
@@ -770,6 +770,36 @@ describe('the FPAS display', () => {
     expect(run('return fpas_home();')).toBe(null) // no home waypoint stored
     expect(run('nav.waypoints[0]={ x:0, z:-370400, elevation:0, name:"", offset:null }; return fpas_home();')).toEqual({ dist: 200, hours: 0.5, arrive: 3000 })
     expect(run('nav.waypoints[7]={ x:185200, z:0, elevation:0, name:"", offset:null }; nav.home=7; return fpas_home().dist;')).toBeCloseTo(100, 9)
+  })
+
+  it('offers CLIMB at the lower left in the NAV master mode, boxed while it is selected (2.3.1.1.8, figure 2-7)', () => {
+    const climbed = (d: Drawn) => d.rects.some(([bx, by]) => by === 482 - 14 && bx === 96 - 25 - 6)
+    expect(at(fpas(), 'CLIMB')).toEqual([96, 482])
+    expect(climbed(fpas())).toBe(false)
+    expect(climbed(fpas({ climbing: true }))).toBe(true)
+    expect(source).toMatch(/\n\tif\(master==="nav"\) ddi_legend\(x,20,"CLIMB",true,fpas\.climb\); \}/) // and removed outside it
+  })
+
+  it('selects and deselects CLIMB from its pushbutton in NAV, and not outside it', () => {
+    const run = (body: string) => new Function('navigate', `const ownship={ grounded:false, pos:{ x:0, z:0 }, gauges:{} }, flow_state={ pph:0 }, cheat=()=>false, tacan=()=>null, hud_steer=()=>null; let sim_time=40, master="nav";
+      ${fpasdefs} ${body}`)(navigate)
+    expect(run('return [fpas_press(20), fpas.climb, fpas_press(20), fpas.climb];')).toEqual([true, true, true, false])
+    expect(run('master="gun"; return [fpas_press(20), fpas.climb];')).toEqual([false, false])
+  })
+
+  it('hands the FPAS no climb where the core has none: the bridge reads its refusal, a negative rate, as null', () => {
+    // flight.ts imports @mochi/web, which vitest cannot load, so the binding is read as text, as the other bridge checks are
+    const bridge = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')
+    const binding = /\nexport function flight_climb\(altitude: number\)[^\n]*\{\n([\s\S]*?)\n\}\n/.exec(bridge)?.[1] ?? ''
+    expect(binding).toMatch(/^ {2}const result = core\?\.climb\?\.\(altitude\)\n {2}if \(!Array\.isArray\(result\) \|\| !\(result\[1\] >= 0\)\) return null\n {2}return \{ speed: result\[0\], rate: result\[1\], calibrated: result\[2\] \}$/)
+  })
+
+  it('asks the flight core for the climb airspeed every two seconds, at the present height', () => {
+    const run = new Function(`const asked=[]; const flight_climb=(altitude)=>{ asked.push(altitude); return { speed:260, rate:80, calibrated:200 }; }; const ownship={ pos:{ y:3000 } }; let sim_time=40;
+      ${/\nconst fpas=\{[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('fpas_climb')}
+      const first=fpas_climb(); sim_time=41.5; fpas_climb(); sim_time=42; ownship.pos.y=-5; fpas_climb();
+      return { first, asked };`)
+    expect(run()).toEqual({ first: { speed: 260, rate: 80, calibrated: 200 }, asked: [3000, 0] })
   })
 
   it('steps the home waypoint round the waypoints with its arrows, and notes the change', () => {

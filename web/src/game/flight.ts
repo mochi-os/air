@@ -142,6 +142,7 @@ interface Core {
     fuel: number
   ): number
   cruise?(altitude: number, mach: number): [number, number] | string
+  climb?(altitude: number): [number, number, number] | string
   clear(): string
   hulk(index: number, aircraft: string, stores?: number): boolean
   volley(input: Uint8Array, output: Uint8Array): number
@@ -1121,6 +1122,17 @@ export function flight_approach(
   fuel: number
 ): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
+}
+
+// flight_climb reports the best steady climb on military power at an altitude
+// (m) for the jet as it is now - its weight, stores and damage: the true and
+// calibrated airspeeds, m/s, and the rate of climb, m/s. The FPAS prompts the
+// calibrated one on the HUD (NATOPS 2.3.1.1.8). Null before the core is up, and
+// where there is no climb to be had.
+export function flight_climb(altitude: number): { speed: number; rate: number; calibrated: number } | null {
+  const result = core?.climb?.(altitude)
+  if (!Array.isArray(result) || !(result[1] >= 0)) return null
+  return { speed: result[0], rate: result[1], calibrated: result[2] }
 }
 
 // flight_cruise reports trimmed level flight on dry power at an altitude (m)
