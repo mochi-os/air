@@ -725,7 +725,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(solo.status().tracks).toEqual([])
   })
   it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
-    expect(source).toMatch(/solo:suite\.dispenser==="bypass", extinguish:extinguish_flag, status:status_own\(\) \};/)
+    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\) \};/)
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
     expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
   })
@@ -744,7 +744,7 @@ describe('the known picture: what the SA page and the map draw', () => {
   function sa(o: { air?: number | null; waypoint?: { x: number; z: number } | null; emitters?: Emitter[]; power?: boolean; limit?: boolean; heading?: number } = {}) {
     return new Function('o', 'countermeasures', `const NM=1852, D2R=Math.PI/180, sa_state={ scale:40 }, wrap_axis=(v)=>v, CARRIER={ x:1e7, z:1e7 }, known=()=>[], link={ selected:false }, ddi_legend=()=>{};
       const ownship={ pos:{ x:0, y:0, z:0 }, gauges:{ heading:o.heading||0 } }, hsi_state={ air:o.air??null }, nav={}, navigate={ spot:(n,i)=>i===3?o.waypoint:null };
-      const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); suite.receiver.power=o.power??true; suite.receiver.limit=!!o.limit; const RWR={ time:10, contacts:o.emitters||[] };
+      const suite=countermeasures.fresh(true); suite.receiver.power=o.power??true; suite.receiver.limit=!!o.limit; const RWR={ time:10, contacts:o.emitters||[] };
       const arcs=[], text=[], shifts=[], turns=[];
       const x=new Proxy({}, { get:(t,k)=>k==="arc"?(ax,ay,r)=>arcs.push([Math.round(ax),Math.round(ay),r]):k==="fillText"?(w,px,py)=>text.push([String(w),px,py]):k==="translate"?(px,py)=>shifts.push([Math.round(px)+0,Math.round(py)+0]):k==="rotate"?(a)=>turns.push(a):()=>{}, set:()=>true });
       ${lift('ddi_sa')}

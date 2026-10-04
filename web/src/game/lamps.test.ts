@@ -81,7 +81,7 @@ function panel(p: Panel): string[] {
   const recording = /\nfunction recording\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block || !recording) throw new Error('glareshield panel block not found in engine.ts')
   const run = new Function('p', 'countermeasures', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0}, sim_time=100, ASPJ_TEST=20;
-    const suite=countermeasures.fresh(true,{ chaff:20, flare:40 }); suite.jammer=p.jammer||"off"; suite.tested=100-(p.tested??0); if(p.dispensed!==undefined) suite.dispensed=100-p.dispensed; suite.receiver.power=p.receiver??true;
+    const suite=countermeasures.fresh(true); suite.jammer=p.jammer||"off"; suite.tested=100-(p.tested??0); if(p.dispensed!==undefined) suite.dispensed=100-p.dispensed; suite.receiver.power=p.receiver??true;
     const RWR={ time:100, contacts:(p.contacts||[]).map(c=>({ locked:!!c.locked, missile:!!c.missile, at:100-(c.age||0) })), locked:()=>!!p.painted, warned:()=>false };
     const buses={ ac:p.ac??true }, master=p.master||"nav", taping=p.taping||"automatic"; ${recording}
     const l={spdbrk:{},lbar:{},aspj:{},xmit:{},rec:{},stby:{},go:{},nogo:{},disp:{},ai:{},rcdr:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
@@ -679,7 +679,7 @@ describe('the lights test', () => {
       const l={}; for(const n of ["fireL","fireR","caution","apufire","go","nogo","stby","disp","rcdr","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat","apuacc","gentie"]) l[n]=lens();
       for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
       const blank=lens(), tested=[...Object.values(l),blank];
-      const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false,{ chaff:20, flare:40 }), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{};
+      const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{};
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;

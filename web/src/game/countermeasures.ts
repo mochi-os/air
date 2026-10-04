@@ -34,54 +34,120 @@ export interface Suite {
   dispenser: Dispenser
   jammer: Jammer
   tested: number // when the ECM knob came to BIT
-  dispensed: number // when a programme last ran
-  bingo: { chaff: number; flare: number } // the levels D LOW shows at
+  dispensed: number // when a programme last released a cartridge
+  running: Running | null // the programme under way
   receiver: Receiver
 }
-// QUARTER: the bingo level the load carries for each category, as a share of
-// its magazine. The jet's are set in mission planning; this is the game's.
-const QUARTER = 0.25
 // fresh: how a spawn finds the panel - in the air the dispenser on and the
 // jammer listening, on the deck both off. The RWR is on, as the pre-flight
 // leaves the other receivers.
-export function fresh(airborne: boolean, load: { chaff: number; flare: number }): Suite {
+export function fresh(airborne: boolean): Suite {
   return {
-    dispenser: airborne ? 'on' : 'off', jammer: airborne ? 'receive' : 'off', tested: -Infinity, dispensed: -Infinity,
-    bingo: { chaff: Math.ceil(load.chaff * QUARTER), flare: Math.ceil(load.flare * QUARTER) },
+    dispenser: airborne ? 'on' : 'off', jammer: airborne ? 'receive' : 'off', tested: -Infinity, dispensed: -Infinity, running: null,
     receiver: { power: true, limit: false, offset: false, special: false, tested: -Infinity },
   }
 }
 
+// ---- the programmes ----
+
+// A dispensing programme, built as the ALE-47's are: for each category the
+// cartridges it releases and the seconds between them, the first of each at the
+// press. NATOPS leaves the jet's programmes to the NATIP (2.13.12), which we do
+// not hold, so these are the game's, sized to its magazines and its decoys. A
+// heat seeker takes one look at each flare's window (0.8 s, air.go), so flares
+// a second apart each get their own, and four take nearly all a programme can
+// give; a chaff bloom holds 2 s and draws a radar round only in the notch, so
+// blooms two seconds apart cover a notch without a gap.
+export interface Release {
+  count: number
+  interval: number
+}
+export interface Programme {
+  flare: Release
+  chaff: Release
+}
+export const PROGRAMMES: Record<'heat' | 'mixed' | 'radar', Programme> = {
+  heat: { flare: { count: 4, interval: 1 }, chaff: { count: 0, interval: 0 } }, // heat missiles alone: chaff draws none
+  mixed: { flare: { count: 3, interval: 1 }, chaff: { count: 2, interval: 2 } }, // heat and radar missiles both
+  radar: { flare: { count: 2, interval: 1 }, chaff: { count: 3, interval: 2 } }, // the radar round first
+}
+// programme: a match's default, by what can be fired at the jet - the weapons
+// rule (guns, fox2 or open) and whether the fight opens beyond visual range.
+// Guns has nothing to decoy and runs the heat programme, so the switch runs
+// the same everywhere.
+export function programme(rule: string, apart: boolean): Programme {
+  if (rule !== 'open') return PROGRAMMES.heat
+  return apart ? PROGRAMMES.radar : PROGRAMMES.mixed
+}
+// bingo: the levels D LOW shows at - two programmes left of each category the
+// programme releases, and empty for one it does not.
+export function bingo(p: Programme): { chaff: number; flare: number } {
+  return { chaff: 2 * p.chaff.count, flare: 2 * p.flare.count }
+}
+// A programme under way: what it is, when it started, and what of each
+// category it has released.
+export interface Running {
+  programme: Programme
+  start: number
+  flare: number
+  chaff: number
+}
+
 // ---- the dispenser ----
 
-// What one press of the dispense switch releases. way: aft (-1) or forward (+1)
-// on the throttle's switch, 0 for the console's dispense button, which runs
-// the programme as the switch's aft position does (2.22.9.23.6). ON runs the
-// programme aft - a flare and a chaff bundle - and gives chaff singles
-// forward; BYPASS goes round the programmer, a flare aft and a bundle forward
+// What one press of the dispense switch releases now. way: aft (-1) or forward
+// (+1) on the throttle's switch, 0 for the console's dispense button, which
+// runs the programme as the switch's aft position does (2.22.9.23.6). ON
+// starts the programme aft, its first release at once and the rest from due(),
+// and gives chaff singles forward; a press while a programme runs adds
+// nothing. BYPASS goes round the programmer, a flare aft and a bundle forward
 // and nothing from the button. Weight on wheels inhibits it.
 export interface Drop {
   flare: number
   chaff: number
   programme: boolean
 }
-export function dispense(s: Suite, way: number, grounded: boolean, now: number): Drop | null {
+export function dispense(s: Suite, way: number, grounded: boolean, now: number, p: Programme): Drop | null {
   if (s.dispenser === 'off' || grounded) return null
   if (s.dispenser === 'bypass') return way < 0 ? { flare: 1, chaff: 0, programme: false } : way > 0 ? { flare: 0, chaff: 1, programme: false } : null
   if (way > 0) return { flare: 0, chaff: 1, programme: false }
+  if (s.running) return null
+  s.running = { programme: p, start: now, flare: 0, chaff: 0 }
+  return due(s, now, grounded)
+}
+// due: what the programme under way releases now - at most one cartridge of
+// each category, a release a frame late taken on the next. It ends with its
+// last release, and stops when the dispenser leaves ON or the wheels touch.
+export function due(s: Suite, now: number, grounded: boolean): Drop | null {
+  const r = s.running
+  if (!r) return null
+  if (s.dispenser !== 'on' || grounded) {
+    s.running = null
+    return null
+  }
+  const take = (k: 'flare' | 'chaff') => {
+    if (r[k] >= r.programme[k].count || now < r.start + r[k] * r.programme[k].interval) return 0
+    r[k]++
+    return 1
+  }
+  const flare = take('flare'), chaff = take('chaff')
+  if (r.flare >= r.programme.flare.count && r.chaff >= r.programme.chaff.count) s.running = null
+  if (!flare && !chaff) return null
   s.dispensed = now
-  return { flare: 1, chaff: 1, programme: true }
+  return { flare, chaff, programme: true }
 }
 // advisories: D LOW with a category down to its bingo level (2.13.12.1); none
 // from a set that is off. D BAD, its misfire advisory, has nothing here to
 // raise it: no cartridge in the game fails to fire.
-export function advisories(s: Suite, left: { chaff: number; flare: number }): string[] {
-  return s.dispenser !== 'off' && (left.chaff <= s.bingo.chaff || left.flare <= s.bingo.flare) ? ['D LOW'] : []
+export function advisories(s: Suite, left: { chaff: number; flare: number }, p: Programme): string[] {
+  const level = bingo(p)
+  return s.dispenser !== 'off' && (left.chaff <= level.chaff || left.flare <= level.flare) ? ['D LOW'] : []
 }
-// FLASH: how long the DISP light stays on after a programme runs, seconds.
+// FLASH: how long the DISP light stays on after a programme's last release,
+// seconds; it is on while the programme runs.
 export const FLASH = 1
 export function dispensing(s: Suite, now: number): boolean {
-  return now - s.dispensed < FLASH
+  return s.running !== null || now - s.dispensed < FLASH
 }
 
 // ---- the jammer ----

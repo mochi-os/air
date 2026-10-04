@@ -1400,20 +1400,30 @@ const GRIP=[
 function speedbrake_switch(){ const want=ownship.speedbrakeTarget??0;
 	if(want<0.02) return 1;
 	return want>(ownship.speedbrake??0)+0.02?-1:0; }
-// dispense works the dispense switch (2.1.1.7.3, ALE-47, #31): aft (-1) runs the manual programme,
-// a flare and a chaff bloom each from its own magazine while it lasts (#29, #43); forward (+1)
-// dispenses chaff singles; 0 is the console's dispense button, which runs the programme too. Weight on the wheels
-// inhibits the dispenser - no pyrotechnics on deck - and the DISPENSER switch decides the rest (countermeasures.ts,
-// #10): nothing at OFF, a flare or a bundle alone at BYPASS.
+// dispense works the dispense switch (2.1.1.7.3, ALE-47, #31): aft (-1) starts the programme (#107), its
+// releases each from its own magazine while it lasts (#29, #43) and the rest of it put out by release() as due;
+// forward (+1) dispenses chaff singles; 0 is the console's dispense button, which runs the programme too. Weight
+// on the wheels inhibits the dispenser - no pyrotechnics on deck - and the DISPENSER switch decides the rest
+// (countermeasures.ts, #10): nothing at OFF, a flare or a bundle alone at BYPASS.
 function dispense(way){ if(way){ hotas.dispense.way=way; hotas.dispense.at=sim_time; }
 	if(suite.dispenser==="off"&&(ownship.squish??0)<0.1) notice(translate("DISPENSER OFF"));   // the switch worked with the set off: nothing leaves, and the press says why
-	const drop=countermeasures.dispense(suite,way,(ownship.squish??0)>=0.1,sim_time); if(!drop) return;
+	release(countermeasures.dispense(suite,way,(ownship.squish??0)>=0.1,sim_time,dispenser_programme())); }
+// release puts out what the dispenser lets go, each from its own magazine while it lasts, and tells a match's
+// server: the wire's flare edge brings a chaff bundle with it unless solo says the flare goes alone, and a
+// bundle alone goes as the chaff edge.
+function release(drop){ if(!drop) return;
 	const ammunition=cheat("ammunition"), flare=drop.flare>0&&(ownship.flares>0||ammunition), chaff=drop.chaff>0&&(ownship.chaff>0||ammunition);
 	if(flare){ dispense_flare(ownship); if(!ammunition) ownship.flares--; }
 	if(chaff){ dispense_chaff(ownship); if(!ammunition) ownship.chaff--; }
 	if(!flare&&!chaff) return;
-	if(drop.flare>0) flare_flag=true; else chaff_flag=true;
+	if(flare){ flare_flag=true; solo_flag=!chaff; } else chaff_flag=true;
 	audio_flare(); }
+// dispenser_programme: the programme the aft switch and the dispense button run (#107), a match's default by what
+// can be fired at the jet (countermeasures.programme). A match's rule and its start come from its parameters; in
+// single player the threat is the bandit's, armed as the joust arms it.
+function dispenser_programme(){
+	if(MULTIPLAYER){ const rules=(net&&net.welcome&&net.welcome.parameters)||{}; return countermeasures.programme(weapons_rule,rules.start==="bvr"); }
+	return countermeasures.programme(cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"),cfg.task==="joust"&&cfg.duel==="bvr"); }
 // The ejection seat (2.15.3, #112): the SAFE/ARMED handle forward on the right armrest pins the
 // sears at SAFE, so the ejection handle cannot fire the seat. A jet spawns ARMED, as it is flown.
 // The seat's height, the harness lock and the manual override handle are not modelled.
@@ -4734,14 +4744,14 @@ const FLARE_LOAD=40, CHAFF_LOAD=20;   // the legacy Hornet's two ALE-47 buckets:
 // interrogator transponder (#98); terminal the MIDS terminal (#99). CODES: the IFF codes of the mission load,
 // plausible values. extinguish_flag: the FIRE EXTGH pushbutton pressed, for the damage model's next step.
 const CODES={ one:"11", two:"0000", three:"1200" };
-const arms=armament.fresh(true), suite=countermeasures.fresh(true,{ chaff:CHAFF_LOAD, flare:FLARE_LOAD });
+const arms=armament.fresh(true), suite=countermeasures.fresh(true);
 const uhf={ one:communication.fresh(), two:communication.fresh(), panel:communication.panel(1), keypad:communication.backup(), pulled:"" };
 const squawk=identification.fresh(), terminal=mids.fresh();
 let extinguish_flag=false;
 // systems_fresh: those panels as a spawn finds them - armed, dispensing and listening in the air, safe and off on
 // the wheels; the radios on, comm 1 on the ship's first preset and comm 2 on its second; the IFF and Link 16 on.
 function systems_fresh(airborne){
-	Object.assign(arms,armament.fresh(airborne)); Object.assign(suite,countermeasures.fresh(airborne,{ chaff:CHAFF_LOAD, flare:FLARE_LOAD }));
+	Object.assign(arms,armament.fresh(airborne)); Object.assign(suite,countermeasures.fresh(airborne));
 	Object.assign(uhf,{ one:communication.fresh(SHIP.channels), two:communication.fresh(SHIP.channels), panel:communication.panel(SHIP.icls), keypad:communication.backup(), pulled:"" });
 	uhf.two.channel=2; uhf.two.stored=communication.selected(uhf.two);
 	Object.assign(squawk,identification.fresh(CODES)); Object.assign(terminal,mids.fresh()); extinguish_flag=false; ownship.failures=[];
@@ -5290,8 +5300,8 @@ function dispense_flare(st){ st.flared_at=sim_time;   // stamped HERE, for every
 	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; }
 	}
 // dispense_chaff: the bloom the radar rounds consult plus a brief grey puff.
-// Flares and chaff are separate dispenses from separate magazines (#43); the
-// player's one key fires both while both remain, each as its own event.
+// Flares and chaff are separate dispenses from separate magazines (#43): a
+// programme's step or a single releases each from its own, as its own event.
 function dispense_chaff(st){
 	const sp=local_offset(st,-3,0,0); st.bloom={x:sp.x,y:sp.y,z:sp.z}; st.chaffed=sim_time;   // `bloom` is WHERE the last cloud is; `chaff` on the ownship is the magazine COUNT — the two shared a name for an afternoon and the HUD read NaN
 	for(let i=0;i<10;i++){ const k=pool_spawn(smoke); if(k<0) break;
@@ -7998,7 +8008,7 @@ function advisories_now(){ const g=ownship.gauges||{}, list=navigate.advisories(
 	if(!navigate.attitude(nav.ins)||reference==="stby") list.push(["HIAOA","HIAOA"]);
 	if(bit.advisory) list.push(["BIT","BIT"]);
 	for(const a of autopilot.advisories(hold)) list.push([a,a]);   // A/P and each mode selected (2.9.1)
-	for(const a of countermeasures.advisories(suite,{ chaff:ownship.chaff|0, flare:ownship.flares|0 })) list.push([a,a]);   // D LOW (2.13.12.1)
+	for(const a of countermeasures.advisories(suite,{ chaff:ownship.chaff|0, flare:ownship.flares|0 },dispenser_programme())) list.push([a,a]);   // D LOW (2.13.12.1): two programmes left
 	{ const c=challenges(); for(const a of identification.advisories(squawk,c.challenged,c.answered)) list.push([a,a]); }   // M4 OK (23.6.2.2.1)
 	return list; }
 function cautions_update(){
@@ -9199,6 +9209,7 @@ function fly_player(dt){
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	autopilot_frame(dt);   // the autopilot's stick for the axes it holds (2.9, #100)
 	if(demonstration) demonstration_drive(dt);   // the scripted pilot: flies the controls the player just released, through the same sample the core reads
+	release(countermeasures.due(suite,sim_time,(ownship.squish??0)>=0.1));   // the dispenser programme's releases as they fall due (#107), after any press this frame
 	if(fuel_dump&&(bingo_low()||fuel_low())) fuel_dump=false;   // NATOPS 2.2.7: the DUMP switch returns to OFF when the BINGO caution comes on, and dumping ends with a feed tank at the FUEL LO level
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
@@ -10836,7 +10847,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // multiplayer The server is authoritative; fly_player runs as the local
 // predictor, corrected from snapshots (snap when >20 m off, gentle pull
 // otherwise). Remotes are interpolated ~100 ms behind live.
-let net=null, flare_flag=false, chaff_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
+let net=null, flare_flag=false, solo_flag=false, chaff_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
 function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
@@ -11540,13 +11551,13 @@ function net_frame(dt){
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:suite.dispenser==="bypass", extinguish:extinguish_flag, status:status_own() };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own() };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
 	// state are the same instant. marked_steps is reset by the mark below, so
 	// this read and that one see the same number.
 	const sequence=net.input({...sample, steps:marked_steps});
-	if(sequence>0){ flare_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; }
+	if(sequence>0){ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).

@@ -334,7 +334,7 @@ export interface InputSample {
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
-  solo: boolean // the dispenser at BYPASS: a flare edge releases the flare alone; a server that predates it drops the chaff bundle too
+  solo: boolean // this flare edge releases the flare alone - BYPASS, or a programme step without chaff (#107); a server that predates it drops a chaff bundle too
   extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay
   onspeed: boolean // the pitch trim alone back to on-speed, an edge; a server that predates it leaves the trim where it was
   reverted: boolean // mission computer 1 lost: the server's limiter drops its weight schedule and the stores' roll limit, as the client's has

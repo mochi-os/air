@@ -45,7 +45,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   atc: 'KeyP',
   lights: 'KeyL',
   'lights.test': 'Shift+KeyL', // the LT TEST switch, held (NATOPS 2.6.2.11)
-  flares: 'KeyC', // the dispense switch aft (#31): the manual programme, a flare and a chaff bloom
+  flares: 'KeyC', // the dispense switch aft (#31): starts the match's dispenser programme (#107)
   chaff: 'KeyZ', // ...and forward: chaff singles
   eject: 'Shift+KeyE',
   map: 'KeyM',
