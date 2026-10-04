@@ -62,7 +62,7 @@ describe('key bindings', () => {
       expect(ids.length).toBeGreaterThan(10)
       // The four look DIRECTIONS carry no key: the pad drives the camera
       // directly and the keyboard uses the fixed arrow keys. look.target is NOT
-      // exempt - it is a bound hold and must own a key for a pad button to
+      // exempt - it is a bound press and must own a key for a pad button to
       // replay.
       const keyless = new Set([
         'look.up',

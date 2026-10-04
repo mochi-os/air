@@ -2713,13 +2713,19 @@ const INS_KNOB={ node:"GYRO_TEST_AN_TEST_491", axis:new THREE.Vector3(0,-1,0), s
 // sets: the heading and course set switches held on their keys (2.13.4.9, 2.13.4.10, #8): which way, and since when
 const sets={ heading:{ way:0, since:0 }, course:{ way:0, since:0 } };
 function set_press(which,d){ navigate.set(nav,which,d>0?5:-5); ddi_dirty=true; }   // a click is a short hold: five degrees
+// nav_ready readies a fresh flight's suite as the pre-flight leaves it: the mission data loaded, the
+// INS aligned and navigating, the heading set to the jet's. It needs the jet's pose, so fly_player
+// calls it as soon as the core has stepped, before that frame's cautions and advisories are judged:
+// a suite still off reads as a new INS ATT. nav_frame calls it for a frame the core does not step.
+function nav_ready(){ if(!nav_cold) return; const truth=nav_sense(0);
+	navigate.load(nav,mission()); nav_fields=airports.length;
+	nav_cold=false; navigate.ready(nav,truth); nav.variation=VARIATION; nav.heading=truth.heading; nav.steer="tcn";
+	if(truth.airborne) nav.waypoints[0]={ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship
 // nav_frame steps the suite: the mission data when it is first there to load, the INS and GPS, AUTO
 // sequential steering's move to the next waypoint, and the set switches held on their keys - a degree
 // on the press, then 30° a second.
-function nav_frame(dt){ const truth=nav_sense(dt);
-	if(nav_cold||nav_fields!==airports.length){ navigate.load(nav,mission()); nav_fields=airports.length; }   // the airfields arrive after the first spawn
-	if(nav_cold){ nav_cold=false; navigate.ready(nav,truth); nav.variation=VARIATION; nav.heading=truth.heading; nav.steer="tcn";
-		if(truth.airborne) nav.waypoints[0]={ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship
+function nav_frame(dt){ nav_ready(); const truth=nav_sense(dt);
+	if(nav_fields!==airports.length){ navigate.load(nav,mission()); nav_fields=airports.length; }   // the airfields arrive after the first spawn
 	const before=nav.ins.mode+nav.source+nav.current;
 	navigate.step(nav,truth);
 	if(nav.steer==="wypt") navigate.sequential(nav,navigate.place(nav,truth),(ownship.gauges||{}).track??truth.heading);
@@ -6677,9 +6683,13 @@ function head_apply(dt){ if(!head_track) return;
 	const el=fresh?THREE.MathUtils.clamp(head_shape(head_pose.pitch-head_datum.pitch,gain,1.396),-1.047,1.396):0;
 	const k=Math.min(1,dt*12);   // glide bridges the 30 Hz pose to frame rate, and eases the view home when the face is lost
 	head_az+=(az-head_az)*k; head_el+=(el-head_el)*k;
-	if(fresh&&Math.abs(az)>0.05){ looking=false; look_home=false; } }   // a deliberate head turn takes the view back from padlock; a resting head leaves it alone
+	if(fresh&&Math.abs(az)>0.05){ padlocked=false; look_home=false; } }   // a deliberate head turn takes the view back from padlock; a resting head leaves it alone
 */
-let looking=false, look_home=false, look_warned=false;   // look-at-target (#243): HOLD the look key to look at the boxed target — the head eases there fast and smoothly, release eases it home. No toggle, no helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
+let padlocked=false, look_home=false;   // look-at-target (#243): a press of the look key latches the padlock - the head eases to the target fast and smoothly and follows it - and the next press, a manual look, a view reset, the target lost or the view left releases it and eases the head home. No helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
+// look_press works the look key in the first-person views: latch on the target, or release.
+function look_press(){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
+	if(padlocked){ padlocked=false; look_home=true; return; }
+	if(look_target()) padlocked=true; else notice(translate("NO TARGET")); }
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
 function zoom_floor(){ return cfg.view==="chase"?0.5:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to
@@ -7126,7 +7136,7 @@ function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the r
 // cancels Space's default (the page must not scroll), so a focused control
 // bar button never answers Space itself.
 function watching(ch,k,shift){ if(k==="Space"&&!shift){ playback_hold(!playback_held); return false; }
-	return (!shift&&/^Digit[1-6]$/.test(k)) || ["view","view.reset","zoom.in","zoom.out","repeater","map","menu"].some(action=>ch===key_of(action)); }
+	return (!shift&&/^Digit[1-6]$/.test(k)) || ["view","view.reset","look.target","zoom.in","zoom.out","repeater","map","menu"].some(action=>ch===key_of(action)); }
 addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
@@ -7179,6 +7189,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
 		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
 		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
+		if(ch===key_of("look.target")) look_press();   // Y: latch the padlock on the target, or release it
 		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
 		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
@@ -7231,7 +7242,8 @@ stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
-	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
+	if(head_drag){ if(press_moved>=6) padlocked=false;   // a drag, not a click on a switch, takes the head back from the padlock
+		head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
 stage.addEventListener("pointerup",e=>{ if(e.button===2||e.button===1){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
@@ -7417,7 +7429,7 @@ function zoom_step(direction){
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){ look_home=false;
+function view_reset(){ look_home=false; padlocked=false;
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
@@ -9223,6 +9235,7 @@ function fly_player(dt){
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; onspeed_flag=false; }   // the edges were consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
 	sync_core(out); last_out=out;
+	nav_ready();   // a fresh flight's suite, from the pose the core just gave and before this frame's cautions
 	emergency_update(dt, keys.has(key_of("jettison.emergency"))||sim_time-emergency_clicked<EMERGENCY_HOLD);   // #18: the held striped button — pairs release while held
 	carriage_update(dt); falling_update(dt);
 	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
@@ -9779,7 +9792,7 @@ function reset_ownship(){
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	bandit_acc=0; missile_acc=0;   // no stale fixed-step debt across spawns
-	designated=-1;   // a respawn drops the acquisition
+	designated=-1; padlocked=false;   // a respawn drops the acquisition and the padlock
 	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
@@ -9916,19 +9929,15 @@ function update_camera(dt){
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; }   // a manual look cancels any ease-home in progress
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; padlocked=false; }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
 	}
-	// Padlock (#243): hold Y to look at the target in the first-person views;
-	// release eases home. Exponential ease with a rate cap. The clamps are the
-	// mask: a target past ±150° az or under the sill stays out of view, head
-	// parked at its limit.
-	{ const held=(cfg.view==="hud"||cfg.view==="cockpit")&&keys.has(key_of("look.target"));
-		const t=held?look_target():null;
-		if(held&&!t&&!look_warned){ notice(translate("NO TARGET")); look_warned=true; }
-		if(!held) look_warned=false;
-		if(looking&&!(held&&t)) look_home=true;   // released (or target gone): ease home
-		looking=!!(held&&t);
-		if(looking){ look_home=false;
+	// Padlock (#243): latched by the look key (look_press), the head follows the
+	// target in the first-person views; released, it eases home. Exponential ease
+	// with a rate cap. The clamps are the mask: a target past ±150° az or under
+	// the sill stays out of view, head parked at its limit.
+	{ const first=cfg.view==="hud"||cfg.view==="cockpit", t=padlocked&&first?look_target():null;
+		if(padlocked&&!t){ padlocked=false; look_home=true; if(first) notice(translate("NO TARGET")); }   // the target lost, or the view left: release and ease home
+		if(padlocked){ look_home=false;
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
@@ -11479,7 +11488,7 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, ownship.msl); systems_fresh(true); }   // in a joust the match-starting double-respawn releases the waiting room
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; padlocked=false; update_rails(ownship, ownship.msl); systems_fresh(true); }   // in a joust the match-starting double-respawn releases the waiting room
 		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
 	case "missile":

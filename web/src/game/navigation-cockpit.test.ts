@@ -45,7 +45,7 @@ const world = `const D2R=Math.PI/180, NM=1852;
   let computers={ one:true, two:true }, acl=0; const mc=()=>computers, acl_select=()=>{ acl++; };
   const uhf={ one:communication.fresh(), two:communication.fresh(), panel:communication.panel(11), keypad:communication.backup(), pulled:"" }, squawk=identification.fresh(), terminal=mids.fresh();`
 const defs = [line('HSI_SCALES'), line('hsi_state'), line('VARIATION'), line('nav'), line('INS_KNOB'), line('sets'), line('carrier_given'), line('mumi'), line('MUMI_FILES'), line('fpas'), pages, line('UFC_ENTRY'), line('UFC_UNITS'), line('ufc'), line('grid_state'), line('GRID_SHIFTS'), line('GRID_BOX')].join('')
-const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
+const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_ready', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
 // cockpit runs a body against the engine's navigation glue, booted as a spawn in the air is unless raw
 function cockpit<T>(body: string, raw = false): T {
@@ -104,6 +104,16 @@ describe('a spawn', () => {
   it('stores the place it aligned in waypoint 0: where it stands on the ground, the ship for a start in the air', () => {
     expect(cockpit('return nav.waypoints[0];')).toMatchObject({ x: -18500, z: 7500 })
     expect(cockpit('ownship.grounded=true; ownship.pos.x=40; ownship.pos.z=60; nav_reset(); nav_frame(0.1); return nav.waypoints[0];')).toMatchObject({ x: 40, z: 60 })
+  })
+  it('is readied once, as soon as the core has given the pose and before that frame\'s cautions are judged', () => {
+    // a suite still off reads as a new INS ATT, which latches MASTER CAUTION and sounds its tone, and
+    // without waypoint 0 FPAS cannot work out the fuel home
+    const s = cockpit<{ cold: string[]; ready: string[]; mode: string; home: boolean; heading: number }>(
+      'nav_reset(); const cold=navigate.cautions(nav); ownship.gauges.heading=1; nav_ready(); const ready=navigate.cautions(nav); ownship.gauges.heading=2; nav_ready(); nav_frame(0.1); return { cold, ready, mode:nav.ins.mode, home:nav.waypoints[0]!==null, heading:nav.heading };', true)
+    expect(s).toEqual({ cold: ['INS ATT'], ready: [], mode: 'nav', home: true, heading: 1 }) // a later call, or nav_frame, does not ready it again
+    const fly = lift('fly_player'), at = fly.indexOf('\tsync_core(out); last_out=out;\n\tnav_ready();')
+    expect(at).toBeGreaterThan(0)
+    expect(fly.indexOf('cautions_update();')).toBeGreaterThan(at)
   })
   it('loads the airfields when they arrive after it', () => {
     expect(cockpit<unknown[]>('const late=airports.splice(0); nav_reset(); nav_frame(0.1); const before=nav.waypoints[2]; airports.push(...late); nav_frame(0.1); return [before, nav.waypoints[2].name];')).toEqual([null, 'PMDY'])
