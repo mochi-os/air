@@ -103,12 +103,36 @@ describe('the instrument cluster rides the nose', () => {
 // altitude boxes, and REJ 2 with it - the airspeed, the altitude and the
 // altimeter setting under it stay at every reject level. The section is run
 // against a recording canvas.
+// The FPAS's climb airspeed prompt (2.3.1.1.8, figure 2-7): over the airspeed box, with CLIMB boxed on
+// the FPAS display, in the NAV master mode and the reject switch at NORM; XXXX with no climb to be had.
+describe('the climb airspeed prompt', () => {
+  const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- altitude box (right)', start)
+  const box = source.slice(start, end)
+  const draw = (o: { climb?: boolean; master?: string; declutter?: number; prompt?: string } = {}) => new Function(`const GR='g', cx=640, ppdv=16, wly=344, master=${JSON.stringify(o.master ?? 'nav')}, declutter=${o.declutter ?? 0};
+    const ownship={ cas:100, speed:100, gauges:{} }, nav={}, navigate={ required:()=>null, place:()=>null }, nav_sense=()=>({});
+    const fpas={ climb:${o.climb ?? true} }, fpas_climb=()=>(${o.prompt ?? '{ speed:260, rate:80, calibrated:150 }'});
+    const text=[];
+    const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s,x,y)=>text.push([String(s),x,y]):()=>{}, set:()=>true });
+    ${box} return text;`)() as [string, number, number][]
+  it('writes the climb airspeed in knots over the airspeed box', () => {
+    expect(start).toBeGreaterThan(0)
+    const ax = 640 - 4.2 * 16
+    expect(draw()).toContainEqual(['292', ax - 8, 344 - 14]) // 150 m/s
+    expect(draw({ prompt: 'null' })).toContainEqual(['XXXX', ax - 8, 344 - 14])
+  })
+  it('writes nothing without CLIMB, outside NAV or with the reject switch off NORM', () => {
+    for (const o of [{ climb: false }, { master: 'gun' }, { declutter: 1 }, { declutter: 2 }]) {
+      expect(draw(o).map(([t]) => t), JSON.stringify(o)).toEqual(['194'])
+    }
+  })
+})
+
 describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
   const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
   const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
-    const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0; ${reading}
+    const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0, fpas={ climb:false }; ${reading}
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];
     const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):k==='strokeRect'?(x,y,w,h)=>rects.push([x,y,w,h]):k==='measureText'?(s)=>({ width:7*String(s).length }):()=>{}, set:()=>true });

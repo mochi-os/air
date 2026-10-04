@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -3547,7 +3547,7 @@ function ddi_hud(x){
 // waypoint 0 at power-up, stepped with the FPAS display's arrows, and quiet for 5 s after a change
 // (2.3.1.2). fpas_steer is the leg to the waypoint or TACAN station the HSI steers to, with its name
 // for the NAV TO row (2.3.1.1.6).
-const fpas={ changed:-Infinity, at:-Infinity, best:null, survey:null, optimum:null };
+const fpas={ changed:-Infinity, at:-Infinity, best:null, survey:null, optimum:null, climb:false, climbed:-Infinity, prompt:null };   // climb: the CLIMB option boxed, the HUD prompting the climb airspeed (2.3.1.1.8); prompt: its last answer, refreshed every two seconds
 function fpas_leg(metres){ const gz=ownship.gauges||{}, gs=gz.ground||0, pph=flow_state.pph;
 	if(ownship.grounded||gs<60||pph<200||cheat("fuel")) return null;
 	const dist=metres/1852, hours=dist/gs;
@@ -3559,8 +3559,14 @@ function fpas_steer(){
 	if(nav.steer!=="wypt") return null;
 	const steer=hud_steer(), leg=steer?fpas_leg(steer.range):null;
 	return leg&&{ ...leg, name:steer.target?"TGT":"WYPT "+navigate.label(nav.current) }; }
-function fpas_press(pb){ if(pb!==16&&pb!==17) return false;   // the home waypoint's arrows, round from the last waypoint to waypoint 0 (2.3.1.2)
+function fpas_press(pb){ if(pb===20&&master==="nav"){ fpas.climb=!fpas.climb; return true; }   // CLIMB, offered in NAV alone (2.3.1.1.8)
+	if(pb!==16&&pb!==17) return false;   // the home waypoint's arrows, round from the last waypoint to waypoint 0 (2.3.1.2)
 	nav.home=(nav.home+(pb===16?1:navigate.WAYPOINTS-1))%navigate.WAYPOINTS; fpas.changed=sim_time; return true; }
+// fpas_climb is the climb airspeed the HUD prompts (2.3.1.1.8): NATOPS leaves the schedule to the
+// performance supplement, so it is the flight core's best steady climb on military power at the present
+// altitude for the jet as it is (flight_climb), found afresh every two seconds. Null with no climb to be had.
+function fpas_climb(){ if(sim_time-fpas.climbed>=2||sim_time<fpas.climbed){ fpas.climbed=sim_time; fpas.prompt=flight_climb(Math.max(0,ownship.pos.y)); }
+	return fpas.prompt; }
 // fpas_cruise keeps the cruise figures (#126, 2.3.1.1.2 to 2.3.1.1.5): the best Mach at the present
 // altitude, found afresh every two seconds, and the optimum altitude and Mach from a survey of the
 // altitudes that climbs a thousand feet a call and starts over when it finishes. Both search the
@@ -3580,7 +3586,7 @@ function fpas_cruise(){ const gz=ownship.gauges||{}, tail=(gz.ground||0)*0.51444
 // legend when under the reserve (2.3.1.4); and the fuel flow in pounds per mile. OPTIMUM: the
 // altitude and Mach for the most range and for the most endurance, and what each gives. XXXX where
 // the inputs are not valid - on deck, the engines not burning, or no cruise found. The home
-// waypoint and its arrows at the lower right (2.3.1.2). The optimum is for the jet at its present
+// waypoint and its arrows at the lower right (2.3.1.2), and CLIMB at the lower left in NAV (2.3.1.1.8). The optimum is for the jet at its present
 // weight; the real one's allowance for the fuel burned on the way is not modelled. Cockpit text
 // stays English by the annunciator policy.
 function ddi_fpas(x,display){ const gz=ownship.gauges||{};
@@ -3620,7 +3626,8 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};
 		x.fillText(far?fraction(far.mach):"XXXX",261,322); x.fillText(long?fraction(long.mach):"XXXX",408,322);
 		x.fillText(far?reach(far):"XXXX",261,346); x.fillText(long?stay(long):"XXXX",408,346); }
 	x.fillText(String(nav.home),376,440); x.fillText("HOME",376,462);   // the home waypoint between its arrows (2.3.1.2)
-	ddi_legend(x,17,"\u2193",true,false); ddi_legend(x,16,"\u2191",true,false); }
+	ddi_legend(x,17,"\u2193",true,false); ddi_legend(x,16,"\u2191",true,false);
+	if(master==="nav") ddi_legend(x,20,"CLIMB",true,fpas.climb); }   // removed outside the NAV master mode (2.3.1.1.8)
 const fuel_state={ bingo:3000 };   // lb, the pilot's BINGO setting: the IFEI arrows own it (NATOPS 2.2.10.1, 100 lb steps to 20,000) and the caution, the voice and the calls read it through BINGO
 // FLBIT (NATOPS 2.2.10.3): the fuel low level system's BIT, run from the FUEL page.
 // It raises FUEL LO through the whole warning chain - the caution, the FUEL LO light,
@@ -10948,6 +10955,8 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	{ const gz=ownship.gauges||{}, need=master==="nav"&&declutter<2?navigate.required(nav,navigate.place(nav,nav_sense(0)),gz.zulu||0):null;   // groundspeed cuing (24.2.9.6): a tick under the airspeed box and an arrowhead left of it when too slow for the time on target, right when too fast, 30 knots at full displacement
 		if(need!==null){ const tx=ax-42, ty=wly+34, at=tx+THREE.MathUtils.clamp(((gz.ground||0)-need)/30,-1,1)*16;
 			hctx.beginPath(); hctx.moveTo(tx,ty); hctx.lineTo(tx,ty+7); hctx.moveTo(at-5,ty+16); hctx.lineTo(at,ty+9); hctx.lineTo(at+5,ty+16); hctx.stroke(); } }
+	if(fpas.climb&&master==="nav"&&!declutter){ const climb=fpas_climb();   // the climb airspeed over the box, with the FPAS's CLIMB boxed and the reject switch at NORM (2.3.1.1.8, figure 2-7)
+		hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(climb?String(Math.round(climb.calibrated*1.94384)):"XXXX",ax-8,wly-14); }
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
