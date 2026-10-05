@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as countermeasures from './countermeasures'
 import * as identification from './identification'
+import * as helmet from './helmet'
 import { describe, expect, it } from 'vitest'
 import { ACROSS, PRIORITY, SLOTS, dedicated, host, lines, reconcile, restack, type Row, type Slots } from './cautions'
 
@@ -158,14 +159,17 @@ describe('the advisory line', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
   const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
   const consts = /\nconst buttons=\{[^\n]*\n/.exec(source)?.[0] ?? '', on = /\nconst ANTIICE_ON=[^\n]*\n/.exec(source)?.[0] ?? ''
-  interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean; chaff?: number; flares?: number; dispenser?: string; challenged?: boolean; answered?: boolean; alert?: string }
-  const advised = (o: Jet = {}) => (new Function('o', 'countermeasures', 'identification', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
+  interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean; chaff?: number; flares?: number; dispenser?: string; challenged?: boolean; answered?: boolean; alert?: string; helmet?: 'aligned' | 'unaligned' | 'off' }
+  const advised = (o: Jet = {}) => (new Function('o', 'countermeasures', 'identification', 'helmet', `const hmd=helmet.fresh(!o.helmet||o.helmet==='aligned',{ azimuth:0, elevation:0, roll:0 },0); if(o.helmet==='unaligned') helmet.step(hmd,true,1); const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
     const suite=countermeasures.fresh(true), dispenser_programme=()=>countermeasures.PROGRAMMES.mixed, squawk=identification.fresh(), challenges=()=>({ challenged:!!o.challenged, answered:!!o.answered });
     if(o.dispenser) suite.dispenser=o.dispenser; if(o.alert) squawk.alert=o.alert;
     const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, chaff:o.chaff??20, flares:o.flares??40, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
     const secured=o.secured||[false,false], antiskid=o.skid??true, reference=o.reference||"auto";
     buttons.trim=o.trim??-Infinity; buttons.reset=o.reset??-Infinity; buttons.standing=!!o.standing; const bit={ advisory:!!o.failure };
-    ${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification) as [string, string][]).map(([key]) => key)
+    ${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification, helmet) as [string, string][]).map(([key]) => key)
+  it('advises HMD while the helmet is on with no valid coarse alignment, and not while it is off (2.21.9)', () => {
+    expect([advised({ helmet: 'unaligned' }), advised({ helmet: 'off' }), advised({ helmet: 'aligned' })]).toEqual([['HMD'], [], []])
+  })
   it('advises nothing in a healthy jet, and passes on what the navigation suite advises', () => {
     expect(consts).not.toBe(''); expect(on).not.toBe('')
     expect(advised()).toEqual([]); expect(advised({ suite: ['ALGN', 'GPS'] })).toEqual(['ALGN', 'GPS'])

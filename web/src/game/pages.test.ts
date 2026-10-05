@@ -223,7 +223,7 @@ function repeat(o: Repeat = {}): Shown {
   const climb = o.climb ?? 0, speed = 150
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
-  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_tape', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
   return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
@@ -2062,9 +2062,9 @@ describe('the DDI view', () => {
 describe('the TAC and SUPT menus', () => {
   const menus = new Function(`${/\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''}; return DDI_MENUS`)() as Record<string, [number, string, string][]>
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
-  function run(menu: string, press = 0, designator = 'center', shows = 'hud', computers = { one: true, two: true }, time = 0) {
+  function run(menu: string, press = 0, designator = 'center', shows = 'hud', computers = { one: true, two: true }, time = 0, priority = false) {
     return new Function('avionics', `let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
-      const sim_time=${time}, mc=()=>(${JSON.stringify(computers)}), display_test={ on:false };
+      const sim_time=${time}, mc=()=>(${JSON.stringify(computers)}), display_test={ on:false }, hmd={ priority:${priority} }, helmet={ exit:()=>{} };
       const ddi_state={ left:{ page:${JSON.stringify(shows)}, menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
       function cautions_draw(){} function ddi_show(d,p){ shown=p; } const caution_page=()=>null, caution_host=()=>null;
       ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')} ${lift('diamond')}
@@ -2083,7 +2083,7 @@ describe('the TAC and SUPT menus', () => {
   const names = (menu: string, computers: { one: boolean; two: boolean }) => run(menu, 0, 'center', 'hud', computers).text.map((t) => t[0]).filter((t) => t !== 'TAC' && t !== 'SUPT' && t !== 'MENU')
   it('loses SA and all of SUPT but HSI without mission computer 1, and STORES without mission computer 2 (2.13.4.2.1)', () => {
     expect(names('tac', { one: false, two: true })).toEqual(['STORES', 'RDR ATTK', 'HUD', 'EW']); expect(names('supt', { one: false, two: true })).toEqual(['HSI'])
-    expect(names('tac', { one: true, two: false })).toEqual(['RDR ATTK', 'HUD', 'SA', 'EW']); expect(names('supt', { one: true, two: false }).length).toBe(11)
+    expect(names('tac', { one: true, two: false })).toEqual(['RDR ATTK', 'HUD', 'SA', 'EW']); expect(names('supt', { one: true, two: false }).length).toBe(12)
     expect(run('supt', 1, 'center', 'hud', { one: false, two: true }).shown).toBe(''); expect(run('supt', 2, 'center', 'hud', { one: false, two: true }).shown).toBe('hsi') // an option that is gone opens nothing
     expect(run('tac', 5, 'center', 'hud', { one: true, two: false }).shown).toBe('')
   })
@@ -2096,6 +2096,7 @@ describe('the TAC and SUPT menus', () => {
   it('draws the TDC diamond in the upper right corner of the display that has the TDC', () => {
     expect(run('tac', 0, 'left').moves).toEqual([[476, 30], [488, 42], [476, 54], [464, 42]])
     expect(run('tac', 0, 'right').moves).toEqual([])
+    expect(run('tac', 0, 'left', 'hud', { one: true, two: true }, 0, true).moves).toEqual([]) // with the TDC at the helmet no display has it
   })
   it('puts each TAC option at its pushbutton', () => {
     const d = run('tac')
@@ -2103,7 +2104,7 @@ describe('the TAC and SUPT menus', () => {
   })
   it('puts each SUPT option at its pushbutton', () => {
     const d = run('supt')
-    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['GPS', 10, 96], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['UFC BU', 416, 482], ['MUMI', 416, 30], ['BIT', 256, 30], ['MENU', 256, 482]])
+    expect(d.text.filter((t) => t[0] !== 'SUPT')).toEqual([['HSI', 10, 336], ['ADI', 10, 416], ['HMD', 10, 256], ['GPS', 10, 96], ['CHKLST', 502, 96], ['ENG', 502, 176], ['FCS', 502, 416], ['FUEL', 96, 482], ['FPAS', 176, 482], ['UFC BU', 416, 482], ['MUMI', 416, 30], ['BIT', 256, 30], ['MENU', 256, 482]])
   })
   // GPS (figure 2-22, pushbutton 5) has no page of its own: it is the HSI on its GPS point data display (figure 24-8).
   it('opens the HSI on its GPS point data display from GPS, whatever the DATA sublevel was showing', () => {

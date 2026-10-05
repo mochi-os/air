@@ -59,7 +59,7 @@ describe('the HUD face', () => {
 
   it('is one stroke weight: no synthesised bold', () => {
     for (const [f] of fonts) if (f.endsWith(FACE)) expect(f).not.toMatch(/^(600|bold) /)
-    expect(source).toMatch(/hctx\.font="20px 'Hornet Display', monospace"; hctx\.textAlign="right"; hctx\.fillText\(String\(Math\.round\(kcas\)\)/)
+    expect(source).toMatch(/hctx\.font="20px 'Hornet Display', monospace"; hctx\.textAlign="right"; if\(keep\("AIRSPEED",3\)\) hctx\.fillText\(String\(Math\.round\(kcas\)\)/)
     expect(source).toMatch(/hctx\.font="21px 'Hornet Display', monospace"; hctx\.fillText\(String\(thousands\)/)
   })
 

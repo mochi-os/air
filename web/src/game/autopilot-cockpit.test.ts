@@ -257,7 +257,9 @@ describe('the HUD\'s cues', () => {
   const heading = /\n\tif\(link\.five&&master==="nav"&&!\(hold\.modes\.coupled&&hold\.source==="bank"\)\)\{[^\n]*\n[\s\S]*?\n\t\thctx\.stroke\(\); \}/.exec(source)?.[0] ?? ''
   it('points at the controller\'s command heading below the heading scale with a double chevron (24.6.1.1.2 a)', () => {
     expect(heading).not.toBe('')
-    const drawn = (setup: string) => new Function('navigate', `const D2R=Math.PI/180, cx=500, hty=46, hppx=7, GR="g", ownship={ fwd:{ x:0, z:-1 } }, link={ five:{ heading:4 } }, hold={ modes:{ coupled:false }, source:"track" }; let master="nav";
+    const place = /\n\tconst place=\(error\)=>[^\n]*\n/.exec(source)?.[0] ?? '' // where a steering error sits on the scale, the HUD's way (worn null)
+    expect(place).toContain('navigate.command(error/D2R)')
+    const drawn = (setup: string) => new Function('navigate', `const D2R=Math.PI/180, cx=500, hty=46, hppx=7, halfd=15, worn=null, hdg=0, middle=0, GR="g", ownship={ fwd:{ x:0, z:-1 } }, link={ five:{ heading:4 } }, hold={ modes:{ coupled:false }, source:"track" }; let master="nav"; ${place}
       const moves=[], lines=[]; let at=[0,0]; const hctx={ beginPath(){}, stroke(){}, setLineDash(){}, moveTo(x,y){ moves.push([x,y]); at=[x,y]; }, lineTo(x,y){ lines.push([at[0],at[1],x,y]); at=[x,y]; } };
       ${setup} ${heading} return { moves, lines };`)(navigate) as { moves: number[][]; lines: number[][] }
     const rounded = (rows: number[][]) => rows.map((row) => row.map((v) => Math.round(v * 1e6) / 1e6))

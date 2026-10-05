@@ -241,10 +241,10 @@ describe('the primary radar low-altitude warning (NATOPS 2.12.5.1)', () => {
 // and flashing for 5 s on a descent through 10,000 ft below 300 knots.
 interface Moment { feet: number; knots: number; t: number; set?: number }
 function baroset(moments: Moment[]): (string | null)[] {
-  const block = /\n\t\{ const knots=\(ownship\.cas\?\?ownship\.speed\)\*1\.944;[\s\S]*?fixed-format like the real instrument\n/.exec(source)?.[0] ?? ''
+  const block = /\n\tif\(!limited&&keep\("BARO PRES",3\)\)\{ const knots=\(ownship\.cas\?\?ownship\.speed\)\*1\.944;[\s\S]*?fixed-format like the real instrument\n/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('baro-set block not found in engine.ts')
   const run = new Function('moments', `let baro_set=2992, baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;
-    const GR='#0f0', lx=0, wly=0, declutter=0, ownship={cas:0, speed:0};
+    const GR='#0f0', lx=0, wly=0, rej=0, limited=false, keep=(symbol,level)=>rej<level, ownship={cas:0, speed:0};
     return moments.map((m)=>{ let drawn=null; const hctx={ fillText:(s)=>{ drawn=s; }, font:'', textAlign:'', fillStyle:'' };
       const baro=m.feet, sim_time=m.t; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
       ${block} return drawn; });`)

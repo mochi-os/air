@@ -29,7 +29,7 @@ describe('the vertical velocity over the altitude box', () => {
   })
 
   it('shows in NAV and the landing configuration only', () => {
-    expect(vertical?.[1]).toBe('master==="nav"||pa')
+    expect(vertical?.[1]).toBe('(master==="nav"||pa)&&!limited&&keep("VSI",3)') // and not in a mission computer's backup set on the helmet (2.21.15), nor rejected there by REJECT SETUP; no HUD reject level removes it
   })
 })
 
@@ -82,7 +82,7 @@ describe('the instrument cluster rides the nose', () => {
     const heading = section('\t// ---- heading scale:', '\t// ---- airspeed box')
     const run = (glass: object | null) => {
       const c = canvas([1, 0, 0, 1, -340, 156]) // the cluster's move onto the nose
-      new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', 'master', 'nav', 'hud_steer', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${heading}`)(
+      new Function('hctx', 'screen', 'glass', 'rej', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'THREE', 'master', 'nav', 'hud_steer', `const limited=false, worn=null, hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const keep=(symbol,level)=>rej<level; ${/\nfunction hud_tape\([^\n]*\n/.exec(source)?.[0] ?? ''} ${heading}`)(
         c.hctx, { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }, glass, 0, false, cx, cy, ppdv, 'g', { fwd: { x: 0, z: -1 } }, false, THREE, 'nav', { magnetic: false, variation: 0 }, () => null)
       return c.moves[0] // the first tick, at the scale's left end
     }
@@ -108,7 +108,7 @@ describe('the instrument cluster rides the nose', () => {
 describe('the climb airspeed prompt', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- altitude box (right)', start)
   const box = source.slice(start, end)
-  const draw = (o: { climb?: boolean; master?: string; declutter?: number; prompt?: string } = {}) => new Function(`const GR='g', cx=640, ppdv=16, wly=344, master=${JSON.stringify(o.master ?? 'nav')}, declutter=${o.declutter ?? 0};
+  const draw = (o: { climb?: boolean; master?: string; declutter?: number; prompt?: string } = {}) => new Function(`const GR='g', cx=640, ppdv=16, wly=344, master=${JSON.stringify(o.master ?? 'nav')}, rej=${o.declutter ?? 0}, limited=false, keep=(symbol,level)=>rej<level;
     const ownship={ cas:100, speed:100, gauges:{} }, nav={}, navigate={ required:()=>null, place:()=>null }, nav_sense=()=>({});
     const fpas={ climb:${o.climb ?? true} }, fpas_climb=()=>(${o.prompt ?? '{ speed:260, rate:80, calibrated:150 }'});
     const text=[];
@@ -131,7 +131,7 @@ describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
   const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
-  const draw = (declutter: number) => new Function('declutter', `const GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
+  const draw = (declutter: number) => new Function('rej', `const limited=false, keep=(symbol,level)=>rej<level, GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
     const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0, fpas={ climb:false }; ${reading}
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];
