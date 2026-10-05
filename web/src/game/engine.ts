@@ -5468,10 +5468,16 @@ function trigger_amraam(){
 		if(!cheat("ammunition")) ownship.amraam--;
 		audio_launch(); update_rails(ownship,ownship.msl);
 		return; }
-	const target=amraam_visual ? (has_enemy&&bandit.group.visible?bandit:null) : (has_enemy&&bandit.group.visible?bandit:null);
+	const target=has_enemy&&bandit.group.visible&&(!amraam_visual||helmet.within(ownship.fwd,seeker_toward(bandit).to,VISUAL))?bandit:null;   // a VISUAL shot's own radar takes what lies inside the field-of-view circle as it leaves the rail, and nothing outside it
 	if(launch_amraam(ownship,target,amraam_visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phase 2)
+// The AIM-120's field-of-view circle (the DCS guide, figure 154; NATOPS has none): the search field of the
+// missile's own radar for a VISUAL shot, about the jet's boresight. VISUAL is its radius, measured on the
+// guide's HUD at about 7.5°. amraam_field: whether the HUD and the helmet show it - the AIM-120 selected
+// with no radar target to slave it to, or VISUAL chosen.
+const VISUAL=7.5*D2R;
+function amraam_field(){ return master==="120c"&&(amraam_visual||(RADAR.stt==null&&RADAR.ls==null)); }
 let caged=false;   // the same switch in the NAV master mode: the velocity vector caged to the HUD centreline (NATOPS I-2-102 item 10)
 function jammer_armed(){ return buses.ac&&suite.jammer==="transmit"; }   // XMIT (#31): the ECM knob's standing decision, on ac power; jammer_loud() is whether it radiates right now
 function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR.warned(),buses.ac); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
@@ -10631,6 +10637,8 @@ function draw_hud(){
 			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18*hs,bore[1]+uy*18*hs); hctx.lineTo(bore[0]+ux*70*hs,bore[1]+uy*70*hs); hctx.stroke(); hctx.lineWidth=1.5;
 			hctx.fillStyle=GR; hctx.font=(12*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84*hs,bore[1]+uy*84*hs+4*hs); } }
+	if(amraam_field()){ const c=proj_dir(ownship.fwd);   // the AIM-120's field of view, dashed, about the boresight
+		if(c){ hctx.strokeStyle=GR; hctx.setLineDash([8*hs,6*hs]); hctx.beginPath(); hctx.arc(c[0],c[1],VISUAL/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
 			const muz=body_offset(ownship,6.0,0.35,0.0);
@@ -11237,6 +11245,8 @@ function draw_hmd(glass,pa,boxed,vc,rng,heat){
 	if(master==="9m"&&!pa&&seeker_now.line){ const at=hmd_at(seeker_now.line), r=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the AIM-9's field of view, where the seeker looks, smaller once it tracks
 		if(at){ hctx.beginPath(); hctx.arc(at[0],at[1],r,0,Math.PI*2); hctx.stroke();
 			if(heat&&heat.shoot){ hctx.font="16px 'Hornet Display', monospace"; hctx.fillText("SHOOT",at[0],at[1]-r-16); hud_shoot=true; } } }   // over the circle, as on the HUD
+	if(!pa&&amraam_field()&&helmet.shown(hmd,"SP/AMR FOV")){ const at=hmd_at(ownship.fwd);   // the AIM-120's field of view, as on the HUD (the DCS guide)
+		if(at){ hctx.setLineDash([6,5]); hctx.beginPath(); hctx.arc(at[0],at[1],VISUAL/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); } }
 	if(!blanked&&RADAR.auto&&(RADAR.acm==="hacq"||RADAR.acm==="lacq")){ hctx.setLineDash([6,5]); hctx.beginPath(); hctx.arc(cx,cy,helmet.ACQUIRE/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); }   // the acquisition reticle
 	hctx.restore(); }
 // hmd_fit: the scale the HUD's layout goes onto the helmet at - the angles it subtends on the HUD, as far as
