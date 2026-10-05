@@ -4092,7 +4092,7 @@ if(DEV_MODE) (globalThis as any).dev_display=function(display,page,presses){ if(
 	const answers=(presses||[]).map(pb=>Array.isArray(pb)?ddi_state[display].page==="grid"&&grid_face(pb[0],pb[1]):ddi_press(display,pb)), c=document.createElement("canvas"); c.width=c.height=512; ddi_render(c.getContext("2d"),512,display);   // a pair is a click on the grid display's face
 	return { answers, face:c.toDataURL("image/png") }; };
 if(DEV_MODE) (globalThis as any).dev_helmet=function(set){ if(set) Object.assign(hmd,set);   // dev (#103): the helmet's state - and, given fields, set them - with what it reports and whether it slaves the seeker, for the headless checks
-	return { ...JSON.parse(JSON.stringify(hmd)), ready:helmet.ready(hmd), offset:helmet.offset(hmd), advisory:helmet.advisory(hmd), slaving:helmet.slaving(hmd,mc()), knob:knob_level("hmd"), acm:RADAR.auto?RADAR.acm:"", track:RADAR.stt??RADAR.ls??null, seeker:{ slaved:seeker_now.slaved, lockon:seeker_now.lockon, track:!!seeker_track } }; };
+	return { ...JSON.parse(JSON.stringify(hmd)), ready:helmet.ready(hmd), offset:helmet.offset(hmd), advisory:helmet.advisory(hmd), slaving:helmet.slaving(hmd,mc()), knob:knob_level("hmd"), acm:RADAR.auto?RADAR.acm:"", track:RADAR.stt??RADAR.ls??null, seeker:{ lockon:seeker_now.lockon, track:!!seeker_track } }; };
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
 // bingo_low: the tank is under the settable bingo bug. FALSE until the jet is
 // flying, because an unread tank is not an empty one: joining a match, the
@@ -5448,7 +5448,7 @@ function trigger_missile(){
 	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
 	if(MULTIPLAYER) missile_flag=true;
-	const aim=seeker_now.slaved?seeker_now.quarry:(MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null));   // with the helmet slaving the seeker the round goes for what the seeker has, and without tone it leaves unguided
+	const aim=seeker_now.quarry;   // the round goes for what the seeker has, and without tone it leaves unguided (#147)
 	if(launch_missile(ownship,aim)){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 // trigger_amraam (#27, SP): the shot needs an L&S (STT or TWS trackfile) and
@@ -10467,7 +10467,7 @@ function gpws_arrow(x,cx,cy,dpp,bank){ const tip=4.5*dpp, neck=1.0*dpp, head=2.6
 	x.restore(); }
 function draw_hud(){
 	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
-	seeker_now={ line:null, quarry:null, lockon:false, drinking:0, slaved:false };   // likewise the 9M's seeker, looked for below in the first-person views only: another view's camera is not the pilot's head, and a stale line must not reach the server
+	seeker_now=seeker_look(hud_target(),(ownship.gear??1)<0.02);   // the 9M's seeker, in every view - it is the jet's, not the camera's; only the helmet's slaving needs the pilot's head (seeker_look) - before any view returns, so no stale line reaches the server
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
 	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
@@ -10600,7 +10600,6 @@ function draw_hud(){
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
-	seeker_now=seeker_look(boxed,pa);
 	const lockon=seeker_now.lockon, drinking=seeker_now.drinking, quarry=seeker_now.quarry;
 	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
 	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
@@ -10680,7 +10679,7 @@ function draw_hud(){
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
 		const seeker=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the 5° seeker circle, smaller once uncaged and tracking (the DCS guide)
-		const at=lockon?(proj_point(quarry.pos)||bore):(seeker_now.line&&proj_dir(seeker_now.line))||bore;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the nose, or the helmet's
+		const at=lockon?(proj_point(quarry.pos)||bore):(seeker_now.line&&proj_dir(seeker_now.line))||bore;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the radar's target, the helmet's or the nose
 		const worn=hmd_seeker();   // the helmet carries the circle and its SHOOT while it works (2.21.15 to 2.21.17)
 		if(!worn){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke(); }
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
@@ -11460,40 +11459,33 @@ function radar_held(){ if(!RADAR.silent()&&designated!==-1&&designated!==RADAR.s
 function hud_target(){ const dst=designated==="bandit"?(has_enemy?bandit:null):(MULTIPLAYER&&net?remotes.get(designated):null);
 	if(dst&&dst.group.visible) return dst;
 	designated=-1; return null; }
-// heat_quarry is what the 9M's seeker looks at: in a match the designated
-// jet, alone the one jet out there, boxed by the radar or not - a heat seeker
-// needs no radar.
-function heat_quarry(boxed){ return MULTIPLAYER?boxed:(has_enemy&&bandit.group.visible?bandit:null); }
-// The 9M's seeker each frame (#73, #103): the line it looks along, the jet whose heat it has, and how deep
-// inside the reach that heat is. Plume-conditioned (#255), mirroring the server: a burner-lit nose is
+// The 9M's seeker each frame (#73, #103, #143): the line it looks along, the jet whose heat it has, and how
+// deep inside the reach that heat is. Plume-conditioned (#255), mirroring the server: a burner-lit nose is
 // lockable to half the envelope, a cold one only close aboard, rear aspect the full reach, and the depth
-// drives the growl's pitch (#59). Without the helmet slaving it - off, still in its BIT, MC2 down - the
-// game's 30° cone about the nose finds heat_quarry's jet, as it always has. With it, MC2 slaves the seeker to
-// the radar's target while the radar holds one, and to the helmet's reported line of sight otherwise
-// (2.21.15), held to its 40° gimbal about the nose; it has whichever jet is nearest that line inside its 2.5°
-// field. Uncaged (seeker_uncage) it follows the jet it has until it leaves the gimbal or the reach (9.6.3).
-// Team-blind, as the hardware is.
-let seeker_track=null, seeker_now={ line:null, quarry:null, lockon:false, drinking:0, slaved:false };
+// drives the growl's pitch (#59). Caged, MC2 slaves it to the radar's target while the radar holds one, to
+// the helmet's reported line of sight while the helmet can slave it and the pilot's head is the camera's
+// (2.21.15), and otherwise to the jet's boresight (2.21.17, 2.21.18; the DCS guide's boresight and L&S
+// modes) - without MC2 slaving is suspended and it stays on the boresight - held to its 40° gimbal about the
+// nose; it has whichever jet is nearest that line inside its 2.5° field. Uncaged (seeker_uncage) it follows
+// the jet it has until it leaves the gimbal or the reach (9.6.3). Team-blind, as the hardware is.
+let seeker_track=null, seeker_now={ line:null, quarry:null, lockon:false, drinking:0 };
 function seeker_reach(st,to){ const tail=st.fwd?Math.max(0,to.dot(st.fwd)):0, floor=0.15+0.35*THREE.MathUtils.clamp(st.reheat??0,0,1); return 5000*(floor+(1-floor)*tail); }
 function seeker_toward(st){ const to=new THREE.Vector3(wrap_axis(st.pos.x-ownship.pos.x),st.pos.y-ownship.pos.y,wrap_axis(st.pos.z-ownship.pos.z)), d=to.length()||1; return { to:to.multiplyScalar(1/d), d }; }
 function seeker_look(boxed,pa){
-	if(master!=="9m"||pa){ seeker_track=null; return { line:null, quarry:null, lockon:false, drinking:0, slaved:false }; }
-	if(!helmet.slaving(hmd,mc())){ seeker_track=null;
-		const quarry=heat_quarry(boxed); if(!quarry) return { line:ownship.fwd.clone(), quarry:null, lockon:false, drinking:0, slaved:false };
-		const { to, d }=seeker_toward(quarry), reach=seeker_reach(quarry,to), lockon=ownship.fwd.dot(to)>0.866&&d<reach;
-		return { line:lockon?to:ownship.fwd.clone(), quarry, lockon, drinking:THREE.MathUtils.clamp(1-d/reach,0,1), slaved:false }; }
+	if(master!=="9m"||pa){ seeker_track=null; return { line:null, quarry:null, lockon:false, drinking:0 }; }
 	const jets=MULTIPLAYER?[...remotes.values()].filter(st=>st.group&&st.group.visible):(has_enemy&&bandit.group.visible?[bandit]:[]);
 	let line=null;
 	if(seeker_track){ const { to, d }=jets.includes(seeker_track)?seeker_toward(seeker_track):{ to:null, d:Infinity };
 		if(to&&helmet.within(ownship.fwd,to,helmet.GIMBAL)&&d<seeker_reach(seeker_track,to)) line=to; else seeker_track=null; }
-	if(!line) line=new THREE.Vector3().copy(helmet.slave((RADAR.stt!=null||RADAR.ls!=null)&&boxed?seeker_toward(boxed).to:hmd_line(),ownship.fwd));
+	if(!line){ const radar=mc().two&&(RADAR.stt!=null||RADAR.ls!=null)&&boxed, worn=helmet.slaving(hmd,mc())&&(cfg.view==="hud"||cfg.view==="cockpit");
+		line=new THREE.Vector3().copy(radar?helmet.slave(seeker_toward(boxed).to,ownship.fwd):worn?helmet.slave(hmd_line(),ownship.fwd):ownship.fwd); }
 	let quarry=null, nearest=-2, drinking=0;
 	for(const st of jets){ const { to, d }=seeker_toward(st), reach=seeker_reach(st,to), c=to.dot(line);
 		if(d<reach&&c>=Math.cos(helmet.SEEKER)&&c>nearest){ quarry=st; nearest=c; drinking=THREE.MathUtils.clamp(1-d/reach,0,1); } }
-	return { line:quarry?seeker_toward(quarry).to:line, quarry, lockon:!!quarry, drinking, slaved:true }; }
-// seeker_uncage: the cage/uncage switch in 9M with the helmet slaving the seeker: uncaged, it tracks the jet
-// it has tone on; pressed again, it is caged back to the helmet's line of sight (9.6.3).
-function seeker_uncage(){ if(seeker_track){ seeker_track=null; return; } if(seeker_now.slaved&&seeker_now.quarry) seeker_track=seeker_now.quarry; }
+	return { line:quarry?seeker_toward(quarry).to:line, quarry, lockon:!!quarry, drinking }; }
+// seeker_uncage: the cage/uncage switch in 9M: uncaged, the seeker tracks the jet it has tone on; pressed
+// again, it is caged back to the line it is slaved to (9.6.3, the DCS guide).
+function seeker_uncage(){ if(seeker_track){ seeker_track=null; return; } if(seeker_now.quarry) seeker_track=seeker_now.quarry; }
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
@@ -11739,11 +11731,6 @@ function apply_own_state(state,reset=true){ if(!state||!state.position) return;
 		ownship.gearTarget=1; ownship.gear=1; ownship.hookTarget=0; ownship.hook=0; ownship.speedbrakeTarget=0; }
 	ownship.grounded=false; ownship.trapped=false; ownship.launching=false;
 	ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); }
-function remote_nearest(){ let best=null, range=1e12;
-	for(const st of remotes.values()){ if(!st.group.visible) continue;
-		const d=(st.pos.x-ownship.pos.x)**2+(st.pos.y-ownship.pos.y)**2+(st.pos.z-ownship.pos.z)**2;
-		if(d<range){ best=st; range=d; } }
-	return best; }
 function net_event(e){ const slot=Number(e.slot);
 	switch(e.kind){
 	case "kill":
@@ -11836,7 +11823,7 @@ function net_frame(dt){
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.slaved?helmet.pack(seeker_now.line):null };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.line?helmet.pack(seeker_now.line):null };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
 	// state are the same instant. marked_steps is reset by the mark below, so

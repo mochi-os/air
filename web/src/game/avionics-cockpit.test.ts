@@ -271,7 +271,7 @@ describe('what the mission computers take with them', () => {
   it('leaves the g limiter to the paddle switch alone, and holds the missiles on their rails without MC2', () => {
     expect(source).toMatch(/override:keys\.has\(key_of\("override"\)\)&&!\(DEV_MODE&&on_ground\(\)\),/) // without MC1 the limit goes to a fixed 7.5 g, not past it (25.1)
     const fire = (two: boolean, master: string) => new Function(`let fired=""; const mc=()=>({ one:true, two:${two} }), master=${JSON.stringify(master)}, trigger_amraam=()=>{ fired="amraam"; }, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false, arms={ arm:true }, notice=()=>{}, translate=(s)=>s;
-      const launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}, seeker_now={ slaved:false, quarry:null }; ${lift('trigger_missile')}
+      const launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}, seeker_now={ quarry:null }; ${lift('trigger_missile')}
 } trigger_missile(); return fired;`)() as string // the lift stops at the function's own closing brace, which stands alone
     expect([fire(true, '120c'), fire(true, '9m'), fire(false, '120c'), fire(false, '9m')]).toEqual(['amraam', 'sidewinder', '', ''])
   })
