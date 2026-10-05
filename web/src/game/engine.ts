@@ -10687,7 +10687,7 @@ function draw_hud(){
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
 		if(!worn&&heat_shown.shoot){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Commanding a launch the trigger will refuse just confuses the merge
 			hctx.fillText("SHOOT",at[0],at[1]-seeker-16*hs); hud_shoot=true; }
-		if(heat_shown.zone&&declutter<2) heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs
+		if(heat_shown.zone) heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs; at every reject level (2.13.4.8.1 names it at neither)
 	}
 	if(brk) hud_cue="break";   // the 9M can't arm, a gun pass this close eats debris: break off (the X is drawn with the cluster)
 	hctx.globalAlpha=1; if(glass) hctx.restore(); }
@@ -11113,8 +11113,9 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes,worn=n
 	// ---- target ranging data (A/A, boxed target): the ranging source, the closure
 	// and the range, stacked under the altitude box where the jet puts them - RDR
 	// (the radar is the only ranging the game has), Vc in knots with a minus for an
-	// opening target, the range in feet inside a mile and in miles beyond ----
-	if(aa&&boxed&&rng!=null&&!rej&&!limited){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
+	// opening target, the range in feet inside a mile and in miles beyond. No reject
+	// level removes it (2.13.4.8.1 names it at neither) ----
+	if(aa&&boxed&&rng!=null&&!limited){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
 		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
 		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
 		const knots=Math.round(vc*1.94384/10)*10;
@@ -11177,7 +11178,7 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes,worn=n
 	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
 	if(keep("TIME WINDOW",2)&&!limited){ const text=timer_text((ownship.gauges||{}).zulu||0);
 		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
-	if(master==="120c"&&keep("NIRD CIRCLE",2)&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);
+	if(master==="120c"&&keep("NIRD CIRCLE",3)&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);   // at every HUD reject level (2.13.4.8.1 names it at neither); the helmet's REJECT SETUP may take it
 	// ---- the breakaway X: one cue for every weapon, however it was reached (the
 	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
 	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
@@ -11373,8 +11374,9 @@ function hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs)
 
 	// ---- the course line's steering arrow (24.2.9.2, figure 24-13), NAV only: the selected course against the
 	// ground track, beside the velocity vector by the angle the aircraft is off the line - full scale at 8°,
-	// where the outer of two dots on that side lies, the inner at 4°; no dots within about 1.25° ----
-	if(fpm&&master==="nav"&&declutter<2){ const steer=hud_steer();
+	// where the outer of two dots on that side lies, the inner at 4°; no dots within about 1.25°. At every
+	// reject level: 2.13.4.8.1's REJ 2 takes the heading scale's command heading marker, not this ----
+	if(fpm&&master==="nav"){ const steer=hud_steer();
 		if(steer&&steer.course!=null){ const gz=ownship.gauges||{}, off=navigate.deviation(steer.bearing,steer.course), full=40*hs, side=Math.sign(off)||1;
 			const px=fpm[0]+THREE.MathUtils.clamp(off,-8,8)/8*full, a=navigate.turn(gz.track??gz.heading??0,steer.course), c=Math.sin(a), u=-Math.cos(a), len=13*hs;
 			hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.beginPath();
