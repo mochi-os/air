@@ -18,7 +18,9 @@ function lift(name: string): string {
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
-  return end ? rest.slice(0, end.index + 1) : rest
+  if (!end) return rest
+  const cut = end.index + 1
+  return rest.startsWith('\n}', cut) ? rest.slice(0, cut + 2) : rest.slice(0, cut) // a closing brace on its own line is the function's
 }
 const from = source.indexOf('\t// Padlock (#243)'), to = source.indexOf('\tif(cfg.view!=="chase" || map_on){   // HELD zoom keys')
 if (from < 0 || to < from) throw new Error('the padlock block not found in update_camera')
@@ -27,9 +29,26 @@ const block = source.slice(from, to)
 function pit<T>(body: string): T {
   return new Function('THREE', `const cfg={ view:"hud" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1) };
-    let padlocked=false, look_home=false, head_az=0, head_el=0, target={ pos:new THREE.Vector3(1000,0,-1000) };
+    let padlocked=false, look_home=false, head_az=0, head_el=0, hud_rest=0, crash_t=0, target={ pos:new THREE.Vector3(1000,0,-1000) };
     const look_target=()=>target, notice=(m)=>notices.push(m), translate=(m)=>m;
     ${lift('look_press')}
+    ${lift('view_rest')}
+    const frame=(dt)=>{ ${block} };
+    const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };
+    ${body}`)(THREE) as T
+}
+// fireball runs a body against the padlock with the real look_target and crash_ownship: a single-player
+// joust in the HUD view, the bandit 45° left, and the jet about to be destroyed.
+function fireball<T>(body: string): T {
+  return new Function('THREE', `const cfg={ view:"hud", callsign:"" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
+    const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1), group:{ visible:true }, speed:200, fate:undefined };
+    const bandit={ pos:new THREE.Vector3(1000,0,-1000), group:{ visible:true } }, remotes=new Map(), net=null;
+    let padlocked=false, look_home=false, head_az=0, head_el=0, hud_rest=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false;
+    const notice=(m)=>notices.push(m), translate=(m)=>m, feed=()=>{}, explosion_at=()=>{};
+    ${lift('look_press')}
+    ${lift('look_target')}
+    ${lift('view_rest')}
+    ${lift('crash_ownship').replace(/ as any/g, '')}
     const frame=(dt)=>{ ${block} };
     const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };
     ${body}`)(THREE) as T
@@ -57,6 +76,18 @@ describe('the look-at-target key', () => {
   })
   it('lets go quietly when the view leaves the first-person views', () => {
     expect(pit('look_press(); frames(60); cfg.view="chase"; frames(1); return { padlocked, notices, home:look_home };')).toEqual({ padlocked: false, notices: [], home: true })
+  })
+  it('lets go quietly when the jet is destroyed: the bandit stands down, and no NO TARGET follows', () => {
+    const s = fireball<{ latched: boolean; padlocked: boolean; enemy: boolean; notices: string[]; az: number }>(
+      'look_press(); frames(60); const latched=padlocked; crash_ownship("missile","Bandit"); frames(180); return { latched, padlocked, enemy:has_enemy, notices, az:head_az };')
+    expect(s.latched).toBe(true)
+    expect(s.enemy).toBe(false)
+    expect(s.padlocked).toBe(false)
+    expect(s.notices).toEqual([])
+    expect(s.az).toBeCloseTo(Math.PI / 4, 3) // the head holds where it was looking; nothing eases it home over the fireball
+  })
+  it('ignores the look key over the fireball: no latch, no NO TARGET', () => {
+    expect(fireball('crash_ownship("missile","Bandit"); look_press(); frames(10); return { padlocked, notices };')).toEqual({ padlocked: false, notices: [] })
   })
   it('is worked by the key press, which a stick button replays and a replay still answers', () => {
     expect(source).toContain('if(ch===key_of("look.target")) look_press();')
