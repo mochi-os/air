@@ -47,9 +47,9 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   let MULTIPLAYER=false, has_enemy=true; const remotes=new Map();
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
-const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track')].join('')
+const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
-  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
+  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
     const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; helmet_frame(dt); } };
@@ -391,6 +391,38 @@ describe('the 9M\'s cues, for the HUD or the helmet', () => {
   })
   it('draw the staff beside the HUD\'s boresight', () => {
     expect(lift('draw_hud')).toContain('heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);')
+  })
+})
+
+describe('the AIM-120\'s field-of-view circle (the DCS guide, figure 154)', () => {
+  it('shows with the AIM-120 selected and no radar target to slave it to, or VISUAL chosen', () => {
+    expect(pit(`const r=[]; master='120c'; r.push(amraam_field()); RADAR.stt='bandit'; r.push(amraam_field()); RADAR.stt=null; RADAR.ls='bandit'; r.push(amraam_field());
+      amraam_visual=true; r.push(amraam_field()); master='9m'; r.push(amraam_field()); return r;`)).toEqual([true, false, false, true, false])
+  })
+  const circles = (body: string, call = 'draw_hmd(null,false,null,0,null,null)') => pit<number[][]>(`const dashed=[]; let dash=0;
+    const hctx=new Proxy({}, { get:(t,k)=>k==='arc'?(x,y,r)=>{ if(dash) dashed.push([x,y,r]); }:k==='setLineDash'?(d)=>{ dash=d.length; }:()=>{}, set:()=>true });
+    const hud_cluster=()=>{}; master='120c'; ${body} ${call}; return dashed.map(([x,y,r])=>[Math.round(x),Math.round(y),Math.round(r/(800/60)*10)/10]);`)
+  it('draws it dashed on the helmet about the boresight, 15° across, and keeps it through the HUD in BLNK', () => {
+    expect(circles('')).toEqual([[500, 400, 7.5]])
+    expect(circles('look(10);')[0][0]).toBeLessThan(500) // the nose 10° left of where the pilot looks
+    expect(circles('RADAR.stt="bandit";')).toEqual([])
+    expect(circles('', 'draw_hmd(null,true,null,0,null,null)')).toEqual([]) // nor in the landing configuration
+    expect(circles('const g={ corners:[[400,300],[600,300],[600,500],[400,500]] };', 'draw_hmd(g,false,null,0,null,null)')).toEqual([[500, 400, 7.5]])
+  })
+  it('leaves it to REJECT SETUP on the helmet (SP/AMR FOV)', () => {
+    expect(circles('hmd.levels["SP/AMR FOV"]=1; hmd.reject=1;')).toEqual([])
+    expect(circles('hmd.levels["SP/AMR FOV"]=1;')).toEqual([[500, 400, 7.5]])
+  })
+  it('draws it on the HUD too, dashed about the boresight', () => {
+    expect(lift('draw_hud')).toContain('if(amraam_field()){ const c=proj_dir(ownship.fwd);')
+    expect(lift('draw_hud')).toContain('hctx.arc(c[0],c[1],VISUAL/D2R*ppd,0,Math.PI*2);')
+  })
+  it('takes alone what lies inside it with a VISUAL shot, and nothing outside it', () => {
+    const shot = (az: number, visual: boolean) => pit<string | null>(`let aim='unset'; amraam_visual=${visual}; const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{};
+      ownship.amraam=2; RADAR.stt=${visual ? 'null' : '"bandit"'}; const launch_amraam=(st,target)=>{ aim=target&&target.name; return true; };
+      bandit.name='bandit'; bandit.pos.copy(at(${az},0,4000)); ${lift('trigger_amraam')}
+} trigger_amraam(); return aim;`)
+    expect([shot(5, true), shot(10, true), shot(20, false)]).toEqual(['bandit', null, 'bandit']) // a supported shot is the radar's, wherever it points
   })
 })
 
