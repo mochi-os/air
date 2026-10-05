@@ -111,6 +111,7 @@ export const UNITS: readonly Unit[] = [
   unit('hud', 'HUD', 'displays', 5, 25),
   unit('ifei', 'IFEI', 'displays', 4, 25),
   unit('dms', 'DMS', 'displays', 2, 30),
+  unit('hmd', 'HMD', 'displays', 11, 20), // the helmet's initiated BIT, at the HMD pushbutton; one not done in 30 s reads RESTRT (2.21.11.2, 2.21.11.3)
   unit('sdc', 'SDC', 'monitor', 5, 20),
   unit('mu', 'MU', 'monitor', 4, 20),
   unit('rwr', 'RWR', 'ew', 0, 0, { plain: true }),

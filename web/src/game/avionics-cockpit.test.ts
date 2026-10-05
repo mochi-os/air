@@ -12,6 +12,7 @@ import * as countermeasures from './countermeasures'
 import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
+import * as helmet from './helmet'
 
 // The cockpit's side of the mission computers and the BIT display (G4: #95, #90,
 // #96, #79): the MC switch, what each unit is found to be doing, the frame's
@@ -41,15 +42,16 @@ const world = `const NM=1852, D2R=Math.PI/180, DDI_ORDER=["left","right","center
   const radios={ tacan:{ on:true }, ils:{ on:true }, link:{ on:true }, beacon:{ on:true } }, knobs={ symbology:1 }, knob_level=(k)=>knobs[k], RADAR={ testing:false };
   const ddi_state={ left:{ page:"fcs", menu:"" }, right:{ page:"bit", menu:"" }, center:{ page:"hsi", menu:"" } }, hsi_state={ level:"", slew:false };
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:false, brake:true, power:true, radar:false, deck:false, tacan:null });`
-const defs = [menus + '\n', legends + '\n', line('mc_switch'), line('bit'), line('bit_state'), line('display_test'), line('ufc_test'), line('PATTERN_BARS')].join('')
+const defs = [menus + '\n', legends + '\n', line('mc_switch'), line('bit'), line('bit_state'), line('display_test'), line('ufc_test'), line('hmd'), line('PATTERN_BARS')].join('')
 const functions = ['fcs_jams', 'mc', 'pattern_start', 'pattern_stop', 'equipment', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
-  return new Function('navigate', 'avionics', 'THREE', 'countermeasures', 'communication', 'identification', 'mids', `${world} ${defs} ${functions}
+  return new Function('navigate', 'avionics', 'THREE', 'countermeasures', 'communication', 'identification', 'mids', 'helmet', `${world} ${defs} ${functions}
+    const helmet_frame=()=>{};   // the helmet's own frame is helmet-cockpit.test.ts's
     const text=[], rects=[], lines=[], arcs=[], fills=[]; let at=[0,0], font="";
     const x=new Proxy({}, { get:(t,k)=>k==="fillText"?(s,px,py)=>text.push([String(s),px,py,font]):k==="strokeRect"?(a,b,c,d)=>rects.push([a,b,c,d]):k==="fillRect"?(a,b,c,d)=>fills.push([a,b,c,d]):k==="arc"?(ax,ay,r)=>arcs.push([ax,ay,r])
       :k==="moveTo"?(px,py)=>{ at=[px,py]; }:k==="lineTo"?(px,py)=>{ lines.push([at[0],at[1],px,py]); at=[px,py]; }:k==="measureText"?(s)=>({ width:10*String(s).length }):()=>{}, set:(t,k,v)=>{ if(k==="font") font=v; return true; } });
     const drawn=()=>({ text:text.map(([s,px,py])=>[s,px,py]), rects, lines, arcs, fills });
-    ${body}`)(navigate, avionics, THREE, countermeasures, communication, identification, mids) as T
+    ${body}`)(navigate, avionics, THREE, countermeasures, communication, identification, mids, helmet) as T
 }
 interface Drawn { text: [string, number, number][]; rects: number[][]; lines: number[][]; arcs: number[][]; fills: number[][] }
 const at = (d: Drawn, s: string) => d.text.find((t) => t[0] === s)?.slice(1)
@@ -269,7 +271,7 @@ describe('what the mission computers take with them', () => {
   it('leaves the g limiter to the paddle switch alone, and holds the missiles on their rails without MC2', () => {
     expect(source).toMatch(/override:keys\.has\(key_of\("override"\)\)&&!\(DEV_MODE&&on_ground\(\)\),/) // without MC1 the limit goes to a fixed 7.5 g, not past it (25.1)
     const fire = (two: boolean, master: string) => new Function(`let fired=""; const mc=()=>({ one:true, two:${two} }), master=${JSON.stringify(master)}, trigger_amraam=()=>{ fired="amraam"; }, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false, arms={ arm:true }, notice=()=>{}, translate=(s)=>s;
-      const launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ${lift('trigger_missile')}
+      const launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}, seeker_now={ slaved:false, quarry:null }; ${lift('trigger_missile')}
 } trigger_missile(); return fired;`)() as string // the lift stops at the function's own closing brace, which stands alone
     expect([fire(true, '120c'), fire(true, '9m'), fire(false, '120c'), fire(false, '9m')]).toEqual(['amraam', 'sidewinder', '', ''])
   })

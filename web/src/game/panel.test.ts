@@ -299,7 +299,7 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
     expect(s.symbology()).toBe(0)
     s.press('knob.symbology', 1); s.buses = { ac: false, essential: true }
     expect(s.symbology()).toBe(0)
-    expect(source.match(/hctx\.globalAlpha=sym;/g)?.length).toBe(3) // the velocity vector's block, the A/A symbology and the cluster
+    expect(source.match(/hctx\.globalAlpha=sym;/g)?.length).toBe(4) // the velocity vector's block, the A/A symbology, the cluster and the helmet's crosses on the HUD
   })
 
   it('dim the AoA indexer from its knob, dark without ac power (2.13.4.8.7)', () => {

@@ -87,7 +87,8 @@ describe('equipment status', () => {
   it('puts each group at its pushbutton, and the game\'s units in their groups', () => {
     expect(A.GROUPS.map((g) => [g.label, g.button])).toEqual([['FCS-MC', 5], ['SENSORS', 4], ['STORES', 3], ['COMM', 2], ['NAV', 1], ['DISPLAYS', 11], ['STATUS MONITOR', 12], ['EW', 13]])
     expect(A.within('fcs').map((u) => u.label)).toEqual(['MC1', 'MC2', 'FCSA', 'FCSB']); expect(A.within('nav').map((u) => u.label)).toEqual(['INS', 'ADC', 'ILS', 'BCN', 'RALT', 'TCN', 'GPS'])
-    expect(A.within('displays').map((u) => u.label)).toEqual(['LDDI', 'RDDI', 'MPCD', 'HUD', 'IFEI', 'DMS']); expect(A.within('comm').map((u) => [u.label, u.button])).toEqual([['CSC', 5], ['ICS', 4], ['IFF', 3], ['D/L', 2], ['COM1', 11], ['COM2', 12], ['L16', 15]]) // figure 2-46's COMM sublevel, MIDS at its pushbutton
+    expect(A.within('displays').map((u) => u.label)).toEqual(['LDDI', 'RDDI', 'MPCD', 'HUD', 'IFEI', 'DMS', 'HMD']); expect(A.within('displays').find((u) => u.key === 'hmd')?.button).toBe(11) // the helmet's IBIT at its pushbutton (2.21.11.2)
+     expect(A.within('comm').map((u) => [u.label, u.button])).toEqual([['CSC', 5], ['ICS', 4], ['IFF', 3], ['D/L', 2], ['COM1', 11], ['COM2', 12], ['L16', 15]]) // figure 2-46's COMM sublevel, MIDS at its pushbutton
   })
 })
 

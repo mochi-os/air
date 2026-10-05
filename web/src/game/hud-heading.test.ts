@@ -13,11 +13,14 @@ import * as navigate from './navigation'
 // so the line that places it is read as text and evaluated per master.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const line = /const hty=[^\n]*;/.exec(source)?.[0] ?? ''
+// hud_tape places it, and the reject switch's rule (keep) gates it on the HUD
+const tape = /\nfunction hud_tape\([^\n]*\n/.exec(source)?.[0] ?? ''
+const support = `const keep=(symbol,level)=>rej<level; ${tape}`
 
 // The scale's y for the master (through the aa gate) in the given frame.
 function hty(aa: boolean, glass: boolean): number {
   if (!line) throw new Error('heading scale placement not found in engine.ts')
-  const run = new Function('aa', 'glass', `const cy=400, ppdv=20, HH=900; ${line} return hty;`) as (aa: boolean, glass: boolean) => number
+  const run = new Function('aa', 'glass', `const cy=400, ppdv=20, HH=900, worn=null; ${tape} ${line} return hty;`) as (aa: boolean, glass: boolean) => number
   return run(aa, glass)
 }
 
@@ -38,7 +41,7 @@ describe('the heading scale', () => {
 
   it('drops the bank scale in the A/A masters on its own rule', () => {
     expect(source).toMatch(/bank angle scale[^\n]*not drawn in the A\/A masters/)
-    expect(source).toMatch(/\n\tif\(!declutter&&!aa\)\{ const pivotY=/)
+    expect(source).toMatch(/\n\tif\(!rej&&!aa&&!limited\)\{ const pivotY=/) // and on the helmet too, which 2.21.13.3 does not exclude, outside a mission computer's backup set
     expect(source).not.toMatch(/relocated heading scale/)
   })
 })
@@ -63,7 +66,7 @@ describe('the heading scale face', () => {
       return () => {}
     }, set: () => true })
     const radians = heading * Math.PI / 180
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'nav', 'hud_steer', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${section}`)(
+    new Function('hctx', 'screen', 'glass', 'rej', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'nav', 'hud_steer', `const limited=false, worn=null, hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${support} ${section}`)(
       hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: Math.sin(radians), z: -Math.cos(radians) } }, false, 'nav', { magnetic, variation: 7 * Math.PI / 180 }, () => null)
     return { text, segments, fills }
   }
@@ -121,7 +124,7 @@ describe('the heading marker and bank scale as figure 2-26 draws them', () => {
   const scale = (steer: { bearing: number; target?: boolean } | null, track = 0, master = 'nav') => {
     const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
     const c = record()
-    new Function('hctx', 'screen', 'glass', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'hud_steer', 'THREE', 'navigate', 'nav', 'D2R', 'const link={ selected:false, five:null, six:null }, hold={ modes:{ coupled:false }, source:"track" }; ' + source.slice(start, end))(
+    new Function('hctx', 'screen', 'glass', 'rej', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'carrier_ols', 'master', 'hud_steer', 'THREE', 'navigate', 'nav', 'D2R', 'const limited=false, worn=null, link={ selected:false, five:null, six:null }, hold={ modes:{ coupled:false }, source:"track" }; ' + support + source.slice(start, end))(
       c.hctx, {}, null, 0, false, cx, 360, 16, 'g', { fwd: { x: 0, z: -1 }, pos: { x: 0, z: 0 }, gauges: { heading: 0, track: track * D2R } }, true, master, () => steer, THREE, navigate, { magnetic: false, variation: 0 }, D2R)
     return c
   }
@@ -158,13 +161,18 @@ describe('the heading marker and bank scale as figure 2-26 draws them', () => {
     expect(scale({ bearing: 4 * D2R }, 0, '9m').paths.filter(path => path.width === 3)).toEqual([])
   })
 
-  const bank = (degrees: number) => {
+  const bank = (degrees: number, limited = false) => {
     const start = source.indexOf('\t// ---- bank angle scale (bottom)'), end = source.indexOf('\t// ---- data blocks', start)
     const c = record(), radians = degrees * D2R
-    new Function('hctx', 'declutter', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'sim_time', 'THREE', 'D2R', source.slice(start, end))(
+    new Function('hctx', 'rej', 'aa', 'cx', 'cy', 'ppdv', 'GR', 'ownship', 'sim_time', 'THREE', 'D2R', `const limited=${limited}; ` + source.slice(start, end))(
       c.hctx, 0, false, cx, 360, 16, 'g', { right: { y: -Math.sin(radians) }, up: { y: Math.cos(radians) } }, 0, THREE, D2R)
     return c
   }
+
+  it('is drawn wherever the HUD layout is, the helmet included, but not in a mission computer\'s backup set there (2.21.13.3, 2.21.15)', () => {
+    expect(bank(0).paths.length).toBeGreaterThan(0)
+    expect(bank(0, true).paths).toEqual([])
+  })
 
   it('draws the 5° ticks short and the centre, 15°, 30° and 45° ticks long', () => {
     const ticks = bank(0).paths.filter(path => path.points.length === 2)

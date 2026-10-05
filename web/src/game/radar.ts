@@ -56,7 +56,7 @@ const MEMORY = 4 // s — how long a track survives on memory before the lock dr
 const BASE = 55 * NM // beam-aspect detection range against the game's one fighter: 44 nm nose-on, so a head-on bandit paints before the AIM-120's ~38 nm head-on reach, within the APG-65/73's published 40-50 nm against a fighter
 const BRICK_AGE = 12 // seconds an RWS paint stays on the format
 const TRACK_AGE = 8 // seconds a TWS trackfile survives without a fresh paint
-const GIMBAL = 1.222 // STT gimbal limit off the nose, rad (±70°)
+export const GIMBAL = 1.222 // STT gimbal limit off the nose, rad (±70°)
 const HOLD = 1.15 // STT holds a lock out to this multiple of detection range
 
 export const WIDTHS = [1.222, 0.785, 0.349] // selectable azimuth half-widths: ±70°, ±45°, ±20°
@@ -188,7 +188,7 @@ export class Radar {
   tracks: Track[] = []
   ls: number | string | null = null // launch & steering trackfile (TWS)
   stt: number | string | null = null // the hard lock
-  acm: 'bst' | 'vacq' | 'wacq' = 'bst' // armed ACM condition, used by the acquire flow
+  acm: 'bst' | 'vacq' | 'hacq' | 'lacq' | 'wacq' = 'bst' // armed ACM condition, used by the acquire flow; HACQ in VACQ's place while the helmet slaves the radar, and HACQ or LACQ from BST (helmet.ts)
   auto = false // the ACM condition is commanded: the radar runs the cone itself and locks the first target in it, until deselected
   memory = 0 // seconds the STT has coasted without real data (0 = tracking); MEM shows past zero
   strobes: number[] = [] // azimuths of jamming emitters this step (#31): bearing-only spokes, range unknown

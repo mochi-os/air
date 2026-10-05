@@ -122,7 +122,7 @@ describe('the ATC advisory', () => {
   const press = /\n\tcase "atc":[^\n]*\n[^\n]*break;[^\n]*\n/.exec(source)?.[0] ?? ''
   const drop = /\n\tif\(atc_on\)\{[^\n]*\n[\s\S]*?\n\t\}\n/.exec(source)?.[0] ?? ''
   const engage = /\nconst TEF_FULL=[^\n]*\n(?:[^\n]*\n)*?function atc_engage\(\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
-  const draw = /\n\thctx\.font="13px 'Hornet Display', monospace"; hctx\.textAlign="left"; hctx\.fillStyle=GR;\n\tif\(atc_on[^\n]*\n/.exec(source)?.[0] ?? ''
+  const draw = /\n\thctx\.font="13px 'Hornet Display', monospace"; hctx\.textAlign="left"; hctx\.fillStyle=GR;\n\tif\(limited\)\{\}\n\telse if\(atc_on[^\n]*\n/.exec(source)?.[0] ?? '' // limited: a mission computer's backup set on the helmet, which has no ATC
 
   // The engage: the FLAP switch (flap_select: 0 AUTO, 1 HALF, 2 FULL) and the trailing-edge flaps' travel, degrees of the
   // flight core's angle: 26 at FULL where the jet has 45, 17.3 at HALF where it has 30.
@@ -203,7 +203,7 @@ describe('the ATC advisory', () => {
     let style = ''
     const hctx = new Proxy({}, { get: (_, k) => k === 'fillText' ? (text: string, x: number, y: number) => drawn.push({ text, x, y, style }) : () => {},
       set: (_, k, v) => { if (k === 'fillStyle') style = v; return true } })
-    new Function('hctx', 'atc_on', 'atc_flash', 'sim_time', 'GR', 'lx', 'cy', 'ppdv', draw)(hctx, on, flash, time, 'green', 700, 400, 16)
+    new Function('hctx', 'atc_on', 'atc_flash', 'sim_time', 'GR', 'lx', 'cy', 'ppdv', 'const limited=false; ' + draw)(hctx, on, flash, time, 'green', 700, 400, 16)
     return drawn
   }
 

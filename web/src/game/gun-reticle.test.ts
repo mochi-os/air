@@ -91,7 +91,7 @@ describe('the gun director reticle', () => {
 function readouts(world: { master?: string; boxed?: boolean; declutter?: number; rng: number; vc: number }): [string, number, number][] {
   if (!data) throw new Error('target ranging data block not found in engine.ts')
   const run = new Function('w', `const text=[]; const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y]); } };
-    const master=w.master??'gun', aa=master!=='nav', boxed=w.boxed===false?null:{}, declutter=w.declutter||0, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
+    const master=w.master??'gun', aa=master!=='nav', boxed=w.boxed===false?null:{}, rej=w.declutter||0, limited=false, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
     ${data}
     return text;`) as (w: object) => [string, number, number][]
   return run(world)
@@ -179,7 +179,7 @@ describe('the selected weapon block', () => {
 // flashed when the L&S target range is within Rmin", VRS AIM-7 documentation).
 describe('the breakaway X', () => {
   const helpers = ['breakaway_shown', 'breakaway'].map((name) => new RegExp(`\\nfunction ${name}\\([^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
-  const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)\)\{[^\n]*?\}/.exec(source)?.[0] ?? ''
+  const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)&&!limited\)\{[^\n]*?\}/.exec(source)?.[0] ?? '' // limited: a mission computer's backup set on the helmet, which has none
   const rdr = /\n\t(if\(breakaway_shown\(\)\)\{ x\.strokeStyle=[^}]*\})/.exec(source)?.[1] ?? ''
   const draw = (code: string, cue: string, time = 0) => {
     const segments: number[][] = [], state: Record<string, unknown> = {}
@@ -190,7 +190,7 @@ describe('the breakaway X', () => {
       if (k === 'setLineDash') return (d: number[]) => { s.dash = d.length }
       return k in s ? s[k as string] : () => {}
     }, set: (s, k, v) => { s[k as string] = v; return true } })
-    new Function('hctx', 'x', 'hud_cue', 'sim_time', 'cx', 'cy', 'ppdv', 'GR', 'AM', `${helpers} ${code}`)(canvas, canvas, cue, time, 640, 360, 20, 'g', 'a')
+    new Function('hctx', 'x', 'hud_cue', 'sim_time', 'cx', 'cy', 'ppdv', 'GR', 'AM', `const limited=false; ${helpers} ${code}`)(canvas, canvas, cue, time, 640, 360, 20, 'g', 'a')
     return { segments, state }
   }
 
@@ -228,7 +228,7 @@ describe('the breakaway X', () => {
 
   it('takes the cue from every weapon: the AMRAAM zone draws first, the 9M and the closure breakaway before the cluster', () => {
     const x = source.indexOf('\t// ---- the breakaway X')
-    expect(source.indexOf('\tif(master==="120c"&&declutter<2) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);')).toBeLessThan(x)
+    expect(source.indexOf('\tif(master==="120c"&&rej<2&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);')).toBeLessThan(x)
     const cluster = source.indexOf('\t// ---- instrument furniture (#133)')
     expect(source.indexOf('\tif(brk) hud_cue="break";')).toBeLessThan(cluster)
     expect(source.indexOf('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");')).toBeLessThan(cluster)

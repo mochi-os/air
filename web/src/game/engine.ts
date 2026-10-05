@@ -51,7 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT } from './radar'
+import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
@@ -84,6 +84,7 @@ import * as countermeasures from './countermeasures'
 import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
+import * as helmet from './helmet'
 import * as faces from './faces'
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
@@ -1354,6 +1355,7 @@ const PIT_SPOTS=[
 	{ action:"display.right.mode", at:[6.163,0.469,0.208] }, { action:"display.right.brt", at:[6.163,0.288,0.125] },
 	{ action:"display.center.brt", at:[6.163,0.211,0] }, { action:"display.center.mode", at:[6.163,0.205,-0.08] },
 	{ action:"knob.ifei", at:[6.211,0.049,-0.305] }, { action:"clock", at:[6.231,-0.069,0.077] }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
+	{ action:"knob.hmd", at:[6.195,0.315,0.361] },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
 	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
 	{ action:"canopy.jettison", at:[6.05,0.175,-0.313] },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
 	{ action:"canopy.crank", at:[5.46,0.28,-0.377] },   // the canopy hand crank under the left sill (2.15.1.1.3, FO-5 sheet 2 item 19), where the model draws only the wall
@@ -2322,12 +2324,13 @@ let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence 
 // DDI_MENUS: [pushbutton, legend, page] where figure 2-22's F/A-18C/D formats put
 // them, the game's own pages only - an option for equipment the jet does not carry
 // is left off, as the real format leaves it off (TAC's sensor, weapon and RECCE
-// displays; SUPT's HMD). GPS calls up the HSI's GPS point data display (figure 24-8).
+// displays). SUPT's HMD is the helmet's format (2.21.12, after AFC 400). GPS calls up
+// the HSI's GPS point data display (figure 24-8).
 // NETS and MIDS stand at pushbuttons 4 and 6 in a jet with MIDS, as this one is: NATOPS
 // leaves their displays to the NATIP, which we do not hold, so they are left off too.
 const DDI_MENUS={
 	tac:[ [5,"STORES","sms"],[4,"RDR ATTK","rdr"],[3,"HUD","hud"],[13,"SA","sa"],[17,"EW","ew"] ],
-	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[5,"GPS","gps"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"],[16,"UFC BU","backup"],[10,"MUMI","mumi"],[8,"BIT","bit"] ] };
+	supt:[ [2,"HSI","hsi"],[1,"ADI","adi"],[3,"HMD","hmd"],[5,"GPS","gps"],[11,"CHKLST","chklst"],[12,"ENG","eng"],[15,"FCS","fcs"],[20,"FUEL","fuel"],[19,"FPAS","fpas"],[16,"UFC BU","backup"],[10,"MUMI","mumi"],[8,"BIT","bit"] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -2351,7 +2354,7 @@ function ddi_press(display,pb){   // true when the press did something (consumes
 	const st=ddi_state[display]; if(!st||!pb) return false;
 	const m=mc(); if(avionics.standby(m)) return false;   // neither mission computer: nothing to press (2.13.4.2.1)
 	if(display_test.on){ if(pb===5) pattern_stop(); else if(!display_test.pressed[display].includes(pb)) display_test.pressed[display].push(pb); ddi_dirty=true; return true; }   // the displays' test pattern: a circle by each button pressed, STOP to end it (2.20.3.10.1)
-	if(pb===18&&(st.menu||st.page!=="grid")){ st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus; the grid display has its S shift there instead
+	if(pb===18&&(st.menu||st.page!=="grid")){ if(!st.menu&&st.page==="hmd"){ helmet.exit(hmd); hmd.setup=false; } st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus; the grid display has its S shift there instead. Off the HMD format it ends an alignment (2.21.12.3)
 	if(st.menu){ const row=DDI_MENUS[st.menu].find(r=>r[0]===pb&&avionics.offered(st.menu,r[2],m));
 		if(row&&row[2]==="gps"){ ddi_show(display,"hsi"); hsi_state.level="data"; hsi_state.check=false; if(hsi_state.data!=="gps") data_press(3,display); }   // GPS: the HSI, on its GPS point data display (figure 24-8, #83)
 		else if(row&&row[2]){ ddi_show(display,row[2]); } return !!(row&&row[2]); }   // menu picks record into the master mode's set (#15)
@@ -2375,7 +2378,7 @@ function ddi_render(x,size,display){   // size-agnostic: draws the display's cur
 	else if(display===caution_page()) caution_display(x,display);   // the dedicated caution display in the HSI's place
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
 	if(display===(caution_page()||caution_host())) cautions_draw(x);
-	if(display===designator) diamond(x);
+	if(display===designator&&!hmd.priority) diamond(x);   // with the TDC at the HMD no display has it (2.21.14.1)
 	if(st.menu||st.page!=="grid") ddi_legend(x,18,"MENU",true,!!st.menu); }
 // diamond: the TDC assignment diamond in the upper right corner of the display that has the TDC,
 // a dot at its centre
@@ -2399,6 +2402,12 @@ const bit=avionics.fresh();
 const bit_state={ level:"", select:false, post:1, page:0 };
 const display_test={ on:false, at:-Infinity, pressed:{ left:[], right:[], center:[] } };
 const ufc_test={ at:-Infinity };
+// The helmet (helmet.ts, NATOPS 2.21, #103, #82). hmd: the JHMCS, as reset_ownship hands it over - an air
+// start's powered, warmed and aligned, a deck or runway start's off and never aligned. hmd_was: what the last
+// frame left of the things whose change ends an alignment (2.21.12.3), and whether the helmet was in IBIT.
+const hmd=helmet.fresh(true,{ azimuth:0, elevation:0, roll:0 },0);
+const hmd_was={ master:"", acm:false, designator:"", testing:false };
+let castle=null;   // when the sensor switch went forward from BST into HACQ, while it stays held: 800 ms on, LACQ (the DCS guide)
 // ---- The autopilot and the data link's carrier landing mode (NATOPS 2.9, 24.6.1; #100, #101) ----
 // hold: the autopilot's modes and references (autopilot.ts). link: the Link 4 ACL mode with the carrier's
 // side of it (datalink.ts). coupled: what CPL last coupled to, as the HUD and HSI word it.
@@ -2460,13 +2469,14 @@ function equipment(){ const m=mc(), core=last_out, hurt=(core&&fcs_jams(core)>0)
 	const gps=!nav.gps.on?"off":nav.gps.search>0?"wait":navigate.cautions(nav).includes("GPS DEGD")?"degraded":"ok";
 	return { mc1:m.one?"ok":"off", mc2:m.two?"ok":"off", fcsa:hurt?"degraded":"ok", fcsb:hurt?"degraded":"ok", rdr:"ok", sms:ownship.torn?"degraded":"ok", wpns:"ok",
 		ins, adc:"ok", ils:radios.ils.on?"ok":"off", bcn:radios.beacon.on?"ok":"off", dl:radios.link.on?"ok":"off", ralt:radalt_on?"ok":"off", tcn:radios.tacan.on?"ok":"off", gps,
-		lddi:lit("left"), rddi:lit("right"), mpcd:lit("center"), hud:knob_level("symbology")>0?"ok":"off", ifei:"ok", dms:"ok", sdc:"ok", mu:"ok", rwr:suite.receiver.power?"ok":"off", ale:suite.dispenser==="off"?"off":"ok", aspj:suite.jammer==="off"?"off":"ok",
+		lddi:lit("left"), rddi:lit("right"), mpcd:lit("center"), hud:knob_level("symbology")>0?"ok":"off", ifei:"ok", dms:"ok", hmd:!hmd.on?"off":helmet.starting(hmd)?"wait":"ok", sdc:"ok", mu:"ok", rwr:suite.receiver.power?"ok":"off", ale:suite.dispenser==="off"?"off":"ok", aspj:suite.jammer==="off"?"off":"ok",
 		csc:"ok", ics:"ok", iff:squawk.on?"ok":"off", com1:uhf.one.on?"ok":"off", com2:uhf.two.on?"ok":"off", l16:terminal.on?"ok":"off" }; }
 const ASPJ_TEST=avionics.UNITS.find(u=>u.key==="aspj").seconds;   // how long the jammer's test runs, at the ECM knob's BIT as from the BIT display
 // avionics_frame steps the tests and the BIT advisory, keeps the radar quiet while it is in test,
 // and takes a display off a page its mission computer no longer drives, to the menu.
 function avionics_frame(dt){ const before=Object.keys(bit.tests).join()+JSON.stringify(bit.results)+bit.advisory, m=mc();
 	avionics.step(bit,equipment(),dt,DDI_ORDER.some(d=>!ddi_state[d].menu&&ddi_state[d].page==="bit"));
+	helmet_frame(dt);
 	identification.step(squawk,buses.essential,(ownship.gearTarget??0)>0.5);   // the mode 4 codes, held or lost with the CRYPTO switch and the power (23.6.2.2.2)
 	RADAR.testing=avionics.testing(bit,"rdr");
 	if(ufc_test.at>-Infinity){ ufc_dirty=true; if(sim_time-ufc_test.at>=10) ufc_test.at=-Infinity; }   // the UFC's test runs its two five-second periods
@@ -2474,6 +2484,54 @@ function avionics_frame(dt){ const before=Object.keys(bit.tests).join()+JSON.str
 	for(const d of DDI_ORDER){ const st=ddi_state[d], menu=["tac","supt"].find(k=>DDI_MENUS[k].some(r=>r[2]===st.page));
 		if(!st.menu&&menu&&!avionics.offered(menu,st.page,m)){ st.menu="tac"; ddi_dirty=true; } }
 	if(before!==Object.keys(bit.tests).join()+JSON.stringify(bit.results)+bit.advisory) ddi_dirty=true; }
+// helmet_frame runs the JHMCS (helmet.ts): power from its OFF/BRT knob and the ac buses; an alignment ended
+// by a master mode change - an A/A weapon selected among them - ACM selected or the TDC given to another
+// display (2.21.12.3); in coarse alignment the cage/uncage switch held in a first-person view, with the HUD's
+// cross where the pilot's true line of sight finds it and the canopy down and locked; the test patterns once
+// its IBIT passes (2.21.11.2); the TDC back from the HMD out of NAV; HACQ held past 800 ms on the sensor
+// switch turning to LACQ (the DCS guide); and the helmet acquisition modes back to VACQ when the helmet can no
+// longer slave the radar (2.21.17).
+function helmet_frame(dt){ const before=hmd.mode+hmd.axis+hmd.coarse+hmd.on+helmet.ready(hmd)+hmd.failed;
+	helmet.step(hmd,buses.ac&&knob_level("hmd")>0,dt);
+	if(hmd.mode&&(master!==hmd_was.master||(RADAR.auto&&!hmd_was.acm)||designator!==hmd_was.designator)) helmet.exit(hmd);
+	if(master!=="nav") hmd.priority=false;
+	const first=cfg.view==="hud"||cfg.view==="cockpit";
+	helmet.hold(hmd,first&&keys.has(key_of("uncage")),dt,hmd_cross(),(ownship.canopy??0)<0.02&&!canopy_gone);
+	const testing=avionics.testing(bit,"hmd");
+	if(hmd_was.testing&&!testing&&bit.results.hmd==="go") hmd.patterns=hmd.time;
+	if(castle!=null&&!keys.has(key_of("sensor.forward"))) castle=null;
+	else if(castle!=null&&sim_time-castle>=0.8){ castle=null; if(RADAR.auto&&RADAR.acm==="hacq") RADAR.acm="lacq"; }
+	if((RADAR.acm==="hacq"||RADAR.acm==="lacq")&&!helmet.slaving(hmd,mc())) RADAR.acm="vacq";
+	Object.assign(hmd_was,{ master, acm:RADAR.auto, designator, testing });
+	if(before!==hmd.mode+hmd.axis+hmd.coarse+hmd.on+helmet.ready(hmd)+hmd.failed) ddi_dirty=true; }
+// hmd_cross: where the HUD's alignment cross, on the jet's boresight, lies from the helmet's own, which crosses
+// helmet.RAISED above the pilot's true line of sight - the camera's in the first-person views - in radians,
+// azimuth + right and elevation + up (figure 2-56).
+const _hmd_q=new THREE.Quaternion(), _hmd_v=new THREE.Vector3();
+function hmd_cross(){ const c=_hmd_v.copy(ownship.fwd).applyQuaternion(_hmd_q.copy(camera.quaternion).invert());
+	return { azimuth:Math.atan2(c.x,-c.z), elevation:Math.atan2(c.y,Math.hypot(c.x,c.z))-helmet.RAISED }; }
+// hmd_line: the line of sight the helmet reports, a world unit vector: the pilot's true one, the camera's in
+// the first-person views, turned by the error its alignment left (helmet.offset).
+function hmd_line(){ const e=helmet.offset(hmd), ce=Math.cos(e.elevation);
+	return new THREE.Vector3(Math.sin(e.azimuth)*ce,Math.sin(e.elevation),-Math.cos(e.azimuth)*ce).applyQuaternion(camera.quaternion); }
+// hmd_at: where the helmet draws a world direction, on the screen: it draws for where it believes it looks,
+// so the direction is turned back by the error it reports its line of sight with - azimuth, elevation and
+// roll about the eye - before the eye's projection places it. Null behind the eye.
+const _hmd_e=new THREE.Euler(0,0,0,"YXZ"), _hmd_r=new THREE.Quaternion();
+function hmd_at(d){ const e=helmet.offset(hmd);
+	_hmd_r.setFromEuler(_hmd_e.set(e.elevation,-e.azimuth,-e.roll,"YXZ")).invert();
+	return proj_dir(_hmd_v.copy(d).applyQuaternion(_hmd_q.copy(camera.quaternion).invert()).applyQuaternion(_hmd_r).applyQuaternion(camera.quaternion)); }
+// hmd_blanked: BLNK boxed, and the helmet looking through the HUD's field - the glass in cockpit view, the HUD
+// view's own 25° - so the HUD's symbology is not drawn twice. Never while aligning, when its crosses must show
+// over the HUD's.
+function hmd_blanked(glass){ if(!hmd.blank||hmd.mode) return false;
+	if(cfg.view==="cockpit") return !!glass&&pip(HW/2,HH/2,glass.corners);
+	return Math.hypot(head_az,head_el)<0.44; }
+// hmd_seeker: the helmet carries the AIM-9's field-of-view symbol, as it does while it works and its
+// mission computer gives it the AIM-9's line of sight (2.21.15), blanked through the HUD or not - the HUD then
+// draws none (2.21.16, 2.21.17).
+function hmd_seeker(){ const set=helmet.backup(mc());
+	return helmet.ready(hmd)&&(set==="full"||set==="two")&&(cfg.view==="hud"||cfg.view==="cockpit"); }
 // The displays' test pattern (2.20.3.10.1, figure 2-48, aircraft 163985 and up): the display blank
 // for a moment, IN TEST flashing, then the pattern - the circle, the cross, TEST over its V, the
 // centre square, the bars over their figures and the raster grey scale - with STOP at its
@@ -2506,9 +2564,9 @@ function pattern_draw(x,display){ const t=sim_time-display_test.at;
 // configuration display: the country code and the mission computers' OFP, the only idents the game
 // has (2.20.6.1, figure 2-49).
 const BIT_LEGENDS={ fcs:{ 5:["FCS"] }, sensors:{ 5:["RDR"] }, stores:{ 5:["SMS"] }, comm:{ 5:["CSC"], 4:["ICS"], 3:["IFF"], 2:["D/L"], 11:["COM1"], 12:["COM2"], 15:["MIDS"] }, nav:{ 5:["INS"], 4:["ADC"], 3:["ILS"], 2:["RALT"], 1:["TCN"], 13:["GPS"] },
-	displays:{ 5:["DDI","MPCD","HUD"], 4:["IFEI"], 2:["DMS"] }, monitor:{ 5:["SDC"], 4:["MU"] }, ew:{ 3:["ALE-47"] } };
+	displays:{ 5:["DDI","MPCD","HUD"], 4:["IFEI"], 2:["DMS"], 11:["HMD"] }, monitor:{ 5:["SDC"], 4:["MU"] }, ew:{ 3:["ALE-47"] } };
 function bit_press(pb){ const level=bit_state.level, conditions=equipment(), grounded=!!ownship.grounded, consent={ grounded, consent:false, test:nav.ins.knob==="test" };
-	if(pb===10){ avionics.stop(bit); ufc_test.at=-Infinity; return true; }   // STOP: every test in progress ends (2.20.3.10.3)
+	if(pb===10){ avionics.stop(bit); ufc_test.at=-Infinity; hmd.patterns=-1; return true; }   // STOP: every test in progress ends (2.20.3.10.3), and the HMD's test patterns (2.21.11.2)
 	if(level==="config"||level==="ins"){ if(pb===8){ bit_state.level=""; return true; }
 		if(level==="ins"&&pb===13){ bit_state.post=bit_state.post===1?2:1; return true; }
 		return false; }
@@ -2566,6 +2624,27 @@ function ddi_bit(x){ const level=bit_state.level, conditions=equipment(), ground
 	if(level==="displays") ddi_legend(x,3,"UFC",true,sim_time-ufc_test.at<10);
 	if(level==="nav"){ if(bit.asking){ ddi_legend(x,20,"GND",true,false); ddi_legend(x,16,"CV",true,false); }
 		else if(grounded){ x.textAlign="center"; x.font="20px monospace"; x.fillText("INS",176,460); x.font="18px monospace"; ddi_legend(x,19,"MAINT",true,false); } } }
+// The HMD format (#82, NATOPS 2.21.12, figures 2-56 and 2-57): its options at their pushbuttons - the
+// reject level at 7, BRT at 11, BLNK at 12, REJECT SETUP over 19, ALIGN at 20, and FINE at 1 once a
+// coarse alignment is valid (helmet.ts) - and nothing in the middle, as the figures draw it. REJECT SETUP's
+// sublevel (the DCS guide) lists the helmet's symbols in two columns, each with the reject level it leaves
+// at - ON, 1 or 2 - the selected one boxed, with its arrows, ON, 1 and 2 under LEVEL, and RETURN.
+function ddi_hmd(x){ x.fillStyle="#39e07a"; x.strokeStyle="#39e07a"; x.lineWidth=2;
+	for(const [pb,text,boxed] of helmet.legends(hmd)){
+		if(pb!==19||hmd.setup){ ddi_legend(x,pb,text,true,boxed); continue; }
+		x.save(); x.font="20px monospace"; x.textAlign="center"; x.textBaseline="middle"; x.fillText("REJECT",176,462); x.fillText("SETUP",176,482); x.restore(); }   // two lines over its pushbutton, as figure 2-56 stacks it beside ALIGN
+	if(!hmd.setup) return;
+	x.save(); x.font="15px monospace"; x.textBaseline="middle";
+	x.textAlign="center"; [..."LEVEL"].forEach((letter,k)=>x.fillText(letter,36,344+k*15));
+	helmet.SETUP.forEach((list,column)=>list.forEach((entry,row)=>{ if(!entry) return;
+		const left=column?250:56, right=column?470:226, y=112+row*18;
+		x.textAlign="left"; x.fillText(entry[0],left,y);
+		x.textAlign="right"; x.fillText(["ON","1","2"][hmd.levels[entry[0]]],right,y);
+		if(hmd.cursor[0]===column&&hmd.cursor[1]===row) x.strokeRect(left-4,y-10,right-left+8,20); }));
+	x.restore(); }
+// hmd_press: the format's pushbuttons. ALIGN, with the helmet working, also gives the cage/uncage switch
+// and the TDC to the alignment (2.21.12).
+function hmd_press(pb){ return helmet.press(hmd,pb); }
 // The caution and advisory area (#5, #89, NATOPS 2.20.3.2.1, figure 2-45): the slots cautions.ts
 // keeps, drawn over whatever the display shows. The cautions run from the lower left, three
 // across, a line up per three, at 150 % of the pages' 18 px text: 27 px, three ten-letter
@@ -2667,7 +2746,7 @@ function adi_press(pb){ if(pb===20) adi_source="ins"; else if(pb===16) adi_sourc
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi,press:adi_press}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas,press:fpas_press}, mumi:{draw:ddi_mumi,press:mumi_press}, backup:{draw:ddi_backup,press:backup_press}, grid:{draw:ddi_grid,press:grid_press}, bit:{draw:ddi_bit,press:bit_press},
-	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
+	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true}, hmd:{draw:ddi_hmd,press:hmd_press} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
 // HSI page state (#99): one nav picture shared by every display showing the
 // format. scale: the distance to the inside of the rose; north: N UP, else T UP;
 // level: the sublevel up - "mode" (24.1.3.2, figure 24-2), "pos" the position
@@ -2764,7 +2843,7 @@ function grid_shifts(){ const at=grid_reference(), s=grid_state.shift; if(s.east
 	return Object.keys(GRID_SHIFTS).map(Number).filter(pb=>navigate.sig(at.latitude,at.longitude,{ east:GRID_SHIFTS[pb][1], north:GRID_SHIFTS[pb][2] }).length>0); }
 function grid_press(pb){ if(!grid_shifts().includes(pb)) return false;
 	grid_state.shift={ east:GRID_SHIFTS[pb][1], north:GRID_SHIFTS[pb][2] }; grid_state.chosen=null; return true; }
-function tdc_grid(){ const st=ddi_state[designator]; return !st.menu&&st.page==="grid"; }
+function tdc_grid(){ const st=ddi_state[designator]; return !hmd.priority&&!st.menu&&st.page==="grid"; }
 // grid_designate: the TDC pressed with the cursor where it stands - the grid shift whose legend it
 // is over, else the square under it
 function grid_designate(){ const c=grid_state.cursor, b=GRID_BOX, at=grid_reference(), pb=button_of(c.x,c.y);
@@ -2795,7 +2874,7 @@ function ddi_grid(x){ const b=GRID_BOX, at=grid_reference(), rows=navigate.sig(a
 // tdc_hsi: the TDC is on a display showing the HSI. hsi_designate: the TDC pressed there - an AUTO
 // update over the waypoint (24.2.7.4), an offset aimpoint's offset added (24.2.10.1), or an overfly
 // designation (24.2.10.2), which with DSG boxed gives a designation update its position (24.2.7.1).
-function tdc_hsi(){ const st=ddi_state[designator]; return !st.menu&&st.page==="hsi"; }
+function tdc_hsi(){ const st=ddi_state[designator]; return !hmd.priority&&!st.menu&&st.page==="hsi"; }
 function hsi_designate(){ const truth=nav_sense(0), point=navigate.spot(nav,nav.current);
 	if(nav.updating==="auto"){ if(navigate.overhead(nav,truth)) hsi_state.level=""; }
 	else if(nav.updating==="map") return;
@@ -4012,6 +4091,8 @@ if(DEV_MODE) (globalThis as any).dev_suite=function(){ return nav; };   // dev: 
 if(DEV_MODE) (globalThis as any).dev_display=function(display,page,presses){ if(page) ddi_show(display,page);   // dev: put a page on a display, press its pushbuttons, and return the face as a PNG data URL and what each press answered
 	const answers=(presses||[]).map(pb=>Array.isArray(pb)?ddi_state[display].page==="grid"&&grid_face(pb[0],pb[1]):ddi_press(display,pb)), c=document.createElement("canvas"); c.width=c.height=512; ddi_render(c.getContext("2d"),512,display);   // a pair is a click on the grid display's face
 	return { answers, face:c.toDataURL("image/png") }; };
+if(DEV_MODE) (globalThis as any).dev_helmet=function(set){ if(set) Object.assign(hmd,set);   // dev (#103): the helmet's state - and, given fields, set them - with what it reports and whether it slaves the seeker, for the headless checks
+	return { ...JSON.parse(JSON.stringify(hmd)), ready:helmet.ready(hmd), offset:helmet.offset(hmd), advisory:helmet.advisory(hmd), slaving:helmet.slaving(hmd,mc()), knob:knob_level("hmd"), acm:RADAR.auto?RADAR.acm:"", track:RADAR.stt??RADAR.ls??null, seeker:{ slaved:seeker_now.slaved, lockon:seeker_now.lockon, track:!!seeker_track } }; };
 if(DEV_MODE) (globalThis as any).dev_ifei=function(button,hold){ if(button) ifei_click(button,hold||0); return ifei_current(); };   // dev: press a pushbutton headless (hold in seconds) and read the face
 // bingo_low: the tank is under the settable bingo bug. FALSE until the jet is
 // flying, because an unread tank is not an empty one: joining a match, the
@@ -5367,7 +5448,8 @@ function trigger_missile(){
 	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
 	if(MULTIPLAYER) missile_flag=true;
-	if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
+	const aim=seeker_now.slaved?seeker_now.quarry:(MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null));   // with the helmet slaving the seeker the round goes for what the seeker has, and without tone it leaves unguided
+	if(launch_missile(ownship,aim)){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 // trigger_amraam (#27, SP): the shot needs an L&S (STT or TWS trackfile) and
 // flies command-inertial on the datalink. UNCAGE selects VISUAL: seeker hot off
@@ -6355,8 +6437,9 @@ let cockpit_flood=null, console_lights=null;
 // ============================================================================ panel systems (G1)
 // Knobs the pilot has turned (#11, #23, #115): null keeps the level the pre-flight leaves, the time of
 // day's for the interior lights and full for the rest. A click turns one a fifth of its throw, right
-// clockwise and brighter.
-const knobs={ instrument:null, consoles:null, flood:null, warn:null, symbology:null, indexer:null, ufc:null, ifei:null };
+// clockwise and brighter. hmd is the HMD OFF/BRT knob on the spin recovery panel (2.21.6, figure 2-52),
+// where the model still paints MAP GAIN: OFF at its bottom stop, as a deck or runway start leaves it.
+const knobs={ instrument:null, consoles:null, flood:null, warn:null, symbology:null, indexer:null, ufc:null, ifei:null, hmd:null };
 function knob_level(k){ if(knobs[k]!==null) return knobs[k]; const night=cfg.tod==="night";
 	return k==="instrument"?(night?0.62:0.22):(k==="consoles"||k==="flood")?(night?1:0):k==="warn"?(night?0.7:1):1; }
 function knob_turn(k,d){ knobs[k]=THREE.MathUtils.clamp(Math.round((knob_level(k)+(d<0?-0.2:0.2))*100)/100,0,1); }   // hundredths, so five clicks from full reach the OFF stop exactly
@@ -7146,7 +7229,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
-		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; } else if(master==="nav") caged=!caged; }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
+		if(ch===key_of("uncage")){ if(hmd.mode){ helmet.toggle(hmd); ddi_dirty=true; } else if(master==="120c"){ amraam_visual=!amraam_visual; } else if(master==="nav") caged=!caged; else if(master==="9m") seeker_uncage(); }   // #27 phase 2: the AIM-120's boresight/MADDOG mode; the 9M's seeker uncaged to track what it has, or caged back to the helmet (9.6.3); in an alignment the switch is the helmet's - held in coarse (helmet_frame), pressed in fine to change axis (2.21.12)
 		if(ch===key_of("jammer")) countermeasures.toggle(suite);   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")) pit_press("radar",0);   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("sensor.forward")) sensor("forward");   // the stick's sensor control switch (#27)
@@ -7704,7 +7787,8 @@ function read_input(dt){
 	if(pad) scan_zoom(pad,pad_bindings(pad));
 	hotas.trigger=keys.has(key_of("fire"))||pad_fire; hotas.paddle=keys.has(key_of("override"));
 	nws_step();
-	tdc_slew((held("tdc.right")?1:0)-(held("tdc.left")?1:0)||pad_tdc.x,(held("tdc.up")?1:0)-(held("tdc.down")?1:0)||pad_tdc.y,dt);
+	{ const x=(held("tdc.right")?1:0)-(held("tdc.left")?1:0)||pad_tdc.x, y=(held("tdc.up")?1:0)-(held("tdc.down")?1:0)||pad_tdc.y;
+		if(hmd.mode==="fine") helmet.nudge(hmd,x,y,dt); else tdc_slew(x,y,dt); }   // in fine alignment the TDC moves the helmet's crosses (2.21.12.2)
 	input.guns=hotas.trigger&&master==="gun"&&arms.arm;   // the trigger serves the SELECTED weapon (#133): guns only in GUN, and nothing with MASTER ARM at SAFE (2.17.1.2)
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
@@ -8010,8 +8094,9 @@ function fcs_jams(words){ return FCS_CHANNELS.filter(c=>(words[STATE.jam+c]||0)>
 // the surfaces at once (2.8.2.2.7); RSET for an FCS RESET, crossed out when the failure stood
 // (2.8.4.5.2); HIAOA while the flight control computers have no INS attitude - INS ATT, or the
 // ATT switch at STBY (figure 12-1); BIT for an equipment failure not yet looked at on the BIT
-// display (2.20.3.2).
+// display (2.20.3.2); HMD while the helmet is on with no valid coarse alignment (2.21.9).
 function advisories_now(){ const g=ownship.gauges||{}, list=navigate.advisories(nav).map(a=>[a,a]);
+	if(helmet.advisory(hmd)) list.push(["HMD","HMD"]);
 	if(!ownship.grounded&&!fpas_home()) list.push(["FPAS","FPAS"]);
 	if(travel_at("antiice")===ANTIICE_ON){ if(!secured[0]&&(g.rpmL??0)>=60) list.push(["L HEAT","L HEAT"]); if(!secured[1]&&(g.rpmR??0)>=60) list.push(["R HEAT","R HEAT"]); }
 	if((ownship.gearTarget??0)<0.5&&!antiskid) list.push(["SKID","SKID"]);
@@ -9831,6 +9916,8 @@ function reset_ownship(){
 	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
 	brake_accumulator=ACCUMULATOR.full; drawn=false;   // a charged brake accumulator, over the 2,600 psi the exterior inspection asks (NATOPS 7.1.2)
 	for(const k of Object.keys(knobs)) knobs[k]=null; for(const k of Object.keys(thrown)) delete thrown[k];   // G1: the panel as the pre-flight leaves it - knobs at their levels, the travel-only controls where the model draws them,
+	{ const air=st!=="carrier"&&st!=="runway", wild=()=>(Math.random()*2-1)*3*D2R;   // the helmet (#103): a start in the air hands it over on, warmed and aligned; on the wheels it is OFF, and its line of sight reads off by up to 3° until aligned
+		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
 	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)) d.brt=1;
 	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
@@ -10241,6 +10328,27 @@ function heat_zone(){
 	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
 function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; return zone_cue(z); }
+// heat_staff: the 9M's range staff beside the boresight at x,y, as the AMRAAM draws its own: Rmax, the doubled
+// Rne tick, Rmin, and the caret at his range; hd is the layout's pixels a degree, hs its stroke scale.
+// designation_line: the world direction to the point designated in NAV, from the position the suite keeps,
+// or null with none (24.2.10).
+function designation_line(){ if(!nav.designation) return null;
+	const here=navigate.place(nav,nav_sense(0)), d=nav.designation, sight=new THREE.Vector3(wrap_axis(d.x-here.x),d.elevation-ownship.pos.y,wrap_axis(d.z-here.z));
+	return sight.lengthSq()>1?sight.normalize():null; }
+function heat_staff(hctx,GR,x,y,hd,hs,zone){
+	hctx.save(); hctx.font=(13*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;   // i18n-format-ok: a CSS font size
+	const top=y-3.0*hd, bottom=y+3.0*hd, sx=x+9*hd;
+	const scale=Math.max(zone.max,zone.range)*1.05;
+	const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
+	hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
+	for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
+		if(range<=0) continue; const at=y_of(range);
+		hctx.beginPath(); hctx.moveTo(sx-5*hs,at); hctx.lineTo(sx+5*hs,at); hctx.stroke();
+		if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5*hs,at-3*hs); hctx.lineTo(sx+5*hs,at-3*hs); hctx.stroke(); } }
+	const at=y_of(zone.range);
+	hctx.beginPath(); hctx.moveTo(sx+7*hs,at); hctx.lineTo(sx+15*hs,at-4*hs); hctx.lineTo(sx+15*hs,at+4*hs); hctx.closePath(); hctx.fill();
+	hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,at+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	hctx.restore(); }
 function hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes){   // axes: the frame the zone is drawn in (fwd, right, up) - the HUD's view, or the airframe on a DDI
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
@@ -10359,6 +10467,7 @@ function gpws_arrow(x,cx,cy,dpp,bank){ const tip=4.5*dpp, neck=1.0*dpp, head=2.6
 	x.restore(); }
 function draw_hud(){
 	hud_cue=""; hud_shoot=false;   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
+	seeker_now={ line:null, quarry:null, lockon:false, drinking:0, slaved:false };   // likewise the 9M's seeker, looked for below in the first-person views only: another view's camera is not the pilot's head, and a stale line must not reach the server
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
 	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
@@ -10473,8 +10582,7 @@ function draw_hud(){
 
 	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost; }   // dev: where the marker was drawn, for the probes
 	hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs);
-	if(nav.designation&&master==="nav"){ const here=navigate.place(nav,nav_sense(0)), d=nav.designation;   // the target diamond on the designated point's line of sight, from the position kept (24.2.10)
-		const sight=new THREE.Vector3(wrap_axis(d.x-here.x),d.elevation-ownship.pos.y,wrap_axis(d.z-here.z)), at=sight.lengthSq()>1?proj_dir(sight.normalize()):null;
+	if(master==="nav"){ const sight=designation_line(), at=sight?proj_dir(sight):null;   // the target diamond on the designated point's line of sight (24.2.10)
 		if(at){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(at[0],at[1]-8*hs); hctx.lineTo(at[0]+8*hs,at[1]); hctx.lineTo(at[0],at[1]+8*hs); hctx.lineTo(at[0]-8*hs,at[1]); hctx.closePath(); hctx.stroke(); } }
 	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	hctx.globalAlpha=1; }
@@ -10492,18 +10600,8 @@ function draw_hud(){
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
-	let lockon=false, drinking=0;
-	const quarry=heat_quarry(boxed);
-	if(master==="9m"&&!pa&&quarry){ const to=_v.set(wrap_axis(quarry.pos.x-ownship.pos.x),quarry.pos.y-ownship.pos.y,wrap_axis(quarry.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
-		// Plume-conditioned acquisition (#255), mirroring the server: a burner-lit
-		// nose is lockable to half the envelope, a cold one only close aboard, rear
-		// aspect the full reach. Depth inside that reach drives the growl's pitch
-		// (#59).
-		const tail=quarry.fwd?Math.max(0,to.dot(quarry.fwd)):0;
-		const floor=0.15+0.35*THREE.MathUtils.clamp(quarry.reheat??0,0,1);
-		const reach=5000*(floor+(1-floor)*tail);
-		lockon=ownship.fwd.dot(to)>0.866&&d<reach;
-		drinking=THREE.MathUtils.clamp(1-d/reach,0,1); }
+	seeker_now=seeker_look(boxed,pa);
+	const lockon=seeker_now.lockon, drinking=seeker_now.drinking, quarry=seeker_now.quarry;
 	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
 	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
 	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
@@ -10516,8 +10614,13 @@ function draw_hud(){
 
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
 	// boxed target, with the gun cross above; 9M = seeker circle + SHOOT cue.
-	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym;
 	const brk=boxed&&rng<(master==="9m"?300:150)+THREE.MathUtils.clamp(vc,0,1000)*1.5;   // breakaway: reaching minimum range within 1.5 s at the current closure — time-based like the real cue, so a 900 kt merge breaks far earlier than a tail-chase (vc clamped: a boxed-target switch in MP spikes one frame)
+	// The 9M's cues, for the HUD or the helmet, whichever carries the seeker's circle: SHOOT only with a radar
+	// lock and the target inside the heater's zone (#47), steady between Rmax and Rne and flashing inside it,
+	// none inside the breakaway regime (the X owns it) or during the joust's weapons hold; and the zone's staff
+	const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
+	const heat_shown={ shoot:lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1)), zone:zone&&zone.max>0&&lockon?zone:null };
+	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym;
 	const td=boxed?proj_point(boxed.pos):null;
 	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
 	if(boxed&&!(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH)){   // target locator line (NATIP): the boxed target is off the HUD — a line from the boresight points the shortest way to it, angle-off at the tip
@@ -10576,30 +10679,16 @@ function draw_hud(){
 				for(let i=1;i<rail.length;i++) hctx.lineTo(rail[i][0],rail[i][1]); hctx.stroke(); }
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
-		const seeker=2.5*ppd;   // the 5° seeker circle
-		const at=lockon?(proj_point(quarry.pos)||bore):bore;   // a seeker with tone looks at its heat, boxed or not
-		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
-		// SHOOT only with a radar lock and the target inside the heater's zone (#47);
+		const seeker=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the 5° seeker circle, smaller once uncaged and tracking (the DCS guide)
+		const at=lockon?(proj_point(quarry.pos)||bore):(seeker_now.line&&proj_dir(seeker_now.line))||bore;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the nose, or the helmet's
+		const worn=hmd_seeker();   // the helmet carries the circle and its SHOOT while it works (2.21.15 to 2.21.17)
+		if(!worn){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke(); }
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
 		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
-		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
-		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
+		if(!worn&&heat_shown.shoot){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Commanding a launch the trigger will refuse just confuses the merge
 			hctx.fillText("SHOOT",at[0],at[1]-seeker-16*hs); hud_shoot=true; }
-		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
-			hctx.save(); hctx.font=(13*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;   // i18n-format-ok: a CSS font size
-			const hd=HH/45*hs, top=bore[1]-3.0*hd, bottom=bore[1]+3.0*hd, sx=bore[0]+9*hd;   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
-			const scale=Math.max(zone.max,zone.range)*1.05;
-			const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
-			hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
-			for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
-				if(range<=0) continue; const y=y_of(range);
-				hctx.beginPath(); hctx.moveTo(sx-5*hs,y); hctx.lineTo(sx+5*hs,y); hctx.stroke();
-				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5*hs,y-3*hs); hctx.lineTo(sx+5*hs,y-3*hs); hctx.stroke(); } }
-			const y=y_of(zone.range);
-			hctx.beginPath(); hctx.moveTo(sx+7*hs,y); hctx.lineTo(sx+15*hs,y-4*hs); hctx.lineTo(sx+15*hs,y+4*hs); hctx.closePath(); hctx.fill();
-			hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,y+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			hctx.restore(); }
+		if(heat_shown.zone&&declutter<2) heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs
 	}
 	if(brk) hud_cue="break";   // the 9M can't arm, a gun pass this close eats debris: break off (the X is drawn with the cluster)
 	hctx.globalAlpha=1; if(glass) hctx.restore(); }
@@ -10683,6 +10772,19 @@ function draw_hud(){
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
 	if((ownship.canopy??0)>0.02||canopy_gone){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); } }   // below PROBE
 
+	// The HUD's side of the helmet (2.21.12): while aligning, its alignment cross crossing on the boresight
+	// (alignment_cross), for the helmet's to be laid on (figures 2-56, 2-57); otherwise, the helmet working, a
+	// cross 1.4° across at the line of sight the helmet reports, flashing at the edge of the HUD's field when
+	// the pilot looks outside it (2.21.12.4, figure 2-58).
+	if(flight_symbols&&helmet.ready(hmd)){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym; hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5;
+		const plus=(x,y,a)=>{ hctx.beginPath(); hctx.moveTo(x-a,y); hctx.lineTo(x+a,y); hctx.moveTo(x,y-a); hctx.lineTo(x,y+a); hctx.stroke(); };
+		if(hmd.mode){ const c=proj_dir(ownship.fwd); if(c) alignment_cross(c[0],c[1],ppd); }
+		else { const line=hmd_line(), off=Math.acos(THREE.MathUtils.clamp(line.dot(ownship.fwd),-1,1)), limit=10*D2R;   // the HUD's field, taken as 10° about the boresight
+			if(off<=limit){ const p=proj_dir(line); if(p) plus(p[0],p[1],0.7*ppd); }
+			else if((sim_time*4)%2<1){ const toward=new THREE.Vector3().copy(line).addScaledVector(ownship.fwd,-line.dot(ownship.fwd)).normalize(), p=proj_dir(new THREE.Vector3().copy(ownship.fwd).multiplyScalar(Math.cos(limit)).addScaledVector(toward,Math.sin(limit)));
+				if(p) plus(p[0],p[1],0.7*ppd); } }
+		hctx.globalAlpha=1; if(glass) hctx.restore(); }
+	if(cfg.view==="hud"||cfg.view==="cockpit") draw_hmd(glass,pa,boxed,vc,ranged?rng:null,heat_shown);
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
 	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
@@ -10933,66 +11035,77 @@ function hud_coupled(){ if(autopilot.cue(hold,sim_time)) return coupled;
 // format draws the same (#62). glass: the heading scale rides the layout, as on the
 // combining glass or a DDI, rather than the HUD view's window edge, whose
 // transform screen keeps; axes the frame the AMRAAM's steering dot is taken in.
-function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
+// hud_tape: where the heading scale's baseline sits in the HUD's layout about cx,cy: at the top in every master,
+// raised 1.25° from the NAV position in the A/A masters (ED manual).
+function hud_tape(cy,ppdv,aa){ return aa?cy-150-1.25*ppdv:cy-150; }
+function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes,worn=null){   // worn: drawn for the helmet (#103) - { helmet, limited, sight }: its reject level and REJECT SETUP's, limited to a mission computer's backup set (2.21.15), and the line of sight it reports; null for the HUD
+	const rej=worn?worn.helmet.reject:declutter, limited=!!(worn&&worn.limited);
+	const keep=(symbol,level)=>worn?helmet.shown(worn.helmet,symbol):rej<level;   // a symbol the HUD's reject switch removes from REJ <level> (2.13.4.8.1) - on the helmet, at the level its REJECT SETUP gives it
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
-	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
-	if(declutter<2){ hctx.save(); if(!glass) hctx.setTransform(screen);
-	const hty=glass?(aa?cy-150-1.25*ppdv:cy-150):46;   // at the top in every master, raised 1.25° from the NAV position in the A/A masters (ED manual) - on the glass only, as the HUD view's scale already sits against the window's edge
+	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group.
+	// The helmet's (the DCS guide) is about the heading it looks along, with the jet's own heading in digits under its middle in place of the T, and the steering marks at their headings on it ----
+	const north=(v)=>((Math.atan2(v.x,-v.z)-(nav.magnetic?nav.variation:0))*180/Math.PI+720)%360;   // a direction's heading, degrees: magnetic with HDG MAG selected (24.2.5.7)
+	const hdg=north(ownship.fwd), middle=worn?north(worn.sight):hdg, hppx=7, halfd=15;
+	const place=(error)=>worn?THREE.MathUtils.clamp(navigate.turn(0,error+navigate.turn(middle*D2R,hdg*D2R))/D2R,-halfd,halfd):navigate.command(error/D2R);   // a steering error off the nose, radians, to degrees along the scale: the HUD's compressed (24.2.9.1), the helmet's at its heading, held at the scale's end
+	if(keep("HMD HEADING",2)&&!limited){ hctx.save(); if(!glass&&!worn) hctx.setTransform(screen);
+	const hty=glass||worn?hud_tape(cy,ppdv,aa):46;   // the HUD view's scale already sits against the window's edge
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px 'Hornet Display', monospace";
-	const hdg=((Math.atan2(ownship.fwd.x,-ownship.fwd.z)-(nav.magnetic?nav.variation:0))*180/Math.PI+720)%360; const hppx=7, halfd=15;   // magnetic with HDG MAG selected (24.2.5.7)
 	hctx.beginPath(); hctx.rect(cx-halfd*hppx-2,hty-22,halfd*hppx*2+4,40); hctx.clip();
-	const m0=Math.ceil((hdg-halfd)/5)*5;
-	for(let m=m0;m<=hdg+halfd;m+=5){ const hx=cx+(m-hdg)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
+	const m0=Math.ceil((middle-halfd)/5)*5;
+	for(let m=m0;m<=middle+halfd;m+=5){ const hx=cx+(m-middle)*hppx; const val=((m%360)+360)%360; const major=(m%10===0);
 		hctx.beginPath(); hctx.moveTo(hx,hty); hctx.lineTo(hx,hty-(major?8:4)); hctx.stroke();
 		if(major) hctx.fillText(String(val).padStart(3,"0"),hx,hty-16); }
 	hctx.restore();
-	hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
-	if(nav.magnetic){ hctx.moveTo(cx-5,hty+11); hctx.lineTo(cx,hty+4); hctx.lineTo(cx+5,hty+11); }   // a caret with magnetic heading, the T under the current heading with true
-	else { hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); }
-	hctx.stroke();
+	if(!worn){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
+		if(nav.magnetic){ hctx.moveTo(cx-5,hty+11); hctx.lineTo(cx,hty+4); hctx.lineTo(cx+5,hty+11); }   // a caret with magnetic heading, the T under the current heading with true
+		else { hctx.moveTo(cx-5,hty+5); hctx.lineTo(cx+5,hty+5); hctx.moveTo(cx,hty+5); hctx.lineTo(cx,hty+13); }
+		hctx.stroke(); }
 	const steer=master==="nav"?hud_steer():null;
 	if(steer){   // command heading marker (NATOPS item 18, 24.2.9.1): great-circle steering to the TACAN station or the waypoint selected on the HSI, a short heavy bar just under the scale's ticks (figure 2-26) - the target's diamond once one is designated (24.2.10). Corrected for wind drift: it shows the ground track's error, itself within 5° and compressed beyond, at the scale's end from 30°. NAV ONLY (#224): selecting an A/A weapon replaces the navigation picture with weapon symbology, as the real jet does
-		const gz=ownship.gauges||{}, mx=cx+navigate.command(navigate.turn(gz.track??gz.heading??0,steer.bearing)/D2R)*hppx;
+		const gz=ownship.gauges||{}, mx=cx+place(navigate.turn(gz.track??gz.heading??0,steer.bearing))*hppx;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		if(steer.target){ hctx.lineWidth=1.5; hctx.moveTo(mx,hty+2); hctx.lineTo(mx+5,hty+8); hctx.lineTo(mx,hty+14); hctx.lineTo(mx-5,hty+8); hctx.closePath(); }
 		else { hctx.lineWidth=3; hctx.moveTo(mx,hty+1); hctx.lineTo(mx,hty+6); }
 		hctx.stroke(); }
 	if(link.five&&master==="nav"&&!(hold.modes.coupled&&hold.source==="bank")){   // the controller's command heading, a pointer below the heading scale (24.6.1.1.2 a): a double chevron, as on the Link 4 display
-		const mx=cx+navigate.command(navigate.turn(Math.atan2(ownship.fwd.x,-ownship.fwd.z),link.five.heading*D2R)/D2R)*hppx;
+		const mx=cx+place(navigate.turn(Math.atan2(ownship.fwd.x,-ownship.fwd.z),link.five.heading*D2R))*hppx;
 		hctx.strokeStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]); hctx.beginPath();
 		for(const y of [hty+8,hty+13]){ hctx.moveTo(mx-5,y+5); hctx.lineTo(mx,y); hctx.lineTo(mx+5,y+5); }
 		hctx.stroke(); }
 	hctx.restore(); }
+	if(worn&&keep("A/C HEADING",2)&&!limited){ hctx.save(); hctx.fillStyle=GR; hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.textBaseline="top";
+		hctx.fillText(String(Math.round(hdg)%360).padStart(3,"0"),cx,hud_tape(cy,ppdv,aa)+16); hctx.restore(); }
 
 	// ---- airspeed box (left): boxed KCAS, top at the waterline. REJ 1 and REJ 2
 	// remove the airspeed and altitude boxes and keep the values in them (NATOPS
 	// 2.13.4.8.1, figure 2-26 sheet 2) ----
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
 	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
-	if(!declutter) hctx.strokeRect(ax-84,wly,84,30);
-	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
-	{ const gz=ownship.gauges||{}, need=master==="nav"&&declutter<2?navigate.required(nav,navigate.place(nav,nav_sense(0)),gz.zulu||0):null;   // groundspeed cuing (24.2.9.6): a tick under the airspeed box and an arrowhead left of it when too slow for the time on target, right when too fast, 30 knots at full displacement
+	if(keep("ALT_ASPD_BOX",1)) hctx.strokeRect(ax-84,wly,84,30);
+	hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; if(keep("AIRSPEED",3)) hctx.fillText(String(Math.round(kcas)),ax-8,wly+16);
+	{ const gz=ownship.gauges||{}, need=master==="nav"&&!rej&&!limited?navigate.required(nav,navigate.place(nav,nav_sense(0)),gz.zulu||0):null;   // groundspeed cuing (24.2.9.6): a tick under the airspeed box and an arrowhead left of it when too slow for the time on target, right when too fast, 30 knots at full displacement
 		if(need!==null){ const tx=ax-42, ty=wly+34, at=tx+THREE.MathUtils.clamp(((gz.ground||0)-need)/30,-1,1)*16;
 			hctx.beginPath(); hctx.moveTo(tx,ty); hctx.lineTo(tx,ty+7); hctx.moveTo(at-5,ty+16); hctx.lineTo(at,ty+9); hctx.lineTo(at+5,ty+16); hctx.stroke(); } }
-	if(fpas.climb&&master==="nav"&&!declutter){ const climb=fpas_climb();   // the climb airspeed over the box, with the FPAS's CLIMB boxed and the reject switch at NORM (2.3.1.1.8, figure 2-7)
+	if(fpas.climb&&master==="nav"&&keep("CLIMB_ASPD",1)&&!limited){ const climb=fpas_climb();   // the climb airspeed over the box, with the FPAS's CLIMB boxed and the reject switch at NORM (2.3.1.1.8, figure 2-7)
 		hctx.font="20px 'Hornet Display', monospace"; hctx.textAlign="right"; hctx.fillText(climb?String(Math.round(climb.calibrated*1.94384)):"XXXX",ax-8,wly-14); }
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084+baro_error(); const lx=cx+4.2*ppdv;
 	const reading=altitude_reading(), alt=reading.feet, radar=reading.radar, flashB=reading.fallback;
-	if(!declutter) hctx.strokeRect(lx,wly,96,30);
-	{ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
+	if(keep("ALT_ASPD_BOX",1)) hctx.strokeRect(lx,wly,96,30);
+	if(keep("ALTITUDE",3)){ const shown=Math.max(0,Math.round(alt)); const thousands=Math.floor(shown/1000);
 		hctx.textAlign="right";
 		if(thousands>0){ const restStr=String(shown%1000).padStart(3,"0");
 			hctx.font="16px 'Hornet Display', monospace"; const rw=hctx.measureText(restStr).width; hctx.fillText(restStr,lx+88,wly+17);
 			hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(thousands),lx+88-rw-2,wly+16); }   // 150% thousands, 120% tail — the NATOPS hierarchy
-		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); }
+		else { hctx.font="21px 'Hornet Display', monospace"; hctx.fillText(String(shown),lx+88,wly+16); } }
+	if(keep("BARO/RADALT",3)){
 		if(radar){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("R",lx+101,wly+16); }
 		if(flashB&&(sim_time*3)%2<1){ hctx.font="12px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillText("B",lx+101,wly+16); } }
 	// the baro-set readout (2.13.4.8.11 item 4, #16): the ADC's setting below the altitude for 5 s after it changes, and
 	// displayed flashing for 5 s when the jet descends below 10,000 ft at less than 300 knots; the descent arms above 10,000 ft
-	{ const knots=(ownship.cas??ownship.speed)*1.944;
+	if(!limited&&keep("BARO PRES",3)){ const knots=(ownship.cas??ownship.speed)*1.944;
 		if(baro>=10000) baro_armed=true;
 		else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=sim_time; baro_flash=true; } }
 		if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=sim_time; baro_flash=false; }
@@ -11002,7 +11115,7 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	// and the range, stacked under the altitude box where the jet puts them - RDR
 	// (the radar is the only ranging the game has), Vc in knots with a minus for an
 	// opening target, the range in feet inside a mile and in miles beyond ----
-	if(aa&&boxed&&rng!=null&&!declutter){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
+	if(aa&&boxed&&rng!=null&&!rej&&!limited){ const right=lx+96, top=wly+30;   // rng null: no radar ranging, so no data block
 		hctx.fillStyle=GR; hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";
 		hctx.fillText("RDR",right-0.3*ppdv,top+2.1*ppdv);
 		const knots=Math.round(vc*1.94384/10)*10;
@@ -11014,20 +11127,20 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 
 	// ---- vertical velocity above the altitude box (NAV master mode and the landing configuration, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"||pa){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
+	if((master==="nav"||pa)&&!limited&&keep("VSI",3)){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="right";   // right-justified over the altitude digits, its last digit on theirs (Chuck's guide p.339: 5110 over 6880). NAV per NATOPS 2.13.4.8 item 12, and the PA symbology keeps it whatever master mode the fight left selected — the approach scan needs the sink number; not on the reject list, so it survives REJ 1/2
 		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+88,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
-	{ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
-		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
-		if(!declutter&&!pa){ const core=last_out;
-			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	if(!limited){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
+		if(keep("ALPHA",3)) hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
+		if(!pa){ const core=last_out;   // each line keeps its place when another is rejected
+			if(keep("MACH",1)) hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			if(keep("G",1)) hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			if(keep("MAX G",1)&&peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
 
 	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); not drawn in the A/A masters, where the references show none ----
-	if(!declutter&&!aa){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
+	if(!rej&&!aa&&!limited){ const pivotY=cy+4.2*ppdv, br=3.2*ppdv;
 		hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 		for(const b of [-45,-30,-15,-5,0,5,15,30,45]){ const a=b*D2R; const sx=cx+Math.sin(a)*br, sy=pivotY+Math.cos(a)*br;
 			const tl=Math.abs(b)===5?5:9;   // figure 2-26: the 5° ticks short, the centre, 15°, 30° and 45° long
@@ -11042,12 +11155,13 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-	if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);
+	if(limited){}
+	else if(atc_on||(sim_time-atc_flash<10&&(sim_time*4)%2<1)) hctx.fillText("ATC",lx,cy+7.2*ppdv-17);
 	else if(steering>=0&&ownship.grounded&&(mc().one||(sim_time*4)%2<1)) hctx.fillText(steering>0?"NWS HI":"NWS",lx,cy+7.2*ppdv-17);   // the NWS advisory in the same place while nosewheel steering is engaged (2.10.2, 2.13.4.8.15, #36)   // the ATC advisory above the distance display (NATOPS 2.13.4.8.15, figure 2-26), flashing twice a second for 10 s when ATC drops out other than by its switch or refuses to engage
-	{ const top=hud_link(), cue=hud_coupled();   // the data link's cue over the coupled cue, over ATC and the range (figure 24-24 b and c; 2.13.4.8 item 15)
+	if(!limited){ const top=hud_link(), cue=hud_coupled();   // the data link's cue over the coupled cue, over ATC and the range (figure 24-24 b and c; 2.13.4.8 item 15)
 		if(top) hctx.fillText(top,lx,cy+7.2*ppdv-51);
 		if(cue) hctx.fillText(cue,lx,cy+7.2*ppdv-34); }
-	if(master==="nav"&&declutter<2){ const steer=hud_steer();
+	if(master==="nav"&&rej<2&&!limited){ const steer=hud_steer();
 		if(steer&&steer.range!=null) hctx.fillText((steer.range/1852).toFixed(1)+(steer.label?" "+steer.label:""),lx,cy+7.2*ppdv); }   // slant range and the station's ident, as the real data block reads (NATOPS item 14, figure 2-26: "21.1 STL") (REJ 2 removes it; NAV only, with the command heading marker — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	{ // The selected weapon and its count, centred at the bottom of the field as the
 		// jet's data block is: the gun's rounds on a line under the name, a missile's
@@ -11062,15 +11176,135 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes){
 	// ---- the mission computer's timer, lower-left corner (NATOPS 2.13.4.8.11 item 17):
 	// ZTOD, ET or CD, whichever the TIMEUFC page shows, as bare digits; none until
 	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
-	if(declutter<2){ const text=timer_text((ownship.gauges||{}).zulu||0);
+	if(keep("TIME WINDOW",2)&&!limited){ const text=timer_text((ownship.gauges||{}).zulu||0);
 		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
-	if(master==="120c"&&declutter<2) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);
+	if(master==="120c"&&keep("NIRD CIRCLE",2)&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);
 	// ---- the breakaway X: one cue for every weapon, however it was reached (the
 	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
 	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
 	// the symbology's green and line (the HUD draws in green only; Chuck's guide
 	// p.391), flashing ----
-	if(breakaway_shown()){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); } }
+	if(breakaway_shown()&&!limited){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5; breakaway(hctx,cx,cy,3.5*ppdv); } }
+// draw_hmd: the helmet display (#103, NATOPS 2.21.13, 2.21.14) in the first-person views - its 20° monocular
+// field about the pilot's line of sight, the screen's centre, at the brightness its knob and BRT set.
+// ENTERING IBIT flashes while its test runs, and the four test patterns follow until STOP (2.21.11.2).
+// Otherwise the HUD's windows where the HUD lays them out (hud_cluster), at the levels REJECT SETUP gives
+// them, less the pitch ladder, horizon, waterline and velocity vector, which only mean anything along the
+// boresight (2.21.13.3), and the GPWS arrow, for which ALTITUDE in the HARM window (2.21.13.4), whose place
+// the manual does not give - the game's is over the weapon. The DCS guide gives the rest: in the A/A masters
+// the layout drops as the pilot looks up (hmd_shift), and the line of sight's elevation sits over the
+// heading scale. The open aiming cross, with its dot while the TDC is the HMD's (2.21.14.1). Placed by the
+// line of sight the helmet reports, so that an alignment's error shows: the TD box on the L&S and, in NAV,
+// the diamond on the designated point, each held at the field's edge when outside it (hmd_mark), with the
+// locator line to the L&S, or to the designation without one (2.21.14, hmd_locator); the AIM-9's field of
+// view with its SHOOT and staff; and the HACQ or LACQ reticle, its legend flashing at the radar's gimbal
+// limit. Without MC1 the set is MC2's backup, without MC2 MC1's (2.21.15). BLNK blanks it through the HUD:
+// all but the aiming cross in NAV, and in the A/A masters all but the cross, the elevation, the TD box, its
+// locator line and the seeker's circle (figure 2-58, the DCS guide). Aligning, it shows its alignment crosses
+// and their message and nothing else, over the HUD's own symbols (2.21.12, figures 2-56 and 2-57).
+function draw_hmd(glass,pa,boxed,vc,rng,heat){
+	if(!helmet.ready(hmd)) return;
+	const set=helmet.backup(mc()), brightness=helmet.level(hmd,knob_level("hmd"),cfg.tod==="night");
+	if(set==="none"||brightness<=0) return;
+	const cx=HW/2, cy=HH/2, ppd=HH/camera.fov, ppdv=HH/45, R=helmet.FIELD/D2R*ppd;
+	hctx.save(); { const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // the helmet rides the head, not the shaking glass
+	hctx.globalAlpha=brightness; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
+	hctx.beginPath(); hctx.arc(cx,cy,R,0,Math.PI*2); hctx.clip();
+	hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.textBaseline="middle";
+	if(avionics.testing(bit,"hmd")){ if(Math.floor(sim_time*2)%2===0) hctx.fillText("ENTERING IBIT",cx,cy); hctx.restore(); return; }
+	{ const k=helmet.pattern(hmd); if(k>=0){ hmd_pattern(k,cx,cy,ppd); hctx.restore(); return; } }
+	if(hmd.mode){ hmd_alignment(cx,cy,ppd); hctx.restore(); return; }   // aligning, its crosses and their message alone (figures 2-56, 2-57)
+	const blanked=hmd_blanked(glass), aa=master!=="nav"&&!pa, limited=set!=="full", sight=hmd_line(), shown=!blanked||aa;
+	if(shown){ const k=hmd_fit(ppd,ppdv,R), tape=hud_tape(cy,ppdv,aa);   // the HUD's layout, in its own pixels about cx,cy
+		hctx.save(); hctx.translate(cx,cy); hctx.scale(k,k); hctx.translate(-cx,-cy+(aa?hmd_shift(sight,cy,tape,ppd/k):0));
+		if(!blanked){ const axes={ fwd:new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), right:new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion), up:new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion) };
+			hud_cluster(hctx,GR,cx,cy,ppdv,null,null,pa,boxed,vc,rng,axes,{ helmet:hmd, limited, sight });
+			hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR;
+			if(law_active&&!limited) hctx.fillText("ALTITUDE",cx,cy+5.8*ppdv);
+			if(master==="9m"&&heat&&heat.zone&&!limited&&helmet.shown(hmd,"NIRD CIRCLE")) heat_staff(hctx,GR,cx,cy-4*ppdv,ppdv,1,heat.zone);   // beside the layout's boresight, as on the HUD
+			if(RADAR.auto&&(RADAR.acm==="hacq"||RADAR.acm==="lacq")&&(sight.dot(ownship.fwd)>=Math.cos(RADAR_GIMBAL)||(sim_time*4)%2<1)) hctx.fillText(RADAR.acm.toUpperCase(),cx+4.2*ppdv+48,cy+4*ppdv); }   // under the altitude box
+		if(!limited&&helmet.shown(hmd,"HMD ELEV")){ const e=Math.round(Math.asin(THREE.MathUtils.clamp(sight.y,-1,1))/D2R);
+			hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.textBaseline="bottom"; hctx.fillStyle=GR; hctx.fillText((e>0?"+":e<0?"-":"")+Math.abs(e),cx,tape-26); }
+		hctx.restore(); }
+	hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.textBaseline="middle";
+	{ const a=0.95*ppd, g=0.3*ppd; hctx.beginPath(); hctx.moveTo(cx-a,cy); hctx.lineTo(cx-g,cy); hctx.moveTo(cx+g,cy); hctx.lineTo(cx+a,cy); hctx.moveTo(cx,cy-a); hctx.lineTo(cx,cy-g); hctx.moveTo(cx,cy+g); hctx.lineTo(cx,cy+a); hctx.stroke();   // the open aiming cross, 1.9° across (figure 2-58)
+		if(hmd.priority){ hctx.beginPath(); hctx.arc(cx,cy,Math.max(1.5,0.12*ppd),0,Math.PI*2); hctx.fill(); } }
+	if(set==="one"||!shown){ hctx.restore(); return; }   // MC1's backup carries neither the L&S nor the AIM-9's line of sight
+	const box=boxed?new THREE.Vector3(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize():null, point=master==="nav"?designation_line():null;
+	if(box) hmd_mark(box,false,cx,cy,ppd,ppdv,R);
+	if(point) hmd_mark(point,true,cx,cy,ppd,ppdv,R);
+	if(box||point) hmd_locator(box||point,sight,cx,cy,ppd);   // the L&S's alone with both (2.21.14)
+	if(master==="9m"&&!pa&&seeker_now.line){ const at=hmd_at(seeker_now.line), r=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the AIM-9's field of view, where the seeker looks, smaller once it tracks
+		if(at){ hctx.beginPath(); hctx.arc(at[0],at[1],r,0,Math.PI*2); hctx.stroke();
+			if(heat&&heat.shoot){ hctx.font="16px 'Hornet Display', monospace"; hctx.fillText("SHOOT",at[0],at[1]-r-16); hud_shoot=true; } } }   // over the circle, as on the HUD
+	if(!blanked&&RADAR.auto&&(RADAR.acm==="hacq"||RADAR.acm==="lacq")){ hctx.setLineDash([6,5]); hctx.beginPath(); hctx.arc(cx,cy,helmet.ACQUIRE/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); }   // the acquisition reticle
+	hctx.restore(); }
+// hmd_fit: the scale the HUD's layout goes onto the helmet at - the angles it subtends on the HUD, as far as
+// the helmet's 20° field holds it. The layout's boxes and scales are partly in pixels, so a short window
+// spreads it wider in degrees: its reach about the layout's centre - the heading scale's labels above, the
+// weapon line below, the altitude box's outer corner - is kept inside the field, as hud_fit keeps it on the glass.
+function hmd_fit(ppd,ppdv,R){ const reach=Math.max(172+1.25*ppdv,8.6*ppdv+10,Math.hypot(4.2*ppdv+101,4*ppdv));
+	return Math.min(ppd/ppdv,0.97*R/reach); }
+// hmd_shift: how far the A/A layout drops down the helmet as the pilot looks up (the DCS guide's dynamic aiming
+// cross), in the layout's pixels: none with the line of sight at or below the horizon, growing with its
+// elevation until, from 30° up, the jet's heading under the heading scale sits just over the aiming cross.
+// unit: the layout's pixels a degree of the display.
+function hmd_shift(sight,cy,tape,unit){ const e=Math.asin(THREE.MathUtils.clamp(sight.y,-1,1));
+	return THREE.MathUtils.clamp(e/(30*D2R),0,1)*Math.max(0,cy-tape-32-0.95*unit); }
+// hmd_toward: the way to a world direction across the helmet display, a unit screen vector from its centre,
+// in the frame the helmet believes it has - for a direction outside the field or behind the eye.
+function hmd_toward(to){ const c=_hmd_v.copy(to).applyQuaternion(_hmd_q.copy(camera.quaternion).invert()), e=helmet.offset(hmd);
+	const az=Math.atan2(c.x,-c.z)-e.azimuth, el=Math.atan2(c.y,Math.hypot(c.x,c.z))-e.elevation, cr=Math.cos(-e.roll), sr=Math.sin(-e.roll);
+	const x=az*cr+el*sr, y=az*sr-el*cr, l=Math.hypot(x,y)||1;
+	return [x/l,y/l]; }
+// hmd_mark: the TD box, or the designation's diamond, on a world direction where the helmet believes it lies,
+// held at the edge of the field nearest it while it lies outside (the DCS guide).
+function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*ppd/ppdv, edge=R-1.5*s;
+	let at=hmd_at(to);
+	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge]; }
+	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return; }
+	hctx.beginPath(); hctx.moveTo(at[0],at[1]-s); hctx.lineTo(at[0]+s,at[1]); hctx.lineTo(at[0],at[1]+s); hctx.lineTo(at[0]-s,at[1]); hctx.closePath(); hctx.stroke(); }
+// hmd_locator: the target locator line (the DCS guide): for a direction more than 10° off the line of sight the
+// helmet reports, a line from the aiming cross toward it, longer the farther off - 8° from the centre by 180° -
+// with an arrowhead at its tip, and the angle off over the aiming cross.
+function hmd_locator(to,sight,cx,cy,ppd){ const off=Math.acos(THREE.MathUtils.clamp(sight.dot(to),-1,1))/D2R;
+	if(off<10) return;
+	const [ux,uy]=hmd_toward(to), start=1.3*ppd, tip=start+off/180*6.7*ppd, x=cx+ux*tip, y=cy+uy*tip, barb=0.5*ppd;
+	hctx.lineWidth=2; hctx.beginPath(); hctx.moveTo(cx+ux*start,cy+uy*start); hctx.lineTo(x,y);
+	for(const a of [-Math.PI/6,Math.PI/6]){ const c=Math.cos(a), n=Math.sin(a); hctx.moveTo(x,y); hctx.lineTo(x-(ux*c-uy*n)*barb,y-(ux*n+uy*c)*barb); }
+	hctx.stroke(); hctx.lineWidth=1.5;
+	hctx.fillText(String(Math.round(off)),cx,cy-2.2*ppd); }
+// alignment_cross: the alignment cross the HUD and the helmet both draw (figures 2-56 and 2-57): a bar 10° tall
+// crossed 2.3° below its top by one 9.5° wide, crossing at x,y.
+function alignment_cross(x,y,ppd){ hctx.beginPath(); hctx.moveTo(x,y-2.3*ppd); hctx.lineTo(x,y+7.7*ppd); hctx.moveTo(x-4.75*ppd,y); hctx.lineTo(x+4.75*ppd,y); hctx.stroke(); }
+// hmd_alignment: the helmet's side of an alignment (2.21.12, figures 2-56 and 2-57). Coarse: its own alignment
+// cross, crossing helmet.RAISED above the display's centre, for the pilot to lay over the HUD's, and READY,
+// ALIGNING or ALIGN FAIL under it. Fine: two crosses 1.9° across where the helmet believes the HUD's cross
+// and a point 4.3° down its bar lie, so an error in azimuth and elevation shows as the upper cross off the
+// HUD's centre and one in roll as the pair leaning off its bar, with FA DXDY or FA DROLL, and ALIGN OK for a
+// while after the coarse alignment.
+function hmd_alignment(cx,cy,ppd){
+	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]); hctx.textAlign="center"; hctx.font="13px 'Hornet Display', monospace";
+	const plus=(x,y,a)=>{ hctx.beginPath(); hctx.moveTo(x-a,y); hctx.lineTo(x+a,y); hctx.moveTo(x,y-a); hctx.lineTo(x,y+a); hctx.stroke(); };
+	if(hmd.mode==="coarse"){ alignment_cross(cx,cy-helmet.RAISED/D2R*ppd,ppd); hctx.fillText(helmet.message(hmd),cx,cy+6*ppd); }
+	else { const high=hmd_at(ownship.fwd), low=hmd_at(new THREE.Vector3().copy(ownship.fwd).applyAxisAngle(ownship.right,-4.3*D2R));
+		for(const p of [high,low]) if(p) plus(p[0],p[1],0.95*ppd);
+		hctx.fillText(helmet.message(hmd),cx,cy+6*ppd);
+		if(helmet.confirmed(hmd)) hctx.fillText("ALIGN OK",cx,cy+7.5*ppd); }
+	hctx.restore(); }
+// hmd_pattern: the four IBIT test patterns (2.21.11.2, figure 2-55), each a second: the 10° circle, its axes
+// ticked each 2.5° with the stroke scale's figures over them, and four 1.5° squares; the 2.5° grid 20°
+// across; the three 9° spokes 120° apart; the 2°, 6°, 9° and 10° circles across four diameters.
+function hmd_pattern(k,cx,cy,ppd){ const d=ppd, line=(x1,y1,x2,y2)=>{ hctx.beginPath(); hctx.moveTo(x1,y1); hctx.lineTo(x2,y2); hctx.stroke(); }, ring=(r)=>{ hctx.beginPath(); hctx.arc(cx,cy,r*d,0,Math.PI*2); hctx.stroke(); };
+	if(k===0){ ring(10); line(cx-10*d,cy,cx+10*d,cy); line(cx,cy-10*d,cx,cy+10*d);
+		for(let t=-7.5;t<=7.5;t+=2.5){ if(!t) continue; line(cx+t*d,cy-1.15*d,cx+t*d,cy+1.15*d); line(cx-0.9*d,cy+t*d,cx+0.9*d,cy+t*d); }
+		for(const [sx,sy] of [[-1,-1],[1,-1],[-1,1],[1,1]]) hctx.strokeRect(cx+sx*5*d-0.75*d,cy+sy*5*d-0.75*d,1.5*d,1.5*d);
+		hctx.fillText("STROKE",cx-5*d,cy-2.5*d);
+		for(const [t,figure] of [[-10,"-800"],[-5,"-400"],[5,"400"],[10,"800"]]) hctx.fillText(figure,cx+t*d,cy-1.5*d);
+		hctx.textAlign="left"; hctx.fillText("0.0",cx+0.1*d,cy-1.5*d); hctx.fillText("400",cx+1.2*d,cy-5*d); hctx.fillText("-400",cx+1.2*d,cy+5*d); hctx.textAlign="center"; }
+	else if(k===1){ for(let t=-10;t<=10;t+=2.5){ line(cx+t*d,cy-10*d,cx+t*d,cy+10*d); line(cx-10*d,cy+t*d,cx+10*d,cy+t*d); } }
+	else if(k===2){ for(const a of [0,2*Math.PI/3,-2*Math.PI/3]) line(cx,cy,cx+Math.cos(a)*9*d,cy-Math.sin(a)*9*d); }
+	else { for(const r of [2,6,9,10]) ring(r); for(let a=0;a<4;a++){ const t=a*Math.PI/4, x=Math.cos(t)*10*d, y=Math.sin(t)*10*d; line(cx-x,cy-y,cx+x,cy+y); } hctx.fillText("3",cx+2.5*d,cy-6*d); } }
 // closure is the rate two jets close along the line of sight, from their
 // velocity vectors, m/s (+ = closing). Never by differencing range between render
 // frames: the cores step on a fixed 60 Hz accumulator, so above 60 fps the
@@ -11230,6 +11464,36 @@ function hud_target(){ const dst=designated==="bandit"?(has_enemy?bandit:null):(
 // jet, alone the one jet out there, boxed by the radar or not - a heat seeker
 // needs no radar.
 function heat_quarry(boxed){ return MULTIPLAYER?boxed:(has_enemy&&bandit.group.visible?bandit:null); }
+// The 9M's seeker each frame (#73, #103): the line it looks along, the jet whose heat it has, and how deep
+// inside the reach that heat is. Plume-conditioned (#255), mirroring the server: a burner-lit nose is
+// lockable to half the envelope, a cold one only close aboard, rear aspect the full reach, and the depth
+// drives the growl's pitch (#59). Without the helmet slaving it - off, still in its BIT, MC2 down - the
+// game's 30° cone about the nose finds heat_quarry's jet, as it always has. With it, MC2 slaves the seeker to
+// the radar's target while the radar holds one, and to the helmet's reported line of sight otherwise
+// (2.21.15), held to its 40° gimbal about the nose; it has whichever jet is nearest that line inside its 2.5°
+// field. Uncaged (seeker_uncage) it follows the jet it has until it leaves the gimbal or the reach (9.6.3).
+// Team-blind, as the hardware is.
+let seeker_track=null, seeker_now={ line:null, quarry:null, lockon:false, drinking:0, slaved:false };
+function seeker_reach(st,to){ const tail=st.fwd?Math.max(0,to.dot(st.fwd)):0, floor=0.15+0.35*THREE.MathUtils.clamp(st.reheat??0,0,1); return 5000*(floor+(1-floor)*tail); }
+function seeker_toward(st){ const to=new THREE.Vector3(wrap_axis(st.pos.x-ownship.pos.x),st.pos.y-ownship.pos.y,wrap_axis(st.pos.z-ownship.pos.z)), d=to.length()||1; return { to:to.multiplyScalar(1/d), d }; }
+function seeker_look(boxed,pa){
+	if(master!=="9m"||pa){ seeker_track=null; return { line:null, quarry:null, lockon:false, drinking:0, slaved:false }; }
+	if(!helmet.slaving(hmd,mc())){ seeker_track=null;
+		const quarry=heat_quarry(boxed); if(!quarry) return { line:ownship.fwd.clone(), quarry:null, lockon:false, drinking:0, slaved:false };
+		const { to, d }=seeker_toward(quarry), reach=seeker_reach(quarry,to), lockon=ownship.fwd.dot(to)>0.866&&d<reach;
+		return { line:lockon?to:ownship.fwd.clone(), quarry, lockon, drinking:THREE.MathUtils.clamp(1-d/reach,0,1), slaved:false }; }
+	const jets=MULTIPLAYER?[...remotes.values()].filter(st=>st.group&&st.group.visible):(has_enemy&&bandit.group.visible?[bandit]:[]);
+	let line=null;
+	if(seeker_track){ const { to, d }=jets.includes(seeker_track)?seeker_toward(seeker_track):{ to:null, d:Infinity };
+		if(to&&helmet.within(ownship.fwd,to,helmet.GIMBAL)&&d<seeker_reach(seeker_track,to)) line=to; else seeker_track=null; }
+	if(!line) line=new THREE.Vector3().copy(helmet.slave((RADAR.stt!=null||RADAR.ls!=null)&&boxed?seeker_toward(boxed).to:hmd_line(),ownship.fwd));
+	let quarry=null, nearest=-2, drinking=0;
+	for(const st of jets){ const { to, d }=seeker_toward(st), reach=seeker_reach(st,to), c=to.dot(line);
+		if(d<reach&&c>=Math.cos(helmet.SEEKER)&&c>nearest){ quarry=st; nearest=c; drinking=THREE.MathUtils.clamp(1-d/reach,0,1); } }
+	return { line:quarry?seeker_toward(quarry).to:line, quarry, lockon:!!quarry, drinking, slaved:true }; }
+// seeker_uncage: the cage/uncage switch in 9M with the helmet slaving the seeker: uncaged, it tracks the jet
+// it has tone on; pressed again, it is caged back to the helmet's line of sight (9.6.3).
+function seeker_uncage(){ if(seeker_track){ seeker_track=null; return; } if(seeker_now.slaved&&seeker_now.quarry) seeker_track=seeker_now.quarry; }
 let acm_clock=0;
 function radar_step(dt){ if(!running) return;
 	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
@@ -11318,7 +11582,10 @@ function undesignate_press(){
 // acquire_acm: the armed ACM condition's cone (#133). BST: 20° off the nose to
 // 10 nm; VACQ: ±6° azimuth, -8°..+55° in the lift plane, 5 nm; WACQ (#27): ±30°
 // azimuth and ±10° about the horizon, space stabilised, 10 nm - the unclassified
-// manual gives no figure for its volume, so this is the game's. Nearest the axis
+// manual gives no figure for its volume, so this is the game's; HACQ and LACQ: the
+// helmet's line of sight as it reports it, inside the acquisition reticle about it
+// and the antenna's 70° gimbal, 10 nm and 40 nm - NATOPS has the radar slaved to it
+// (2.21.15) and the DCS guide gives the reticle and the ranges. Nearest the axis
 // first; repeat presses step the cone, an empty cone undesignates. Radar active
 // -> STT, silent -> visual designation. `auto` (radar_step's pass) takes the
 // first target and never steps or undesignates.
@@ -11328,6 +11595,8 @@ function acquire_acm(auto){
 		const d=Math.hypot(dx,dy,dz)||1; const fx=dx/d, fy=dy/d, fz=dz/d;
 		const nose=ownship.fwd.x*fx+ownship.fwd.y*fy+ownship.fwd.z*fz;
 		if(RADAR.acm==="bst"){ if(d>18520||nose<0.94) continue; }
+		else if(RADAR.acm==="hacq"||RADAR.acm==="lacq"){ const line=hmd_line();
+			if(d>(RADAR.acm==="lacq"?74080:18520)||nose<Math.cos(RADAR_GIMBAL)||line.x*fx+line.y*fy+line.z*fz<Math.cos(helmet.ACQUIRE)) continue; }
 		else if(RADAR.acm==="wacq"){ const level=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;   // the volume hangs off the horizon below the nose's heading, whatever the jet's attitude
 			const off=Math.atan2((ownship.fwd.x*fz-ownship.fwd.z*fx)/level,(ownship.fwd.x*fx+ownship.fwd.z*fz)/level);
 			if(d>18520||Math.abs(off)>0.524||Math.abs(Math.asin(THREE.MathUtils.clamp(fy,-1,1)))>0.175) continue; }
@@ -11353,29 +11622,36 @@ function acquire_acm(auto){
 // undesignates while it holds.
 function acm_press(){
 	if(!RADAR.auto){ RADAR.auto=true; RADAR.acm="bst"; }
-	else if(RADAR.acm==="bst") RADAR.acm="vacq";
-	else if(RADAR.acm==="vacq") RADAR.acm="wacq";
+	else if(RADAR.acm==="bst") RADAR.acm=helmet.slaving(hmd,mc())?"hacq":"vacq";   // HACQ in VACQ's place while the helmet can slave the radar (2.21.17)
+	else if(RADAR.acm==="vacq"||RADAR.acm==="hacq"||RADAR.acm==="lacq") RADAR.acm="wacq";
 	else { RADAR.auto=false; RADAR.acm="bst"; } }
 // sensor works the stick's sensor control switch (#27, NATOPS 2.8.2.2.2). In an air-to-air master
 // mode with the radar searching, forward commands ACM in boresight; aft gives the TDC to the AMPCD,
 // left to the left DDI and right to the right DDI, and toward the display that already has it
-// while that display shows the attack format, auto acquisition. In ACM, forward is BST, aft VACQ,
-// left WACQ and right returns to search. NAV keeps only the TDC's assignment: forward gives it to
-// the HUD, which designates nothing in this jet, so it does nothing.
+// while that display shows the attack format, auto acquisition. In ACM, forward is BST - and from BST, with
+// the helmet able to slave the radar, HACQ, turning to LACQ if held 800 ms (the DCS guide) - aft VACQ, HACQ
+// while the helmet can slave the radar (2.21.17), left WACQ and right returns to search. NAV
+// keeps only the TDC's assignment: forward gives it to the HMD with the helmet working, which shows
+// it by the dot in its aiming cross (2.21.14.1) and designates nothing in this jet. A display given
+// the TDC takes it from the HMD, and ends a helmet alignment (2.21.12.3).
 function sensor(way){
 	const aa=master!=="nav";
-	if(aa&&RADAR.auto){ if(way==="right"){ RADAR.auto=false; RADAR.acm="bst"; } else RADAR.acm=way==="forward"?"bst":way==="aft"?"vacq":"wacq"; return; }
-	if(way==="forward"){ if(aa){ RADAR.auto=true; RADAR.acm="bst"; } return; }
+	if(aa&&RADAR.auto){ const slaved=helmet.slaving(hmd,mc());
+		if(way==="right"){ RADAR.auto=false; RADAR.acm="bst"; }
+		else if(way==="forward"){ if(RADAR.acm==="bst"&&slaved){ RADAR.acm="hacq"; castle=sim_time; } else RADAR.acm="bst"; }
+		else RADAR.acm=way==="aft"?(slaved?"hacq":"vacq"):"wacq";
+		return; }
+	if(way==="forward"){ if(aa){ RADAR.auto=true; RADAR.acm="bst"; } else if(helmet.ready(hmd)){ hmd.priority=true; ddi_dirty=true; } return; }
 	const display=way==="aft"?"center":way;
 	if(aa&&display===designator&&ddi_state[display].page==="rdr"&&!ddi_state[display].menu){ aacq(); return; }
-	designator=display; ddi_dirty=true; }
+	designator=display; hmd.priority=false; helmet.exit(hmd); ddi_dirty=true; }
 // aacq: auto acquisition (#27): the target under the TDC if there is one, else the nearest the scan
 // holds, straight to STT
 // antenna_step: the antenna elevation a step up or down, which takes it back from an antenna wheel
 // bound on the stick until that wheel is moved again, as the keys take the throttle from its lever
 function antenna_step(d){ RADAR.slew(d); const wheel=pad_levers.antenna; if(wheel){ wheel.armed=false; wheel.rest=undefined; } }
 // tdc_radar: the TDC is on a display showing the attack format, where it moves the cursor
-function tdc_radar(){ const st=ddi_state[designator]; return !st.menu&&st.page==="rdr"; }
+function tdc_radar(){ const st=ddi_state[designator]; return !hmd.priority&&!st.menu&&st.page==="rdr"; }
 function tdc_press(){ hotas.tdc.at=sim_time; if(tdc_radar()) tdc_designate(); else if(tdc_hsi()) hsi_designate(); else if(tdc_grid()) grid_designate(); }
 // tdc_slew moves the cursor on the attack format with the TDC held (#32): full deflection crosses
 // the scan's width, or its range scale, in two seconds
@@ -11488,7 +11764,7 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; padlocked=false; update_rails(ownship, ownship.msl); systems_fresh(true); }   // in a joust the match-starting double-respawn releases the waiting room
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; padlocked=false; update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
 		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
 	case "missile":
@@ -11560,7 +11836,7 @@ function net_frame(dt){
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own() };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.slaved?helmet.pack(seeker_now.line):null };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
 	// state are the same instant. marked_steps is reset by the mark below, so

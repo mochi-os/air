@@ -31,7 +31,7 @@ function panel(): Panel {
   if (!timers || !block) throw new Error('the HUD timer not found in engine.ts')
   return new Function(`let sim_time=0; ${timers}
     const at=(time)=>{ sim_time=time; };
-    const draw=(declutter, zulu=0)=>{ const text=[]; let align='';
+    const draw=(rej, zulu=0)=>{ const text=[], limited=false, keep=(symbol,level)=>rej<level; let align='';
       const hctx={ font:'', fillStyle:'', get textAlign(){ return align; }, set textAlign(v){ align=v; }, fillText(t,x,y){ text.push([t,x,y,align]); } };
       const GR='g', ax=200, cy=400, ppdv=20, ownship={ gauges:{ zulu } };
       ${block}
@@ -119,7 +119,7 @@ describe('the HUD timer', () => {
 describe('the lower-right data block', () => {
   const data = /\n\t\/\/ ---- data blocks: TCN slant range[\s\S]*?(?=\n\t\{ \/\/ The selected weapon and its count)/.exec(source)?.[0] ?? ''
   const block = (tacan = '{}', emcon = false, wheels: { steering: number; grounded: boolean; atc: boolean; time?: number; computer?: boolean } = { steering: -1, grounded: false, atc: false }) => new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const text=[], nav={ steer:'tcn', designation:null, course:null }; const hctx={ font:'', fillStyle:'', textAlign:'', fillText(t){ text.push(t); } };
-      const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=${wheels.time ?? 100}, mc=()=>({ one:${wheels.computer ?? true}, two:true }), lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', declutter=0, steering=${wheels.steering};
+      const atc_on=${wheels.atc}, atc_flash=-Infinity, sim_time=${wheels.time ?? 100}, mc=()=>({ one:${wheels.computer ?? true}, two:true }), lx=700, cy=400, ppdv=20, GR='g', AM='a', carrier_ols=true, master='nav', rej=0, limited=false, steering=${wheels.steering};
       const CARRIER={ x:0, z:-18520 }, ownship={ pos:{ x:0, y:0, z:0 }, grounded:${wheels.grounded} }, SHIP={ ident:'NIM', tacan:{ channel:74, band:'X' } }, wrap_axis=(v)=>v;
       const radios={ tacan:{ on:true, channel:74, band:'X', mode:'tr', air:false, ...${tacan} } }, emcon=${emcon};
       ${/\nfunction tacan\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''} ${/\nfunction hud_steer\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}

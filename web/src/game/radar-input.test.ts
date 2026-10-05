@@ -6,10 +6,11 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { Radar, SCALES, BARS, boresight, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, BARS, GIMBAL, boresight, geometry, pick, type Track } from './radar'
 import * as identification from './identification'
 import * as mids from './mids'
 import * as countermeasures from './countermeasures'
+import * as helmet from './helmet'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -50,6 +51,10 @@ type Rig = {
   set(designator: string, master: string): void
   show(display: string, page: string): void
   levers: Record<string, { armed: boolean; rest?: number }>
+  helmet(on: boolean): void
+  priority(): boolean
+  castle(): number | null
+  look(line: { x: number; y: number; z: number }): void
 }
 
 // track is a minimal TWS trackfile straight ahead of the ownship at `range`
@@ -103,13 +108,16 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
     'radar_pick',
     'contactList',
     'RADAR_BARS',
+    'helmet',
     `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
      const NM=1852;
      const RADAR=new Radar();
+     const hmd=helmet.fresh(false,{ azimuth:0, elevation:0, roll:0 },0), mc=()=>({ one:true, two:true }), RADAR_GIMBAL=${GIMBAL};   // the helmet off unless a test turns it on
+     let line={ x:0, y:0, z:-1 }; const hmd_line=()=>line;   // where the helmet reports it looks
      const wrap_axis=(v)=>v;
      const MULTIPLAYER=false; let designated=-1;
      let radar_events=[];
-     let sim_time=0;
+     let sim_time=0, castle=null;
      const radar_cursor={ azimuth:0, range:0 };
      const ownship={ pos:{x:0,y:0,z:0}, fwd:{x:0,y:0,z:-1}, up:{x:0,y:1,z:0}, right:{x:1,y:0,z:0}, gauges:{heading:0} };
      const pad_levers={}, hotas={ tdc:{ x:0, y:0, at:-Infinity } };
@@ -125,9 +133,10 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
        rdrPress:(pb)=>rdr_press(pb),
        events:()=>radar_events, clock:(t)=>{ sim_time=t; },
        sensor, slew:tdc_slew, tdc:tdc_press, acm:acm_press, cursor:radar_cursor, grid:(up)=>{ grid_up=up; return grid_calls; },
-       levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; } };`
+       levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; },
+       helmet:(on)=>{ Object.assign(hmd,helmet.fresh(on,{ azimuth:0, elevation:0, roll:0 },0)); }, look:(v)=>{ line=v; }, priority:()=>hmd.priority, castle:()=>castle };`
   )
-  return run(Radar, geometry, pick, contacts, BARS) as Rig
+  return run(Radar, geometry, pick, contacts, BARS, helmet) as Rig
 }
 
 // The attack format's scan readouts (#47): the bars scanned on their bezel,
@@ -519,9 +528,10 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     const hud = lift('draw_hud')
     expect(hud).toMatch(/const dst=hud_target\(\); if\(dst\)\{ boxed=dst;/)
     expect(hud).not.toMatch(/if\(has_enemy\)\{[^}]*boxed=bandit/) // never the bandit for being there
-    expect(hud).toMatch(/const quarry=heat_quarry\(boxed\);/)
-    expect(hud).toMatch(/if\(master==="9m"&&!pa&&quarry\)/)
-    expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):bore;/) // the seeker circle on its heat, boxed or not
+    expect(hud).toMatch(/\n\tseeker_now=seeker_look\(boxed,pa\);/)
+    expect(lift('seeker_look')).toMatch(/const quarry=heat_quarry\(boxed\);[^\n]*\n[^\n]*lockon=ownship\.fwd\.dot\(to\)>0\.866&&d<reach;/) // without the helmet slaving it, the nose cone on heat_quarry's jet
+    expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
+    expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):\(seeker_now\.line&&proj_dir\(seeker_now\.line\)\)\|\|bore;/) // the seeker circle on its heat, boxed or not
     expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
   })
 
@@ -725,7 +735,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(solo.status().tracks).toEqual([])
   })
   it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
-    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\) \};/)
+    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.slaved\?helmet\.pack\(seeker_now\.line\):null \};/)
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
     expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
   })
@@ -845,7 +855,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
       expect(body, name).not.toMatch(/rng=wrap_distance\(ownship\.pos,dst\.pos\)/)
       expect(body, name).toContain('vc,ranged?rng:null,')
     }
-    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!declutter)')
+    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!rej&&!limited)')
   })
   it('has no zone without a trackfile, or once the jet is gone', () => {
     const z = zones()
@@ -891,6 +901,101 @@ describe('the sensor control switch and the TDC', () => {
     r.sensor('right')
     expect(r.RADAR.auto).toBe(false)
     expect(r.state().designator).toBe('right')
+  })
+
+  it('in ACM selects HACQ for VACQ while the helmet can slave the radar, and locks the jet it looks at inside its field and the gimbal (2.21.17)', () => {
+    const off = (degrees: number, range: number) => ({ id: `at${degrees}`, x: range * Math.sin(degrees * Math.PI / 180), y: 0, z: -range * Math.cos(degrees * Math.PI / 180) })
+    const toward = (degrees: number) => ({ x: Math.sin(degrees * Math.PI / 180), y: 0, z: -Math.cos(degrees * Math.PI / 180) })
+    const r = rig([off(35, 4000), off(0, 3000), off(80, 3000)])
+    r.helmet(true)
+    r.RADAR.auto = true
+    r.sensor('aft')
+    expect(r.RADAR.acm).toBe('hacq')
+    r.look(toward(35))
+    r.press()
+    expect(r.RADAR.stt).toBe('at35') // off the nose, where the helmet looks - not the nearer jet on the nose
+    const away = rig([off(35, 4000)])
+    away.helmet(true)
+    away.RADAR.auto = true
+    away.RADAR.acm = 'hacq'
+    away.look(toward(50))
+    away.press()
+    expect(away.RADAR.stt).toBeNull() // 15° off the line: outside the field
+    const past = rig([off(80, 3000)])
+    past.helmet(true)
+    past.RADAR.auto = true
+    past.RADAR.acm = 'hacq'
+    past.look(toward(80))
+    past.press()
+    expect(past.RADAR.stt).toBeNull() // past the antenna's 70° gimbal
+    const bare = rig()
+    bare.RADAR.auto = true
+    bare.sensor('aft')
+    expect(bare.RADAR.acm).toBe('vacq') // the helmet off
+  })
+
+  it('from BST takes HACQ forward, timing the press for LACQ, and to 40 nm in LACQ where HACQ stops at 10 (the DCS guide)', () => {
+    const off = (degrees: number, range: number) => ({ id: `at${degrees}_${range}`, x: range * Math.sin(degrees * Math.PI / 180), y: 0, z: -range * Math.cos(degrees * Math.PI / 180) })
+    const toward = (degrees: number) => ({ x: Math.sin(degrees * Math.PI / 180), y: 0, z: -Math.cos(degrees * Math.PI / 180) })
+    const r = rig([off(20, 30000)])
+    r.helmet(true)
+    r.RADAR.auto = true
+    r.clock(5)
+    r.sensor('forward')
+    expect([r.RADAR.acm, r.castle()]).toEqual(['hacq', 5])
+    r.look(toward(20))
+    r.press()
+    expect(r.RADAR.stt).toBeNull() // 16 nm: past HACQ's 10
+    r.RADAR.acm = 'lacq'
+    r.press()
+    expect(r.RADAR.stt).toBe('at20_30000')
+    const back = rig()
+    back.helmet(true)
+    back.RADAR.auto = true
+    back.RADAR.acm = 'hacq'
+    back.sensor('forward')
+    expect([back.RADAR.acm, back.castle()]).toEqual(['bst', null]) // forward again: BST
+    const bare = rig()
+    bare.RADAR.auto = true
+    bare.sensor('forward')
+    expect(bare.RADAR.acm).toBe('bst') // no helmet: forward stays BST
+    const near = rig([off(20, 4000), off(23, 4000)])
+    near.helmet(true)
+    near.RADAR.auto = true
+    near.RADAR.acm = 'hacq'
+    near.look(toward(23))
+    near.press()
+    expect(near.RADAR.stt).toBe('at23_4000')
+    near.undesignate()
+    near.look(toward(25.6))
+    near.press()
+    expect(near.RADAR.stt).toBeNull() // 2.6° off the line: outside the reticle's 2.5°
+  })
+
+  it('in NAV forward gives the TDC to the HMD with the helmet working, which the attack format then gives up; a display assigned takes it back (2.21.14.1)', () => {
+    const r = rig()
+    r.set('right', 'nav')
+    r.sensor('forward')
+    expect(r.priority()).toBe(false) // the helmet off
+    r.helmet(true)
+    r.sensor('forward')
+    expect([r.priority(), r.state().designator]).toEqual([true, 'right'])
+    const before = r.cursor.azimuth
+    r.slew(1, 0, 1)
+    expect(r.cursor.azimuth).toBe(before) // the TDC is the helmet's
+    r.sensor('left')
+    expect([r.priority(), r.state().designator]).toEqual([false, 'left'])
+  })
+
+  it('steps the ACM legend BST, HACQ, WACQ while the helmet can slave the radar', () => {
+    const r = rig()
+    r.helmet(true)
+    const seen: string[] = []
+    for (let k = 0; k < 4; k++) {
+      r.acm()
+      seen.push(r.RADAR.auto ? r.RADAR.acm : 'search')
+    }
+    expect(seen).toEqual(['bst', 'hacq', 'wacq', 'search'])
   })
 
   it('in NAV only assigns the TDC: no ACM forward, no AACQ', () => {

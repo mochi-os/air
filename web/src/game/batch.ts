@@ -22,12 +22,16 @@ export const BUDGET = 1100
 
 // queue adds a sample to the batch. solo, extinguish, onspeed and reverted go
 // only when set, and held only when fuel is, a server reading their absence as
-// false and none; the status goes packed, on the newest sample alone, which is
-// the one the server reads it from.
+// false and none; the status goes packed, and the seeker's line while the
+// helmet slaves it, on the newest sample alone, which is the one the server
+// reads them from.
 export function queue(batch: Queued[], sample: InputSample, sequence: number): void {
-  const { solo, extinguish, onspeed, reverted, held, status, ...rest } = sample
-  for (const earlier of batch) delete earlier.status
+  const { solo, extinguish, onspeed, reverted, held, status, seeker, ...rest } = sample
+  for (const earlier of batch) {
+    delete earlier.status
+    delete earlier.seeker
+  }
   const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(held > 0 ? { held } : {}) }
-  batch.push({ ...rest, ...rare, status: pack(status), sequence })
+  batch.push({ ...rest, ...rare, status: pack(status), ...(seeker ? { seeker } : {}), sequence })
   if (batch.length > DEPTH) batch.shift()
 }

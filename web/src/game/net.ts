@@ -340,6 +340,7 @@ export interface InputSample {
   reverted: boolean // mission computer 1 lost: the server's limiter drops its weight schedule and the stores' roll limit, as the client's has
   held: number // wing fuel held at INHIBIT, kg; a server that predates it burns the wings' fuel with the rest
   status: Status // this aircraft's identification and link status, relayed to the session (mids.ts): a server that predates it reads nothing
+  seeker: [number, number] | null // the 9M seeker's line while the helmet slaves it (helmet.ts pack: world azimuth and elevation, hundredths of a degree), else null; a server that predates it searches the nose cone
   // How many fixed 1/60 steps the core integrated this sample for (#176). The
   // client has always recorded it against the mark ring; sending it lets the
   // server apply the sample for the same number of ticks, so the state the

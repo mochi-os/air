@@ -10,6 +10,7 @@ import * as navigate from './navigation'
 import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
+import * as helmet from './helmet'
 
 // The cockpit's side of the navigation suite (G3): the engine's glue between the
 // jet and navigation.ts, the INS knob and the set switches, the HSI's pushbuttons
@@ -49,10 +50,11 @@ const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
 // cockpit runs a body against the engine's navigation glue, booted as a spawn in the air is unless raw
 function cockpit<T>(body: string, raw = false): T {
-  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', `${world} ${defs} ${functions}
+  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', 'helmet', `${world} ${defs} ${functions}
+    const hmd=helmet.fresh(false,{ azimuth:0, elevation:0, roll:0 },0);   // the helmet off: the TDC is the displays' (helmet-cockpit.test.ts gives it to the HMD)
     map_name="MIDWAY ATOLL"; const point=(x,z,more)=>({ x, z, elevation:0, name:"", offset:null, ...more }), keys=(...b)=>{ for(const k of b) ufc_press(k); };
     ${raw ? '' : 'nav_reset(); nav_frame(0.1);'}
-    ${body}`)(navigate, THREE, communication, identification, mids) as T
+    ${body}`)(navigate, THREE, communication, identification, mids, helmet) as T
 }
 
 describe('what the jet tells the suite', () => {
@@ -599,7 +601,7 @@ describe('the steering the HUD shows', () => {
   })
 
   const cue = /\n\t\{ const gz=ownship\.gauges\|\|\{\}, need=master==="nav"[\s\S]*?\n\t\t\thctx\.beginPath\(\);[^\n]*\} \}\n/.exec(source)?.[0] ?? ''
-  const cued = (ground: number, need: string, master = 'nav') => new Function('THREE', `const master=${JSON.stringify(master)}, declutter=0, ax=300, wly=200, ownship={ gauges:{ ground:${ground}, zulu:0 } }, nav={}, nav_sense=()=>({}), navigate={ place:()=>({}), required:()=>(${need}) };
+  const cued = (ground: number, need: string, master = 'nav', rej = 0) => new Function('THREE', `const master=${JSON.stringify(master)}, rej=${rej}, limited=false, ax=300, wly=200, ownship={ gauges:{ ground:${ground}, zulu:0 } }, nav={}, nav_sense=()=>({}), navigate={ place:()=>({}), required:()=>(${need}) };
     const moves=[]; const hctx={ beginPath(){}, stroke(){}, moveTo(x,y){ moves.push([x,y]); }, lineTo(x,y){ moves.push([x,y]); } }; ${cue} return moves;`)(THREE) as number[][]
   it('cues the groundspeed for the time on target under the airspeed box: the arrowhead left of the tick when slow, 30 knots at full displacement', () => {
     expect(cue).not.toBe('')
@@ -611,10 +613,14 @@ describe('the steering the HUD shows', () => {
     expect(cued(300, '400')[3]).toEqual([242, 243])
     expect(cued(460, '400')[3]).toEqual([274, 243])
   })
+  it('goes with the reject switch at REJ 1, as at REJ 2 (2.13.4.8.1)', () => {
+    expect(cued(400, '400', 'nav', 1)).toEqual([])
+    expect(cued(400, '400', 'nav', 2)).toEqual([])
+  })
 })
 
 describe('the designated target on the HUD', () => {
-  const block = /\n\tif\(nav\.designation&&master==="nav"\)\{ const here=[^\n]*\n[^\n]*\n\t\tif\(at\)\{[^\n]*\} \}\n/.exec(source)?.[0] ?? ''
+  const block = (/\n\tif\([^\n]*\)\{ const sight=designation_line\(\)[^\n]*\n\t\tif\(at\)\{[^\n]*\} \}\n/.exec(source)?.[0] ?? '') + (/\nfunction designation_line\(\)[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? '')
   const run = (designation: string, master = 'nav', error = '{ x:0, z:0 }') => new Function('navigate', 'THREE', `const master=${JSON.stringify(master)}, GR='g', hs=1, wrap_axis=(v)=>v, ownship={ pos:{ x:0, y:1000, z:0 } };
     const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.ins.error=${error}; nav.designation=${designation};
     const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });
@@ -622,7 +628,8 @@ describe('the designated target on the HUD', () => {
     const hctx={ beginPath(){}, closePath(){}, stroke(){}, setLineDash(){}, moveTo(x,y){ points.push([x,y]); }, lineTo(x,y){ points.push([x,y]); } };
     ${block} return { sights, points };`)(navigate, THREE) as { sights: number[][]; points: number[][] }
   it('draws the target diamond on the designated point\'s line of sight, at its elevation', () => {
-    expect(block).not.toBe('')
+    expect(block).toContain('function designation_line()')
+    expect(block).toContain('if(master==="nav"){ const sight=designation_line()')
     const d = run('{ x:0, z:-3000, elevation:0, stage:"tgt" }')
     const length = Math.hypot(3000, 1000)
     expect(d.sights[0][0]).toBeCloseTo(0, 9); expect(d.sights[0][1]).toBeCloseTo(-1000 / length, 9); expect(d.sights[0][2]).toBeCloseTo(-3000 / length, 9)
@@ -633,6 +640,7 @@ describe('the designated target on the HUD', () => {
     expect(d.sights[0][0]).toBeCloseTo(-Math.SQRT1_2, 9); expect(d.sights[0][1]).toBeCloseTo(0, 9)
   })
   it('draws none without a designation, nor outside the NAV master mode', () => {
+    expect(block).toContain('const sight=designation_line()')
     expect(run('null').points).toEqual([])
     expect(run('{ x:0, z:-3000, elevation:0, stage:"tgt" }', '9m').points).toEqual([])
   })
