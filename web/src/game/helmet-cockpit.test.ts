@@ -33,7 +33,7 @@ const D = Math.PI / 180
 // The eye at the origin looking down -z, the jet's nose there too; look turns the eye, azimuth + right.
 const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const devicePixelRatio=1;
-  let sim_time=0, ddi_dirty=false, master='nav', designator='right', canopy_gone=false, law_active=false, head_az=0, head_el=0, hud_rest=0;
+  let sim_time=0, ddi_dirty=false, master='nav', designator='right', canopy_gone=false, law_active=false, head_az=0, head_el=0;
   const cfg={ view:'cockpit', tod:'day' }, keys=new Set(), key_of=(a)=>a==='uncage'?'KeyU':a==='sensor.forward'?'Forward':'None';
   let buses={ ac:true }, computers={ one:true, two:true }; const mc=()=>computers;
   const knobs={ hmd:1 }, knob_level=(k)=>knobs[k]??1;
@@ -48,7 +48,7 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
 const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
-const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hud_off', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
+const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
   'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
