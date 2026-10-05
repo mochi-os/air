@@ -85,11 +85,6 @@ msgstr "{0, plural, zero {# wedi'i ddewis} one {# wedi'i ddewis} two {# wedi'u d
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, zero {#/{2} chwaraewr} one {#/{1} chwaraewr} two {#/{2} chwaraewr} few {#/{2} chwaraewr} many {#/{2} chwaraewr} other {#/{2} chwaraewr}}"
 
-#. placeholder {0}: overflow.get(day) ?? 0
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{0, plural, one {+# more} other {+# more}}"
-msgstr "{0, plural, zero {+# arall} one {+# arall} two {+# arall} few {+# arall} many {+# arall} other {+# arall}}"
-
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -2835,8 +2830,8 @@ msgstr "Symudwyd"
 msgid "Moved {field}"
 msgstr "Symudwyd {field}"
 
-#. placeholder {0}: dayName(current.day)
 #. placeholder {0}: dayName(dragging.day)
+#. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Moving to {0}"

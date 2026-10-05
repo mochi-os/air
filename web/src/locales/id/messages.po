@@ -85,11 +85,6 @@ msgstr "{0, plural, one {# dipilih} other {# dipilih}}"
 msgid "{0, plural, one {#/{1} player} other {#/{2} players}}"
 msgstr "{0, plural, other {#/{2} pemain}}"
 
-#. placeholder {0}: overflow.get(day) ?? 0
-#: ../../../lib/web/src/components/calendar/month-grid.tsx
-msgid "{0, plural, one {+# more} other {+# more}}"
-msgstr "{0, plural, other {+# lainnya}}"
-
 #. placeholder {0}: countDeepChildren(object.id)
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx
 msgid "{0, plural, one {+# nested} other {+# nested}}"
@@ -2835,8 +2830,8 @@ msgstr "Dipindahkan"
 msgid "Moved {field}"
 msgstr "{field} dipindahkan"
 
-#. placeholder {0}: dayName(current.day)
 #. placeholder {0}: dayName(dragging.day)
+#. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Moving to {0}"
