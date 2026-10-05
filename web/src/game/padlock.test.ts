@@ -29,10 +29,9 @@ const block = source.slice(from, to)
 function pit<T>(body: string): T {
   return new Function('THREE', `const cfg={ view:"hud" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1) };
-    let padlocked=false, look_home=false, head_az=0, head_el=0, hud_rest=0, crash_t=0, target={ pos:new THREE.Vector3(1000,0,-1000) };
+    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, target={ pos:new THREE.Vector3(1000,0,-1000) };
     const look_target=()=>target, notice=(m)=>notices.push(m), translate=(m)=>m;
     ${lift('look_press')}
-    ${lift('view_rest')}
     const frame=(dt)=>{ ${block} };
     const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };
     ${body}`)(THREE) as T
@@ -43,11 +42,10 @@ function fireball<T>(body: string): T {
   return new Function('THREE', `const cfg={ view:"hud", callsign:"" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1), group:{ visible:true }, speed:200, fate:undefined };
     const bandit={ pos:new THREE.Vector3(1000,0,-1000), group:{ visible:true } }, remotes=new Map(), net=null;
-    let padlocked=false, look_home=false, head_az=0, head_el=0, hud_rest=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false;
+    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false;
     const notice=(m)=>notices.push(m), translate=(m)=>m, feed=()=>{}, explosion_at=()=>{};
     ${lift('look_press')}
     ${lift('look_target')}
-    ${lift('view_rest')}
     ${lift('crash_ownship').replace(/ as any/g, '')}
     const frame=(dt)=>{ ${block} };
     const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };
