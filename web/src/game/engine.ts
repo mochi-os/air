@@ -2528,7 +2528,7 @@ function hmd_at(d){ const e=helmet.offset(hmd);
 // over the HUD's.
 function hmd_blanked(glass){ if(!hmd.blank||hmd.mode) return false;
 	if(cfg.view==="cockpit") return !!glass&&pip(HW/2,HH/2,glass.corners);
-	return Math.hypot(head_az,head_el)<0.44; }
+	return hud_off()<0.44; }
 // hmd_seeker: the helmet carries the AIM-9's field-of-view symbol, as it does while it works and its
 // mission computer gives it the AIM-9's line of sight (2.21.15), blanked through the HUD or not - the HUD then
 // draws none (2.21.16, 2.21.17).
@@ -3612,7 +3612,7 @@ function link_draw(x,cy,R,hdg){ const p=link_picture(), five=link.five, quiet=ho
 // waterline datum 4° above the display's centre, the HUD's optical centre (item 2).
 function ddi_hud(x){
 	const ppd=512/26, k=ppd/(HH/45), cx=256, cy=256, wly=cy-4*ppd, bore=[cx,wly], GREEN="#39e07a";   // k: the HUD layout's pixels onto the display's
-	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=ppd/D2R, pa=(ownship.gear??1)<0.02;   // pa: the landing symbology, on the gear as the HUD's (item 13)
+	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=ppd/D2R, pa=hud_landing();   // pa: the landing symbology, on the gear as the HUD's (item 13)
 	const place=(d)=>{ const f=d.x*fwd.x+d.y*fwd.y+d.z*fwd.z; if(f<0.05) return null;   // a perspective projection about the nose, as the HUD's camera makes
 		return [cx+(d.x*right.x+d.y*right.y+d.z*right.z)/f*focal, wly-(d.x*up.x+d.y*up.y+d.z*up.z)/f*focal]; };
 	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(fwd,Math.max(0,2-ownship.speed));   // the flight path as the HUD takes it, faded in from the nose over the first 2 m/s
@@ -4078,6 +4078,11 @@ if(DEV_MODE) (globalThis as any).dev_ufc=function(button){ if(button) ufc_press(
 if(DEV_MODE) (globalThis as any).dev_systems=()=>structuredClone({ arms, suite, radios:{ one:uhf.one, two:uhf.two, panel:uhf.panel, pulled:uhf.pulled }, squawk, terminal, taping, accumulator:apu_accumulator, isolate:isolate_held(), tie:electrics.tie, master, func:ufc.func, emergency:sim_time-emergency_clicked<EMERGENCY_HOLD, flag:extinguish_flag });   // dev: the weapon, defensive, radio and identification panels' state, for the headless click checks
 if(DEV_MODE) (globalThis as any).dev_screen=function(x,y,z){ const v=ownship.group.localToWorld(new THREE.Vector3(x,y,z)).project(cockpit_cam); return v.z>1?null:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };   // dev: where a group-frame panel point lands on screen (css px), to aim and click at painted controls
 if(DEV_MODE) (globalThis as any).dev_look=function(az,el,zoom){ head_az=(az||0)*D2R; head_el=(el||0)*D2R; if(zoom){ zoom_target=zoom; view_zoom=zoom; } return { az:head_az/D2R, el:head_el/D2R, zoom:view_zoom }; };   // dev: aim the head (degrees) and set the zoom, for pit close-ups
+if(DEV_MODE) (globalThis as any).dev_view=function(above){   // dev: the first-person view's rest and head, the boresight on screen, where a direction `above` degrees over the nose lands, and the bandit - so a probe can check the A/A rest puts a target 30° above the boresight on the top edge
+	const up=new THREE.Vector3().copy(ownship.fwd).multiplyScalar(Math.cos((+above||0)*D2R)).addScaledVector(ownship.up,Math.sin((+above||0)*D2R));
+	const to=has_enemy&&bandit.group.visible?new THREE.Vector3().copy(bandit.pos).sub(ownship.pos):null;   // the bandit's elevation is measured in the jet's own pitch plane: dev_close parks it by WORLD elevation, which differs by the pitch attitude
+	return { view:cfg.view, master, landing:hud_landing(), rest:+(view_rest()/D2R).toFixed(2), head:[+(head_az/D2R).toFixed(2),+(head_el/D2R).toFixed(2)], fov:+camera.fov.toFixed(2), size:[HW,HH],   // i18n-format-ok: dev probe payload, never rendered to a user
+		bore:proj_dir(ownship.fwd), at:proj_dir(up), bandit:to?proj_point(bandit.pos):null, elevation:to?+(Math.atan2(to.dot(ownship.up),to.dot(ownship.fwd))/D2R).toFixed(2):null, padlocked }; };   // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
 	rc.setFromCamera(new THREE.Vector2(px/HW*2-1,-(py/HH)*2+1),cockpit_cam); ownship.group.updateMatrixWorld(true);
 	return rc.intersectObject(ownship.group,true).filter(h=>all||shown(h.object)).slice(0,8).map(h=>{ const m=(Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}; const p=ownship.group.worldToLocal(h.point.clone());
@@ -6736,6 +6741,15 @@ const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
 const PIT_REST=-8*D2R;   // the cockpit view's resting head pitch: from the design eye the waterline runs through the upper HUD, and a level gaze leaves the displays half under the frame; a pilot's rest is a few degrees down, with the HUD high and the DDIs whole. head_el is the look relative to it
+const HUD_REST=8*D2R;   // the HUD view's resting head pitch in the air-to-air masters: a fight is flown looking up through the top of the HUD, so the 45° field spans about -15° to +30° about the nose instead of ±22.5°. NAV and the gear-down approach rest along the nose, so a glideslope sits where it did
+let hud_rest=0;   // where the HUD view's head rests this frame, eased between 0 and HUD_REST as the master and the gear change (update_camera); head_el is the look relative to it
+// hud_landing: the HUD's landing symbology gate, the gear down and locked (NATOPS 2.13.4.8.11 item 13).
+// view_rest: the pitch a first-person view's head rests at, which head_el is measured from.
+// hud_off: how far the HUD view's eye is off the boresight, its rest included - the measure for whether
+// the eye is looking through the HUD. (One-liners without a trailing comment: the tests lift them by text.)
+function hud_landing(){ return (ownship.gear??1)<0.02; }
+function view_rest(){ return cfg.view==="cockpit"?PIT_REST:cfg.view==="hud"?hud_rest:0; }
+function hud_off(){ return Math.hypot(head_az,head_el+hud_rest); }
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
 /* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
 block, the import at the top, the head_apply/head_begin/head_close call sites,
@@ -6780,6 +6794,7 @@ function head_apply(dt){ if(!head_track) return;
 let padlocked=false, look_home=false;   // look-at-target (#243): a press of the look key latches the padlock - the head eases to the target fast and smoothly and follows it - and the next press, a manual look, a view reset, the target lost or the view left releases it and eases the head home. No helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
 // look_press works the look key in the first-person views: latch on the target, or release.
 function look_press(){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
+	if(crash_t>0) return;   // no jet to look from: a press over the fireball neither latches nor says NO TARGET
 	if(padlocked){ padlocked=false; look_home=true; return; }
 	if(look_target()) padlocked=true; else notice(translate("NO TARGET")); }
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
@@ -8345,7 +8360,7 @@ if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest ca
 if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlocked, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -8557,6 +8572,7 @@ function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_writt
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
+	padlocked=false; look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
@@ -10020,6 +10036,12 @@ function look_target(){
 function update_camera(dt){
 	const firstPerson = (cfg.view==="hud");
 	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
+	// The HUD view's rest (HUD_REST): up in the air-to-air masters, along the nose
+	// in NAV and with the gear down. Eased, so a master change or the gear coming
+	// down glides the view over a quarter second instead of cutting it, and kept
+	// current in every view, so a switch into the HUD view finds it settled.
+	{ const rest=(master!=="nav"&&!hud_landing())?HUD_REST:0;
+		hud_rest+=(rest-hud_rest)*(1-Math.exp(-dt*4)); if(Math.abs(rest-hud_rest)<1e-4) hud_rest=rest; }
 	// #57 parked: head_apply(dt);   // #57: the tracked pose first — a held arrow still nudges on top for the frame
 	if(cfg.view!=="chase" && cfg.view!=="ddi" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit, and head-down DDI work leaves the head where it was. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
 		const hr=dt*1.6;
@@ -10037,7 +10059,7 @@ function update_camera(dt){
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
-			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br))-(cfg.view==="cockpit"?PIT_REST:0),-1.047,1.396);   // head_el is taken from the view's rest
+			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br))-view_rest(),-1.047,1.396);   // head_el is taken from the view's rest
 			const k=1-Math.exp(-dt*9), R=dt*7;   // ease constant ~0.11 s, rate cap ~400°/s
 			head_az+=THREE.MathUtils.clamp((azT-head_az)*k,-R,R);
 			head_el+=THREE.MathUtils.clamp((elT-head_el)*k,-R,R); } }
@@ -10070,7 +10092,7 @@ function update_camera(dt){
 		// pilot without the airframe in the way, so the head turns here too,
 		// and the quaternion form is what keeps roll coupled correctly near
 		// the pitch poles where lookAt fumbles it.
-		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // the held look keeps the pilot's head roll in the AIRFRAME frame — a glance, not a stabilised camera (world-up stabilisation tried 2026-08-10 and removed at the user's direction)
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el+hud_rest)).multiply(CAMFIX);   // the held look keeps the pilot's head roll in the AIRFRAME frame — a glance, not a stabilised camera (world-up stabilisation tried 2026-08-10 and removed at the user's direction)
 		if(buffet_rot>1e-5) camera.quaternion.multiply(_headq.setFromAxisAngle(_zaxis,(Math.random()*2-1)*buffet_rot)).multiply(_pitq.setFromAxisAngle(_yaxis,(Math.random()*2-1)*buffet_rot));   // the temps are free again after the compose consumed them
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
@@ -10494,7 +10516,7 @@ function draw_hud(){
 	// The combining glass is bolted to the airframe: in HUD view the symbology
 	// fades as the head leaves boresight and is gone by ~25° off, about a real
 	// HUD's field of view. Cockpit view gets this from the glass rectangle.
-	const boresight=Math.hypot(head_az,head_el);
+	const boresight=hud_off();
 	const sym=symbology();   // SYM BRT (#11): the symbology's brightness, none at OFF or without ac power (#116)
 	const flight_symbols=sym>0&&((cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44));
 	if(crash_t>0){ const end=demise(ownship.fate,own_killer,ejected);   // the cause the engine already recorded, not a guess: CRASHED was shown for every death including being shot down
@@ -10550,7 +10572,7 @@ function draw_hud(){
 	// (NATOPS 2.13.4.8.11 item 13). One gear value stands for all three legs, and
 	// down means down and locked. The trim readout reads the FCS law, trim_law().
 	trim_manual=trim_law();
-	const pa=(ownship.gear??1)<0.02;              // landing symbology gate
+	const pa=hud_landing();                       // landing symbology gate
 	let fpm=null;
 	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }

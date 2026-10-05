@@ -117,9 +117,11 @@ describe('the AoA bracket rides the velocity vector', () => {
 describe('the landing symbology gate', () => {
   const start = source.indexOf('\tconst ppd=HH/camera.fov;'), end = source.indexOf('\tlet fpm=null;', start)
   const section = source.slice(start, end)
+  const landing = /\nfunction hud_landing\(\)\{[^\n]*\n/.exec(source)?.[0]   // the gate's one-line helper, lifted with the section that calls it
+  if (!landing) throw new Error('hud_landing not found in engine.ts')
   const gate = (states: { gear: number; speed: number }[]) => new Function('states', `const HH=900, camera={ fov:60 }, trim_law=()=>0;
     let trim_manual=0, hud_pa=false;
-    return states.map((s)=>{ const ownship={ gear:s.gear, cas:s.speed, speed:s.speed }; ${section} return pa; });`)(states) as boolean[]
+    return states.map((s)=>{ const ownship={ gear:s.gear, cas:s.speed, speed:s.speed }; ${landing} ${section} return pa; });`)(states) as boolean[]
 
   it('is on whenever the gear is down and locked, at any airspeed', () => {
     expect(section).toMatch(/const pa=/)

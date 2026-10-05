@@ -223,7 +223,7 @@ function repeat(o: Repeat = {}): Shown {
   const climb = o.climb ?? 0, speed = 150
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
-  const names = ['ddi_hud', 'hud_pitch', 'hud_symbols', 'hud_tape', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  const names = ['ddi_hud', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
   return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
