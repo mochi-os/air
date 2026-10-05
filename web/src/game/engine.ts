@@ -1179,6 +1179,7 @@ const AIRCRAFT_MODELS={
 			{ lo:[0.3107,1.0068,4.3864], hi:[0.3495,1.0699,4.4738] },     // the MASTER ARM switch's
 			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] } ] } ],   // and the earlier dispenser panel's switches and ECM knob on the pedestal
 		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
+		twins:[{ node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", name:"INSTRUMENT_Needle_HydPressure_HYD2" }],   // the hydraulic pressure indicator's second pointer (NATOPS 2.7.1: a transducer in each reservoir; #150): the model draws one, so it is copied onto the same pivot
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		lights:{ lex:[1.25,-0.21,1.45], hinge:[-0.79,-0.50,4.13] },   // the starboard LEX and wingfold hinge position lights (NATOPS 2.6.1.2), measured on the model's LEX edge forward of the wing root and under the wing at the fold pivot; the port pair mirrors them
@@ -1251,7 +1252,8 @@ const AIRCRAFT_MODELS={
 	      // the needle family's clock-anchored +z convention with a game-plausible drive. The
 	      // model's CabinPress needle turns on the radar altimeter's dial (FO-5 item 41), whose
 	      // face build_radalt draws, needle and all: it is hidden
-	      { name:"hyd",       node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd" },
+	      { name:"hyd1",      node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd1" },   // HYD 1 and HYD 2, each its own pointer (2.7.1, #150): the second is the model's needle copied (spec.twins)
+	      { name:"hyd2",      node:"INSTRUMENT_Needle_HydPressure_HYD2",               axis:"z", gauge:"hyd2" },
 	      { name:"voltE",     node:"INSTRUMENT_Needle_Battery_AN_BatteryE_520",  axis:"y", sign:-1, gauge:"voltsE" },
 	      { name:"voltU",     node:"INSTRUMENT_Needle_BatteryUAction_AN_BatteryU_523", axis:"y", gauge:"voltsU" },
 	      // cockpit levers ride their authored clips (single calibrated sweeps), scrubbed from state
@@ -2065,7 +2067,7 @@ function lamps_update(out){
 		handle_lit=unsafe?(handle_lit<0?sim_time:handle_lit):-1;
 		l.transit.material.opacity=!buses.essential?0:wheels_warning()?((sim_time%1.1)<0.55?1:0):(unsafe?1:0);
 		lamp_set(l.nose,locked[0]); lamp_set(l.left,locked[1]); lamp_set(l.right,locked[2]); }
-	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5||!(((ownship.gauges||{}).hyd??0)>0);   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs) or without hydraulic pressure
+	if(l.half){ const slow=(out[STATE.cas]||0)*1.944<250, off=(out[STATE.jam+5]||0)>0.5||!((((ownship.gauges||{}).hyd1??0)+((ownship.gauges||{}).hyd2??0))>0);   // the flap lights read the SWITCH, never the flaps (NATOPS 2.8.4.3): HALF/FULL green below 250 kt; FLAPS amber with HALF or FULL selected above 250 kt, or a flap off (the LEF jam word the FCS page Xs) or without hydraulic pressure
 		lamp_set(l.half,flap_select===1&&slow);
 		lamp_set(l.full,flap_select===2&&slow);
 		lamp_set(l.flaps,(flap_select>0&&!slow)||off); }
@@ -4536,6 +4538,7 @@ async function init_external_model(kind){
 		const gltf={ scene:stocked.scene.clone(true), animations:stocked.animations };
 		{ try{
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
+				for(const twin of spec.twins||[]){ const o=gltf.scene.getObjectByName(twin.node); if(o&&o.parent){ const c=o.clone(true); c.name=twin.name; o.parent.add(c); } }   // a part the model draws once and the jet has twice, copied in place under its own name for the rig
 				for(const cut of spec.cut||[]) model_cut(gltf.scene, cut);
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
@@ -6699,7 +6702,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
 		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
-		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
+		hyd1:gL>0.03?2.83:0, hyd2:gR>0.03?2.83:0,              // ~3000 psi on the 0-5k arc while its own engine's pump turns: HYD 1 on the left AMAD, HYD 2 on the right (2.7.1); an engine failure takes its side's system (NATOPS 15.4)
 		foldpull:fold_handle==="lock"?0:1,                       // the wing fold handle out of LOCK (2.11.1), for its travel along the shaft
 		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
 		voltsE:volt_angle(battery_volts("e")), voltsU:volt_angle(battery_volts("u")),   // the E/U BATT voltmeter (#21)

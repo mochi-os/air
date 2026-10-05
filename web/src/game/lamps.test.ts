@@ -16,13 +16,13 @@ import * as countermeasures from './countermeasures'
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const block = /\n\tif\(l\.half\)\{ const slow=[\s\S]*?lamp_set\(l\.flaps,[^\n]*\n/.exec(source)?.[0] ?? ''
 
-interface Case { flap: number; kt: number; jam?: number; hyd?: number }
+interface Case { flap: number; kt: number; jam?: number; hyd?: [number, number] }
 // Returns the names of the flap lights on for a switch position, an airspeed
 // (knots calibrated) and the leading-edge flap jam word.
 function lit(c: Case): string[] {
   if (!block) throw new Error('flap lamp block not found in engine.ts')
   const run = new Function('c', `const STATE={cas:0, jam:1}, out=[c.kt/1.944, 0,0,0,0,0, c.jam||0];
-    const lamp_set=(m,on)=>{ m.on=!!on; }, l={half:{}, full:{}, flaps:{}}, ownship={ gauges:{ hyd:c.hyd??2.83 } };
+    const lamp_set=(m,on)=>{ m.on=!!on; }, l={half:{}, full:{}, flaps:{}}, ownship={ gauges:{ hyd1:(c.hyd??[2.83,2.83])[0], hyd2:(c.hyd??[2.83,2.83])[1] } };
     const flap_select=c.flap; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
@@ -43,9 +43,10 @@ describe('the flap position lights', () => {
     expect(build).toMatch(/gear\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\); m\.layers\.set\(LAYER_OWN\); \}\); g\.add\(gear\);/) // painted face aft, as the glareshield's
   })
 
-  it('show amber FLAPS for flaps without hydraulic pressure (2.8.4.3)', () => {
-    expect(lit({ flap: 0, kt: 150, hyd: 0 })).toEqual(['flaps'])
-    expect(lit({ flap: 1, kt: 150, hyd: 0 })).toEqual(['half', 'flaps'])
+  it('show amber FLAPS for flaps without hydraulic pressure (2.8.4.3), and not while either system has it', () => {
+    expect(lit({ flap: 0, kt: 150, hyd: [0, 0] })).toEqual(['flaps'])
+    expect(lit({ flap: 1, kt: 150, hyd: [0, 0] })).toEqual(['half', 'flaps'])
+    expect([lit({ flap: 1, kt: 150, hyd: [2.83, 0] }), lit({ flap: 1, kt: 150, hyd: [0, 2.83] })]).toEqual([['half'], ['half']])
   })
 
   it('show amber FLAPS instead once the switch is out of AUTO above 250 kt', () => {
@@ -684,7 +685,7 @@ describe('the lights test', () => {
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
-      const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd:3000 } };
+      const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
       ${update}
       return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);
         const seen={ blank }; Object.assign(seen,l); const r={};
@@ -758,5 +759,36 @@ describe('the lights test', () => {
     expect(keys).toMatch(/'lights\.test': 'Shift\+KeyL'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
     expect(settings.match(/id: 'lights\.test', label: msg`Lights test`, group: 'aircraft'/g)?.length).toBe(2)
+  })
+})
+
+// The hydraulic pressure indicator (FO-5 item 47, NATOPS 2.7.1): HYD 1 and HYD 2
+// on their own pointers, each from its own engine's pump (#150). The model draws
+// one needle; the second is that needle copied onto the same pivot at load.
+describe('the hydraulic pressure indicator', () => {
+  it('reads HYD 1 off the left engine and HYD 2 off the right, each on its own', () => {
+    const expression = /\n\t\thyd1:(gL>0\.03\?2\.83:0), hyd2:(gR>0\.03\?2\.83:0),/.exec(source)
+    expect(expression).not.toBeNull()
+    const read = (gL: number, gR: number) => new Function('gL', 'gR', `return [${expression![1]}, ${expression![2]}];`)(gL, gR) as number[]
+    expect([read(0.6, 0.6), read(0, 0.6), read(0.6, 0), read(0, 0)]).toEqual([[2.83, 2.83], [0, 2.83], [2.83, 0], [0, 0]])
+  })
+  it('draws a second pointer: the model\'s needle copied in place under its own name, which the rig turns for HYD 2', async () => {
+    const THREE = await import('three')
+    const twins = /\n\t\t\t\tfor\(const twin of spec\.twins\|\|\[\]\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(twins).not.toBe('')
+    const scene = new THREE.Group(), dial = new THREE.Group(), needle = new THREE.Group()
+    needle.name = 'INSTRUMENT_Needle_HydPressure_AN_HydPressure_529'
+    needle.add(new THREE.Mesh(new THREE.BufferGeometry()))
+    needle.rotation.z = 0.4
+    dial.add(needle); scene.add(dial)
+    const spec = { twins: [{ node: 'INSTRUMENT_Needle_HydPressure_AN_HydPressure_529', name: 'INSTRUMENT_Needle_HydPressure_HYD2' }] }
+    new Function('gltf', 'spec', twins)({ scene }, spec)
+    const twin = scene.getObjectByName('INSTRUMENT_Needle_HydPressure_HYD2')
+    expect(twin?.parent).toBe(dial)
+    expect(twin?.rotation.z).toBeCloseTo(0.4)
+    expect(twin?.children).toHaveLength(1)
+    expect(source).toMatch(/twins:\[\{ node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", name:"INSTRUMENT_Needle_HydPressure_HYD2" \}\]/)
+    expect(source).toMatch(/\{ name:"hyd1", +node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd1" \}/)
+    expect(source).toMatch(/\{ name:"hyd2", +node:"INSTRUMENT_Needle_HydPressure_HYD2", +axis:"z", gauge:"hyd2" \}/)
   })
 })
