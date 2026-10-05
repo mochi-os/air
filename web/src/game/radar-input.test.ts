@@ -445,7 +445,7 @@ describe('the range scale (the RDR page\'s arrows, the castle zoom)', () => {
 })
 
 describe('the HUD box: what the pilot has designated, and nothing else', () => {
-  // hud_target, radar_held and heat_quarry, lifted as the rig does, with the
+  // hud_target and radar_held, lifted as the rig does, with the
   // bandit alone or a match's remotes.
   type Jet = { group: { visible: boolean }; name: string }
   function world(multiplayer: boolean) {
@@ -458,8 +458,7 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
        let designated=-1;
        ${lift('radar_held')}
        ${lift('hud_target')}
-       ${lift('heat_quarry')}
-       return { RADAR, bandit, remotes, hud_target, radar_held, heat_quarry,
+       return { RADAR, bandit, remotes, hud_target, radar_held,
          designate:(id)=>{ designated=id; }, designated:()=>designated };`
     )(Radar) as {
       RADAR: Radar
@@ -467,7 +466,6 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
       remotes: Map<number, Jet>
       hud_target(): Jet | null
       radar_held(): void
-      heat_quarry(boxed: Jet | null): Jet | null
       designate(id: number | string): void
       designated(): number | string
     }
@@ -513,23 +511,13 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     expect(w.designated()).toBe('bandit')
   })
 
-  it("points the 9M's seeker at the bandit alone whether or not the radar has it, and at the designated jet in a match", () => {
-    const alone = world(false)
-    expect(alone.heat_quarry(null)).toBe(alone.bandit) // a heat seeker needs no radar
-    alone.bandit.group.visible = false
-    expect(alone.heat_quarry(null)).toBeNull()
-    const match = world(true)
-    const three = match.remotes.get(3)!
-    expect(match.heat_quarry(three)).toBe(three)
-    expect(match.heat_quarry(null)).toBeNull()
-  })
-
-  it('draws with these: the box from hud_target, the seeker from heat_quarry, the designation checked each radar step', () => {
+  it('draws with these: the box from hud_target, the seeker looked for in every view, the designation checked each radar step', () => {
     const hud = lift('draw_hud')
     expect(hud).toMatch(/const dst=hud_target\(\); if\(dst\)\{ boxed=dst;/)
     expect(hud).not.toMatch(/if\(has_enemy\)\{[^}]*boxed=bandit/) // never the bandit for being there
-    expect(hud).toMatch(/\n\tseeker_now=seeker_look\(boxed,pa\);/)
-    expect(lift('seeker_look')).toMatch(/const quarry=heat_quarry\(boxed\);[^\n]*\n[^\n]*lockon=ownship\.fwd\.dot\(to\)>0\.866&&d<reach;/) // without the helmet slaving it, the nose cone on heat_quarry's jet
+    expect(hud).toMatch(/\n\thud_cue=""; hud_shoot=false;[^\n]*\n\tseeker_now=seeker_look\(hud_target\(\),\(ownship\.gear\?\?1\)<0\.02\);/) // first, before any view returns
+    expect(source).not.toMatch(/heat_quarry/)
+    expect(lift('seeker_look')).not.toMatch(/0\.866/) // no cone on the client: the seeker's own 2.5° field about its line
     expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
     expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):\(seeker_now\.line&&proj_dir\(seeker_now\.line\)\)\|\|bore;/) // the seeker circle on its heat, boxed or not
     expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
@@ -735,7 +723,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(solo.status().tracks).toEqual([])
   })
   it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
-    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.slaved\?helmet\.pack\(seeker_now\.line\):null \};/)
+    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.line\?helmet\.pack\(seeker_now\.line\):null \};/) // whatever it is slaved to, whenever the 9M is selected (#143)
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
     expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
   })

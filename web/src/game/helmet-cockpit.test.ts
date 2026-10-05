@@ -49,7 +49,7 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
 const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
-  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'heat_quarry', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
+  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
     const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; helmet_frame(dt); } };
@@ -123,18 +123,28 @@ describe('where the helmet believes it looks and draws', () => {
 })
 
 describe('the 9M\'s seeker under the helmet', () => {
-  it('without the helmet slaving it, finds heat in the 30° cone about the nose as before', () => {
-    expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; const r=[]; for(const az of [20,35]){ bandit.pos.copy(at(az,0,2000)); const s=seeker_look(null,false); r.push([s.slaved,s.lockon]); } return r;`))
-      .toEqual([[false, true], [false, false]])
+  it('without the helmet or the radar, looks along the boresight with its 2.5° field (2.21.17)', () => {
+    expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; const r=[]; for(const az of [2,3,20]){ bandit.pos.copy(at(az,0,2000)); const s=seeker_look(null,false); r.push([s.lockon,s.line.z<-0.99]); } return r;`))
+      .toEqual([[true, true], [false, true], [false, true]])
   })
   it('slaved, has the jet the pilot looks at off the nose, inside its 2.5° field and the 40° gimbal', () => {
-    expect(pit(`master='9m'; const r=[]; for(const [jet,eye] of [[35,35],[35,39],[45,45],[0,20]]){ bandit.pos.copy(at(jet,0,2000)); look(eye); const s=seeker_look(null,false); r.push([s.slaved,s.lockon]); } return r;`))
-      .toEqual([[true, true], [true, false], [true, false], [true, false]]) // looking past the gimbal the seeker stops at 40°; looking away it does not see the nose
+    expect(pit(`master='9m'; const r=[]; for(const [jet,eye] of [[35,35],[35,39],[45,45],[0,20]]){ bandit.pos.copy(at(jet,0,2000)); look(eye); r.push(seeker_look(null,false).lockon); } return r;`))
+      .toEqual([true, false, false, false]) // looking past the gimbal the seeker stops at 40°; looking away it does not see the nose
   })
-  it('slaved, looks at the radar\'s target while the radar holds one, wherever the pilot looks; the helmet off, the nose cone as before', () => {
-    expect(pit(`master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(35,0,2000)); look(-20); const s=seeker_look(bandit,false); return [s.slaved,s.lockon];`)).toEqual([true, true])
-    expect(pit(`master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(45,0,2000)); look(45); const s=seeker_look(bandit,false); return [s.slaved,s.lockon];`)).toEqual([true, false]) // past the gimbal
-    expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; RADAR.stt='bandit'; const r=[]; for(const az of [10,35]){ bandit.pos.copy(at(az,0,2000)); const s=seeker_look(bandit,false); r.push([s.slaved,s.lockon]); } return r;`)).toEqual([[false, true], [false, false]])
+  it('looks at the radar\'s target while the radar holds one, wherever the pilot looks, the helmet on or off (the DCS guide\'s L&S slaving)', () => {
+    expect(pit(`master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(35,0,2000)); look(-20); return seeker_look(bandit,false).lockon;`)).toBe(true)
+    expect(pit(`master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(45,0,2000)); look(45); return seeker_look(bandit,false).lockon;`)).toBe(false) // past the gimbal
+    expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; RADAR.stt='bandit'; const r=[]; for(const az of [10,35,45]){ bandit.pos.copy(at(az,0,2000)); r.push(seeker_look(bandit,false).lockon); } return r;`)).toEqual([true, true, false])
+  })
+  it('stays on the boresight without MC2, which slaves it (2.21.15)', () => {
+    expect(pit(`knobs.hmd=0; frames(0.1); computers={ one:true, two:false }; master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(10,0,2000)); return seeker_look(bandit,false).lockon;`)).toBe(false)
+  })
+  it('is slaved to the helmet only from the pilot\'s own eyes: in another view, the boresight or the radar', () => {
+    expect(pit(`master='9m'; cfg.view='chase'; bandit.pos.copy(at(35,0,2000)); look(35); return seeker_look(null,false).lockon;`)).toBe(false)
+    expect(pit(`master='9m'; cfg.view='chase'; RADAR.stt='bandit'; bandit.pos.copy(at(35,0,2000)); return seeker_look(bandit,false).lockon;`)).toBe(true)
+  })
+  it('uncages to track the jet it has, the helmet off too', () => {
+    expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; RADAR.stt='bandit'; bandit.pos.copy(at(20,0,2000)); seeker_now=seeker_look(bandit,false); seeker_uncage(); RADAR.stt=null; return [!!seeker_track,seeker_look(null,false).lockon];`)).toEqual([true, true])
   })
   it('uncaged, keeps the jet it had as the pilot looks away, until it leaves the gimbal', () => {
     expect(pit(`master='9m'; bandit.pos.copy(at(20,0,2000)); look(20); seeker_now=seeker_look(null,false); seeker_uncage();
@@ -153,7 +163,7 @@ describe('the 9M\'s seeker under the helmet', () => {
     const fired = (seen: string) => new Function(`let aim='unset'; const arms={ arm:true }, mc=()=>({ one:true, two:true }), notice=()=>{}, translate=(t)=>t, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=true, bandit='bandit', master='9m';
       const seeker_now=${seen}, trigger_amraam=()=>{}, launch_missile=(st,target)=>{ aim=target; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ${lift('trigger_missile')}
 } trigger_missile(); return aim;`)() as unknown
-    expect([fired('{ slaved:true, quarry:"held" }'), fired('{ slaved:true, quarry:null }'), fired('{ slaved:false, quarry:null }')]).toEqual(['held', null, 'bandit'])
+    expect([fired('{ quarry:"held" }'), fired('{ quarry:null }')]).toEqual(['held', null]) // no tone, unguided: never the bandit for being there (#147)
   })
 })
 

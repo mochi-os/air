@@ -91,7 +91,7 @@ describe('the MASTER ARM switch', () => {
   })
   // trigger_missile's own closing brace stands alone, so the lift stops short of it
   const fired = (arm: boolean, master: string) => new Function('arm', 'master', `let fired=""; const said=[], arms={ arm }, mc=()=>({ one:true, two:true }), notice=(t)=>said.push(t), translate=(t)=>t, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false;
-    const trigger_amraam=()=>{ fired="amraam"; }, launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}, seeker_now={ slaved:false, quarry:null }; ${lift('trigger_missile')}
+    const trigger_amraam=()=>{ fired="amraam"; }, launch_missile=()=>{ fired="sidewinder"; return true; }, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}, seeker_now={ quarry:null }; ${lift('trigger_missile')}
 } trigger_missile(); return [fired, said];`)(arm, master) as [string, string[]]
   it('holds the missiles on their rails at SAFE, and says why', () => {
     expect(fired(true, '9m')).toEqual(['sidewinder', []]); expect(fired(true, '120c')).toEqual(['amraam', []])
