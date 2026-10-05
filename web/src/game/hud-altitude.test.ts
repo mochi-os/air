@@ -153,3 +153,31 @@ describe('the reject switch keeps the airspeed and altitude', () => {
     }
   })
 })
+
+// NATOPS 2.13.4.8.1's list of what the reject switch removes names none of the
+// weapons' ranging - the radar's range and closure, the AIM-120's launch zone,
+// the 9M's range scale - so they stay at every reject level on the HUD (#148).
+describe('the reject switch keeps the weapons\' ranging', () => {
+  it('keeps the range and closure under the altitude box at REJ 1 and REJ 2', () => {
+    const start = source.indexOf('\t// ---- target ranging data'), end = source.indexOf('\t// ---- vertical velocity', start)
+    const block = source.slice(start, end)
+    const text = (rej: number) => new Function(`const rej=${rej}, aa=true, boxed={}, rng=3000, vc=150, limited=false, GR='g', lx=700, wly=300, ppdv=20;
+      const text=[]; const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):()=>{}, set:()=>true }); ${block} return text;`)() as string[]
+    expect(start).toBeGreaterThan(0)
+    const norm = text(0)
+    expect(norm).toContain('RDR')
+    expect([text(1), text(2)]).toEqual([norm, norm])
+  })
+  it('draws the AIM-120\'s launch zone at every HUD reject level', () => {
+    const line = /\n\tif\(master==="120c"&&keep\("NIRD CIRCLE",\d\)&&!limited\) hud_launch_zone\([^\n]*\n/.exec(source)?.[0] ?? ''
+    const drawn = (rej: number) => new Function(`const master='120c', worn=null, rej=${rej}, limited=false, keep=(symbol,level)=>rej<level, hctx={}, GR='g', cx=0, cy=0, ppdv=20, ax=0, lx=0, axes={}; let calls=0; const hud_launch_zone=()=>{ calls++; }; ${line} return calls;`)() as number
+    expect(line).not.toBe('')
+    expect([drawn(0), drawn(1), drawn(2)]).toEqual([1, 1, 1])
+  })
+  it('draws the 9M\'s range scale at every reject level', () => {
+    const line = /\n\t\tif\(heat_shown\.zone[^\n]*\) heat_staff\([^\n]*\n/.exec(source)?.[0] ?? ''
+    const drawn = (declutter: number) => new Function(`const declutter=${declutter}, heat_shown={ zone:{} }, bore=[0,0], HH=900, hs=1, hctx={}, GR='g'; let calls=0; const heat_staff=()=>{ calls++; }; ${line} return calls;`)() as number
+    expect(line).not.toBe('')
+    expect([drawn(0), drawn(1), drawn(2)]).toEqual([1, 1, 1])
+  })
+})

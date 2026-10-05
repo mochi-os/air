@@ -389,8 +389,8 @@ describe('the 9M\'s cues, for the HUD or the helmet', () => {
     expect([cues('cue="flash"; sim_time=0.1;')[0], cues('cue="flash"; sim_time=0.3;')[0]]).toEqual([true, false])
     expect([cues('brk=true;')[0], cues('weapons_hold=true;')[0], cues('ownship.msl=0;')[0], cues('cue="break";')[0], cues('lockon=false;')]).toEqual([false, false, false, false, [false, false]])
   })
-  it('draw the staff beside the HUD\'s boresight below REJ 2, as before', () => {
-    expect(lift('draw_hud')).toContain('if(heat_shown.zone&&declutter<2) heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);')
+  it('draw the staff beside the HUD\'s boresight', () => {
+    expect(lift('draw_hud')).toContain('heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);')
   })
 })
 

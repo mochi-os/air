@@ -593,11 +593,13 @@ describe('the steering the HUD shows', () => {
     const crossing = drawn(`{ bearing:90*D2R, course:90*D2R }`)
     expect(crossing.paths[0][1][0] - crossing.paths[0][0][0]).toBeCloseTo(26, 6) // the shaft level, pointing right
   })
-  it('draws the arrow only with a course line selected, in NAV, and not at REJ 2', () => {
+  it('draws the arrow only with a course line selected and in NAV, at every reject level (2.13.4.8.1 names it at neither)', () => {
     expect(drawn(`{ bearing:0, course:null }`).paths).toEqual([])
     expect(drawn('null').paths).toEqual([])
     expect(drawn(`{ bearing:10*D2R, course:14*D2R }`, '9m').paths).toEqual([])
-    expect(drawn(`{ bearing:10*D2R, course:14*D2R }`, 'nav', 2).paths).toEqual([])
+    const norm = drawn(`{ bearing:10*D2R, course:14*D2R }`).paths
+    expect(norm.length).toBeGreaterThan(0)
+    for (const level of [1, 2]) expect(drawn(`{ bearing:10*D2R, course:14*D2R }`, 'nav', level).paths).toEqual(norm)
   })
 
   const cue = /\n\t\{ const gz=ownship\.gauges\|\|\{\}, need=master==="nav"[\s\S]*?\n\t\t\thctx\.beginPath\(\);[^\n]*\} \}\n/.exec(source)?.[0] ?? ''
