@@ -333,6 +333,7 @@ export interface InputSample {
   chaff: boolean // the dispense switch forward (#31): chaff singles, an edge like the flare's; a sample without it drops none
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
+  visual: boolean // that trigger edge is a VISUAL shot (#155); a server that predates it refuses the shot without a lock
   jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
   solo: boolean // this flare edge releases the flare alone - BYPASS, or a programme step without chaff (#107); a server that predates it drops a chaff bundle too
   extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay

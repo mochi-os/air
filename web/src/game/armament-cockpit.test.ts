@@ -202,7 +202,7 @@ describe('the FIRE EXTGH pushbutton', () => {
   it('reaches the damage model: alone as its third bit, in a match as the sample\'s extinguish flag, sent once', () => {
     expect(source).toMatch(/battle_progress\(ownship\.throttle,battle_tick\+\+,battle_reset,\(secured\[0\]\?1:0\)\|\(secured\[1\]\?2:0\)\|\(extinguish_flag\?4:0\)\); battle_reset=false; extinguish_flag=false;/)
     expect(source).toMatch(/eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, /)
-    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
+    expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; fox3_visual=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
   })
 })
 

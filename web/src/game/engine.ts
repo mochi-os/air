@@ -5464,7 +5464,7 @@ function trigger_amraam(){
 		// honest. A supported shot needs the STT the server can see on the emitter
 		// wire - the L&S is client-side only.
 		if(!amraam_visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
-		fox3_flag=true;
+		fox3_flag=true; fox3_visual=amraam_visual;   // a VISUAL shot says so (#155): the server launches it without a lock, its seeker after what lies in the circle
 		if(!cheat("ammunition")) ownship.amraam--;
 		audio_launch(); update_rails(ownship,ownship.msl);
 		return; }
@@ -10965,7 +10965,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // multiplayer The server is authoritative; fly_player runs as the local
 // predictor, corrected from snapshots (snap when >20 m off, gentle pull
 // otherwise). Remotes are interpolated ~100 ms behind live.
-let net=null, flare_flag=false, solo_flag=false, chaff_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
+let net=null, flare_flag=false, solo_flag=false, chaff_flag=false, missile_flag=false, fox3_flag=false, fox3_visual=false, session_over=false;
 let net_notice="", net_notice_t=0;
 function feed(fate,killer,victim){ const line=report(fate,killer,victim); if(line) comm(translate(line.text,line.values),"#ffd27f"); }   // one death, told to everyone: merged into the chat log so it outlives the three-second banner and answers "where did he go" for anyone who missed the moment
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
@@ -11835,13 +11835,13 @@ function net_frame(dt){
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.line?helmet.pack(seeker_now.line):null };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, visual:fox3_flag&&fox3_visual, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.line?helmet.pack(seeker_now.line):null };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
 	// state are the same instant. marked_steps is reset by the mark below, so
 	// this read and that one see the same number.
 	const sequence=net.input({...sample, steps:marked_steps});
-	if(sequence>0){ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; }
+	if(sequence>0){ flare_flag=false; solo_flag=false; chaff_flag=false; missile_flag=false; fox3_flag=false; fox3_visual=false; eject_flag=false; extinguish_flag=false; onspeed_owed=false; reset_owed=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).

@@ -424,6 +424,14 @@ describe('the AIM-120\'s field-of-view circle (the DCS guide, figure 154)', () =
 } trigger_amraam(); return aim;`)
     expect([shot(5, true), shot(10, true), shot(20, false)]).toEqual(['bandit', null, 'bandit']) // a supported shot is the radar's, wherever it points
   })
+  it('in a match, says a VISUAL shot is one with the trigger edge, and still refuses a supported shot without a lock (#155)', () => {
+    const edge = (visual: boolean, stt: string) => pit<[boolean, boolean, number]>(`let fox3_flag=false, fox3_visual=false; MULTIPLAYER=true; amraam_visual=${visual}; RADAR.stt=${stt};
+      const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ownship.amraam=2; ${lift('trigger_amraam')}
+} trigger_amraam(); return [fox3_flag,fox3_visual,ownship.amraam];`)
+    expect(edge(true, 'null')).toEqual([true, true, 1])
+    expect(edge(false, 'null')).toEqual([false, false, 2])
+    expect(edge(false, '"bandit"')).toEqual([true, false, 1])
+  })
 })
 
 describe('the heading scale on the helmet (the DCS guide)', () => {

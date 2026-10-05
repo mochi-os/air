@@ -80,7 +80,7 @@ describe('the jammer', () => {
     expect(state('transmit', { painted: true, ac: false })).toEqual([false, false])
   })
   it('tells a match the knob is at XMIT, on power, as the sample\'s jammer flag', () => {
-    expect(source).toMatch(/radar:fox3_flag, jammer:jammer_armed\(\), eject:eject_flag,/)
+    expect(source).toMatch(/radar:fox3_flag, visual:fox3_flag&&fox3_visual, jammer:jammer_armed\(\), eject:eject_flag,/)
   })
 })
 

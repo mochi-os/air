@@ -122,12 +122,13 @@ describe('the gun ranging data under the altitude box', () => {
     expect(ft[1]).toBeGreaterThan(584)
   })
 
-  it('shows in every A/A master with a boxed target, not in NAV, and never under REJ', () => {
+  it('shows in every A/A master with a boxed target, not in NAV, and at every reject level (2.13.4.8.1 names it at neither)', () => {
     expect(readouts({ rng: 500, vc: 0, boxed: false })).toEqual([])
     expect(readouts({ rng: 500, vc: 0, master: '9m' }).map(([t]) => t)).toEqual(['RDR', '0V', 'c', '1640 FT'])
     expect(readouts({ rng: 500, vc: 0, master: '120c' })).toHaveLength(4)
     expect(readouts({ rng: 500, vc: 0, master: 'nav' })).toEqual([])
-    expect(readouts({ rng: 500, vc: 0, declutter: 1 })).toEqual([])
+    expect(readouts({ rng: 500, vc: 0, declutter: 1 })).toHaveLength(4)
+    expect(readouts({ rng: 500, vc: 0, declutter: 2 })).toHaveLength(4)
   })
 
   it('is the only range and closure readout: the older miles-and-knots block is gone', () => {
@@ -227,11 +228,14 @@ describe('the breakaway X', () => {
   })
 
   it('takes the cue from every weapon: the AMRAAM zone draws first, the 9M and the closure breakaway before the cluster', () => {
-    const x = source.indexOf('\t// ---- the breakaway X')
-    expect(source.indexOf('\tif(master==="120c"&&rej<2&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);')).toBeLessThan(x)
-    const cluster = source.indexOf('\t// ---- instrument furniture (#133)')
-    expect(source.indexOf('\tif(brk) hud_cue="break";')).toBeLessThan(cluster)
-    expect(source.indexOf('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");')).toBeLessThan(cluster)
+    const before = (line: string | RegExp, mark: string) => { // the line is there, and ahead of the mark
+      const at = typeof line === 'string' ? source.indexOf(line) : source.search(line)
+      expect(at, String(line)).toBeGreaterThan(0)
+      expect(at, String(line)).toBeLessThan(source.indexOf(mark))
+    }
+    before(/\n\tif\(master==="120c"&&keep\("NIRD CIRCLE",\d\)&&!limited\) hud_launch_zone\(hctx,GR,cx,cy,ppdv,ax,lx,axes\);/, '\t// ---- the breakaway X')
+    before('\tif(brk) hud_cue="break";', '\t// ---- instrument furniture (#133)')
+    before('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");', '\t// ---- instrument furniture (#133)')
     expect(source).toMatch(/const cue=shoot_cue\(z\);\n\tif\(cue\) hud_cue=cue;/)
   })
 
