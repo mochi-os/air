@@ -14,7 +14,7 @@ import type { InputSample } from './net'
 const sample = (over: Partial<InputSample> = {}): InputSample => ({
   pitch: -0.123456789, roll: 0.123456789, yaw: 0.0123456789, throttle: 0.87654321, speedbrake: 0.25, reheat: 0.5, brake: false, bypass: false, emergency: false, mechanical: false,
   wing: 0, centre: 0, steering: 0, trim: 0, lean: 0, reset: false, flap: 0, gear: false, hook: false, probe: false, eject: false, override: false, dump: false, port: false, starboard: false, fire: false, flare: false, chaff: false, missile: false, radar: false, jammer: false,
-  solo: false, extinguish: false, onspeed: false, reverted: false, held: 0, status: { reply: true, challenge: true, link: true, antenna: 'both', tracks: [] }, seeker: null, steps: 1, ...over,
+  solo: false, extinguish: false, onspeed: false, reverted: false, held: 0, visual: false, status: { reply: true, challenge: true, link: true, antenna: 'both', tracks: [] }, seeker: null, steps: 1, ...over,
 })
 const filled = (samples: InputSample[]) => { const batch: Queued[] = []; samples.forEach((s, k) => queue(batch, s, 100 + k)); return batch }
 
@@ -28,9 +28,10 @@ describe('the input batch', () => {
     const [sent] = filled([sample()])
     for (const key of ['pitch', 'roll', 'yaw', 'throttle', 'speedbrake', 'reheat', 'brake', 'gear', 'hook', 'fire', 'flare', 'chaff', 'missile', 'radar', 'jammer', 'port', 'starboard', 'steps']) expect(sent, key).toHaveProperty(key)
   })
-  it('leaves solo and extinguish out unless they are set', () => {
+  it('leaves solo, extinguish and visual out unless they are set', () => {
     const [plain] = filled([sample()])
-    expect('solo' in plain || 'extinguish' in plain).toBe(false)
+    expect('solo' in plain || 'extinguish' in plain || 'visual' in plain).toBe(false)
+    expect(filled([sample({ radar: true, visual: true })])[0]).toMatchObject({ radar: true, visual: true }) // the AIM-120's VISUAL edge (#155)
     const [set] = filled([sample({ solo: true, extinguish: true })])
     expect([set.solo, set.extinguish]).toEqual([true, true])
     expect(filled([sample({ solo: true })])[0]).not.toHaveProperty('extinguish')
@@ -61,12 +62,12 @@ describe('the input batch', () => {
     // sample; an edge is one sample's, and the datagram carries that sample once.
     const tracks = Array.from({ length: 16 }, (_, k) => 40 + k)
     const level = sample({ solo: true, reverted: true, held: 526, trim: 1, lean: -1, status: { reply: true, challenge: true, link: true, antenna: 'lower', tracks } })
-    const edge = { ...level, extinguish: true, onspeed: true, seeker: [-17999, -8999] as [number, number] } // the newest, with the helmet's line at its widest
+    const edge = { ...level, extinguish: true, onspeed: true, radar: true, visual: true, seeker: [-17999, -8999] as [number, number] } // the newest, with the helmet's line at its widest and a VISUAL shot
     const size = cbor_encode({ kind: 'input', inputs: filled([level, level, edge]) }).length
     expect(BUDGET).toBe(1100)
     expect(size).toBeLessThanOrEqual(BUDGET)
     expect(size).toBeGreaterThan(BUDGET - 60) // which is most of the room: a field added to every sample has to be paid for
-    expect(size - cbor_encode({ kind: 'input', inputs: filled([sample(), sample(), sample()]) }).length).toBeLessThan(145) // what the worst costs over a quiet one: the helmet's line is 14 bytes of it
+    expect(size - cbor_encode({ kind: 'input', inputs: filled([sample(), sample(), sample()]) }).length).toBeLessThan(155) // what the worst costs over a quiet one: the helmet's line is 14 bytes of it, the VISUAL flag 8
   })
   it('measures the sample the engine sends: the same fields, no more and no fewer', () => {
     const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')

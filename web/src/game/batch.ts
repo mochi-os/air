@@ -26,12 +26,12 @@ export const BUDGET = 1100
 // helmet slaves it, on the newest sample alone, which is the one the server
 // reads them from.
 export function queue(batch: Queued[], sample: InputSample, sequence: number): void {
-  const { solo, extinguish, onspeed, reverted, held, status, seeker, ...rest } = sample
+  const { solo, extinguish, onspeed, reverted, held, visual, status, seeker, ...rest } = sample
   for (const earlier of batch) {
     delete earlier.status
     delete earlier.seeker
   }
-  const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(held > 0 ? { held } : {}) }
+  const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(held > 0 ? { held } : {}), ...(visual ? { visual } : {}) }
   batch.push({ ...rest, ...rare, status: pack(status), ...(seeker ? { seeker } : {}), sequence })
   if (batch.length > DEPTH) batch.shift()
 }

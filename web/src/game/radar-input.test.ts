@@ -843,7 +843,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
       expect(body, name).not.toMatch(/rng=wrap_distance\(ownship\.pos,dst\.pos\)/)
       expect(body, name).toContain('vc,ranged?rng:null,')
     }
-    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!rej&&!limited)')
+    expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!limited)')
   })
   it('has no zone without a trackfile, or once the jet is gone', () => {
     const z = zones()
