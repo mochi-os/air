@@ -10482,6 +10482,9 @@ function hud_fit(){ const glass=ownship.group.userData.glass, field=glass&&glass
 	const ppd=HH/camera.fov, ppdv=HH/45, k=ppd/ppdv; if(!field) return k;
 	const up=Math.max(ppdv,172-2.75*ppdv), down=12.6*ppdv+8, half=4.2*ppdv+112;   // the layout's reach from the waterline datum: the A/A heading labels above, the NAV weapon word below, the altitude box's R suffix to the side
 	return Math.min(k,0.97*field.top*ppd/up,0.97*field.floor*ppd/down,0.97*field.side*ppd/half); }
+// hud_scale: the HUD's symbol scale in the first-person view on screen, as draw_hud draws whenever the HUD is in
+// sight - its layout 1:1 in the HUD view, carried onto the glass at the angle it subtends there in the pit.
+function hud_scale(){ return cfg.view==="cockpit"?hud_fit():1; }
 // gpws_arrow draws the GPWS recovery cue (NATOPS 2.17.5.3, figure 2-41): a steady
 // outlined arrow at the HUD centre, perpendicular to the horizon and pointing the
 // way to pull, up the ladder, so it turns with the bank (+ right wing down).
@@ -11287,7 +11290,7 @@ function hmd_toward(to){ const c=_hmd_v.copy(to).applyQuaternion(_hmd_q.copy(cam
 	return [x/l,y/l]; }
 // hmd_mark: the TD box, or the designation's diamond, on a world direction where the helmet believes it lies,
 // held at the edge of the field nearest it while it lies outside (the DCS guide).
-function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*ppd/ppdv, edge=R-1.5*s;
+function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*hud_scale(), edge=R-1.5*s;   // the HUD's own box and diamond size (14*hs, 8*hs), so through the HUD the two marks coincide at every field and zoom; sized by ppd/ppdv, they matched only at the 45° field
 	let at=hmd_at(to);
 	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge]; }
 	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return; }
