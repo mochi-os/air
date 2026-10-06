@@ -42,13 +42,13 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });
   const camera=new THREE.PerspectiveCamera(60,HW/HH,0.1,1e7); camera.updateMatrixWorld();
   const look=(az,el=0)=>{ camera.quaternion.setFromEuler(new THREE.Euler(el*D2R,-az*D2R,0,'YXZ')); camera.updateMatrixWorld(); };
-  const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(0,0,-1), right:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), canopy:0, msl:2, launching:false, gear:1 };
+  const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(0,0,-1), right:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), canopy:0, msl:2, launching:false, gear:1, group:{ userData:{} } };
   const bit=avionics.fresh(), wrap_axis=(v)=>v;
   let MULTIPLAYER=false, has_enemy=true; const remotes=new Map();
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
 const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
-const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
+const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hud_fit', 'hud_scale', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
   'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
@@ -224,6 +224,17 @@ describe('the helmet display', () => {
     expect(out.rects).toHaveLength(1)
     expect(out.rects[0][0] + half).toBeCloseTo(500 + R - 1.5 * half, 6) // held at the field's right edge
     expect(out.text).toContain('40')
+  })
+  it('boxes the L&S at the size the HUD draws its own box, so through the HUD the two coincide at every field', () => {
+    // draw_hud's box is 14*hs either side, hs the HUD view's 1 or the glass's hud_fit() in the pit
+    expect(source).toContain('const hs=glass?hud_fit():1;')
+    expect(source).toContain('hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs);')
+    const box = (setup: string) => show(`${setup} const boxed={ pos:at(3,0,2000) }; camera.updateProjectionMatrix();`, 'draw_hmd(null,false,boxed,0,null,null)').rects[0]?.[2]
+    for (const field of [45, 60, 75]) expect(box(`cfg.view='hud'; master='9m'; camera.fov=${field};`)).toBeCloseTo(28, 9) // the HUD view in an A/A master, where the helmet draws through the HUD even with BLNK: 28 pixels whatever the field
+    expect(box(`camera.fov=60;`)).toBeCloseTo(28 * 45 / 60, 9) // the pit, the glass not limiting: the HUD's layout at the world's angle, as before
+    const fit = pit<number>(`camera.fov=60; ownship.group.userData.glass={ field:{ top:3, floor:20, side:20 } }; return hud_fit();`)
+    expect(fit).toBeLessThan(45 / 60) // a glass too short for the layout shrinks the HUD's symbols to fit it
+    expect(box(`camera.fov=60; ownship.group.userData.glass={ field:{ top:3, floor:20, side:20 } };`)).toBeCloseTo(28 * fit, 9) // and the helmet's box with them
   })
   it('draws the locator line from the aiming cross, longer the farther off, with its arrowhead and the angle over the cross', () => {
     const tll = (degrees: number) => pit<{ lines: number[][]; text: [string, number, number][] }>(`const lines=[], text=[]; let pen=[0,0];
