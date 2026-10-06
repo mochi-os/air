@@ -5493,16 +5493,21 @@ function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR
 // and is handed to the Go core with the datalink's first estimate — or with
 // none at all for a VISUAL shot, which starts the seeker hot. The slot is
 // the core's handle for this round's flight.
+// amraam_departure: the station st's next AMRAAM leaves from and the velocity it leaves with - one reading for
+// launch_amraam, which fires it, and launch_zone, whose ladder flies it and adds nothing of its own. Ejector
+// points (the cheek LAU-116, the inboard LAU-115C) punch the round DOWN before the motor lights; rail points
+// (wing LAU-127s, single or twin) send it forward off the rail like the 9M.
+function amraam_departure(st){ const order=stores_amraams(st.loadout||{}), name=order[Math.max(0,order.length-Math.max(0,st.amraam|0))];
+	if(stores_eject(st.loadout||{},name||"")) return { name, velocity:{ x:st.fwd.x*(st.speed+15), y:st.fwd.y*st.speed-8, z:st.fwd.z*(st.speed+15) } };
+	return { name, velocity:{ x:st.fwd.x*(st.speed+30), y:st.fwd.y*(st.speed+30), z:st.fwd.z*(st.speed+30) } }; }
 function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.9,0);
-	const order=stores_amraams(st.loadout||{});
-	const name=order[Math.max(0,order.length-Math.max(0,st.amraam|0))];
+	const { name, velocity }=amraam_departure(st);
 	const piece=name&&st.racks&&st.racks.nodes&&st.racks.nodes[name];
 	if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
-	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
-	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
+	m.vx=velocity.x; m.vy=velocity.y; m.vz=velocity.z;
 	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
@@ -10316,8 +10321,8 @@ function launch_zone(){
 	const t=radar_target(track); if(!t) return null;
 	if(zone&&zone_track===track&&sim_time-zone_at<0.5) return zone;   // ~2 Hz: each ladder flies several trial shots
 	zone_track=track; zone_at=sim_time;
-	zone=round_ladder(
-		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
+	zone=round_ladder(   // the shot the next round makes: it leaves along the nose with the launcher's push (amraam_departure), and the ladder adds nothing - handed the jet's own velocity it drew the zone for a round nobody fires, the no-escape range about 14 km short at cruise alpha
+		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:amraam_departure(ownship).velocity },
 		{ position:t.position, velocity:t.velocity }, WORLD_WRAP);
 	if(zone){ const p=t.position, v=t.velocity;
 		zone.range=Math.hypot(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z));
@@ -10346,8 +10351,12 @@ function heat_zone(){
 	let swing={x:0,y:0,z:0};   // his present acceleration, from the last refresh: the ladder flies his turn on, not a straight line
 	if(heat_prev&&heat_track===track&&sim_time-heat_prev.t>0.2){ const dt=sim_time-heat_prev.t; swing={x:(v.x-heat_prev.vx)/dt,y:(v.y-heat_prev.vy)/dt,z:(v.z-heat_prev.vz)/dt}; }
 	heat_prev={t:sim_time,vx:v.x,vy:v.y,vz:v.z}; heat_track=track; heat_at=sim_time;
+	// The trial round leaves along the nose at the jet's speed, as launch_missile fires it and the server's
+	// launcher() takes the shooter: handed the flight path, at fighting alpha it flew a round nobody fires, the
+	// target the nose was pulling onto sat outside its gimbal, and SHOOT stayed dark over a tone.
+	const speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	heat=heater_ladder(
-		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
+		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.fwd.x*speed,y:ownship.fwd.y*speed,z:ownship.fwd.z*speed} },
 		{ position:t.position, velocity:v }, swing, t.reheat, WORLD_WRAP);
 	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
