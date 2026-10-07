@@ -1489,12 +1489,12 @@ function MissionPanel({
                 options={[
                   {
                     value: 'day',
-                    label: <Trans>Day</Trans>,
+                    label: <Trans context='daytime'>Day</Trans>,
                     icon: TOD_ICONS.day,
                   },
                   {
                     value: 'night',
-                    label: <Trans>Night</Trans>,
+                    label: <Trans context='daytime'>Night</Trans>,
                     icon: TOD_ICONS.night,
                   },
                 ]}

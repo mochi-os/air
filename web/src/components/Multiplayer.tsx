@@ -113,7 +113,7 @@ const DEVIATIONS: Record<string, React.ReactNode> = {
   fox2: 'Fox 2',
   bvr: 'BVR',
   spaced: <Trans>Anchored sides</Trans>, // the chip reuses the switch's own words rather than a second string to translate
-  night: <Trans>Night</Trans>,
+  night: <Trans context='daytime'>Night</Trans>,
   cumulus: <Trans>Cumulus</Trans>,
   high_stratus: <Trans>High stratus</Trans>,
   mid_stratus: <Trans>Mid stratus</Trans>,
@@ -707,13 +707,13 @@ export function Multiplayer({
                   group={group + 'tod'}
                   value='day'
                   icon={TOD_ICONS.day}
-                  label={<Trans>Day</Trans>}
+                  label={<Trans context='daytime'>Day</Trans>}
                 />
                 <Option
                   group={group + 'tod'}
                   value='night'
                   icon={TOD_ICONS.night}
-                  label={<Trans>Night</Trans>}
+                  label={<Trans context='daytime'>Night</Trans>}
                 />
               </RadioGroup>
               <RadioGroup value={clouds} onValueChange={setClouds}>
