@@ -26,6 +26,11 @@ msgstr "(gulaalame)"
 msgid "(expand)"
 msgstr "(babal'isi)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(ati)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[hin qindoofne]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# wanta} other {# wantoota}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {deebii #} other {deebii # dabalataa}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Gadi-bu'uu gaarii (injinoonni dhaabatan)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Saffisa goruu itti-fufaa gaarii"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1166,6 +1184,7 @@ msgstr "Garagalfamee gara saanduqa garagalchaa"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
@@ -2911,6 +2930,10 @@ msgstr "Seerri itti seenumsaa hin qindaa'amne. Eenyu qabeenya kana itti seenuu d
 msgid "No activity yet"
 msgstr "Hanga ammaatti sochiin hin jiru"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Hanga ammaatti yaadni hin jiru"
@@ -3043,6 +3066,15 @@ msgstr "GOMMAA DURAA"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Piroofaayilii joystick miti"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4098,6 +4130,10 @@ msgstr "Bireekii saffisaa"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Saffisawwan KCAS keessatti, salphaa (boba'aa xiqqaa, fe'umsa malee) irraa hanga ulfaataa (ulfina waliigalaa guddaa) tti hangaan. Daataan taphicha keessatti yaalidhaan argame. Garaagarummaan xiyyaara dhugaa irraa jiru kamiyyuu dogoggora moodeela balali'ii simuleetara agarsiisa."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "QOOCHOO DIRIIRSI"
@@ -4376,7 +4412,6 @@ msgid "Toggle view options"
 msgstr "Filannoo argaa jijjiiri"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
 msgstr "Wantoota daawwataman jijjiiri"
 
@@ -4505,6 +4540,10 @@ msgstr "Dogoggora API hin eegamne"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Hin xumuramne"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

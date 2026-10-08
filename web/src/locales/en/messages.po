@@ -26,6 +26,11 @@ msgstr "(edited)"
 msgid "(expand)"
 msgstr "(expand)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr "(from {0})"
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(you)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[not set]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr "{0, plural, one {# file changed} other {# files changed}}"
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# item} other {# items}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# reply} other {+# more replies}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Best glide (engines out)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Best sustained turn speed"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr "Binary file not shown"
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1166,6 +1184,7 @@ msgstr "Copied to clipboard"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
@@ -2911,6 +2930,10 @@ msgstr "No access rules configured. Add rules to control who can access this res
 msgid "No activity yet"
 msgstr "No activity yet"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr "No changes to display"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "No comments yet"
@@ -3043,6 +3066,15 @@ msgstr "NOSE GEAR"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Not a joystick profile"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr "Not compared: larger than {0}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr "Not compared: over the size limit"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4098,6 +4130,10 @@ msgstr "Speed brake"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr "Split"
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "SPREAD WINGS"
@@ -4376,7 +4412,6 @@ msgid "Toggle view options"
 msgstr "Toggle view options"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
 msgstr "Toggle watched filter"
 
@@ -4505,6 +4540,10 @@ msgstr "Unexpected API error"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Unfinished"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr "Unified"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

@@ -26,6 +26,11 @@ msgstr "(askichata)"
 msgid "(expand)"
 msgstr "(jathiqaña)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(juma)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[jan uskuta]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# yänaka} other {# yänaka}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# kutsuwi} other {# mayamp kutsuwinaka}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Suma llusk'a jalaña (motornaka jiwata)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Suma sarantir muyuña velocidad"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1166,6 +1184,7 @@ msgstr "Clipboard-ru copiata"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
@@ -2911,6 +2930,10 @@ msgstr "Jan mantañ kamachi configuratati. Kamachi yapxatma khiti aka recurso ma
 msgid "No activity yet"
 msgstr "Janira lurawi"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Janira comentarionaka"
@@ -3043,6 +3066,15 @@ msgstr "NASA TREN"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Janiw joystick profilkiti"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4098,6 +4130,10 @@ msgstr "Wayra freno"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Velocidadanakax KCAS-na, pisi (juk'a combustible, jan cargani) tuqita jach'a (juk'ampi jach'a jathi) tuqikama. Datonakax anati manqhana yant'awimpi jikxatata. Kuna jan kikipas chiqa avionampi simulador jalaña modelon pantjatanakapa uñacht'ayi."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "CHIQNAKA JIST'ARAÑA"
@@ -4376,7 +4412,6 @@ msgid "Toggle view options"
 msgstr "Uñjañ opcionanak mayjt'ayaña"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
 msgstr "Uñch'ukita filtro mayjt'ayaña"
 
@@ -4505,6 +4540,10 @@ msgstr "Jan suyt'ata API pantjawi"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Jan tukuyata"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
