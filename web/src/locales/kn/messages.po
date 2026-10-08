@@ -26,6 +26,11 @@ msgstr "(ಸಂಪಾದಿಸಲಾಗಿದೆ)"
 msgid "(expand)"
 msgstr "(ವಿಸ್ತರಿಸಿ)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(ನೀವು)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[ಸಜ್ಜುಗೊಳಿಸಿಲ್ಲ]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# ಐಟಂ} other {# ಐಟಂಗಳು}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# ಪ್ರತ್ಯುತ್ತರ} other {+# ಹೆಚ್ಚಿನ ಪ್ರತ್ಯುತ್ತರಗಳು}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "ಅತ್ಯುತ್ತಮ ಜಾರುವಿಕೆ (ಎಂಜಿನ್
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "ಅತ್ಯುತ್ತಮ ನಿರಂತರ ತಿರುವು ವೇಗ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1166,6 +1184,7 @@ msgstr "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾ�
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
@@ -2911,6 +2930,10 @@ msgstr "ಯಾವುದೇ ಪ್ರವೇಶ ನಿಯಮಗಳನ್ನು ಕ
 msgid "No activity yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಇಲ್ಲ"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳಿಲ್ಲ"
@@ -3043,6 +3066,15 @@ msgstr "ಮುಂದಿನ ಚಕ್ರ"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "ಇದು ಜಾಯ್‌ಸ್ಟಿಕ್ ಪ್ರೊಫೈಲ್ ಅಲ್ಲ"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4098,6 +4130,10 @@ msgstr "ವೇಗ ಬ್ರೇಕ್"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "KCAS ನಲ್ಲಿ ವೇಗಗಳು, ಹಗುರ (ಕನಿಷ್ಠ ಇಂಧನ, ಯಾವುದೇ ಬಾಹ್ಯ ಭಾರವಿಲ್ಲ) ದಿಂದ ಭಾರ (ಗರಿಷ್ಠ ಒಟ್ಟು ತೂಕ) ವರೆಗಿನ ಶ್ರೇಣಿಯಾಗಿ. ಡೇಟಾವನ್ನು ಆಟದಲ್ಲಿ ಪ್ರಾಯೋಗಿಕವಾಗಿ ಪಡೆಯಲಾಗಿದೆ. ನಿಜವಾದ ವಿಮಾನದಿಂದ ಯಾವುದೇ ವ್ಯತ್ಯಾಸಗಳು ಸಿಮ್ಯುಲೇಟರ್‌ನ ಹಾರಾಟ ಮಾದರಿಯ ದೋಷಗಳನ್ನು ಪ್ರತಿಬಿಂಬಿಸುತ್ತವೆ."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ರೆಕ್ಕೆ ಹರಡಿ"
@@ -4376,7 +4412,6 @@ msgid "Toggle view options"
 msgstr "ವೀಕ್ಷಣೆ ಆಯ್ಕೆಗಳನ್ನು ಬದಲಾಯಿಸಿ"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
 msgstr "ವೀಕ್ಷಿತ ಫಿಲ್ಟರ್ ಟಾಗಲ್ ಮಾಡಿ"
 
@@ -4505,6 +4540,10 @@ msgstr "ಅನಿರೀಕ್ಷಿತ API ದೋಷ"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "ಅಪೂರ್ಣ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

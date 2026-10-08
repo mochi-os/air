@@ -26,6 +26,11 @@ msgstr "(რედაქტირებულია)"
 msgid "(expand)"
 msgstr "(გაშლა)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(თქვენ)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[არ არის მითითებული]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, other {# ერთეული}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, other {# პასუხი}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "საუკეთესო პლანირება (ძრავე
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "საუკეთესო მდგრადი მოხვევის სიჩქარე"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1166,6 +1184,7 @@ msgstr "ბუფერში დაკოპირდა"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
+#: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 #: ../../../lib/web/src/components/ui/copy-button.tsx
@@ -2911,6 +2930,10 @@ msgstr "წვდომის წესები არ არის კონ�
 msgid "No activity yet"
 msgstr "აქტივობა ჯერ არ არის"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "კომენტარები ჯერ არ არის"
@@ -3043,6 +3066,15 @@ msgstr "წინა შასი"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "ეს არ არის ჯოისტიკის პროფილი"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4098,6 +4130,10 @@ msgstr "სიჩქარის მუხრუჭი"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "სიჩქარეები KCAS-ში, დიაპაზონად მსუბუქიდან (მინიმალური საწვავი, დამატებითი დატვირთვის გარეშე) მძიმემდე (მაქსიმალური საერთო წონა). მონაცემები მიღებულია ექსპერიმენტულად თამაშში. ნებისმიერი განსხვავება რეალური თვითმფრინავისგან ასახავს სიმულატორის ფრენის მოდელის შეცდომებს."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ფრთების გაშლა"
@@ -4376,7 +4412,6 @@ msgid "Toggle view options"
 msgstr "ხედის ვარიანტების გადართვა"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Toggle watched filter"
 msgstr "ყურადღების ფილტრის გადართვა"
 
@@ -4505,6 +4540,10 @@ msgstr "API-ის მოულოდნელი შეცდომა"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "დაუსრულებელი"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
