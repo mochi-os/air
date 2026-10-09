@@ -26,6 +26,11 @@ msgstr "(a tunṣe)"
 msgid "(expand)"
 msgstr "(fẹ̀ jáde)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(ìwọ)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[kò sí]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# nkan} other {# nkan}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {Ìdáhùn #} other {+# àwọn ìdáhùn síi}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Fífò-àfẹ́fẹ́ tó dára jù (ẹ́ńjìnnì kú)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Ìyára ìyípo tó dúró tó dára jù"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "A kò ṣètò àwọn òfin àyè kankan. Fi àwọn òfin kún láti �
 msgid "No activity yet"
 msgstr "Kò sí iṣẹ́ síbẹ̀"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Kò sí àlàyé síbẹ̀"
@@ -3046,6 +3068,15 @@ msgstr "GÍYÀ IMÚ"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Kì í ṣe profaili joystick"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "Breki àfẹ́fẹ́"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Àwọn ìyára wà ní KCAS, gẹ́gẹ́ bí ààlà láti fúyẹ́ (epo tó kéré jù, láìsí ẹrù) dé wíwúwo (ìwúwo lápapọ̀ tó ga jù). A ṣe àgbékalẹ̀ dátà náà nípasẹ̀ àdánwò nínú eré náà. Ìyàtọ̀ èyíkéyìí sí ọkọ̀ òfuurufú gidi ń fi àwọn àṣìṣe àwòṣe ìfòfò ti ẹ̀rọ àfarawé hàn."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "TẸ́ ÌYẸ́ SÍLẸ̀"
@@ -4507,6 +4542,10 @@ msgstr "Àṣìṣe API tí a kò retí"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Kò parí"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

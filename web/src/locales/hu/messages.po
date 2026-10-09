@@ -26,6 +26,11 @@ msgstr "(szerkesztve)"
 msgid "(expand)"
 msgstr "(kibontás)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(te)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[nincs beállítva]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# elem} other {# elem}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# válasz} other {+# további válasz}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Legjobb siklás (leállt hajtóművek)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Legjobb tartós fordulási sebesség"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "Nincsenek konfigurált hozzáférési szabályok. Adjon hozzá szabályo
 msgid "No activity yet"
 msgstr "Még nincs tevékenység"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Még nincsenek hozzászólások"
@@ -3046,6 +3068,15 @@ msgstr "ORRFUTÓ"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Ez nem botkormány-profil"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "Sebességfék"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Sebességek KCAS-ban, könnyűtől (minimális üzemanyag, függesztmények nélkül) nehézig (maximális össztömeg) terjedő tartományban. Az adatok a játékon belül, kísérleti úton lettek meghatározva. A valódi repülőgéptől való bármely eltérés a szimulátor repülési modelljének hibáit tükrözi."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "SZÁRNYAK KINYITÁSA"
@@ -4507,6 +4542,10 @@ msgstr "Váratlan API-hiba"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Befejezetlen"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

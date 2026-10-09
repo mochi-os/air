@@ -26,6 +26,11 @@ msgstr "(دەستکاریکراو)"
 msgid "(expand)"
 msgstr "(فراوانکردن)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(تۆ)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[دانەنراوە]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# بڕگە} other {# بڕگە}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# وەڵام} other {+# وەڵامی زیاتر}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "باشترین خلیسکان (بزوێنەرەکان کوژاون)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "باشترین خێرایی سووڕانەوەی بەردەوام"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "هیچ ڕێسایەکی دەستڕاگەیشتن ڕێکنەخراوە. �
 msgid "No activity yet"
 msgstr "هێشتا هیچ چالاکییەک نییە"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "هێشتا هیچ بۆچوونێک نییە"
@@ -3046,6 +3068,15 @@ msgstr "چەرخی پێشەوە"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "ئەمە پرۆفایلی جۆیستیک نییە"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "بریکی هەوا"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "خێراییەکان بە KCAS، وەک مەودایەک لە سووک (کەمترین سووتەمەنی، بێ چەک) بۆ قورس (زۆرترین کێشی گشتی). داتاکان بە شێوەی ئەزموونی لەناو یارییەکەدا وەرگیراون. هەر جیاوازییەک لەگەڵ فڕۆکەی ڕاستەقینەدا ڕەنگدانەوەی هەڵەکانی مۆدێلی فڕینی هاوشێوەکارە."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "باڵەکان بکەرەوە"
@@ -4507,6 +4542,10 @@ msgstr "هەڵەیەکی چاوەڕواننەکراوی API"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "تەواونەبوو"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

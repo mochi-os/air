@@ -26,6 +26,11 @@ msgstr "(golygwyd)"
 msgid "(expand)"
 msgstr "(ehangu)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(chi)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[heb ei osod]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, zero {# eitem} one {# eitem} two {# eitem} few {# e
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, zero {# ateb} one {# ateb} two {+# ateb arall} few {+# ateb arall} many {+# ateb arall} other {+# ateb arall}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Gleidio gorau (peiriannau wedi diffodd)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Cyflymder tro parhaus gorau"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "Dim rheolau mynediad wedi'u ffurfweddu. Ychwanegwch reolau i reoli pwy s
 msgid "No activity yet"
 msgstr "Dim gweithgaredd eto"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Dim sylwadau eto"
@@ -3046,6 +3068,15 @@ msgstr "OLWYN TRWYN"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Nid proffil ffon reoli mo hwn"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "Brêc aer"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Cyflymderau mewn KCAS, fel ystod o ysgafn (isafswm tanwydd, dim llwythi allanol) i drwm (uchafswm crynswth). Data wedi'i ddeillio'n arbrofol yn y gêm. Mae unrhyw wahaniaethau o'r awyren go iawn yn adlewyrchu gwallau ym model hedfan yr efelychydd."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "LLEDAENU'R ADENYDD"
@@ -4507,6 +4542,10 @@ msgstr "Gwall API annisgwyl"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Heb ei orffen"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

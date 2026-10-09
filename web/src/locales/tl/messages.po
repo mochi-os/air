@@ -26,6 +26,11 @@ msgstr "(in-edit)"
 msgid "(expand)"
 msgstr "(palawakin)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(ikaw)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[hindi naitakda]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# item} other {# na item}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# tugon} other {+# pang tugon}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Pinakamahusay na pag-glide (patay ang makina)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Bilis ng pinakamahusay na tuloy-tuloy na pagliko"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "Walang naka-configure na access rule. Magdagdag ng mga rule upang kontro
 msgid "No activity yet"
 msgstr "Wala pang aktibidad"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "Wala pang komento"
@@ -3046,6 +3068,15 @@ msgstr "GEAR SA ILONG"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Hindi ito profile ng joystick"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "Preno ng hangin"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Mga bilis sa KCAS, bilang saklaw mula magaan (pinakamababang gasolina, walang kargada) hanggang mabigat (pinakamataas na kabuuang timbang). Ang datos ay nakuha nang eksperimental sa loob ng laro. Anumang pagkakaiba sa tunay na eroplano ay bunga ng mga pagkakamali sa modelo ng paglipad ng simulator."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "IBUKA ANG MGA PAKPAK"
@@ -4507,6 +4542,10 @@ msgstr "Hindi inaasahang API error"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Hindi natapos"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

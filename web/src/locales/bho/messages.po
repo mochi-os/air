@@ -26,6 +26,11 @@ msgstr "(संपादित)"
 msgid "(expand)"
 msgstr "(फइलाईं)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(राउर)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[सेट नइखे]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# आइटम} other {# आइटम}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# जवाब} other {+# अउरी जवाब}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "सबसे बढ़िया ग्लाइड (इंजन बं�
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "सबसे बढ़िया सतत मोड़ रफ्तार"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "कौनो पहुँच नियम सेट नइखे। ए 
 msgid "No activity yet"
 msgstr "अबहीं तक कौनो गतिविधि नइखे"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "अबहीं तक कौनो टिप्पणी नइखे"
@@ -3046,6 +3068,15 @@ msgstr "नोज गियर"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "ई जॉयस्टिक प्रोफाइल ना ह"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "वायु ब्रेक"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "रफ्तार KCAS में, हल्का (न्यूनतम ईंधन, कवनो बाहरी भार ना) से भारी (अधिकतम कुल भार) तक के दायरा के रूप में। डेटा खेल के भीतर प्रयोग से जुटावल गइल। असली विमान से कवनो अंतर सिम्युलेटर के उड़ान मॉडल के त्रुटि के दर्शावेला।"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "पंख फइलाईं"
@@ -4507,6 +4542,10 @@ msgstr "अप्रत्याशित API त्रुटि"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "अधूरा"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
