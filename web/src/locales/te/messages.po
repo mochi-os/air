@@ -26,6 +26,11 @@ msgstr "(సవరించబడింది)"
 msgid "(expand)"
 msgstr "(విస్తరించు)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(మీరు)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[సెట్ చేయలేదు]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# అంశం} other {# అంశాలు}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# జవాబు} other {+# అదనపు జవాబులు}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "ఉత్తమ జారుడు (ఇంజిన్లు లేక�
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "ఉత్తమ నిలకడ మలుపు వేగం"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "యాక్సెస్ నియమాలు ఏవీ కాన్ఫ
 msgid "No activity yet"
 msgstr "ఇంకా యాక్టివిటీ లేదు"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "ఇంకా కామెంట్‌లు లేవు"
@@ -3046,6 +3068,15 @@ msgstr "ముందు గేర్"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "ఇది జాయ్‌స్టిక్ ప్రొఫైల్ కాదు"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "వాయు బ్రేక్"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "వేగాలు KCASలో, తేలికైన స్థితి (కనిష్ఠ ఇంధనం, ఆయుధాలు లేకుండా) నుండి భారీ స్థితి (గరిష్ఠ స్థూల బరువు) వరకు ఒక శ్రేణిగా. డేటా ఆటలోనే ప్రయోగాత్మకంగా సేకరించబడింది. అసలు విమానంతో ఏవైనా తేడాలు సిమ్యులేటర్ విమాన నమూనా లోపాలను ప్రతిబింబిస్తాయి."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "రెక్కలు విప్పండి"
@@ -4507,6 +4542,10 @@ msgstr "ఊహించని API లోపం"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "అసంపూర్ణం"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

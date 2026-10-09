@@ -26,6 +26,11 @@ msgstr "(таҳриршуда)"
 msgid "(expand)"
 msgstr "(васеъ кардан)"
 
+#. placeholder {0}: file.oldPath
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "(from {0})"
+msgstr ""
+
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "(No title)"
@@ -41,6 +46,11 @@ msgstr "(шумо)"
 #: ../../../lib/web/src/components/entity/entity-tree-view.tsx
 msgid "[not set]"
 msgstr "[таъин нашудааст]"
+
+#. placeholder {0}: files.length
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{0, plural, one {# file changed} other {# files changed}}"
+msgstr ""
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -184,6 +194,10 @@ msgstr "{totalCount, plural, one {# ҷузъ} other {# ҷузъ}}"
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
 msgid "{totalDescendants, plural, one {# reply} other {+# more replies}}"
 msgstr "{totalDescendants, plural, one {# ҷавоб} other {+# ҷавоби бештар}}"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -627,6 +641,10 @@ msgstr "Беҳтарин лағжиш (муҳаррикҳо хомӯш)"
 #: src/components/MissionSetup.tsx
 msgid "Best sustained turn speed"
 msgstr "Суръати беҳтарин гардиши устувор"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Binary file not shown"
+msgstr ""
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -2914,6 +2932,10 @@ msgstr "Ягон қоидаи дастрасӣ танзим нашудааст. 
 msgid "No activity yet"
 msgstr "То ҳол ягон фаъолият нест"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "No changes to display"
+msgstr ""
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
 msgstr "То ҳол ягон шарҳ нест"
@@ -3046,6 +3068,15 @@ msgstr "ШАССИ ПЕШ"
 #: src/components/SettingsDialog.tsx
 msgid "Not a joystick profile"
 msgstr "Ин профили ҷойстик нест"
+
+#. placeholder {0}: formatFileSize(file.limit)
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: larger than {0}"
+msgstr ""
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Not compared: over the size limit"
+msgstr ""
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4101,6 +4132,10 @@ msgstr "Тормози ҳавоӣ"
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Суръатҳо бо KCAS, ҳамчун маҳдуда аз сабук (сӯзишвории ҳадди ақал, бе бори берунӣ) то вазнин (вазни умумии ҳадди аксар). Маълумот дар дохили бозӣ ба таври таҷрибавӣ ба даст оварда шудааст. Ҳама гуна фарқият аз ҳавопаймои воқеӣ хатогиҳои модели парвози симуляторро инъикос мекунад."
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Split"
+msgstr ""
+
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "БОЛҲОРО КУШОДАН"
@@ -4507,6 +4542,10 @@ msgstr "Хатои ғайричашмдошти API"
 #: src/components/MatchLog.tsx
 msgid "Unfinished"
 msgstr "Нотамом"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Unified"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"
