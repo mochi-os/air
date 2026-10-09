@@ -26,7 +26,6 @@ import {
   ArrowRight,
   CheckCircle,
   CircleAlert,
-  Loader2,
   MessageSquare,
   Trash2,
 } from 'lucide-react'
@@ -159,12 +158,12 @@ export function FeedbackDialog({
                 <Button variant='outline' onClick={close} disabled={sending}>
                   <Trans>Cancel</Trans>
                 </Button>
-                <Button onClick={() => void send()} disabled={!ready}>
-                  {sending ? (
-                    <Loader2 className='size-4 animate-spin' />
-                  ) : (
-                    <MessageSquare className='size-4' />
-                  )}
+                <Button
+                  onClick={() => void send()}
+                  disabled={!ready}
+                  loading={sending || forum.status === 'checking'}
+                  icon={<MessageSquare className='size-4' />}
+                >
                   <Trans>Post feedback</Trans>
                 </Button>
               </>
@@ -187,12 +186,6 @@ export function FeedbackDialog({
           </div>
         ) : (
           <div className='flex flex-col gap-4'>
-            {forum.status === 'checking' && (
-              <div className='text-muted-foreground flex items-center gap-2 text-sm'>
-                <Loader2 className='size-4 animate-spin' />
-                <Trans>Loading...</Trans>
-              </div>
-            )}
             {forum.status === 'unavailable' && (
               <Alert
                 variant='destructive'
