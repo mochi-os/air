@@ -425,8 +425,6 @@ export function bandit_init(config: {
   missiles: boolean
   weapons?: string
   fuel?: number
-  stage?: number // the brain's structural stage under evaluation (developer only); 0 or absent = as it stands
-  omit?: number // stages left out of the stack beneath it, one bit per stage number (developer only)
   hold?: boolean // the joust's weapons hold: the brain fires nothing until the 3/9 crossing
   air?: object // the player's own environment (the weather() payload), so the bandit flies the same wind; absent is still air
 }): boolean {
