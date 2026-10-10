@@ -224,8 +224,6 @@ let weapons_rule=MULTIPLAYER?"guns":"open";      // the match's weapons CLASS (#
 if(MULTIPLAYER){ cfg.task="joust"; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome set the missiles rule and the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").replace(/"/g,"")==="1";   // tolerant of BOTH ?developer=1 and the ?developer="1" the router writes when it round-trips the flag through a navigation (search values are JSON-encoded)   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
-const BANDIT_STAGE=DEV_MODE?(parseInt((new URLSearchParams(location.search).get("stage")||"").replace(/"/g,""),10)||0):0;   // &stage=N (developer only): fly against the bandit brain's structural stage N before it is accepted (world/games/air tactics.stage; claude/plans/air-bot-arbiter.md Part II). Absent, or outside developer mode, the bandit is the brain as it stands
-const BANDIT_OMIT=DEV_MODE?(parseInt((new URLSearchParams(location.search).get("omit")||"").replace(/"/g,""),10)||0):0;   // &omit=M (developer only): stages left out of the stack under &stage, one bit per stage number - &stage=8&omit=128 flies truth and ends without hypotheses (world/games/air tactics.omit)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 const PANEL_POINT=DEV_MODE&&new URLSearchParams(location.search).get("panelpoint")==="1";   // cockpit clicks that miss the DDIs report the panel point hit (group-frame y,z on the dev HUD + clipboard) — feeds &radalt=y,z calibration
 const INDEXER_TEST=DEV_MODE?(new URLSearchParams(location.search).get("indexertest")||""):"";   // "1": force all three AoA lamps lit; "2": also depth-free draw-on-top — the render-vs-depth bisect
@@ -8016,7 +8014,7 @@ function recording_file(){
 	const armed=missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns";
 	const {kind,match}=stamp({ multiplayer:MULTIPLAYER,
 		mode:MULTIPLAYER?String((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode)||"furball"):(cfg.task||""),
-		duel:cfg.duel||"", bandit:cfg.bandit||"", stage:BANDIT_STAGE, omit:BANDIT_OMIT, weapons:armed,
+		duel:cfg.duel||"", bandit:cfg.bandit||"", weapons:armed,
 		opening:(cfg.duel==="bvr"&&joust_start)?[joust_start.altitude[0],joust_start.altitude[1],joust_start.speed,joust_start.flank/D2R,joust_start.apart].map(v=>Math.round(v)).join("|"):"",   // the BVR start drawn (#46): the player's block|the bandit's (m)|speed (m/s)|flank (deg)|separation (m) — i18n-format-ok: recording header data, not display text
 		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", world:cfg.world||"", callsign:cfg.callsign||"",
 		cheats:cfg.cheats as Record<string,boolean>|undefined, effects:cfg.effects_quality as number|undefined, version:flight_version(), passes:passes_text(),
@@ -8661,6 +8659,10 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
+// bandit_seed: the bandit brain's seed for one mission, a fresh draw each time or the developer's &seed=N
+// to replay one. A fixed 7 drew the same side for the joust's pass, the same aim wander and the same flare
+// rolls every mission: the bandit set up on the pilot's right and turned to his left in every recorded joust.
+function bandit_seed(){ return demonstration_seed||Math.floor(Math.random()*2147483647)+1; }
 let demonstration=null, demonstration_seed=0;   // the Case I demonstration (demonstration.ts): the scripted pilot flying the visual pattern through the ordinary controls, or null while the player has the jet; the seed replays one pilot's habits (&seed=N in developer mode)
 let test_active=null, test_idle=0, _test_power=0, test_brake=false, dev_fps=0, dev_jitter=false, livery_pending=null;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (_test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
@@ -9537,8 +9539,8 @@ function fly_bandit(dt){
 	}
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
-		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: bandit_seed(), wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
@@ -12049,7 +12051,7 @@ function start_mission(){
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
-	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits; 0 draws a fresh one per mission
+	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
