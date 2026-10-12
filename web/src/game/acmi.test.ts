@@ -1047,8 +1047,6 @@ describe('stamp', () => {
     mode: 'joust',
     duel: 'bvr',
     bandit: 'superhuman',
-    stage: 6,
-    omit: 0,
     weapons: 'fox2',
     start: 'air',
     clouds: 'none',
@@ -1121,26 +1119,6 @@ describe('stamp', () => {
     expect(stamp({ ...fight, mode: 'free', opening: '9000|5000|250|30|120000' }).match.opening).toBe('')
     expect(stamp(fight).match.opening).toBe('') // a merge, or a BVR joust flown before the draw: acmi() drops it
     expect(source).toMatch(/opening:\(cfg\.duel==="bvr"&&joust_start\)\?\[joust_start\.altitude\[0\],joust_start\.altitude\[1\],joust_start\.speed,joust_start\.flank\/D2R,joust_start\.apart\]/)
-  })
-
-  it('names the brain the bandit flew: its stage always, the omitted stages only when there are any', () => {
-    expect(stamp(fight).match.stage).toBe('6')
-    expect(stamp(fight).match.omit).toBe('') // acmi() drops an empty field
-    expect(stamp({ ...fight, stage: 0 }).match.stage).toBe('0') // the brain as it stands, said rather than left to be assumed
-    expect(stamp({ ...fight, stage: 8, omit: 128 }).match.omit).toBe('128')
-    const other = stamp({
-      ...fight,
-      multiplayer: true,
-      mode: 'furball',
-      stage: 6,
-      omit: 128,
-    }).match
-    expect(other.stage).toBe('') // a multiplayer match has no bandit brain to name
-    expect(other.omit).toBe('')
-    expect(stamp({ ...fight, mode: 'free' }).match.stage).toBe('')
-    // and the engine hands the stamp the stage it armed the bandit with
-    expect(lift('recording_file')).toMatch(/bandit:cfg\.bandit\|\|"", stage:BANDIT_STAGE, omit:BANDIT_OMIT,/)
-    expect(source).toMatch(/stage: BANDIT_STAGE, omit: BANDIT_OMIT, hold: weapons_hold, air: weather\(\) \}\);/)
   })
 
   it('names a multiplayer match by the mode the SERVER says it is', () => {

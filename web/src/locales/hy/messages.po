@@ -29,7 +29,7 @@ msgstr "(ընդարձակել)"
 #. placeholder {0}: file.oldPath
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "(from {0})"
-msgstr ""
+msgstr "({0}-ից)"
 
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
@@ -50,7 +50,7 @@ msgstr "[չի սահմանվել]"
 #. placeholder {0}: files.length
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "{0, plural, one {# file changed} other {# files changed}}"
-msgstr ""
+msgstr "{0, plural, one {# ֆայլ փոխվել է} other {# ֆայլ փոխվել է}}"
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -201,7 +201,7 @@ msgstr "{totalDescendants, plural, one {# պատասխան} other {+# ևս պա�
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
-msgstr ""
+msgstr "{truncated, plural, one {Եվս # ֆայլ ցուցադրված չէ} other {Եվս # ֆայլ ցուցադրված չեն}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -648,7 +648,7 @@ msgstr "Լավագույն կայուն շրջադարձի արագությու�
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Binary file not shown"
-msgstr ""
+msgstr "Երկուական ֆայլը չի ցուցադրվում"
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1365,6 +1365,7 @@ msgstr "Ամսաթիվ"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "daytime"
 msgid "Day"
 msgstr "Ցերեկ"
 
@@ -2930,6 +2931,7 @@ msgstr "Հաջորդ տարի"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "daytime"
 msgid "Night"
 msgstr "Գիշեր"
 
@@ -2947,7 +2949,7 @@ msgstr "Դեռ ակտիվություն չկա"
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "No changes to display"
-msgstr ""
+msgstr "Ցուցադրելու փոփոխություններ չկան"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
@@ -3085,11 +3087,11 @@ msgstr "Ջոյսթիքի պրոֆիլ չէ"
 #. placeholder {0}: formatFileSize(file.limit)
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Not compared: larger than {0}"
-msgstr ""
+msgstr "Չի համեմատվել. ավելի մեծ է, քան {0}"
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Not compared: over the size limit"
-msgstr ""
+msgstr "Չի համեմատվել. գերազանցում է չափի սահմանը"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4147,7 +4149,7 @@ msgstr "Արագությունները KCAS-ով, որպես միջակայք թ
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Split"
-msgstr ""
+msgstr "Բաժանել"
 
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
@@ -4558,7 +4560,7 @@ msgstr "Չավարտված"
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Unified"
-msgstr ""
+msgstr "Միասնական"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

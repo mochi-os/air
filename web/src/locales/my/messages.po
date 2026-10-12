@@ -29,7 +29,7 @@ msgstr "(ချဲ့ရန်)"
 #. placeholder {0}: file.oldPath
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "(from {0})"
-msgstr ""
+msgstr "({0} မှ)"
 
 #: ../../../lib/web/src/components/calendar/event-title.tsx
 #: ../../../lib/web/src/components/calendar/tooltip.ts
@@ -50,7 +50,7 @@ msgstr "[မသတ်မှတ်ရသေး]"
 #. placeholder {0}: files.length
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "{0, plural, one {# file changed} other {# files changed}}"
-msgstr ""
+msgstr "{0, plural, one {ဖိုင် # ခု ပြောင်းလဲခဲ့သည်} other {ဖိုင် # ခု ပြောင်းလဲခဲ့သည်}}"
 
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx
@@ -201,7 +201,7 @@ msgstr "{totalDescendants, plural, other {+ ပြန်ဖြေချက် # 
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "{truncated, plural, one {# more file not shown} other {# more files not shown}}"
-msgstr ""
+msgstr "{truncated, plural, other {နောက်ထပ်ဖိုင် # ခုကို မပြပါ}}"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
@@ -648,7 +648,7 @@ msgstr "အကောင်းဆုံးစဉ်ဆက်ကွေ့ဝို
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Binary file not shown"
-msgstr ""
+msgstr "ဘိုင်နရီဖိုင်ကို မပြထားပါ"
 
 #: src/components/GameCanvas.tsx
 msgid "BINGO FUEL"
@@ -1365,6 +1365,7 @@ msgstr "ရက်စွဲ"
 
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "daytime"
 msgid "Day"
 msgstr "နေ့"
 
@@ -2930,6 +2931,7 @@ msgstr "နောက်နှစ်"
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "daytime"
 msgid "Night"
 msgstr "ည"
 
@@ -2947,7 +2949,7 @@ msgstr "လှုပ်ရှားမှုများ မရှိသေး�
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "No changes to display"
-msgstr ""
+msgstr "ပြသရန် ပြောင်းလဲမှုများ မရှိပါ"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
 msgid "No comments yet"
@@ -3085,11 +3087,11 @@ msgstr "ဂျွိုက်စတစ် ပရိုဖိုင် မဟု�
 #. placeholder {0}: formatFileSize(file.limit)
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Not compared: larger than {0}"
-msgstr ""
+msgstr "နှိုင်းယှဉ်မထားပါ - {0} ထက်ကြီးသည်"
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Not compared: over the size limit"
-msgstr ""
+msgstr "နှိုင်းယှဉ်မထားပါ - အရွယ်အစားကန့်သတ်ချက်ကို ကျော်လွန်သည်"
 
 #: ../../../lib/web/src/components/attachment-image.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
@@ -4147,7 +4149,7 @@ msgstr "အမြန်နှုန်းများကို KCAS ဖြင့
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Split"
-msgstr ""
+msgstr "ခွဲခြားမည်"
 
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
@@ -4558,7 +4560,7 @@ msgstr "မပြီးဆုံးသေး"
 
 #: ../../../lib/web/src/components/diff-viewer.tsx
 msgid "Unified"
-msgstr ""
+msgstr "ပေါင်းစပ်ထား"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "United States"

@@ -384,8 +384,6 @@ export function stamp(fight: {
   mode: string // multiplayer: the welcome's session mode. Single player: cfg.task
   duel: string // single player only: the joust's start shape
   bandit: string // single player only: the bandit's tier - a multiplayer match has none
-  stage: number // single player only: the bandit brain's structural stage (&stage= in a developer build), 0 for the brain as it stands
-  omit: number // single player only: stages left out beneath it, one bit per stage number (&omit=), 0 for none
   opening?: string // single-player BVR joust only: the start drawn (#46), the player's block|the bandit's (m)|speed (m/s)|flank (deg)|separation (m)
   weapons: string // 'guns' | 'fox2' | 'open'
   start: string
@@ -427,10 +425,6 @@ export function stamp(fight: {
       // nothing else: empty here means "there was none", and acmi() omits it.
       duel: joust ? fight.duel || 'merge' : '',
       bandit: joust ? fight.bandit || 'ace' : '',
-      // Which brain the bandit flew. A stage sortie is judged against that
-      // brain, and without this only the pilot's memory could say which it was.
-      stage: joust ? String(fight.stage || 0) : '',
-      omit: joust && fight.omit ? String(fight.omit) : '',
       opening: joust ? fight.opening ?? '' : '',
       weapons: fight.weapons,
       start: fight.start,
