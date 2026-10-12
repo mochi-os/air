@@ -27,6 +27,7 @@ KEEP_WORDS = {
     "caldav", "carddav", "webdav", "vcard", "icalendar", "ics", "thunderbird",
     "contacts",
     "apple", "microsoft", "facebook", "x", "android", "mac",
+    "fediverse", "activitypub", "webfinger", "nodeinfo", "mastodon", "lemmy", "mbin", "piefed", "bluesky", "matrix", "element", "xmpp", "jabber", "did", "omemo", "olm", "megolm",
 
 }
 
@@ -47,6 +48,7 @@ KEEP_ENGLISH = frozenset({
     "CalDAV", "CardDAV", "WebDAV", "vCard", "iCalendar", "ICS", "DAVx5", "Thunderbird",
     "Contacts",
     "Apple", "Microsoft", "Facebook", "X", "Android", "Mac",
+    "Fediverse", "ActivityPub", "WebFinger", "NodeInfo", "Mastodon", "Lemmy", "Mbin", "PieFed", "Bluesky", "Matrix", "Element", "XMPP", "Jabber", "DID", "OMEMO", "Olm", "Megolm",
 
 })
 
