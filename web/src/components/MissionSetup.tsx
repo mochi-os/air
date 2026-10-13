@@ -91,9 +91,10 @@ import {
   type WorldChatLine,
 } from '../game/net'
 import {
+  FUEL,
   PRESETS,
   asymmetry,
-  matches,
+  chosen,
   normalize,
   outcome,
   outcomes,
@@ -246,8 +247,8 @@ function Picker<T extends string>({
   )
 }
 
-// Full internal fuel, in pounds: the slider's ceiling, the default, and what
-// every stores preset loads.
+// Full internal fuel, in pounds: the slider's ceiling, and the load of a
+// config that has none.
 const FULL_FUEL = 10800
 
 function Armament({
@@ -285,7 +286,7 @@ function Armament({
     }
   }, [book])
   const loadout = normalize(stores)
-  const preset = matches(loadout)
+  const preset = chosen(loadout, fuel)
   const positions: Record<number, ReactNode> = {
     1: <Trans>Left wingtip</Trans>,
     2: <Trans>Left wing</Trans>,
@@ -365,7 +366,7 @@ function Armament({
               size='sm'
               className='flex-1 gap-1.5 text-xs font-semibold'
               onClick={() =>
-                onPreset(structuredClone(PRESETS[entry.name]), FULL_FUEL)
+                onPreset(structuredClone(PRESETS[entry.name]), FUEL[entry.name])
               }
             >
               {active && <Check className='size-3.5' />}

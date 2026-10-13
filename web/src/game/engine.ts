@@ -4324,6 +4324,8 @@ const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for j
 const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cloned onto the outboard stations — also shared with the preview
 const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard (decided 2026-08-06): six AIM-9Ms on tips and outboard twins, PINNED to match the server's bots_loadout — the calibrated doctrine flies this fit regardless of how the player presets are shaped; the brain's two-round discipline fires from it in SMS order (opening it is #25's re-sweep)
 const BOT_CLEAN=stores_normalize({});
+const BOT_OPEN=stores_normalize(stores_presets.fox3);   // the BVR fit, the Fox 3 preset with its centreline tank, PINNED to the server's bots_loadout("open") (decided 2026-10-12)
+function bandit_fit(){ return cfg.duel==="bvr"?BOT_OPEN:missiles_on()?BOT_ARMED:BOT_CLEAN; }   // the fit the brain carries: bots_loadout of the class bandit_init names. The BVR bandit was drawn with the six heaters while it flew AMRAAMs
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
 function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircraft()); if(raw) stores_book=stores_resolve(raw); } return stores_book; }
@@ -4334,7 +4336,7 @@ function demonstrating(){ return !MULTIPLAYER&&!!cfg.demonstration&&cfg.start===
 function loadout(){ return stores_granted(demonstrating()?stores_normalize(stores_presets[DEMONSTRATION.stores]):cfg.stores, weapons_rule); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice — the same clamp the server applies at Join (stores_grant)
 function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
-function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
+function bandit_remaining(){ return stores_rounds(bandit_fit()).length; }   // the heaters the SP bandit spawns with; launch_bandit_heater counts them down from here, and server bots decrement their own masks
 function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's model
@@ -4403,7 +4405,7 @@ function update_rails(st,count){ if(!st.group) return;
 	{ const order=stores_amraams(lo); const spent=Math.max(0,order.length-Math.max(0,st.amraam??order.length));   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
 		order.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
-	assign_loadout(ownship, loadout()); assign_loadout(bandit, missiles_on()?BOT_ARMED:BOT_CLEAN);
+	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask: the core attach bitmask for the flown loadout with expended rounds
 // cleared, memoised on (loadout revision, heaters left, AMRAAMs left). Before
@@ -5520,7 +5522,7 @@ function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
 	if(!launch_missile(bandit,ownship)) return;
 	const m=missiles.find(x=>x.active&&x.kind==="9m"&&x.target===ownship&&!x.enemy);
 	if(m) m.enemy=true;
-	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??magazine())-1); } }   // no launch sound (#66): a motor a kilometre out is inaudible through canopy, ambient and helmet — the smoke trail is the cue a real pilot gets
+	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??bandit_remaining())-1); } }   // no launch sound (#66): a motor a kilometre out is inaudible through canopy, ambient and helmet — the smoke trail is the cue a real pilot gets
 
 // launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the rail -
 // the brain only decides the shot. It chases the ownship, its datalink is the
@@ -5535,6 +5537,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
+	bandit.amraam=Math.max(0,(bandit.amraam??0)-1); update_rails(bandit,bandit.msl??bandit_remaining());   // its cheek round leaves the drawn jet and the hulk's rack, port first as the player's do
 	}   // no launch sound (#66): enemy launches are seen, never heard
 // step_amraam (#27): the AIM-120 flies the Go `round` core - the same
 // integrator the server and the DLZ ladder use. While our track on the target
@@ -7958,7 +7961,7 @@ function recording_sample(){
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				structure:bandit.harm.wreck||0, wing:bandit.harm.wing||0, ...(bandit.fate?{fate:bandit.fate}:{}),   // #103: the element TOTAL and the aero-relevant wing loss are different numbers, and only the total used to be recorded — under the name Wing, which is what made a fight's damage unattributable
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
-				missiles:Math.max(0,(bandit.msl??magazine())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
+				missiles:Math.max(0,(bandit.msl??bandit_remaining())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
 				...(bandit_locked?{lock:1}:{}), ...(bandit_brain?{target:1}:{}),   // the brain bandit only ever fights the ownship
 				// The brain bandit flies the real model, so its own STATE tail
 				// carries the same telemetry the ownship records: TacView graphs
@@ -9540,7 +9543,7 @@ function fly_bandit(dt){
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: bandit_seed(), wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL(), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // no fuel: the bandit carries the load its own fit fights best on (bots_fuel), not the player's slider, which may be the wrong choice (2026-10-12)   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
@@ -9909,7 +9912,7 @@ function reset_ownship(){
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	bandit_acc=0; missile_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1; padlocked=false;   // a respawn drops the acquisition and the padlock
-	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
+	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");

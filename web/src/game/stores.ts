@@ -145,20 +145,40 @@ export const PRESETS: Record<string, Loadout> = {
   }),
 }
 
+// The internal fuel each preset loads, in pounds (decided 2026-10-12): a
+// round figure just above the most that leaves the fit at the weight the
+// 7.5 g placard is written at, so the run-in to the merge burns it down to
+// about the best. The Fox 3 fit flies full internal: its fight opens beyond
+// visual range, where nobody pulls the placard for minutes. The bandit takes
+// the exact figure for its own fit from the server.
+export const FUEL: Record<string, number> = {
+  gun: 9000,
+  fox2: 6500,
+  fox3: 10800,
+}
+
 // migrate maps the retired boolean to its preset: armed configs become
 // Fox 2, guns-only becomes Gun.
 export function migrate(missiles: boolean): Loadout {
   return structuredClone(missiles ? PRESETS.fox2 : PRESETS.gun)
 }
 
-// matches reports which preset a loadout equals, or "" for a custom fill —
-// the setup highlights the matching preset button without storing a name.
+// matches reports which preset a loadout equals, or "" for a custom fill: the
+// fit alone, which a launch start reads to seed the preset's fuel.
 export function matches(loadout: Loadout): string {
   for (const [name, preset] of Object.entries(PRESETS)) {
     if (JSON.stringify(normalize(loadout)) === JSON.stringify(preset))
       return name
   }
   return ''
+}
+
+// chosen is the preset button the setup highlights, without storing a name:
+// the fit and the fuel both as that button loads them, so a preset whose fuel
+// has been moved off its figure reads as a fill of the player's own.
+export function chosen(loadout: Loadout, fuel: number): string {
+  const name = matches(loadout)
+  return name && FUEL[name] === fuel ? name : ''
 }
 
 // missiles_loaded: the derived predicate that replaced cfg.missiles — it
