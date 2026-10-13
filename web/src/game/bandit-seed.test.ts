@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it, vi } from 'vitest'
+import { PRESETS, amraams, normalize, rounds } from './stores'
 
 // engine.ts cannot be imported (WebGL at module scope): bandit_seed is cut out
 // of its source and run on its own, as blast.test.ts's lift() does.
@@ -38,5 +39,43 @@ describe('the single-player bandit is seeded per mission', () => {
   it('is what the bandit brain is armed with, not a constant', () => {
     expect(source).toMatch(/bandit_init\(\{[^}]*seed: bandit_seed\(\)/)
     expect(source).not.toMatch(/bandit_init\(\{[^}]*seed: \d/)
+  })
+})
+
+// The bandit is drawn, counted and racked on the fit its brain carries: the
+// server's bots_loadout of the class bandit_init names. The BVR bandit flew the
+// AMRAAMs and was drawn with six heaters on twin rails.
+describe('the single-player bandit carries the fit its brain flies', () => {
+  const fits = new Function(
+    'stores_normalize',
+    'stores_presets',
+    `${source.slice(source.indexOf('const BOT_ARMED='), source.indexOf('let loadout_rev'))}\nreturn { BOT_ARMED, BOT_CLEAN, BOT_OPEN }`
+  )(normalize, PRESETS)
+  function fit(duel: string, missiles: boolean) {
+    return new Function(
+      'cfg',
+      'missiles_on',
+      'BOT_ARMED',
+      'BOT_CLEAN',
+      'BOT_OPEN',
+      `${lift('bandit_fit')}\nreturn bandit_fit()`
+    )({ duel }, () => missiles, fits.BOT_ARMED, fits.BOT_CLEAN, fits.BOT_OPEN)
+  }
+
+  it('flies the Fox 3 preset beyond visual range, tank included', () => {
+    expect(fit('bvr', true)).toEqual(normalize(PRESETS.fox3))
+    expect(fit('bvr', false)).toEqual(normalize(PRESETS.fox3))
+    expect(amraams(fit('bvr', true))).toHaveLength(6)
+  })
+
+  it('flies the twin-rail heaters or the gun within visual range', () => {
+    expect(rounds(fit('wvr', true))).toHaveLength(6)
+    expect(amraams(fit('wvr', true))).toHaveLength(0)
+    expect(rounds(fit('wvr', false))).toHaveLength(0)
+  })
+
+  it('names the class the same way bandit_init does', () => {
+    expect(source).toMatch(/weapons: cfg\.duel==="bvr"\?"open":\(missiles_on\(\)\?"fox2":"guns"\)/)
+    expect(source).toMatch(/assign_loadout\(bandit, bandit_fit\(\)\)/)
   })
 })

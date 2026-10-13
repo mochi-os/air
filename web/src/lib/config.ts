@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { PRESETS } from '../game/stores'
+import { FUEL, PRESETS, matches } from '../game/stores'
 
 // One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
 // and which pad button provides each action ('' = none). Missing entries fall
@@ -311,8 +311,10 @@ export interface MissionConfig {
 
 // seedStart applies a start choice with everything it defines: the recovery
 // cases seed their weather and every start seeds matching fuel (NATOPS 4.1.7:
-// full internal exceeds the 33,000 lb carrier landing limit). Seeded values
-// stay overridable; re-picking re-seeds.
+// full internal exceeds the 33,000 lb carrier landing limit). A launch start
+// seeds the fuel of the stores preset the jet is loaded with, as its button
+// does, and full internal for a fit of the player's own. Seeded values stay
+// overridable; re-picking re-seeds.
 export function seedStart(
   config: MissionConfig,
   start: MissionConfig['start']
@@ -331,7 +333,7 @@ export function seedStart(
     seeded.clouds = 'low_stratus'
     seeded.fuel = 4500
   } else {
-    seeded.fuel = 10800
+    seeded.fuel = FUEL[matches(config.stores)] ?? 10800
   }
   return seeded
 }
@@ -366,7 +368,7 @@ export const TAB_FIELDS: Record<string, string[]> = {
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   bandit: 'ace',
-  fuel: 10800, // full internal — combat loads are a slider pull away
+  fuel: FUEL.fox2, // the load of the Fox 2 preset the default stores carry
   record: true, // flight recorder (#212): always running, saved from the log
   hints: true, // ON, matching the `!== false` idiom every consumer already used while this key was undeclared (#116)
   aircraft: 'fa18c',

@@ -6,10 +6,12 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
+  FUEL,
   LIMITS,
   RELEASE,
   PRESETS,
   amraams,
+  chosen,
   asymmetry,
   eject,
   entries,
@@ -174,6 +176,15 @@ describe('presets', () => {
     const custom = structuredClone(PRESETS.fox2)
     custom['2'].stores[0] = ''
     expect(matches(custom)).toBe('')
+  })
+  it('chosen needs the preset fuel as well as the fit', () => {
+    for (const [name, fuel] of Object.entries(FUEL)) {
+      expect(chosen(PRESETS[name], fuel)).toBe(name)
+      expect(chosen(PRESETS[name], fuel - 500)).toBe('')
+    }
+    const custom = structuredClone(PRESETS.fox2)
+    custom['2'].stores[0] = ''
+    expect(chosen(custom, FUEL.fox2)).toBe('')
   })
   it('migrate maps the retired boolean', () => {
     expect(matches(migrate(true))).toBe('fox2')

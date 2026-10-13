@@ -424,7 +424,6 @@ export function bandit_init(config: {
   night: boolean
   missiles: boolean
   weapons?: string
-  fuel?: number
   hold?: boolean // the joust's weapons hold: the brain fires nothing until the 3/9 crossing
   air?: object // the player's own environment (the weather() payload), so the bandit flies the same wind; absent is still air
 }): boolean {

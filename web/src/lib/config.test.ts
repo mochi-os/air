@@ -3,6 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
+import { FUEL, PRESETS, matches, normalize } from '../game/stores'
 import {
   DEFAULT_CONFIG,
   TAB_FIELDS,
@@ -20,11 +21,29 @@ describe('seedStart', () => {
       expect(seedStart(DEFAULT_CONFIG, start).fuel).toBe(4500)
     }
   })
-  it('seeds full tanks back for the launch starts', () => {
-    const light = seedStart(DEFAULT_CONFIG, 'case1')
-    for (const start of ['air', 'runway', 'carrier'] as const) {
-      expect(seedStart(light, start).fuel).toBe(10800)
+  it("seeds the loaded preset's fuel back for the launch starts", () => {
+    for (const [name, fuel] of Object.entries(FUEL)) {
+      const light = seedStart(
+        { ...DEFAULT_CONFIG, stores: structuredClone(PRESETS[name]) },
+        'case1'
+      )
+      for (const start of ['air', 'runway', 'carrier'] as const) {
+        expect(seedStart(light, start).fuel).toBe(fuel)
+      }
     }
+  })
+  it("seeds full internal for a fit of the player's own", () => {
+    const own = normalize({ 1: { fixture: 'rail', stores: ['9m'] } })
+    expect(matches(own)).toBe('')
+    expect(seedStart({ ...DEFAULT_CONFIG, stores: own }, 'air').fuel).toBe(
+      10800
+    )
+  })
+  it('loads a fuel for every stores preset', () => {
+    expect(Object.keys(FUEL).sort()).toEqual(Object.keys(PRESETS).sort())
+  })
+  it('defaults to the fuel of the preset its stores carry', () => {
+    expect(DEFAULT_CONFIG.fuel).toBe(FUEL[matches(DEFAULT_CONFIG.stores)])
   })
   it('seeds the case weather alongside the fuel', () => {
     expect(seedStart(DEFAULT_CONFIG, 'case1')).toMatchObject({
