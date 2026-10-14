@@ -181,7 +181,7 @@ describe('the selected weapon block', () => {
 describe('the breakaway X', () => {
   const helpers = ['breakaway_shown', 'breakaway'].map((name) => new RegExp(`\\nfunction ${name}\\([^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
   const hud = /\n\t\/\/ ---- the breakaway X[\s\S]*?\n\tif\(breakaway_shown\(\)&&!limited\)\{[^\n]*?\}/.exec(source)?.[0] ?? '' // limited: a mission computer's backup set on the helmet, which has none
-  const rdr = /\n\t(if\(breakaway_shown\(\)\)\{ x\.strokeStyle=[^}]*\})/.exec(source)?.[1] ?? ''
+  const rdr = /\n\t(\{ const cue=attack_cue\(\);[\s\S]*?breakaway\(x,256,250,65\); \} \})/.exec(source)?.[1] ?? '' // the attack format's, from the mission computer's own cue (attack_cue)
   const draw = (code: string, cue: string, time = 0) => {
     const segments: number[][] = [], state: Record<string, unknown> = {}
     let at = [0, 0]
@@ -191,7 +191,8 @@ describe('the breakaway X', () => {
       if (k === 'setLineDash') return (d: number[]) => { s.dash = d.length }
       return k in s ? s[k as string] : () => {}
     }, set: (s, k, v) => { s[k as string] = v; return true } })
-    new Function('hctx', 'x', 'hud_cue', 'sim_time', 'cx', 'cy', 'ppdv', 'GR', 'AM', `const limited=false; ${helpers} ${code}`)(canvas, canvas, cue, time, 640, 360, 20, 'g', 'a')
+    const attack_cue = () => ({ shoot: false, brk: cue === 'break' })
+    new Function('hctx', 'x', 'hud_cue', 'attack_cue', 'sim_time', 'cx', 'cy', 'ppdv', 'GR', 'AM', `const limited=false; ${helpers} ${code}`)(canvas, canvas, cue, attack_cue, time, 640, 360, 20, 'g', 'a')
     return { segments, state }
   }
 
@@ -233,10 +234,10 @@ describe('the breakaway X', () => {
       expect(at, String(line)).toBeGreaterThan(0)
       expect(at, String(line)).toBeLessThan(source.indexOf(mark))
     }
-    before(/\n\tif\(master==="120c"&&keep\("NIRD CIRCLE",\d\)&&!limited\) hud_launch_zone\(hctx,GR,cx,cy,ppdv,ax,lx,axes\);/, '\t// ---- the breakaway X')
+    before(/\n\tif\(master==="120c"&&keep\("NIRD CIRCLE",\d\)&&!limited\) hud_launch_zone\(hctx,GR,cx,cy,ppdv,lx\);/, '\t// ---- the breakaway X')
     before('\tif(brk) hud_cue="break";', '\t// ---- instrument furniture (#133)')
     before('hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");', '\t// ---- instrument furniture (#133)')
-    expect(source).toMatch(/const cue=shoot_cue\(z\);\n\tif\(cue\) hud_cue=cue;/)
+    expect(source).toMatch(/const cue=shoot_cue\(z\), brk=hud_cue==="break";[^\n]*\n\tif\(cue&&!brk\) hud_cue=cue;/) // the zone's words never overwrite the closing breakaway
   })
 
   it('is the only X: no weapon draws its own', () => {
@@ -246,12 +247,14 @@ describe('the breakaway X', () => {
     expect(source.match(/(?<!function )breakaway\((hctx|x),/g)?.length).toBe(2)
   })
 
-  it('keeps the AMRAAM\'s SHOOT off while it is inside Rmin', () => {
-    const line = /\n\tif\(cue&&cue!=="break"&&\(cue==="steady"\|\|\(sim_time\*4\)%2<1\)\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  it('writes the AMRAAM\'s SHOOT over the TD box with the mission computer\'s cue, under the box against the field\'s top', () => {
+    const line = /\n\tif\(master==="120c"&&edge&&attack_cue\(\)\.shoot\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
-    const shoot = (cue: string) => new Function('cue', `const text=[]; let hud_shoot=false; const sim_time=0, GR='g', cx=0, cy=0, ppdv=20;
-      const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t){ text.push(t); } }; ${line} return text;`)(cue) as string[]
-    expect(shoot('break')).toEqual([])
-    expect(shoot('steady')).toEqual(['SHOOT'])
+    const shoot = (lit: boolean, room = true) => new Function('lit', 'room', `const text=[]; let hud_shoot=false; const master='120c', GR='g', hs=1, glass=null, edge={ at:[300,200], limited:false };
+      const attack_cue=()=>({ shoot:lit, brk:false }), hud_field=()=>null, hud_room=()=>room?1:-1;
+      const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y,this.font,this.textAlign]); } }; ${line} return [text,hud_shoot];`)(lit, room) as [unknown[][], boolean]
+    expect(shoot(false)).toEqual([[], false]) // inside Rmin, in the hold or closing to the breakaway: attack_cue holds it off
+    expect(shoot(true)).toEqual([[['SHOOT', 300, 174, "18.0px 'Hornet Display', monospace", 'center']], true])
+    expect(shoot(true, false)[0][0][2]).toBe(234)
   })
 })

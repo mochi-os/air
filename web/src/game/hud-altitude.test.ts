@@ -174,9 +174,9 @@ describe('the reject switch keeps the weapons\' ranging', () => {
     expect(line).not.toBe('')
     expect([drawn(0), drawn(1), drawn(2)]).toEqual([1, 1, 1])
   })
-  it('draws the 9M\'s range scale at every reject level', () => {
-    const line = /\n\t\tif\(heat_shown\.zone[^\n]*\) heat_staff\([^\n]*\n/.exec(source)?.[0] ?? ''
-    const drawn = (declutter: number) => new Function(`const declutter=${declutter}, heat_shown={ zone:{} }, bore=[0,0], HH=900, hs=1, hctx={}, GR='g'; let calls=0; const heat_staff=()=>{ calls++; }; ${line} return calls;`)() as number
+  it('draws the 9M\'s NIRD at every reject level', () => {
+    const line = /\n\tif\(master==="9m"&&keep\("NIRD CIRCLE",\d\)&&!limited\) heat_steering\([^\n]*\n/.exec(source)?.[0] ?? ''
+    const drawn = (rej: number) => new Function(`const master='9m', worn=null, rej=${rej}, limited=false, keep=(symbol,level)=>rej<level, hctx={}, GR='g', cx=0, wly=0, ppdv=20; let calls=0; const heat_steering=()=>{ calls++; }; ${line} return calls;`)() as number
     expect(line).not.toBe('')
     expect([drawn(0), drawn(1), drawn(2)]).toEqual([1, 1, 1])
   })

@@ -49,7 +49,7 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
 const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hud_fit', 'hud_scale', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
-  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line', 'heat_staff'].map(lift).join('\n')
+  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
     const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; helmet_frame(dt); } };
@@ -225,10 +225,15 @@ describe('the helmet display', () => {
     expect(out.rects[0][0] + half).toBeCloseTo(500 + R - 1.5 * half, 6) // held at the field's right edge
     expect(out.text).toContain('40')
   })
+  it('writes the AMRAAM\'s SHOOT over its box, as the HUD does over its own, and leaves it to the HUD through the glass', () => {
+    const shoot = (lit: boolean, setup = '', call = 'draw_hmd(null,false,boxed,0,null,null)') => show(`master='120c'; const attack_cue=()=>({ shoot:${lit}, brk:false }); const boxed={ pos:at(3,0,2000) }; ${setup}`, call).text.includes('SHOOT')
+    expect([shoot(true), shoot(false)]).toEqual([true, false])
+    expect(shoot(true, `hmd.blank=true; const g={ corners:[[400,300],[600,300],[600,500],[400,500]] };`, 'draw_hmd(g,false,boxed,0,null,null)')).toBe(false) // BLNK through the HUD: the HUD's SHOOT, not a second one
+  })
   it('boxes the L&S at the size the HUD draws its own box, so through the HUD the two coincide at every field', () => {
     // draw_hud's box is 14*hs either side, hs the HUD view's 1 or the glass's hud_fit() in the pit
     expect(source).toContain('const hs=glass?hud_fit():1;')
-    expect(source).toContain('hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs);')
+    expect(source).toContain('hctx.strokeRect(box[0]-14*hs,box[1]-14*hs,28*hs,28*hs);')
     const box = (setup: string) => show(`${setup} const boxed={ pos:at(3,0,2000) }; camera.updateProjectionMatrix();`, 'draw_hmd(null,false,boxed,0,null,null)').rects[0]?.[2]
     for (const field of [45, 60, 75]) expect(box(`cfg.view='hud'; master='9m'; camera.fov=${field};`)).toBeCloseTo(28, 9) // the HUD view in an A/A master, where the helmet draws through the HUD even with BLNK: 28 pixels whatever the field
     expect(box(`camera.fov=60;`)).toBeCloseTo(28 * 45 / 60, 9) // the pit, the glass not limiting: the HUD's layout at the world's angle, as before
@@ -315,16 +320,15 @@ describe('the helmet display', () => {
     expect(pit<number>(`return hmd_shift(new THREE.Vector3(0,Math.sin(15*D2R),-Math.cos(15*D2R)),400,hud_tape(400,800/45,true),10);`)).toBeCloseTo(full / 2, 6)
     expect(shift('9m', 15)).toBeGreaterThan(0)
   })
-  it('carries the 9M\'s circle where the seeker looks, smaller once it tracks, with SHOOT over it and the staff in the layout', () => {
-    const base = `master='9m'; seeker_now.line=at(5,0,1); const heat={ shoot:true, zone:{ max:4000, escape:2000, minimum:300, range:2500 } };`
+  it('carries the 9M\'s circle where the seeker looks, smaller once it tracks, with SHOOT over it', () => {
+    const base = `master='9m'; seeker_now.line=at(5,0,1); const heat={ shoot:true };`
     const d = show(base, 'draw_hmd(null,false,null,0,null,heat)')
     const circle = d.arcs.find(([, , r]) => Math.abs(r - 2.5 * ppd) < 1e-6)
     expect(circle).toBeDefined()
     expect(d.text).toContain('SHOOT')
-    expect(d.text).toContain('1.3') // the staff's range caret: 2,500 m
     const tracking = show(`${base} seeker_track={};`, 'draw_hmd(null,false,null,0,null,heat)')
     expect(tracking.arcs.some(([, , r]) => Math.abs(r - 1.25 * ppd) < 1e-6)).toBe(true)
-    expect(show(`master='9m'; seeker_now.line=at(5,0,1);`, 'draw_hmd(null,false,null,0,null,{ shoot:false, zone:null })').text).not.toContain('SHOOT')
+    expect(show(`master='9m'; seeker_now.line=at(5,0,1);`, 'draw_hmd(null,false,null,0,null,{ shoot:false })').text).not.toContain('SHOOT')
   })
   it('draws the HACQ or LACQ reticle 5° across with its legend, flashing past the radar\'s gimbal (the DCS guide)', () => {
     const d = show(`master='9m'; RADAR.auto=true; RADAR.acm='lacq';`)
@@ -394,14 +398,123 @@ describe('REJECT SETUP on the HMD format', () => {
 
 describe('the 9M\'s cues, for the HUD or the helmet', () => {
   const line = /\n\tconst heat_shown=[^\n]*\n/.exec(source)?.[0] ?? ''
-  const cues = (setup: string) => new Function(`let lockon=true, brk=false, weapons_hold=false, sim_time=0, cue='steady'; const ownship={ msl:2 }, zone={ max:4000 }; ${setup} ${line} return [heat_shown.shoot,!!heat_shown.zone];`)() as boolean[]
+  const cues = (setup: string) => new Function(`let lockon=true, brk=false, weapons_hold=false, sim_time=0, cue='steady'; const ownship={ msl:2 }; ${setup} ${lift('heat_lit')} ${line} return heat_shown.shoot;`)() as boolean
   it('cue SHOOT with tone inside the zone, steady or flashing inside Rne, and never inside the breakaway, in the joust\'s hold or with none left (#47)', () => {
-    expect(cues('')).toEqual([true, true])
-    expect([cues('cue="flash"; sim_time=0.1;')[0], cues('cue="flash"; sim_time=0.3;')[0]]).toEqual([true, false])
-    expect([cues('brk=true;')[0], cues('weapons_hold=true;')[0], cues('ownship.msl=0;')[0], cues('cue="break";')[0], cues('lockon=false;')]).toEqual([false, false, false, false, [false, false]])
+    expect(cues('')).toBe(true)
+    expect([cues('cue="flash"; sim_time=0.1;'), cues('cue="flash"; sim_time=0.3;')]).toEqual([true, false])
+    expect([cues('brk=true;'), cues('weapons_hold=true;'), cues('ownship.msl=0;'), cues('cue="break";'), cues('lockon=false;')]).toEqual([false, false, false, false, false])
   })
-  it('draw the staff beside the HUD\'s boresight', () => {
-    expect(lift('draw_hud')).toContain('heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);')
+  it('carry the zone\'s ranges on the steering circle, not on a staff beside the boresight', () => {
+    expect(source).not.toMatch(/heat_staff/)
+  })
+})
+
+// The real cue lights only with the steering dot, the lead for a round fired now, inside the
+// allowable steering error circle; the game's 9M takes a 10-degree circle. The dot is drawn in a
+// circle the AMRAAM's size, its rim that 10 degrees off the nose.
+describe('the 9M\'s steering dot and its circle', () => {
+  const steer = `${line('HEAT_ASE')} ${lift('heat_lead')} ${lift('track_range')} ${lift('nird')} ${lift('heat_steered')} ${lift('zone_cue')} ${lift('heat_cue')} ${lift('nird_clock')} ${lift('heat_steering')}`
+  // the radar's target 2,000 m out, still unless moved; nose(a) turns the jet's nose a degrees right
+  const rig = <T,>(body: string) => pit<T>(`let weapons_hold=false; RADAR.ls='bandit'; ownship.speed=250;
+    const target={ position:at(0,0,2000), velocity:{ x:0, y:0, z:0 } }, radar_target=()=>target;
+    const nose=(a)=>{ ownship.fwd.set(Math.sin(a*D2R),0,-Math.cos(a*D2R)); ownship.right.set(Math.cos(a*D2R),0,Math.sin(a*D2R)); };
+    const zone={ range:2000, minimum:300, escape:1000, max:4000 }; let ladder=null; const heat_zone=()=>ladder; ${steer} ${body}`)
+  it('lights SHOOT only with the nose within 10 degrees of the lead, and keeps the breakaway whatever the steering', () => {
+    expect(rig(`return [0,9,11,30].map((a)=>{ target.position=at(a,0,2000); return heat_cue(zone); });`)).toEqual(['steady', 'steady', null, null])
+    expect(rig(`target.position=at(30,0,200); return heat_cue({ ...zone, range:200 });`)).toBe('break')
+    expect(rig(`return [weapons_hold=true, heat_cue(zone)][1];`)).toBeNull()
+    expect(rig(`RADAR.ls=null; return heat_cue(zone);`)).toBeNull() // no track, no lead: no SHOOT
+  })
+  it('leads a crossing target by the round\'s time of flight, the range over the launch speed and about 500 m/s', () => {
+    // 2,000 m ahead crossing right at 200 m/s: 2.67 s of flight puts the lead 533 m right, 14.9 degrees
+    const lead = Math.atan(200 * 2000 / 750 / 2000) / D
+    expect(rig<number>(`target.velocity={ x:200, y:0, z:0 }; const l=heat_lead(); return Math.atan2(l.x,-l.z)/D2R;`)).toBeCloseTo(lead, 6)
+    expect(rig(`target.velocity={ x:200, y:0, z:0 }; return [heat_cue(zone), (nose(${lead}), heat_cue(zone))];`)).toEqual([null, 'steady'])
+  })
+  it('draws the circle the AMRAAM\'s size at the layout\'s centre, the dot inside it exactly while SHOOT may light, pegged past it', () => {
+    const dot = (body: string) => rig<number[][]>(`const arcs=[]; const hctx=new Proxy({}, { get:(t,k)=>k==='arc'?(x,y,r)=>arcs.push([x,y,r]):()=>{}, set:()=>true });
+      ${body} heat_steering(hctx,'g',500,400,20); return arcs;`)
+    const R = 3.2 * 20
+    const shown = dot(`target.position=at(5,0,2000);`)
+    expect(shown[0]).toEqual([500, 400, R])
+    expect(shown[1][0] - 500).toBeCloseTo(R / 2, 6) // 5 degrees right: half way to the rim
+    expect(shown[1][1]).toBeCloseTo(400, 6)
+    expect(400 - dot(`target.position=at(0,8,2000);`)[1][1]).toBeCloseTo(R * 0.8, 6) // 8 degrees up: up the screen
+    expect(dot(`target.position=at(40,0,2000);`)[1][0] - 500).toBeCloseTo(R * 1.35, 6)
+    expect(dot(`RADAR.ls=null;`)).toEqual([])
+    expect(dot(`ownship.msl=0;`)).toEqual([])
+  })
+  it('draws in the HUD\'s cluster on the waterline, so the helmet repeats it, with the 9M selected', () => {
+    expect(source).toContain('if(master==="9m"&&keep("NIRD CIRCLE",3)&&!limited) heat_steering(hctx,GR,cx,wly,ppdv);')
+    expect(lift('hud_cluster')).toContain('const wly=cy-4*ppdv;')
+  })
+  // The NIRD (the VRS AIM-9 page): Rmin at 2:30, Rmax at 6:00, Rne between, outside the rim; his
+  // range an arc from 12 o'clock with a bar at its end, turning counter-clockwise as he closes.
+  it('places the ranges on the circle by the clock, Rmin at 2:30 and Rmax at 6:00 whatever their size', () => {
+    const clock = (r: number) => rig<number>(`return nird_clock(${r},{ minimum:500, escape:1500, max:3000 });`)
+    expect([0, 250, 500, 1500, 3000].map(clock)).toEqual([0, 37.5, 75, 75 + 105 * 1000 / 2500, 180])
+    expect(clock(4000)).toBeCloseTo(180 + 105 * 1000 / 2500, 9) // past Rmax at the same rate a metre
+    expect(clock(20000)).toBe(330) // and no further than 11 o'clock
+  })
+  it('draws the range cues as triangles outside the rim and his range as an arc and bar, with the radar\'s zone', () => {
+    const draw = (body: string) => rig<{ arcs: number[][]; tips: number[][]; bars: number[][] }>(`const arcs=[], tips=[], bars=[]; let width=0, first=null;
+      const hctx=new Proxy({}, { get:(t,k)=>k==='arc'?(...a)=>arcs.push([...a,width]):k==='moveTo'?(x,y)=>{ first=[x,y]; }:k==='lineTo'?(x,y)=>{ if(first){ (width>2?bars:tips).push(first); first=null; } }:()=>{}, set:(t,k,v)=>{ if(k==='lineWidth') width=v; return true; } });
+      ladder={ minimum:500, escape:1500, max:3000 }; ${body} heat_steering(hctx,'g',500,400,20); return { arcs, tips, bars };`)
+    const R = 64, place = (clock: number, radius: number) => [500 + Math.sin(clock * D) * radius, 400 - Math.cos(clock * D) * radius]
+    const d = draw('')
+    const near = (a: number[], b: number[]) => { expect(a[0]).toBeCloseTo(b[0], 6); expect(a[1]).toBeCloseTo(b[1], 6) }
+    expect(d.tips).toHaveLength(3)
+    near(d.tips[0], place(75, R + 2)) // Rmin at 2:30
+    near(d.tips[1], place(75 + 105 * 1000 / 2500, R + 2)) // Rne between
+    near(d.tips[2], place(180, R + 2)) // Rmax at 6:00
+    const at = 75 + 105 * 1500 / 2500 // the target 2,000 m out
+    expect(d.arcs[2][3]).toBeCloseTo(-Math.PI / 2, 9)
+    expect(d.arcs[2][4]).toBeCloseTo(-Math.PI / 2 + at * D, 9) // the arc from 12 o'clock to his range
+    expect(d.arcs[2][5]).toBe(2.5)
+    near(d.bars[0], place(at, R))
+    expect(draw('target.position=at(0,0,1000);').arcs[2][4]).toBeLessThan(d.arcs[2][4]) // closing turns it counter-clockwise
+    expect(draw('ladder.escape=0;').tips).toHaveLength(2) // no no-escape band, no Rne
+    expect(draw('ladder.max=0;').arcs).toHaveLength(2) // no zone: the circle and the dot alone
+  })
+})
+
+// Off the HUD's field the 9M's seeker circle and the TD box are limited to its edge and flash.
+describe('a symbol limited to the HUD\'s field', () => {
+  const edge = (body: string) => pit<{ at: number[]; limited: boolean }>(`const _q=new THREE.Quaternion();
+    ${lift('proj_point')} ${lift('hud_field')} ${lift('hud_room')} ${lift('hud_edge')} ${body}`)
+  const glass = 'const glass={ corners:[[400,300],[600,300],[600,500],[400,500]] };'
+  it('sits at its projection while that is on the field', () => {
+    const s = edge(`return hud_edge(at(10,0,2000),[500,400],null,20);`)
+    expect(s.limited).toBe(false)
+    expect(s.at[0]).toBeCloseTo(500 + Math.tan(10 * D) / Math.tan(30 * D) * 400, 6)
+  })
+  it('is pinned inside the field\'s edge, its radius in, on the line from the boresight toward it', () => {
+    const right = edge(`return hud_edge(at(50,0,2000),[500,400],null,20);`)
+    expect(right.limited).toBe(true)
+    expect(right.at[0]).toBeCloseTo(980, 6)
+    expect(right.at[1]).toBeCloseTo(400, 6)
+    const behind = edge(`return hud_edge(at(170,0,2000),[500,400],null,20);`) // behind the eye, a little right
+    expect(behind.limited).toBe(true)
+    expect(behind.at[0]).toBeCloseTo(980, 6)
+    expect(behind.at[1]).toBeCloseTo(400, 6)
+  })
+  it('takes the glass for the field in the pit', () => {
+    const side = edge(`${glass} return hud_edge(at(20,0,2000),[500,400],glass,20);`)
+    expect(side.limited).toBe(true)
+    expect(side.at[0]).toBeCloseTo(580, 6)
+    expect(side.at[1]).toBeCloseTo(400, 6)
+    const top = edge(`${glass} return hud_edge(at(0,20,2000),[500,400],glass,20);`)
+    expect(top.at[0]).toBeCloseTo(500, 6)
+    expect(top.at[1]).toBeCloseTo(320, 6)
+    expect(edge(`${glass} return hud_edge(at(5,0,2000),[500,400],glass,20).limited;`)).toBe(false)
+  })
+  it('is where the HUD draws the 9M\'s circle and box, flashing while limited, SHOOT kept on the glass, and the locator line then', () => {
+    const hud = lift('draw_hud')
+    expect(hud).toContain('const spot=look?hud_edge(look,bore,glass,seeker):{ at:bore, limited:false }, at=spot.at;')
+    expect(hud).toContain('if(!worn&&(!spot.limited||blink)){ hctx.strokeStyle=GR;')
+    expect(hud).toContain('const box=edge?(edge.limited?(master==="9m"&&blink?edge.at:null):edge.at):null;')
+    expect(hud).toContain('if(edge&&edge.limited){   // target locator line')
+    expect(hud).toContain('hctx.fillText("SHOOT",at[0],room?above:at[1]+seeker+16*hs);')
   })
 })
 
@@ -489,7 +602,7 @@ describe('the wiring', () => {
   it('draws in the first-person views only, and the HUD draws the AIM-9 circle only when the helmet does not', () => {
     expect(lift('draw_hud')).toContain('if(cfg.view==="hud"||cfg.view==="cockpit") draw_hmd(glass,pa,boxed,vc,ranged?rng:null,heat_shown);')
     expect(lift('draw_hud')).toContain('const worn=hmd_seeker();')
-    expect(lift('draw_hud')).toContain('if(!worn){ hctx.strokeStyle=GR;')
+    expect(lift('draw_hud')).toContain('if(!worn&&(!spot.limited||blink)){ hctx.strokeStyle=GR;')
     expect(lift('draw_hud')).toContain('if(!worn&&heat_shown.shoot){') // its SHOOT goes with it
     expect(lift('draw_hud')).toContain('const seeker=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;') // the HUD's own, in the views that overlay it, smaller tracking too
   })

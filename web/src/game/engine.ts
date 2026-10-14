@@ -2799,7 +2799,7 @@ function set_press(which,d){ navigate.set(nav,which,d>0?5:-5); ddi_dirty=true; }
 function nav_ready(){ if(!nav_cold) return; const truth=nav_sense(0);
 	navigate.load(nav,mission()); nav_fields=airports.length;
 	nav_cold=false; navigate.ready(nav,truth); nav.variation=VARIATION; nav.heading=truth.heading; nav.steer="tcn";
-	if(truth.airborne) nav.waypoints[0]={ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship
+	if(truth.airborne) nav.waypoints[0]=cfg.task==="joust"?null:{ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship; a joust's has no home waypoint, so the FPAS cannot judge HOME FUEL and shows its advisory instead (2.3.1.2, 2.3.1.3): the ship was far off and every fight in burner called it within seconds
 // nav_frame steps the suite: the mission data when it is first there to load, the INS and GPS, AUTO
 // sequential steering's move to the next waypoint, and the set switches held on their keys - a degree
 // on the press, then 30° a second.
@@ -3123,7 +3123,9 @@ function ddi_rdr(x){
 		const tilt=RADAR.centre.elevation, cover=RADAR.coverage();   // the altitudes the bars span at the cursor's range
 		const hi=Math.round((ownship.pos.y+reach*Math.tan(tilt+cover))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(tilt-cover))*3.281/1000));
 		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); }
-	if(breakaway_shown()){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } }   // the breakaway X across the attack format's centre, flashing with the HUD's
+	{ const cue=attack_cue();   // the mission computer's own, so the head-down view has them too
+		if(cue.shoot){ x.fillStyle="#39e07a"; x.font="22px monospace"; x.textAlign="center"; x.fillText("SHOOT",256,474); }   // the missile's SHOOT, centred under the tactical region
+		if(cue.brk&&(sim_time*4)%2<1){ x.strokeStyle="#39e07a"; x.lineWidth=2.5; breakaway(x,256,250,65); } } }   // the breakaway X across the attack format's centre, flashing with the HUD's
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the EMD as figure 2-3 draws it: the -402's EPE line on top, no title, the parameter names down the middle and each engine's values left-aligned either side
 	// The EMD's thirteen rows (2.1.1.7.6), with the figure's names and digits: FF to the ten,
 	// VIB and TDP to a tenth, EPR to a hundredth. N2, EGT, fuel flow, nozzle and oil pressure are
@@ -10184,6 +10186,28 @@ function glass_clip(g){ hctx.beginPath(); hctx.moveTo(g.corners[0][0],g.corners[
 	if(GLASS_DEBUG){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
 	hctx.clip(); }
 function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
+// hud_field: the HUD's field on the screen - the glass in the pit, the window in the HUD view - as its outline
+// and each edge's inward normal; hud_room: how far q lies inside it, negative outside.
+function hud_field(glass){ const outline=glass?glass.corners:[[0,0],[HW,0],[HW,HH],[0,HH]];
+	let turn=0; for(let i=0,j=outline.length-1;i<outline.length;j=i++) turn+=outline[j][0]*outline[i][1]-outline[i][0]*outline[j][1];
+	const side=turn>0?1:-1;   // the winding sets which side of each edge is in
+	return outline.map((a,i)=>{ const b=outline[(i+1)%outline.length], ex=b[0]-a[0], ey=b[1]-a[1], l=Math.hypot(ex,ey)||1; return { a, nx:-ey/l*side, ny:ex/l*side }; }); }
+function hud_room(q,field){ let room=Infinity; for(const e of field) room=Math.min(room,(q[0]-e.a[0])*e.nx+(q[1]-e.a[1])*e.ny); return room; }
+// hud_edge: where the HUD draws a symbol of radius r for the world point p. While p projects inside the field,
+// at its projection; off it, or behind the eye, limited: on the line from the boresight toward it, as far out
+// as keeps the symbol on the glass, which is where the 9M's seeker circle and TD box go, flashing.
+function hud_edge(p,bore,glass,r){
+	const field=hud_field(glass), at=proj_point(p);
+	if(at&&hud_room(at,field)>=0) return { at, limited:false };
+	let ux, uy;
+	if(at){ ux=at[0]-bore[0]; uy=at[1]-bore[1]; }
+	else { const cs=new THREE.Vector3().subVectors(p,camera.position).applyQuaternion(_q.copy(camera.quaternion).invert()); ux=cs.x; uy=-cs.y; }
+	const length=Math.hypot(ux,uy); if(length<1e-6) return { at:bore, limited:true };
+	ux/=length; uy/=length;
+	let reach=Infinity;
+	for(const e of field){ const toward=ux*e.nx+uy*e.ny; if(toward<0) reach=Math.min(reach,((bore[0]-e.a[0])*e.nx+(bore[1]-e.a[1])*e.ny-r)/-toward); }
+	reach=Math.max(0,Number.isFinite(reach)?reach:0);
+	return { at:[bore[0]+ux*reach,bore[1]+uy*reach], limited:true }; }
 let GR="#15b85f"; const AM="#ffc14d";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
 
 // ---- full-screen map (M) — aircraft, islands, airports, carrier; never bandits ----
@@ -10365,64 +10389,107 @@ function heat_zone(){
 		{ position:t.position, velocity:v }, swing, t.reheat, WORLD_WRAP);
 	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
-function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; return zone_cue(z); }
-// heat_staff: the 9M's range staff beside the boresight at x,y, as the AMRAAM draws its own: Rmax, the doubled
-// Rne tick, Rmin, and the caret at his range; hd is the layout's pixels a degree, hs its stroke scale.
+// The 9M's allowable steering error: its SHOOT needs the steering dot, the line to where the radar's target
+// will be when a round fired now arrives, within HEAT_ASE of the nose, as the real cue needs the dot inside its
+// circle. No public source gives the circle's size; 10 degrees leaves the off-boresight seeker its shots and
+// denies the cue to a nose pulled 27 degrees off the lead, which it lit before.
+const HEAT_ASE=10*D2R;
+// heat_lead: that line, a unit world vector from the jet, or null without a radar track. The round's time of
+// flight is the range over the launch speed plus the motor's gain, about 500 m/s on a short shot (the Mk 36
+// boosts 780 m/s in 3 s): steering-dot precision, as launch_zone takes the AMRAAM's. Worked every frame from
+// the track, not at the zone's 2 Hz, so the dot does not jump.
+function heat_lead(){
+	const track=RADAR.stt??RADAR.ls, t=track==null?null:radar_target(track); if(!t) return null;
+	const p=t.position, v=t.velocity, to=new THREE.Vector3(wrap_axis(p.x-ownship.pos.x),p.y-ownship.pos.y,wrap_axis(p.z-ownship.pos.z));
+	const tof=to.length()/(Math.max(ownship.speed,150)+500);
+	to.set(to.x+v.x*tof,to.y+v.y*tof,to.z+v.z*tof);
+	return to.lengthSq()>1?to.normalize():null; }
+// track_range: the radar's range to its L&S or STT track every frame, or null without one - the zones' own is 2 Hz
+function track_range(){ const track=RADAR.stt??RADAR.ls, t=track==null?null:radar_target(track); if(!t) return null;
+	return Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z)); }
+function heat_steered(){ const lead=heat_lead(); return !!lead&&lead.dot(ownship.fwd)>=Math.cos(HEAT_ASE); }
+// heat_cue: the zone's cue, less SHOOT while the dot is outside the circle; the breakaway is the range's alone
+function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null;
+	const cue=zone_cue(z); return cue==="break"||heat_steered()?cue:null; }
+// breakaway_due: the boxed target closing to the selected weapon's minimum range within 1.5 s at the radar's
+// closure - time-based like the real cue, so a 900 kt merge breaks far earlier than a tail chase (closure
+// clamped: a boxed-target switch in multiplayer spikes one frame)
+function breakaway_due(boxed,rng,vc){ return !!boxed&&rng<(master==="9m"?300:150)+THREE.MathUtils.clamp(vc,0,1000)*1.5; }
+// heat_lit: whether the heater's SHOOT shows this instant, flash phase included: a seeker lock, a missile on the
+// rail, no breakaway or weapons hold, and the cue steady or, inside Rne, flashing
+function heat_lit(lockon,brk,cue){ return lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1)); }
+// attack_cue: the missile SHOOT and the breakaway X as the attack format shows them, worked out here rather
+// than read from the HUD's frame, which the head-down view never draws: the heater's from its own seeker lock
+// and zone, the AMRAAM's from its zone, and the X for the breakaway or either missile's minimum range.
+function attack_cue(){
+	if(master==="nav"||hud_landing()) return { shoot:false, brk:false };
+	const boxed=hud_target(), r=boxed?ranging():null, brk=breakaway_due(boxed,r?r.range:1500,r?r.closure:0);
+	if(master==="9m"){ const lockon=seeker_now.lockon, cue=lockon?heat_cue(heat_zone()):null;
+		return { shoot:heat_lit(lockon,brk,cue), brk:brk||(lockon&&ownship.msl>0&&cue==="break") }; }
+	if(master==="120c"){ const cue=shoot_cue(launch_zone());
+		return { shoot:!brk&&(cue==="steady"||(cue==="flash"&&(sim_time*4)%2<1)), brk:brk||cue==="break" }; }
+	return { shoot:false, brk }; }
 // designation_line: the world direction to the point designated in NAV, from the position the suite keeps,
 // or null with none (24.2.10).
 function designation_line(){ if(!nav.designation) return null;
 	const here=navigate.place(nav,nav_sense(0)), d=nav.designation, sight=new THREE.Vector3(wrap_axis(d.x-here.x),d.elevation-ownship.pos.y,wrap_axis(d.z-here.z));
 	return sight.lengthSq()>1?sight.normalize():null; }
-function heat_staff(hctx,GR,x,y,hd,hs,zone){
-	hctx.save(); hctx.font=(13*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;   // i18n-format-ok: a CSS font size
-	const top=y-3.0*hd, bottom=y+3.0*hd, sx=x+9*hd;
-	const scale=Math.max(zone.max,zone.range)*1.05;
-	const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
-	hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
-	for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
-		if(range<=0) continue; const at=y_of(range);
-		hctx.beginPath(); hctx.moveTo(sx-5*hs,at); hctx.lineTo(sx+5*hs,at); hctx.stroke();
-		if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5*hs,at-3*hs); hctx.lineTo(sx+5*hs,at-3*hs); hctx.stroke(); } }
-	const at=y_of(zone.range);
-	hctx.beginPath(); hctx.moveTo(sx+7*hs,at); hctx.lineTo(sx+15*hs,at-4*hs); hctx.lineTo(sx+15*hs,at+4*hs); hctx.closePath(); hctx.fill();
-	hctx.fillText((zone.range/1852).toFixed(1),sx+18*hs,at+4*hs);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+// heat_steering: the 9M's ASE circle as the HUD's NIRD (the VRS AIM-9 page), centred on the waterline at x,y
+// and as large as the AMRAAM's, constant in size. The steering dot is measured off the airframe's nose, as the
+// gate is: the rim is HEAT_ASE, so the dot sits inside it exactly while heat_cue lets SHOOT light, and it pegs at
+// 1.35 times the rim. With the radar's zone on the target, its range cues go round the rim (nird).
+function heat_steering(hctx,GR,x,y,ppdv){
+	const lead=(ownship.msl|0)>0?heat_lead():null; if(!lead) return;
+	const R=3.2*ppdv, off=Math.acos(THREE.MathUtils.clamp(lead.dot(ownship.fwd),-1,1));
+	const sx=lead.dot(ownship.right), sy=lead.dot(ownship.up), side=Math.hypot(sx,sy);
+	const d=Math.min(off/HEAT_ASE,1.35)*R, ux=side>1e-6?sx/side:0, uy=side>1e-6?-sy/side:0;
+	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
+	hctx.beginPath(); hctx.arc(x,y,R,0,Math.PI*2); hctx.stroke();
+	hctx.beginPath(); hctx.arc(x+ux*d,y+uy*d,3.5,0,Math.PI*2); hctx.fill();
+	const zone=heat_zone(), range=track_range();
+	if(zone&&zone.max>0&&range!=null) nird(hctx,x,y,R,ppdv,zone,range,[zone.minimum,zone.escape,zone.max]);
 	hctx.restore(); }
-function hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes){   // axes: the frame the zone is drawn in (fwd, right, up) - the HUD's view, or the airframe on a DDI
+// nird: the NIRD about the ASE circle at x,y of radius R, as the AVM AIM-120 guide and the VRS AIM-9 page draw it:
+// each range cue a triangle outside the rim at its clock - Rmin at 2:30, Rmax at 6:00, Rne floating between,
+// Raero past Rmax - and his range an arc from 12 o'clock with a bar at its end, turning counter-clockwise as he
+// closes. A cue short of Rmin is left off: a zone with no no-escape band reports none.
+function nird(hctx,x,y,R,ppdv,zone,range,cues){
+	const at=(clock,radius)=>[x+Math.sin(clock*D2R)*radius,y-Math.cos(clock*D2R)*radius];
+	hctx.lineWidth=1.5;
+	for(const cue of cues){ if(cue<zone.minimum) continue;
+		const c=nird_clock(cue,zone), tip=at(c,R+2), base=at(c,R+2+0.5*ppdv), across=[Math.cos(c*D2R)*0.3*ppdv,Math.sin(c*D2R)*0.3*ppdv];
+		hctx.beginPath(); hctx.moveTo(tip[0],tip[1]); hctx.lineTo(base[0]+across[0],base[1]+across[1]); hctx.lineTo(base[0]-across[0],base[1]-across[1]); hctx.closePath(); hctx.stroke(); }
+	const c=nird_clock(range,zone), outer=at(c,R), inner=at(c,R-0.6*ppdv);
+	hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(x,y,R,-Math.PI/2,-Math.PI/2+c*D2R); hctx.stroke();
+	hctx.beginPath(); hctx.moveTo(outer[0],outer[1]); hctx.lineTo(inner[0],inner[1]); hctx.stroke();
+	hctx.lineWidth=1.5; }
+// nird_clock: where a range sits on the NIRD, in degrees clockwise from 12 o'clock. Normalised: Rmin at 2:30 and
+// Rmax at 6:00 whatever their ranges, linear between them; inside Rmin down to 12 o'clock at no range, and past
+// Rmax on at the same rate a metre as between them, to 11 o'clock at most.
+function nird_clock(range,zone){
+	if(range<=zone.minimum) return 75*Math.max(0,range)/Math.max(zone.minimum,1);
+	return Math.min(330,75+105*(range-zone.minimum)/Math.max(zone.max-zone.minimum,1)); }
+// hud_launch_zone: the AMRAAM's on the HUD's layout about cx,cy - its ASE circle on the waterline with the steering
+// dot and the NIRD, its cue words for the recorder, and each supported round's times under the cluster. Its SHOOT
+// goes over the TD box (draw_hud), and its maximum-aspect cue is the attack format's, not the HUD's.
+function hud_launch_zone(hctx,GR,cx,cy,ppdv,lx){
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
 	hctx.save(); hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
-	if(z&&z.aero>0){
-		const top=cy-3.0*ppdv, bottom=cy+3.0*ppdv, sx=ax-30;
-		const scale=Math.max(z.aero,z.range)*1.05;
-		const at=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
-		hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
-		for(const [range,mark] of [[z.aero,""],[z.max,"—"],[z.escape,"="],[z.minimum,"_"]]){
-			if(range<=0) continue; const y=at(range);
-			hctx.beginPath(); hctx.moveTo(sx-5,y); hctx.lineTo(sx+5,y); hctx.stroke();
-			if(mark==="=") { hctx.beginPath(); hctx.moveTo(sx-5,y-3); hctx.lineTo(sx+5,y-3); hctx.stroke(); } }   // Rne carries the doubled tick, the pilot's "he cannot escape" mark
-		const y=at(z.range);   // the target's own range: the caret that walks down the staff
-		hctx.beginPath(); hctx.moveTo(sx+7,y); hctx.lineTo(sx+15,y-4); hctx.lineTo(sx+15,y+4); hctx.closePath(); hctx.fill();
-		hctx.fillText((z.range/1852).toFixed(1),sx+18,y+4);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
-		if(z.max>0&&z.range<=z.aero){   // the maximum-aspect digit: tens of degrees of turn the shot survives
-			const aspect=z.range<=z.escape?18:Math.round(18*THREE.MathUtils.clamp((z.max-z.range)/Math.max(1,z.max-z.escape),0,1));
-			hctx.fillText("A "+aspect,sx-46,top-6); } }
-	// ASE circle and steering dot: pre-launch lead steering, as the real jet
-	// flies the shot — the dot is the lead intercept direction off the nose,
-	// centred in the circle means the launch spends no missile energy turning.
-	// The dot pegs at the rim edge-out when the lead point is far off axis.
-	if(z&&z.lead&&(ownship.amraam|0)>0){ const R=3.2*ppdv;
+	// The ASE circle and steering dot: pre-launch lead steering, as the real jet flies the shot. The dot is the
+	// lead intercept direction off the airframe's nose, a degree a degree, so centred in the circle the launch
+	// spends no missile energy turning; it pegs at 1.35 times the rim when the lead is far off axis.
+	if(z&&z.lead&&(ownship.amraam|0)>0){ const R=3.2*ppdv, x=cx, y=cy-4*ppdv;
 		const to=new THREE.Vector3(wrap_axis(z.lead.x-ownship.pos.x),z.lead.y-ownship.pos.y,wrap_axis(z.lead.z-ownship.pos.z)).normalize();
-		const cs=new THREE.Vector3(to.dot(axes.right),to.dot(axes.up),-to.dot(axes.fwd));
-		let dxp=0, dyp=0;
-		if(cs.z<-1e-4){ dxp=Math.atan2(cs.x,-cs.z)*57.29578*ppdv; dyp=-Math.atan2(cs.y,-cs.z)*57.29578*ppdv; }
-		else { const sd=Math.hypot(cs.x,cs.y)||1; dxp=cs.x/sd*R*2; dyp=-cs.y/sd*R*2; }
-		const d=Math.hypot(dxp,dyp); if(d>R*1.35){ dxp*=R*1.35/d; dyp*=R*1.35/d; }
-		hctx.beginPath(); hctx.arc(cx,cy,R,0,Math.PI*2); hctx.stroke();
-		hctx.beginPath(); hctx.arc(cx+dxp,cy+dyp,3.5,0,Math.PI*2); hctx.fill(); }
-	const cue=shoot_cue(z);
-	if(cue) hud_cue=cue;   // the radar cue's own words: steady / flash / break
-	if(cue&&cue!=="break"&&(cue==="steady"||(sim_time*4)%2<1)){   // inside Rmin the breakaway X replaces it (drawn with the rest of the cluster) hctx.fillStyle=GR; hctx.font="18px 'Hornet Display', monospace"; hctx.textAlign="center";
-		hctx.fillText("SHOOT",cx,cy-2.2*ppdv); hud_shoot=true; }
+		const off=Math.acos(THREE.MathUtils.clamp(to.dot(ownship.fwd),-1,1))/D2R;
+		const sx=to.dot(ownship.right), sy=to.dot(ownship.up), side=Math.hypot(sx,sy);
+		const d=Math.min(off*ppdv,1.35*R), ux=side>1e-6?sx/side:0, uy=side>1e-6?-sy/side:0;
+		hctx.beginPath(); hctx.arc(x,y,R,0,Math.PI*2); hctx.stroke();
+		hctx.beginPath(); hctx.arc(x+ux*d,y+uy*d,3.5,0,Math.PI*2); hctx.fill();
+		const range=track_range();
+		if(z.max>0&&range!=null) nird(hctx,x,y,R,ppdv,z,range,[z.minimum,z.escape,z.max,z.aero]); }
+	const cue=shoot_cue(z), brk=hud_cue==="break";   // brk: the closing breakaway, cued already this frame, which the zone's words must not overwrite
+	if(cue&&!brk) hud_cue=cue;   // the radar cue's own words: steady / flash / break
 	if(flying.length){   // one line per supported round: A-time to the seeker's wake, then T-time
 		hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 		let y=cy+3.6*ppdv;
@@ -10654,16 +10721,24 @@ function draw_hud(){
 
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
 	// boxed target, with the gun cross above; 9M = seeker circle + SHOOT cue.
-	const brk=boxed&&rng<(master==="9m"?300:150)+THREE.MathUtils.clamp(vc,0,1000)*1.5;   // breakaway: reaching minimum range within 1.5 s at the current closure — time-based like the real cue, so a 900 kt merge breaks far earlier than a tail-chase (vc clamped: a boxed-target switch in MP spikes one frame)
+	const brk=breakaway_due(boxed,rng,vc);
 	// The 9M's cues, for the HUD or the helmet, whichever carries the seeker's circle: SHOOT only with a radar
 	// lock and the target inside the heater's zone (#47), steady between Rmax and Rne and flashing inside it,
-	// none inside the breakaway regime (the X owns it) or during the joust's weapons hold; and the zone's staff
+	// none inside the breakaway regime (the X owns it) or during the joust's weapons hold. Its range cues are the
+	// NIRD's, on the steering circle (heat_steering)
 	const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
-	const heat_shown={ shoot:lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1)), zone:zone&&zone.max>0&&lockon?zone:null };
+	const heat_shown={ shoot:heat_lit(lockon,brk,cue) };
 	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym;
-	const td=boxed?proj_point(boxed.pos):null;
-	if(td){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(td[0]-14*hs,td[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
-	if(boxed&&!(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH)){   // target locator line (NATIP): the boxed target is off the HUD — a line from the boresight points the shortest way to it, angle-off at the tip
+	const blink=(sim_time*5)%2<1;   // the 9M's limited symbols flash at its SHOOT cue's rate
+	const edge=boxed?hud_edge(boxed.pos,bore,glass,14*hs):null;   // edge.limited: he is off the HUD's field
+	const td=boxed?proj_point(boxed.pos):null;   // his projection, which the gun's director needs on the HUD or off it
+	const box=edge?(edge.limited?(master==="9m"&&blink?edge.at:null):edge.at):null;   // with the 9M the box is limited to the field's edge and flashes; otherwise the field takes it
+	if(box){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(box[0]-14*hs,box[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
+	if(master==="120c"&&edge&&attack_cue().shoot){   // the AMRAAM's SHOOT over the TD box (the AVM AIM-120 guide), at the field's edge with the box while he is off it, under it against the top
+		const above=edge.at[1]-26*hs, room=hud_room([edge.at[0],above-10*hs],hud_field(glass))>=0;
+		hctx.fillStyle=GR; hctx.font=(18*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size
+		hctx.fillText("SHOOT",edge.at[0],room?above:edge.at[1]+34*hs); hud_shoot=true; }
+	if(edge&&edge.limited){   // target locator line (NATIP): the boxed target is off the HUD — a line from the boresight points the shortest way to it, angle-off at the tip
 		const to=new THREE.Vector3(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();
 		const off=Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(to),-1,1))*57.29578;
 		const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert()); const sd=Math.hypot(cs.x,cs.y);
@@ -10722,15 +10797,16 @@ function draw_hud(){
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
 		const seeker=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the 5° seeker circle, smaller once uncaged and tracking (the DCS guide)
-		const at=lockon?(proj_point(quarry.pos)||bore):(seeker_now.line&&proj_dir(seeker_now.line))||bore;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the radar's target, the helmet's or the nose
+		const look=lockon?quarry.pos:seeker_now.line?new THREE.Vector3().copy(camera.position).addScaledVector(seeker_now.line,1000):null;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the radar's target, the helmet's or the nose
+		const spot=look?hud_edge(look,bore,glass,seeker):{ at:bore, limited:false }, at=spot.at;   // off the HUD's field the circle is limited to its edge and flashes
 		const worn=hmd_seeker();   // the helmet carries the circle and its SHOOT while it works (2.21.15 to 2.21.17)
-		if(!worn){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke(); }
+		if(!worn&&(!spot.limited||blink)){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke(); }
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
 		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
 		if(!worn&&heat_shown.shoot){ hctx.fillStyle=GR; hctx.font=(16*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size. Commanding a launch the trigger will refuse just confuses the merge
-			hctx.fillText("SHOOT",at[0],at[1]-seeker-16*hs); hud_shoot=true; }
-		if(heat_shown.zone) heat_staff(hctx,GR,bore[0],bore[1],HH/45*hs,hs,heat_shown.zone);   // HUD degrees, not the world's: the staff is layout, carried onto the glass by hs; at every reject level (2.13.4.8.1 names it at neither)
+			const above=at[1]-seeker-16*hs, room=hud_room([at[0],above-8*hs],hud_field(glass))>=0;   // over the circle, or under it when the circle is limited against the field's top
+			hctx.fillText("SHOOT",at[0],room?above:at[1]+seeker+16*hs); hud_shoot=true; }
 	}
 	if(brk) hud_cue="break";   // the 9M can't arm, a gun pass this close eats debris: break off (the X is drawn with the cluster)
 	hctx.globalAlpha=1; if(glass) hctx.restore(); }
@@ -11221,7 +11297,8 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes,worn=n
 	// one is selected. REJ 2 removes it (16927); REJ 1 keeps it ----
 	if(keep("TIME WINDOW",2)&&!limited){ const text=timer_text((ownship.gauges||{}).zulu||0);
 		if(text){ hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.fillText(text,ax-84,cy+7.2*ppdv); } }
-	if(master==="120c"&&keep("NIRD CIRCLE",3)&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,ax,lx,axes);   // at every HUD reject level (2.13.4.8.1 names it at neither); the helmet's REJECT SETUP may take it
+	if(master==="120c"&&keep("NIRD CIRCLE",3)&&!limited) hud_launch_zone(hctx,GR,cx,cy,ppdv,lx);   // at every HUD reject level (2.13.4.8.1 names it at neither); the helmet's REJECT SETUP may take it
+	if(master==="9m"&&keep("NIRD CIRCLE",3)&&!limited) heat_steering(hctx,GR,cx,wly,ppdv);   // the 9M's NIRD, on the waterline, at every HUD reject level
 	// ---- the breakaway X: one cue for every weapon, however it was reached (the
 	// AMRAAM inside Rmin, the 9M inside its own minimum, or closing to minimum range
 	// within 1.5 s). A large X across the HUD's optical centre, about 7° across, in
@@ -11264,7 +11341,6 @@ function draw_hmd(glass,pa,boxed,vc,rng,heat){
 			hud_cluster(hctx,GR,cx,cy,ppdv,null,null,pa,boxed,vc,rng,axes,{ helmet:hmd, limited, sight });
 			hctx.font="13px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.fillStyle=GR;
 			if(law_active&&!limited) hctx.fillText("ALTITUDE",cx,cy+5.8*ppdv);
-			if(master==="9m"&&heat&&heat.zone&&!limited&&helmet.shown(hmd,"NIRD CIRCLE")) heat_staff(hctx,GR,cx,cy-4*ppdv,ppdv,1,heat.zone);   // beside the layout's boresight, as on the HUD
 			if(RADAR.auto&&(RADAR.acm==="hacq"||RADAR.acm==="lacq")&&(sight.dot(ownship.fwd)>=Math.cos(RADAR_GIMBAL)||(sim_time*4)%2<1)) hctx.fillText(RADAR.acm.toUpperCase(),cx+4.2*ppdv+48,cy+4*ppdv); }   // under the altitude box
 		if(!limited&&helmet.shown(hmd,"HMD ELEV")){ const e=Math.round(Math.asin(THREE.MathUtils.clamp(sight.y,-1,1))/D2R);
 			hctx.font="11px 'Hornet Display', monospace"; hctx.textAlign="center"; hctx.textBaseline="bottom"; hctx.fillStyle=GR; hctx.fillText((e>0?"+":e<0?"-":"")+Math.abs(e),cx,tape-26); }
@@ -11274,7 +11350,8 @@ function draw_hmd(glass,pa,boxed,vc,rng,heat){
 		if(hmd.priority){ hctx.beginPath(); hctx.arc(cx,cy,Math.max(1.5,0.12*ppd),0,Math.PI*2); hctx.fill(); } }
 	if(set==="one"||!shown){ hctx.restore(); return; }   // MC1's backup carries neither the L&S nor the AIM-9's line of sight
 	const box=boxed?new THREE.Vector3(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize():null, point=master==="nav"?designation_line():null;
-	if(box) hmd_mark(box,false,cx,cy,ppd,ppdv,R);
+	if(box){ const at=hmd_mark(box,false,cx,cy,ppd,ppdv,R);
+		if(master==="120c"&&!blanked&&attack_cue().shoot){ hctx.font="18px 'Hornet Display', monospace"; hctx.fillText("SHOOT",at[0],at[1]-26*hud_scale()); hud_shoot=true; } }   // the AMRAAM's over the helmet's box, as on the HUD; through the HUD, the HUD's
 	if(point) hmd_mark(point,true,cx,cy,ppd,ppdv,R);
 	if(box||point) hmd_locator(box||point,sight,cx,cy,ppd);   // the L&S's alone with both (2.21.14)
 	if(master==="9m"&&!pa&&seeker_now.line){ const at=hmd_at(seeker_now.line), r=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the AIM-9's field of view, where the seeker looks, smaller once it tracks
@@ -11307,8 +11384,8 @@ function hmd_toward(to){ const c=_hmd_v.copy(to).applyQuaternion(_hmd_q.copy(cam
 function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*hud_scale(), edge=R-1.5*s;   // the HUD's own box and diamond size (14*hs, 8*hs), so through the HUD the two marks coincide at every field and zoom; sized by ppd/ppdv, they matched only at the 45° field
 	let at=hmd_at(to);
 	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge]; }
-	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return; }
-	hctx.beginPath(); hctx.moveTo(at[0],at[1]-s); hctx.lineTo(at[0]+s,at[1]); hctx.lineTo(at[0],at[1]+s); hctx.lineTo(at[0]-s,at[1]); hctx.closePath(); hctx.stroke(); }
+	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return at; }
+	hctx.beginPath(); hctx.moveTo(at[0],at[1]-s); hctx.lineTo(at[0]+s,at[1]); hctx.lineTo(at[0],at[1]+s); hctx.lineTo(at[0]-s,at[1]); hctx.closePath(); hctx.stroke(); return at; }
 // hmd_locator: the target locator line (the DCS guide): for a direction more than 10° off the line of sight the
 // helmet reports, a line from the aiming cross toward it, longer the farther off - 8° from the centre by 180° -
 // with an arrowhead at its tip, and the angle off over the aiming cross.
