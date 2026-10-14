@@ -224,6 +224,9 @@ describe('the helmet display', () => {
     expect(out.rects).toHaveLength(1)
     expect(out.rects[0][0] + half).toBeCloseTo(500 + R - 1.5 * half, 6) // held at the field's right edge
     expect(out.text).toContain('40')
+    // Held at the edge it flashes, so it is never read as the box on the jet; on the jet it stays steady.
+    expect(show(`sim_time=0.3; const boxed={ pos:at(40,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(0)
+    expect(show(`sim_time=0.3; const boxed={ pos:at(3,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(1)
   })
   it('writes the AMRAAM\'s SHOOT over its box, as the HUD does over its own, and leaves it to the HUD through the glass', () => {
     const shoot = (lit: boolean, setup = '', call = 'draw_hmd(null,false,boxed,0,null,null)') => show(`master='120c'; const attack_cue=()=>({ shoot:${lit}, brk:false }); const boxed={ pos:at(3,0,2000) }; ${setup}`, call).text.includes('SHOOT')

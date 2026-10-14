@@ -11380,10 +11380,13 @@ function hmd_toward(to){ const c=_hmd_v.copy(to).applyQuaternion(_hmd_q.copy(cam
 	const x=az*cr+el*sr, y=az*sr-el*cr, l=Math.hypot(x,y)||1;
 	return [x/l,y/l]; }
 // hmd_mark: the TD box, or the designation's diamond, on a world direction where the helmet believes it lies,
-// held at the edge of the field nearest it while it lies outside (the DCS guide).
+// held at the edge of the field nearest it while it lies outside (the DCS guide). Held there it flashes, as the
+// HUD's held box does with the 9M: steady, a mark is on its object; flashing, it only points the way, and two
+// steady boxes, the HUD's on the jet and the helmet's at its edge, left the pilot unable to tell which held him.
 function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*hud_scale(), edge=R-1.5*s;   // the HUD's own box and diamond size (14*hs, 8*hs), so through the HUD the two marks coincide at every field and zoom; sized by ppd/ppdv, they matched only at the 45° field
 	let at=hmd_at(to);
-	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge]; }
+	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge];
+		if((sim_time*5)%2>=1) return at; }
 	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return at; }
 	hctx.beginPath(); hctx.moveTo(at[0],at[1]-s); hctx.lineTo(at[0]+s,at[1]); hctx.lineTo(at[0],at[1]+s); hctx.lineTo(at[0]-s,at[1]); hctx.closePath(); hctx.stroke(); return at; }
 // hmd_locator: the target locator line (the DCS guide): for a direction more than 10° off the line of sight the
