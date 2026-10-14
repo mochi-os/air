@@ -384,9 +384,10 @@ describe('the LOCK and SHOOT lights', () => {
 
   it('take the SHOOT word from every HUD site that draws it, reset each frame', () => {
     expect(source).toMatch(/hud_cue=""; hud_shoot=false;/)
-    expect(source.match(/hud_shoot=true/g)?.length).toBe(4) // the AMRAAM cue, the gun director and the Sidewinder cue, on the HUD or the helmet
-    expect(source).toMatch(/hctx\.fillText\("SHOOT",cx,cy-2\.2\*ppdv\); hud_shoot=true; \}/)
-    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-seeker-16\*hs\); hud_shoot=true; \}/)
+    expect(source.match(/hud_shoot=true/g)?.length).toBe(5) // the AMRAAM cue and the Sidewinder cue, each on the HUD or the helmet, and the gun director
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",edge\.at\[0\],room\?above:edge\.at\[1\]\+34\*hs\); hud_shoot=true; \}/)
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-26\*hud_scale\(\)\); hud_shoot=true; \}/)
+    expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],room\?above:at\[1\]\+seeker\+16\*hs\); hud_shoot=true; \}/)
     expect(source).toMatch(/hctx\.fillText\("SHOOT",at\[0\],at\[1\]-r-16\); hud_shoot=true; \}/)
   })
 

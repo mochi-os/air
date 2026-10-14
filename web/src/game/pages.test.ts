@@ -310,15 +310,31 @@ describe('the HUD format on a DDI', () => {
     expect(pointer).toBeDefined()
   })
 
-  it('takes the AMRAAM steering dot in the frame it is drawn in: the airframe on a DDI', () => {
-    const dot = (axes: string, lead: string) => new Function('THREE', `const D2R=Math.PI/180, GR='g', sim_time=0, missiles=[], ownship={ pos:{x:0,y:0,z:0}, amraam:4 }, wrap_axis=(v)=>v, shoot_cue=()=>null;
-      const launch_zone=()=>({ aero:0, lead:${lead} }), camera={ quaternion:new THREE.Quaternion() }, _q=new THREE.Quaternion(); let hud_cue="", hud_shoot=false;
-      const arcs=[]; const hctx=new Proxy({}, { get:(o,k)=>k==='arc'?(ax,ay,r)=>arcs.push([ax,ay,r]):()=>{}, set:()=>true });
-      ${lift('hud_launch_zone')} hud_launch_zone(hctx,GR,0,0,20,0,0,${axes}); return arcs.find((a)=>a[2]===3.5);`)(THREE) as number[]
-    const east = '{ fwd:new THREE.Vector3(1,0,0), right:new THREE.Vector3(0,0,1), up:new THREE.Vector3(0,1,0) }' // an airframe heading east
-    const [x, y] = dot(east, '{ x:1000*Math.cos(2*D2R), y:0, z:1000*Math.sin(2*D2R) }') // 2° right of its nose, inside the dot's peg
+  // The AMRAAM's NIRD (the AVM AIM-120 guide): its ASE circle on the waterline, the dot off the airframe's nose a
+  // degree a degree, Rmin at 2:30, Rmax at 6:00, Rne between, Raero past Rmax, and his range as an arc from 12.
+  const amraam = (lead: string) => new Function('THREE', `const D2R=Math.PI/180, GR='g', sim_time=0, missiles=[], wrap_axis=(v)=>v, shoot_cue=()=>null, track_range=()=>30000;
+      const ownship={ pos:{x:0,y:0,z:0}, amraam:4, fwd:new THREE.Vector3(1,0,0), right:new THREE.Vector3(0,0,1), up:new THREE.Vector3(0,1,0) };   // an airframe heading east
+      const launch_zone=()=>({ aero:60000, max:40000, escape:20000, minimum:2000, range:30000, lead:${lead} }); let hud_cue="", hud_shoot=false;
+      const arcs=[], tips=[], text=[]; let first=null;
+      const hctx=new Proxy({}, { get:(o,k)=>k==='arc'?(ax,ay,r,a0,a1)=>arcs.push([ax,ay,r,a0,a1]):k==='moveTo'?(px,py)=>{ first=[px,py]; }:k==='lineTo'?()=>{ if(first){ tips.push(first); first=null; } }:k==='fillText'?(t)=>text.push(String(t)):()=>{}, set:()=>true });
+      ${lift('nird_clock')} ${lift('nird')} ${lift('hud_launch_zone')} hud_launch_zone(hctx,GR,0,0,20,0); return { arcs, tips, text };`)(THREE) as { arcs: number[][]; tips: number[][]; text: string[] }
+  const right = '{ x:1000*Math.cos(2*D2R), y:0, z:1000*Math.sin(2*D2R) }' // 2° right of the nose
+
+  it('takes the AMRAAM steering dot off the airframe\'s nose, its circle on the waterline', () => {
+    const d = amraam(right)
+    expect(d.arcs[0]).toEqual([0, -80, 64, 0, 2 * Math.PI]) // 4° up the layout, 3.2° across
+    const [x, y] = d.arcs.find((a) => a[2] === 3.5)!
     expect(x).toBeCloseTo(2 * 20, 6)
-    expect(y).toBeCloseTo(0, 6)
+    expect(y).toBeCloseTo(-80, 6)
+  })
+
+  it('carries the AMRAAM\'s ranges round its circle, Raero past Rmax, and no staff or aspect digit on the HUD', () => {
+    const d = amraam(right), D = Math.PI / 180
+    const place = (clock: number) => [Math.sin(clock * D) * 66, -80 - Math.cos(clock * D) * 66]
+    const clocks = [75, 75 + 105 * 18000 / 38000, 180, 180 + 105 * 20000 / 38000] // Rmin, Rne, Rmax, Raero
+    clocks.forEach((clock, k) => { expect(d.tips[k][0]).toBeCloseTo(place(clock)[0], 6); expect(d.tips[k][1]).toBeCloseTo(place(clock)[1], 6) })
+    expect(d.arcs[2][4]).toBeCloseTo(-Math.PI / 2 + (75 + 105 * 28000 / 38000) * D, 9) // his 30 km
+    expect(d.text).toEqual([])
   })
 
   it('is drawn by the HUD\'s own code', () => {
@@ -827,6 +843,12 @@ describe('the FPAS display', () => {
     expect(run.optimum.endurance?.altitude).toBeCloseTo(30000 * 0.3048, 6) // the layer nearest 9 km
     expect(run.optimum.endurance?.mach).toBeCloseTo(0.6, 9)
     expect(run.layers).toBeGreaterThan(0) // and the next survey is under way
+  })
+
+  it('starts a joust with no home waypoint, so HOME FUEL has nothing to judge, and any other air start homed on the ship', () => {
+    const run = (task: string) => new Function('navigate', `let nav_cold=true, nav_fields=0; const nav=navigate.fresh(1), airports=[], VARIATION=0, CARRIER={ x:5000, z:7000, deckY:20 }, cfg={ task:${JSON.stringify(task)} }, mission=()=>({ identifier:"T", waypoints:[], stations:[], points:[] }), nav_sense=()=>({ x:0, z:0, heading:0, airborne:true }); ${lift('nav_ready')}\n nav_ready(); return nav.waypoints[0];`)(navigate)
+    expect(run('joust')).toBeNull()
+    expect(run('free')).toMatchObject({ x: 5000, z: 7000 })
   })
 
   it('holds the HOME FUEL caution off with the refuelling probe out, and for 5 s after the home waypoint is changed', () => {

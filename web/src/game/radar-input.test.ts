@@ -163,7 +163,7 @@ describe('a new mission sets the radar up afresh', () => {
 })
 
 describe('the RDR page draws the scan volume', () => {
-  function draw(set: (radar: Radar) => void) {
+  function draw(set: (radar: Radar) => void, cue = { shoot: false, brk: false }) {
     const text: string[] = []
     const at: [string, number][] = [] // each text with where it was drawn across
     const boxes: number[] = [] // each strokeRect's left edge
@@ -174,24 +174,29 @@ describe('the RDR page draws the scan volume', () => {
       'text',
       'at',
       'boxes',
+      'cue',
       `const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
-       const NM=1852, D2R=Math.PI/180, wrap_axis=(v)=>v;
+       const NM=1852, D2R=Math.PI/180, wrap_axis=(v)=>v, sim_time=0;
        const RADAR=new Radar();
        const radar_cursor={ azimuth:0, range:20*NM };
        const ownship={ pos:{x:0,y:6096,z:0}, gauges:{heading:0}, speed:250, fwd:{x:0,y:0,z:-1} };
-       const breakaway_shown=()=>false, breakaway=()=>{};
+       const attack_cue=()=>cue, breakaway=()=>{};
        ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
        set(RADAR);
        const x=new Proxy({}, { get:(t,k)=>k==='fillText'?(s,px)=>{ text.push(String(s)); at.push([String(s),px]); }:k==='strokeRect'?(bx)=>boxes.push(bx):k==='measureText'?(s)=>({ width:10*String(s).length }):()=>{}, set:()=>true });
        ddi_rdr(x);
        return RADAR;`
     )
-    const radar = run(Radar, geometry, set, text, at, boxes) as Radar
+    const radar = run(Radar, geometry, set, text, at, boxes, cue) as Radar
     return { text, at, boxes, radar }
   }
   it('labels the bars scanned, TWS dropping bars as it caps the width', () => {
     expect(draw(() => {}).text).toContain('4B')
     expect(draw((r) => { r.mode = 'tws' }).text).toContain('2B')
+  })
+  it("writes the missile's SHOOT centred under the tactical region, with the mission computer's cue (attack_cue)", () => {
+    expect(draw(() => {}, { shoot: true, brk: false }).at).toContainEqual(['SHOOT', 256])
+    expect(draw(() => {}).text).not.toContain('SHOOT')
   })
   it('says where the scan points, and nothing when it points level', () => {
     expect(draw(() => {}).text.some((t) => t.startsWith('EL '))).toBe(false)
@@ -520,7 +525,7 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     expect(source).not.toMatch(/heat_quarry/)
     expect(lift('seeker_look')).not.toMatch(/0\.866/) // no cone on the client: the seeker's own 2.5° field about its line
     expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
-    expect(hud).toMatch(/const at=lockon\?\(proj_point\(quarry\.pos\)\|\|bore\):\(seeker_now\.line&&proj_dir\(seeker_now\.line\)\)\|\|bore;/) // the seeker circle on its heat, boxed or not
+    expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?new THREE\.Vector3\(\)\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
     expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
   })
 
@@ -773,6 +778,45 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(emitters(sa({ emitters: eight }))).toHaveLength(8)
     expect(emitters(sa({ emitters: eight, power: false }))).toEqual([])
     expect(emitters(sa({ emitters: eight, limit: true }))).toHaveLength(6)
+  })
+})
+
+// The attack format's SHOOT and breakaway X, worked out by the mission computer rather than read from
+// the HUD's frame, which the head-down view never draws. The HUD's own cues come from the same pieces.
+describe("the attack format's cues (attack_cue)", () => {
+  const cue = (body: string) => new Function(`let master='9m', weapons_hold=false, sim_time=0, steered=true, landing=false;
+    const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
+    const ownship={ msl:2, amraam:2 }, seeker_now={ lockon:true };
+    let boxed={}, radar={ range:2000, closure:100 };
+    const heat={ range:2000, minimum:300, escape:1000, max:4000 }, amraam={ range:20000, minimum:2000, escape:10000, max:40000 };
+    const hud_target=()=>boxed, ranging=()=>radar, heat_zone=()=>heat, launch_zone=()=>amraam, heat_steered=()=>steered, hud_landing=()=>landing;
+    ${['attack_cue', 'breakaway_due', 'heat_lit', 'heat_cue', 'zone_cue', 'shoot_cue'].map(lift).join('\n')}
+    ${body}`)() as { shoot: boolean; brk: boolean }
+  it("lights the heater's SHOOT with a lock in its zone and the dot in the circle, flashing inside Rne", () => {
+    expect(cue('return attack_cue();')).toEqual({ shoot: true, brk: false })
+    for (const off of ['steered=false;', 'weapons_hold=true;', 'seeker_now.lockon=false;', 'ownship.msl=0;']) expect(cue(`${off} return attack_cue();`), off).toEqual({ shoot: false, brk: false })
+    expect([cue('heat.range=800; return attack_cue();').shoot, cue('heat.range=800; sim_time=0.3; return attack_cue();').shoot]).toEqual([true, false])
+  })
+  it("lights the AMRAAM's from its zone, flashing inside Rne", () => {
+    expect(cue("master='120c'; return attack_cue();")).toEqual({ shoot: true, brk: false })
+    expect([cue("master='120c'; amraam.range=5000; return attack_cue();").shoot, cue("master='120c'; amraam.range=5000; sim_time=0.3; return attack_cue();").shoot]).toEqual([true, false])
+  })
+  it("crosses the format for the closing breakaway or either missile's minimum range, and holds SHOOT off then", () => {
+    expect(cue('heat.range=200; return attack_cue();')).toEqual({ shoot: false, brk: true })
+    expect(cue("master='120c'; amraam.range=1000; return attack_cue();")).toEqual({ shoot: false, brk: true })
+    expect(cue("master='120c'; radar={ range:250, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: true }) // 150 m plus 1.5 s, in the AMRAAM's zone
+    expect(cue('radar={ range:400, closure:100 }; return attack_cue();')).toEqual({ shoot: false, brk: true }) // 300 m plus 1.5 s at 100 m/s
+    expect(cue("master='gun'; radar={ range:250, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: true })
+    expect(cue("master='gun'; return attack_cue();")).toEqual({ shoot: false, brk: false })
+  })
+  it('shows nothing in NAV or on the gear', () => {
+    expect(cue("master='nav'; radar={ range:100, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: false })
+    expect(cue('landing=true; return attack_cue();')).toEqual({ shoot: false, brk: false })
+  })
+  it("is the HUD's decision too", () => {
+    const hud = lift('draw_hud')
+    expect(hud).toContain('const brk=breakaway_due(boxed,rng,vc);')
+    expect(hud).toContain('const heat_shown={ shoot:heat_lit(lockon,brk,cue) };')
   })
 })
 
