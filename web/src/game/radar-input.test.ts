@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { Radar, SCALES, BARS, GIMBAL, boresight, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, BARS, GIMBAL, FRAME, boresight, geometry, pick, type Track } from './radar'
 import * as identification from './identification'
 import * as mids from './mids'
 import * as countermeasures from './countermeasures'
@@ -829,37 +829,37 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
     return new Function(
       'Radar', 'THREE', 'stores_amraams', 'stores_eject',
       `const RADAR=new Radar();
-       const MULTIPLAYER=false, has_enemy=true, remotes=new Map(), WORLD_WRAP=0, wrap_axis=(v)=>v;
+       const MULTIPLAYER=false, has_enemy=true, remotes=new Map(), WORLD_WRAP=0, wrap_axis=(v)=>v, RADAR_FRAME=${FRAME};
        const bandit={ group:{ visible:true }, pos:{ x:0, y:6000, z:-30000 }, velx:0, vely:0, velz:250, fwd:{ x:0, y:0, z:1 }, speed:250, reheat:0.5 };
        const ownship={ pos:{ x:0, y:6000, z:0 }, velx:0, vely:0, velz:-250, speed:250, fwd:{ x:0, y:0, z:-1 }, loadout:{}, amraam:0 };
        let sim_time=10, zone_at=0, zone=null, zone_track=null, heat_at=0, heat=null, heat_track=null, heat_prev=null;
        const fed={ amraam:null, heater:null, reheat:null, shooter:null, launcher:null };
        const round_ladder=(own,target)=>{ fed.launcher=own; fed.amraam=target; return { max:40000, escape:20000, minimum:800 }; };
        const heater_ladder=(own,target,swing,reheat)=>{ fed.shooter=own; fed.heater=target; fed.reheat=reheat; return { max:8000, escape:4000, minimum:500 }; };
-       ${lift('radar_target')} ${lift('amraam_departure')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')}
-       return { RADAR, bandit, ownship, fed, launch_zone, heat_zone, ranging };`
-    )(Radar, THREE, stores_amraams, stores_eject) as { RADAR: Radar; bandit: { group: { visible: boolean } }; ownship: { velx: number; vely: number; velz: number; fwd: { x: number; y: number; z: number }; loadout: Record<string, { fixture: string; stores: string[] }>; amraam: number }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null; shooter: Fed | null; launcher: Fed | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null }
+       ${lift('radar_target')} ${lift('amraam_departure')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')} ${lift('heat_lead')} ${lift('track_range')}
+       return { RADAR, bandit, ownship, fed, launch_zone, heat_zone, ranging, heat_lead, track_range };`
+    )(Radar, THREE, stores_amraams, stores_eject) as { RADAR: Radar; bandit: { group: { visible: boolean } }; ownship: { velx: number; vely: number; velz: number; fwd: { x: number; y: number; z: number }; loadout: Record<string, { fixture: string; stores: string[] }>; amraam: number }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null; shooter: Fed | null; launcher: Fed | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null; heat_lead(): unknown; track_range(): number | null }
   }
-  // the trackfile's last fix: 40 km out four seconds ago, closing at 250 m/s
+  // the trackfile's last fix: 40 km out two seconds ago, inside a scan frame, closing at 250 m/s
   const held = { id: 'bandit', x: 0, y: 6000, z: -40000, vx: 0, vy: 0, vz: 250, at: 0, hits: 1 }
 
   it('flies the AMRAAM zone against the trackfile carried on, not the jet', () => {
     const z = zones()
     z.RADAR.tracks = [held]
     z.RADAR.ls = 'bandit'
-    z.RADAR.time = 4
+    z.RADAR.time = 2
     const zone = z.launch_zone()
-    expect(z.fed.amraam?.position).toEqual({ x: 0, y: 6000, z: -39000 })
+    expect(z.fed.amraam?.position).toEqual({ x: 0, y: 6000, z: -39500 })
     expect(z.fed.amraam?.velocity).toEqual({ x: 0, y: 0, z: 250 })
-    expect(zone?.range).toBeCloseTo(39000, 6)
-    expect(zone?.lead.z).toBeCloseTo(-39000 + 250 * (39000 / (250 + 650)), 6) // the steering dot leads the track, not the jet at 30 km
+    expect(zone?.range).toBeCloseTo(39500, 6)
+    expect(zone?.lead.z).toBeCloseTo(-39500 + 250 * (39500 / (250 + 650)), 6) // the steering dot leads the track, not the jet at 30 km
   })
   it("flies the AMRAAM zone for the round the next station fires: along the nose with the launcher's push", () => {
     const shot = (left: number) => {
       const z = zones()
       z.RADAR.tracks = [held]
       z.RADAR.ls = 'bandit'
-      z.RADAR.time = 4
+      z.RADAR.time = 2
       const alpha = 30 * Math.PI / 180 // the nose 30° above a level flight path at 250 m/s
       z.ownship.fwd = { x: 0, y: Math.sin(alpha), z: -Math.cos(alpha) }
       z.ownship.loadout = { 4: { fixture: 'rail', stores: ['120c'] }, 2: { fixture: 'rail', stores: ['120c'] } } // the cheek fires first, then the wing rail
@@ -883,17 +883,17 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
     const z = zones()
     z.RADAR.tracks = [held]
     z.RADAR.stt = 'bandit'
-    z.RADAR.time = 4
+    z.RADAR.time = 2
     const heat = z.heat_zone()
-    expect(z.fed.heater?.position).toEqual({ x: 0, y: 6000, z: -39000 })
-    expect(heat?.range).toBeCloseTo(39000, 6)
+    expect(z.fed.heater?.position).toEqual({ x: 0, y: 6000, z: -39500 })
+    expect(heat?.range).toBeCloseTo(39500, 6)
     expect(z.fed.reheat).toBe(0.5)
   })
   it("launches the 9M zone's trial round along the nose at the jet's speed, as the round is fired, not down the flight path", () => {
     const z = zones()
     z.RADAR.tracks = [held]
     z.RADAR.stt = 'bandit'
-    z.RADAR.time = 4
+    z.RADAR.time = 2
     const alpha = 30 * Math.PI / 180 // fighting alpha: the nose 30° above a level flight path at 250 m/s
     z.ownship.fwd = { x: 0, y: Math.sin(alpha), z: -Math.cos(alpha) }
     z.heat_zone()
@@ -906,10 +906,26 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
     const z = zones()
     z.RADAR.tracks = [held]
     z.RADAR.stt = 'bandit'
-    z.RADAR.time = 4
+    z.RADAR.time = 2
     const r = z.ranging()
-    expect(r?.range).toBeCloseTo(39000, 6)
+    expect(r?.range).toBeCloseTo(39500, 6)
     expect(r?.closure).toBeCloseTo(500, 6) // 250 m/s each, nose to nose
+  })
+  it('ranges nothing from a trackfile that has missed a scan frame: no zone, no steering dot, no range', () => {
+    // An RWS search paints no trackfile, so the one a broken lock leaves is never
+    // refreshed; coasted straight for its whole 8 s it lit the 9M's SHOOT across his turn.
+    const cues = (age: number, lock: 'stt' | 'ls') => {
+      const z = zones()
+      z.RADAR.tracks = [held]
+      z.RADAR[lock] = 'bandit'
+      z.RADAR.time = age
+      return [z.heat_zone(), z.launch_zone(), z.heat_lead(), z.track_range(), z.ranging()]
+    }
+    for (const lock of ['stt', 'ls'] as const) {
+      expect(cues(FRAME - 0.1, lock).every((cue) => cue != null), `${lock} inside the frame`).toBe(true)
+      expect(cues(FRAME + 0.1, lock), `${lock} past the frame`).toEqual([null, null, null, null, null])
+    }
+    expect(FRAME).toBe(2.5) // the radar's own revisit: the longest frame TWS scans
   })
   it('has no ranging from a silent radar or without a trackfile', () => {
     const z = zones()

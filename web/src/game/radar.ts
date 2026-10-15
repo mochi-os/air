@@ -46,7 +46,7 @@ export type Wrap = (value: number) => number
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
 const BEAM = 0.0576 // one bar's height, rad (3.3°): the APG-65/73's beam
 export const TILT = 1.047 // antenna elevation gimbal, rad (±60°)
-const FRAME = 2.5 // s: the longest frame TWS scans, so each trackfile is looked at least this often
+export const FRAME = 2.5 // s: the longest frame TWS scans, so each trackfile is looked at least this often
 // The EW pieces (#31): a jammer outside burnthrough or a target inside the
 // clutter notch starves the tracker, so the STT goes to MEMORY and breaks if
 // the condition outlasts the window.

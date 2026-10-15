@@ -51,7 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL } from './radar'
+import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
@@ -10327,13 +10327,19 @@ function joust_drawn(){ if(MULTIPLAYER||!joust_start||!joust_start.pending) retu
 // radar_target is what the radar holds of the locked or L&S contact, which the
 // launch zones fly against: its trackfile's last fix carried on by that fix's
 // velocity for the track's age. A tracking STT refreshes it every frame, a TWS
-// L&S at each paint, and a lock on memory not at all, so the zone ages with the
-// track. null while the jet is gone or no trackfile holds it.
+// L&S at each paint, and a lock on memory or RWS not at all, so the zone ages
+// with the track. null while the jet is gone, no trackfile holds it, or the
+// trackfile has missed a scan frame (RADAR_FRAME, the longest TWS takes to look
+// at it again): the RWS a broken lock falls back to paints no trackfile, so the
+// one it leaves would coast straight for its whole 8 s across his turn. Without a
+// fresh track nothing is ranged: no zone, no steering dot, no SHOOT, the seeker's
+// tone alone.
 function radar_target(track){
 	const jet=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
 	const t=RADAR.tracks.find(k=>k.id===track);
 	if(!jet||!jet.group||!jet.group.visible||!t) return null;
 	const age=RADAR.time-t.at;
+	if(age>RADAR_FRAME) return null;
 	return { position:{x:t.x+t.vx*age,y:t.y+t.vy*age,z:t.z+t.vz*age}, velocity:{x:t.vx,y:t.vy,z:t.vz}, reheat:jet.reheat??0 }; }
 // ranging is the radar's range and closure (m/s, + closing) to the designated
 // jet, from the trackfile that holds it: null from a silent radar or with no
