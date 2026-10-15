@@ -7287,7 +7287,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			canopy_gone=true;   // the ejection handle fires the canopy away first (2.15.1.2)   // ejection handle: one deliberate Shift+E chord — the zero-zero seat works everywhere. Moved off plain J (a pilot reaching for "jettison" must never punch out) and off a tap count (untypeable in the Keys tab)
 			ejected=true; audio_eject();
 			if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
-			crash_ownship(); }   // the red centre banner announces it — no notice-line duplicate
+			crash_ownship("eject"); }   // the red centre banner announces it — no notice-line duplicate; the recording's Fate and the game-over panel say the pilot punched out
 		if(TEST_SCENARIOS && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyY"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+Y (dev): stab orientation cycle, +90° per press — the user reports the correct number
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
@@ -8576,7 +8576,7 @@ function soot_burst(x,y,z){
 		const tone=0.10+Math.random()*0.12;
 		smoke.r[k]=tone*1.1; smoke.g[k]=tone; smoke.b[k]=tone*0.95; } }
 function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_written=false;
-	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
+	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238): every path names its own reason, the ejection "eject"
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	padlocked=false; look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball

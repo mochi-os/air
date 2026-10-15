@@ -710,6 +710,8 @@ export function GameCanvas({
                 <p className='text-base font-medium'>
                   {over.fate === 'pilot' ? (
                     <Trans>Pilot killed</Trans>
+                  ) : over.fate === 'eject' ? (
+                    <Trans>Ejected</Trans>
                   ) : over.fate === 'fire' ? (
                     <Trans>Destroyed by fire</Trans>
                   ) : over.fate === 'sea' ? (
