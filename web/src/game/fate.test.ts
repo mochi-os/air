@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { demise, opponent, report } from './fate'
 
@@ -141,5 +143,20 @@ describe('opponent', () => {
     ]) {
       expect(opponent(fate)).toBe(fate)
     }
+  })
+})
+
+// An ejection was recorded as Fate=pilot, so the debrief and the game-over
+// panel read a pilot who punched out as a pilot killed: the seat names its own
+// fate, which the recording and the panel carry.
+describe('the ejection', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const canvas = readFileSync(fileURLToPath(new URL('../components/GameCanvas.tsx', import.meta.url)), 'utf8')
+  it('ends the life with the fate "eject"', () => {
+    const branch = /else if\(ch===key_of\("eject"\)[\s\S]*?crash_ownship\(([^)]*)\); \}/.exec(engine)
+    expect(branch?.[1]).toBe('"eject"')
+  })
+  it('reads as Ejected on the game-over panel', () => {
+    expect(canvas).toMatch(/over\.fate === 'eject' \? \(\s*<Trans>Ejected<\/Trans>/)
   })
 })
