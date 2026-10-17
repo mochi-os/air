@@ -57,6 +57,7 @@ import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
+import { Pacing } from './pacing'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
@@ -432,7 +433,13 @@ function build_water_detail(){
 	const tex=new THREE.DataTexture(data,S,S,THREE.RGBAFormat);
 	tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.magFilter=THREE.LinearFilter;
 	tex.minFilter=THREE.LinearMipmapLinearFilter; tex.generateMipmaps=true; tex.needsUpdate=true;
-	tex.anisotropy=renderer.capabilities.getMaxAnisotropy();   // default anisotropy (1) blurs the detail flat at oblique view angles — a silky "oily" band that no shader change can fix (same disease as the deck markings)
+	// Anisotropy 2, not the GPU's maximum: 1 blurs the detail flat at oblique
+	// view angles, a silky "oily" band no shader change can fix, but the sea
+	// reads this texture about ten times a pixel, and at the maximum it cost
+	// 14 ms of a 19.5 ms frame on the Lunar Lake Arc (45 fps, stalls of 260 ms
+	// as the GPU queue backed up). Measured with only this texture capped: 4
+	// gave 100 fps, 2 gave 178 fps with the far sea only slightly smoother.
+	tex.anisotropy=Math.min(2,renderer.capabilities.getMaxAnisotropy());
 	return tex;
 }
 const col_deep2=new THREE.Color(0x11424e);
@@ -10997,13 +11004,13 @@ function draw_hud(){
 }
 
 // ============================================================================ perf
-const ft_ring=new Array(180).fill(16.7); let ft_i=0, accumulator=0;
-function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length;   // frame-time ring (dynamic_res reads it)
+const pacing=new Pacing(); let accumulator=0;
+function refresh_perf(dt){ pacing.record(dt);   // the frame's real length, unclamped (dynamic_res reads it)
 	accumulator+=dt; if(accumulator<0.25 || !framerate) return; accumulator=0;        // fps + 1% low readout, ~4 Hz
 	if(!cfg.framerate){ framerate.style.display="none"; return; }                     // gated by the graphics setting (default off)
 	framerate.style.display="block";
-	const s=[...ft_ring].sort((a,b)=>a-b), avg=s.reduce((x,v)=>x+v,0)/s.length, low=s[Math.floor(s.length*0.99)];
-	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
+	const { average, low }=pacing.readout();
+	framerate.textContent=Math.round(1000/average)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
 // ============================================================================
 // sizing Supersample: render at SUPERSAMPLE× device resolution and let the blit
@@ -11015,12 +11022,13 @@ function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; 
 function supersample(dpr){ if(Number.isFinite(SSAA_OVERRIDE)) return SSAA_OVERRIDE;   // &ssaa=X (dev) pins it for benchmarking
 	return dpr>1.25?1.0:1.5; }
 function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*supersample(dpr);
-	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
+	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); pacing.reset(); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); cockpit_cam.aspect=w/h; cockpit_cam.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
 let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0, dyn_strain=0, dyn_health=0;
 function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t-=dt)<=0) dyn_ceiling=2.0; if(dyn_cd>0) return; dyn_cd=0.5;
-	const last=ft_ring.slice(-30), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + p90 of the last 30 frames
+	const judged=pacing.recent(); if(!judged) return;   // still settling after a start or a resize
+	const { mean:recent, spike }=judged;   // mean + p90 of the last second of frames
 	if(recent>18&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
 		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); dyn_strain=0; dyn_health=0; }
 	else if(recent>18){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
@@ -12191,7 +12199,7 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	ownship.group.visible=true; ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
 
 const clock=new THREE.Clock();
-function frame(){ let dt=Math.min(clock.getDelta(),0.05);
+function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // the simulation steps at most 50 ms; the frame record takes the real length
 	if(DEV_MODE&&running){ const bk=Math.abs(Math.atan2(ownship.right.y,ownship.up.y))*180/Math.PI; if(bk>dev_peakbank&&bk<170) dev_peakbank=bk;
 		const pt=Math.asin(Math.max(-1,Math.min(1,ownship.fwd.y)))*180/Math.PI; if(pt>dev_pitchhi)dev_pitchhi=pt; if(pt<dev_pitchlo)dev_pitchlo=pt; }   // true per-frame peak bank + pitch extent for #72
 	if(DEV_MODE&&dev_fps>0){ dt=1/dev_fps; if(dev_jitter&&Math.random()<0.25) dt=0.05; }   // dev: force a fixed frame dt (?fps=N); ?jitter=1 randomly spikes to the 0.05 clamp to mimic real stutter (#72)
@@ -12208,7 +12216,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready(), face:face_ready };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
-		if(assets_ready()){ loading=false;
+		if(assets_ready()){ loading=false; pacing.reset();
 			console.warn("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");   // i18n-format-ok: developer console timing, never shown to a user
 			if(MULTIPLAYER && !net) net_connect(); }   // dial only NOW: connecting before the assets exist left the link idle for the whole download (slow connections were dropped mid-load and bounced back to the menu)
 		else { const lp=load_progress();
@@ -12235,7 +12243,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	// step after the render composited one black frame per adjustment (visible
 	// as black flicker while the governor hunted). Stepping first means the
 	// resized buffer is repainted below before the compositor ever sees it.
-	refresh_perf(dt); dynamic_res(dt);
+	refresh_perf(wall); dynamic_res(wall);   // the governor's timers run on wall time too: a clamped step slowed them fivefold through a run of stalls
 	render_frame();
 	stage.style.cursor=(running && !game_paused && !playback && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
 	if(running){ draw_hud();
