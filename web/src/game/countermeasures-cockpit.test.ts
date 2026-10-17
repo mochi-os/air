@@ -112,3 +112,19 @@ describe('the RWR\'s tones', () => {
   })
 })
 
+
+// In single player the bandit and its rounds live in the wasm core, and the
+// jammer's radiation is only the client's to know: it goes across in the
+// mirror's flags (bit 3) and in each bandit round's step (word 16), where the
+// server applies the same truth itself.
+describe('the jammer in single player', () => {
+  const flight = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')
+  it('tells the bandit when it radiates, so its radar starves on it', () => {
+    expect(source).toMatch(/bandit_mirror\(flight_get\(\), input\.guns, crash_t<=0, jammer_loud\(\)\)/)
+    expect(flight).toMatch(/mirror\[SIZE\] = \(firing \? 1 : 0\) \| \(alive \? 2 : 0\) \| \(radiating \? 4 : 0\)/)
+  })
+  it('lets the bandit\'s round home on it while it radiates', () => {
+    expect(source).toMatch(/round_step\(m\.slot,dt,supported\?truth:null,truth,m\.enemy&&!!truth&&jammer_loud\(\)\)/)
+    expect(flight).toMatch(/r\[16\] = beacon \? 1 : 0/)
+  })
+})
