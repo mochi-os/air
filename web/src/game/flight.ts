@@ -450,11 +450,12 @@ export function bandit_spawn(
 export function bandit_mirror(
   state: Float64Array,
   firing: boolean,
-  alive: boolean
+  alive: boolean,
+  radiating = false // the player's jammer, armed and painted: the bandit's radar starves on it
 ): void {
   if (!core?.bandit_mirror) return
   mirror.set(state.subarray(0, SIZE))
-  mirror[SIZE] = (firing ? 1 : 0) | (alive ? 2 : 0)
+  mirror[SIZE] = (firing ? 1 : 0) | (alive ? 2 : 0) | (radiating ? 4 : 0)
   core.bandit_mirror(mirror_bytes)
 }
 
@@ -817,7 +818,8 @@ export function round_step(
   slot: number,
   dt: number,
   support: Aimed | null,
-  truth: Aimed | null
+  truth: Aimed | null,
+  beacon = false // the target's jammer is radiating: the round homes on it
 ): RoundState | null {
   if (!core) return null
   const r = round_input
@@ -841,6 +843,7 @@ export function round_step(
     r[14] = truth.velocity.y
     r[15] = truth.velocity.z
   }
+  r[16] = beacon ? 1 : 0
   if (core.round_step(round_input_bytes, round_output_bytes) != null)
     return null
   const o = round_output

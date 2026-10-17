@@ -5560,7 +5560,7 @@ function step_amraam(m,dt){
 	supported=truth&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
 	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.bloom,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
-	const state=round_step(m.slot,dt,supported?truth:null,truth);
+	const state=round_step(m.slot,dt,supported?truth:null,truth,m.enemy&&!!truth&&jammer_loud());   // our jammer radiating draws the bandit's round to home on it, as the server's rounds do
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
 	m.phase=state.phase; m.stale=state.stale; m.flew=state.time; m.mach=state.mach; m.rangeToGo=state.range; m.least=state.least;
@@ -9550,7 +9550,7 @@ function fly_bandit(dt){
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
-		bandit_mirror(flight_get(), input.guns, crash_t<=0);
+		bandit_mirror(flight_get(), input.guns, crash_t<=0, jammer_loud());   // our jammer radiating starves the bandit's lock outside burnthrough, as a server bot's
 		const shots=menace_words(missiles as any, bandit);   // the wire lives in menace.ts, where it can be tested: the phase word carries the heater's fate (-2 beaten) as well as the radar round's guidance phase
 		bandit_menace(shots);   // every round in the air, eight words each: the brain defends against ours and paces its own by phase (#33)
 		// The brain advances fixed 1/60 s frames: run it through an accumulator like
