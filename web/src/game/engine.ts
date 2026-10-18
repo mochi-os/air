@@ -58,6 +58,8 @@ import { blast_plan, Blasts } from './blast'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { Pacing } from './pacing'
+import { PATTERN_VERTEX as FOAM_VERTEX, PATTERN_FRAGMENT as FOAM_FRAGMENT } from './foam'
+import { tables as atmosphere_tables, radiance as sky_radiance, ATMOSPHERE, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
@@ -275,15 +277,45 @@ scene.add(sun,sun.target); const hemi=new THREE.HemisphereLight(0xbcd6ec,0x35506
 sun.layers.enable(LAYER_OWN); hemi.layers.enable(LAYER_OWN); amb.layers.enable(LAYER_OWN);   // lights are layer-filtered: without these the cockpit pass renders black
 
 // ============================================================================ sky + ocean (proven)
+// The sky from the atmosphere (atmosphere.ts): the dome, the sea's reflection of it, the
+// clouds' backdrop and the lit materials' haze all read the sky-view table drawn here each
+// frame (or the same integral on the CPU), so they cannot disagree. The dome and the sea
+// write display values, so they show the table through the land's own curve (SKY_SHOWN).
+const HAZE=2.5;   // the trades' maritime aerosol, against 1 for a clear day
+const air_tables=atmosphere_tables(HAZE);
+function air_texture(data,width,height){ const half=new Uint16Array(data.length); for(let i=0;i<data.length;i++) half[i]=THREE.DataUtils.toHalfFloat(data[i]);   // half floats: linear filtering of full floats is an extension, of halves it is core
+	const t=new THREE.DataTexture(half,width,height,THREE.RGBAFormat,THREE.HalfFloatType); t.minFilter=t.magFilter=THREE.LinearFilter; t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping; t.needsUpdate=true; return t; }
+const sky_target=new THREE.WebGLRenderTarget(SKY_SIZE.width,SKY_SIZE.height,{ type:THREE.HalfFloatType, depthBuffer:false, minFilter:THREE.LinearFilter, magFilter:THREE.LinearFilter, wrapS:THREE.ClampToEdgeWrapping, wrapT:THREE.ClampToEdgeWrapping });
+const atmosphere_uniforms={ u_transmittance:{value:air_texture(air_tables.transmittance,TRANSMITTANCE.width,TRANSMITTANCE.height)}, u_scattering:{value:air_texture(air_tables.scattering,SCATTERING,SCATTERING)},
+	u_sky:{value:sky_target.texture}, u_altitude:{value:0.01}, u_haze:{value:HAZE}, u_illuminance:{value:4.5}, u_exposure:{value:1.05} };   // u_illuminance: the sun's (or moon's) light above the air, per time of day (TOD sky: 4.5 by day and 0.1 by night put the dome where the hand-picked gradient it replaced was, within 10 of 255); u_altitude km; u_exposure the renderer's
+const sky_view_mat=new THREE.ShaderMaterial({ vertexShader:SKY_VIEW_VERTEX, fragmentShader:SKY_VIEW_FRAGMENT, depthTest:false, depthWrite:false,
+	uniforms:{ u_transmittance:atmosphere_uniforms.u_transmittance, u_scattering:atmosphere_uniforms.u_scattering, u_altitude:atmosphere_uniforms.u_altitude, u_haze:atmosphere_uniforms.u_haze, u_sun_view:{value:sun_dir} } });
+const sky_view_room=new THREE.Scene(); sky_view_room.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),sky_view_mat)); const sky_view_camera=new THREE.Camera();
+function sky_view_render(altitude){ atmosphere_uniforms.u_altitude.value=Math.max(altitude,1)/1000;
+	const was=renderer.getRenderTarget(); renderer.setRenderTarget(sky_target); renderer.render(sky_view_room,sky_view_camera); renderer.setRenderTarget(was); }
+// Light as the screen shows it, through three's ACESFilmic and the sRGB encode, and the dome
+// built from it. The cloud composite pays its haze out in exactly this dome, so the two change
+// together by construction.
+const SKY_SHOWN=`uniform float u_illuminance;
+	vec3 shown_tone(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
+	vec3 shown(vec3 color, float exposure){
+		const mat3 inm=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
+		const mat3 outm=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
+		vec3 c=clamp(outm*shown_tone(inm*(color*exposure/0.6)),0.0,1.0);
+		return mix(c*12.92, 1.055*pow(c,vec3(1.0/2.4))-0.055, step(vec3(0.0031308),c)); }
+	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure){
+		float t=(d.y+dip)*1.2;
+		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
+		if(t<0.0) col=mix(col,fog*0.88,clamp(-t*6.0,0.0,1.0));   // below the rim the haze takes over, as the sea does
+		col=mix(col, vec3(dot(col,vec3(0.333)))*ovct, ovc*(1.0-smoothstep(0.0,ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) - under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze) - the distant unresolved field
+		float s=max(dot(d,sun),0.0); return col+suncol*(pow(s,220.0)*1.4+pow(s,8.0)*0.18); }`;
 const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
-	uniforms:{ u_sun:{value:sun_dir}, u_horizon:{value:sky_horizon}, u_zenith:{value:sky_zenith}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc}, u_blackout:{value:1.0} },   // u_blackout: per frame, see render_frame
+	uniforms:{ ...atmosphere_uniforms, u_sun:{value:sun_dir}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc}, u_blackout:{value:1.0} },
 	vertexShader:`varying vec3 v_dir; void main(){ v_dir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_horizon,u_zenith,u_fog,u_sun_col; uniform float u_dip,u_ovc,u_ovct,u_ovcw,u_blackout;
-		void main(){ vec3 d=normalize(v_dir); float t=(d.y+u_dip)*1.2;
-		vec3 col=t>=0.0?mix(u_horizon,u_zenith,pow(clamp(t,0.0,1.0),0.65))
-		               :mix(u_horizon,u_fog*0.88,clamp(-t*6.0,0.0,1.0));   // #108: the gradient's bright peak sits at the VISIBLE HORIZON (u_dip = the altitude-dependent dip to the ocean rim), not at eye level — peaking at d.y=0 painted a bright crest ACROSS the sky at eye level from any altitude, framed darker above and below: the persistent band. Below the horizon the sky descends into a darkened haze belt. CHANGE IN LOCKSTEP with the cloud pass's skybg — the aerial-haze payout must match this dome exactly or a colour-seam band returns
-		col=mix(col, vec3(dot(col,vec3(0.333)))*u_ovct, u_ovc*(1.0-smoothstep(0.0,u_ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) — under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze tone) — the real field extends far beyond the 90 km march and its stacked distant clouds read as a hazy band riding the sea line. Horizon-weighted so sky overhead stays blue. LOCKSTEP with the cloud skybg
-		float s=max(dot(d,normalize(u_sun)),0.0); col+=u_sun_col*pow(s,220.0)*1.4; col+=u_sun_col*pow(s,8.0)*0.18; gl_FragColor=vec4(col*u_blackout,1.0); }` });
+	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_fog,u_sun_col; uniform float u_dip,u_ovc,u_ovct,u_ovcw,u_blackout,u_exposure;
+		`+ATMOSPHERE+`
+		`+SKY_SHOWN+`
+		void main(){ vec3 col=sky_dome(normalize(v_dir),normalize(u_sun),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure); gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
 // The canopy's rear-view mirrors (#99) reflect the sky behind the pilot: an
 // environment map baked from the sky dome whenever the time of day sets it. The
@@ -292,6 +324,7 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.f
 const mirror_mats=[];
 let mirror_env=null;
 function mirror_bake(){
+	sky_view_render(camera.position.y);   // the table the dome is drawn from, for this hour's sun
 	const generator=new THREE.PMREMGenerator(renderer);
 	const bake=new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, uniforms:sky_mat.uniforms, vertexShader:sky_mat.vertexShader,
 		fragmentShader:sky_mat.fragmentShader.replace("gl_FragColor=vec4(col*u_blackout,1.0);","gl_FragColor=vec4(pow(col*u_blackout,vec3(2.2)),1.0);") });
@@ -332,8 +365,8 @@ const star_buffer=new THREE.Vector2();
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, glint:60.0, rough:0.11, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
-	night:{ sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, glint:14.0, rough:0.07, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
+	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, glint:60.0, rough:0.11, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
+	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, glint:14.0, rough:0.07, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
@@ -342,10 +375,9 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	apply_light_balance();   // re-derive the cloud lighting against this time of day's lights
-	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
+	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
-	ocean_mat.uniforms.u_seafog.value.setHex(p.fog).lerp(new THREE.Color(p.deep), 0.42);   // the sea's distance colour: mildly darker than the sky so the horizon line reads, but light enough that the approach to it SILVERS the way grazing Fresnel really behaves — the defect to avoid is a stripe (brighter than the water beyond it), not brightness itself   // the sea's distance colour: a deep slate CONTINUING the rolled-off mid-band's darkness — a merely-dimmed pale grey sits BRIGHTER than the mid band and reads as a white stripe before the horizon
 	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
@@ -442,6 +474,15 @@ function build_water_detail(){
 	tex.anisotropy=Math.min(2,renderer.capabilities.getMaxAnisotropy());
 	return tex;
 }
+// The foam pattern (foam.ts), drawn once into a tiling texture on the GPU.
+function build_foam_pattern(){
+	const target=new THREE.WebGLRenderTarget(1024,1024,{ depthBuffer:false, generateMipmaps:true, minFilter:THREE.LinearMipmapLinearFilter, magFilter:THREE.LinearFilter,
+		wrapS:THREE.RepeatWrapping, wrapT:THREE.RepeatWrapping, anisotropy:Math.min(2,renderer.capabilities.getMaxAnisotropy()) });   // anisotropy 2, as the detail texture: the sea's reads are what its frame time is made of
+	const bake=new THREE.ShaderMaterial({ vertexShader:FOAM_VERTEX, fragmentShader:FOAM_FRAGMENT, depthTest:false, depthWrite:false });
+	const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),bake), room=new THREE.Scene(); room.add(quad);
+	const was=renderer.getRenderTarget(); renderer.setRenderTarget(target); renderer.render(room,new THREE.Camera()); renderer.setRenderTarget(was);
+	bake.dispose(); quad.geometry.dispose();
+	return target.texture; }
 const col_deep2=new THREE.Color(0x11424e);
 const cloud_shadow_uniforms={ u_shadow:{value:null}, u_shadow_sun:{value:sun_dir},
 	u_shadow_patch:{value:new THREE.Vector4(0,0,1,0)},      // xy patch centre, z extent (both written by cloud_shadow_render before any receiver samples), w strength (0 = no cloud shadow at all)
@@ -470,9 +511,9 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 	float cloud_shadow_level(float open){ return mix(u_shadow_level.x,u_shadow_level.y,open); }`;   // linear fraction of open-sun illumination
 
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
-	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog_density:{value:0.000060},
-		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)}, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
-		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
+	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
+		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
@@ -486,8 +527,10 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_flat,u_light; uniform sampler2D u_water,u_detail; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_flat,u_light,u_foam_gain,u_foam_debug; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+CLOUD_SHADOW_RESOLVE+`
+		`+ATMOSPHERE+`
+		`+SKY_SHOWN+`
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point. MUST mirror the vertex W0/W1 exactly: sin(kx - wt), W0 = the crossing NW ground swell, W1 = the longest wind-sea train
 			float h=2.0*sin(dot(normalize(vec2(-0.12,-0.99)),p)*(6.2831853/420.0)-u_time*(60.0/420.0));
@@ -512,7 +555,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 c=textureGrad(u_detail,uv+hashcell(i+vec2(0.0,1.0))+drift,dx,dy).rg-0.5;
 			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
 		}
-		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
+		vec3 sky_at(vec3 d){ d=normalize(d); d.y=max(d.y,0.005); vec3 col=shown(at_sky(normalize(d),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own sky: a facet tilted past the horizon still sees the horizon's sky
 			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
@@ -597,9 +640,10 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float alo=dot(xzc,aw), cro=dot(xzc,vec2(-aw.y,aw.x));
 			vec2 hu=vec2(alo*2.2,cro), tu=vec2((alo-16.0)*0.45,cro*1.5);
 			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
-			float hv=(0.45*texture2D(u_detail,hu/320.0).b+0.55*texture2D(u_detail,hu/700.0).b)*(0.6+0.4*capc);
-			float tv=(0.45*texture2D(u_detail,tu/320.0).b+0.55*texture2D(u_detail,tu/700.0).b)*(0.6+0.4*capc);
+			float hv=(0.45*texture2D(u_detail,hu/160.0).b+0.55*texture2D(u_detail,hu/350.0).b)*(0.6+0.4*capc);   // half the scales they were (320 and 700 m): twice as many caps, half the size, the same share of the sea
+			float tv=(0.45*texture2D(u_detail,tu/160.0).b+0.55*texture2D(u_detail,tu/350.0).b)*(0.6+0.4*capc);
 			float head=smoothstep(0.575,0.615,hv), tail=smoothstep(0.565,0.615,tv);
+			float broad=smoothstep(0.575,0.665,hv), trail=smoothstep(0.565,0.665,tv);   // the same caps on wide ramps, for the lace: the narrow ones outline every patch, a white shape with a hard edge. They start where the narrow ones do, so a cap softens inward and never grows
 			// Heads gate on the crest being here now; tails also pass when the crest is
 			// just downwind, so each break leaves a fading streak. Not a steepness gate:
 			// sines are steepest at zero height, so ridge*steep only flickered.
@@ -608,16 +652,33 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float ridge2=smoothstep(0.55,1.8,swell(xzc+aw*52.0));
 			float lee=0.7+0.3*smoothstep(0.0,0.10,dot(slope,aw));
 			float carry=max(ridge, max(ridge1*0.65, ridge2*0.35));
-			float caps=max(head*(0.10+0.90*ridge*lee), 0.5*tail*(0.10+0.90*carry*lee))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
-			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
-			foam=max(foam,caps*0.9);
-			col=mix(col,vec3(0.92,0.96,1.0)*shade*u_light,clamp(foam,0.0,0.85));   // u_light: this hour's light against noon's - a fixed white left every whitecap glowing on a black night sea
+			float breaks=0.10+0.90*ridge*lee, carried=0.10+0.90*carry*lee, fade=smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);
+			float caps=max(head*breaks, 0.5*tail*carried)*fade;   // tapered by ~6 km (mip flattening finishes the job further out)
+			float spill=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); spill*=smoothstep(0.15,0.55,1.0-N.y);
+			float foam=max(spill,caps*0.9);
+			// What foam looks like (foam.ts): its cover sets how opaque it is, fading out softly at
+			// its edge, a baked bubble pattern mottles it inside, and it is lit by the sun. The
+			// pattern is drawn where a pixel resolves it; beyond, the soft cover stands for it.
+			vec2 fx=dFdx(xzc), fy=dFdy(xzc); float reach=max(length(fx),length(fy)), span=min(length(fx),length(fy));
+			float slant=clamp(log2(reach/max(span,1.0e-4)),0.0,5.0);   // the reads filter for the footprint's long axis: at a grazing slant the lace aliased into hatching
+			vec4 tile=texture2D(u_foam,xzc/38.0,slant);
+			float cover=clamp(max(spill,max(broad*breaks,0.5*trail*carried)*fade*0.9)*u_foam_gain,0.0,1.0), pattern=tile.r*0.78+tile.g*0.22;
+			float lace=smoothstep(0.02,0.6,cover)*mix(1.0,0.3+0.9*pattern,0.6);   // the cover's own soft gradient is the edge and the pattern only mottles the foam inside it: a cap has a bright heart and thins out translucent, never stopping at a line
+			float resolved=1.0-smoothstep(0.6,3.0,span);   // judged on the footprint's short side: at a slant foam stays sharp across the view however long the footprint runs along it
+			float mask=mix(clamp(foam,0.0,0.85),min(lace,0.97),resolved);
+			vec3 lit=vec3(0.86,0.91,0.95)*(0.80+0.12*tile.r+0.15*tile.g)*(0.62+0.38*max(dot(N,L),0.0));   // whiteness varies through thick foam as well as at its edge
+			vec3 tint=mix(vec3(0.92,0.96,1.0),lit,resolved);
+			if(u_foam_debug>2.5){ mask=clamp(foam,0.0,0.85); tint=vec3(0.92,0.96,1.0); }   // dev_sea: the soft foam alone, drawn, to compare
+			else if(u_foam_debug>0.5){ gl_FragColor=v_calm>0.01?vec4(0.0,0.0,1.0,1.0):vec4(vec3(u_foam_debug>1.5?clamp(foam,0.0,0.85):mask),1.0); return; }   // dev_foam_cover: the mask, or the soft cover alone (2); the reef and lagoon, which never foam, in blue
+			col=mix(col,tint*shade*u_light,mask);   // u_light: this hour's light against noon's - a fixed white left every whitecap glowing on a black night sea
 			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist);
 			fog=max(fog, smoothstep(70000.0,112000.0,dist));   // absolute saturation before the disc rim — a safety net; the density fog completes far earlier
-			vec3 seafog=mix(u_seafog, vec3(dot(u_seafog,vec3(0.333)))*0.74, u_cloud_flat);   // under an OVERCAST the far sea silvers toward the deck's grey, not toward a sunny sky's pale blue — the bright rim read as blue sky under the stratus
+			vec3 horizon=shown(at_sky(normalize(vec3(-V.x,0.0,-V.z)+vec3(0.0,0.02,0.0)),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own horizon, this way
+			vec3 seafog=mix(horizon,u_deep,0.42);   // the sea's distance colour: mildly darker than the sky so the horizon line reads
+			seafog=mix(seafog, vec3(dot(seafog,vec3(0.333)))*0.74, u_cloud_flat);   // under an OVERCAST the far sea silvers toward the deck's grey, not toward a sunny sky's pale blue — the bright rim read as blue sky under the stratus
 			float toDome=smoothstep(600.0,3200.0,cameraPosition.y);   // the deliberate darker-than-sky horizon line is a SEA-LEVEL design: from altitude the fogged sea against the paler dome widens into a hard stripe across the view (the user's line, 2026-08-10), so the far sea converges to the dome colour as the camera climbs and the rim melts into the sky
 			col*=mix(1.0,u_shadow_hour,u_cloud_flat); seafog*=mix(1.0,u_shadow_hour,u_cloud_flat);   // under an overcast at night the sea blacks out, its haze with it: the deck blocks the moon the night is lit by
-			col=mix(col,mix(seafog,u_sky,toDome*0.9),clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
+			col=mix(col,mix(seafog,horizon,toDome*0.9),clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
 			gl_FragColor=vec4(col,1.0); }` });
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
@@ -783,7 +844,7 @@ const CLOUD_FIELD=`
 
 const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, glslVersion:THREE.GLSL3,   // GLSL3 for MRT: the pass writes colour AND a reprojection-depth attachment (explicit outs replace gl_FragColor)
 	uniforms:{ ...cloud_field_uniforms, tDepth:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
-		uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour},
+		...atmosphere_uniforms, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour},
 		uSunGain:{value:1.0}, uDip:{value:0.0}, uDebug:{value:0.0}, uJitter:{value:0.0}, uExposure:{value:1.05},
 		uOvc:{value:0.0}, uOvcT:{value:1.02}, uOvcW:{value:0.28}, uBlackout:{value:1.0} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
@@ -803,6 +864,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			const mat3 outm=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
 			color*=uExposure/0.6; return clamp(outm*rrtodt(inm*color),0.0,1.0); }
 		vec3 srgb(vec3 c){ return mix(c*12.92, 1.055*pow(c,vec3(1.0/2.4))-0.055, step(vec3(0.0031308),c)); }
+		`+ATMOSPHERE+`
+		`+SKY_SHOWN+`
 		void main(){
 			float depth=texture(tDepth,vUv).r;
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
@@ -864,11 +927,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
 						t+=dt; }
-					float tsk=(ray.y+uDip)*1.2;   // EXACTLY the sky_mat gradient incl. the #108 horizon-dip peak shift, fog descent and overcast horizon grey (+ sun aureole below), so the haze share composites to the true backdrop — these two shaders change in LOCKSTEP
-					vec3 skybg=tsk>=0.0?mix(uSky,uZenith,pow(clamp(tsk,0.0,1.0),0.65))
-					                   :mix(uSky,uFog*0.88,clamp(-tsk*6.0,0.0,1.0));
-					skybg=mix(skybg, vec3(dot(skybg,vec3(0.333)))*uOvcT, uOvc*(1.0-smoothstep(0.0,uOvcW,abs(tsk))));
-					float sbg=max(dot(ray,uSun),0.0); skybg+=uSunCol*(pow(sbg,220.0)*1.4+pow(sbg,8.0)*0.18);
+					vec3 skybg=sky_dome(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure);   // EXACTLY the dome, so the haze share composites to the true backdrop
 					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 					// (An analytic under-storm horizon mist lived here 2026-07-06 and was removed by request:
 					// four rounds of geometry/hue fixes never fully hid the sea/sky line to the pilot's eye.)
@@ -1100,6 +1159,7 @@ const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 			vec4 hist=clamp(texture2D(tHist,puv),mn,mx);   // neighbourhood clamp: stale history is pulled to what the current frame says is locally possible
 			gl_FragColor=mix(w>0.0?cur:avg,hist,w); }` });   // rejected pixels fall back to the neighbourhood mean — the old blur, exactly where it is still needed
 const acc_scene=new THREE.Scene(); acc_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),acc_mat));
+const fog_direction=new THREE.Vector3();
 function render_frame(){
 	if(cfg.view==="ddi") return;   // head-down: the opaque 2D panel covers the screen — skip the world passes entirely (the sim and audio run on; set_view marks cloud history stale for the return cut)
 	{ const f=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), u=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
@@ -1110,6 +1170,11 @@ function render_frame(){
 	camera.layers.set(0); if(!pit) camera.layers.enable(LAYER_OWN);
 	const dip=Math.max(camera.position.y,3)/45000;   // #108: dip of the VISIBLE sea/sky line — set by the seafog completion and the 42 km far plane, NOT the 120 km mesh rim (that model left a bright crest above the line at altitude). Generous by design: a peak clipped below the line is invisible, a crest above it is the band
 	sky_mat.uniforms.u_dip.value=dip; cloud_mat.uniforms.uDip.value=dip;
+	sky_view_render(camera.position.y);   // the sky from this height, for everything that shows it
+	{ // the lit materials' haze takes the sky's horizon in the direction the camera faces (one colour a frame: three's fog has no per-pixel sky)
+		const f=fog_direction.set(0,0,-1).applyQuaternion(camera.quaternion); const across=Math.hypot(f.x,f.z)||1, k=Math.sqrt(1-0.03*0.03)/across;
+		const r=sky_radiance(air_tables,[f.x*k,0.03,f.z*k],camera.position.y,[sun_dir.x,sun_dir.y,sun_dir.z],HAZE), e=atmosphere_uniforms.u_illuminance.value;
+		scene.fog.color.setRGB(r[0]*e,r[1]*e,r[2]*e); }
 	// Below an overcast deck at night everything but lights blacks out: the deck blocks the
 	// moon the night scene is lit by. Tied to the CAMERA for the sky and the deck, so a
 	// moonlit deck top seen from above stays visible; the sea and the land are always
@@ -8387,6 +8452,23 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 	flight_push();
 	const p=CLOUDS[cfg.clouds];
 	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_sky=(illuminance)=>{ if(illuminance!==undefined&&illuminance!==null) atmosphere_uniforms.u_illuminance.value=illuminance; return atmosphere_uniforms.u_illuminance.value; };   // dev: the light above the air, for calibrating the sky's brightness against the time of day's
+// dev: hold the world still (the sea's clock with it) and pick how foam is drawn: 0 as
+// shipped, 3 the soft foam alone - the same frame both ways
+if(DEV_MODE) (globalThis as any).dev_sea=(hold,debug)=>{ if(hold!==undefined&&hold!==null) menu_hold=!!hold; if(debug!==undefined&&debug!==null) ocean_mat.uniforms.u_foam_debug.value=debug; return { hold:menu_hold, debug:ocean_mat.uniforms.u_foam_debug.value }; };
+// dev: the share of the open sea foam covers, as the mask's mean over a grid of top-down tiles
+// (size m square, pixels a side) spread over 60 km of deep water: mode 1 the lace, 2 the soft
+// cover alone, at a gain on the cover
+if(DEV_MODE) (globalThis as any).dev_foam_cover=(mode=1,gain,size=1024,pixels=1024,count=8)=>{ const u=ocean_mat.uniforms, was={ debug:u.u_foam_debug.value, gain:u.u_foam_gain.value };
+	u.u_foam_debug.value=mode; if(gain!==undefined&&gain!==null) u.u_foam_gain.value=gain;
+	const target=new THREE.WebGLRenderTarget(pixels,pixels,{ depthBuffer:true }), view=new THREE.OrthographicCamera(-size/2,size/2,size/2,-size/2,10,4000), room=new THREE.Scene();
+	const home=ocean.parent, at=ocean.position.clone(); room.add(ocean); const buffer=new Uint8Array(pixels*pixels*4); let sum=0, total=0;
+	for(let i=0;i<count;i++) for(let j=0;j<count;j++){ const x=30000+i*7300, z=-40000+j*6900;
+		view.position.set(x,2000,z); view.up.set(0,0,-1); view.lookAt(x,0,z); view.updateMatrixWorld(); ocean.position.set(x,0,z); ocean.updateMatrixWorld();
+		renderer.setRenderTarget(target); renderer.render(room,view); renderer.readRenderTargetPixels(target,0,0,pixels,pixels,buffer);
+		for(let k=0;k<buffer.length;k+=4){ if(buffer[k+2]>200&&buffer[k]<40) continue; sum+=buffer[k]/255; total++; } }
+	renderer.setRenderTarget(null); home.add(ocean); ocean.position.copy(at); target.dispose(); u.u_foam_debug.value=was.debug; u.u_foam_gain.value=was.gain;
+	return { mode, gain:gain??was.gain, cover:sum/Math.max(total,1) }; };
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
 if(DEV_MODE) (globalThis as any).dev_gun=()=>{ const loaded=fleet[own_aircraft()], rig=ownship.gun; return { profile:loaded?loaded.profile:null, gas:rig?rig.gas:null, flash:rig?rig.flash.visible:null, light:rig&&rig.light?rig.light.intensity:null }; };   // dev: the measured port and skin line, and the ownship rig's state
 if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapour - what it is flying, what shows, which shells are drawn and the puffs in the air; dev_vapour({humid, flight}) pins the humidity or the flight every jet is drawn for, dev_vapour(null) frees both
