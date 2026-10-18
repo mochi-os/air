@@ -245,6 +245,10 @@ const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gat
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
 let joust_start=null;   // the BVR joust's drawn start (#46): each end's block (the player's first), the block speed, the flank and the separation; null for the merge
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
+// Where the wind blows, a unit vector in the world's xz (x east, z south). The sea's waves and
+// foam and the clouds' streets and drift all follow it; one uniform object, shared by every
+// material that reads it, set from the weather by apply_wind.
+const downwind={ value:new THREE.Vector2(-Math.sin(70*Math.PI/180),Math.cos(70*Math.PI/180)) };   // the trades, from 070 toward 250, until apply_wind runs
 const CARRIER={ x:-18500, z:7500, deckY:SHIP.deck };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
 const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a), col_shallow=new THREE.Color(0x1d6e86);
@@ -277,6 +281,13 @@ scene.add(sun,sun.target); const hemi=new THREE.HemisphereLight(0xbcd6ec,0x35506
 sun.layers.enable(LAYER_OWN); hemi.layers.enable(LAYER_OWN); amb.layers.enable(LAYER_OWN);   // lights are layer-filtered: without these the cockpit pass renders black
 
 // ============================================================================ sky + ocean (proven)
+// The sea is drawn about one axis: its wind sea, the swell crossing it, its foam and its detail
+// textures are laid out along it. turn() takes that axis onto the way the wind blows, and
+// unturn() takes the world back into the axis's frame, so all of them follow the wind together.
+const SEA_TURN=`uniform vec2 u_downwind;
+		const vec2 AXIS=normalize(vec2(0.958,0.286));
+		vec2 turn(vec2 v){ float c=dot(AXIS,u_downwind), s=AXIS.x*u_downwind.y-AXIS.y*u_downwind.x; return vec2(c*v.x-s*v.y, s*v.x+c*v.y); }
+		vec2 unturn(vec2 v){ float c=dot(AXIS,u_downwind), s=AXIS.x*u_downwind.y-AXIS.y*u_downwind.x; return vec2(c*v.x+s*v.y, -s*v.x+c*v.y); }`;
 // The sky from the atmosphere (atmosphere.ts): the dome, the sea's reflection of it, the
 // clouds' backdrop and the lit materials' haze all read the sky-view table drawn here each
 // frame (or the same integral on the CPU), so they cannot disagree. The dome and the sea
@@ -444,7 +455,7 @@ function build_water_detail(){
 		const fx=Math.round(f*Math.cos(th)), fz=Math.round(f*Math.sin(th));
 		if(fx===0&&fz===0){ i--; continue; }
 		w.push([fx,fz,rnd()*Math.PI*2,(0.6+0.7*rnd())/Math.pow(Math.hypot(fx,fz),red)]); } return w; };
-	const WIND=0.29;   // matches the primary vertex swell W0 (1,0.3)
+	const WIND=0.29;   // the sea's axis (SEA_TURN's AXIS, 0.958,0.286): the shader turns it onto the wind
 	const H=band(170,3,40,1.15,WIND,0.9), B=band(26,6,24,1.0,WIND,1.4), A=mkwaves(8,3,1.0);
 	const T=Math.PI*2/S;
 	// Two passes: accumulate raw fields, then normalise each channel to its own
@@ -512,12 +523,13 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
-		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+		`+SEA_TURN+`
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
-		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
+		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=turn(normalize(w.xy)); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
 		float fit(float gap,float span){ return 1.0-smoothstep(span*0.25,span*0.5,gap); }   // sampling honesty (#71): a wave the LOCAL vertex spacing cannot carry (fewer than ~2-4 vertices per wavelength) folds into a gear-amplified beat lattice that races over the sea with camera motion — the moire. Fade each train out where the camera-centred grid gets coarser than its wavelength supports; the texture octaves own those scales beyond
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
 		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
@@ -531,6 +543,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		`+CLOUD_SHADOW_RESOLVE+`
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
+		`+SEA_TURN+`
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point. MUST mirror the vertex W0/W1 exactly: sin(kx - wt), W0 = the crossing NW ground swell, W1 = the longest wind-sea train
 			float h=2.0*sin(dot(normalize(vec2(-0.12,-0.99)),p)*(6.2831853/420.0)-u_time*(60.0/420.0));
@@ -558,36 +571,38 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		vec3 sky_at(vec3 d){ d=normalize(d); d.y=max(d.y,0.005); vec3 col=shown(at_sky(normalize(d),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own sky: a facet tilted past the horizon still sees the horizon's sky
 			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
-			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
+			vec2 xz=unturn(v_world.xz); float dist=length(cameraPosition-v_world);   // the sea's own frame (SEA_TURN): its textures, foam and shading swells are laid out about that axis
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
 			float f2=exp(-dist/6500.0);   // the fine octave outlives the 1-5 km ring: grazing Fresnel is hypersensitive to the glass-smooth swell faces left when it fades (pale mirror stripes along every crest)
 			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
-			// ALL texture drift runs downwind at dispersion-scaled speeds; anti-repeat is
+			// ALL texture drift runs downwind at dispersion-scaled speeds (a fetch at uv-drift
+			// carries the pattern along +drift, as xzc carries the caps); anti-repeat is
 			// hex-tiling per octave (see hexslope) — dual incommensurate sampling created a
 			// beat envelope that drifted with the water: the "moving quilt".
-			vec2 s3=hexslope(xr3/2650.0, u_time*vec2(1.45e-4,4.3e-5));
+			vec2 s3=hexslope(xr3/2650.0, -u_time*vec2(1.45e-4,4.3e-5));
 			// The coarse octave is warped by the kilometre octave and rotated off-axis: an
 			// unwarped tile repeats its exact pattern every 331 m, which reads as a quilt
 			// from altitude no matter how irregular the pattern inside the tile is.
 			vec2 warp=(texture2D(u_detail,xr3/6400.0).rg*2.0-1.0);   // very-low-frequency warp source: strong warp from a busy field marbles the sea into curlicues
 			vec2 xr0=vec2(0.993*xz.x-0.122*xz.y, 0.122*xz.x+0.993*xz.y)+warp*45.0+s3*8.0;   // gentle meander only: hex-tiling owns anti-repetition now, and a strong warp draws visible mid-band swirl curls
-			vec2 s0=hexslope(xr0/610.0, u_time*vec2(1.10e-3,3.3e-4));
+			vec2 s0=hexslope(xr0/610.0, -u_time*vec2(1.10e-3,3.3e-4));
 			// Octaves rotate AND domain-warp on the coarse field: same-direction lattices at
 			// every zoom read as a chessboard; warped, the crests meander like real seas.
 			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
-			vec2 s1=hexslope(xr1/90.0, u_time*vec2(1.17e-2,3.5e-3));
+			vec2 s1=hexslope(xr1/90.0, -u_time*vec2(1.17e-2,3.5e-3));
 			float far=smoothstep(3000.0,14000.0,dist);
 			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.28*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
 			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
 			// distance band once the detail octaves mip away — real seas read isotropic out
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
 			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.7));
-			vec3 N=normalize(vn+vec3(slope.x,0.0,slope.y));
+			vec2 lean=turn(slope);   // the octaves' slopes are in the sea's frame: the world's normal takes them turned
+			vec3 N=normalize(vn+vec3(lean.x,0.0,lean.y));
 			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.58*far);   // grazing mirror reduced by wave shadowing but NOT killed: the sea silvers smoothly toward the horizon, it just must never form a stripe brighter than the water beyond it   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
 			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
 			else { // deep-water patchiness: slow drift between two deep hues at ~1.5 km scale
-				float swatch=texture2D(u_detail,xz/1470.0+u_time*vec2(1.3e-4,3.9e-5)).a;   // 'patch' is a GLSL ES 3.0 reserved word
+				float swatch=texture2D(u_detail,xz/1470.0-u_time*vec2(1.3e-4,3.9e-5)).a;   // 'patch' is a GLSL ES 3.0 reserved word
 				swatch=mix(swatch, texture2D(u_detail,vec2(xz.y,-xz.x)/5300.0).a, far*0.7);   // kilometre-scale colour variation survives the mip flattening at flight-level slants
 				vec3 deep=mix(u_deep,u_deep2,smoothstep(0.35,0.65,swatch));
 				body=mix(deep,u_shallow,diff*0.8+0.2); }
@@ -639,7 +654,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 xzc=xz-u_time*aw*1.1;   // the cap pattern drifts downwind
 			float alo=dot(xzc,aw), cro=dot(xzc,vec2(-aw.y,aw.x));
 			vec2 hu=vec2(alo*2.2,cro), tu=vec2((alo-16.0)*0.45,cro*1.5);
-			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
+			float capc=texture2D(u_detail,xz/1900.0-u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
 			float hv=(0.45*texture2D(u_detail,hu/160.0).b+0.55*texture2D(u_detail,hu/350.0).b)*(0.6+0.4*capc);   // half the scales they were (320 and 700 m): twice as many caps, half the size, the same share of the sea
 			float tv=(0.45*texture2D(u_detail,tu/160.0).b+0.55*texture2D(u_detail,tu/350.0).b)*(0.6+0.4*capc);
 			float head=smoothstep(0.575,0.615,hv), tail=smoothstep(0.565,0.615,tv);
@@ -752,7 +767,7 @@ const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1
 // the sea and the island is cast by the cloud the pilot can actually see. The two
 // materials also share these uniform OBJECTS by reference, so apply_clouds writes
 // each preset exactly once and no copy can drift.
-const cloud_field_uniforms={ tNoise:{value:null}, tDetail:{value:null}, uTime:{value:0},
+const cloud_field_uniforms={ tNoise:{value:null}, tDetail:{value:null}, uTime:{value:0}, uDownwind:downwind,
 	uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42},
 	uDensity:{value:1.0}, uFlat:{value:0.0}, uDark:{value:0.45}, uGate:{value:new THREE.Vector2(0.22,0.50)},
 	// Air spawns, the only places a jet starts at cloud height. The free-flight start
@@ -769,13 +784,13 @@ const cloud_field_uniforms={ tNoise:{value:null}, tDetail:{value:null}, uTime:{v
 	uMerge:{value:new THREE.Vector4(0, 0, 25.0e6, 100.0e6)} };   // joust merge / multiplayer spawn ring (ring=2778 m about the origin)                                               // joust merge / multiplayer spawn ring (ring=2778 m about the origin)
 const CLOUD_FIELD_UNIFORMS=`uniform highp sampler3D tNoise,tDetail;
 		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uDark;
-		uniform vec2 uGate; uniform vec4 uClear,uMerge;`;
+		uniform vec2 uGate,uDownwind; uniform vec4 uClear,uMerge;`;
 const CLOUD_FIELD=`
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		// Trade-wind cumulus field: flat bases at uBase, most cells capped by the inversion at uTop, a minority of
 		// vigorous cells towering to uHigh (per-cell vigour from low-frequency noise). Density: Perlin-Worley base
 		// remapped by coverage, eroded at the edges by high-frequency Worley — the cauliflower billows.
-		vec4 cellfield(vec2 xz){ vec2 q=vec2((xz.x*0.958+xz.y*0.286)*0.62, -xz.x*0.286+xz.y*0.958);   // cells stretched ~1.6x along the wind: STREETS of distinct cells — stronger stretch fuses them into worm-chains
+		vec4 cellfield(vec2 xz){ vec2 q=vec2(dot(xz,uDownwind)*0.62, dot(xz,vec2(-uDownwind.y,uDownwind.x)));   // cells stretched ~1.6x along the wind: STREETS of distinct cells — stronger stretch fuses them into worm-chains
 			return texture(tNoise, vec3(q*2.0833e-5, 0.37)); }   // ~8 km cell pattern
 		float vigour(vec2 xz){ return cellfield(xz).g; }   // .g drives cell placement; .b/.a (worley octaves at the same fetch — free) become per-cell CHARACTER fields below
 		float clearing(vec2 xz){ vec2 cd=xz-uClear.xy;   // the free-flight start: no cumulus at all
@@ -784,7 +799,7 @@ const CLOUD_FIELD=`
 			return mix(mix(uTop,uHigh,smoothstep(0.52,0.68,vig)*smoothstep(uMerge.z,uMerge.w,dot(md,md))), uTop, uFlat); }   // NARROW ramp: height plateaus just inside a vigorous cell, so the flanks rise as near-vertical walls — the old wide ramp (0.48-0.82) made height track the vigour falloff and every tower rendered as a smooth cone
 		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
 			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // the air-start clearing: nothing to march inside it
-				vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
+				vec3 sp=p-vec3(uDownwind.x,0.0,uDownwind.y)*(uTime*8.54);   // the field drifts downwind at 8.5 m/s
 				vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
 				float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
 				vec4 cf=cellfield(p.xz); float vig=cf.g;
@@ -807,14 +822,14 @@ const CLOUD_FIELD=`
 				float vfall=1.0+h*3.2; if(vfall<=0.0) return 0.0;
 				float shaft=smoothstep(0.60,0.85,vig)*vfall*(1.0-smoothstep(0.35,0.70,lod));   // NEAR-field only: as a thin horizontal layer it integrates into a flat pale band above the horizon at range (height-coded debug, 2026-07-05)
 				if(shaft<=0.0) return 0.0;
-				vec4 nb=texture(tNoise,(p+vec3(uTime*8.0,0.0,uTime*3.0))*1.6667e-4);
+				vec4 nb=texture(tNoise,(p-vec3(uDownwind.x,0.0,uDownwind.y)*(uTime*8.54))*1.6667e-4);
 				return smoothstep(0.55,0.85,nb.r)*shaft*0.045*uDensity*cm;
 			}
 			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,mix(mix(0.40,0.62,tA),0.86,tallf),h),   // cumulus domes, per-cell taper (flat-topped through plump); TOWERS hold near-constant width and only round at the head — early taper renders ice-cream cones
 			                smoothstep(0.0,70.0/max(top-lbase,1.0),h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab. The bottom fade is a FIXED 70 m, not a fraction of thickness: at 0.25 of an 824 m Case III deck it was 206 m (676 ft) of mush, so a 300 ft geometric base first became visible near 500 ft and the reported ceiling was a fiction. Real stratus has a sharp base — that is why a ceiling is a definite altitude — and a thickness-proportional fade is cumulus behaviour wearing a stratus hat
 			sp+=(w.gba-0.5)*vec3(150.0,80.0,150.0)*(0.75+0.5*tA)*(1.0-uFlat);   // domain warp, gentle, per-cell amplitude: clusters the base blobs into LOBES (height-scaled warp smears the field into vertical curtain folds — tried and reverted)
 			vec3 spn=sp;
-			if(uFlat>0.01){ vec2 sw=vec2(sp.x*0.958+sp.z*0.286, -sp.x*0.286+sp.z*0.958); sw.x*=0.32;   // stratus sheets are WIND-COMBED: stretch the base field ~3x along the wind so the deck shows banded striations instead of a featureless veil
+			if(uFlat>0.01){ vec2 sw=vec2(dot(sp.xz,uDownwind), dot(sp.xz,vec2(-uDownwind.y,uDownwind.x))); sw.x*=0.32;   // stratus sheets are WIND-COMBED: stretch the base field ~3x along the wind so the deck shows banded striations instead of a featureless veil
 				spn=mix(sp, vec3(sw.x,sp.y,sw.y), uFlat); }
 			vec4 n=texture(tNoise, spn*1.6667e-4);   // base field, ~6 km period
 			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
@@ -9264,6 +9279,8 @@ function scenery(){
 	const island=carrier_island(); if(island){ prisms.push(island.prism); posts.push(island.post); }
 	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
 }
+// The sea and the clouds follow the wind the jet flies in; in a calm they keep the line they had.
+function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); }
 // The single-player environment: the map's own seed and wrap, the mission's weather.
 function weather(){
 	const cl=CLOUDS[cfg.clouds];
@@ -12235,7 +12252,7 @@ function start_mission(){
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
 	build_ocean(cfg.ocean_segments);
-	apply_time_of_day(cfg.tod); apply_effects();
+	apply_time_of_day(cfg.tod); apply_effects(); apply_wind();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
 	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
 	// The &ddi page hook applies AFTER reset_ownship (#48): the case start's
@@ -12271,7 +12288,7 @@ let face_ready=false;
 function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready() && face_ready; }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm, HUD face
 
 // ============================================================================ boot
-apply_time_of_day(cfg.tod); apply_effects(); apply_size();
+apply_time_of_day(cfg.tod); apply_effects(); apply_size(); apply_wind();
 help_el.style.display="none";   // controls list lives in the pause window now (shown while paused via P)
 addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catch{ /* focus best-effort */ } },{ signal });   // clicks are user activations too: without this, a mouse-started carrier mission is silent until the first keypress
 
