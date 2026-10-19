@@ -78,6 +78,9 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
+import moon_day_url from '../assets/moon-day.png?url'
+import moon_night_url from '../assets/moon-night.png?url'
+import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, SIZE as MOON_SIZE } from './moon'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
 import * as navigate from './navigation'
@@ -92,7 +95,7 @@ import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
 import { humidity, vapour as vapour_show } from './vapour'
-import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
+import { decode as sky_decode, direction as sky_direction, light as sky_light, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 export type GameConfig = Record<string, unknown>
@@ -300,7 +303,8 @@ function air_texture(data,width,height){ const half=new Uint16Array(data.length)
 	const t=new THREE.DataTexture(half,width,height,THREE.RGBAFormat,THREE.HalfFloatType); t.minFilter=t.magFilter=THREE.LinearFilter; t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping; t.needsUpdate=true; return t; }
 const sky_target=new THREE.WebGLRenderTarget(SKY_SIZE.width,SKY_SIZE.height,{ type:THREE.HalfFloatType, depthBuffer:false, minFilter:THREE.LinearFilter, magFilter:THREE.LinearFilter, wrapS:THREE.ClampToEdgeWrapping, wrapT:THREE.ClampToEdgeWrapping });
 const atmosphere_uniforms={ u_transmittance:{value:air_texture(air_tables.transmittance,TRANSMITTANCE.width,TRANSMITTANCE.height)}, u_scattering:{value:air_texture(air_tables.scattering,SCATTERING,SCATTERING)},
-	u_sky:{value:sky_target.texture}, u_altitude:{value:0.01}, u_haze:{value:HAZE}, u_illuminance:{value:4.5}, u_exposure:{value:1.05} };   // u_illuminance: the sun's (or moon's) light above the air, per time of day (TOD sky: 4.5 by day and 0.1 by night put the dome where the hand-picked gradient it replaced was, within 10 of 255); u_altitude km; u_exposure the renderer's
+	u_sky:{value:sky_target.texture}, u_altitude:{value:0.01}, u_haze:{value:HAZE}, u_illuminance:{value:4.5}, u_exposure:{value:1.05},
+	u_moon:{value:null}, u_moon_dir:{value:new THREE.Vector3(0,-1,0)}, u_moon_right:{value:new THREE.Vector3(1,0,0)}, u_moon_up:{value:new THREE.Vector3(0,0,1)}, u_moon_gain:{value:new THREE.Vector3()}, u_moon_radius:{value:MOON_DAY.radius}, u_sun_disc:{value:1.0} };   // the moon's face and frame at this hour's moment (moon.ts), set by apply_time_of_day; u_sun_disc 0 at night, when the slot holds the moon   // u_illuminance: the sun's (or moon's) light above the air, per time of day (TOD sky: 4.5 by day and 0.1 by night put the dome where the hand-picked gradient it replaced was, within 10 of 255); u_altitude km; u_exposure the renderer's
 const sky_view_mat=new THREE.ShaderMaterial({ vertexShader:SKY_VIEW_VERTEX, fragmentShader:SKY_VIEW_FRAGMENT, depthTest:false, depthWrite:false,
 	uniforms:{ u_transmittance:atmosphere_uniforms.u_transmittance, u_scattering:atmosphere_uniforms.u_scattering, u_altitude:atmosphere_uniforms.u_altitude, u_haze:atmosphere_uniforms.u_haze, u_sun_view:{value:sun_dir} } });
 const sky_view_room=new THREE.Scene(); sky_view_room.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),sky_view_mat)); const sky_view_camera=new THREE.Camera();
@@ -324,15 +328,27 @@ const TONE=`
 		vec3 a=1.0-0.983729*y, b=0.0245786-0.4329510*y, k=-(0.000090537+0.238081*y);
 		vec3 v=(-b+sqrt(b*b-4.0*a*k))/(2.0*a);   // the tone fit's quadratic, its positive root
 		return max(ini*v,0.0)*0.6/exposure; }`;   // three's ACES and sRGB as shown(), and its inverse: the sky, the sea, the clouds and the glare share them
-const SKY_SHOWN=`uniform float u_illuminance;
+// The moon (#90) as Midway saw it at the hour's fixed moment (moon.ts, tools/moon.py): its face
+// from the baked image, the image's right and up laid on the sky, its light scene-linear and added
+// to the sky's BEFORE the tone - so a daytime crescent is as pale as the sky's own light makes it,
+// and the night's full moon keeps its seas where a disc added after the tone washed to white.
+const MOON=`uniform sampler2D u_moon; uniform vec3 u_moon_dir,u_moon_right,u_moon_up,u_moon_gain; uniform float u_moon_radius;
+	vec3 moon_light(vec3 d, float blur){   // blur: a pixel's angle, so the face is read at the mip the screen can resolve and its edge is a pixel soft
+		vec2 p=vec2(dot(d,u_moon_right),dot(d,u_moon_up))/u_moon_radius;
+		float edge=(1.0-smoothstep(1.0-blur/u_moon_radius,1.0+blur/u_moon_radius,length(p)))*step(0.0,dot(d,u_moon_dir));   // nothing outside the disc, nor at its antipode
+		float lod=log2(max(blur*${MOON_SIZE}.0/(2.0*u_moon_radius),1.0));
+		return textureLod(u_moon,clamp(p*0.5+0.5,0.0,1.0),lod).rgb*u_moon_gain*edge; }`;
+const SKY_SHOWN=`uniform float u_illuminance,u_sun_disc;
 	`+TONE+`
+	`+MOON+`
 	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure, float blur){   // blur: a pixel's angle, taken by the caller outside any branch
 		float t=(d.y+dip)*1.2;
-		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
+		vec3 moon=moon_light(d,blur)*at_transmittance(AT_GROUND+u_altitude,max(d.y,0.0));   // the moon through the air before it, as the sky's own light reaches the eye
+		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance+moon,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
 		if(t<0.0) col=mix(col,fog*0.88,clamp(-t*6.0,0.0,1.0));   // below the rim the haze takes over, as the sea does
 		col=mix(col, vec3(dot(col,vec3(0.333)))*ovct, ovc*(1.0-smoothstep(0.0,ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) - under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze) - the distant unresolved field
-		float a=length(cross(d,sun)), disc=dot(d,sun)>0.0?1.0-smoothstep(0.004651-blur,0.004651+blur,a):0.0;   // the sun's own disc, 0.53 degrees across (the moon's at night is the same size), its edge a pixel soft; the glow about it is the air's, in at_sky
-		return col+suncol*1.4*disc; }`;
+		float a=length(cross(d,sun)), disc=dot(d,sun)>0.0?1.0-smoothstep(0.004651-blur,0.004651+blur,a):0.0;   // the sun's own disc, 0.53 degrees across, its edge a pixel soft; the glow about it is the air's, in at_sky
+		return col+suncol*1.4*disc*u_sun_disc; }`;
 const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
 	uniforms:{ ...atmosphere_uniforms, u_sun:{value:sun_dir}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc}, u_blackout:{value:1.0} },
 	vertexShader:`varying vec3 v_dir; void main(){ v_dir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
@@ -359,8 +375,8 @@ function mirror_bake(){
 	bake.dispose(); generator.dispose(); }
 
 // stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
-// placed by ./sky for the map origin at local midnight on today's date, the hour a full moon
-// stands due south and high as the night moon here does. Each star is a fixed-pixel Gaussian
+// placed by ./sky for the map origin at the night's moment (moon.ts), the midnight whose full moon
+// stood due south and high where the night moon here does. Each star is a fixed-pixel Gaussian
 // sprite sized and brightened by magnitude and tinted by colour: world-sized points came out
 // about half a pixel wide and flickered as the view moved, which read as twinkling.
 const star_catalogue=sky_decode(STAR_DATA,STAR_COUNT), STAR_RADIUS=16000;
@@ -381,7 +397,7 @@ const stars=new THREE.Points(star_geo,new THREE.ShaderMaterial({ transparent:tru
 			gl_FragColor=vec4(v_light*exp(-r2*2.0)*u_opacity,1.0); }` }));   // display-referred, as the sky dome it sits in front of
 stars.frustumCulled=false; scene.add(stars);
 function sky_place(latitude,longitude){   // re-placed once the map's own origin is known
-	const local=sky_sidereal(sky_midnight(new Date(),longitude))+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
+	const local=sky_sidereal(MOON_NIGHT.time)+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
 	star_catalogue.forEach((s,i)=>{ const d=sky_direction(s,latitude,local); pos[i*3]=d[0]*STAR_RADIUS; pos[i*3+1]=d[1]*STAR_RADIUS; pos[i*3+2]=d[2]*STAR_RADIUS; });
 	star_geo.attributes.position.needsUpdate=true; }
 sky_place(MIDWAY.latitude,MIDWAY.longitude);
@@ -392,6 +408,26 @@ const TOD={
 	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
 	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
+// The moon's two faces (#90): the noon's crescent and the midnight's full moon, each as Midway saw it.
+// Until an image arrives it samples black, and the sky simply has no moon.
+function moon_face(url){ const t=new THREE.TextureLoader().load(url); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping;
+	t.magFilter=THREE.LinearFilter; t.minFilter=THREE.LinearMipmapLinearFilter; t.generateMipmaps=true; return t; }
+const moon_faces={ day:moon_face(moon_day_url), night:moon_face(moon_night_url) };
+// The night's moon is shown as an eye adapted to it sees it: its highlands at about 0.86 of white and its
+// seas at about 0.6, through the tone. Its true light is some 200,000 times the moonlit sky's, which no
+// screen can show beside that sky; by day the crescent keeps its true light against the sky's (moon.ts scale).
+const MOON_NIGHT_GAIN=1.35;
+const _moon_up=new THREE.Vector3();
+function moon_place(p){ const night=p===TOD.night, m=night?MOON_NIGHT:MOON_DAY, u=atmosphere_uniforms;
+	u.u_moon.value=night?moon_faces.night:moon_faces.day; u.u_moon_radius.value=m.radius; u.u_sun_disc.value=night?0:1;
+	if(night) u.u_moon_dir.value.copy(sun_dir); else u.u_moon_dir.value.fromArray(m.direction);   // by night in the slot the night is lit from, 0.1 degrees from where the moment put it, so the glare finds it where the light comes from
+	_moon_up.fromArray(m.up); _moon_up.addScaledVector(u.u_moon_dir.value,-_moon_up.dot(u.u_moon_dir.value)).normalize();
+	u.u_moon_up.value.copy(_moon_up); u.u_moon_right.value.crossVectors(u.u_moon_dir.value,_moon_up);   // looking along the moon with the zenith above: right as the image's +x
+	if(night) u.u_moon_gain.value.setScalar(MOON_NIGHT_GAIN); else u.u_moon_gain.value.setScalar(m.scale*p.sky);   // by day its radiance per unit of the sun's light, in the sky table's own units
+	const mean=m.mean*u.u_moon_gain.value.x;
+	glare_mat.uniforms.u_moon_mean.value.setScalar(mean);
+	if(night) glare_mat.uniforms.u_veil.value.setScalar(mean*Math.PI*m.radius*m.radius);   // the moon's glare is its own displayed light over its solid angle: as a disc that bright makes it, not as the 200,000-times light the screen cannot show
+	else glare_mat.uniforms.u_veil.value.copy(ocean_mat.uniforms.u_beam.value); }   // the sun's: its true beam against the sky, as the disc the screen clips stands for
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
 	sun.color.setHex(p.sunCol); sun.intensity=p.sunI; ocean_mat.uniforms.u_beam.value.copy(sun.color).multiplyScalar(p.sunI);   // the sun's (or the moon's) beam, for the sea's glint
@@ -399,7 +435,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	apply_light_balance();   // re-derive the cloud lighting against this time of day's lights
-	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
+	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; moon_place(p); cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
@@ -766,10 +802,11 @@ function apply_waves(){ const w=weather().wind, speed=Math.hypot(w.x,w.z), on=(c
 // or the canopy frame across it takes the glare away), and off it, where the eye still sees the sun,
 // by the clouds' shadow map.
 const glare_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, toneMapped:false,
-	uniforms:{ u_frame:{value:null}, u_inverse:{value:new THREE.Matrix4()}, u_eye:{value:new THREE.Vector3()}, u_forward:{value:new THREE.Vector3(0,0,-1)}, u_sun:{value:sun_dir}, u_beam:ocean_mat.uniforms.u_beam, u_disc:{value:col_sundisc}, ...cloud_shadow_uniforms,
-		u_exposure:atmosphere_uniforms.u_exposure, u_at:{value:new THREE.Vector2()}, u_size:{value:new THREE.Vector2(1,1)}, u_radius:{value:3.0}, u_inside:{value:0.0} },
+	uniforms:{ u_frame:{value:null}, u_inverse:{value:new THREE.Matrix4()}, u_eye:{value:new THREE.Vector3()}, u_forward:{value:new THREE.Vector3(0,0,-1)}, u_sun:{value:sun_dir}, u_disc:{value:col_sundisc}, ...cloud_shadow_uniforms,
+		u_exposure:atmosphere_uniforms.u_exposure, u_at:{value:new THREE.Vector2()}, u_size:{value:new THREE.Vector2(1,1)}, u_radius:{value:3.0}, u_inside:{value:0.0},
+		u_veil:{value:new THREE.Color()}, u_moon_mean:{value:new THREE.Color()}, u_sun_disc:atmosphere_uniforms.u_sun_disc },   // u_veil: the glare's source, set with the hour (moon_place); u_moon_mean: the night moon's mean light, for telling it unhidden
 	vertexShader:`varying vec2 v_uv; void main(){ v_uv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
-	fragmentShader:`varying vec2 v_uv; uniform sampler2D u_frame; uniform mat4 u_inverse; uniform vec3 u_eye,u_forward,u_sun,u_beam,u_disc; uniform vec2 u_at,u_size; uniform float u_exposure,u_radius,u_inside;
+	fragmentShader:`varying vec2 v_uv; uniform sampler2D u_frame; uniform mat4 u_inverse; uniform vec3 u_eye,u_forward,u_sun,u_veil,u_disc,u_moon_mean; uniform vec2 u_at,u_size; uniform float u_exposure,u_radius,u_inside,u_sun_disc;
 		`+TONE+`
 		`+CLOUD_SHADOW_RESOLVE+`
 		float clear(){   // the clouds' share of the sun's beam that reaches the eye: the ground point whose sun line runs through the eye sees what the eye sees, below the cloud base
@@ -778,13 +815,15 @@ const glare_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, to
 			vec2 g=u_eye.xz-u_shadow_sun.xz*(u_eye.y/max(u_shadow_sun.y,0.05)), uv=(g-u_shadow_patch.xy)/u_shadow_patch.z+0.5;
 			float open=mix(1.0,texture2D(u_shadow,clamp(uv,0.0,1.0)).r,u_shadow_patch.w*(1.0-smoothstep(0.35,0.5,length(uv-0.5))));
 			return mix(open,1.0,smoothstep(u_shadow_deck.x,u_shadow_deck.y,u_eye.y)); }   // climbing through the field, less of it lies ahead of the sun
-		float lit(vec2 p){ vec3 c=texture2D(u_frame,p/u_size).rgb/min(u_disc*1.4,vec3(1.0)); return smoothstep(0.95,0.995,min(c.r,min(c.g,c.b))); }   // a pixel of the disc as the dome draws it, unhidden: a white cloud across it reads under 0.95
+		float lit(vec2 p){ vec3 f=texture2D(u_frame,p/u_size).rgb;
+			if(u_sun_disc>0.5){ vec3 c=f/min(u_disc*1.4,vec3(1.0)); return smoothstep(0.95,0.995,min(c.r,min(c.g,c.b))); }   // a pixel of the sun's disc as the dome draws it, unhidden: a white cloud across it reads under 0.95
+			return smoothstep(0.5,0.7,dot(f,vec3(1.0))/dot(shown(u_moon_mean,u_exposure),vec3(1.0))); }   // the moon's face: its darkest seas read 0.8 of its mean, a cloud or a jet across it far less
 		void main(){ vec3 frame=texture2D(u_frame,v_uv).rgb;
 			float disc=0.2*(lit(u_at)+lit(u_at+vec2(u_radius*0.5,0.0))+lit(u_at-vec2(u_radius*0.5,0.0))+lit(u_at+vec2(0.0,u_radius*0.5))+lit(u_at-vec2(0.0,u_radius*0.5)));
 			float seen=mix(clear(),disc,u_inside)*smoothstep(-0.174,0.174,dot(u_forward,u_sun));   // the disc where the screen shows it, the clouds where it does not; none from behind the eye (past 90 degrees off the line of sight)
 			vec4 far=u_inverse*vec4(v_uv*2.0-1.0,1.0,1.0); vec3 ray=normalize(far.xyz/far.w-u_eye);
 			float angle=max(degrees(atan(length(cross(ray,u_sun)),dot(ray,u_sun))),0.27);   // from the sun, held at its disc's edge
-			vec3 veil=u_beam*(10.0/(angle*angle*angle)+(5.0/(angle*angle)+0.05/angle)*1.0256+0.00125)*seen;
+			vec3 veil=u_veil*(10.0/(angle*angle*angle)+(5.0/(angle*angle)+0.05/angle)*1.0256+0.00125)*seen;
 			vec3 base=unshown(frame,u_exposure);
 			vec3 col=frame+shown(base+veil,u_exposure)-shown(base,u_exposure);   // added in linear light, as the change it makes, so a pixel it leaves alone is left exactly
 			gl_FragColor=vec4(col,1.0); }` });
