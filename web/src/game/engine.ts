@@ -59,6 +59,8 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { Pacing } from './pacing'
 import { PATTERN_VERTEX as FOAM_VERTEX, PATTERN_FRAGMENT as FOAM_FRAGMENT } from './foam'
+import { Waves } from './waves'
+import { slopes as spectrum_slopes, CASCADES } from './spectrum'
 import { tables as atmosphere_tables, radiance as sky_radiance, ATMOSPHERE, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
@@ -531,10 +533,14 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
-		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
+		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+SEA_TURN+`
+		#ifdef WAVES
+		uniform sampler2D u_displacement0,u_displacement1; uniform vec3 u_lengths; varying vec2 v_origin;
+		vec3 cascade(sampler2D map, vec2 p, float L, float gap){ return textureLod(map,p/L,log2(max(512.0*gap/L,1.0))).xyz; }   // the mip whose texels are twice the local vertex spacing: the waves the mesh cannot carry average away, as fit() fades the sines
+		#endif
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=turn(normalize(w.xy)); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
 		float fit(float gap,float span){ return 1.0-smoothstep(span*0.25,span*0.5,gap); }   // sampling honesty (#71): a wave the LOCAL vertex spacing cannot carry (fewer than ~2-4 vertices per wavelength) folds into a gear-amplified beat lattice that races over the sea with camera motion — the moire. Fade each train out where the camera-centred grid gets coarser than its wavelength supports; the texture octaves own those scales beyond
@@ -542,15 +548,24 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
-		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g; h+=wave(xz,W1,1.1*fit(gap,W1.z),g);gt+=g;
+		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g;
+		#ifdef WAVES
+		vec3 d=(cascade(u_displacement0,xz,u_lengths.x,gap)+cascade(u_displacement1,xz,u_lengths.y,gap))*ws;   // the wind's sea from its spectrum (waves.ts), in place of the three sines; the crossing ground swell stays
+		h*=ws; gt*=ws; wp.xz+=d.xz; h+=d.y; v_origin=xz;
+		#else
+		h+=wave(xz,W1,1.1*fit(gap,W1.z),g);gt+=g;
 		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
+		#endif
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
 	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_cloud_flat,u_light,u_foam_gain,u_foam_debug,u_slope; uniform vec3 u_beam; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+CLOUD_SHADOW_RESOLVE+`
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
 		`+SEA_TURN+`
+		#ifdef WAVES
+		uniform sampler2D u_derivative0,u_derivative1,u_derivative2; uniform vec3 u_lengths,u_spectrum; varying vec2 v_origin;
+		#endif
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point. MUST mirror the vertex W0/W1 exactly: sin(kx - wt), W0 = the crossing NW ground swell, W1 = the longest wind-sea train
 			float h=2.0*sin(dot(normalize(vec2(-0.12,-0.99)),p)*(6.2831853/420.0)-u_time*(60.0/420.0));
@@ -598,12 +613,20 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
 			vec2 s1=hexslope(xr1/90.0, -u_time*vec2(1.17e-2,3.5e-3));
 			float far=smoothstep(3000.0,14000.0,dist);
+			#ifdef WAVES
+			float near=1.0-smoothstep(1200.0,2400.0,dist);   // the spectrum's sea near the eye, the octaves beyond, where the 300 m tile would show its repeat
+			vec2 ox=dFdx(v_origin), oy=dFdy(v_origin);
+			#endif
 			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.28*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
 			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
 			// distance band once the detail octaves mip away — real seas read isotropic out
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
 			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.7));
 			vec2 lean=turn(slope);   // the octaves' slopes are in the sea's frame: the world's normal takes them turned
+			#ifdef WAVES
+			{ vec4 q=textureGrad(u_derivative0,v_origin/u_lengths.x,ox/u_lengths.x,oy/u_lengths.x)+textureGrad(u_derivative1,v_origin/u_lengths.y,ox/u_lengths.y,oy/u_lengths.y)+textureGrad(u_derivative2,v_origin/u_lengths.z,ox/u_lengths.z,oy/u_lengths.z);
+				lean=mix(lean,-vec2(q.x/max(1.0+q.z,0.2),q.y/max(1.0+q.w,0.2))*(1.0-0.85*v_calm),near); }   // each slope the displaced surface's: the height's gradient over how far the horizontal displacement squeezed it
+			#endif
 			vec3 N=normalize(vn+vec3(lean.x,0.0,lean.y));
 			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.58*far);   // grazing mirror reduced by wave shadowing but NOT killed: the sea silvers smoothly toward the horizon, it just must never form a stripe brighter than the water beyond it   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
@@ -656,6 +679,9 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// The sparkle is divided by its mean over the ripples the textures resolve (their slope variance: the baked texture's 0.0665
 			// a tap, per component, through the octave weights), so it scatters the pool's light into glitter without changing how much there is.
 			float ripples=0.0665*u_wind*u_wind*(1.0-0.85*v_calm)*(1.0-0.85*v_calm)*(0.1156+0.2304*f2*f2+0.0784*far*far);
+			#ifdef WAVES
+			ripples=mix(ripples,0.5*(u_spectrum.x+u_spectrum.y+u_spectrum.z)*(1.0-0.85*v_calm)*(1.0-0.85*v_calm),near);   // the cascades' slope variance, per component, in place of the octaves'
+			#endif
 			float kernel=rs*rs+2.0*ripples; vec2 ev=-vn.xz/max(vn.y,0.2)-hs;
 			float glitter=0.10+0.90*min(spark/max(rs*rs/kernel*exp(-dot(ev,ev)/kernel),1.0e-6),40.0);   // a smooth tenth beneath: a pool of glitter alone flickers out between sparkles
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
@@ -718,6 +744,16 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			col*=mix(1.0,u_shadow_hour,u_cloud_flat); seafog*=mix(1.0,u_shadow_hour,u_cloud_flat);   // under an overcast at night the sea blacks out, its haze with it: the deck blocks the moon the night is lit by
 			col=mix(col,mix(seafog,horizon,toDome*0.9),clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
 			gl_FragColor=vec4(col,1.0); }` });
+// The FFT sea (waves.ts) at high and ultra: the wind's sea from its spectrum near the eye, for the
+// wind the weather blows. Its tables are made the first time a setting asks for it.
+let waves=null;
+function apply_waves(){ const w=weather().wind, speed=Math.hypot(w.x,w.z), on=(cfg.effects_quality??2)>=2&&speed>0.1, u=ocean_mat.uniforms;   // a calm raises no wind sea
+	if(on&&!waves){ const wind={ speed, direction:Math.atan2(w.z,w.x), fetch:200000 };   // the trades blow over the open Pacific: past this fetch the sea grows no further
+		waves=new Waves(wind,1);
+		u.u_displacement0.value=waves.displacement[0]; u.u_displacement1.value=waves.displacement[1];
+		u.u_derivative0.value=waves.derivative[0]; u.u_derivative1.value=waves.derivative[1]; u.u_derivative2.value=waves.derivative[2];
+		const slopes=spectrum_slopes(wind); u.u_spectrum.value.set(slopes[0],slopes[1],slopes[2]); }
+	if(on!==("WAVES" in ocean_mat.defines)){ if(on) ocean_mat.defines.WAVES=""; else delete ocean_mat.defines.WAVES; ocean_mat.needsUpdate=true; } }
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
 	// Camera-centred polar disc, not a square: a 20 km square rim sits at ~2° depression
@@ -1223,7 +1259,7 @@ function render_frame(){
 	// read as a lit grey ceiling over a grey sea.
 	{ const deck=CLOUDS[cfg.clouds], hour=cloud_shadow_uniforms.u_shadow_hour.value;
 		const blackout=deck&&deck.flat>0.5?1+(hour-1)*(1-THREE.MathUtils.smoothstep(camera.position.y,deck.base,deck.top)):1;
-		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=deck&&deck.flat>0.5?hour:1; stars.material.uniforms.u_opacity.value=(TOD[cfg.tod]||TOD.day).stars*blackout; renderer.getDrawingBufferSize(star_buffer); stars.material.uniforms.u_scale.value=Math.max(1,star_buffer.y/1080); }
+		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=deck&&deck.flat>0.5?hour:1; stars.material.uniforms.u_opacity.value=(TOD[cfg.tod]||TOD.day).stars*blackout; renderer.getDrawingBufferSize(star_buffer); stars.material.uniforms.u_scale.value=Math.max(1,star_buffer.y/1080); if(waves&&("WAVES" in ocean_mat.defines)) waves.update(renderer,ocean_mat.uniforms.u_time.value); }   // the spectrum's sea at this moment
 	if(cloud_active()){ size_rt();
 		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera);
 		scene.overrideMaterial=null;   // depth-only pass at the cloud buffer's resolution, used for cloud occlusion — no colour, no lighting or textures
@@ -11205,7 +11241,7 @@ function set_view(v){
 	cfg.view=v;
 	cockpit_hidden();
 }
-function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits();
+function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits(); apply_waves();
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); }
 
 // ============================================================================
