@@ -6990,12 +6990,26 @@ function head_apply(dt){ if(!head_track) return;
 */
 let padlocked=false, look_home=false;   // look-at-target (#243): a press of the look key latches the padlock - the head eases to the target fast and smoothly and follows it - and the next press, a manual look, a view reset, the target lost or the view left releases it and eases the head home. No helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
 // look_press works the look key in the first-person views: latch on the target, or release.
-function look_press(){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
+// latch sets the padlock and records the change.
+function latch(on,source){ if(padlocked===on) return; padlocked=on; view_note("padlock",on?"on":"off",source); }
+function look_press(source){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
 	if(crash_t>0) return;   // no jet to look from: a press over the fireball neither latches nor says NO TARGET
-	if(padlocked){ padlocked=false; look_home=true; return; }
-	if(look_target()) padlocked=true; else notice(translate("NO TARGET")); }
+	if(padlocked){ latch(false,source); look_home=true; return; }
+	if(look_target()) latch(true,source); else notice(translate("NO TARGET")); }
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
+// view_events (#70): every change to what the screen shows - the view, its zoom,
+// a reset, the padlock, the map - and what made it: start, key, stick (a stick
+// button, replayed as a key or read directly), wheel, axis (a stick axis bound to
+// zoom), mouse, look (a manual head turn), view (the zoom a view switch recalls),
+// reset, dev, or auto (the engine's own: the padlock let go when the target is
+// lost or the jet dies). Drained into the View channel as radar_events is into
+// Input. A zoom that keeps moving from one source (a held key, a wheel's momentum,
+// an axis) rewrites its own pending entry, so a sweep writes one entry a sample
+// rather than one a frame.
+let view_events=[];
+function view_note(kind,value,source){ const entry=`${sim_time.toFixed(1)}|${kind}|${value}|${source}`, last=view_events.length?view_events[view_events.length-1].split("|"):null;   // i18n-format-ok: ACMI event timestamp, not display text
+	if(kind==="zoom"&&last&&last[1]==="zoom"&&last[3]===source) view_events[view_events.length-1]=entry; else view_events.push(entry); }
 // The HUD view's vertical field at 1x: 60°, so a bandit 30° above the boresight - about where a heater's tone starts
 // with the seeker slaved to a lock - sits on the top edge of the screen, with the boresight at the centre as before.
 // The 45° it had kept the HUD's fixed overlay (the boxes, waterline and bracket are laid out at HH/45 a degree)
@@ -7450,7 +7464,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
-		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
+		const ch=(e.shiftKey?"Shift+":"")+k, source=e.isTrusted?"key":"stick";   // the source a view change records: a stick button arrives here as a synthetic key — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
 		if(!playback||watching(ch,k,e.shiftKey)){   // a replay answers only the keys that choose what to see
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
@@ -7489,19 +7503,19 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
-		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
-			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
-			if(k==="Digit3") set_view("ddi");        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
-			if(k==="Digit4") set_view("chase");      // 4 Chase
-			if(k==="Digit5") set_view("flypast");    // 5 Flypast
-			if(k==="Digit6") set_view("padlock"); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
-		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
+		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit",source);   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
+			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud",source); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
+			if(k==="Digit3") set_view("ddi",source);        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
+			if(k==="Digit4") set_view("chase",source);      // 4 Chase
+			if(k==="Digit5") set_view("flypast",source);    // 5 Flypast
+			if(k==="Digit6") set_view("padlock",source); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
+		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit",source);   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
 		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
-		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
-		if(ch===key_of("look.target")) look_press();   // Y: latch the padlock on the target, or release it
-		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
-		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
-		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
+		if(ch===key_of("view.reset")) view_reset(source);   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
+		if(ch===key_of("look.target")) look_press(source);   // Y: latch the padlock on the target, or release it
+		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1,source);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
+		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1,source);
+		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; view_note("map",map_on?"open":"closed",source); if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // `: the fast path to match chat (#84); MP only — bots do not read
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("server"); }   // Shift+`: everyone on the server, through the lobby ring
 		if(ch===key_of("hook")) pit_press("hook",0);   // arrestor hook deploy/stow
@@ -7551,7 +7565,7 @@ stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
-	if(head_drag){ if(press_moved>=6) padlocked=false;   // a drag, not a click on a switch, takes the head back from the padlock
+	if(head_drag){ if(press_moved>=6) latch(false,"mouse");   // a drag, not a click on a switch, takes the head back from the padlock
 		head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
@@ -7730,19 +7744,22 @@ function pit_press(action,direction){ const d=direction||0;
 			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } else atc_flash=sim_time; } break;   // the key and the UFC's A/P selector: engages the mode the FLAP switch sets (atc_engage), and a refused engage flashes the advisory; toggling off is always allowed, and silent
 	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
-function zoom_step(direction){
+// zoom_to moves the zoom target, held to this view's range, and records the change.
+function zoom_to(value,source){ const v=THREE.MathUtils.clamp(value,zoom_floor(),4); if(v===zoom_target) return;
+	zoom_target=v; zoom_persist(); view_note("zoom",v.toFixed(2),source); }   // i18n-format-ok: ACMI event value, not display text
+function zoom_step(direction,source){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
 	if(cfg.view==="ddi"){ ddi_range(direction); return; }   // no optical zoom on a flat panel — the notch goes to the focused page's range scale
-	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.18,direction),zoom_floor(),4); zoom_persist(); } }   // fine per-tap steps (~12 taps floor to ceiling) — a HELD key sweeps continuously for big moves, so taps can afford precision
+	if(running) zoom_to(zoom_target*Math.pow(1.18,direction),source); }   // fine per-tap steps (~12 taps floor to ceiling) — a HELD key sweeps continuously for big moves, so taps can afford precision
 // view_reset returns the CURRENT view to how it starts: zoom back to 1x, the
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){ look_home=false; padlocked=false;
+function view_reset(source){ look_home=false; latch(false,source);
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
-	zoom_target=THREE.MathUtils.clamp(1,zoom_floor(),4); zoom_persist();
+	view_note("reset",cfg.view,source); zoom_to(1,"reset");
 	// #57 parked: if(head_track&&head_pose){ head_datum={ yaw:head_pose.raw.yaw, pitch:head_pose.raw.pitch }; head_yaw.reset(); head_pitch.reset(); }   // #57: capture the physical pose as the new neutral FIRST — zeroing alone would snap the view straight back off
 	head_az=0; head_el=0;
 	if(cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }
@@ -7761,7 +7778,7 @@ function scan_zoom(pad,bind){
 		for(const index of String(list).split(",")){ const b=+index;
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed, was=pad_buttons[action+"/"+b]||false;
-			if(down!==was){ pad_buttons[action+"/"+b]=down; if(down) zoom_step(action==="zoom.in"?1:-1); } } } }
+			if(down!==was){ pad_buttons[action+"/"+b]=down; if(down) zoom_step(action==="zoom.in"?1:-1,"stick"); } } } }
 stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any mouse wheel; the VelocityOne trim wheel in DIGITAL mode arrives as button pulses instead — see zoom.in/zoom.out)
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
@@ -7771,7 +7788,7 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 		ddi_wheel+=notch;
 		if(Math.abs(ddi_wheel)>=1){ ddi_range(Math.sign(ddi_wheel)); ddi_wheel=0; ddi_stepped=now; }
 		return; }
-	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
+	zoom_to(zoom_target*Math.pow(1.5,notch),"wheel");
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults in ./keys (one table, shared with
@@ -7998,7 +8015,7 @@ function read_input(dt){
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			// A KEYLESS action cannot be replayed. "None" is truthy, so the generic path below dispatched a synthetic event carrying the code "None", and EVERY unbound action matched it at once — a stick button bound to Cycle view also toggled the HUD reject switch and zeroed the trim. These two are the keyless actions a stick may reasonably carry, so they fire directly on the press edge, the same shape as guns and the zoom notches above; that also hands trim reset to the stick without inventing a keyboard chord for an action deliberately left unbound.
 			if(action==="view"||action==="trim.reset"||action==="gear.emergency"){ const edge=pad_buttons[action+"/"+b]||false;
-				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else trim_reset(); }
+				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit","stick"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else trim_reset(); }
 				pad_buttons[action+"/"+b]=down; continue; }
 			const was=pad_buttons[action+"/"+b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[action+"/"+b]=down; const bindText=key_of(action);
@@ -8122,6 +8139,7 @@ function recording_sample(){
 		// the dropped frame. A press with no effect writes nothing - the Radar
 		// channel not moving already says that.
 		...(due&&radar_events.length?{input:radar_events.splice(0).join(";")}:{}),
+		...(due&&view_events.length?{view:view_events.splice(0).join(";")}:{}),   // view changes and what made them (#70), drained the same way
 		// Why the ownship's own hard lock broke, when it did (#33 debrief): the
 		// automatic, physics-driven counterpart to Input above - never a press,
 		// so kept on its own channel rather than folded into that vocabulary.
@@ -8601,7 +8619,7 @@ if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapou
 		jets[name]={ flight:round(rig.flight), shown:round(rig.shown), drawn:rig.drawn, humid:Math.round((vapour_humid??humidity(cfg.clouds,presented(st).y))*1000)/1000 }; }
 	const rig=ownship.vapour, rows=rig&&rig.cores[0].visible?rig.rows[0].map(r=>[r.x,r.y,r.z,r.width,r.alpha].map(v=>Math.round(v*10000)/10000)):[];
 	return { puffs:vapour_pool.activeList.length, pinned:{ humid:vapour_humid, flight:vapour_force }, jets, rope:rows }; };   // rope: the pilot's starboard LEX rope while it shows, apex first, in the jet's frame - x, y, z, width (m) and density
-if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
+if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase","dev"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
 if(DEV_MODE) (globalThis as any).dev_wake=()=>{ const w=flight_wake(), at=(st)=>({ x:+st.pos.x.toFixed(1), y:+st.pos.y.toFixed(1), z:+st.pos.z.toFixed(1), vx:+(st.velx||0).toFixed(1), vy:+(st.vely||0).toFixed(1), vz:+(st.velz||0).toFixed(1) });   // i18n-format-ok: developer telemetry, never shown to a user
 	const others={}; if(has_enemy&&bandit.group.visible) others.bandit=at(bandit); for(const [slot,st] of remotes) if(st.group.visible) others["r"+slot]=at(st);
 	return w?{ pieces:w.pieces, trails:w.trails, swirl:w.swirl.map(v=>Math.round(v*1000)/1000), g:Math.round((ownship.gload??1)*1000)/1000, roll:last_out?Math.round((last_out[STATE.omega]||0)/D2R*100)/100:null, own:at(ownship), others }:null; };   // dev: the wake the pilot's core was handed on its last frame, how many jets have one laid, the air it made at the CG (m/s), the jet's g and roll rate, and where every jet is
@@ -8791,7 +8809,7 @@ function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_writt
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238): every path names its own reason, the ejection "eject"
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
-	padlocked=false; look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
+	latch(false,"auto"); look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
@@ -10127,7 +10145,7 @@ function reset_ownship(){
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	bandit_acc=0; missile_acc=0;   // no stale fixed-step debt across spawns
-	designated=-1; padlocked=false;   // a respawn drops the acquisition and the padlock
+	designated=-1; latch(false,"auto");   // a respawn drops the acquisition and the padlock
 	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
@@ -10266,14 +10284,14 @@ function update_camera(dt){
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; padlocked=false; }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; latch(false,"look"); }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
 	}
 	// Padlock (#243): latched by the look key (look_press), the head follows the
 	// target in the first-person views; released, it eases home. Exponential ease
 	// with a rate cap. The clamps are the mask: a target past ±150° az or under
 	// the sill stays out of view, head parked at its limit.
 	{ const first=cfg.view==="hud"||cfg.view==="cockpit", t=padlocked&&first?look_target():null;
-		if(padlocked&&!t){ padlocked=false; look_home=true; if(first) notice(translate("NO TARGET")); }   // the target lost, or the view left: release and ease home
+		if(padlocked&&!t){ latch(false,"auto"); look_home=true; if(first) notice(translate("NO TARGET")); }   // the target lost, or the view left: release and ease home
 		if(padlocked){ look_home=false;
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
@@ -10289,7 +10307,7 @@ function update_camera(dt){
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
 		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
-			else if(cfg.view!=="ddi"){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
+			else if(cfg.view!=="ddi") zoom_to(zoom_target*Math.pow(2.4,sweep),"key"); } }
 	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
 		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
@@ -11278,15 +11296,17 @@ function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]
 function lowered(clear,elevation){ return elevation<(clear?PEDESTAL_UP:PEDESTAL_DOWN); }
 function pedestal_step(){ const clear=cfg.view==="cockpit"&&lowered(pedestal_clear,head_el); if(clear===pedestal_clear) return;
 	pedestal_clear=clear; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=!clear; }
-function set_view(v){
+function set_view(v,source){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
-		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
+		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; view_note("display",d,source); return; }
 	if(v==="ddi"){ ddi_open(); ddi_view_last=0; }   // entering: draw the display's face this frame
 	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
 	if(v!==cfg.view) hist_valid=false;   // a view switch is a camera CUT: reprojecting cloud history across it smears the old view over the new one for a beat
-	zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
+	if(v!==cfg.view) view_note("view",v,source);
+	{ const was=zoom_target; zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
+		if(zoom_target!==was) view_note("zoom",zoom_target.toFixed(2),"view"); }   // i18n-format-ok: ACMI event value, not display text
 	cfg.view=v;
 	cockpit_hidden();
 }
@@ -12099,7 +12119,7 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; padlocked=false; update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
 		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
 	case "missile":
@@ -12328,7 +12348,7 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
-	set_view("hud");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
+	set_view("hud","start");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
@@ -12340,7 +12360,7 @@ function start_mission(){
 	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
-	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	const viewq=devq.get("view"); if(viewq) set_view(viewq,"start");   // ?view=cockpit|hud|chase — headless capture hook (#105)
 	{ const pounds=parseFloat(devq.get("fuel")||""); if(pounds>0) cfg.fuel=pounds; }   // &fuel=<lb> — headless fuel pin: ?fly=1 mounts with the saved config or the defaults, whichever arrives first, and the catapult shot flown at 2,100 lb and at 10,800 lb are different shots
 	const storesq=devq.get("stores");   // &stores=gun|fox2|fox3|tanks|right|spam|heat — headless loadout hook (#17): the presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the ten-round AMRAAM twin fit, and the ten-heater fit (#27)
 	if(storesq){ const extra={
@@ -12357,7 +12377,7 @@ function start_mission(){
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
 	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
-	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
+	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase","start"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects(); apply_wind();
@@ -12375,6 +12395,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
+	view_events.length=0; view_note("view",cfg.view,"start"); view_note("zoom",zoom_target.toFixed(2),"start");   // the recording opens on the view and zoom the match began with; anything noted before this (the last match's tail, the start's own set_view) is not this match's - i18n-format-ok: ACMI event value, not display text
 	if(!playback){ recorder.clear(); record_started=new Date(); publish_recording(recording_file); } passes=[];   // a fresh recording per mission, and a fresh LSO book (#212) - but a replay records nothing, and publishing would hand the log page's buffer of the last flight over to an empty one
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
@@ -12382,7 +12403,7 @@ function start_mission(){
 	if(shotp!==null){ const [saz,sel,salt,sdist]=shotp.split(",").map(Number);
 		setTimeout(()=>{ try{
 			flight_level(CARRIER.x+2500, isNaN(salt)?100:salt, CARRIER.z+2500, 0.9, -0.45, 120, 2450);
-			set_view("chase"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
+			set_view("chase","start"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
 		}catch(e){ console.warn("shot preset failed", e); } }, 6000); }
 	try{ window.focus(); stage.focus(); }catch{ /* focus best-effort */ }
 }
@@ -12440,7 +12461,7 @@ function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // 
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
-	if(!map_on&&zoom_wheel&&running&&!game_paused){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),zoom_floor(),4); zoom_persist(); }   // axis-form wheels steer the target too
+	if(!map_on&&zoom_wheel&&running&&!game_paused) zoom_to(zoom_target*Math.pow(3,zoom_wheel*4*dt),"axis");   // axis-form wheels steer the target too
 	view_zoom+=(zoom_target-view_zoom)*Math.min(1,dt*10);   // ease toward the notch target — direct FOV steps read as jerky
 	{ const base=cfg.view==="cockpit"?72:cfg.view==="hud"?HUD_FIELD:45;   // wide field in the pit — at 45° the glareshield swallowed the canopy; the HUD view's 60° reaches 30° above the boresight (HUD_FIELD); 45° elsewhere
 		const fov=base/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }

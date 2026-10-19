@@ -589,6 +589,39 @@ it('records a hard-lock break once, and several between samples joined', () => {
   expect(mine[3]).toContain('Break=210.1|notch;214.6|range')
 })
 
+// What the screen showed and what changed it (#70): the view, its zoom, a
+// reset, the padlock and the map, each with its source. Same journalled-event
+// encoding as Input.
+it('records a view change once, and several between samples joined', () => {
+  const jet = (view?: string): Sample['objects'][number] => ({
+    id: 1,
+    x: 0,
+    y: 1000,
+    z: 0,
+    roll: 0,
+    pitch: 0,
+    yaw: 0,
+    name: 'FA-18C',
+    label: 'P',
+    colour: 'Blue',
+    kind: 'Air+FixedWing',
+    data: { view },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet('0.0|view|hud|start;0.0|zoom|1.38|start')] },
+      { time: 0.1, objects: [jet(undefined)] }, // nothing changed: field absent, not repeated
+      { time: 0.2, objects: [jet('3.2|zoom|1.62|wheel')] },
+    ],
+    new Date(0),
+    't'
+  )
+  const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('View=0.0|view|hud|start;0.0|zoom|1.38|start')
+  expect(mine[1]).not.toContain('View=')
+  expect(mine[2]).toContain('View=3.2|zoom|1.62|wheel')
+})
+
 // When weapons went free, and why (#33 debrief): removes the need to infer
 // the merge from geometry against the first 3/9 crossing. Same encoding.
 it('records when weapons went free, merge or a BVR start with no hold', () => {

@@ -2012,7 +2012,7 @@ describe('the TIMEUFC page', () => {
 // radar page, so a BVR fight starts on the attack format whichever display the
 // pilot last looked at; after that 3 returns to the display last shown.
 describe('the DDI view', () => {
-  const start = source.indexOf('function set_view(v){')
+  const start = source.indexOf('function set_view(v,source){')
   const view = source.slice(start, source.indexOf('\n}\n', start) + 2)
   function rig(pages: Record<string, string>, remembered: string) {
     const run = new Function('pages', 'remembered', `
@@ -2021,7 +2021,7 @@ describe('the DDI view', () => {
       const ddi_state={ left:{page:pages.left,menu:""}, right:{page:pages.right,menu:""}, center:{page:pages.center,menu:""} };
       const on_config=(c)=>saved.push(c.ddi);
       let ddi_view_last=0, cam_psi=0, cam_az=0, cam_el=0, cam_dist=0, flyby_pos=null, hist_valid=true, zoom_target=1, view_zoom=1;
-      const ownship={ fwd:{x:0,z:1} }, zoom_recall=()=>1, cockpit_hidden=()=>{};
+      const ownship={ fwd:{x:0,z:1} }, zoom_recall=()=>1, cockpit_hidden=()=>{}, view_note=()=>{};
       let ddi_fresh=true;
       ${lift('ddi_focus')} ${lift('ddi_open')} ${view}
       return { press:(v)=>set_view(v), shown:()=>cfg.view==="ddi"?ddi_focus():null, saved, spawn:()=>{ ddi_fresh=true; if(cfg.view==="ddi") ddi_open(); }, move:(d,p)=>{ ddi_state[d].page=p; } };`)
