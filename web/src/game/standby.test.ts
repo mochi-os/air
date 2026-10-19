@@ -502,8 +502,22 @@ describe('the secondary and barometric low-altitude warnings', () => {
   })
 
   it('power up each spawn as the ground power-up leaves them, and speak through the voice queue', () => {
-    expect(source).toMatch(/altitude_set\.radar=0; altitude_set\.baro=5000; altitude_armed\.radar=altitude_armed\.baro=false; altitude_called=-Infinity;/)
+    expect(source).toMatch(/altitude_set\.radar=0; altitude_set\.baro=[^;]+; altitude_armed\.radar=altitude_armed\.baro=false; altitude_called=-Infinity;/)
     expect(source).toMatch(/if\(sim_time-altitude_called<1\) active\.add\("ALTITUDE"\);/)
+  })
+
+  // The barometric setting each start leaves: NATOPS's 5,000 ft on the deck and the runway and through
+  // the recoveries, and off for the free flight air start, which begins at 5,000 ft (the first ripple
+  // armed it and the next called), and for the joust.
+  it('leave the barometric warning off for the free flight air start and the joust, and at 5,000 ft for the rest', () => {
+    const m = /altitude_set\.radar=0; altitude_set\.baro=([^;]+);/.exec(source)
+    expect(m, 'the reset of the warnings').not.toBeNull()
+    const baro = (st: string) => new Function('st', `return ${m![1]};`)(st) as number
+    for (const st of ['carrier', 'runway', 'case1', 'case2', 'case3']) expect(baro(st), st).toBe(5000)
+    for (const st of ['air', 'joust']) expect(baro(st), st).toBe(0)
+    expect(source).toMatch(/ownship\.pos\.set\(rwy\.x\+Math\.sin\(b\)\*15000, 1524, /)   // the air start's 5,000 ft, which a 5,000 ft warning sat on
+    expect(called([{ baro: 5000 }, { baro: 5100 }, { baro: 4990 }], { radar: 0, baro: baro('air') })).toEqual([false, false, false])   // the dip that called no longer does
+    expect(called([{ baro: 5000 }, { baro: 5100 }, { baro: 4990 }], { radar: 0, baro: baro('case3') })).toEqual([false, false, true])   // Case III still calls through its platform
   })
 })
 
