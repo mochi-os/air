@@ -10,6 +10,17 @@ import { GROUND, radiance, sunlight, tables, transmittance } from './atmosphere'
 const air = tables(2.5)
 const noon: [number, number, number] = [0, 0.866, 0.5]
 const luminance = (c: number[]) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+// The standard normal's inverse distribution (Acklam), for fixed quasi-random draws.
+const normal = (u: number) => {
+  const a = [2.50662823884, -18.61500062529, 41.39119773534, -25.44106049637],
+    b = [-8.4735109309, 23.08336743743, -21.06224101826, 3.13082909833]
+  const q = u - 0.5
+  if (Math.abs(q) < 0.42) { const r = q * q; return (q * (((a[3] * r + a[2]) * r + a[1]) * r + a[0])) / ((((b[3] * r + b[2]) * r + b[1]) * r + b[0]) * r + 1) }
+  const r = Math.log(-Math.log(q > 0 ? 1 - u : u))
+  const c = [0.3374754822726147, 0.9761690190917186, 0.1607979714918209, 0.0276438810333863, 0.0038405729373609, 0.0003951896511919, 0.0000321767881768, 0.0000002888167364, 0.0000003960315187]
+  let x = c[8]; for (let i = 7; i >= 0; i--) x = x * r + c[i]
+  return q > 0 ? x : -x
+}
 
 describe('the transmittance table', () => {
   it('passes what the vertical optical depths of the air say, from the sea straight up', () => {
@@ -68,7 +79,7 @@ describe('the wiring', () => {
   it("shows the sky through the land's own curve, number for number", () => {
     const shown = engine.slice(
       engine.indexOf('vec3 shown_tone(vec3 v){'),
-      engine.indexOf('vec3 sky_dome(vec3 d,')
+      engine.indexOf('vec3 unshown(vec3 colour,')
     )
     const land = engine.slice(
       engine.indexOf('vec3 rrtodt(vec3 v){'),
@@ -112,5 +123,221 @@ describe('the wiring', () => {
     expect(engine).toMatch(
       /atmosphere_uniforms\.u_exposure\.value=p\.exp; atmosphere_uniforms\.u_illuminance\.value=p\.sky;/
     )
+  })
+})
+
+describe("the sea's reflection", () => {
+  const engine = readFileSync(
+    fileURLToPath(new URL('./engine.ts', import.meta.url)),
+    'utf8'
+  )
+  const shader = engine.slice(engine.indexOf('const SKY_SHOWN='))
+  // A GLSL mat3 from its source, column by column, as m[row][column].
+  function matrix(name: string) {
+    const m = new RegExp(`const mat3 ${name}=mat3\\(([^)]*)\\);`).exec(shader)
+    expect(m, `${name} in SKY_SHOWN`).not.toBeNull()
+    const v = m![1].split(',').map(Number)
+    expect(v).toHaveLength(9)
+    return [0, 1, 2].map((r) => [0, 1, 2].map((c) => v[c * 3 + r]))
+  }
+  const times = (m: number[][], v: number[]) =>
+    m.map((row) => row[0] * v[0] + row[1] * v[1] + row[2] * v[2])
+  const inm = matrix('inm'), outm = matrix('outm'), outi = matrix('outi'), ini = matrix('ini')
+  const fit = (v: number) =>
+    (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.432951) + 0.238081)
+  const clamp = (v: number) => Math.min(Math.max(v, 0), 1)
+  // shown() and unshown() as the shader writes them, on the source's own matrices.
+  const shown = (colour: number[], exposure: number) =>
+    times(outm, times(inm, colour.map((c) => (c * exposure) / 0.6)).map(fit))
+      .map(clamp)
+      .map((c) => (c < 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055))
+  const unshown = (colour: number[], exposure: number) => {
+    const c = colour.map(clamp).map((c) => (c < 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+    const v = times(outi, c).map(clamp).map((y) => {
+      const a = 1 - 0.983729 * y, b = 0.0245786 - 0.432951 * y, k = -(0.000090537 + 0.238081 * y)
+      return (-b + Math.sqrt(b * b - 4 * a * k)) / (2 * a)
+    })
+    return times(ini, v).map((x) => (Math.max(x, 0) * 0.6) / exposure)
+  }
+
+  it('undoes the curve the sky is shown through', () => {
+    for (const [m, n] of [[outi, outm], [ini, inm]])
+      for (let r = 0; r < 3; r++)
+        for (let c = 0; c < 3; c++)
+          expect(m[r][0] * n[0][c] + m[r][1] * n[1][c] + m[r][2] * n[2][c]).toBeCloseTo(r === c ? 1 : 0, 5)
+    expect(shader).toMatch(
+      /vec3 a=1\.0-0\.983729\*y, b=0\.0245786-0\.4329510\*y, k=-\(0\.000090537\+0\.238081\*y\);/
+    )
+    expect(shader).toMatch(/vec3 shown_tone\(vec3 v\)\{ vec3 a=v\*\(v\+0\.0245786\)-0\.000090537; vec3 b=v\*\(0\.983729\*v\+0\.4329510\)\+0\.238081;/)
+    // Light the screen can show comes back exactly; a colour past the display's gamut or white is clipped by shown() and cannot.
+    for (const light of [[0.01, 0.01, 0.01], [0.02, 0.04, 0.07], [0.05, 0.1, 0.2], [0.2, 0.2, 0.2], [0.3, 0.35, 0.5], [1.2, 1.0, 0.8]]) {
+      const display = shown(light, 1.05)
+      for (const c of display) { expect(c).toBeGreaterThan(0); expect(c).toBeLessThan(1) }
+      const back = unshown(display, 1.05)
+      for (let i = 0; i < 3; i++) expect(back[i] / light[i]).toBeCloseTo(1, 3)
+    }
+  })
+
+  it('adds the sky to the water in linear light, not as displayed colours', () => {
+    expect(engine).toMatch(
+      /vec3 ray=reflect\(-V,N\), water=unshown\(body,u_exposure\), sky=unshown\(refl\*mix\(shade,1\.0,0\.25\),u_exposure\);/
+    )
+    expect(engine).toMatch(
+      /vec3 surface=mix\(water,sky,clamp\(fres\*mix\(1\.0,0\.35,shallow\)\*seen,0\.0,1\.0\)\);/
+    )
+    expect(engine).toMatch(/vec3 col=shown\(surface\+glint,u_exposure\);/)
+    expect(engine).not.toMatch(/vec3 col=mix\(body,/)
+  })
+
+  it('shows a ray reflected down the next wave: its water, and the sky it mirrors, joining the sky at the horizon', () => {
+    const m = /sky=mix\(water,unshown\(mirrored\*mix\(shade,1\.0,0\.25\),u_exposure\),([^;]+)\); \}/.exec(engine)
+    expect(m, 'the downward ray in the sea shader').not.toBeNull()
+    expect(engine).toMatch(/if\(ray\.y<0\.0\)\{[^\n]*\n\t*vec3 mirrored=sky_at\(vec3\(ray\.x,-ray\.y,ray\.z\)\);/)
+    const fresnel = new Function('ray', `return ${m![1].replace(/pow\(/g, 'Math.pow(')};`) as (ray: { y: number }) => number
+    expect(fresnel({ y: 0 })).toBeCloseTo(1, 9)   // at the horizon the next wave is a mirror: no seam with the sky above it
+    expect(fresnel({ y: -1 })).toBeCloseTo(0.02, 9)
+    expect(fresnel({ y: -0.1 })).toBeLessThan(fresnel({ y: -0.05 }))
+  })
+
+  it("weights each ripple by how much of it the eye sees, averaging 1 over the sea's slopes at every angle", () => {
+    expect(engine).toMatch(
+      /float facing=dot\(vn,V\), grazing=max\(facing,0\.02\), margin=grazing\/\(length\(V-vn\*facing\)\*rw\+1\.0e-4\);/
+    )
+    expect(engine).toMatch(
+      /float seen=max\(dot\(N,V\),0\.0\)\/\(max\(dot\(N,vn\),0\.2\)\*grazing\*expected\);/
+    )
+    const line = /float expected=([^;]+);/.exec(engine)
+    expect(line, 'expected in the sea shader').not.toBeNull()
+    const expected = new Function('margin', 'tanh', 'exp', `return ${line![1]};`) as (
+      margin: number, tanh: (x: number) => number, exp: (x: number) => number) => number
+    // Slopes along the line of sight, Gaussian with the spread rw, by a fixed quasi-random draw.
+    for (const spread of [0.1, 0.234, 0.4])
+      for (const degrees of [3, 5, 12, 30, 60, 85]) {
+        const d = (degrees * Math.PI) / 180, grazing = Math.max(Math.sin(d), 0.02)
+        const margin = grazing / (Math.cos(d) * spread + 1e-4)
+        const mean = expected(margin, Math.tanh, Math.exp)
+        let sum = 0
+        const n = 20000
+        for (let i = 0; i < n; i++) {
+          const slope = normal((i + 0.5) / n) * spread
+          sum += Math.max(Math.sin(d) - slope * Math.cos(d), 0) / (grazing * mean)   // N.V over N.vn: the normalisation shared by both cancels
+        }
+        expect(sum / n, `${degrees} degrees, spread ${spread}`).toBeCloseTo(1, 1)
+        expect(Math.abs(sum / n - 1), `${degrees} degrees, spread ${spread}`).toBeLessThan(0.02)
+      }
+  })
+})
+
+describe("the sun's glint", () => {
+  const engine = readFileSync(
+    fileURLToPath(new URL('./engine.ts', import.meta.url)),
+    'utf8'
+  )
+  // lift cuts one top-level function out of the source, keeping its closing brace.
+  function lift(name: string): string {
+    const start = engine.indexOf(`function ${name}(`)
+    expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+    const rest = engine.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    if (!end) return rest
+    const cut = end.index + 1
+    return rest.startsWith('\n}', cut) ? rest.slice(0, cut + 2) : rest.slice(0, cut)
+  }
+  // A scalar GLSL expression from the sea shader, run as JavaScript with the names it reads.
+  function expression(pattern: RegExp, names: string[]) {
+    const m = pattern.exec(engine)
+    expect(m, String(pattern)).not.toBeNull()
+    const js = m![1]
+      .replace(/\bdot\((\w+),\1\)/g, '($1_x*$1_x+$1_y*$1_y)')
+      .replace(/\b(exp|sqrt|min|max|pow)\(/g, 'Math.$1(')
+      .replace(/(\w+)\.([xy])\b/g, '$1_$2')
+    return new Function(...names, `return ${js};`) as (...values: number[]) => number
+  }
+
+  it("reflects the beam by Cox-Munk's slope density, which integrates to one, split along the weather's wind", () => {
+    const shares = /float upwind=([\d.]+)\*rw\*rw, crosswind=([\d.]+)\*rw\*rw;/.exec(engine)
+    expect(shares, 'the upwind and crosswind shares').not.toBeNull()
+    const upwind = Number(shares![1]), crosswind = Number(shares![2])
+    // Cox-Munk at the wind the weather blows: 3.16e-3 U upwind, 0.003 + 1.92e-3 U crosswind
+    const wind = new Function('CLOUDS', 'cfg', 'DEV_MODE', 'D2R', 'WORLD_WRAP', 'cheat', `${lift('weather')}\nreturn weather;`)(
+      {}, { clouds: 'none' }, false, Math.PI / 180, 250000, () => false)().wind
+    const speed = Math.hypot(wind.x, wind.z)
+    const total = 0.003 + 5.12e-3 * speed
+    expect(upwind).toBeCloseTo((3.16e-3 * speed) / total, 2)
+    expect(crosswind).toBeCloseTo((0.003 + 1.92e-3 * speed) / total, 2)
+    expect(upwind + crosswind).toBeCloseTo(1, 9)
+    expect(engine).toMatch(/vec2 along=vec2\(dot\(dv,u_downwind\),dot\(dv,vec2\(-u_downwind\.y,u_downwind\.x\)\)\);/)
+    const density = expression(/float density=([^;]+);/, ['along_x', 'along_y', 'upwind', 'crosswind'])
+    for (const rw of [0.15, 0.234, 0.3]) {
+      let sum = 0
+      const step = 0.004
+      for (let x = -1.5; x <= 1.5; x += step)
+        for (let y = -1.5; y <= 1.5; y += step) sum += density(x, y, upwind * rw * rw, crosswind * rw * rw) * step * step
+      expect(sum, `rw ${rw}`).toBeCloseTo(1, 3)
+    }
+  })
+
+  it("takes the sea's roughness from the weather's wind, by day and by night", () => {
+    expect(engine).toMatch(/float rw=sqrt\(u_slope\)\*mix\(1\.0,0\.4,v_calm\);/)
+    expect(engine).toMatch(/float ra=rw\/2\.4;/)
+    expect(engine).not.toMatch(/u_rough|rough:0\./)
+    const slope = (wind: { x: number; z: number }) => {
+      const ocean_mat = { uniforms: { u_slope: { value: 0 } } }
+      new Function('weather', 'downwind', 'ocean_mat', `${lift('apply_wind')}\napply_wind();`)(
+        () => ({ wind }), { value: { set() {} } }, ocean_mat)
+      return ocean_mat.uniforms.u_slope.value
+    }
+    // Cox-Munk's mean square slope, 0.003 + 5.12e-3 U, at the trades and in a calm
+    expect(slope({ x: -12.12, z: 4.41 })).toBeCloseTo(0.003 + 5.12e-3 * Math.hypot(12.12, 4.41), 9)
+    expect(slope({ x: 0, z: 0 })).toBeCloseTo(0.003, 9)
+  })
+
+  it('adds the glint to the sea in linear light, from the hour\'s own beam', () => {
+    expect(engine).toMatch(
+      /vec3 glint=u_beam\*fresH\*density\*tilt\*tilt\/\(4\.0\*max\(dot\(Ne,V\),0\.05\)\)\*glitter\*\(1\.0-0\.85\*u_cloud_flat\)\*shade\*shade;/
+    )
+    expect(engine).toMatch(/float tilt=1\.0\+dot\(dv,dv\);/)
+    expect(engine).toMatch(/vec3 col=shown\(surface\+glint,u_exposure\);/)
+    expect(engine).toMatch(/ocean_mat\.uniforms\.u_beam\.value\.copy\(sun\.color\)\.multiplyScalar\(p\.sunI\);/)
+    expect(engine).not.toMatch(/u_glint|glint\/\(1\.0\+0\.22\*glint\)/)
+  })
+
+  it('scatters it into glitter without changing how much light there is', () => {
+    // The ripples' variance is the baked texture's own, through the octave weights the slope uses.
+    const baked = (() => {
+      const THREE = { DataTexture: function (this: { image: { data: Uint8Array } }, data: Uint8Array) { this.image = { data } }, RGBAFormat: 0, RepeatWrapping: 0, LinearFilter: 0, LinearMipmapLinearFilter: 0 }
+      const texture = new Function('THREE', 'renderer', `${lift('build_water_detail')}\nreturn build_water_detail();`)(
+        THREE, { capabilities: { getMaxAnisotropy: () => 2 } }) as { image: { data: Uint8Array } }
+      const data = texture.image.data, n = data.length / 4
+      let sum = 0, square = 0
+      for (let i = 0; i < n; i++)
+        for (const k of [0, 1]) { const v = (data[i * 4 + k] / 255 - 0.5) * 2; sum += v; square += v * v }
+      return square / (2 * n) - (sum / (2 * n)) ** 2
+    })()
+    const ripples = /float ripples=([\d.]+)\*u_wind\*u_wind\*\(1\.0-0\.85\*v_calm\)\*\(1\.0-0\.85\*v_calm\)\*\(([\d.]+)\+([\d.]+)\*f2\*f2\+([\d.]+)\*far\*far\);/.exec(engine)
+    expect(ripples, 'the ripples line').not.toBeNull()
+    expect(Number(ripples![1])).toBeCloseTo(baked, 3)
+    const weights = /vec2 slope=\(s0\*([\d.]+) \+ s1\*([\d.]+)\*f2 \+ s3\*([\d.]+)\*far\)\*u_wind\*\(1\.0-0\.85\*v_calm\);/.exec(engine)
+    expect(weights, 'the slope line').not.toBeNull()
+    for (let i = 1; i <= 3; i++) expect(Number(ripples![i + 1])).toBeCloseTo(Number(weights![i]) ** 2, 6)
+    // Over the ripples a pixel can hold, the glitter averages 1 wherever the needed slope sits in the pool.
+    expect(engine).toMatch(/float spark=exp\(-dot\(dv2,dv2\)\/\(rs\*rs\)\);/)
+    expect(engine).toMatch(/float kernel=rs\*rs\+2\.0\*ripples;/)
+    const glitter = expression(/float glitter=([^;]+);/, ['spark', 'rs', 'kernel', 'ev_x', 'ev_y'])
+    const dot = (x: number, y: number) => x * x + y * y
+    for (const [rs, variance] of [[0.156, 0.0129], [0.156, 0.004], [0.11, 0.008]]) {
+      const kernel = rs * rs + 2 * variance, reach = Math.sqrt(kernel / 2)
+      for (const offset of [0, reach, 1.5 * reach]) {
+        let sum = 0
+        const n = 300
+        for (let i = 0; i < n; i++)
+          for (let j = 0; j < n; j++) {
+            const x = offset + normal((i + 0.5) / n) * Math.sqrt(variance), y = normal((j + 0.5) / n) * Math.sqrt(variance)
+            sum += glitter(Math.exp(-dot(x, y) / (rs * rs)), rs, kernel, offset, 0)
+          }
+        expect(sum / (n * n), `rs ${rs}, variance ${variance}, offset ${offset}`).toBeCloseTo(1, 1)
+        expect(Math.abs(sum / (n * n) - 1)).toBeLessThan(0.03)
+      }
+    }
   })
 })
