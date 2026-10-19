@@ -324,19 +324,20 @@ const SKY_SHOWN=`uniform float u_illuminance;
 		vec3 a=1.0-0.983729*y, b=0.0245786-0.4329510*y, k=-(0.000090537+0.238081*y);
 		vec3 v=(-b+sqrt(b*b-4.0*a*k))/(2.0*a);   // the tone fit's quadratic, its positive root
 		return max(ini*v,0.0)*0.6/exposure; }
-	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure){
+	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure, float blur){   // blur: a pixel's angle, taken by the caller outside any branch
 		float t=(d.y+dip)*1.2;
 		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
 		if(t<0.0) col=mix(col,fog*0.88,clamp(-t*6.0,0.0,1.0));   // below the rim the haze takes over, as the sea does
 		col=mix(col, vec3(dot(col,vec3(0.333)))*ovct, ovc*(1.0-smoothstep(0.0,ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) - under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze) - the distant unresolved field
-		float s=max(dot(d,sun),0.0); return col+suncol*(pow(s,220.0)*1.4+pow(s,8.0)*0.18); }`;
+		float a=length(cross(d,sun)), disc=dot(d,sun)>0.0?1.0-smoothstep(0.004651-blur,0.004651+blur,a):0.0;   // the sun's own disc, 0.53 degrees across (the moon's at night is the same size), its edge a pixel soft; the glow about it is the air's, in at_sky
+		return col+suncol*1.4*disc; }`;
 const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
 	uniforms:{ ...atmosphere_uniforms, u_sun:{value:sun_dir}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc}, u_blackout:{value:1.0} },
 	vertexShader:`varying vec3 v_dir; void main(){ v_dir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
 	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_fog,u_sun_col; uniform float u_dip,u_ovc,u_ovct,u_ovcw,u_blackout,u_exposure;
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
-		void main(){ vec3 col=sky_dome(normalize(v_dir),normalize(u_sun),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure); gl_FragColor=vec4(col*u_blackout,1.0); }` });
+		void main(){ vec3 d=normalize(v_dir); vec3 col=sky_dome(d,normalize(u_sun),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure,max(length(fwidth(d)),1.0e-5)); gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
 // The canopy's rear-view mirrors (#99) reflect the sky behind the pilot: an
 // environment map baked from the sky dome whenever the time of day sets it. The
@@ -591,7 +592,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
 		}
 		vec3 sky_at(vec3 d){ d=normalize(d); d.y=max(d.y,0.005); vec3 col=shown(at_sky(normalize(d),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own sky: a facet tilted past the horizon still sees the horizon's sky
-			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
+			return col; }   // no drawn halo: the air's own glow about the sun is in at_sky, and the sun's reflection is the glint
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=unturn(v_world.xz); float dist=length(cameraPosition-v_world);   // the sea's own frame (SEA_TURN): its textures, foam and shading swells are laid out about that axis
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
@@ -942,7 +943,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		`+SKY_SHOWN+`
 		void main(){
 			float depth=texture(tDepth,vUv).r;
-			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
+			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos); float blur=max(length(fwidth(ray)),1.0e-5);   // a pixel's angle, for the sun's disc: here, before the march's branches
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
 			// Intersect the sea plane analytically: the ocean mesh is a finite disc, and
@@ -1001,7 +1002,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
 						t+=dt; }
-					vec3 skybg=sky_dome(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure);   // EXACTLY the dome, so the haze share composites to the true backdrop
+					vec3 skybg=sky_dome(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure,blur);   // EXACTLY the dome, so the haze share composites to the true backdrop
 					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 					// (An analytic under-storm horizon mist lived here 2026-07-06 and was removed by request:
 					// four rounds of geometry/hue fixes never fully hid the sea/sky line to the pilot's eye.)
