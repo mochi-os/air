@@ -95,7 +95,7 @@ import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
 import { humidity, vapour as vapour_show } from './vapour'
-import { decode as sky_decode, direction as sky_direction, light as sky_light, sidereal as sky_sidereal, tint as sky_tint } from './sky'
+import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 export type GameConfig = Record<string, unknown>
@@ -374,12 +374,13 @@ function mirror_bake(){
 	for(const m of mirror_mats){ m.envMap=target.texture; m.needsUpdate=true; }
 	bake.dispose(); generator.dispose(); }
 
-// stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
-// placed by ./sky for the map origin at the night's moment (moon.ts), the midnight whose full moon
-// stood due south and high where the night moon here does. Each star is a fixed-pixel Gaussian
+// stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 5.0 (./stars), and
+// Mars, up in the south-west and brighter than any star then - placed by ./sky for the map origin at the
+// night's moment (moon.ts), the midnight whose full moon stood due south and high where the night moon
+// here does. Each star is a fixed-pixel Gaussian
 // sprite sized and brightened by magnitude and tinted by colour: world-sized points came out
 // about half a pixel wide and flickered as the view moved, which read as twinkling.
-const star_catalogue=sky_decode(STAR_DATA,STAR_COUNT), STAR_RADIUS=16000;
+const star_catalogue=[...sky_decode(STAR_DATA,STAR_COUNT), sky_planet("mars",MOON_NIGHT.time)], STAR_RADIUS=16000;   // the planets where the night's moment had them: of the five the eye sees, only Mars was up
 const star_geo=new THREE.BufferGeometry();
 { const n=star_catalogue.length, brightness=new Float32Array(n), size=new Float32Array(n), colour=new Float32Array(n*3);
 	star_catalogue.forEach((s,i)=>{ const l=sky_light(s.magnitude), c=sky_tint(s.colour); brightness[i]=l.brightness; size[i]=l.size; colour.set(c,i*3); });
