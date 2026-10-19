@@ -314,6 +314,14 @@ const SKY_SHOWN=`uniform float u_illuminance;
 		const mat3 outm=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
 		vec3 c=clamp(outm*shown_tone(inm*(color*exposure/0.6)),0.0,1.0);
 		return mix(c*12.92, 1.055*pow(c,vec3(1.0/2.4))-0.055, step(vec3(0.0031308),c)); }
+	vec3 unshown(vec3 colour, float exposure){   // shown() undone: the scene-linear light a displayed colour stands for
+		const mat3 outi=mat3(0.643038,0.059269,0.005962, 0.311187,0.931436,0.063929, 0.045775,0.009295,0.930118);
+		const mat3 ini=mat3(1.764741,-0.147028,-0.036337, -0.675778,1.160252,-0.162436, -0.088963,-0.013224,1.198773);
+		vec3 c=clamp(colour,0.0,1.0); c=mix(c/12.92, pow((c+0.055)/1.055,vec3(2.4)), step(vec3(0.04045),c));
+		vec3 y=clamp(outi*c,0.0,1.0);
+		vec3 a=1.0-0.983729*y, b=0.0245786-0.4329510*y, k=-(0.000090537+0.238081*y);
+		vec3 v=(-b+sqrt(b*b-4.0*a*k))/(2.0*a);   // the tone fit's quadratic, its positive root
+		return max(ini*v,0.0)*0.6/exposure; }
 	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure){
 		float t=(d.y+dip)*1.2;
 		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
@@ -376,12 +384,12 @@ const star_buffer=new THREE.Vector2();
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, glint:60.0, rough:0.11, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
-	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, glint:14.0, rough:0.07, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
+	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
+	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
-	sun.color.setHex(p.sunCol); sun.intensity=p.sunI;
+	sun.color.setHex(p.sunCol); sun.intensity=p.sunI; ocean_mat.uniforms.u_beam.value.copy(sun.color).multiplyScalar(p.sunI);   // the sun's (or the moon's) beam, for the sea's glint
 	col_sundisc.setHex(p.disc); sky_horizon.setHex(p.hor); sky_zenith.setHex(p.zen); col_deep.setHex(p.deep); col_shallow.setHex(p.shal);
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
@@ -389,7 +397,6 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
-	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
 		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio;
@@ -524,7 +531,7 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
-		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
+		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+SEA_TURN+`
@@ -539,7 +546,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_flat,u_light,u_foam_gain,u_foam_debug; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_cloud_flat,u_light,u_foam_gain,u_foam_debug,u_slope; uniform vec3 u_beam; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+CLOUD_SHADOW_RESOLVE+`
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
@@ -618,26 +625,42 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// linear space instead.
 			float shade=pow(cloud_shadow_level(cloud_shadow_open(v_world)),1.0/2.2);
 			body*=shade;
-			vec3 col=mix(body,refl*mix(shade,1.0,0.25),fres*mix(1.0,0.35,shallow));   // the reflection takes three-quarters of the shading. A shadow leaves the reflected sky itself unchanged, but from altitude the reflection is most of a grazing sea, and at half a cumulus shadow on deep water read as a 5% smudge
-			// --- Cox-Munk style glint: slope-space Beckmann, corridor stretched along the sun azimuth,
-			// wind-roughened, calmed in the lagoon; granular sparkle emerges from the detail normals.
+			// The water's own light and the sky it reflects add in linear light: mixed as displayed colours they darken
+			// and grey each other, worst toward the horizon, where the reflection is most of what the sea shows.
+			vec3 ray=reflect(-V,N), water=unshown(body,u_exposure), sky=unshown(refl*mix(shade,1.0,0.25),u_exposure);   // the reflection takes three-quarters of the shading. A shadow leaves the reflected sky itself unchanged, but from altitude the reflection is most of a grazing sea, and at half a cumulus shadow on deep water read as a 5% smudge
+			if(ray.y<0.0){   // a ray reflected down meets the next wave at a grazing angle: its water, and the sky mirrored in it at that wave's Fresnel
+				vec3 mirrored=sky_at(vec3(ray.x,-ray.y,ray.z)); mirrored=mix(mirrored, vec3(dot(mirrored,vec3(0.333)))*0.90, u_cloud_flat*0.85);
+				sky=mix(water,unshown(mirrored*mix(shade,1.0,0.25),u_exposure),0.02+0.98*pow(1.0+ray.y,5.0)); }
+			// The reflection is weighted by how much of this ripple the eye sees: one tilted toward the viewer shows more of
+			// itself than one tilted away, and one facing away is hidden behind the ripple in front. Judged on the swell's
+			// own surface, whose geometry hides its own back faces; the weight averages 1 over the sea's slope spread.
+			float rw=sqrt(u_slope)*mix(1.0,0.4,v_calm);   // the sea's FULL slope spread (detail included): Cox-Munk at the weather's wind, calmed in the lagoon; the glint below carries it too
+			float ra=rw/2.4;
+			float facing=dot(vn,V), grazing=max(facing,0.02), margin=grazing/(length(V-vn*facing)*rw+1.0e-4);
+			float expected=0.5*(1.0+tanh(0.7978846*(margin+0.044715*margin*margin*margin)))+exp(-0.5*margin*margin)*0.3989423/margin;   // the weight's mean over Gaussian slopes, which it is divided by
+			float seen=max(dot(N,V),0.0)/(max(dot(N,vn),0.2)*grazing*expected);
+			vec3 surface=mix(water,sky,clamp(fres*mix(1.0,0.35,shallow)*seen,0.0,1.0));
+			// --- Sun glint: the beam the wave slopes reflect, E F p / (4 cos^4 beta cos theta_v), in linear light. p is Cox-Munk's
+			// slope density about the swell, its mean square slope rw*rw split upwind and crosswind along the weather's wind in
+			// Cox-Munk's shares at the trades' 12.9 m/s; the detail normals scatter it into glitter. Calmed in the lagoon through rw.
 			vec3 H=normalize(L+V);
 			vec2 hs=-H.xz/max(H.y,0.05);
-			// Corridor envelope from the SMOOTH normal (vertex waves + a whisper of coarse detail):
-			// the pool's shape stays coherent while the full detail normal supplies the granular
-			// sparkle inside it — two scales, as on a real sea.
-			vec3 Ne=v_normal;   // envelope from the swell alone: even a whisper of coarse detail in Ne paints the warp's filament structure across the pool as smooth white swirls — the residual oil
+			vec3 Ne=v_normal;   // the density about the swell alone: even a whisper of coarse detail in Ne paints the warp's filament structure across the pool as smooth white swirls — the residual oil
 			vec2 es=-Ne.xz/max(Ne.y,0.2); vec2 dv=es-hs;
-			vec2 az=normalize(L.xz+vec2(1e-4,0.0)); vec2 c=vec2(dot(dv,az),dot(dv,vec2(-az.y,az.x)));
-			float ra=u_rough*(0.55+0.45*u_wind)*mix(1.0,0.4,v_calm);
-			float rw=ra*2.4;   // the envelope carries the FULL Cox-Munk slope variance (detail included) — the sparkle only granulates inside it
-			float env=exp(-(c.x*c.x/(rw*rw*3.6)+c.y*c.y/(rw*rw)));
+			vec2 along=vec2(dot(dv,u_downwind),dot(dv,vec2(-u_downwind.y,u_downwind.x)));
+			float upwind=0.595*rw*rw, crosswind=0.405*rw*rw;
+			float density=exp(-0.5*(along.x*along.x/upwind+along.y*along.y/crosswind))/(6.2831853*sqrt(upwind*crosswind));
+			float tilt=1.0+dot(dv,dv);   // 1/cos^2 of the facet's tilt
 			vec2 fs=-N.xz/max(N.y,0.2); vec2 dv2=fs-hs; float rs=ra*1.6;   // sparkle sigma must sit near the true facet-slope spread or it never fires
 			float spark=exp(-dot(dv2,dv2)/(rs*rs));
-			float g=env*(0.10+2.8*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
+			// The sparkle is divided by its mean over the ripples the textures resolve (their slope variance: the baked texture's 0.0665
+			// a tap, per component, through the octave weights), so it scatters the pool's light into glitter without changing how much there is.
+			float ripples=0.0665*u_wind*u_wind*(1.0-0.85*v_calm)*(1.0-0.85*v_calm)*(0.1156+0.2304*f2*f2+0.0784*far*far);
+			float kernel=rs*rs+2.0*ripples; vec2 ev=-vn.xz/max(vn.y,0.2)-hs;
+			float glitter=0.10+0.90*min(spark/max(rs*rs/kernel*exp(-dot(ev,ev)/kernel),1.0e-6),40.0);   // a smooth tenth beneath: a pool of glitter alone flickers out between sparkles
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
-			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*(1.0-0.85*u_cloud_flat)*shade*shade;   // a specular corridor needs the BEAM and an overcast has none: shade*shade alone still passed ~28% of the glitter path under a solid 300 ft deck (u_glint is per time-of-day, not per preset)
-			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
+			vec3 glint=u_beam*fresH*density*tilt*tilt/(4.0*max(dot(Ne,V),0.05))*glitter*(1.0-0.85*u_cloud_flat)*shade*shade;   // a specular corridor needs the BEAM and an overcast has none: shade*shade alone still passed ~28% of the glitter path under a solid 300 ft deck
+			vec3 col=shown(surface+glint,u_exposure);
 			// --- subsurface transmission: light through the thin water near a crest reaches the
 			// viewer when looking toward the sun's far side — the blue-green glow that makes
 			// waves read as liquid up close (MSFS-style SSS, cheapened to one term).
@@ -9280,7 +9303,7 @@ function scenery(){
 	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
 }
 // The sea and the clouds follow the wind the jet flies in; in a calm they keep the line they had.
-function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); }
+function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); ocean_mat.uniforms.u_slope.value=0.003+0.00512*speed; }   // u_slope: the sea's mean square slope, Cox-Munk at this wind
 // The single-player environment: the map's own seed and wrap, the mission's weather.
 function weather(){
 	const cl=CLOUDS[cfg.clouds];
