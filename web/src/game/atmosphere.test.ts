@@ -5,7 +5,9 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as THREE from 'three'
 import { GROUND, radiance, sunlight, tables, transmittance } from './atmosphere'
+import { DAY as MOON_DAY, NIGHT as MOON_NIGHT } from './moon'
 
 const air = tables(2.5)
 const noon: [number, number, number] = [0, 0.866, 0.5]
@@ -349,7 +351,7 @@ describe('the sun', () => {
   it('is drawn its own size, 0.53 degrees across, with a pixel-soft edge', () => {
     const m = /float a=length\(cross\(d,sun\)\), disc=dot\(d,sun\)>0\.0\?1\.0-smoothstep\(([\d.]+)-blur,\1\+blur,a\):0\.0;/.exec(shader)
     expect(m, 'the disc in sky_dome').not.toBeNull()
-    expect(shader).toMatch(/return col\+suncol\*1\.4\*disc; \}/)
+    expect(shader).toMatch(/return col\+suncol\*1\.4\*disc\*u_sun_disc; \}/)   // by night the slot holds the moon's face instead
     const radius = Number(m![1])
     expect(Math.asin(radius) * 2 * (180 / Math.PI)).toBeCloseTo(0.533, 2)   // the sun's mean angular diameter from the Earth
     // The disc against the angle from the sun, as the shader draws it, at a pixel of 0.09 degrees.
@@ -387,7 +389,7 @@ describe("the sun's glare", () => {
   const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t) }
 
   it("lays the CIE's veil over the view for a young pilot, from the sun's own beam: white near the sun, fading over tens of degrees", () => {
-    const cie = /vec3 veil=u_beam\*\(10\.0\/\(angle\*angle\*angle\)\+\(5\.0\/\(angle\*angle\)\+([\d.]+)\/angle\)\*([\d.]+)\+([\d.]+)\)\*seen;/.exec(pass)
+    const cie = /vec3 veil=u_veil\*\(10\.0\/\(angle\*angle\*angle\)\+\(5\.0\/\(angle\*angle\)\+([\d.]+)\/angle\)\*([\d.]+)\+([\d.]+)\)\*seen;/.exec(pass)
     expect(cie, 'the CIE 146:2002 glare equation').not.toBeNull()
     const pigment = 0.5, age = 25
     expect(Number(cie![1])).toBeCloseTo(0.1 * pigment, 9)
@@ -396,7 +398,7 @@ describe("the sun's glare", () => {
     const hold = /float angle=max\(degrees\(atan\(length\(cross\(ray,u_sun\)\),dot\(ray,u_sun\)\)\),([\d.]+)\);/.exec(pass)
     expect(hold, 'the angle, held at the disc').not.toBeNull()
     expect(Number(hold![1])).toBeCloseTo((Math.asin(0.004651) * 180) / Math.PI, 2)
-    expect(engine).toMatch(/u_beam:ocean_mat\.uniforms\.u_beam,/)
+    expect(engine).toContain('else glare_mat.uniforms.u_veil.value.copy(ocean_mat.uniforms.u_beam.value); }')   // by day the veil's source is the sun's own beam
     // Against white paint under the same day light (TOD.day): the beam, and flat ground's light over pi.
     const day = /\tday: {2}\{ sky:[\d.]+, sun:\[([\d.]+),([\d.]+),([\d.]+)\], sunCol:(0x[0-9a-f]+), sunI:([\d.]+),.*?hs:(0x[0-9a-f]+),.*?hi:([\d.]+),\s*ac:(0x[0-9a-f]+),\s*ai:([\d.]+),/.exec(engine)
     expect(day, 'TOD.day').not.toBeNull()
@@ -414,14 +416,13 @@ describe("the sun's glare", () => {
   })
 
   it("is there only while the frame shows the sun's own disc: a cloud, the jet or the canopy across it takes the glare away", () => {
-    const m = /float lit\(vec2 p\)\{ vec3 c=texture2D\(u_frame,p\/u_size\)\.rgb\/min\(u_disc\*1\.4,vec3\(1\.0\)\); return smoothstep\(([\d.]+),([\d.]+),min\(c\.r,min\(c\.g,c\.b\)\)\); \}/.exec(pass)
+    const m = /float lit\(vec2 p\)\{ vec3 f=texture2D\(u_frame,p\/u_size\)\.rgb;\s*if\(u_sun_disc>0\.5\)\{ vec3 c=f\/min\(u_disc\*1\.4,vec3\(1\.0\)\); return smoothstep\(([\d.]+),([\d.]+),min\(c\.r,min\(c\.g,c\.b\)\)\); \}/.exec(pass)
     expect(m, 'lit() in the glare pass').not.toBeNull()
     const lit = (pixel: number[], disc: number) => {
       const expected = linear(disc).map((c) => Math.min(c * 1.4, 1))
       return smooth(Number(m![1]), Number(m![2]), Math.min(...pixel.map((c, i) => c / 255 / expected[i])))
     }
     expect(lit([255, 255, 255], 0xfff3da)).toBe(1)   // the day's disc, unhidden
-    expect(lit([218, 245, 255], 0xcdd8f0)).toBe(1)   // the moon's, by its own colour
     expect(lit([163, 166, 179], 0xfff3da)).toBe(0)   // the bright haze beside it
     expect(lit([240, 240, 240], 0xfff3da)).toBeLessThan(0.2)   // a white cloud across it
     expect(pass).toMatch(/float disc=0\.2\*\(lit\(u_at\)\+lit\(u_at\+vec2\(u_radius\*0\.5,0\.0\)\)\+lit\(u_at-vec2\(u_radius\*0\.5,0\.0\)\)\+lit\(u_at\+vec2\(0\.0,u_radius\*0\.5\)\)\+lit\(u_at-vec2\(0\.0,u_radius\*0\.5\)\)\);/)
@@ -437,7 +438,7 @@ describe("the sun's glare", () => {
     const ground = 'u_shadow_sun.xz*(world.y/max(u_shadow_sun.y,0.05))'
     expect(engine).toContain(ground)
     expect(pass).toContain(ground.replace(/world/g, 'u_eye'))
-    expect(engine).toMatch(/u_sun:\{value:sun_dir\}, u_beam:ocean_mat\.uniforms\.u_beam, u_disc:\{value:col_sundisc\}, \.\.\.cloud_shadow_uniforms,/)
+    expect(engine).toMatch(/u_sun:\{value:sun_dir\}, u_disc:\{value:col_sundisc\}, \.\.\.cloud_shadow_uniforms,/)
     expect(engine).toMatch(/camera\.getWorldDirection\(u\.u_forward\.value\);/)
   })
 
@@ -445,5 +446,90 @@ describe("the sun's glare", () => {
     expect(pass).toMatch(/vec3 col=frame\+shown\(base\+veil,u_exposure\)-shown\(base,u_exposure\);/)
     expect(pass).toMatch(/vec3 base=unshown\(frame,u_exposure\);/)
     expect(engine).toMatch(/renderer\.render\(scene,cockpit_cam\); renderer\.autoClear=true;\n\t\}\n\tglare_render\(\);\n\}/)   // every frame, last
+  })
+})
+
+// The moon (#90) at the hour's fixed moment: its face added to the sky's light before the tone,
+// placed and lit by moon_place from moon.ts, with the glare's source set to match.
+describe('the moon', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const shader = engine.slice(engine.indexOf('const MOON='), engine.indexOf('const sky_mat'))
+  function lift(name: string): string {
+    const start = engine.indexOf(`function ${name}(`)
+    expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+    const rest = engine.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    if (!end) return rest
+    const cut = end.index + 1
+    return rest.startsWith('\n}', cut) ? rest.slice(0, cut + 2) : rest.slice(0, cut)
+  }
+  // moon_place run against stand-ins for the uniforms it sets
+  function place(hour: 'day' | 'night') {
+    const gain = /const MOON_NIGHT_GAIN=([\d.]+);/.exec(engine)
+    expect(gain, 'MOON_NIGHT_GAIN').not.toBeNull()
+    const v = () => new THREE.Vector3()
+    const atmosphere = { u_moon: { value: null }, u_moon_dir: { value: v() }, u_moon_right: { value: v() }, u_moon_up: { value: v() }, u_moon_gain: { value: v() }, u_moon_radius: { value: 0 }, u_sun_disc: { value: -1 } }
+    const glare = { uniforms: { u_moon_mean: { value: new THREE.Color() }, u_veil: { value: new THREE.Color() } } }
+    const ocean = { uniforms: { u_beam: { value: new THREE.Color(2.4, 2.2, 1.9) } } }
+    const TOD = { day: { sky: 4.5 }, night: { sky: 0.1 } }
+    const sun = new THREE.Vector3(0, 0.866, 0.5).normalize()
+    new Function('THREE', 'TOD', 'MOON_DAY', 'MOON_NIGHT', 'MOON_NIGHT_GAIN', 'atmosphere_uniforms', 'moon_faces', 'sun_dir', 'glare_mat', 'ocean_mat',
+      `const _moon_up=new THREE.Vector3();\n${lift('moon_place')}\nmoon_place(TOD.${hour});`)(
+      THREE, TOD, MOON_DAY, MOON_NIGHT, Number(gain![1]), atmosphere, { day: 'day face', night: 'night face' }, sun, glare, ocean)
+    return { u: atmosphere, glare: glare.uniforms, beam: ocean.uniforms.u_beam.value, sun, gain: Number(gain![1]) }
+  }
+
+  it("adds its light to the sky's before the tone, through the air in front of it", () => {
+    expect(shader).toContain('vec3 moon=moon_light(d,blur)*at_transmittance(AT_GROUND+u_altitude,max(d.y,0.0));')
+    expect(shader).toContain('vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance+moon,exposure);')
+    expect(shader).toContain('const SKY_SHOWN=`uniform float u_illuminance,u_sun_disc;\n\t`+TONE+`\n\t`+MOON+`')
+  })
+
+  it("lays the face on the sky by the image's right and up, a disc its own size, read at the mip a pixel resolves", () => {
+    expect(shader).toContain('vec2 p=vec2(dot(d,u_moon_right),dot(d,u_moon_up))/u_moon_radius;')
+    expect(shader).toContain('float edge=(1.0-smoothstep(1.0-blur/u_moon_radius,1.0+blur/u_moon_radius,length(p)))*step(0.0,dot(d,u_moon_dir));')
+    expect(shader).toContain('float lod=log2(max(blur*${MOON_SIZE}.0/(2.0*u_moon_radius),1.0));')
+    expect(shader).toContain('return textureLod(u_moon,clamp(p*0.5+0.5,0.0,1.0),lod).rgb*u_moon_gain*edge; }')
+    expect(engine).toContain('t.colorSpace=THREE.SRGBColorSpace;')   // the images are sRGB-encoded linear light
+  })
+
+  it("puts the noon's crescent where it stood, at its true light against the sky, beside the sun's disc", () => {
+    const { u, glare, beam } = place('day')
+    expect(u.u_moon.value).toBe('day face')
+    expect(u.u_sun_disc.value).toBe(1)
+    expect(u.u_moon_radius.value).toBe(MOON_DAY.radius)
+    for (const [got, want] of [[u.u_moon_dir.value, MOON_DAY.direction], [u.u_moon_up.value, MOON_DAY.up], [u.u_moon_right.value, MOON_DAY.right]] as const)
+      got.toArray().forEach((c, i) => expect(c).toBeCloseTo(want[i], 5))
+    expect(u.u_moon_gain.value.x).toBeCloseTo(MOON_DAY.scale * 4.5, 9)   // radiance per unit sun light, in the sky table's units
+    expect(glare.u_veil.value.toArray()).toEqual(beam.toArray())   // the sun's glare, from its beam
+  })
+
+  it('puts the full moon in the slot the night is lit from, shown as an adapted eye sees it, with the glare its own light makes', () => {
+    const { u, glare, sun, gain } = place('night')
+    expect(u.u_moon.value).toBe('night face')
+    expect(u.u_sun_disc.value).toBe(0)
+    expect(u.u_moon_dir.value.toArray()).toEqual(sun.toArray())
+    expect(Math.abs(u.u_moon_up.value.dot(sun))).toBeLessThan(1e-9)   // the frame squared to the slot, 0.1 degrees from the moment's own place
+    expect(u.u_moon_right.value.distanceTo(new THREE.Vector3().crossVectors(sun, u.u_moon_up.value))).toBeLessThan(1e-9)
+    expect(u.u_moon_gain.value.x).toBe(gain)
+    const mean = MOON_NIGHT.mean * gain
+    expect(glare.u_moon_mean.value.r).toBeCloseTo(mean, 9)
+    expect(glare.u_veil.value.r).toBeCloseTo(mean * Math.PI * MOON_NIGHT.radius ** 2, 12)   // a disc of its shown light over its solid angle
+  })
+
+  it('is placed with every hour', () => {
+    expect(engine).toContain('atmosphere_uniforms.u_illuminance.value=p.sky; moon_place(p);')
+  })
+
+  it('tells the night moon unhidden by its own mean light: its seas pass, a cloud or a jet across it does not', () => {
+    const pass = engine.slice(engine.indexOf('const glare_mat='), engine.indexOf('function glare_render('))
+    const m = /return smoothstep\(([\d.]+),([\d.]+),dot\(f,vec3\(1\.0\)\)\/dot\(shown\(u_moon_mean,u_exposure\),vec3\(1\.0\)\)\); \}/.exec(pass)
+    expect(m, 'the night branch of lit()').not.toBeNull()
+    const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t) }
+    const lit = (ratio: number) => smooth(Number(m![1]), Number(m![2]), ratio)
+    expect(lit(1)).toBe(1)
+    expect(lit(0.8)).toBe(1)   // its darkest seas, as the tone shows them at the night's gain
+    expect(lit(0.35)).toBe(0)   // a moonlit cloud across it
+    expect(lit(0.1)).toBe(0)   // a jet or the canopy frame
   })
 })

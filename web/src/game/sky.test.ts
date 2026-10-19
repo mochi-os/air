@@ -3,7 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { decode, direction, light, midnight, sidereal, tint, type Star } from './sky'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { NIGHT } from './moon'
+import { decode, direction, light, sidereal, tint, type Star } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 const DEGREE = Math.PI / 180
@@ -50,8 +53,18 @@ describe('sidereal time', () => {
     expect((((b - a) / DEGREE) % 360 + 360) % 360).toBeCloseTo(0.98565, 3)
   })
 
-  it('puts local mean midnight at Midway near 11:49 UTC', () => {
-    expect(midnight(new Date('2026-09-13T20:15:00Z'), -177.3668).toISOString()).toBe('2026-09-13T11:49:28.032Z')
+  // The stars are placed for the night's moment (moon.ts), the midnight whose full moon stood
+  // where the night is lit from: the moon's own place then, through the stars' own transform,
+  // lands in that slot, so the moon and the stars agree. Its topocentric J2000 place from the
+  // map origin at 2018-09-25 12:04:36 UTC is JPL Horizons'.
+  it("puts the night's moon where the night is lit from, by the stars' own clock and transform", () => {
+    const moon: Star = { ascension: 7.820176 * DEGREE, declination: -1.993816 * DEGREE, magnitude: -12.7, colour: 0.9 }
+    const d = direction(moon, LATITUDE, sidereal(NIGHT.time) - 177.3668 * DEGREE)
+    const slot = [0, 0.866, 0.5].map((c) => c / Math.hypot(0, 0.866, 0.5))
+    const apart = Math.acos(d[0] * slot[0] + d[1] * slot[1] + d[2] * slot[2]) / DEGREE
+    expect(apart).toBeLessThan(0.4) // J2000 places by today's sidereal clock: precession's quarter degree, and the 0.1 the moment misses by
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    expect(engine).toContain('const local=sky_sidereal(MOON_NIGHT.time)+longitude*Math.PI/180')
   })
 })
 

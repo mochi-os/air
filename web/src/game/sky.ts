@@ -42,14 +42,6 @@ export function sidereal(date: Date): number {
   return ((((degrees % 360) + 360) % 360) * DEGREE)
 }
 
-// Local mean midnight at a longitude (degrees, east positive) on the UTC calendar date of `date`:
-// the hour a full moon stands due south at its highest, as the game's night moon does.
-export function midnight(date: Date, longitude: number): Date {
-  const day = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-  const hours = (((-longitude / 15) % 24) + 24) % 24
-  return new Date(day + hours * 3600000)
-}
-
 // A star's direction in the world for an observer at `latitude` (degrees) under local sidereal time `local` (radians).
 export function direction(star: Star, latitude: number, local: number): [number, number, number] {
   const phi = latitude * DEGREE, hour = local - star.ascension, dec = star.declination
