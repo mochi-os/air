@@ -95,10 +95,10 @@ describe('the wiring', () => {
 
   it('has the dome, the sea and the clouds read the one sky-view table', () => {
     expect(engine).toMatch(
-      /vec3 col=sky_dome\(normalize\(v_dir\),normalize\(u_sun\),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure\);/
+      /vec3 d=normalize\(v_dir\); vec3 col=sky_dome\(d,normalize\(u_sun\),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure,max\(length\(fwidth\(d\)\),1\.0e-5\)\);/
     )
     expect(engine).toMatch(
-      /vec3 skybg=sky_dome\(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure\);/
+      /vec3 skybg=sky_dome\(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure,blur\);/
     )
     expect(engine).toMatch(
       /vec3 col=shown\(at_sky\(normalize\(d\),normalize\(u_sun\)\)\*u_illuminance,u_exposure\);/
@@ -339,5 +339,42 @@ describe("the sun's glint", () => {
         expect(Math.abs(sum / (n * n) - 1)).toBeLessThan(0.03)
       }
     }
+  })
+})
+
+describe('the sun', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const shader = engine.slice(engine.indexOf('const SKY_SHOWN='), engine.indexOf('const sky_mat'))
+
+  it('is drawn its own size, 0.53 degrees across, with a pixel-soft edge', () => {
+    const m = /float a=length\(cross\(d,sun\)\), disc=dot\(d,sun\)>0\.0\?1\.0-smoothstep\(([\d.]+)-blur,\1\+blur,a\):0\.0;/.exec(shader)
+    expect(m, 'the disc in sky_dome').not.toBeNull()
+    expect(shader).toMatch(/return col\+suncol\*1\.4\*disc; \}/)
+    const radius = Number(m![1])
+    expect(Math.asin(radius) * 2 * (180 / Math.PI)).toBeCloseTo(0.533, 2)   // the sun's mean angular diameter from the Earth
+    // The disc against the angle from the sun, as the shader draws it, at a pixel of 0.09 degrees.
+    const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t) }
+    const disc = (degrees: number, blur: number) => {
+      const r = (degrees * Math.PI) / 180
+      return Math.cos(r) > 0 ? 1 - smooth(radius - blur, radius + blur, Math.sin(r)) : 0
+    }
+    const pixel = (0.0885 * Math.PI) / 180
+    expect(disc(0, pixel)).toBe(1)
+    expect(disc(0.15, pixel)).toBe(1)
+    expect(disc(0.27, pixel)).toBeGreaterThan(0.3)
+    expect(disc(0.27, pixel)).toBeLessThan(0.7)
+    expect(disc(0.45, pixel)).toBe(0)
+    expect(disc(180, pixel)).toBe(0)
+  })
+
+  it('takes each pixel\'s angle outside any branch, where its derivatives hold', () => {
+    expect(engine).toMatch(/vec3 ray=normalize\(fp\.xyz\/fp\.w-uCamPos\); float blur=max\(length\(fwidth\(ray\)\),1\.0e-5\);/)
+  })
+
+  it('draws no glow of its own: the air\'s is in the sky, and its reflection is the glint', () => {
+    const dome = shader.slice(shader.indexOf('vec3 sky_dome('), shader.indexOf('}`;'))
+    expect(dome.length).toBeGreaterThan(200)
+    expect(dome, 'a power of the angle to the sun is a drawn glow').not.toMatch(/pow\(/)
+    expect(engine).not.toMatch(/pow\(s,14\.0\)\*0\.07/)
   })
 })
