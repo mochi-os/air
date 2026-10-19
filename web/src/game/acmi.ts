@@ -199,6 +199,14 @@ interface Flight {
   // from geometry against the first 3/9 crossing; this removes the need.
   // Event-encoded like Input and Break.
   merge?: string
+  // What the screen showed and what changed it (#70): "sim time|kind|value|
+  // source", kind one of view (cockpit, hud, ddi, chase, flypast, padlock),
+  // display (the DDI view's display), zoom (the view's optical zoom target),
+  // reset, padlock (on / off) or map (open / closed); source one of start, key,
+  // stick, wheel, axis, mouse, look, view (the zoom a view switch recalls),
+  // reset, dev or auto. The first entry of a match is its starting view and
+  // zoom. Event-encoded like Input; several between two samples join with ';'.
+  view?: string
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
@@ -675,6 +683,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
           ['Input', d.input],
           ['Break', d.break],
           ['Merge', d.merge],
+          ['View', d.view],
         ] as const) {
           if (value === undefined) continue
           const key = `${o.id}:${channel}`
