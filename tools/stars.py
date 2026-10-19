@@ -9,7 +9,7 @@ Source: Hoffleit & Warren, The Bright Star Catalogue, 5th Revised Ed. (Yale
 University Observatory, 1991), CDS catalogue V/50:
   https://cdsarc.cds.unistra.fr/ftp/V/50/catalog.gz  (format: .../V/50/ReadMe)
 
-Usage: stars.py <catalog> [--limit 4.5]
+Usage: stars.py <catalog> [--limit 5.0]
 Each star packs into 6 bytes: right ascension as uint16 (full circle), declination
 as int16 (+-90 deg), visual magnitude as uint8 ((V + 2) * 20), B-V colour index as
 int8 (* 50). J2000 positions: precession to the present moves them by under 0.4 deg.
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 catalog = Path(sys.argv[1])
-limit = float(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 4.5   # a moonlit sky: fainter stars are washed out, and 4.5 keeps ~450 above the horizon
+limit = float(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 5.0   # a moonlit sky's edge: under the night's full moon the eye reaches about 4.5 near it and 5 away from it, more from altitude; 5.0 keeps ~780 above the horizon
 out = Path(__file__).resolve().parent.parent / "web/src/game/stars.ts"
 
 records, brightest = [], None
