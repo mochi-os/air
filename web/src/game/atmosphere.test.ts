@@ -131,7 +131,7 @@ describe("the sea's reflection", () => {
     fileURLToPath(new URL('./engine.ts', import.meta.url)),
     'utf8'
   )
-  const shader = engine.slice(engine.indexOf('const SKY_SHOWN='))
+  const shader = engine.slice(engine.indexOf('const TONE='))
   // A GLSL mat3 from its source, column by column, as m[row][column].
   function matrix(name: string) {
     const m = new RegExp(`const mat3 ${name}=mat3\\(([^)]*)\\);`).exec(shader)
@@ -376,5 +376,74 @@ describe('the sun', () => {
     expect(dome.length).toBeGreaterThan(200)
     expect(dome, 'a power of the angle to the sun is a drawn glow').not.toMatch(/pow\(/)
     expect(engine).not.toMatch(/pow\(s,14\.0\)\*0\.07/)
+  })
+})
+
+describe("the sun's glare", () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const pass = engine.slice(engine.indexOf('const glare_mat='), engine.indexOf('function glare_render('))
+  const linear = (hex: number) => [16, 8, 0].map((shift) => { const c = ((hex >> shift) & 255) / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4 })
+  const luma = (c: number[]) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+  const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t) }
+
+  it("lays the CIE's veil over the view for a young pilot, from the sun's own beam: white near the sun, fading over tens of degrees", () => {
+    const cie = /vec3 veil=u_beam\*\(10\.0\/\(angle\*angle\*angle\)\+\(5\.0\/\(angle\*angle\)\+([\d.]+)\/angle\)\*([\d.]+)\+([\d.]+)\)\*seen;/.exec(pass)
+    expect(cie, 'the CIE 146:2002 glare equation').not.toBeNull()
+    const pigment = 0.5, age = 25
+    expect(Number(cie![1])).toBeCloseTo(0.1 * pigment, 9)
+    expect(Number(cie![2])).toBeCloseTo(1 + (age / 62.5) ** 4, 4)
+    expect(Number(cie![3])).toBeCloseTo(0.0025 * pigment, 9)
+    const hold = /float angle=max\(degrees\(atan\(length\(cross\(ray,u_sun\)\),dot\(ray,u_sun\)\)\),([\d.]+)\);/.exec(pass)
+    expect(hold, 'the angle, held at the disc').not.toBeNull()
+    expect(Number(hold![1])).toBeCloseTo((Math.asin(0.004651) * 180) / Math.PI, 2)
+    expect(engine).toMatch(/u_beam:ocean_mat\.uniforms\.u_beam,/)
+    // Against white paint under the same day light (TOD.day): the beam, and flat ground's light over pi.
+    const day = /\tday: {2}\{ sky:[\d.]+, sun:\[([\d.]+),([\d.]+),([\d.]+)\], sunCol:(0x[0-9a-f]+), sunI:([\d.]+),.*?hs:(0x[0-9a-f]+),.*?hi:([\d.]+),\s*ac:(0x[0-9a-f]+),\s*ai:([\d.]+),/.exec(engine)
+    expect(day, 'TOD.day').not.toBeNull()
+    const [x, y, z] = [1, 2, 3].map((i) => Number(day![i])), up = y / Math.hypot(x, y, z)
+    const beam = Number(day![5]) * luma(linear(Number(day![4])))
+    const paint = (beam * up + Number(day![7]) * luma(linear(Number(day![6]))) + Number(day![9]) * luma(linear(Number(day![8])))) / Math.PI
+    const spread = (t: number) => 10 / t ** 3 + (5 / t ** 2 + Number(cie![1]) / t) * Number(cie![2]) + Number(cie![3])
+    const veil = (degrees: number) => (beam * spread(degrees)) / paint
+    expect(veil(6)).toBeGreaterThan(0.45)
+    expect(veil(6)).toBeLessThan(0.65)
+    expect(veil(10)).toBeCloseTo(0.185, 1)
+    expect(veil(20)).toBeLessThan(0.06)
+    expect(veil(30)).toBeLessThan(0.03)
+    expect(spread(10) / (10 / 10 ** 2), 'a third under Holladay at 10 degrees').toBeLessThan(0.75)
+  })
+
+  it("is there only while the frame shows the sun's own disc: a cloud, the jet or the canopy across it takes the glare away", () => {
+    const m = /float lit\(vec2 p\)\{ vec3 c=texture2D\(u_frame,p\/u_size\)\.rgb\/min\(u_disc\*1\.4,vec3\(1\.0\)\); return smoothstep\(([\d.]+),([\d.]+),min\(c\.r,min\(c\.g,c\.b\)\)\); \}/.exec(pass)
+    expect(m, 'lit() in the glare pass').not.toBeNull()
+    const lit = (pixel: number[], disc: number) => {
+      const expected = linear(disc).map((c) => Math.min(c * 1.4, 1))
+      return smooth(Number(m![1]), Number(m![2]), Math.min(...pixel.map((c, i) => c / 255 / expected[i])))
+    }
+    expect(lit([255, 255, 255], 0xfff3da)).toBe(1)   // the day's disc, unhidden
+    expect(lit([218, 245, 255], 0xcdd8f0)).toBe(1)   // the moon's, by its own colour
+    expect(lit([163, 166, 179], 0xfff3da)).toBe(0)   // the bright haze beside it
+    expect(lit([240, 240, 240], 0xfff3da)).toBeLessThan(0.2)   // a white cloud across it
+    expect(pass).toMatch(/float disc=0\.2\*\(lit\(u_at\)\+lit\(u_at\+vec2\(u_radius\*0\.5,0\.0\)\)\+lit\(u_at-vec2\(u_radius\*0\.5,0\.0\)\)\+lit\(u_at\+vec2\(0\.0,u_radius\*0\.5\)\)\+lit\(u_at-vec2\(0\.0,u_radius\*0\.5\)\)\);/)
+    expect(engine).toMatch(/u\.u_inside\.value=ahead\?THREE\.MathUtils\.smoothstep\(Math\.min\(x,w-x,y,h-y\),0\.0,u\.u_radius\.value\*3\.0\):0\.0;/)
+  })
+
+  it('comes on smoothly as the sun nears the screen: off it, the clouds\' shadow map says whether it is hidden', () => {
+    expect(pass).toMatch(/float seen=mix\(clear\(\),disc,u_inside\)\*smoothstep\(-0\.174,0\.174,dot\(u_forward,u_sun\)\);/)
+    expect(pass).toMatch(/if\(u_shadow_deck\.z>0\.0\) return 1\.0-cloud_shadow_below\(u_eye\);/)
+    expect(pass).toMatch(/if\(u_shadow_patch\.w<=0\.0\) return 1\.0;/)
+    expect(pass).toMatch(/return mix\(open,1\.0,smoothstep\(u_shadow_deck\.x,u_shadow_deck\.y,u_eye\.y\)\); \}/)
+    // the ground point whose sun line runs through the eye, by the shadow map's own projection
+    const ground = 'u_shadow_sun.xz*(world.y/max(u_shadow_sun.y,0.05))'
+    expect(engine).toContain(ground)
+    expect(pass).toContain(ground.replace(/world/g, 'u_eye'))
+    expect(engine).toMatch(/u_sun:\{value:sun_dir\}, u_beam:ocean_mat\.uniforms\.u_beam, u_disc:\{value:col_sundisc\}, \.\.\.cloud_shadow_uniforms,/)
+    expect(engine).toMatch(/camera\.getWorldDirection\(u\.u_forward\.value\);/)
+  })
+
+  it('adds it in linear light, as the change it makes, over everything drawn', () => {
+    expect(pass).toMatch(/vec3 col=frame\+shown\(base\+veil,u_exposure\)-shown\(base,u_exposure\);/)
+    expect(pass).toMatch(/vec3 base=unshown\(frame,u_exposure\);/)
+    expect(engine).toMatch(/renderer\.render\(scene,cockpit_cam\); renderer\.autoClear=true;\n\t\}\n\tglare_render\(\);\n\}/)   // every frame, last
   })
 })

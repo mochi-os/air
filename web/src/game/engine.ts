@@ -309,7 +309,7 @@ function sky_view_render(altitude){ atmosphere_uniforms.u_altitude.value=Math.ma
 // Light as the screen shows it, through three's ACESFilmic and the sRGB encode, and the dome
 // built from it. The cloud composite pays its haze out in exactly this dome, so the two change
 // together by construction.
-const SKY_SHOWN=`uniform float u_illuminance;
+const TONE=`
 	vec3 shown_tone(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
 	vec3 shown(vec3 color, float exposure){
 		const mat3 inm=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
@@ -323,7 +323,9 @@ const SKY_SHOWN=`uniform float u_illuminance;
 		vec3 y=clamp(outi*c,0.0,1.0);
 		vec3 a=1.0-0.983729*y, b=0.0245786-0.4329510*y, k=-(0.000090537+0.238081*y);
 		vec3 v=(-b+sqrt(b*b-4.0*a*k))/(2.0*a);   // the tone fit's quadratic, its positive root
-		return max(ini*v,0.0)*0.6/exposure; }
+		return max(ini*v,0.0)*0.6/exposure; }`;   // three's ACES and sRGB as shown(), and its inverse: the sky, the sea, the clouds and the glare share them
+const SKY_SHOWN=`uniform float u_illuminance;
+	`+TONE+`
 	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure, float blur){   // blur: a pixel's angle, taken by the caller outside any branch
 		float t=(d.y+dip)*1.2;
 		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
@@ -755,6 +757,51 @@ function apply_waves(){ const w=weather().wind, speed=Math.hypot(w.x,w.z), on=(c
 		u.u_derivative0.value=waves.derivative[0]; u.u_derivative1.value=waves.derivative[1]; u.u_derivative2.value=waves.derivative[2];
 		const slopes=spectrum_slopes(wind); u.u_spectrum.value.set(slopes[0],slopes[1],slopes[2]); }
 	if(on!==("WAVES" in ocean_mat.defines)){ if(on) ocean_mat.defines.WAVES=""; else delete ocean_mat.defines.WAVES; ocean_mat.needsUpdate=true; } }
+// The sun's glare: light the eye's own media scatter about a bright source, laid over everything
+// in view. The CIE's glare spread (CIE 146:2002, the disability glare equation) gives the veil's
+// luminance for E the source's light at the eye and theta degrees from it, for a young pilot (age
+// 25, the age factor 1 + (25/62.5)^4) of mid pigmentation (p = 0.5). The sun's beam is far past
+// white on any display, so its glare cannot come from the frame's pixels: it is drawn from the beam
+// itself, and gated by whether the sun can be seen - on the screen by its own disc (a cloud, the jet
+// or the canopy frame across it takes the glare away), and off it, where the eye still sees the sun,
+// by the clouds' shadow map.
+const glare_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, toneMapped:false,
+	uniforms:{ u_frame:{value:null}, u_inverse:{value:new THREE.Matrix4()}, u_eye:{value:new THREE.Vector3()}, u_forward:{value:new THREE.Vector3(0,0,-1)}, u_sun:{value:sun_dir}, u_beam:ocean_mat.uniforms.u_beam, u_disc:{value:col_sundisc}, ...cloud_shadow_uniforms,
+		u_exposure:atmosphere_uniforms.u_exposure, u_at:{value:new THREE.Vector2()}, u_size:{value:new THREE.Vector2(1,1)}, u_radius:{value:3.0}, u_inside:{value:0.0} },
+	vertexShader:`varying vec2 v_uv; void main(){ v_uv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 v_uv; uniform sampler2D u_frame; uniform mat4 u_inverse; uniform vec3 u_eye,u_forward,u_sun,u_beam,u_disc; uniform vec2 u_at,u_size; uniform float u_exposure,u_radius,u_inside;
+		`+TONE+`
+		`+CLOUD_SHADOW_RESOLVE+`
+		float clear(){   // the clouds' share of the sun's beam that reaches the eye: the ground point whose sun line runs through the eye sees what the eye sees, below the cloud base
+			if(u_shadow_deck.z>0.0) return 1.0-cloud_shadow_below(u_eye);   // an overcast deck hides the sun beneath it
+			if(u_shadow_patch.w<=0.0) return 1.0;
+			vec2 g=u_eye.xz-u_shadow_sun.xz*(u_eye.y/max(u_shadow_sun.y,0.05)), uv=(g-u_shadow_patch.xy)/u_shadow_patch.z+0.5;
+			float open=mix(1.0,texture2D(u_shadow,clamp(uv,0.0,1.0)).r,u_shadow_patch.w*(1.0-smoothstep(0.35,0.5,length(uv-0.5))));
+			return mix(open,1.0,smoothstep(u_shadow_deck.x,u_shadow_deck.y,u_eye.y)); }   // climbing through the field, less of it lies ahead of the sun
+		float lit(vec2 p){ vec3 c=texture2D(u_frame,p/u_size).rgb/min(u_disc*1.4,vec3(1.0)); return smoothstep(0.95,0.995,min(c.r,min(c.g,c.b))); }   // a pixel of the disc as the dome draws it, unhidden: a white cloud across it reads under 0.95
+		void main(){ vec3 frame=texture2D(u_frame,v_uv).rgb;
+			float disc=0.2*(lit(u_at)+lit(u_at+vec2(u_radius*0.5,0.0))+lit(u_at-vec2(u_radius*0.5,0.0))+lit(u_at+vec2(0.0,u_radius*0.5))+lit(u_at-vec2(0.0,u_radius*0.5)));
+			float seen=mix(clear(),disc,u_inside)*smoothstep(-0.174,0.174,dot(u_forward,u_sun));   // the disc where the screen shows it, the clouds where it does not; none from behind the eye (past 90 degrees off the line of sight)
+			vec4 far=u_inverse*vec4(v_uv*2.0-1.0,1.0,1.0); vec3 ray=normalize(far.xyz/far.w-u_eye);
+			float angle=max(degrees(atan(length(cross(ray,u_sun)),dot(ray,u_sun))),0.27);   // from the sun, held at its disc's edge
+			vec3 veil=u_beam*(10.0/(angle*angle*angle)+(5.0/(angle*angle)+0.05/angle)*1.0256+0.00125)*seen;
+			vec3 base=unshown(frame,u_exposure);
+			vec3 col=frame+shown(base+veil,u_exposure)-shown(base,u_exposure);   // added in linear light, as the change it makes, so a pixel it leaves alone is left exactly
+			gl_FragColor=vec4(col,1.0); }` });
+const glare_scene=new THREE.Scene(), glare_view=new THREE.Camera(), glare_at=new THREE.Vector3();
+{ const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),glare_mat); quad.frustumCulled=false; glare_scene.add(quad); }
+let glare_frame=null;
+function glare_render(){   // after the world, the clouds and the cockpit: the eye sees them all through its own scatter
+	renderer.getDrawingBufferSize(star_buffer); const w=star_buffer.x, h=star_buffer.y, u=glare_mat.uniforms;
+	if(!glare_frame||glare_frame.image.width!==w||glare_frame.image.height!==h){ if(glare_frame) glare_frame.dispose(); glare_frame=new THREE.FramebufferTexture(w,h); }
+	renderer.copyFramebufferToTexture(new THREE.Vector2(0,0),glare_frame); u.u_frame.value=glare_frame; u.u_size.value.set(w,h);
+	u.u_inverse.value.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).invert(); u.u_eye.value.copy(camera.position); camera.getWorldDirection(u.u_forward.value);
+	glare_at.copy(sun_dir).multiplyScalar(1.0e5).add(camera.position).project(camera);
+	const ahead=camera.getWorldDirection(_glare_ahead).dot(sun_dir)>0.0, x=(glare_at.x*0.5+0.5)*w, y=(glare_at.y*0.5+0.5)*h;
+	u.u_at.value.set(x,y); u.u_radius.value=Math.max(h*0.5*camera.projectionMatrix.elements[5]*Math.tan(0.004651),1.0);   // the disc's radius in pixels
+	u.u_inside.value=ahead?THREE.MathUtils.smoothstep(Math.min(x,w-x,y,h-y),0.0,u.u_radius.value*3.0):0.0;   // how far the disc's own pixels can be trusted to say whether it is hidden
+	renderer.autoClear=false; renderer.render(glare_scene,glare_view); renderer.autoClear=true; }
+const _glare_ahead=new THREE.Vector3();
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
 	// Camera-centred polar disc, not a square: a 20 km square rim sits at ~2° depression
@@ -1288,6 +1335,7 @@ function render_frame(){
 		cockpit_cam.position.copy(camera.position); cockpit_cam.quaternion.copy(camera.quaternion);
 		renderer.autoClear=false; renderer.clearDepth(); renderer.render(scene,cockpit_cam); renderer.autoClear=true;
 	}
+	glare_render();
 }
 
 // ============================================================================ geometry
