@@ -5,7 +5,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import { absorb, loadOutcome, merged, PendingConfig } from './config-persist'
+import {
+  absorb,
+  loadOutcome,
+  merged,
+  PendingConfig,
+  seeded,
+} from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -138,9 +144,13 @@ const SAVE_DELAY = 600
 // source of truth), with shell storage as a local cache so the menu renders the
 // last-known settings instantly rather than flashing defaults while the server
 // responds. Saves are debounced so dragging a slider doesn't spam the server.
+// The third value is whether a signed-in player's saved config has arrived:
+// until then the cache may be stale or another account's, so nothing that
+// depends on what this player has answered may act on it.
 export function useMissionConfig(): [
   MissionConfig,
   (config: MissionConfig) => void,
+  boolean,
 ] {
   const [config, setStored] = useShellStorage<MissionConfig>(
     'air.config',
@@ -159,6 +169,7 @@ export function useMissionConfig(): [
   // could fire after navigation or an in-place account change and write stale
   // config under the then-current auth context. Cancelled on unmount.
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     loadConfig().then((saved) => {
@@ -181,8 +192,12 @@ export function useMissionConfig(): [
         // migrates its preset: absorb is the one reading of a saved config.
         setStored(absorb(saved))
       } else {
-        void saveConfig(pending.current()) // first run on this account — seed the server
+        // First run on this account: seed the server.
+        const fresh = seeded(pending.current())
+        setStored(fresh)
+        void saveConfig(fresh)
       }
+      setLoaded(!!config_identity)
     })
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current)
@@ -200,5 +215,5 @@ export function useMissionConfig(): [
     [setStored, pending] // pending is a stable ref object; listed to satisfy exhaustive-deps
   )
 
-  return [config, setConfig]
+  return [config, setConfig, loaded]
 }

@@ -56,6 +56,16 @@ export function absorb(saved: Partial<MissionConfig>): MissionConfig {
   return { ...DEFAULT_CONFIG, ...kept, stores } as MissionConfig
 }
 
+// seeded is what the first save on an account with nothing stored writes: the
+// config in memory, which on a shared browser can be another account's cached
+// settings - so never its answer on sharing, which only this account's player
+// can give. Without it the menu asks.
+export function seeded(config: MissionConfig): MissionConfig {
+  const out = { ...config }
+  delete out.sharing
+  return out
+}
+
 // merged is what a flush persists: the saved config (or the defaults, on a
 // fresh account) with the keys edited while it was loading laid on top. Never
 // the in-memory config wholesale - on a fresh or top-window load that is the

@@ -138,7 +138,8 @@ interface Flight {
   // rounds, not with the control-law channels.
   graze?: number // metres from the skin, 0 for a graze
   miss?: { ahead: number; above: number; right: number }
-  // The bandit's decision journal (journal.ts), developer recordings only:
+  // The bandit's decision journal (journal.ts), left out of the player's own
+  // download (conceal):
   // what the arbiter weighed at each re-plan, how far its forecasts landed from
   // the truth, the reflexes that pre-empted it, and the g it asked for at each
   // stage between the play and the stick. The first three are EVENTS - each
@@ -288,6 +289,44 @@ const round = (v: number, places: number) => {
 // from the network today - "escape the untrusted ones" is the rule that let
 // nine of eleven sites go unescaped.
 const field = (v: string) => v.replace(/[,\n\r]/g, ' ')
+
+// The AI's hand: the bandit's chosen manoeuvre and its decision journal. Every
+// recording carries them, for the developers a player lets read their
+// recordings; conceal takes them out of the copy the player downloads.
+const CONCEALED = new Set(['Doctrine', 'Decision', 'Forecast', 'Bypass', 'Demand'])
+
+// fields splits an object line on the commas no backslash escapes: text()
+// escapes a comma inside free text, and that one belongs to its value.
+function fields(line: string): string[] {
+  const out: string[] = []
+  let start = 0
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '\\') i++
+    else if (line[i] === ',') {
+      out.push(line.slice(start, i))
+      start = i + 1
+    }
+  }
+  out.push(line.slice(start))
+  return out
+}
+
+// conceal returns a recording without the concealed channels. A line left
+// holding nothing but its object's id says nothing, and goes.
+export function conceal(recording: string): string {
+  return recording
+    .split('\n')
+    .flatMap((line) => {
+      if (!line.includes('=') || line.startsWith('#')) return [line]
+      const all = fields(line)
+      const kept = all.filter(
+        (f, i) => i === 0 || !CONCEALED.has(f.slice(0, f.indexOf('=')))
+      )
+      if (kept.length === all.length) return [line]
+      return kept.length > 1 ? [kept.join(',')] : []
+    })
+    .join('\n')
+}
 
 // text keeps free text's commas, where field drops them: a backslash escapes a
 // comma, a semicolon and itself, as TacView escapes a comma, and a line break
@@ -759,7 +798,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
         declared.set(o.id, properties)
         line += `,Name=${field(o.name)},Pilot=${field(o.label)},Color=${field(o.colour)},Type=${field(o.kind)}`
         if (o.skill) line += `,Skill=${field(o.skill)}` // the bot's tier, on the object itself: the mission title named it only for jousts, and only in the header
-        if (o.mode) line += `,Doctrine=${field(o.mode)}` // developer builds only: the bot's chosen manoeuvre
+        if (o.mode) line += `,Doctrine=${field(o.mode)}` // the bot's chosen manoeuvre, left out of the player's own download (conceal)
         if (r) {
           // ACMI's own parent/target linkage, in the object ids the file uses.
           line += `,Parent=${r.shooter.toString(16)}`
