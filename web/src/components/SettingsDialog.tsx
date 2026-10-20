@@ -1361,6 +1361,19 @@ function GeneralPanel({
         />
       </div>
 
+      {/* Coaching through the comms area as you fly — the carrier recovery
+          procedures first (#70). On by default: the players who need it most
+          never find a buried toggle, and it only speaks on approach. */}
+      <div>
+        <SwitchRow
+          id='hints'
+          tight
+          label={<Trans>Flight hints</Trans>}
+          checked={config.hints !== false}
+          onChange={(v) => set('hints', v)}
+        />
+      </div>
+
       <div>
         <SwitchRow
           id='record'
@@ -1371,8 +1384,8 @@ function GeneralPanel({
         />
       </div>
 
-      {/* The answer the menu asked for on the first visit, changed here.
-          Unset reads as not allowed. */}
+      {/* The answer the first Fly asked for, changed here. Unset reads as
+          not allowed. */}
       <div>
         <SwitchRow
           id='sharing'
@@ -1385,19 +1398,6 @@ function GeneralPanel({
           }
           checked={config.sharing === true}
           onChange={(v) => set('sharing', v)}
-        />
-      </div>
-
-      {/* Coaching through the comms area as you fly — the carrier recovery
-          procedures first (#70). On by default: the players who need it most
-          never find a buried toggle, and it only speaks on approach. */}
-      <div>
-        <SwitchRow
-          id='hints'
-          tight
-          label={<Trans>Flight hints</Trans>}
-          checked={config.hints !== false}
-          onChange={(v) => set('hints', v)}
         />
       </div>
     </div>
