@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   acmi,
+  conceal,
   position,
   Recorder,
   MIDWAY,
@@ -161,9 +162,67 @@ describe('acmi', () => {
     expect(text).not.toContain('Stick=')
   })
 
-  it('omits the doctrine channel when absent (shipped builds)', () => {
+  it('omits the doctrine channel when absent', () => {
     const text = acmi([{ time: 0, objects: [jet()] }], new Date(), 'Joust')
     expect(text).not.toContain('Doctrine=')
+  })
+})
+
+describe('conceal', () => {
+  // Every build records the bot's hand, for the developers a player lets read
+  // their recordings; the player's own download leaves it out.
+  const flown = acmi(
+    [
+      {
+        time: 0,
+        objects: [
+          jet({ id: 2, mode: 'press', data: { decision: '12|press|3.0|neutral|0.410|press:0.410/lag:0.300', demand: '6.1|5.2|5.0|0.80', notice: ['FIGHT\'S ON, gun, heater'] } }),
+        ],
+      },
+      { time: 0.1, objects: [jet({ id: 2, mode: 'press', data: { forecast: '12|his|60|420' } })] },
+      { time: 0.2, objects: [jet({ id: 2, mode: 'press', data: { bypass: '14|rebuild|70|80' } })] },
+    ],
+    new Date('2026-07-27T14:32:00Z'),
+    'Joust'
+  )
+
+  it('is fed by the engine in every build, a player\'s as well as a developer\'s', () => {
+    const notes = new Function(
+      'DEV_MODE',
+      'bandit_brain',
+      'bandit_journal',
+      'journal_notes',
+      `${lift('bandit_notes')} return bandit_notes();`
+    )(false, {}, () => ({ decisions: [] }), () => ({ decision: '12|press' }))
+    expect(notes).toEqual({ decision: '12|press' })
+    expect(lift('recording_sample')).toContain('add(bandit,2,"Bandit","Red",bandit_brain?(') // the doctrine, ungated
+  })
+
+  it('records the bot channels a concealed copy then leaves out', () => {
+    for (const channel of ['Doctrine=', 'Decision=', 'Forecast=', 'Bypass=', 'Demand='])
+      expect(flown, channel).toContain(channel)
+    const hidden = conceal(flown)
+    for (const channel of ['Doctrine=', 'Decision=', 'Forecast=', 'Bypass=', 'Demand='])
+      expect(hidden, channel).not.toContain(channel)
+  })
+
+  it('keeps every other field, a comma escaped inside free text included', () => {
+    const hidden = conceal(flown)
+    expect(hidden).toContain('Name=FA-18C')
+    expect(hidden).toContain('Pilot=Viper')
+    expect(hidden).toContain('Notice=FIGHT\'S ON\\, gun\\, heater')
+    expect(hidden.split('\n').slice(0, 3)).toEqual(flown.split('\n').slice(0, 3)) // the header
+    expect(hidden.match(/^#/gm)).toEqual(flown.match(/^#/gm)) // every frame
+  })
+
+  it('reads an escaped comma as part of its value, not a field boundary', () => {
+    // Free text naming a channel stays text: only a real field is concealed.
+    expect(conceal('2,Notice=said\\,Doctrine=press,Bypass=1')).toBe('2,Notice=said\\,Doctrine=press')
+  })
+
+  it('drops a line left holding nothing but its id', () => {
+    expect(conceal('#0.2\n2,Bypass=14|rebuild|70|80\n#0.3\n-2')).toBe('#0.2\n#0.3\n-2')
+    expect(conceal('2,T=1|2|3,Bypass=14|rebuild|70|80')).toBe('2,T=1|2|3')
   })
 })
 

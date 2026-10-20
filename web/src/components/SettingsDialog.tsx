@@ -1371,6 +1371,23 @@ function GeneralPanel({
         />
       </div>
 
+      {/* The answer the menu asked for on the first visit, changed here.
+          Unset reads as not allowed. */}
+      <div>
+        <SwitchRow
+          id='sharing'
+          tight
+          label={
+            <Trans>
+              Allow developers to read your flight recordings to improve the
+              game
+            </Trans>
+          }
+          checked={config.sharing === true}
+          onChange={(v) => set('sharing', v)}
+        />
+      </div>
+
       {/* Coaching through the comms area as you fly — the carrier recovery
           procedures first (#70). On by default: the players who need it most
           never find a buried toggle, and it only speaks on approach. */}

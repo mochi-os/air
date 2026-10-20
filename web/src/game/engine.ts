@@ -8112,15 +8112,16 @@ function read_input(dt){
 
 let sim_time=0;
 // Flight recorder (#212): a rolling buffer saved from the log page. The
-// bot's doctrine state rides along in developer builds only — free to capture
-// (the brain runs in-process in wasm for a local joust) but it is the AI's
-// hand, so a shipped replay does not show it.
+// bot's doctrine state rides along in every build - free to capture (the brain
+// runs in-process in wasm for a local joust), and what a recording a player
+// shares with the developers needs to say about the bot - but it is the AI's
+// hand, so the player's own download leaves it out (acmi.ts conceal).
 const recorder=new Recorder();
 let record_started=null;
 // bandit_notes drains the brain's decision journal into the recorder's channels.
-// DEV_MODE only, and only while a brain flies: the drain EMPTIES the journal, so
-// calling it anywhere else would steal entries from the recording.
-function bandit_notes(){ if(!DEV_MODE||!bandit_brain) return {};
+// Only while a brain flies: the drain EMPTIES the journal, so calling it
+// anywhere else would steal entries from the recording.
+function bandit_notes(){ if(!bandit_brain) return {};
 	const drained=bandit_journal(); return drained?journal_notes(drained):{}; }
 // damage_words is a core state's damage in the order the recording carries it:
 // the forty per-element losses, the three gear struts, the eight jammed channels.
@@ -8210,7 +8211,7 @@ function recording_sample(){
 		...(due&&record_radio.length?{radio:record_radio.splice(0)}:{}), ...(due&&record_notices.length?{notice:record_notices.splice(0)}:{}) }:undefined;
 	if(own!=="gone") add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
+		add(bandit,2,"Bandit","Red",bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				speedbrake:bandit.speedbrake??0,   // the board, for a replay to draw
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
@@ -8227,7 +8228,7 @@ function recording_sample(){
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R,
 					surfaces:[bandit_words[STATE.stabilator]||0,bandit_words[STATE.stabilator+1]||0,bandit_words[STATE.flaperon]||0,bandit_words[STATE.flaperon+1]||0,bandit_words[STATE.rudder]||0,bandit_words[STATE.slat]||0],
 					damage:damage_words(bandit_words) }:{}),
-				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
+				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), left out of the player's own download: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
 			cfg.task==="joust"?(cfg.bandit||"expert"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";

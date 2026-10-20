@@ -42,6 +42,7 @@ import {
   Play,
   ShieldAlert,
 } from 'lucide-react'
+import { conceal } from '../game/acmi'
 import {
   log,
   recording_load,
@@ -74,9 +75,11 @@ async function save(
     `${at.getFullYear()}${pad(at.getMonth() + 1)}${pad(at.getDate())}` +
     `_${pad(at.getHours())}${pad(at.getMinutes())}${pad(at.getSeconds())}`
   const name = `${stamp}.acmi`
-  done(
-    await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name)
-  )
+  // The player's copy leaves out the bot's hand; a developer's keeps it.
+  const developer =
+    (new URLSearchParams(window.location.search).get('developer') ?? '').replace(/"/g, '') === '1'
+  const text = developer ? replay.text : conceal(replay.text)
+  done(await shellSaveBlob(new Blob([text], { type: 'text/plain' }), name))
 }
 
 // The columns worth ordering by: when the flight was, how long it ran, and how

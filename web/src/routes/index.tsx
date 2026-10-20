@@ -4,13 +4,21 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import {
+  Button,
   LazyBoundary,
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
   shellSetTitle,
   toast,
   useShellImmersive,
 } from '@mochi/web'
+import { Check } from 'lucide-react'
 import { MissionSetup } from '../components/MissionSetup'
 import { audio_gesture } from '../game/audio'
 // Type-only, so the statement is erased at build. Keep it that way: a VALUE
@@ -82,23 +90,78 @@ function exitFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {})
 }
 
+// Whether the developers may read the player's flight recordings. Nothing is
+// chosen for the player: Allow and Don't allow each record their answer, while
+// the close button records nothing and the question comes back on the next
+// visit. The general settings change the answer later.
+function SharingDialog({
+  open,
+  onAnswer,
+  onClose,
+}: {
+  open: boolean
+  onAnswer: (allowed: boolean) => void
+  onClose: () => void
+}) {
+  const allow = useRef<HTMLButtonElement>(null)
+  return (
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={(v) => !v && onClose()}
+      shouldCloseOnInteractOutside={false}
+    >
+      <ResponsiveDialogContent
+        // Focus on Allow, not the first button in the dialog.
+        onOpenAutoFocus={(focus) => {
+          focus.preventDefault()
+          allow.current?.focus()
+        }}
+      >
+        <ResponsiveDialogHeader className='text-start'>
+          <ResponsiveDialogTitle>
+            <Trans>Flight recordings</Trans>
+          </ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>
+            <Trans>
+              Allow developers to read your flight recordings to improve the
+              game
+            </Trans>
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
+        <ResponsiveDialogFooter className='gap-2'>
+          <Button variant='outline' onClick={() => onAnswer(false)}>
+            <Trans>Don't allow</Trans>
+          </Button>
+          <Button ref={allow} onClick={() => onAnswer(true)}>
+            <Check className='size-4' />
+            <Trans>Allow</Trans>
+          </Button>
+        </ResponsiveDialogFooter>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
+  )
+}
+
 // Menu ↔ game state machine. Once a mission starts the game stays mounted and
 // alive; Escape pauses it and overlays the menu (Resume / Exit). "In flight"
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const { t } = useLingui()
-  const [config, setConfig] = useMissionConfig()
+  const [config, setConfig, loaded] = useMissionConfig()
   const [join, setJoin] = useState<NetJoin | null>(null)
-  const fly =
+  const developer =
     typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('developer') === '1' &&
-    new URLSearchParams(window.location.search).has('fly') // dev/screenshot hook: ?developer=1&fly=1 skips the menu straight into a mission with saved config (#105: all hooks live behind developer mode)
+    new URLSearchParams(window.location.search).get('developer') === '1'
+  const fly =
+    developer && new URLSearchParams(window.location.search).has('fly') // dev/screenshot hook: ?developer=1&fly=1 skips the menu straight into a mission with saved config (#105: all hooks live behind developer mode)
   const [started, setStarted] = useState(fly)
   const [menuOpen, setMenuOpen] = useState(!fly)
   const [gameKey, setGameKey] = useState(0)
   const gameRef = useRef<GameHandle | null>(null)
 
   const [tab, setTab] = useState<SetupTab>('general')
+  // Closed without an answer: not asked again until the next visit.
+  const [deferred, setDeferred] = useState(false)
 
   const inFlight = started && !menuOpen
 
@@ -181,6 +244,19 @@ function Index() {
           </Suspense>
         </LazyBoundary>
       )}
+      {/* Not in developer mode: the headless harness drives this menu there,
+          and a question it cannot answer would stop every run. */}
+      <SharingDialog
+        open={
+          loaded &&
+          menuOpen &&
+          !developer &&
+          !deferred &&
+          config.sharing === undefined
+        }
+        onAnswer={(allowed) => setConfig({ ...config, sharing: allowed })}
+        onClose={() => setDeferred(true)}
+      />
       {menuOpen && (
         <MissionSetup
           config={config}
