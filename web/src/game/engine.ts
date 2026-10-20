@@ -42,7 +42,7 @@ import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
-import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject, order as stores_order, sequence, departed, ignite, adopt, burning as burning_stores, rearm as rearm_order, retain as stores_retain, masked as stores_masked, revised as stores_revised } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
@@ -4414,12 +4414,12 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.strokeStyle="rgba(57,224,122,0.5)"; x.lineWidth=2;
 	x.beginPath(); x.moveTo(256,96); x.lineTo(236,206); x.lineTo(60,266); x.lineTo(60,282); x.lineTo(236,262); x.lineTo(236,352); x.lineTo(216,398); x.lineTo(256,388); x.lineTo(296,398); x.lineTo(276,352); x.lineTo(276,262); x.lineTo(452,282); x.lineTo(452,266); x.lineTo(276,206); x.closePath(); x.stroke();
 	const spots={ 1:[64,308], 2:[112,318], 3:[160,328], 4:[208,338], 5:[256,348], 6:[304,338], 7:[352,328], 8:[400,318], 9:[448,308] };
-	const order=stores_rounds(lo);
-	const fired=Math.max(0, order.length-Math.max(0,ownship.msl|0));
-	const next=order[fired];   // the SMS priority station: the round the trigger takes next
-	const live=new Set(order.slice(fired).map(r=>r.name));
-	const aorder=stores_amraams(lo);   // #27: the cheek AMRAAMs, their own magazine
-	const aspent=Math.max(0,aorder.length-Math.max(0,ownship.amraam|0));
+	const order=sequence(ownship).heaters, stations=new Map(stores_rounds(lo).map(r=>[r.name,r.station]));
+	const spent=departed(order,ownship.msl|0);
+	const next=order[spent];   // the SMS priority station: the round the trigger takes next, a round burning on its rail first
+	const live=new Set(order.slice(spent));
+	const aorder=sequence(ownship).amraams;   // #27: the cheek AMRAAMs, their own magazine
+	const aspent=departed(aorder,ownship.amraam|0);
 	const alive=new Set(aorder.slice(aspent));
 	for(let station=1;station<=9;station++){
 		const slot=lo[String(station)]||{fixture:"",stores:[]};
@@ -4438,7 +4438,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 		if(colour&&label!=="—"&&label!=="PYL") x.fillStyle=tank_here?"#ffd24a":"#39e07a"; else x.fillStyle=label==="—"?"rgba(57,224,122,0.4)":"#39e07a";
 		x.fillText(label,sx,sy+34);
 		x.font="12px monospace"; x.fillStyle="rgba(57,224,122,0.6)"; x.fillText(String(station),sx,sy+52);
-		if(master==="9m"&&next&&next.station===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
+		if(master==="9m"&&next&&stations.get(next)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
 		if(master==="120c"&&aorder[aspent]&&parseInt(aorder[aspent].slice(4),10)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // parseInt: twin rounds carry an a/b point suffix
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
@@ -4574,7 +4574,21 @@ function loadout(){ return stores_granted(demonstrating()?stores_normalize(store
 function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return stores_rounds(bandit_fit()).length; }   // the heaters the SP bandit spawns with; launch_bandit_heater counts them down from here, and server bots decrement their own masks
-function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
+function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; rearm_order(st); if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
+// cooked adopts the stores the battle core reports burning on a jet's rails
+// (single player's battle output words 62 and 63): each new one jumps the
+// jet's launch order (stores.ts sequence), and its fire is drawn.
+function cooked(st,mask){ const book=stores_catalog(); if(book) adopt(st,stores_masked(mask,book.index)); }
+// store_fires draws a burning round's motor at its station: flame and smoke,
+// the only cue (a real Hornet has no light or voice for it).
+function store_fires(st){ for(const name of burning_stores(st)){ const p=store_position(st,name); if(p) burn_trail(p,0.6,st.velx??st.fwd.x*st.speed,st.vely,st.velz??st.fwd.z*st.speed); } }
+// store_position is where a round hangs in the world: a tip's rail node, or
+// the drawn centre of a rack round, whose node carries baked geometry offset
+// by a delta, so the node origin is NOT the round.
+function store_position(st,name){ if(!st.group) return null;
+	if(name.startsWith("tip")){ const rail=st.group.getObjectByName(TIP_NODES[name]); if(!rail) return null; rail.getWorldPosition(_v); return {x:_v.x,y:_v.y,z:_v.z}; }
+	const piece=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(!piece) return null;
+	_launch_box.setFromObject(piece); _launch_box.getCenter(_v); return {x:_v.x,y:_v.y,z:_v.z}; }
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's model
 // space), pylon AIM-9s as translated clones of the tip missile mesh. Tips stay
@@ -4634,27 +4648,26 @@ function round_clone(model, name, station){
 function update_rails(st,count){ if(!st.group) return;
 	const lo=st.loadout;
 	if(!lo){ for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } return; }
-	const order=stores_rounds(lo);
-	const fired=Math.max(0, order.length-Math.max(0,count|0));
-	const live=new Set(order.slice(fired).map(r=>r.name));
+	const order=sequence(st);
+	const live=new Set(order.heaters.slice(departed(order.heaters,count|0)));
 	for(const key of ["tip1","tip9"]){ const node=st.group.getObjectByName(TIP_NODES[key]); if(node) node.visible=live.has(key); }
 	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); }
-	{ const order=stores_amraams(lo); const spent=Math.max(0,order.length-Math.max(0,st.amraam??order.length));   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
-		order.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
+	{ const spent=departed(order.amraams,st.amraam);   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
+		order.amraams.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask: the core attach bitmask for the flown loadout with expended rounds
 // cleared, memoised on (loadout revision, heaters left, AMRAAMs left). Before
 // the catalog is readable the wingtip default stands in.
-let own_mask_memo={ key:-1, value:0b11 };
+let own_mask_memo={ key:"", value:0b11 };
 function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 	const lo=ownship.loadout||loadout();
+	const order=ownship.loadout?sequence(ownship):stores_order(lo);   // the jet's own launch order: a round fired off burning leaves out of the SMS order
 	const remaining=Math.max(0, ownship.msl|0);
-	const aorder=stores_amraams(lo);
-	const aleft=Math.min(Math.max(0,(ownship.amraam??aorder.length)|0), aorder.length);
-	const key=(loadout_rev*64+remaining)*64+aleft;
-	if(own_mask_memo.key!==key){ const order=stores_rounds(lo); own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.length-remaining), book, aorder.length-aleft) }; }
+	const aleft=Math.min(Math.max(0,(ownship.amraam??order.amraams.length)|0), order.amraams.length);
+	const key=loadout_rev+"|"+stores_revised()+"|"+remaining+"|"+aleft;
+	if(own_mask_memo.key!==key) own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.heaters.length-remaining), book, order.amraams.length-aleft, order) };
 	return own_mask_memo.value; }
 // external_capacity is the flown loadout's full-tank external fuel, kg — the
 // deck crew's fill line and the setup's gross-weight arithmetic both use it.
@@ -4706,12 +4719,15 @@ function jettison_stations(stations, what){
 		next=stores_jettison(next,station,what); }
 	if(!dropped.length) return false;
 	separate_debris(ownship, debris);
-	const before=stores_rounds(lo), fired=Math.max(0,before.length-Math.max(0,ownship.msl|0));
-	const live=new Set(stores_rounds(next).map(r=>r.name));
-	const gone=before.slice(fired).filter(r=>!live.has(r.name)).length;   // live rounds that left on their racks
-	const carried=Math.min(Math.max(0,ownship.amraam|0), stores_amraams(next).length);   // #27: cheek rounds that left on their racks stop counting (assign_loadout re-seeds full)
+	const before=sequence(ownship), after=stores_order(next);   // the launch order keeps its sequence, a burning round's promotion included, less the rounds that went with their stations (stores.go Jettison)
+	const live=new Set(after.heaters), carried=new Set(after.amraams);
+	const gone=before.heaters.slice(departed(before.heaters,ownship.msl|0)).filter(name=>!live.has(name)).length;   // live rounds that left on their racks
+	const lost=before.amraams.slice(departed(before.amraams,ownship.amraam|0)).filter(name=>!carried.has(name)).length;   // #27: and the AMRAAMs: only rounds still aboard come off the count, not ones already fired from a station now dropped
+	const amraam=Math.max(0,(ownship.amraam|0)-lost);
+	const burning=ownship.cooking;
 	assign_loadout(ownship,next);
-	ownship.amraam=carried;
+	stores_retain(ownship,before,burning);
+	ownship.amraam=amraam;
 	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
 	update_rails(ownship,ownship.msl);
 	// Release envelope (#43, NATOPS fig 4-4: 575 KCAS / Mach 0.95, +1 to +2 g):
@@ -5665,13 +5681,11 @@ const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_ge
 		burn:0,flew:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, broken lock, and a swallowed flare's fall point (the sight line carries no memory: seeker.ts)
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
-	if(st.group&&st.msl>0){ let rail=null;
-		if(st.loadout){ const order=stores_rounds(st.loadout); const next=order[Math.max(0,order.length-st.msl)];   // the round about to depart, in the SMS priority order (#17)
-			if(next&&next.name.startsWith("tip")) rail=st.group.getObjectByName(TIP_NODES[next.name]);
-			else if(next){ const piece=st.racks&&st.racks.nodes&&st.racks.nodes[next.name];   // rack rounds carry baked geometry offset by a delta, so the node origin is NOT the round — take the drawn centre
-				if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
-		else rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
-		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
+	if(st.group&&st.msl>0){
+		if(st.loadout){ const order=sequence(st).heaters; const next=order[departed(order,st.msl)];   // the round about to depart, in the jet's launch order: the SMS priority order (#17), a burning round first
+			const at=next&&store_position(st,next); if(at) sp=at; }
+		else { const rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
+			if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
@@ -5702,19 +5716,20 @@ function trigger_missile(){
 function trigger_amraam(){
 	if(weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || (ownship.amraam|0)<=0) return;
 	const track=RADAR.stt??RADAR.ls;
-	if(!amraam_visual && track==null){ notice("NO RADAR LOCK"); return; }
+	const next=amraam_departure(ownship).name, visual=amraam_visual||burning_stores(ownship).includes(next);   // a round burning on its rail goes off as a VISUAL shot, lock or none: firing it off is the way out before it cooks the jet off
+	if(!visual && track==null){ notice("NO RADAR LOCK"); return; }
 	if(MULTIPLAYER){
 		// Multiplayer (#27): the server flies the round and judges the warhead; the
 		// client raises the trigger edge and spends its own magazine to keep the SMS
 		// honest. A supported shot needs the STT the server can see on the emitter
 		// wire - the L&S is client-side only.
-		if(!amraam_visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
-		fox3_flag=true; fox3_visual=amraam_visual;   // a VISUAL shot says so (#155): the server launches it without a lock, its seeker after what lies in the circle
+		if(!visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
+		fox3_flag=true; fox3_visual=visual;   // a VISUAL shot says so (#155): the server launches it without a lock, its seeker after what lies in the circle
 		if(!cheat("ammunition")) ownship.amraam--;
 		audio_launch(); update_rails(ownship,ownship.msl);
 		return; }
-	const target=has_enemy&&bandit.group.visible&&(!amraam_visual||helmet.within(ownship.fwd,seeker_toward(bandit).to,VISUAL))?bandit:null;   // a VISUAL shot's own radar takes what lies inside the field-of-view circle as it leaves the rail, and nothing outside it
-	if(launch_amraam(ownship,target,amraam_visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
+	const target=has_enemy&&bandit.group.visible&&(!visual||helmet.within(ownship.fwd,seeker_toward(bandit).to,VISUAL))?bandit:null;   // a VISUAL shot's own radar takes what lies inside the field-of-view circle as it leaves the rail, and nothing outside it
+	if(launch_amraam(ownship,target,visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phase 2)
 // The AIM-120's field-of-view circle (the DCS guide, figure 154; NATOPS has none): the search field of the
@@ -5734,7 +5749,7 @@ function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR
 // launch_amraam, which fires it, and launch_zone, whose ladder flies it and adds nothing of its own. Ejector
 // points (the cheek LAU-116, the inboard LAU-115C) punch the round DOWN before the motor lights; rail points
 // (wing LAU-127s, single or twin) send it forward off the rail like the 9M.
-function amraam_departure(st){ const order=stores_amraams(st.loadout||{}), name=order[Math.max(0,order.length-Math.max(0,st.amraam|0))];
+function amraam_departure(st){ const order=sequence(st).amraams, name=order[departed(order,st.amraam|0)];
 	if(stores_eject(st.loadout||{},name||"")) return { name, velocity:{ x:st.fwd.x*(st.speed+15), y:st.fwd.y*st.speed-8, z:st.fwd.z*(st.speed+15) } };
 	return { name, velocity:{ x:st.fwd.x*(st.speed+30), y:st.fwd.y*(st.speed+30), z:st.fwd.z*(st.speed+30) } }; }
 function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if(!m) return false;
@@ -6061,13 +6076,13 @@ function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.
 // hulk (#33): a hulk has no flight model, so without this its rails read as
 // permanently loaded and empty stations would keep cooking off. Memoised on
 // the remaining counts — it is called every frame.
-let bandit_rack_memo={ key:-1, value:0 };
+let bandit_rack_memo={ key:"", value:0 };
 function bandit_racks(){ const book=stores_catalog(); if(!book||!battle_rigged) return;
 	const lo=bandit.loadout; if(!lo) return;
-	const order=stores_rounds(lo), aorder=stores_amraams(lo);
-	const left=Math.min(Math.max(0,(bandit.msl??order.length)|0), order.length), aleft=Math.min(Math.max(0,(bandit.amraam??aorder.length)|0), aorder.length);   // the counts default to a FULL rack: the SP bandit's heater launches never reach the client (its brain reports only fox3), so an undefined count means carried, not fired
-	const key=left*64+aleft;
-	if(bandit_rack_memo.key!==key) bandit_rack_memo={ key, value:stores_mask(lo, Math.max(0,order.length-left), book, aorder.length-aleft) };
+	const order=sequence(bandit);
+	const left=Math.min(Math.max(0,(bandit.msl??order.heaters.length)|0), order.heaters.length), aleft=Math.min(Math.max(0,(bandit.amraam??order.amraams.length)|0), order.amraams.length);   // the counts default to a FULL rack: an undefined count means carried, not fired
+	const key=stores_revised()+"|"+left+"|"+aleft;
+	if(bandit_rack_memo.key!==key) bandit_rack_memo={ key, value:stores_mask(lo, order.heaters.length-left, book, order.amraams.length-aleft, order) };
 	battle_racks(0,bandit_rack_memo.value); }
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true; bandit_dispensed=0; bandit_words=null;
@@ -8193,7 +8208,7 @@ function recording_sample(){
 		// battle channels (#238): what the fight did to ME, from the same
 		// state the CAS alerts and damage visuals read
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
-		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
+		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0, cooking:burning_stores(ownship).join("+"),
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
 		// The hands on the controls (shipped, where they were developer-only):
 		// the one way to judge the handling against what the jet did.
@@ -8214,7 +8229,7 @@ function recording_sample(){
 		add(bandit,2,"Bandit","Red",bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				speedbrake:bandit.speedbrake??0,   // the board, for a replay to draw
-				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
+				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0, cooking:burning_stores(bandit).join("+"),
 				structure:bandit.harm.wreck||0, wing:bandit.harm.wing||0, ...(bandit.fate?{fate:bandit.fate}:{}),   // #103: the element TOTAL and the aero-relevant wing loss are different numbers, and only the total used to be recorded — under the name Wing, which is what made a fight's damage unattributable
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
 				missiles:Math.max(0,(bandit.msl??bandit_remaining())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
@@ -8237,7 +8252,7 @@ function recording_sample(){
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange",undefined,
 			channels({ spent:st.spent, struck:st.struck, speed:st.speed, burning:st.burning, burn:st.burn,
 				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, speedbrake:st.speedbrakeTarget, missiles:st.msl,
-				aoa:st.aoa, beta:st.beta, g:st.gload },
+				aoa:st.aoa, beta:st.beta, g:st.gload, cooking:burning_stores(st) },
 				net.emitters.get(slot), net.slot)); } }
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
@@ -8683,9 +8698,9 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
-	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification)
-	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off, y:bandit.pos.y-bandit.fwd.y*back+right.y*off, z:bandit.pos.z-bandit.fwd.z*back+right.z*off},
+if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side,below){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0, low=+below||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification); below: metres under it, so it can run along the rounds hung beneath the wing
+	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off-up.x*low, y:bandit.pos.y-bandit.fwd.y*back+right.y*off-up.y*low, z:bandit.pos.z-bandit.fwd.z*back+right.z*off-up.z*low},
 		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
@@ -8712,7 +8727,7 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
 	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
 	return { ownship:read(ownship), bandit:has_enemy?read(bandit):null, ownshipShed:gone }; };   // dev (#wing loss): panel visibility and the element verdict behind it
-if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, stores:burning_stores(bandit), heaters:bandit.msl??null, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flare(bandit); dispense_chaff(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
 if(DEV_MODE) (globalThis as any).dev_heat=()=>{ const z=heat_zone(); if(!z) return null;   // #47: the live 9M ladder and its cue, as the HUD draws them
@@ -9234,6 +9249,7 @@ function playback_damage(p,words){ const v=(p.Damage||"").split("|").map(Number)
 function playback_effects(st,pose,own,dt){ if(dt<=0) return;
 	const n=(key,fallback)=>playback_number(pose.properties,key,fallback);
 	if(n("Burning",0)>0) burn_trail(st.pos,0.8,st.velx,st.vely,st.velz);
+	{ const cooking=String(pose.properties.Cooking??""); if(cooking||(st.cooking&&st.cooking.size)) adopt(st,cooking?cooking.split("+"):[]); store_fires(st); }   // a round burning on its rail: first in its launch order, its fire at the station
 	const leak=n("Leak",0); if(leak>0.05) leak_trail(st.pos,leak,st.velx,st.vely,st.velz);
 	const thrust=n("Thrust",0); if(thrust>0.06) engine_smoke(st.pos,thrust,st.velx,st.vely,st.velz);
 	// The pilot's jet counts its magazines down; the bandit counts its dispenses up.
@@ -9500,7 +9516,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; rearm_order(ownship); update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); external_fill(b); flight_set(b); }   // the deck crew top the externals too — every spawn and service is a full-tank fill (#17)
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
@@ -9512,7 +9528,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; rearm_order(ownship); update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); external_fill(b); flight_set(b); }
 }
 function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
@@ -9651,6 +9667,7 @@ function fly_player(dt){
 			if(flown.graze&&(!graze||flown.graze.gap<graze.gap)) graze={...flown.graze}; }   // the burst's closest MISS: kept as a running minimum, because a burst is many ticks and only its best moment says anything
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)|(extinguish_flag?4:0)); battle_reset=false; extinguish_flag=false;   // bit 4: the fire extinguisher discharged this frame (2.14.2)
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
+		cooked(ownship,battle[62]); if(has_enemy) cooked(bandit,battle[63]);   // a round's motor alight on a rail: it jumps the launch order, and its fire is drawn at the station
 		shed_panels(ownship,last_out);   // our own wing too: in any external view a lost panel is the loudest damage cue there is
 		if(has_enemy) bandit_racks();   // keep the hulk's rails in step before the next tick judges hits on them
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
@@ -9662,6 +9679,7 @@ function fly_player(dt){
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
 			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, (bandit.reheat??0)>0.3); }   // the bandit's roar carries its burner (#88 audit): its plume state is a core mechanic and it was hardcoded cold
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
+		store_fires(ownship);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
 		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire",has_enemy?BANDIT:""); }   // the fuel fire's fuse ran out
 		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship("pilot",has_enemy?BANDIT:""); }
@@ -9912,6 +9930,7 @@ function shed_panels(st,words){ if(!st||!st.group||!words) return;
 function bandit_wounds(){ const harm=bandit.harm; if(!harm) return;
 	shed_panels(bandit,bandit_words);   // a wing the battle model tore off stops being drawn
 	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,(harm.wing||0)*0.9),bandit.velx,bandit.vely,bandit.velz);
+	store_fires(bandit);
 	if((harm.thrust||0)>0.06) engine_smoke(bandit.pos,harm.thrust,bandit.velx,bandit.vely,bandit.velz);
 	if((harm.leak||0)>0.04) leak_trail(bandit.pos,Math.min(1,harm.leak*3),bandit.velx,bandit.vely,bandit.velz);
 }
@@ -10190,7 +10209,7 @@ function reset_ownship(){
 	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
@@ -12118,7 +12137,9 @@ function remote_racks(st,slot){ if(!net) return;
 			const keep=new Set(stores_entries(station,next[String(station)]||{fixture:"",stores:[]}));
 			for(const name of stores_entries(station,before)) if(!keep.has(name)) gone.push(name); }
 		separate_debris(st, gone); }
+	const previous=st.loadout?sequence(st):undefined, burning=st.cooking;
 	assign_loadout(st, next);
+	if(previous) stores_retain(st,previous,burning);   // a jettison keeps his launch order, a burning round's promotion included
 	if(st.msl===undefined) st.msl=stores_rounds(st.loadout).length;
 	else st.msl=Math.min(st.msl, stores_rounds(st.loadout).length);
 	update_rails(st, st.msl); }
@@ -12160,9 +12181,10 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
-		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); rearm_order(ownship); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
+		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); rearm_order(st); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
+	case "store": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st&&e.name) ignite(st,String(e.name)); break; }   // a round's motor caught fire on that jet's rail: it goes first in the launch order, and its fire is drawn until it leaves
 	case "missile":
 		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
 		break;
@@ -12275,6 +12297,7 @@ function net_frame(dt){
 		if(mine){ own_burn[0]=mine.burn[0]; own_burn[1]=mine.burn[1]; own_burning=!!mine.burning; own_leak=mine.leak;
 			if(mine.alive){ const worst=Math.max(own_burn[0],own_burn[1],own_burning?1:0);
 				if(worst>0) burn_trail(ownship.pos,worst,ownship.velx,ownship.vely,ownship.velz);
+				store_fires(ownship);
 				if(own_leak>0.1) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz); } } }
 	const seen=new Set(), wakes=[];
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
@@ -12314,6 +12337,7 @@ function net_frame(dt){
 		else audio_remote_drop("r"+slot);
 		if(pose.alive){ const burning=Math.max(pose.burn?pose.burn[0]:0, pose.burn?pose.burn[1]:0);   // #78: the damage you inflicted shows on their jet
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
+			store_fires(st);
 			if((pose.thrust||0)>0.06) engine_smoke(st.pos,pose.thrust,st.velx,st.vely,st.velz);   // harmless no-op on wires that do not carry it
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
 	flight_wake_shed(wakes);

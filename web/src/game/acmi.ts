@@ -117,6 +117,7 @@ interface Flight {
   structure?: number // whole-airframe element loss, summed: what a hit counter reads
   wing?: number // wing loss the aero flies: what a performance claim rests on
   leak?: number // fuel loss, kg/s
+  cooking?: string // the rounds whose motors burn on the rails, catalog names joined by '+', empty when none
   fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe / battle / surface
   // Who ended it, when anyone is credited: the debrief keeps the mechanism in
   // Fate and gains the attribution here, the way a missile carries Parent.
@@ -376,6 +377,7 @@ export function channels(
     aoa?: number // degrees, off the pose wire (#164)
     g?: number // load factor (#164)
     beta?: number // sideslip, degrees, off the pose wire
+    cooking?: string[] // the rounds burning on his rails, from the store events
   },
   emitter?: { mode: number; target: number },
   mine?: number
@@ -388,6 +390,7 @@ export function channels(
     burning: !!remote.burning || Math.max(burn[0] ?? 0, burn[1] ?? 0) > 0,
     thrust: remote.thrust ?? 0,
     leak: remote.leak ?? 0,
+    cooking: (remote.cooking ?? []).join('+'),
     burner: remote.reheat ?? 0,
     gear: remote.gear ?? 1,
     speedbrake: remote.speedbrake ?? 0,
@@ -600,6 +603,8 @@ export function writer(): (sample: Sample, out: string[]) => void {
             battle += `,Structure=${round(d.structure, 2)}`
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
+          if (d.cooking !== undefined)
+            battle += `,Cooking=${field(d.cooking)}`
           if (d.fate !== undefined) battle += `,Fate=${field(d.fate)}`
           if (d.killer) battle += `,Killer=${field(d.killer)}`
           if (battle && battled.get(o.id) !== battle) {
