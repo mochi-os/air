@@ -1746,3 +1746,44 @@ describe("the ownship's death in the recording", () => {
     expect(lines[1]).not.toContain('TAS=')
   })
 })
+
+// A round's motor burning on the rail (the store fire): the debrief reads which
+// round burned and for how long, and a replay draws the fire at its station.
+describe('a store fire is recorded', () => {
+  const at = (time: number, cooking: string): Sample => ({
+    time,
+    objects: [
+      {
+        id: 1,
+        x: 0,
+        y: 1000,
+        z: 0,
+        roll: 0,
+        pitch: 0,
+        yaw: 0,
+        name: 'FA-18C',
+        label: 'P',
+        colour: 'Blue',
+        kind: 'Air+FixedWing',
+        data: { struck: 3, burning: false, thrust: 0, cooking },
+      },
+    ],
+  })
+
+  it('writes the burning rounds when they change, and clears them', () => {
+    const text = acmi(
+      [at(0, ''), at(0.1, 'tip9'), at(0.2, 'tip9'), at(0.3, '')],
+      new Date(0),
+      't'
+    )
+    const lines = text.split('\n').filter((l) => l.includes('Cooking='))
+    expect(lines).toHaveLength(3)
+    expect(lines[1]).toContain('Cooking=tip9')
+    expect(lines[2]).toMatch(/Cooking=(,|$)/)
+  })
+
+  it('carries a remote jet\'s burning rounds', () => {
+    expect(channels({ cooking: ['9m2', '120c4'] }).cooking).toBe('9m2+120c4')
+    expect(channels({}).cooking).toBe('')
+  })
+})

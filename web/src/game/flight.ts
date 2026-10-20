@@ -735,7 +735,8 @@ export function battle_blast(
 // battle_progress runs the damage cascade one frame; the returned view is valid
 // until the next call. Layout: 0-5 ownship (fire L, fire R, burning, killed,
 // mask, leak); 6+i*9.. per hulk (adds thrust loss, wing loss, element total
-// before leak).
+// before leak); 62 and 63 the rounds whose motors burn on the ownship's and
+// hulk 0's rails, as catalog masks (bit i the catalog's store i).
 export function battle_progress(
   throttle: number,
   tick: number,
