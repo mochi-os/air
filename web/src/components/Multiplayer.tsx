@@ -199,15 +199,15 @@ export function Multiplayer({
   const [bots, setBots] = useState<Record<string, number>>({
     drone: 0,
     novice: 0,
-    pilot: 0,
-    ace: 0,
+    intermediate: 0,
+    expert: 0,
     superhuman: 0,
   }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const [blueBots, setBlueBots] = useState<Record<string, number>>({
     drone: 0,
     novice: 0,
-    pilot: 0,
-    ace: 0,
+    intermediate: 0,
+    expert: 0,
     superhuman: 0,
   }) // teams mode: the blue side's bots (the row above places red's)
   const address = normalize_server(server || default_server())
@@ -895,8 +895,8 @@ export function Multiplayer({
                         [
                           ['drone', t`Drone`],
                           ['novice', t`Novice`],
-                          ['pilot', t`Pilot`],
-                          ['ace', t`Ace`],
+                          ['intermediate', t`Intermediate`],
+                          ['expert', t`Expert`],
                           ['superhuman', t`Superhuman`],
                         ] as const
                       ).map(([level, label]) => (
