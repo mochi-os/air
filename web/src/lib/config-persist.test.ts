@@ -166,4 +166,12 @@ describe('the partial a flush applies', () => {
     expect(whole.stores).toEqual(normalize(migrate(false)))
     expect(absorb({ callsign: 'x' }).stores).toEqual(normalize(migrate(true)))
   })
+
+  it("reads a bandit saved under a tier's former name as the tier it became", () => {
+    const former = (bandit: string) => absorb({ bandit } as unknown as Partial<MissionConfig>).bandit
+    expect(former('pilot')).toBe('intermediate')
+    expect(former('ace')).toBe('expert')
+    for (const tier of ['novice', 'intermediate', 'expert', 'superhuman']) expect(former(tier)).toBe(tier)
+    expect(absorb({ callsign: 'x' }).bandit).toBe(DEFAULT_CONFIG.bandit)
+  })
 })

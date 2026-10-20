@@ -762,7 +762,7 @@ it("writes a bot's skill tier once, on the object", () => {
     label: 'Bandit',
     colour: 'Red',
     kind: 'Air+FixedWing',
-    skill: 'ace',
+    skill: 'expert',
   })
   const text = acmi(
     [
@@ -773,7 +773,7 @@ it("writes a bot's skill tier once, on the object", () => {
     't'
   )
   const lines = text.split('\n').filter((l) => l.startsWith('2,T='))
-  expect(lines[0]).toContain('Skill=ace')
+  expect(lines[0]).toContain('Skill=expert')
   expect(lines[1]).not.toContain('Skill=')
 })
 
@@ -821,7 +821,7 @@ it('records flares, throttle, the sensor picture, and the match rules', () => {
     't',
     {
       task: 'joust',
-      bandit: 'ace',
+      bandit: 'expert',
       weapons: 'fox2',
       cheats: 'invulnerable',
       empty: '',
@@ -830,7 +830,7 @@ it('records flares, throttle, the sensor picture, and the match rules', () => {
   const lines = text.split('\n')
   expect(lines.filter((l) => l.startsWith('0,Match_'))).toEqual([
     '0,Match_task=joust',
-    '0,Match_bandit=ace',
+    '0,Match_bandit=expert',
     '0,Match_weapons=fox2',
     '0,Match_cheats=invulnerable',
   ])
@@ -949,7 +949,7 @@ describe('rendering a recording as it grows', () => {
     const recorder = new Recorder()
     for (const s of flight(10)) recorder.add(s.time, s.objects)
     recorder.render(new Date(0), 't', { task: 'joust' })
-    expect(recorder.render(new Date(0), 't', { task: 'joust', bandit: 'ace' })).toContain('0,Match_bandit=ace')
+    expect(recorder.render(new Date(0), 't', { task: 'joust', bandit: 'expert' })).toContain('0,Match_bandit=expert')
   })
   it('starts again when a windowed recorder drops its first samples', () => {
     const recorder = new Recorder(5)

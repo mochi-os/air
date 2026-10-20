@@ -1369,8 +1369,8 @@ function MissionPanel({
                   </Label>
                   <Picker
                     value={
-                      String(config.bandit || 'pilot') as
-                        'novice' | 'pilot' | 'ace' | 'superhuman'
+                      String(config.bandit || 'intermediate') as
+                        'novice' | 'intermediate' | 'expert' | 'superhuman'
                     }
                     onChange={(v) => set('bandit', v)}
                     options={[
@@ -1380,13 +1380,13 @@ function MissionPanel({
                         icon: SignalLow,
                       },
                       {
-                        value: 'pilot',
-                        label: <Trans>Pilot</Trans>,
+                        value: 'intermediate',
+                        label: <Trans>Intermediate</Trans>,
                         icon: SignalMedium,
                       },
                       {
-                        value: 'ace',
-                        label: <Trans>Ace</Trans>,
+                        value: 'expert',
+                        label: <Trans>Expert</Trans>,
                         icon: SignalHigh,
                       },
                       {
@@ -1645,8 +1645,8 @@ export function MissionSetup({
 
   const BANDITS: Record<string, ReactNode> = {
     novice: <Trans>Novice</Trans>,
-    pilot: <Trans>Pilot</Trans>,
-    ace: <Trans>Ace</Trans>,
+    intermediate: <Trans>Intermediate</Trans>,
+    expert: <Trans>Expert</Trans>,
     superhuman: <Trans>Superhuman</Trans>,
   }
   const STARTS: Record<string, ReactNode> = {
@@ -1661,7 +1661,7 @@ export function MissionSetup({
     config.task === 'joust' ? (
       <>
         <Trans>Joust</Trans> ·{' '}
-        {BANDITS[String(config.bandit || 'pilot')] ?? BANDITS.pilot}
+        {BANDITS[String(config.bandit || 'intermediate')] ?? BANDITS.intermediate}
         {config.duel === 'bvr' ? ' · BVR' : ''}
       </>
     ) : config.start === 'case1' && config.demonstration ? (

@@ -30,7 +30,7 @@ export interface Recorded {
   colour: 'Blue' | 'Red' | 'Orange'
   kind: string // TacView type tag, e.g. Air+FixedWing
   mode?: string // bot doctrine state — developer builds only
-  skill?: string // a bot's tier (novice / pilot / ace / superhuman) — shipped: the context that decides whether a play was reasonable
+  skill?: string // a bot's tier (novice / intermediate / expert / superhuman) — shipped: the context that decides whether a play was reasonable
   data?: Flight // per-sample flight data: TacView graphs these natively
   round?: Round // a missile in flight (#33 debrief): its guidance state and, on its last sample, its fate
 }
@@ -423,7 +423,7 @@ export function stamp(fight: {
   const kind = fight.multiplayer
     ? fight.mode || 'furball'
     : joust
-      ? 'joust-' + (fight.bandit || 'ace')
+      ? 'joust-' + (fight.bandit || 'expert')
       : 'flight'
   return {
     kind,
@@ -432,7 +432,7 @@ export function stamp(fight: {
       // A duel shape and a bandit belong to a single-player joust and to
       // nothing else: empty here means "there was none", and acmi() omits it.
       duel: joust ? fight.duel || 'merge' : '',
-      bandit: joust ? fight.bandit || 'ace' : '',
+      bandit: joust ? fight.bandit || 'expert' : '',
       opening: joust ? fight.opening ?? '' : '',
       weapons: fight.weapons,
       start: fight.start,
