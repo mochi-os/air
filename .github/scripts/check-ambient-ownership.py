@@ -7,10 +7,10 @@
 """check-ambient-ownership.py - flag Starlark access checks that grant access on
 entity ownership without a real authenticated-user guard.
 
-Core runs a public action as the entity owner (or the first administrator for
-class-level actions) when the caller is anonymous, so `owned(id)` and
-`mochi.entity.get(id)` answer about the OWNER. `if owned(id): return True`
-therefore grants an anonymous caller everything; the fix is
+Core runs a public action with the entity owner's storage (or, for a class-level
+action on a hosted domain, the route owner's) when the caller is anonymous, so
+`owned(id)` and `mochi.entity.get(id)` answer about the OWNER. `if owned(id):
+return True` therefore grants an anonymous caller everything; the fix is
 `if user and owned(id): return True`.
 
 Four detectors, each documented at its own rule below: that `if ...: return True`
