@@ -10210,7 +10210,7 @@ function reset_ownship(){
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
-	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
+	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=false;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise; the set already on from that pre-flight, so a spawn on the deck or the runway is no power-up and does not whoop
 	altitude_set.radar=0; altitude_set.baro=["carrier","runway","case1","case2","case3"].includes(st)?5000:0; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3), kept by the recoveries, where Case III's call comes at its 5,000 ft platform; off for the free flight air start, which begins at 5,000 ft and would call on every dip, and for the joust, where the sea is the only floor and the call would hold back the damage voices
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship

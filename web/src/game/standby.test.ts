@@ -713,12 +713,14 @@ describe('the radar altimeter height indicator', () => {
     expect(source).toMatch(/if\(agl<=5000&&!radalt_inhibited\(\)\) return \{ feet:Math\.max\(agl,0\), radar:true, fallback:false \};/)
   })
 
-  it('sounds the familiarisation whoop once at ground power-up, and a spawn on the deck or the runway is one', () => {
+  it('sounds the familiarisation whoop once at ground power-up, and a spawn, whose set the pre-flight left on, is not one', () => {
     const line = /\n\t\t\tif\(radalt_greet\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
     const whoops = new Function(`let radalt_greet=true, whoops=0; const audio_law=()=>{ whoops++; }; for(let i=0;i<3;i++){ ${line} } return whoops;`)() as number
     expect(whoops).toBe(1)
-    expect(source).toMatch(/radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"\|\|st==="runway";/)
+    // The carrier and runway starts sounded it on their first frame with the set already on.
+    expect(source).toMatch(/radalt_on=true; radalt_test=-Infinity; radalt_greet=false;/)
+    expect(source).not.toMatch(/radalt_greet=st===/)
   })
 
   it('pushes the knob with the middle button on the face, and nothing but the push and pull controls with it', () => {
