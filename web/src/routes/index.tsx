@@ -90,10 +90,12 @@ function exitFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {})
 }
 
-// Whether the developers may read the player's flight recordings. Nothing is
-// chosen for the player: Allow and Don't allow each record their answer, while
-// the close button records nothing and the question comes back on the next
-// visit. The general settings change the answer later.
+// Whether the developers may read the player's flight recordings, asked when
+// the player first presses Fly: a recording is made from the first flight.
+// Nothing is chosen for the player: Allow and Don't allow each record their
+// answer, while the close button records nothing and the question comes back on
+// the first Fly of the next visit. Either way the flight then starts. The
+// general settings change the answer later.
 function SharingDialog({
   open,
   onAnswer,
@@ -160,6 +162,8 @@ function Index() {
   const gameRef = useRef<GameHandle | null>(null)
 
   const [tab, setTab] = useState<SetupTab>('general')
+  // The question on sharing recordings is open, its flight waiting on it.
+  const [asking, setAsking] = useState(false)
   // Closed without an answer: not asked again until the next visit.
   const [deferred, setDeferred] = useState(false)
 
@@ -181,6 +185,15 @@ function Index() {
   const leaveFlight = () => {
     setMenuOpen(true)
     exitFullscreen()
+  }
+  // Every path here runs inside the click or key press that answered or
+  // pressed Fly, which enterFlight's audio and fullscreen need.
+  const launch = () => {
+    setAsking(false)
+    setJoin(null)
+    setGameKey((k) => k + 1)
+    setStarted(true)
+    enterFlight()
   }
 
   return (
@@ -244,18 +257,16 @@ function Index() {
           </Suspense>
         </LazyBoundary>
       )}
-      {/* Not in developer mode: the headless harness drives this menu there,
-          and a question it cannot answer would stop every run. */}
       <SharingDialog
-        open={
-          loaded &&
-          menuOpen &&
-          !developer &&
-          !deferred &&
-          config.sharing === undefined
-        }
-        onAnswer={(allowed) => setConfig({ ...config, sharing: allowed })}
-        onClose={() => setDeferred(true)}
+        open={asking}
+        onAnswer={(allowed) => {
+          setConfig({ ...config, sharing: allowed })
+          launch()
+        }}
+        onClose={() => {
+          setDeferred(true)
+          launch()
+        }}
       />
       {menuOpen && (
         <MissionSetup
@@ -264,10 +275,16 @@ function Index() {
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}
           onStart={() => {
-            setJoin(null)
-            setGameKey((k) => k + 1)
-            setStarted(true)
-            enterFlight()
+            // Not in developer mode: the headless harness flies from this menu
+            // there, and a question it cannot answer would stop every run.
+            if (
+              loaded &&
+              !developer &&
+              !deferred &&
+              config.sharing === undefined
+            )
+              setAsking(true)
+            else launch()
           }}
           onJoin={(info) => {
             setJoin(info)
