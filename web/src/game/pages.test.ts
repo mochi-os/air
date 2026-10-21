@@ -1946,7 +1946,7 @@ describe('the radar silence the game reads', () => {
       'if(RADAR.sil) rows.push([GR,"SIL"]);',
       'RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";',
     ])
-    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(10) // the tenth: whether the radar can give an inflight alignment its velocities
+    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(11) // the tenth: whether the radar can give an inflight alignment its velocities; the eleventh: whether the ACM cone skips a jet in the clutter notch
   })
 })
 

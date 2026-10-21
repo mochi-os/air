@@ -48,8 +48,9 @@ const BEAM = 0.0576 // one bar's height, rad (3.3°): the APG-65/73's beam
 export const TILT = 1.047 // antenna elevation gimbal, rad (±60°)
 export const FRAME = 2.5 // s: the longest frame TWS scans, so each trackfile is looked at least this often
 // The EW pieces (#31): a jammer outside burnthrough or a target inside the
-// clutter notch starves the tracker, so the STT goes to MEMORY and breaks if
-// the condition outlasts the window.
+// clutter notch (notched: against the sea, too slow along the line of sight)
+// starves the tracker, so the STT goes to MEMORY and breaks if the condition
+// outlasts the window.
 const BURNTHROUGH = 9000 // m — inside this the skin echo beats the jammer
 const NOTCH = 60 // m/s — radial speed under this sits in the clutter gate
 const MEMORY = 4 // s — how long a track survives on memory before the lock drops
@@ -124,6 +125,27 @@ export function clutter(
   const horizon = Math.acos(EARTH / (EARTH + Math.max(0, own.y)))
   const t = Math.min(1, Math.max(0, (below - horizon + EDGE) / (2 * EDGE)))
   return t * t * (3 - 2 * t)
+}
+
+// notched reports a target in the clutter notch: seen against the sea, with
+// its own speed along the line of sight inside NOTCH, so its return shares the
+// sea's doppler cell. With the sky behind it nothing competes with its return,
+// however it flies. The bots' radar, the datalink and the AMRAAM's seeker use
+// the same (world/games/air/round Notched).
+export function notched(
+  own: RadarOwn,
+  target: RadarTarget,
+  wrap: Wrap
+): boolean {
+  if (clutter(own, target, wrap) <= 0.5) return false
+  const x = wrap(target.x - own.x)
+  const y = target.y - own.y
+  const z = wrap(target.z - own.z)
+  const range = Math.hypot(x, y, z)
+  return (
+    range < 1 ||
+    Math.abs((target.vx * x + target.vy * y + target.vz * z) / range) <= NOTCH
+  )
 }
 
 // detect_range: how far this target paints, this look.
@@ -328,18 +350,8 @@ export class Radar {
       // MEMORY (#31): a starved tracker coasts on the track's last state (no
       // fix), the display says MEM, and the lock drops if the condition
       // outlasts the window.
-      const speed = Math.hypot(target.vx, target.vy, target.vz)
-      const radial =
-        speed < 1
-          ? 0
-          : Math.abs(
-              (target.vx * wrap(target.x - own.x) +
-                target.vy * (target.y - own.y) +
-                target.vz * wrap(target.z - own.z)) /
-                Math.max(g.range, 1)
-            )
       const jammed = target.jamming && g.range > BURNTHROUGH
-      const starved = jammed || radial < NOTCH
+      const starved = jammed || notched(own, target, wrap)
       if (starved) {
         this.memory += dt
         if (this.memory > MEMORY) {
