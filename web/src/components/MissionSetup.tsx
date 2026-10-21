@@ -811,6 +811,59 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              Moon from the <b>CGI Moon Kit</b> by{' '}
+              <b>NASA’s Scientific Visualization Studio</b>, built from the{' '}
+              <b>Lunar Reconnaissance Orbiter</b> camera mosaic (public
+              domain); positions from <b>JPL Horizons</b>. Modified: rendered as
+              the near side seen from Midway at the game’s day and night times.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://svs.gsfc.nasa.gov/4720'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              NASA SVS
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://ssd.jpl.nasa.gov/horizons/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              JPL Horizons
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
+              Cockpit display font <b>“Hornet Display”</b> by{' '}
+              <b>Mørkvitnir</b>, © 2022, licensed under <b>MIT</b>.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://github.com/0x408/hornet-display'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              GitHub
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://opensource.org/license/mit'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: licence name */}
+              MIT
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Rendering by <b>three.js</b> (MIT licence).
             </Trans>{' '}
             <a
