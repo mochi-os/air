@@ -51,7 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
-import { Radar, boresight, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
+import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
@@ -12012,6 +12012,7 @@ function undesignate_press(){
 function acquire_acm(auto){
 	const cone=[];
 	for(const c of contacts()){ const dx=wrap_axis(c.x-ownship.pos.x), dy=c.y-ownship.pos.y, dz=wrap_axis(c.z-ownship.pos.z);
+		if(!RADAR.silent()&&radar_notched(radar_own(),c,wrap_axis)) continue;   // in the clutter notch the radar has no return to lock, as a bot's acquisition has none (hunt.go painted): only a silent radar designates by eye
 		const d=Math.hypot(dx,dy,dz)||1; const fx=dx/d, fy=dy/d, fz=dz/d;
 		const nose=ownship.fwd.x*fx+ownship.fwd.y*fy+ownship.fwd.z*fz;
 		if(RADAR.acm==="bst"){ if(d>18520||nose<0.94) continue; }

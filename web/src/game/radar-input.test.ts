@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { Radar, SCALES, BARS, GIMBAL, FRAME, boresight, geometry, pick, type Track } from './radar'
+import { Radar, SCALES, BARS, GIMBAL, FRAME, boresight, geometry, pick, notched, type Track } from './radar'
 import * as identification from './identification'
 import * as mids from './mids'
 import * as countermeasures from './countermeasures'
@@ -75,12 +75,12 @@ const track = (id: string, range: number): Track => ({
 
 // rig builds the stand-in engine: a real Radar, an ownship facing -z at the
 // origin, and contacts() answering whatever a test supplies (a target at
-// x,y,z; no velocity is needed - only acquire_acm's cone test reads position).
+// x,y,z, its velocity only where a test needs the clutter notch).
 // rdrClick takes a target's azimuth/range directly and converts through the
 // SAME rdr_x/rdr_y the DDI page draws with, rather than duplicating their
 // magic numbers, so a page relayout cannot silently desync the test from what
 // a click actually lands on.
-function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): Rig {
+function rig(contacts: { id: string; x: number; y: number; z: number; vx?: number; vy?: number; vz?: number }[] = []): Rig {
   const code = [
     lift('radar_own'),
     lift('radar_designate'),
@@ -107,6 +107,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
     'Radar',
     'radar_geometry',
     'radar_pick',
+    'radar_notched',
     'contactList',
     'RADAR_BARS',
     'helmet',
@@ -137,7 +138,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number }[] = []): 
        levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; },
        helmet:(on)=>{ Object.assign(hmd,helmet.fresh(on,{ azimuth:0, elevation:0, roll:0 },0)); }, look:(v)=>{ line=v; }, priority:()=>hmd.priority, castle:()=>castle };`
   )
-  return run(Radar, geometry, pick, contacts, BARS, helmet) as Rig
+  return run(Radar, geometry, pick, notched, contacts, BARS, helmet) as Rig
 }
 
 // The attack format's scan readouts (#47): the bars scanned on their bezel,
@@ -272,6 +273,22 @@ describe('acquire (Enter / the stick\'s acquire button)', () => {
     r.press()
     expect(r.RADAR.stt).toBe('bandit')
     expect(r.events()).toEqual(['5.0|acquire|cone'])
+  })
+
+  it('the cone takes no jet in the clutter notch, as a bot cannot (#97)', () => {
+    const beaming = { id: 'bandit', x: 0, y: -400, z: -5000, vx: 250, vy: 0, vz: 0 } // below the horizon, the sea behind it, crossing
+    const r = rig([beaming])
+    r.RADAR.mode = 'rws'
+    r.press()
+    expect(r.RADAR.stt).toBe(null)
+    const hot = rig([{ ...beaming, vx: 0, vz: 250 }]) // the same jet flying at us: out of the notch
+    hot.RADAR.mode = 'rws'
+    hot.press()
+    expect(hot.RADAR.stt).toBe('bandit')
+    const above = rig([{ ...beaming, y: 400 }]) // the same beam above the horizon: the sky behind it
+    above.RADAR.mode = 'rws'
+    above.press()
+    expect(above.RADAR.stt).toBe('bandit')
   })
 
   it('a press that finds nothing to acquire, and holds nothing, lands on nothing: no event', () => {

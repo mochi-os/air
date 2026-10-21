@@ -10,6 +10,7 @@ import {
   geometry,
   aspect_factor,
   clutter,
+  notched,
   detect_range,
   paint_probability,
   pick,
@@ -313,9 +314,11 @@ describe('TWS', () => {
 })
 
 // A HOT target: closing fast, radial velocity far above the clutter notch - the
-// geometry where a tracker holds. The crossing `beam` target above sits IN the
-// notch, which since #31 puts an STT on it into MEMORY.
+// geometry where a tracker holds. The crossing `beam` target above has the sky
+// behind it, so nothing shares its doppler; flown low, the sea behind it, it
+// sits IN the notch, which since #31 puts an STT on it into MEMORY.
 const hot = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 0, vy: 0, vz: 250 }
+const low = { ...beam, y: 300 }
 
 describe('STT', () => {
   it('tracks a hot target continuously and paints nothing else', () => {
@@ -329,17 +332,30 @@ describe('STT', () => {
     expect(radar.bricks.length).toBe(0)
   })
 
-  it('a beaming target coasts in MEMORY, then the lock drops (#31)', () => {
+  it('a beaming target against the sea coasts in MEMORY, then the lock drops (#31)', () => {
     const radar = new Radar()
     radar.designate(7)
-    swept(radar, [beam], 2) // in the notch: no fresh data, the track coasts
+    swept(radar, [low], 2) // in the notch: no fresh data, the track coasts
     expect(radar.stt).toBe(7)
     expect(radar.memory).toBeGreaterThan(1)
     expect(radar.tracks.find((t) => t.id === 7)?.hits ?? 0).toBeLessThan(10)
     expect(radar.breakReason).toBe(null) // still coasting: not broken yet
-    stepUntilBroken(radar, [beam]) // the memory window (4 s) expires
+    stepUntilBroken(radar, [low]) // the memory window (4 s) expires
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe('notch')
+  })
+
+  it('a beaming target with the sky behind it stays tracked (#97)', () => {
+    const radar = new Radar()
+    radar.designate(7)
+    swept(radar, [beam], 6) // past the 4 s memory window: a starved lock would have dropped
+    expect(radar.stt).toBe(7)
+    expect(radar.memory).toBe(0)
+    expect(radar.tracks.find((t) => t.id === 7)?.hits).toBeGreaterThan(300)
+    const above = { ...beam, y: 3500, z: -500, vx: 30, vz: -50 } // a slow jet close above: #97's lock
+    expect(notched(own, above, wrap)).toBe(false)
+    expect(notched(own, low, wrap)).toBe(true)
+    expect(notched(own, { ...low, vx: 0, vz: 250 }, wrap)).toBe(false) // low but flying at us: out of the notch
   })
 
   it('a jammer outside burnthrough steals the gate; inside, the echo wins (#31)', () => {
