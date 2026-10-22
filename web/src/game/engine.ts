@@ -5692,7 +5692,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.rate=undefined; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
-		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??target.burner??0,0,1);   // the ownship's plume lives in `burner` (#67): reading only `reheat` left the bandit's seeker blind to the player's afterburner, and its first live pair left the rail cold at 996 m against a lit reach of 2,500
+		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);   // the target's achieved plume, the ownship's included: the bandit's brain fired on it, so the round judges the same flame and not the lever, which sent pairs fired as the pilot left burner off the rail cold
 		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
 	return true; }
 const _v=new THREE.Vector3();
@@ -9502,6 +9502,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+3]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved reheat, health-weighted (#41): a dead engine's flame disc stops and its nozzle glow dies with it
+	ownship.reheat=Math.max(out[STATE.engine+1],out[STATE.engine+3]);   // the plume as the engines make it, the one the bandit's brain reads through its mirror to decide a heater shot: the lever leaves burner at once, the flame takes a second to die, and the light zones round the lever up
 	ownship.spools=[out[STATE.engine]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+2]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved power, health-weighted: a contrail follows a running engine
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
