@@ -509,14 +509,14 @@ export function bandit_coast(lean: number): Float64Array | null {
 }
 
 // bandit_mode reports the brain's chosen manoeuvre (press, defense, spiral...)
-// for the flight recorder's developer-only doctrine channel (#212/#206).
+// for the flight recorder's doctrine channel (#212/#206).
 export function bandit_mode(): string {
   return core?.bandit_mode ? core.bandit_mode() : ''
 }
 
 // bandit_journal drains the brain's decision journal: what the arbiter weighed
 // at each re-plan, the forecast errors come due, the bypasses, and the g demand
-// stack. Developer recordings only. Null on an older core or when nothing flies.
+// stack. Null on an older core or when nothing flies.
 export function bandit_journal(): Journal | null {
   return core?.bandit_journal ? journal_parse(core.bandit_journal()) : null
 }
@@ -735,7 +735,8 @@ export function battle_blast(
 // battle_progress runs the damage cascade one frame; the returned view is valid
 // until the next call. Layout: 0-5 ownship (fire L, fire R, burning, killed,
 // mask, leak); 6+i*9.. per hulk (adds thrust loss, wing loss, element total
-// before leak).
+// before leak); 62 and 63 the rounds whose motors burn on the ownship's and
+// hulk 0's rails, as catalog masks (bit i the catalog's store i).
 export function battle_progress(
   throttle: number,
   tick: number,

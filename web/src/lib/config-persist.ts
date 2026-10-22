@@ -34,16 +34,36 @@ export function stripRetired<T extends Record<string, unknown>>(saved: T): T {
   return out
 }
 
+// The bandit tiers' former names: a config saved while the intermediate was
+// called the pilot and the expert the ace still names them so.
+const TIERS = new Map<string, MissionConfig['bandit']>([
+  ['pilot', 'intermediate'],
+  ['ace', 'expert'],
+])
+
 // absorb turns what config/load returned into a whole config: the defaults
 // under it, every retired key gone, the stores map normalized (a legacy save
 // carries the retired missiles boolean and no stores map, and migrates to the
-// matching preset, #17). Read `missiles` BEFORE stripping: it still decides the
-// preset, and stripRetired copies, so it survives here.
+// matching preset, #17), and a bandit saved under a tier's former name renamed.
+// Read `missiles` BEFORE stripping: it still decides the preset, and
+// stripRetired copies, so it survives here.
 export function absorb(saved: Partial<MissionConfig>): MissionConfig {
   const legacy = saved as Partial<MissionConfig> & { missiles?: boolean }
   const stores = normalize(legacy.stores ?? migrate(legacy.missiles !== false))
   const kept = stripRetired(legacy) as Partial<MissionConfig>
+  const bandit = TIERS.get(String(kept.bandit))
+  if (bandit) kept.bandit = bandit
   return { ...DEFAULT_CONFIG, ...kept, stores } as MissionConfig
+}
+
+// seeded is what the first save on an account with nothing stored writes: the
+// config in memory, which on a shared browser can be another account's cached
+// settings - so never its answer on sharing, which only this account's player
+// can give. Without it the menu asks.
+export function seeded(config: MissionConfig): MissionConfig {
+  const out = { ...config }
+  delete out.sharing
+  return out
 }
 
 // merged is what a flush persists: the saved config (or the defaults, on a

@@ -312,12 +312,6 @@ msgstr "ဝင်ရောက်ခွင့်အဆင့်"
 msgid "Account type"
 msgstr "အကောင့်အမျိုးအစား"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "ထိပ်တန်း"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "မုဒ်အားလုံး"
 msgid "All servers"
 msgstr "ဆာဗာအားလုံး"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "ခွင့်ပြုရန်"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "{entityLabel} ကို မည်သူမဆို ရှာဖွေခွင့်ပြုပါ"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "ဂိမ်းကို ပိုကောင်းအောင် ပြုလုပ်ရန် ဆော့ဖ်ဝဲရေးသားသူများအား သင့်ပျံသန်းမှု မှတ်တမ်းများကို ဖတ်ရှုခွင့်ပြုရန်"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "အကွာအဝေး LOD"
 msgid "Does not match the required pattern"
 msgstr "လိုအပ်သော ပုံစံနှင့် မကိုက်ညီပါ"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "ခွင့်မပြုရန်"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "ချဲ့ရန်"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "ဘေးဘားကို ချဲ့ပါ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "ကျွမ်းကျင်သူ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "ပျံသန်းမှု လမ်းညွှန်ချက်�
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "ပျံသန်းမှုမှတ်တမ်း"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "ပျံသန်းမှု မှတ်တမ်းများ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "စိတ်ဝင်စားမှု {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "စိတ်ဝင်စားမှုများ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "အလယ်အလတ်"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "လူများ"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "လေယာဉ်မှူး"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "လေယာဉ်မှူး"
 
 #: src/components/GameCanvas.tsx

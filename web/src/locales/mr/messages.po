@@ -312,12 +312,6 @@ msgstr "प्रवेश स्तर"
 msgid "Account type"
 msgstr "खाते प्रकार"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "एक्का"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "सर्व मोड"
 msgid "All servers"
 msgstr "सर्व सर्व्हर"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "अनुमती द्या"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "कोणालाही {entityLabel} शोधण्याची परवानगी द्या"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "गेम सुधारण्यासाठी डेव्हलपर्सना तुमची उड्डाण रेकॉर्डिंग्ज वाचण्याची अनुमती द्या"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "अंतर LOD"
 msgid "Does not match the required pattern"
 msgstr "आवश्यक नमुन्याशी जुळत नाही"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "अनुमती देऊ नका"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "विस्तृत करा"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "साइडबार विस्तृत करा"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "तज्ज्ञ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "उड्डाण टिपा"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "उड्डाण नोंदवही"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "उड्डाण रेकॉर्डिंग्ज"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "स्वारस्य {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "इंटरेस्ट्स"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "मध्यम"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "लोक"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "पायलट"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "पायलट"
 
 #: src/components/GameCanvas.tsx

@@ -312,12 +312,6 @@ msgstr "Մուտքի մակարդակ"
 msgid "Account type"
 msgstr "Հաշվի տեսակ"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Վարպետ"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Բոլոր ռեժիմները"
 msgid "All servers"
 msgstr "Բոլոր սերվերները"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Թույլատրել"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Թույլատրել բոլորին որոնել {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Թույլատրել մշակողներին կարդալ ձեր թռիչքների գրառումները՝ խաղը բարելավելու համար"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "Հեռավորության LOD"
 msgid "Does not match the required pattern"
 msgstr "Չի համապատասխանում պահանջվող ձևանմուշին"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Չթույլատրել"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Ծավալել"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Ընդարձակել կողագոտին"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Փորձագետ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Թռիչքի հուշումներ"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Թռիչքների մատյան"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Թռիչքների գրառումներ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Հետաքրքրություն՝ {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Հետաքրքրություններ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Միջին"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Մարդիկ"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "օդաչու"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Օդաչու"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

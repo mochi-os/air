@@ -312,12 +312,6 @@ msgstr "កម្រិតការចូលប្រើ"
 msgid "Account type"
 msgstr "ប្រភេទគណនី"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "កំពូល"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "គ្រប់របៀប"
 msgid "All servers"
 msgstr "គ្រប់ម៉ាស៊ីនបម្រើ"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "អនុញ្ញាត"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "អនុញ្ញាតឱ្យអ្នកណាក៏ដោយស្វែងរក {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "អនុញ្ញាតឱ្យអ្នកអភិវឌ្ឍន៍អានកំណត់ត្រាហោះហើររបស់អ្នក ដើម្បីកែលម្អហ្គេម"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LOD តាមចម្ងាយ"
 msgid "Does not match the required pattern"
 msgstr "មិនត្រូវនឹងលំនាំដែលទាមទារ"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "មិនអនុញ្ញាត"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "ពង្រីក"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "ពង្រីករបារចំហៀង"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "អ្នកជំនាញ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "គន្លឹះការហោះហើរ"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "កំណត់ហេតុការហោះហើរ"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "កំណត់ត្រាហោះហើរ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "ចំណាប់អារម្មណ៍ {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "ចំណាប់អារម្មណ៍"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "កម្រិតមធ្យម"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "មនុស្ស"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "អ្នកបើកយន្តហោះ"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "អ្នកបើកយន្តហោះ"
 
 #: src/components/GameCanvas.tsx

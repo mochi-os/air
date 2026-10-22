@@ -312,12 +312,6 @@ msgstr "অ্যাক্সেস লেভেল"
 msgid "Account type"
 msgstr "অ্যাকাউন্টের ধরন"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "টেক্কা"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "সব মোড"
 msgid "All servers"
 msgstr "সব সার্ভার"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "অনুমতি দিন"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "যে কাউকে {entityLabel} খোঁজার অনুমতি দিন"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "গেমটি উন্নত করতে ডেভেলপারদের আপনার ফ্লাইট রেকর্ডিং পড়ার অনুমতি দিন"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "দূরত্ব LOD"
 msgid "Does not match the required pattern"
 msgstr "প্রয়োজনীয় প্যাটার্নের সঙ্গে মেলে না"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "অনুমতি দেবেন না"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "প্রসারিত করুন"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "সাইডবার প্রসারিত করুন"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "বিশেষজ্ঞ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "উড়ানের ইঙ্গিত"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "উড়ান লগ"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "ফ্লাইট রেকর্ডিং"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "আগ্রহ {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "আগ্রহসমূহ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "মধ্যম"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "ব্যক্তিরা"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "পাইলট"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "পাইলট"
 
 #: src/components/GameCanvas.tsx

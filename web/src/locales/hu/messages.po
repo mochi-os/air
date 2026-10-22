@@ -312,12 +312,6 @@ msgstr "Hozzáférési szint"
 msgid "Account type"
 msgstr "Fióktípus"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Ász"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Minden mód"
 msgid "All servers"
 msgstr "Minden kiszolgáló"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Engedélyezés"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Bárki rákereshessen erre: {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "A fejlesztők olvashatják a repülési felvételeidet a játék fejlesztéséhez"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "Távolsági LOD"
 msgid "Does not match the required pattern"
 msgstr "Nem felel meg a megadott mintának"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Tiltás"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Kibontás"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Oldalsáv kibontása"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Szakértő"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Repülési tippek"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Repülési napló"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Repülési felvételek"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Érdeklődés: {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Érdeklődések"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Középhaladó"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Személyek"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "pilóta"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Pilóta"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

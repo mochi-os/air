@@ -545,19 +545,23 @@ describe('the AIM-120\'s field-of-view circle (the DCS guide, figure 154)', () =
     expect(lift('draw_hud')).toContain('hctx.arc(c[0],c[1],VISUAL/D2R*ppd,0,Math.PI*2);')
   })
   it('takes alone what lies inside it with a VISUAL shot, and nothing outside it', () => {
-    const shot = (az: number, visual: boolean) => pit<string | null>(`let aim='unset'; amraam_visual=${visual}; const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{};
-      ownship.amraam=2; RADAR.stt=${visual ? 'null' : '"bandit"'}; const launch_amraam=(st,target)=>{ aim=target&&target.name; return true; };
+    const shot = (az: number, visual: boolean, burning = false) => pit<string | null>(`let aim='unset'; amraam_visual=${visual}; const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{};
+      const amraam_departure=()=>({ name:'120c4' }), burning_stores=()=>${burning ? "['120c4']" : '[]'};
+      ownship.amraam=2; RADAR.stt=${visual || burning ? 'null' : '"bandit"'}; const launch_amraam=(st,target)=>{ aim=target&&target.name; return true; };
       bandit.name='bandit'; bandit.pos.copy(at(${az},0,4000)); ${lift('trigger_amraam')}
 } trigger_amraam(); return aim;`)
     expect([shot(5, true), shot(10, true), shot(20, false)]).toEqual(['bandit', null, 'bandit']) // a supported shot is the radar's, wherever it points
+    expect([shot(5, false, true), shot(10, false, true)]).toEqual(['bandit', null]) // a round burning on its rail goes off as a VISUAL shot, no lock needed
   })
   it('in a match, says a VISUAL shot is one with the trigger edge, and still refuses a supported shot without a lock (#155)', () => {
-    const edge = (visual: boolean, stt: string) => pit<[boolean, boolean, number]>(`let fox3_flag=false, fox3_visual=false; MULTIPLAYER=true; amraam_visual=${visual}; RADAR.stt=${stt};
+    const edge = (visual: boolean, stt: string, burning = false) => pit<[boolean, boolean, number]>(`let fox3_flag=false, fox3_visual=false; MULTIPLAYER=true; amraam_visual=${visual}; RADAR.stt=${stt};
+      const amraam_departure=()=>({ name:'120c4' }), burning_stores=()=>${burning ? "['120c4']" : '[]'};
       const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ownship.amraam=2; ${lift('trigger_amraam')}
 } trigger_amraam(); return [fox3_flag,fox3_visual,ownship.amraam];`)
     expect(edge(true, 'null')).toEqual([true, true, 1])
     expect(edge(false, 'null')).toEqual([false, false, 2])
     expect(edge(false, '"bandit"')).toEqual([true, false, 1])
+    expect(edge(false, 'null', true)).toEqual([true, true, 1]) // a burning round goes off as a VISUAL shot: the server fires it, lock or none
   })
 })
 

@@ -11,6 +11,7 @@ import {
   merged,
   PendingConfig,
   RETIRED,
+  seeded,
   stripRetired,
 } from './config-persist'
 
@@ -165,5 +166,34 @@ describe('the partial a flush applies', () => {
     expect(whole.fuel).toBe(6000)
     expect(whole.stores).toEqual(normalize(migrate(false)))
     expect(absorb({ callsign: 'x' }).stores).toEqual(normalize(migrate(true)))
+  })
+
+  it("reads a bandit saved under a tier's former name as the tier it became", () => {
+    const former = (bandit: string) => absorb({ bandit } as unknown as Partial<MissionConfig>).bandit
+    expect(former('pilot')).toBe('intermediate')
+    expect(former('ace')).toBe('expert')
+    for (const tier of ['novice', 'intermediate', 'expert', 'superhuman']) expect(former(tier)).toBe(tier)
+    expect(absorb({ callsign: 'x' }).bandit).toBe(DEFAULT_CONFIG.bandit)
+  })
+})
+
+describe('the answer on sharing', () => {
+  it('has no default, so a config never asked reads as unset', () => {
+    expect('sharing' in DEFAULT_CONFIG).toBe(false)
+    expect(absorb({ callsign: 'x' }).sharing).toBeUndefined()
+  })
+
+  it('reads a saved answer either way', () => {
+    expect(absorb({ sharing: true }).sharing).toBe(true)
+    expect(absorb({ sharing: false }).sharing).toBe(false)
+  })
+
+  it('is never seeded onto an account from the config in memory', () => {
+    // A shared browser's cache is the last account's settings: its answer is not this one's.
+    const cached = { ...DEFAULT_CONFIG, callsign: 'Maverick', sharing: true } as MissionConfig
+    const first = seeded(cached)
+    expect('sharing' in first).toBe(false)
+    expect(first.callsign).toBe('Maverick')
+    expect(cached.sharing).toBe(true) // a copy: the caller's config is untouched
   })
 })

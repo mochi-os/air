@@ -334,7 +334,7 @@ describe('the clickable switches', () => {
     expect(source).toMatch(/if\(ch===key_of\("radar\.silent"\)\) pit_press\("radar",0\);/)
     expect(source).toMatch(/if\(ch===key_of\("flaps\.extend"\)\) pit_press\("flaps",-1\);/)
     expect(source).toMatch(/if\(ch===key_of\("flaps\.retract"\)\) pit_press\("flaps",1\);/)
-    expect(source).toMatch(/if\(k==="Digit2"\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud"\); \}/)
+    expect(source).toMatch(/if\(k==="Digit2"\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud",source\); \}/)
   })
 
   it('open the canopy on a right click and close it on a left, on the ground only', () => {

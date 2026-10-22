@@ -312,12 +312,6 @@ msgstr "د لاسرسي کچه"
 msgid "Account type"
 msgstr "د حساب ډول"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "اتل"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "ټول حالتونه"
 msgid "All servers"
 msgstr "ټول سرورونه"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "اجازه ورکړئ"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "هر چا ته اجازه ورکړئ چې {entityLabel} ولټوي"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "پراختیاکوونکو ته اجازه ورکړئ چې د لوبې د ښه کولو لپاره ستاسو د الوتنې ثبتونه ولولي"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "د واټن LOD"
 msgid "Does not match the required pattern"
 msgstr "د اړین نمونې سره سمون نه خوري"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "اجازه مه ورکوئ"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "غځول"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "څنګلوري لیست خلاص کړئ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "ماهر"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "د الوتنې لارښوونې"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "د الوتنو یادښت"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "د الوتنې ثبتونه"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "لېوالتیا {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "علاقې"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "منځنی"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "خلک"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "پیلوټ"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "پیلوټ"
 
 #: src/components/GameCanvas.tsx

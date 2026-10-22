@@ -30,7 +30,7 @@ export interface Recorded {
   colour: 'Blue' | 'Red' | 'Orange'
   kind: string // TacView type tag, e.g. Air+FixedWing
   mode?: string // bot doctrine state — developer builds only
-  skill?: string // a bot's tier (novice / pilot / ace / superhuman) — shipped: the context that decides whether a play was reasonable
+  skill?: string // a bot's tier (novice / intermediate / expert / superhuman) — shipped: the context that decides whether a play was reasonable
   data?: Flight // per-sample flight data: TacView graphs these natively
   round?: Round // a missile in flight (#33 debrief): its guidance state and, on its last sample, its fate
 }
@@ -117,6 +117,7 @@ interface Flight {
   structure?: number // whole-airframe element loss, summed: what a hit counter reads
   wing?: number // wing loss the aero flies: what a performance claim rests on
   leak?: number // fuel loss, kg/s
+  cooking?: string // the rounds whose motors burn on the rails, catalog names joined by '+', empty when none
   fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe / battle / surface
   // Who ended it, when anyone is credited: the debrief keeps the mechanism in
   // Fate and gains the attribution here, the way a missile carries Parent.
@@ -138,7 +139,8 @@ interface Flight {
   // rounds, not with the control-law channels.
   graze?: number // metres from the skin, 0 for a graze
   miss?: { ahead: number; above: number; right: number }
-  // The bandit's decision journal (journal.ts), developer recordings only:
+  // The bandit's decision journal (journal.ts), left out of the player's own
+  // download (conceal):
   // what the arbiter weighed at each re-plan, how far its forecasts landed from
   // the truth, the reflexes that pre-empted it, and the g it asked for at each
   // stage between the play and the stick. The first three are EVENTS - each
@@ -199,6 +201,14 @@ interface Flight {
   // from geometry against the first 3/9 crossing; this removes the need.
   // Event-encoded like Input and Break.
   merge?: string
+  // What the screen showed and what changed it (#70): "sim time|kind|value|
+  // source", kind one of view (cockpit, hud, ddi, chase, flypast, padlock),
+  // display (the DDI view's display), zoom (the view's optical zoom target),
+  // reset, padlock (on / off) or map (open / closed); source one of start, key,
+  // stick, wheel, axis, mouse, look, view (the zoom a view switch recalls),
+  // reset, dev or auto. The first entry of a match is its starting view and
+  // zoom. Event-encoded like Input; several between two samples join with ';'.
+  view?: string
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
   spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
@@ -281,6 +291,44 @@ const round = (v: number, places: number) => {
 // nine of eleven sites go unescaped.
 const field = (v: string) => v.replace(/[,\n\r]/g, ' ')
 
+// The AI's hand: the bandit's chosen manoeuvre and its decision journal. Every
+// recording carries them, for the developers a player lets read their
+// recordings; conceal takes them out of the copy the player downloads.
+const CONCEALED = new Set(['Doctrine', 'Decision', 'Forecast', 'Bypass', 'Demand'])
+
+// fields splits an object line on the commas no backslash escapes: text()
+// escapes a comma inside free text, and that one belongs to its value.
+function fields(line: string): string[] {
+  const out: string[] = []
+  let start = 0
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '\\') i++
+    else if (line[i] === ',') {
+      out.push(line.slice(start, i))
+      start = i + 1
+    }
+  }
+  out.push(line.slice(start))
+  return out
+}
+
+// conceal returns a recording without the concealed channels. A line left
+// holding nothing but its object's id says nothing, and goes.
+export function conceal(recording: string): string {
+  return recording
+    .split('\n')
+    .flatMap((line) => {
+      if (!line.includes('=') || line.startsWith('#')) return [line]
+      const all = fields(line)
+      const kept = all.filter(
+        (f, i) => i === 0 || !CONCEALED.has(f.slice(0, f.indexOf('=')))
+      )
+      if (kept.length === all.length) return [line]
+      return kept.length > 1 ? [kept.join(',')] : []
+    })
+    .join('\n')
+}
+
 // text keeps free text's commas, where field drops them: a backslash escapes a
 // comma, a semicolon and itself, as TacView escapes a comma, and a line break
 // becomes a space. list joins several texts with semicolons. The replay reads
@@ -329,6 +377,7 @@ export function channels(
     aoa?: number // degrees, off the pose wire (#164)
     g?: number // load factor (#164)
     beta?: number // sideslip, degrees, off the pose wire
+    cooking?: string[] // the rounds burning on his rails, from the store events
   },
   emitter?: { mode: number; target: number },
   mine?: number
@@ -341,6 +390,7 @@ export function channels(
     burning: !!remote.burning || Math.max(burn[0] ?? 0, burn[1] ?? 0) > 0,
     thrust: remote.thrust ?? 0,
     leak: remote.leak ?? 0,
+    cooking: (remote.cooking ?? []).join('+'),
     burner: remote.reheat ?? 0,
     gear: remote.gear ?? 1,
     speedbrake: remote.speedbrake ?? 0,
@@ -415,7 +465,7 @@ export function stamp(fight: {
   const kind = fight.multiplayer
     ? fight.mode || 'furball'
     : joust
-      ? 'joust-' + (fight.bandit || 'ace')
+      ? 'joust-' + (fight.bandit || 'expert')
       : 'flight'
   return {
     kind,
@@ -424,7 +474,7 @@ export function stamp(fight: {
       // A duel shape and a bandit belong to a single-player joust and to
       // nothing else: empty here means "there was none", and acmi() omits it.
       duel: joust ? fight.duel || 'merge' : '',
-      bandit: joust ? fight.bandit || 'ace' : '',
+      bandit: joust ? fight.bandit || 'expert' : '',
       opening: joust ? fight.opening ?? '' : '',
       weapons: fight.weapons,
       start: fight.start,
@@ -553,6 +603,8 @@ export function writer(): (sample: Sample, out: string[]) => void {
             battle += `,Structure=${round(d.structure, 2)}`
           if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
           if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
+          if (d.cooking !== undefined)
+            battle += `,Cooking=${field(d.cooking)}`
           if (d.fate !== undefined) battle += `,Fate=${field(d.fate)}`
           if (d.killer) battle += `,Killer=${field(d.killer)}`
           if (battle && battled.get(o.id) !== battle) {
@@ -675,6 +727,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
           ['Input', d.input],
           ['Break', d.break],
           ['Merge', d.merge],
+          ['View', d.view],
         ] as const) {
           if (value === undefined) continue
           const key = `${o.id}:${channel}`
@@ -750,7 +803,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
         declared.set(o.id, properties)
         line += `,Name=${field(o.name)},Pilot=${field(o.label)},Color=${field(o.colour)},Type=${field(o.kind)}`
         if (o.skill) line += `,Skill=${field(o.skill)}` // the bot's tier, on the object itself: the mission title named it only for jousts, and only in the header
-        if (o.mode) line += `,Doctrine=${field(o.mode)}` // developer builds only: the bot's chosen manoeuvre
+        if (o.mode) line += `,Doctrine=${field(o.mode)}` // the bot's chosen manoeuvre, left out of the player's own download (conceal)
         if (r) {
           // ACMI's own parent/target linkage, in the object ids the file uses.
           line += `,Parent=${r.shooter.toString(16)}`

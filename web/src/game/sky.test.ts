@@ -3,7 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { decode, direction, light, midnight, sidereal, tint, type Star } from './sky'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { NIGHT } from './moon'
+import { decode, direction, light, planet, sidereal, tint, type Star } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 const DEGREE = Math.PI / 180
@@ -24,8 +27,8 @@ function nearest(ascension: number, declination: number): Star {
 describe('the packed catalogue', () => {
   it('decodes every star', () => {
     expect(stars).toHaveLength(STAR_COUNT)
-    expect(STAR_COUNT).toBeGreaterThan(800) // 904 to magnitude 4.5
-    expect(STAR_COUNT).toBeLessThan(1000)
+    expect(STAR_COUNT).toBeGreaterThan(1550) // 1,630 to magnitude 5.0
+    expect(STAR_COUNT).toBeLessThan(1700)
   })
 
   it('holds Sirius, the brightest star, where the sky has it', () => {
@@ -35,8 +38,10 @@ describe('the packed catalogue', () => {
     expect(brightest.declination / DEGREE).toBeCloseTo(-16.716, 1)
   })
 
-  it('stops at the magnitude 4.5 limit it was packed to', () => {
-    expect(Math.max(...stars.map((s) => s.magnitude))).toBeLessThanOrEqual(4.5)
+  it('reaches the magnitude 5.0 limit it was packed to, and stops there', () => {
+    const faintest = Math.max(...stars.map((s) => s.magnitude))
+    expect(faintest).toBeLessThanOrEqual(5.0)
+    expect(faintest).toBeGreaterThan(4.9)
   })
 })
 
@@ -50,8 +55,18 @@ describe('sidereal time', () => {
     expect((((b - a) / DEGREE) % 360 + 360) % 360).toBeCloseTo(0.98565, 3)
   })
 
-  it('puts local mean midnight at Midway near 11:49 UTC', () => {
-    expect(midnight(new Date('2026-09-13T20:15:00Z'), -177.3668).toISOString()).toBe('2026-09-13T11:49:28.032Z')
+  // The stars are placed for the night's moment (moon.ts), the midnight whose full moon stood
+  // where the night is lit from: the moon's own place then, through the stars' own transform,
+  // lands in that slot, so the moon and the stars agree. Its topocentric J2000 place from the
+  // map origin at 2018-09-25 12:04:36 UTC is JPL Horizons'.
+  it("puts the night's moon where the night is lit from, by the stars' own clock and transform", () => {
+    const moon: Star = { ascension: 7.820176 * DEGREE, declination: -1.993816 * DEGREE, magnitude: -12.7, colour: 0.9 }
+    const d = direction(moon, LATITUDE, sidereal(NIGHT.time) - 177.3668 * DEGREE)
+    const slot = [0, 0.866, 0.5].map((c) => c / Math.hypot(0, 0.866, 0.5))
+    const apart = Math.acos(d[0] * slot[0] + d[1] * slot[1] + d[2] * slot[2]) / DEGREE
+    expect(apart).toBeLessThan(0.4) // J2000 places by today's sidereal clock: precession's quarter degree, and the 0.1 the moment misses by
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    expect(engine).toContain('const local=sky_sidereal(MOON_NIGHT.time)+longitude*Math.PI/180')
   })
 })
 
@@ -102,9 +117,55 @@ describe('how a star shows', () => {
     expect(sirius.brightness).toBeLessThanOrEqual(1)
   })
 
+  // Brighter, not bigger: the brightness by the power 0.3 of the flux, the size still by the 0.45 it
+  // was set by, so a star keeps the width it had.
+  it('lights the faint stars at about a quarter of white, and leaves each star its width', () => {
+    const before = (magnitude: number) => Math.pow(Math.min(Math.max(Math.pow(10, -0.4 * (magnitude - 6)), 1), 400) / 400, 0.45)
+    expect(light(4.5).brightness).toBeCloseTo(0.251, 3)
+    expect(light(5.0).brightness).toBeCloseTo(0.218, 3)
+    expect(light(2.0).brightness).toBeCloseTo(0.5, 2)
+    expect(light(0.03).brightness).toBeLessThan(0.9) // Vega: under white, so its core keeps its shape
+    for (const magnitude of [5.0, 4.5, 3, 2, 1, 0, -1.46]) {
+      expect(light(magnitude).size).toBeCloseTo(3.5 + 3.5 * before(magnitude), 9)
+      expect(light(magnitude).brightness).toBeGreaterThanOrEqual(before(magnitude))
+    }
+  })
+
   it('tints hot stars blue and cool stars orange', () => {
     const [br, , bb] = tint(-0.3), [or, , ob] = tint(1.8)
     expect(bb).toBeGreaterThan(br)
     expect(or).toBeGreaterThan(ob)
+  })
+})
+
+// Mars by JPL's approximate elements, held to JPL Horizons' geocentric J2000 place and visual magnitude.
+describe('a planet', () => {
+  const apart = (a: Star, ascension: number, declination: number) =>
+    Math.acos(Math.min(1, Math.sin(a.declination) * Math.sin(declination * DEGREE) + Math.cos(a.declination) * Math.cos(declination * DEGREE) * Math.cos(a.ascension - ascension * DEGREE))) / DEGREE * 60
+
+  it('stands Mars where Horizons has it, to an arcminute or so, and as bright', () => {
+    for (const [time, ascension, declination, magnitude] of [
+      ['2018-09-25T12:04:00Z', 307.042032, -23.419267, -1.418], // the night's moment
+      ['2020-10-13T23:00:00Z', 20.338037, 5.337565, -2.67], // at opposition
+      ['2005-03-15T23:58:00Z', 298.69625, -21.671523, 1.14], // beyond the sun
+    ] as const) {
+      const mars = planet('mars', new Date(time))
+      expect(apart(mars, ascension, declination), time).toBeLessThan(1.5)
+      expect(Math.abs(mars.magnitude - magnitude), time).toBeLessThan(0.15)
+      expect(mars.colour).toBeCloseTo(1.36, 2)
+    }
+  })
+
+  it("puts Mars low in the south-west at the night's moment, brighter than any star in the sky", () => {
+    const mars = planet('mars', NIGHT.time)
+    const d = direction(mars, LATITUDE, sidereal(NIGHT.time) - 177.3668 * DEGREE)
+    expect(altitude(d)).toBeGreaterThan(10) // Horizons: 12.1 degrees up at azimuth 234.9
+    expect(altitude(d)).toBeLessThan(14)
+    const azimuth = ((Math.atan2(d[0], -d[2]) / DEGREE) % 360 + 360) % 360
+    expect(azimuth).toBeGreaterThan(233)
+    expect(azimuth).toBeLessThan(237)
+    expect(mars.magnitude).toBeLessThan(Math.min(...stars.map((s) => s.magnitude)))
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    expect(engine).toContain('const star_catalogue=[...sky_decode(STAR_DATA,STAR_COUNT), sky_planet("mars",MOON_NIGHT.time)]')
   })
 })

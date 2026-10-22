@@ -312,12 +312,6 @@ msgstr "Giriş derejesi"
 msgid "Account type"
 msgstr "Hasap görnüşi"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Ussat"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Ähli tertipler"
 msgid "All servers"
 msgstr "Ähli serwerler"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Rugsat ber"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Islendik adama {entityLabel} gözlemäge rugsat ber"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Oýny gowulandyrmak üçin döredijilere uçuş ýazgylaryňyzy okamaga rugsat ber"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "Aralyk LOD"
 msgid "Does not match the required pattern"
 msgstr "Talap edilýän nusga gabat gelmeýär"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Rugsat berme"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Giňeltmek"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Gapdal paneli giňelt"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Hünärmen"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Uçuş maslahatlary"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Uçuş žurnaly"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Uçuş ýazgylary"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Gyzyklanma {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Gyzyklanmalar"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Orta"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Adamlar"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "uçarman"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Uçarman"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

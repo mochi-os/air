@@ -312,12 +312,6 @@ msgstr "Cấp độ truy cập"
 msgid "Account type"
 msgstr "Loại tài khoản"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Cao thủ"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Tất cả chế độ"
 msgid "All servers"
 msgstr "Tất cả máy chủ"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Cho phép"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Cho phép mọi người tìm kiếm {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Cho phép nhà phát triển đọc bản ghi chuyến bay của bạn để cải thiện trò chơi"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LOD theo khoảng cách"
 msgid "Does not match the required pattern"
 msgstr "Không khớp với mẫu bắt buộc"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Không cho phép"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Mở rộng"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Mở rộng thanh bên"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Chuyên gia"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Gợi ý bay"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Nhật ký bay"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Bản ghi chuyến bay"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Mức quan tâm {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Sở thích"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Trung cấp"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Mọi người"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "phi công"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Phi công"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

@@ -209,7 +209,7 @@ describe('the FIRE EXTGH pushbutton', () => {
 // The STORES page (#109): the ARM status, and FAIL at a station whose store tore away.
 describe('the STORES page', () => {
   const page = (o: Jet & { failures?: number[]; arm?: boolean } = {}) => cockpit<[string, number, number][]>(`arms.arm=o.arm??true; ownship.failures=o.failures||[]; const hud_sms=0;
-    const stores_rounds=stores.rounds, stores_amraams=stores.amraams, stores_entries=stores.entries, text=[];
+    const stores_rounds=stores.rounds, stores_amraams=stores.amraams, stores_entries=stores.entries, sequence=stores.sequence, departed=stores.departed, text=[];
     const x=new Proxy({}, { get:(t,k)=>k==="fillText"?(s,px,py)=>text.push([String(s),px,py]):()=>{}, set:()=>true });
     ${lift('ddi_sms')}
     ddi_sms(x,"left"); return text;`, o)
