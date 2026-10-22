@@ -32,6 +32,79 @@ export type RwrContact = {
 // not its shooter's. Bearing is all a receiver gets.
 export type RwrSeeker = { id: number | string; x: number; z: number }
 
+// RwrMotion is a position and a velocity in world metres and metres a second.
+export type RwrMotion = {
+  x: number
+  y: number
+  z: number
+  vx: number
+  vy: number
+  vz: number
+}
+
+// incoming reports whether a radar round is a threat to us, judged as the
+// world server's bots judge one: its seeker awake (phase 1 and on: active,
+// pitbull or loose) and the round still closing, its velocity relative to ours
+// along the line to us. One that has gone by flies on until its battery dies,
+// and warning of it told the pilot to keep defending a round that had missed.
+export function incoming(
+  phase: number,
+  round: RwrMotion,
+  own: RwrMotion,
+  wrap: (v: number) => number
+): boolean {
+  if (phase < 1) return false
+  const dx = wrap(own.x - round.x)
+  const dy = own.y - round.y
+  const dz = wrap(own.z - round.z)
+  return (
+    (round.vx - own.vx) * dx +
+      (round.vy - own.vy) * dy +
+      (round.vz - own.vz) * dz >
+    0
+  )
+}
+
+// RwrRound is a round as single player's pool holds it: its slot, whether it
+// is flying and whether it is the bandit's, its seeker phase, and its position
+// and velocity.
+export type RwrRound = {
+  slot: number
+  active: boolean
+  enemy: boolean
+  phase?: number
+  px: number
+  py: number
+  pz: number
+  vx: number
+  vy: number
+  vz: number
+}
+
+// threats is single player's third voice: the bandit's rounds that are
+// incoming, each painting us from where it is.
+export function threats(
+  rounds: RwrRound[],
+  own: RwrMotion,
+  wrap: (v: number) => number
+): RwrSeeker[] {
+  const seekers: RwrSeeker[] = []
+  for (const m of rounds) {
+    if (!m.active || !m.enemy) continue
+    if (
+      !incoming(
+        m.phase ?? 0,
+        { x: m.px, y: m.py, z: m.pz, vx: m.vx, vy: m.vy, vz: m.vz },
+        own,
+        wrap
+      )
+    )
+      continue
+    seekers.push({ id: 'bandit-round-' + m.slot, x: m.px, z: m.pz })
+  }
+  return seekers
+}
+
 const CONE = 0.342 // cos 70°: his scan half-width — outside it his sweep never touches us
 const REACH = 60 * NM // one-way listening range: a receiver hears further than the radar sees
 const REVISIT = 2.2 // his sweep's revisit floor, seconds; jitter rides on top
