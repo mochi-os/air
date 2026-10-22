@@ -52,7 +52,7 @@ import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
-import { Rwr } from './rwr'
+import { Rwr, threats } from './rwr'
 import { words as menace_words } from './menace'
 import { blast_plan, Blasts } from './blast'
 import { surface as impact_surface } from './impact'
@@ -11951,12 +11951,9 @@ function rwr_step(dt){ if(!running) return;
 		emitters.push({ id:slot, x:st.pos.x, z:st.pos.z, nosex:st.fwd.x/f, nosez:st.fwd.z/f, mode:e.mode, locked:e.mode===2&&e.target===net.slot }); } }
 	// Active seekers hunting us (#27): a round's own radar, not its shooter's.
 	// Multiplayer darts carry the kind bit and their closure says which to fear;
-	// in single player the bandit's own rounds feed it once their seeker is
-	// active.
-	const seekers=[];
-	if(!MULTIPLAYER){ for(const m of missiles){   // the bandit's own rounds (#33): an active seeker painting us is the third RWR voice, exactly as an MP dart's would be
-		if(!m.active||!m.enemy||(m.phase??0)<1) continue;
-		seekers.push({ id:"bandit-round-"+m.slot, x:m.px, z:m.pz }); } }
+	// in single player the bandit's own rounds feed it while their seeker is
+	// awake and they are still closing on us.
+	const seekers=MULTIPLAYER?[]:threats(missiles,{ x:ownship.pos.x, y:ownship.pos.y, z:ownship.pos.z, vx:ownship.velx, vy:ownship.vely, vz:ownship.velz },wrap_axis);   // the bandit's own rounds (#33): an active seeker painting us is the third RWR voice, exactly as an MP dart's would be
 	if(MULTIPLAYER&&net){ for(const d of (net.darts||[])){
 		if(!d.radar||d.shooter===net.slot) continue;
 		const dx=wrap_axis(d.position[0]-ownship.pos.x), dy=d.position[1]-ownship.pos.y, dz=wrap_axis(d.position[2]-ownship.pos.z);
