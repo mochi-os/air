@@ -312,12 +312,6 @@ msgstr "ප්‍රවේශ මට්ටම"
 msgid "Account type"
 msgstr "ගිණුම් වර්ගය"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "ප්‍රවීණ"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "සියලු ආකාර"
 msgid "All servers"
 msgstr "සියලු සේවාදායක"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "ඉඩ දෙන්න"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ඕනෑම කෙනෙකුට {entityLabel} සෙවීමට ඉඩ දෙන්න"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "ක්‍රීඩාව වැඩිදියුණු කිරීමට ඔබගේ පියාසැරි පටිගත කිරීම් කියවීමට සංවර්ධකයින්ට ඉඩ දෙන්න"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "දුර LOD"
 msgid "Does not match the required pattern"
 msgstr "අවශ්‍ය රටාවට නොගැළපේ"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "ඉඩ නොදෙන්න"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "විහිදන්න"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "පැති තීරුව ප්‍රසාරණය කරන්න"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "ප්‍රවීණ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "පියාසර ඉඟි"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "පියාසර සටහන"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "පියාසැරි පටිගත කිරීම්"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "උනන්දුව {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "උනන්දු"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "අතරමැදි"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "පුද්ගලයන්"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "නියමුවා"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "නියමුවා"
 
 #: src/components/GameCanvas.tsx

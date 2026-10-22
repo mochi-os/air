@@ -29,8 +29,10 @@ const block = source.slice(from, to)
 function pit<T>(body: string): T {
   return new Function('THREE', `const cfg={ view:"hud" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1) };
-    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, target={ pos:new THREE.Vector3(1000,0,-1000) };
+    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, target={ pos:new THREE.Vector3(1000,0,-1000) }, sim_time=5, view_events=[];
     const look_target=()=>target, notice=(m)=>notices.push(m), translate=(m)=>m;
+    ${lift('view_note')}
+    ${lift('latch')}
     ${lift('look_press')}
     const frame=(dt)=>{ ${block} };
     const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };
@@ -42,8 +44,10 @@ function fireball<T>(body: string): T {
   return new Function('THREE', `const cfg={ view:"hud", callsign:"" }, PIT_REST=0, _look_d=new THREE.Vector3(), notices=[];
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), right:new THREE.Vector3(0,0,1), group:{ visible:true }, speed:200, fate:undefined };
     const bandit={ pos:new THREE.Vector3(1000,0,-1000), group:{ visible:true } }, remotes=new Map(), net=null;
-    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false;
+    let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false, sim_time=5, view_events=[];
     const notice=(m)=>notices.push(m), translate=(m)=>m, feed=()=>{}, explosion_at=()=>{};
+    ${lift('view_note')}
+    ${lift('latch')}
     ${lift('look_press')}
     ${lift('look_target')}
     ${lift('crash_ownship').replace(/ as any/g, '')}
@@ -87,16 +91,21 @@ describe('the look-at-target key', () => {
   it('ignores the look key over the fireball: no latch, no NO TARGET', () => {
     expect(fireball('crash_ownship("missile","Bandit"); look_press(); frames(10); return { padlocked, notices };')).toEqual({ padlocked: false, notices: [] })
   })
+  it('is recorded on and off, with what did it (#70)', () => {
+    expect(pit('look_press("key"); frames(60); target=null; frames(1); return view_events;')).toEqual(['5.0|padlock|on|key', '5.0|padlock|off|auto'])
+    expect(pit('look_press("stick"); look_press("key"); return view_events;')).toEqual(['5.0|padlock|on|stick', '5.0|padlock|off|key'])
+    expect(fireball('look_press("key"); frames(60); crash_ownship("missile","Bandit"); return view_events;')).toEqual(['5.0|padlock|on|key', '5.0|padlock|off|auto'])
+  })
   it('is worked by the key press, which a stick button replays and a replay still answers', () => {
-    expect(source).toContain('if(ch===key_of("look.target")) look_press();')
+    expect(source).toContain('if(ch===key_of("look.target")) look_press(source);')
     expect(lift('watching')).toContain('"look.target"')
     expect(source).not.toContain('keys.has(key_of("look.target"))') // no hold is read
   })
   it('is released by a manual look, a mouse drag, a view reset and a respawn', () => {
-    expect(source).toMatch(/if\(daz\|\|del\)\{[^\n]*look_home=false; padlocked=false; \}/)
-    expect(source).toContain('if(head_drag){ if(press_moved>=6) padlocked=false;') // a click on a switch is not a drag
-    expect(lift('view_reset')).toContain('padlocked=false;')
-    expect(lift('reset_ownship')).toContain('designated=-1; padlocked=false;')
-    expect(source).toContain('net_waiting=false; padlocked=false;') // a match's respawn
+    expect(source).toMatch(/if\(daz\|\|del\)\{[^\n]*look_home=false; latch\(false,"look"\); \}/)
+    expect(source).toContain('if(head_drag){ if(press_moved>=6) latch(false,"mouse");') // a click on a switch is not a drag
+    expect(lift('view_reset')).toContain('latch(false,source);')
+    expect(lift('reset_ownship')).toContain('designated=-1; latch(false,"auto");')
+    expect(source).toContain('net_waiting=false; latch(false,"auto");') // a match's respawn
   })
 })

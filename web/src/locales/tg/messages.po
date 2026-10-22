@@ -312,12 +312,6 @@ msgstr "Сатҳи дастрасӣ"
 msgid "Account type"
 msgstr "Намуди ҳисоб"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Устод"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Ҳамаи ҳолатҳо"
 msgid "All servers"
 msgstr "Ҳамаи серверҳо"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Иҷозат додан"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Ба ҳама иҷозат диҳед, ки {entityLabel}-ро ҷустуҷӯ кунанд"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Ба таҳиягарон иҷозат додан, ки сабтҳои парвози шуморо барои беҳтар кардани бозӣ хонанд"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LOD-и масофа"
 msgid "Does not match the required pattern"
 msgstr "Ба намунаи талабшуда мувофиқат намекунад"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Иҷозат надодан"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Васеъ кардан"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Васеъ кардани панели канорӣ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Коршинос"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Маслиҳатҳои парвоз"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Журнали парвозҳо"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Сабтҳои парвоз"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Таваҷҷуҳ {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Шавқҳо"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Миёна"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Одамон"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "халабон"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Халабон"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

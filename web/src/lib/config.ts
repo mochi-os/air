@@ -265,8 +265,9 @@ export interface MissionConfig {
   task: 'free' | 'joust' // multiplayer is no longer a task: a MATCH is joined from the server page (#77)
   fuel: number
   record: boolean // record flights for replay download
+  sharing?: boolean // whether the developers may read this player's flight recordings: no default, so an account that was never asked still reads as unset and gets asked
   hints: boolean // in-flight coaching (#70/#91). Consumers all test `!== false`, so the effective default has always been ON
-  bandit: 'novice' | 'pilot' | 'ace' | 'superhuman'
+  bandit: 'novice' | 'intermediate' | 'expert' | 'superhuman'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
@@ -307,6 +308,7 @@ export interface MissionConfig {
     | Record<string, unknown>
     | Record<string, StickBindings>
     | Record<string, StationSlot>
+    | undefined // sharing, which is unset until the player is asked
 }
 
 // seedStart applies a start choice with everything it defines: the recovery
@@ -367,7 +369,7 @@ export const TAB_FIELDS: Record<string, string[]> = {
 
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
-  bandit: 'ace',
+  bandit: 'expert',
   fuel: FUEL.fox2, // the load of the Fox 2 preset the default stores carry
   record: true, // flight recorder (#212): always running, saved from the log
   hints: true, // ON, matching the `!== false` idiom every consumer already used while this key was undeclared (#116)

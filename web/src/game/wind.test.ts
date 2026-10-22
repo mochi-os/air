@@ -77,7 +77,8 @@ const weather = new Function(
 )({}, { clouds: 'none' }, false, DEGREE, 250000, () => false) as () => { wind: { x: number; z: number } }
 function applied(wind: { x: number; z: number }, before: V) {
   const downwind = { value: { ...before, set(x: number, y: number) { this.x = x; this.y = y } } }
-  new Function('weather', 'downwind', `${lift('apply_wind')}\napply_wind();`)(() => ({ wind }), downwind)
+  const ocean_mat = { uniforms: { u_slope: { value: 0 } } }
+  new Function('weather', 'downwind', 'ocean_mat', `${lift('apply_wind')}\napply_wind();`)(() => ({ wind }), downwind, ocean_mat)
   return vec2(downwind.value.x, downwind.value.y)
 }
 const trades = (() => { const w = weather().wind; return applied(w, vec2(0, 1)) })()

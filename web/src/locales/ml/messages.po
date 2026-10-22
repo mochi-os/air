@@ -312,12 +312,6 @@ msgstr "ആക്സസ് ലെവൽ"
 msgid "Account type"
 msgstr "അക്കൗണ്ട് തരം"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "എയ്സ്"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "എല്ലാ മോഡുകളും"
 msgid "All servers"
 msgstr "എല്ലാ സെർവറുകളും"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "അനുവദിക്കുക"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "{entityLabel} ആർക്കും തിരയാൻ അനുവദിക്കുക"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "ഗെയിം മെച്ചപ്പെടുത്താൻ ഡെവലപ്പർമാരെ നിങ്ങളുടെ ഫ്ലൈറ്റ് റെക്കോർഡിംഗുകൾ വായിക്കാൻ അനുവദിക്കുക"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "ദൂര LOD"
 msgid "Does not match the required pattern"
 msgstr "ആവശ്യമായ മാതൃകയുമായി പൊരുത്തപ്പെടുന്നില്ല"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "അനുവദിക്കരുത്"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "വികസിപ്പിക്കുക"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "സൈഡ്‌ബാർ വികസിപ്പിക്കുക"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "വിദഗ്ധൻ"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "പറക്കൽ സൂചനകൾ"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "ഫ്ലൈറ്റ് ലോഗ്"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "ഫ്ലൈറ്റ് റെക്കോർഡിംഗുകൾ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "താൽപ്പര്യം {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "താൽപ്പര്യങ്ങൾ"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "ഇടത്തരം"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "ആളുകൾ"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "പൈലറ്റ്"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "പൈലറ്റ്"
 
 #: src/components/GameCanvas.tsx

@@ -42,7 +42,7 @@ import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
-import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject, order as stores_order, sequence, departed, ignite, adopt, burning as burning_stores, rearm as rearm_order, retain as stores_retain, masked as stores_masked, revised as stores_revised } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
@@ -59,6 +59,8 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { Pacing } from './pacing'
 import { PATTERN_VERTEX as FOAM_VERTEX, PATTERN_FRAGMENT as FOAM_FRAGMENT } from './foam'
+import { Waves } from './waves'
+import { slopes as spectrum_slopes, CASCADES } from './spectrum'
 import { tables as atmosphere_tables, radiance as sky_radiance, ATMOSPHERE, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
@@ -76,6 +78,9 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
+import moon_day_url from '../assets/moon-day.png?url'
+import moon_night_url from '../assets/moon-night.png?url'
+import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, SIZE as MOON_SIZE } from './moon'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
 import * as navigate from './navigation'
@@ -90,7 +95,7 @@ import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
 import { humidity, vapour as vapour_show } from './vapour'
-import { decode as sky_decode, direction as sky_direction, light as sky_light, midnight as sky_midnight, sidereal as sky_sidereal, tint as sky_tint } from './sky'
+import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 export type GameConfig = Record<string, unknown>
@@ -298,7 +303,8 @@ function air_texture(data,width,height){ const half=new Uint16Array(data.length)
 	const t=new THREE.DataTexture(half,width,height,THREE.RGBAFormat,THREE.HalfFloatType); t.minFilter=t.magFilter=THREE.LinearFilter; t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping; t.needsUpdate=true; return t; }
 const sky_target=new THREE.WebGLRenderTarget(SKY_SIZE.width,SKY_SIZE.height,{ type:THREE.HalfFloatType, depthBuffer:false, minFilter:THREE.LinearFilter, magFilter:THREE.LinearFilter, wrapS:THREE.ClampToEdgeWrapping, wrapT:THREE.ClampToEdgeWrapping });
 const atmosphere_uniforms={ u_transmittance:{value:air_texture(air_tables.transmittance,TRANSMITTANCE.width,TRANSMITTANCE.height)}, u_scattering:{value:air_texture(air_tables.scattering,SCATTERING,SCATTERING)},
-	u_sky:{value:sky_target.texture}, u_altitude:{value:0.01}, u_haze:{value:HAZE}, u_illuminance:{value:4.5}, u_exposure:{value:1.05} };   // u_illuminance: the sun's (or moon's) light above the air, per time of day (TOD sky: 4.5 by day and 0.1 by night put the dome where the hand-picked gradient it replaced was, within 10 of 255); u_altitude km; u_exposure the renderer's
+	u_sky:{value:sky_target.texture}, u_altitude:{value:0.01}, u_haze:{value:HAZE}, u_illuminance:{value:4.5}, u_exposure:{value:1.05},
+	u_moon:{value:null}, u_moon_dir:{value:new THREE.Vector3(0,-1,0)}, u_moon_right:{value:new THREE.Vector3(1,0,0)}, u_moon_up:{value:new THREE.Vector3(0,0,1)}, u_moon_gain:{value:new THREE.Vector3()}, u_moon_radius:{value:MOON_DAY.radius}, u_sun_disc:{value:1.0} };   // the moon's face and frame at this hour's moment (moon.ts), set by apply_time_of_day; u_sun_disc 0 at night, when the slot holds the moon   // u_illuminance: the sun's (or moon's) light above the air, per time of day (TOD sky: 4.5 by day and 0.1 by night put the dome where the hand-picked gradient it replaced was, within 10 of 255); u_altitude km; u_exposure the renderer's
 const sky_view_mat=new THREE.ShaderMaterial({ vertexShader:SKY_VIEW_VERTEX, fragmentShader:SKY_VIEW_FRAGMENT, depthTest:false, depthWrite:false,
 	uniforms:{ u_transmittance:atmosphere_uniforms.u_transmittance, u_scattering:atmosphere_uniforms.u_scattering, u_altitude:atmosphere_uniforms.u_altitude, u_haze:atmosphere_uniforms.u_haze, u_sun_view:{value:sun_dir} } });
 const sky_view_room=new THREE.Scene(); sky_view_room.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),sky_view_mat)); const sky_view_camera=new THREE.Camera();
@@ -307,26 +313,49 @@ function sky_view_render(altitude){ atmosphere_uniforms.u_altitude.value=Math.ma
 // Light as the screen shows it, through three's ACESFilmic and the sRGB encode, and the dome
 // built from it. The cloud composite pays its haze out in exactly this dome, so the two change
 // together by construction.
-const SKY_SHOWN=`uniform float u_illuminance;
+const TONE=`
 	vec3 shown_tone(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
 	vec3 shown(vec3 color, float exposure){
 		const mat3 inm=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
 		const mat3 outm=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
 		vec3 c=clamp(outm*shown_tone(inm*(color*exposure/0.6)),0.0,1.0);
 		return mix(c*12.92, 1.055*pow(c,vec3(1.0/2.4))-0.055, step(vec3(0.0031308),c)); }
-	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure){
+	vec3 unshown(vec3 colour, float exposure){   // shown() undone: the scene-linear light a displayed colour stands for
+		const mat3 outi=mat3(0.643038,0.059269,0.005962, 0.311187,0.931436,0.063929, 0.045775,0.009295,0.930118);
+		const mat3 ini=mat3(1.764741,-0.147028,-0.036337, -0.675778,1.160252,-0.162436, -0.088963,-0.013224,1.198773);
+		vec3 c=clamp(colour,0.0,1.0); c=mix(c/12.92, pow((c+0.055)/1.055,vec3(2.4)), step(vec3(0.04045),c));
+		vec3 y=clamp(outi*c,0.0,1.0);
+		vec3 a=1.0-0.983729*y, b=0.0245786-0.4329510*y, k=-(0.000090537+0.238081*y);
+		vec3 v=(-b+sqrt(b*b-4.0*a*k))/(2.0*a);   // the tone fit's quadratic, its positive root
+		return max(ini*v,0.0)*0.6/exposure; }`;   // three's ACES and sRGB as shown(), and its inverse: the sky, the sea, the clouds and the glare share them
+// The moon (#90) as Midway saw it at the hour's fixed moment (moon.ts, tools/moon.py): its face
+// from the baked image, the image's right and up laid on the sky, its light scene-linear and added
+// to the sky's BEFORE the tone - so a daytime crescent is as pale as the sky's own light makes it,
+// and the night's full moon keeps its seas where a disc added after the tone washed to white.
+const MOON=`uniform sampler2D u_moon; uniform vec3 u_moon_dir,u_moon_right,u_moon_up,u_moon_gain; uniform float u_moon_radius;
+	vec3 moon_light(vec3 d, float blur){   // blur: a pixel's angle, so the face is read at the mip the screen can resolve and its edge is a pixel soft
+		vec2 p=vec2(dot(d,u_moon_right),dot(d,u_moon_up))/u_moon_radius;
+		float edge=(1.0-smoothstep(1.0-blur/u_moon_radius,1.0+blur/u_moon_radius,length(p)))*step(0.0,dot(d,u_moon_dir));   // nothing outside the disc, nor at its antipode
+		float lod=log2(max(blur*${MOON_SIZE}.0/(2.0*u_moon_radius),1.0));
+		return textureLod(u_moon,clamp(p*0.5+0.5,0.0,1.0),lod).rgb*u_moon_gain*edge; }`;
+const SKY_SHOWN=`uniform float u_illuminance,u_sun_disc;
+	`+TONE+`
+	`+MOON+`
+	vec3 sky_dome(vec3 d, vec3 sun, float dip, vec3 fog, float ovc, float ovct, float ovcw, vec3 suncol, float exposure, float blur){   // blur: a pixel's angle, taken by the caller outside any branch
 		float t=(d.y+dip)*1.2;
-		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
+		vec3 moon=moon_light(d,blur)*at_transmittance(AT_GROUND+u_altitude,max(d.y,0.0));   // the moon through the air before it, as the sky's own light reaches the eye
+		vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance+moon,exposure);   // the table's sky above the visible rim, the rim's own colour beneath it
 		if(t<0.0) col=mix(col,fog*0.88,clamp(-t*6.0,0.0,1.0));   // below the rim the haze takes over, as the sea does
 		col=mix(col, vec3(dot(col,vec3(0.333)))*ovct, ovc*(1.0-smoothstep(0.0,ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) - under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze) - the distant unresolved field
-		float s=max(dot(d,sun),0.0); return col+suncol*(pow(s,220.0)*1.4+pow(s,8.0)*0.18); }`;
+		float a=length(cross(d,sun)), disc=dot(d,sun)>0.0?1.0-smoothstep(0.004651-blur,0.004651+blur,a):0.0;   // the sun's own disc, 0.53 degrees across, its edge a pixel soft; the glow about it is the air's, in at_sky
+		return col+suncol*1.4*disc*u_sun_disc; }`;
 const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
 	uniforms:{ ...atmosphere_uniforms, u_sun:{value:sun_dir}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc}, u_blackout:{value:1.0} },
 	vertexShader:`varying vec3 v_dir; void main(){ v_dir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
 	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_fog,u_sun_col; uniform float u_dip,u_ovc,u_ovct,u_ovcw,u_blackout,u_exposure;
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
-		void main(){ vec3 col=sky_dome(normalize(v_dir),normalize(u_sun),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure); gl_FragColor=vec4(col*u_blackout,1.0); }` });
+		void main(){ vec3 d=normalize(v_dir); vec3 col=sky_dome(d,normalize(u_sun),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure,max(length(fwidth(d)),1.0e-5)); gl_FragColor=vec4(col*u_blackout,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
 // The canopy's rear-view mirrors (#99) reflect the sky behind the pilot: an
 // environment map baked from the sky dome whenever the time of day sets it. The
@@ -345,12 +374,13 @@ function mirror_bake(){
 	for(const m of mirror_mats){ m.envMap=target.texture; m.needsUpdate=true; }
 	bake.dispose(); generator.dispose(); }
 
-// stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 4.5 (./stars),
-// placed by ./sky for the map origin at local midnight on today's date, the hour a full moon
-// stands due south and high as the night moon here does. Each star is a fixed-pixel Gaussian
+// stars (night only): the real sky - the Yale Bright Star Catalogue to magnitude 5.0 (./stars), and
+// Mars, up in the south-west and brighter than any star then - placed by ./sky for the map origin at the
+// night's moment (moon.ts), the midnight whose full moon stood due south and high where the night moon
+// here does. Each star is a fixed-pixel Gaussian
 // sprite sized and brightened by magnitude and tinted by colour: world-sized points came out
 // about half a pixel wide and flickered as the view moved, which read as twinkling.
-const star_catalogue=sky_decode(STAR_DATA,STAR_COUNT), STAR_RADIUS=16000;
+const star_catalogue=[...sky_decode(STAR_DATA,STAR_COUNT), sky_planet("mars",MOON_NIGHT.time)], STAR_RADIUS=16000;   // the planets where the night's moment had them: of the five the eye sees, only Mars was up
 const star_geo=new THREE.BufferGeometry();
 { const n=star_catalogue.length, brightness=new Float32Array(n), size=new Float32Array(n), colour=new Float32Array(n*3);
 	star_catalogue.forEach((s,i)=>{ const l=sky_light(s.magnitude), c=sky_tint(s.colour); brightness[i]=l.brightness; size[i]=l.size; colour.set(c,i*3); });
@@ -368,7 +398,7 @@ const stars=new THREE.Points(star_geo,new THREE.ShaderMaterial({ transparent:tru
 			gl_FragColor=vec4(v_light*exp(-r2*2.0)*u_opacity,1.0); }` }));   // display-referred, as the sky dome it sits in front of
 stars.frustumCulled=false; scene.add(stars);
 function sky_place(latitude,longitude){   // re-placed once the map's own origin is known
-	const local=sky_sidereal(sky_midnight(new Date(),longitude))+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
+	const local=sky_sidereal(MOON_NIGHT.time)+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
 	star_catalogue.forEach((s,i)=>{ const d=sky_direction(s,latitude,local); pos[i*3]=d[0]*STAR_RADIUS; pos[i*3+1]=d[1]*STAR_RADIUS; pos[i*3+2]=d[2]*STAR_RADIUS; });
 	star_geo.attributes.position.needsUpdate=true; }
 sky_place(MIDWAY.latitude,MIDWAY.longitude);
@@ -376,20 +406,39 @@ const star_buffer=new THREE.Vector2();
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, glint:60.0, rough:0.11, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
-	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, glint:14.0, rough:0.07, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
+	day:  { sky:4.5, sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
+	night:{ sky:0.1, sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
+// The moon's two faces (#90): the noon's crescent and the midnight's full moon, each as Midway saw it.
+// Until an image arrives it samples black, and the sky simply has no moon.
+function moon_face(url){ const t=new THREE.TextureLoader().load(url); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping;
+	t.magFilter=THREE.LinearFilter; t.minFilter=THREE.LinearMipmapLinearFilter; t.generateMipmaps=true; return t; }
+const moon_faces={ day:moon_face(moon_day_url), night:moon_face(moon_night_url) };
+// The night's moon is shown as an eye adapted to it sees it: its highlands at about 0.86 of white and its
+// seas at about 0.6, through the tone. Its true light is some 200,000 times the moonlit sky's, which no
+// screen can show beside that sky; by day the crescent keeps its true light against the sky's (moon.ts scale).
+const MOON_NIGHT_GAIN=1.35;
+const _moon_up=new THREE.Vector3();
+function moon_place(p){ const night=p===TOD.night, m=night?MOON_NIGHT:MOON_DAY, u=atmosphere_uniforms;
+	u.u_moon.value=night?moon_faces.night:moon_faces.day; u.u_moon_radius.value=m.radius; u.u_sun_disc.value=night?0:1;
+	if(night) u.u_moon_dir.value.copy(sun_dir); else u.u_moon_dir.value.fromArray(m.direction);   // by night in the slot the night is lit from, 0.1 degrees from where the moment put it, so the glare finds it where the light comes from
+	_moon_up.fromArray(m.up); _moon_up.addScaledVector(u.u_moon_dir.value,-_moon_up.dot(u.u_moon_dir.value)).normalize();
+	u.u_moon_up.value.copy(_moon_up); u.u_moon_right.value.crossVectors(u.u_moon_dir.value,_moon_up);   // looking along the moon with the zenith above: right as the image's +x
+	if(night) u.u_moon_gain.value.setScalar(MOON_NIGHT_GAIN); else u.u_moon_gain.value.setScalar(m.scale*p.sky);   // by day its radiance per unit of the sun's light, in the sky table's own units
+	const mean=m.mean*u.u_moon_gain.value.x;
+	glare_mat.uniforms.u_moon_mean.value.setScalar(mean);
+	if(night) glare_mat.uniforms.u_veil.value.setScalar(mean*Math.PI*m.radius*m.radius);   // the moon's glare is its own displayed light over its solid angle: as a disc that bright makes it, not as the 200,000-times light the screen cannot show
+	else glare_mat.uniforms.u_veil.value.copy(ocean_mat.uniforms.u_beam.value); }   // the sun's: its true beam against the sky, as the disc the screen clips stands for
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
-	sun.color.setHex(p.sunCol); sun.intensity=p.sunI;
+	sun.color.setHex(p.sunCol); sun.intensity=p.sunI; ocean_mat.uniforms.u_beam.value.copy(sun.color).multiplyScalar(p.sunI);   // the sun's (or the moon's) beam, for the sea's glint
 	col_sundisc.setHex(p.disc); sky_horizon.setHex(p.hor); sky_zenith.setHex(p.zen); col_deep.setHex(p.deep); col_shallow.setHex(p.shal);
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	apply_light_balance();   // re-derive the cloud lighting against this time of day's lights
-	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
+	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; atmosphere_uniforms.u_exposure.value=p.exp; atmosphere_uniforms.u_illuminance.value=p.sky; moon_place(p); cloud_mat.uniforms.uSunGain.value=cloud_gain(p); stars.material.uniforms.u_opacity.value=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
-	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 	{ const hour=hour_flux(p), noon=hour_flux(TOD.day), ratio=(hour.beam+hour.indirect)/(noon.beam+noon.indirect);
 		ocean_mat.uniforms.u_light.value=Math.pow(ratio,1/2.2); cloud_shadow_uniforms.u_shadow_hour.value=ratio;
@@ -524,10 +573,14 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
-		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
+		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms },   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+SEA_TURN+`
+		#ifdef WAVES
+		uniform sampler2D u_displacement0,u_displacement1; uniform vec3 u_lengths; varying vec2 v_origin;
+		vec3 cascade(sampler2D map, vec2 p, float L, float gap){ return textureLod(map,p/L,log2(max(512.0*gap/L,1.0))).xyz; }   // the mip whose texels are twice the local vertex spacing: the waves the mesh cannot carry average away, as fit() fades the sines
+		#endif
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=turn(normalize(w.xy)); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
 		float fit(float gap,float span){ return 1.0-smoothstep(span*0.25,span*0.5,gap); }   // sampling honesty (#71): a wave the LOCAL vertex spacing cannot carry (fewer than ~2-4 vertices per wavelength) folds into a gear-amplified beat lattice that races over the sea with camera motion — the moire. Fade each train out where the camera-centred grid gets coarser than its wavelength supports; the texture octaves own those scales beyond
@@ -535,15 +588,24 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
-		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g; h+=wave(xz,W1,1.1*fit(gap,W1.z),g);gt+=g;
+		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g;
+		#ifdef WAVES
+		vec3 d=(cascade(u_displacement0,xz,u_lengths.x,gap)+cascade(u_displacement1,xz,u_lengths.y,gap))*ws;   // the wind's sea from its spectrum (waves.ts), in place of the three sines; the crossing ground swell stays
+		h*=ws; gt*=ws; wp.xz+=d.xz; h+=d.y; v_origin=xz;
+		#else
+		h+=wave(xz,W1,1.1*fit(gap,W1.z),g);gt+=g;
 		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
+		#endif
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_flat,u_light,u_foam_gain,u_foam_debug; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_cloud_flat,u_light,u_foam_gain,u_foam_debug,u_slope; uniform vec3 u_beam; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		`+CLOUD_SHADOW_RESOLVE+`
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
 		`+SEA_TURN+`
+		#ifdef WAVES
+		uniform sampler2D u_derivative0,u_derivative1,u_derivative2; uniform vec3 u_lengths,u_spectrum; varying vec2 v_origin;
+		#endif
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point. MUST mirror the vertex W0/W1 exactly: sin(kx - wt), W0 = the crossing NW ground swell, W1 = the longest wind-sea train
 			float h=2.0*sin(dot(normalize(vec2(-0.12,-0.99)),p)*(6.2831853/420.0)-u_time*(60.0/420.0));
@@ -569,7 +631,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
 		}
 		vec3 sky_at(vec3 d){ d=normalize(d); d.y=max(d.y,0.005); vec3 col=shown(at_sky(normalize(d),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own sky: a facet tilted past the horizon still sees the horizon's sky
-			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
+			return col; }   // no drawn halo: the air's own glow about the sun is in at_sky, and the sun's reflection is the glint
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=unturn(v_world.xz); float dist=length(cameraPosition-v_world);   // the sea's own frame (SEA_TURN): its textures, foam and shading swells are laid out about that axis
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
@@ -591,12 +653,20 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
 			vec2 s1=hexslope(xr1/90.0, -u_time*vec2(1.17e-2,3.5e-3));
 			float far=smoothstep(3000.0,14000.0,dist);
+			#ifdef WAVES
+			float near=1.0-smoothstep(1200.0,2400.0,dist);   // the spectrum's sea near the eye, the octaves beyond, where the 300 m tile would show its repeat
+			vec2 ox=dFdx(v_origin), oy=dFdy(v_origin);
+			#endif
 			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.28*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
 			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
 			// distance band once the detail octaves mip away — real seas read isotropic out
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
 			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.7));
 			vec2 lean=turn(slope);   // the octaves' slopes are in the sea's frame: the world's normal takes them turned
+			#ifdef WAVES
+			{ vec4 q=textureGrad(u_derivative0,v_origin/u_lengths.x,ox/u_lengths.x,oy/u_lengths.x)+textureGrad(u_derivative1,v_origin/u_lengths.y,ox/u_lengths.y,oy/u_lengths.y)+textureGrad(u_derivative2,v_origin/u_lengths.z,ox/u_lengths.z,oy/u_lengths.z);
+				lean=mix(lean,-vec2(q.x/max(1.0+q.z,0.2),q.y/max(1.0+q.w,0.2))*(1.0-0.85*v_calm),near); }   // each slope the displaced surface's: the height's gradient over how far the horizontal displacement squeezed it
+			#endif
 			vec3 N=normalize(vn+vec3(lean.x,0.0,lean.y));
 			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.58*far);   // grazing mirror reduced by wave shadowing but NOT killed: the sea silvers smoothly toward the horizon, it just must never form a stripe brighter than the water beyond it   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
@@ -618,26 +688,45 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// linear space instead.
 			float shade=pow(cloud_shadow_level(cloud_shadow_open(v_world)),1.0/2.2);
 			body*=shade;
-			vec3 col=mix(body,refl*mix(shade,1.0,0.25),fres*mix(1.0,0.35,shallow));   // the reflection takes three-quarters of the shading. A shadow leaves the reflected sky itself unchanged, but from altitude the reflection is most of a grazing sea, and at half a cumulus shadow on deep water read as a 5% smudge
-			// --- Cox-Munk style glint: slope-space Beckmann, corridor stretched along the sun azimuth,
-			// wind-roughened, calmed in the lagoon; granular sparkle emerges from the detail normals.
+			// The water's own light and the sky it reflects add in linear light: mixed as displayed colours they darken
+			// and grey each other, worst toward the horizon, where the reflection is most of what the sea shows.
+			vec3 ray=reflect(-V,N), water=unshown(body,u_exposure), sky=unshown(refl*mix(shade,1.0,0.25),u_exposure);   // the reflection takes three-quarters of the shading. A shadow leaves the reflected sky itself unchanged, but from altitude the reflection is most of a grazing sea, and at half a cumulus shadow on deep water read as a 5% smudge
+			if(ray.y<0.0){   // a ray reflected down meets the next wave at a grazing angle: its water, and the sky mirrored in it at that wave's Fresnel
+				vec3 mirrored=sky_at(vec3(ray.x,-ray.y,ray.z)); mirrored=mix(mirrored, vec3(dot(mirrored,vec3(0.333)))*0.90, u_cloud_flat*0.85);
+				sky=mix(water,unshown(mirrored*mix(shade,1.0,0.25),u_exposure),0.02+0.98*pow(1.0+ray.y,5.0)); }
+			// The reflection is weighted by how much of this ripple the eye sees: one tilted toward the viewer shows more of
+			// itself than one tilted away, and one facing away is hidden behind the ripple in front. Judged on the swell's
+			// own surface, whose geometry hides its own back faces; the weight averages 1 over the sea's slope spread.
+			float rw=sqrt(u_slope)*mix(1.0,0.4,v_calm);   // the sea's FULL slope spread (detail included): Cox-Munk at the weather's wind, calmed in the lagoon; the glint below carries it too
+			float ra=rw/2.4;
+			float facing=dot(vn,V), grazing=max(facing,0.02), margin=grazing/(length(V-vn*facing)*rw+1.0e-4);
+			float expected=0.5*(1.0+tanh(0.7978846*(margin+0.044715*margin*margin*margin)))+exp(-0.5*margin*margin)*0.3989423/margin;   // the weight's mean over Gaussian slopes, which it is divided by
+			float seen=max(dot(N,V),0.0)/(max(dot(N,vn),0.2)*grazing*expected);
+			vec3 surface=mix(water,sky,clamp(fres*mix(1.0,0.35,shallow)*seen,0.0,1.0));
+			// --- Sun glint: the beam the wave slopes reflect, E F p / (4 cos^4 beta cos theta_v), in linear light. p is Cox-Munk's
+			// slope density about the swell, its mean square slope rw*rw split upwind and crosswind along the weather's wind in
+			// Cox-Munk's shares at the trades' 12.9 m/s; the detail normals scatter it into glitter. Calmed in the lagoon through rw.
 			vec3 H=normalize(L+V);
 			vec2 hs=-H.xz/max(H.y,0.05);
-			// Corridor envelope from the SMOOTH normal (vertex waves + a whisper of coarse detail):
-			// the pool's shape stays coherent while the full detail normal supplies the granular
-			// sparkle inside it — two scales, as on a real sea.
-			vec3 Ne=v_normal;   // envelope from the swell alone: even a whisper of coarse detail in Ne paints the warp's filament structure across the pool as smooth white swirls — the residual oil
+			vec3 Ne=v_normal;   // the density about the swell alone: even a whisper of coarse detail in Ne paints the warp's filament structure across the pool as smooth white swirls — the residual oil
 			vec2 es=-Ne.xz/max(Ne.y,0.2); vec2 dv=es-hs;
-			vec2 az=normalize(L.xz+vec2(1e-4,0.0)); vec2 c=vec2(dot(dv,az),dot(dv,vec2(-az.y,az.x)));
-			float ra=u_rough*(0.55+0.45*u_wind)*mix(1.0,0.4,v_calm);
-			float rw=ra*2.4;   // the envelope carries the FULL Cox-Munk slope variance (detail included) — the sparkle only granulates inside it
-			float env=exp(-(c.x*c.x/(rw*rw*3.6)+c.y*c.y/(rw*rw)));
+			vec2 along=vec2(dot(dv,u_downwind),dot(dv,vec2(-u_downwind.y,u_downwind.x)));
+			float upwind=0.595*rw*rw, crosswind=0.405*rw*rw;
+			float density=exp(-0.5*(along.x*along.x/upwind+along.y*along.y/crosswind))/(6.2831853*sqrt(upwind*crosswind));
+			float tilt=1.0+dot(dv,dv);   // 1/cos^2 of the facet's tilt
 			vec2 fs=-N.xz/max(N.y,0.2); vec2 dv2=fs-hs; float rs=ra*1.6;   // sparkle sigma must sit near the true facet-slope spread or it never fires
 			float spark=exp(-dot(dv2,dv2)/(rs*rs));
-			float g=env*(0.10+2.8*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
+			// The sparkle is divided by its mean over the ripples the textures resolve (their slope variance: the baked texture's 0.0665
+			// a tap, per component, through the octave weights), so it scatters the pool's light into glitter without changing how much there is.
+			float ripples=0.0665*u_wind*u_wind*(1.0-0.85*v_calm)*(1.0-0.85*v_calm)*(0.1156+0.2304*f2*f2+0.0784*far*far);
+			#ifdef WAVES
+			ripples=mix(ripples,0.5*(u_spectrum.x+u_spectrum.y+u_spectrum.z)*(1.0-0.85*v_calm)*(1.0-0.85*v_calm),near);   // the cascades' slope variance, per component, in place of the octaves'
+			#endif
+			float kernel=rs*rs+2.0*ripples; vec2 ev=-vn.xz/max(vn.y,0.2)-hs;
+			float glitter=0.10+0.90*min(spark/max(rs*rs/kernel*exp(-dot(ev,ev)/kernel),1.0e-6),40.0);   // a smooth tenth beneath: a pool of glitter alone flickers out between sparkles
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
-			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*(1.0-0.85*u_cloud_flat)*shade*shade;   // a specular corridor needs the BEAM and an overcast has none: shade*shade alone still passed ~28% of the glitter path under a solid 300 ft deck (u_glint is per time-of-day, not per preset)
-			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
+			vec3 glint=u_beam*fresH*density*tilt*tilt/(4.0*max(dot(Ne,V),0.05))*glitter*(1.0-0.85*u_cloud_flat)*shade*shade;   // a specular corridor needs the BEAM and an overcast has none: shade*shade alone still passed ~28% of the glitter path under a solid 300 ft deck
+			vec3 col=shown(surface+glint,u_exposure);
 			// --- subsurface transmission: light through the thin water near a crest reaches the
 			// viewer when looking toward the sun's far side — the blue-green glow that makes
 			// waves read as liquid up close (MSFS-style SSS, cheapened to one term).
@@ -695,6 +784,64 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			col*=mix(1.0,u_shadow_hour,u_cloud_flat); seafog*=mix(1.0,u_shadow_hour,u_cloud_flat);   // under an overcast at night the sea blacks out, its haze with it: the deck blocks the moon the night is lit by
 			col=mix(col,mix(seafog,horizon,toDome*0.9),clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
 			gl_FragColor=vec4(col,1.0); }` });
+// The FFT sea (waves.ts) at high and ultra: the wind's sea from its spectrum near the eye, for the
+// wind the weather blows. Its tables are made the first time a setting asks for it.
+let waves=null;
+function apply_waves(){ const w=weather().wind, speed=Math.hypot(w.x,w.z), on=(cfg.effects_quality??2)>=2&&speed>0.1, u=ocean_mat.uniforms;   // a calm raises no wind sea
+	if(on&&!waves){ const wind={ speed, direction:Math.atan2(w.z,w.x), fetch:200000 };   // the trades blow over the open Pacific: past this fetch the sea grows no further
+		waves=new Waves(wind,1);
+		u.u_displacement0.value=waves.displacement[0]; u.u_displacement1.value=waves.displacement[1];
+		u.u_derivative0.value=waves.derivative[0]; u.u_derivative1.value=waves.derivative[1]; u.u_derivative2.value=waves.derivative[2];
+		const slopes=spectrum_slopes(wind); u.u_spectrum.value.set(slopes[0],slopes[1],slopes[2]); }
+	if(on!==("WAVES" in ocean_mat.defines)){ if(on) ocean_mat.defines.WAVES=""; else delete ocean_mat.defines.WAVES; ocean_mat.needsUpdate=true; } }
+// The sun's glare: light the eye's own media scatter about a bright source, laid over everything
+// in view. The CIE's glare spread (CIE 146:2002, the disability glare equation) gives the veil's
+// luminance for E the source's light at the eye and theta degrees from it, for a young pilot (age
+// 25, the age factor 1 + (25/62.5)^4) of mid pigmentation (p = 0.5). The sun's beam is far past
+// white on any display, so its glare cannot come from the frame's pixels: it is drawn from the beam
+// itself, and gated by whether the sun can be seen - on the screen by its own disc (a cloud, the jet
+// or the canopy frame across it takes the glare away), and off it, where the eye still sees the sun,
+// by the clouds' shadow map.
+const glare_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, toneMapped:false,
+	uniforms:{ u_frame:{value:null}, u_inverse:{value:new THREE.Matrix4()}, u_eye:{value:new THREE.Vector3()}, u_forward:{value:new THREE.Vector3(0,0,-1)}, u_sun:{value:sun_dir}, u_disc:{value:col_sundisc}, ...cloud_shadow_uniforms,
+		u_exposure:atmosphere_uniforms.u_exposure, u_at:{value:new THREE.Vector2()}, u_size:{value:new THREE.Vector2(1,1)}, u_radius:{value:3.0}, u_inside:{value:0.0},
+		u_veil:{value:new THREE.Color()}, u_moon_mean:{value:new THREE.Color()}, u_sun_disc:atmosphere_uniforms.u_sun_disc },   // u_veil: the glare's source, set with the hour (moon_place); u_moon_mean: the night moon's mean light, for telling it unhidden
+	vertexShader:`varying vec2 v_uv; void main(){ v_uv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 v_uv; uniform sampler2D u_frame; uniform mat4 u_inverse; uniform vec3 u_eye,u_forward,u_sun,u_veil,u_disc,u_moon_mean; uniform vec2 u_at,u_size; uniform float u_exposure,u_radius,u_inside,u_sun_disc;
+		`+TONE+`
+		`+CLOUD_SHADOW_RESOLVE+`
+		float clear(){   // the clouds' share of the sun's beam that reaches the eye: the ground point whose sun line runs through the eye sees what the eye sees, below the cloud base
+			if(u_shadow_deck.z>0.0) return 1.0-cloud_shadow_below(u_eye);   // an overcast deck hides the sun beneath it
+			if(u_shadow_patch.w<=0.0) return 1.0;
+			vec2 g=u_eye.xz-u_shadow_sun.xz*(u_eye.y/max(u_shadow_sun.y,0.05)), uv=(g-u_shadow_patch.xy)/u_shadow_patch.z+0.5;
+			float open=mix(1.0,texture2D(u_shadow,clamp(uv,0.0,1.0)).r,u_shadow_patch.w*(1.0-smoothstep(0.35,0.5,length(uv-0.5))));
+			return mix(open,1.0,smoothstep(u_shadow_deck.x,u_shadow_deck.y,u_eye.y)); }   // climbing through the field, less of it lies ahead of the sun
+		float lit(vec2 p){ vec3 f=texture2D(u_frame,p/u_size).rgb;
+			if(u_sun_disc>0.5){ vec3 c=f/min(u_disc*1.4,vec3(1.0)); return smoothstep(0.95,0.995,min(c.r,min(c.g,c.b))); }   // a pixel of the sun's disc as the dome draws it, unhidden: a white cloud across it reads under 0.95
+			return smoothstep(0.5,0.7,dot(f,vec3(1.0))/dot(shown(u_moon_mean,u_exposure),vec3(1.0))); }   // the moon's face: its darkest seas read 0.8 of its mean, a cloud or a jet across it far less
+		void main(){ vec3 frame=texture2D(u_frame,v_uv).rgb;
+			float disc=0.2*(lit(u_at)+lit(u_at+vec2(u_radius*0.5,0.0))+lit(u_at-vec2(u_radius*0.5,0.0))+lit(u_at+vec2(0.0,u_radius*0.5))+lit(u_at-vec2(0.0,u_radius*0.5)));
+			float seen=mix(clear(),disc,u_inside)*smoothstep(-0.174,0.174,dot(u_forward,u_sun));   // the disc where the screen shows it, the clouds where it does not; none from behind the eye (past 90 degrees off the line of sight)
+			vec4 far=u_inverse*vec4(v_uv*2.0-1.0,1.0,1.0); vec3 ray=normalize(far.xyz/far.w-u_eye);
+			float angle=max(degrees(atan(length(cross(ray,u_sun)),dot(ray,u_sun))),0.27);   // from the sun, held at its disc's edge
+			vec3 veil=u_veil*(10.0/(angle*angle*angle)+(5.0/(angle*angle)+0.05/angle)*1.0256+0.00125)*seen;
+			vec3 base=unshown(frame,u_exposure);
+			vec3 col=frame+shown(base+veil,u_exposure)-shown(base,u_exposure);   // added in linear light, as the change it makes, so a pixel it leaves alone is left exactly
+			gl_FragColor=vec4(col,1.0); }` });
+const glare_scene=new THREE.Scene(), glare_view=new THREE.Camera(), glare_at=new THREE.Vector3();
+{ const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),glare_mat); quad.frustumCulled=false; glare_scene.add(quad); }
+let glare_frame=null;
+function glare_render(){   // after the world, the clouds and the cockpit: the eye sees them all through its own scatter
+	renderer.getDrawingBufferSize(star_buffer); const w=star_buffer.x, h=star_buffer.y, u=glare_mat.uniforms;
+	if(!glare_frame||glare_frame.image.width!==w||glare_frame.image.height!==h){ if(glare_frame) glare_frame.dispose(); glare_frame=new THREE.FramebufferTexture(w,h); }
+	renderer.copyFramebufferToTexture(new THREE.Vector2(0,0),glare_frame); u.u_frame.value=glare_frame; u.u_size.value.set(w,h);
+	u.u_inverse.value.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).invert(); u.u_eye.value.copy(camera.position); camera.getWorldDirection(u.u_forward.value);
+	glare_at.copy(sun_dir).multiplyScalar(1.0e5).add(camera.position).project(camera);
+	const ahead=camera.getWorldDirection(_glare_ahead).dot(sun_dir)>0.0, x=(glare_at.x*0.5+0.5)*w, y=(glare_at.y*0.5+0.5)*h;
+	u.u_at.value.set(x,y); u.u_radius.value=Math.max(h*0.5*camera.projectionMatrix.elements[5]*Math.tan(0.004651),1.0);   // the disc's radius in pixels
+	u.u_inside.value=ahead?THREE.MathUtils.smoothstep(Math.min(x,w-x,y,h-y),0.0,u.u_radius.value*3.0):0.0;   // how far the disc's own pixels can be trusted to say whether it is hidden
+	renderer.autoClear=false; renderer.render(glare_scene,glare_view); renderer.autoClear=true; }
+const _glare_ahead=new THREE.Vector3();
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
 	// Camera-centred polar disc, not a square: a 20 km square rim sits at ~2° depression
@@ -883,7 +1030,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		`+SKY_SHOWN+`
 		void main(){
 			float depth=texture(tDepth,vUv).r;
-			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
+			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos); float blur=max(length(fwidth(ray)),1.0e-5);   // a pixel's angle, for the sun's disc: here, before the march's branches
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
 			// Intersect the sea plane analytically: the ocean mesh is a finite disc, and
@@ -942,7 +1089,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
 						t+=dt; }
-					vec3 skybg=sky_dome(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure);   // EXACTLY the dome, so the haze share composites to the true backdrop
+					vec3 skybg=sky_dome(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure,blur);   // EXACTLY the dome, so the haze share composites to the true backdrop
 					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 					// (An analytic under-storm horizon mist lived here 2026-07-06 and was removed by request:
 					// four rounds of geometry/hue fixes never fully hid the sea/sky line to the pilot's eye.)
@@ -1200,7 +1347,7 @@ function render_frame(){
 	// read as a lit grey ceiling over a grey sea.
 	{ const deck=CLOUDS[cfg.clouds], hour=cloud_shadow_uniforms.u_shadow_hour.value;
 		const blackout=deck&&deck.flat>0.5?1+(hour-1)*(1-THREE.MathUtils.smoothstep(camera.position.y,deck.base,deck.top)):1;
-		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=deck&&deck.flat>0.5?hour:1; stars.material.uniforms.u_opacity.value=(TOD[cfg.tod]||TOD.day).stars*blackout; renderer.getDrawingBufferSize(star_buffer); stars.material.uniforms.u_scale.value=Math.max(1,star_buffer.y/1080); }
+		sky_mat.uniforms.u_blackout.value=blackout; cloud_mat.uniforms.uBlackout.value=deck&&deck.flat>0.5?hour:1; stars.material.uniforms.u_opacity.value=(TOD[cfg.tod]||TOD.day).stars*blackout; renderer.getDrawingBufferSize(star_buffer); stars.material.uniforms.u_scale.value=Math.max(1,star_buffer.y/1080); if(waves&&("WAVES" in ocean_mat.defines)) waves.update(renderer,ocean_mat.uniforms.u_time.value); }   // the spectrum's sea at this moment
 	if(cloud_active()){ size_rt();
 		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera);
 		scene.overrideMaterial=null;   // depth-only pass at the cloud buffer's resolution, used for cloud occlusion — no colour, no lighting or textures
@@ -1228,6 +1375,7 @@ function render_frame(){
 		cockpit_cam.position.copy(camera.position); cockpit_cam.quaternion.copy(camera.quaternion);
 		renderer.autoClear=false; renderer.clearDepth(); renderer.render(scene,cockpit_cam); renderer.autoClear=true;
 	}
+	glare_render();
 }
 
 // ============================================================================ geometry
@@ -4266,12 +4414,12 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.strokeStyle="rgba(57,224,122,0.5)"; x.lineWidth=2;
 	x.beginPath(); x.moveTo(256,96); x.lineTo(236,206); x.lineTo(60,266); x.lineTo(60,282); x.lineTo(236,262); x.lineTo(236,352); x.lineTo(216,398); x.lineTo(256,388); x.lineTo(296,398); x.lineTo(276,352); x.lineTo(276,262); x.lineTo(452,282); x.lineTo(452,266); x.lineTo(276,206); x.closePath(); x.stroke();
 	const spots={ 1:[64,308], 2:[112,318], 3:[160,328], 4:[208,338], 5:[256,348], 6:[304,338], 7:[352,328], 8:[400,318], 9:[448,308] };
-	const order=stores_rounds(lo);
-	const fired=Math.max(0, order.length-Math.max(0,ownship.msl|0));
-	const next=order[fired];   // the SMS priority station: the round the trigger takes next
-	const live=new Set(order.slice(fired).map(r=>r.name));
-	const aorder=stores_amraams(lo);   // #27: the cheek AMRAAMs, their own magazine
-	const aspent=Math.max(0,aorder.length-Math.max(0,ownship.amraam|0));
+	const order=sequence(ownship).heaters, stations=new Map(stores_rounds(lo).map(r=>[r.name,r.station]));
+	const spent=departed(order,ownship.msl|0);
+	const next=order[spent];   // the SMS priority station: the round the trigger takes next, a round burning on its rail first
+	const live=new Set(order.slice(spent));
+	const aorder=sequence(ownship).amraams;   // #27: the cheek AMRAAMs, their own magazine
+	const aspent=departed(aorder,ownship.amraam|0);
 	const alive=new Set(aorder.slice(aspent));
 	for(let station=1;station<=9;station++){
 		const slot=lo[String(station)]||{fixture:"",stores:[]};
@@ -4290,7 +4438,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 		if(colour&&label!=="—"&&label!=="PYL") x.fillStyle=tank_here?"#ffd24a":"#39e07a"; else x.fillStyle=label==="—"?"rgba(57,224,122,0.4)":"#39e07a";
 		x.fillText(label,sx,sy+34);
 		x.font="12px monospace"; x.fillStyle="rgba(57,224,122,0.6)"; x.fillText(String(station),sx,sy+52);
-		if(master==="9m"&&next&&next.station===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
+		if(master==="9m"&&next&&stations.get(next)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
 		if(master==="120c"&&aorder[aspent]&&parseInt(aorder[aspent].slice(4),10)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // parseInt: twin rounds carry an a/b point suffix
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
@@ -4426,7 +4574,21 @@ function loadout(){ return stores_granted(demonstrating()?stores_normalize(store
 function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return stores_rounds(bandit_fit()).length; }   // the heaters the SP bandit spawns with; launch_bandit_heater counts them down from here, and server bots decrement their own masks
-function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
+function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; rearm_order(st); if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
+// cooked adopts the stores the battle core reports burning on a jet's rails
+// (single player's battle output words 62 and 63): each new one jumps the
+// jet's launch order (stores.ts sequence), and its fire is drawn.
+function cooked(st,mask){ const book=stores_catalog(); if(book) adopt(st,stores_masked(mask,book.index)); }
+// store_fires draws a burning round's motor at its station: flame and smoke,
+// the only cue (a real Hornet has no light or voice for it).
+function store_fires(st){ for(const name of burning_stores(st)){ const p=store_position(st,name); if(p) burn_trail(p,0.6,st.velx??st.fwd.x*st.speed,st.vely,st.velz??st.fwd.z*st.speed); } }
+// store_position is where a round hangs in the world: a tip's rail node, or
+// the drawn centre of a rack round, whose node carries baked geometry offset
+// by a delta, so the node origin is NOT the round.
+function store_position(st,name){ if(!st.group) return null;
+	if(name.startsWith("tip")){ const rail=st.group.getObjectByName(TIP_NODES[name]); if(!rail) return null; rail.getWorldPosition(_v); return {x:_v.x,y:_v.y,z:_v.z}; }
+	const piece=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(!piece) return null;
+	_launch_box.setFromObject(piece); _launch_box.getCenter(_v); return {x:_v.x,y:_v.y,z:_v.z}; }
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's model
 // space), pylon AIM-9s as translated clones of the tip missile mesh. Tips stay
@@ -4486,27 +4648,26 @@ function round_clone(model, name, station){
 function update_rails(st,count){ if(!st.group) return;
 	const lo=st.loadout;
 	if(!lo){ for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } return; }
-	const order=stores_rounds(lo);
-	const fired=Math.max(0, order.length-Math.max(0,count|0));
-	const live=new Set(order.slice(fired).map(r=>r.name));
+	const order=sequence(st);
+	const live=new Set(order.heaters.slice(departed(order.heaters,count|0)));
 	for(const key of ["tip1","tip9"]){ const node=st.group.getObjectByName(TIP_NODES[key]); if(node) node.visible=live.has(key); }
 	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); }
-	{ const order=stores_amraams(lo); const spent=Math.max(0,order.length-Math.max(0,st.amraam??order.length));   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
-		order.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
+	{ const spent=departed(order.amraams,st.amraam);   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
+		order.amraams.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask: the core attach bitmask for the flown loadout with expended rounds
 // cleared, memoised on (loadout revision, heaters left, AMRAAMs left). Before
 // the catalog is readable the wingtip default stands in.
-let own_mask_memo={ key:-1, value:0b11 };
+let own_mask_memo={ key:"", value:0b11 };
 function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 	const lo=ownship.loadout||loadout();
+	const order=ownship.loadout?sequence(ownship):stores_order(lo);   // the jet's own launch order: a round fired off burning leaves out of the SMS order
 	const remaining=Math.max(0, ownship.msl|0);
-	const aorder=stores_amraams(lo);
-	const aleft=Math.min(Math.max(0,(ownship.amraam??aorder.length)|0), aorder.length);
-	const key=(loadout_rev*64+remaining)*64+aleft;
-	if(own_mask_memo.key!==key){ const order=stores_rounds(lo); own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.length-remaining), book, aorder.length-aleft) }; }
+	const aleft=Math.min(Math.max(0,(ownship.amraam??order.amraams.length)|0), order.amraams.length);
+	const key=loadout_rev+"|"+stores_revised()+"|"+remaining+"|"+aleft;
+	if(own_mask_memo.key!==key) own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.heaters.length-remaining), book, order.amraams.length-aleft, order) };
 	return own_mask_memo.value; }
 // external_capacity is the flown loadout's full-tank external fuel, kg — the
 // deck crew's fill line and the setup's gross-weight arithmetic both use it.
@@ -4558,12 +4719,15 @@ function jettison_stations(stations, what){
 		next=stores_jettison(next,station,what); }
 	if(!dropped.length) return false;
 	separate_debris(ownship, debris);
-	const before=stores_rounds(lo), fired=Math.max(0,before.length-Math.max(0,ownship.msl|0));
-	const live=new Set(stores_rounds(next).map(r=>r.name));
-	const gone=before.slice(fired).filter(r=>!live.has(r.name)).length;   // live rounds that left on their racks
-	const carried=Math.min(Math.max(0,ownship.amraam|0), stores_amraams(next).length);   // #27: cheek rounds that left on their racks stop counting (assign_loadout re-seeds full)
+	const before=sequence(ownship), after=stores_order(next);   // the launch order keeps its sequence, a burning round's promotion included, less the rounds that went with their stations (stores.go Jettison)
+	const live=new Set(after.heaters), carried=new Set(after.amraams);
+	const gone=before.heaters.slice(departed(before.heaters,ownship.msl|0)).filter(name=>!live.has(name)).length;   // live rounds that left on their racks
+	const lost=before.amraams.slice(departed(before.amraams,ownship.amraam|0)).filter(name=>!carried.has(name)).length;   // #27: and the AMRAAMs: only rounds still aboard come off the count, not ones already fired from a station now dropped
+	const amraam=Math.max(0,(ownship.amraam|0)-lost);
+	const burning=ownship.cooking;
 	assign_loadout(ownship,next);
-	ownship.amraam=carried;
+	stores_retain(ownship,before,burning);
+	ownship.amraam=amraam;
 	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
 	update_rails(ownship,ownship.msl);
 	// Release envelope (#43, NATOPS fig 4-4: 575 KCAS / Mach 0.95, +1 to +2 g):
@@ -5517,13 +5681,11 @@ const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_ge
 		burn:0,flew:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, broken lock, and a swallowed flare's fall point (the sight line carries no memory: seeker.ts)
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
-	if(st.group&&st.msl>0){ let rail=null;
-		if(st.loadout){ const order=stores_rounds(st.loadout); const next=order[Math.max(0,order.length-st.msl)];   // the round about to depart, in the SMS priority order (#17)
-			if(next&&next.name.startsWith("tip")) rail=st.group.getObjectByName(TIP_NODES[next.name]);
-			else if(next){ const piece=st.racks&&st.racks.nodes&&st.racks.nodes[next.name];   // rack rounds carry baked geometry offset by a delta, so the node origin is NOT the round — take the drawn centre
-				if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
-		else rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
-		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
+	if(st.group&&st.msl>0){
+		if(st.loadout){ const order=sequence(st).heaters; const next=order[departed(order,st.msl)];   // the round about to depart, in the jet's launch order: the SMS priority order (#17), a burning round first
+			const at=next&&store_position(st,next); if(at) sp=at; }
+		else { const rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
+			if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
@@ -5554,19 +5716,20 @@ function trigger_missile(){
 function trigger_amraam(){
 	if(weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || (ownship.amraam|0)<=0) return;
 	const track=RADAR.stt??RADAR.ls;
-	if(!amraam_visual && track==null){ notice("NO RADAR LOCK"); return; }
+	const next=amraam_departure(ownship).name, visual=amraam_visual||burning_stores(ownship).includes(next);   // a round burning on its rail goes off as a VISUAL shot, lock or none: firing it off is the way out before it cooks the jet off
+	if(!visual && track==null){ notice("NO RADAR LOCK"); return; }
 	if(MULTIPLAYER){
 		// Multiplayer (#27): the server flies the round and judges the warhead; the
 		// client raises the trigger edge and spends its own magazine to keep the SMS
 		// honest. A supported shot needs the STT the server can see on the emitter
 		// wire - the L&S is client-side only.
-		if(!amraam_visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
-		fox3_flag=true; fox3_visual=amraam_visual;   // a VISUAL shot says so (#155): the server launches it without a lock, its seeker after what lies in the circle
+		if(!visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
+		fox3_flag=true; fox3_visual=visual;   // a VISUAL shot says so (#155): the server launches it without a lock, its seeker after what lies in the circle
 		if(!cheat("ammunition")) ownship.amraam--;
 		audio_launch(); update_rails(ownship,ownship.msl);
 		return; }
-	const target=has_enemy&&bandit.group.visible&&(!amraam_visual||helmet.within(ownship.fwd,seeker_toward(bandit).to,VISUAL))?bandit:null;   // a VISUAL shot's own radar takes what lies inside the field-of-view circle as it leaves the rail, and nothing outside it
-	if(launch_amraam(ownship,target,amraam_visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
+	const target=has_enemy&&bandit.group.visible&&(!visual||helmet.within(ownship.fwd,seeker_toward(bandit).to,VISUAL))?bandit:null;   // a VISUAL shot's own radar takes what lies inside the field-of-view circle as it leaves the rail, and nothing outside it
+	if(launch_amraam(ownship,target,visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phase 2)
 // The AIM-120's field-of-view circle (the DCS guide, figure 154; NATOPS has none): the search field of the
@@ -5586,7 +5749,7 @@ function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR
 // launch_amraam, which fires it, and launch_zone, whose ladder flies it and adds nothing of its own. Ejector
 // points (the cheek LAU-116, the inboard LAU-115C) punch the round DOWN before the motor lights; rail points
 // (wing LAU-127s, single or twin) send it forward off the rail like the 9M.
-function amraam_departure(st){ const order=stores_amraams(st.loadout||{}), name=order[Math.max(0,order.length-Math.max(0,st.amraam|0))];
+function amraam_departure(st){ const order=sequence(st).amraams, name=order[departed(order,st.amraam|0)];
 	if(stores_eject(st.loadout||{},name||"")) return { name, velocity:{ x:st.fwd.x*(st.speed+15), y:st.fwd.y*st.speed-8, z:st.fwd.z*(st.speed+15) } };
 	return { name, velocity:{ x:st.fwd.x*(st.speed+30), y:st.fwd.y*(st.speed+30), z:st.fwd.z*(st.speed+30) } }; }
 function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if(!m) return false;
@@ -5913,13 +6076,13 @@ function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.
 // hulk (#33): a hulk has no flight model, so without this its rails read as
 // permanently loaded and empty stations would keep cooking off. Memoised on
 // the remaining counts — it is called every frame.
-let bandit_rack_memo={ key:-1, value:0 };
+let bandit_rack_memo={ key:"", value:0 };
 function bandit_racks(){ const book=stores_catalog(); if(!book||!battle_rigged) return;
 	const lo=bandit.loadout; if(!lo) return;
-	const order=stores_rounds(lo), aorder=stores_amraams(lo);
-	const left=Math.min(Math.max(0,(bandit.msl??order.length)|0), order.length), aleft=Math.min(Math.max(0,(bandit.amraam??aorder.length)|0), aorder.length);   // the counts default to a FULL rack: the SP bandit's heater launches never reach the client (its brain reports only fox3), so an undefined count means carried, not fired
-	const key=left*64+aleft;
-	if(bandit_rack_memo.key!==key) bandit_rack_memo={ key, value:stores_mask(lo, Math.max(0,order.length-left), book, aorder.length-aleft) };
+	const order=sequence(bandit);
+	const left=Math.min(Math.max(0,(bandit.msl??order.heaters.length)|0), order.heaters.length), aleft=Math.min(Math.max(0,(bandit.amraam??order.amraams.length)|0), order.amraams.length);   // the counts default to a FULL rack: an undefined count means carried, not fired
+	const key=stores_revised()+"|"+left+"|"+aleft;
+	if(bandit_rack_memo.key!==key) bandit_rack_memo={ key, value:stores_mask(lo, order.heaters.length-left, book, order.amraams.length-aleft, order) };
 	battle_racks(0,bandit_rack_memo.value); }
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true; bandit_dispensed=0; bandit_words=null;
@@ -6882,12 +7045,26 @@ function head_apply(dt){ if(!head_track) return;
 */
 let padlocked=false, look_home=false;   // look-at-target (#243): a press of the look key latches the padlock - the head eases to the target fast and smoothly and follows it - and the next press, a manual look, a view reset, the target lost or the view left releases it and eases the head home. No helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
 // look_press works the look key in the first-person views: latch on the target, or release.
-function look_press(){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
+// latch sets the padlock and records the change.
+function latch(on,source){ if(padlocked===on) return; padlocked=on; view_note("padlock",on?"on":"off",source); }
+function look_press(source){ if(cfg.view!=="hud"&&cfg.view!=="cockpit") return;
 	if(crash_t>0) return;   // no jet to look from: a press over the fireball neither latches nor says NO TARGET
-	if(padlocked){ padlocked=false; look_home=true; return; }
-	if(look_target()) padlocked=true; else notice(translate("NO TARGET")); }
+	if(padlocked){ latch(false,source); look_home=true; return; }
+	if(look_target()) latch(true,source); else notice(translate("NO TARGET")); }
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
+// view_events (#70): every change to what the screen shows - the view, its zoom,
+// a reset, the padlock, the map - and what made it: start, key, stick (a stick
+// button, replayed as a key or read directly), wheel, axis (a stick axis bound to
+// zoom), mouse, look (a manual head turn), view (the zoom a view switch recalls),
+// reset, dev, or auto (the engine's own: the padlock let go when the target is
+// lost or the jet dies). Drained into the View channel as radar_events is into
+// Input. A zoom that keeps moving from one source (a held key, a wheel's momentum,
+// an axis) rewrites its own pending entry, so a sweep writes one entry a sample
+// rather than one a frame.
+let view_events=[];
+function view_note(kind,value,source){ const entry=`${sim_time.toFixed(1)}|${kind}|${value}|${source}`, last=view_events.length?view_events[view_events.length-1].split("|"):null;   // i18n-format-ok: ACMI event timestamp, not display text
+	if(kind==="zoom"&&last&&last[1]==="zoom"&&last[3]===source) view_events[view_events.length-1]=entry; else view_events.push(entry); }
 // The HUD view's vertical field at 1x: 60°, so a bandit 30° above the boresight - about where a heater's tone starts
 // with the seeker slaved to a lock - sits on the top edge of the screen, with the boresight at the centre as before.
 // The 45° it had kept the HUD's fixed overlay (the boxes, waterline and bracket are laid out at HH/45 a degree)
@@ -7342,7 +7519,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
-		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
+		const ch=(e.shiftKey?"Shift+":"")+k, source=e.isTrusted?"key":"stick";   // the source a view change records: a stick button arrives here as a synthetic key — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
 		if(!playback||watching(ch,k,e.shiftKey)){   // a replay answers only the keys that choose what to see
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
@@ -7381,19 +7558,19 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
-		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
-			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud"); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
-			if(k==="Digit3") set_view("ddi");        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
-			if(k==="Digit4") set_view("chase");      // 4 Chase
-			if(k==="Digit5") set_view("flypast");    // 5 Flypast
-			if(k==="Digit6") set_view("padlock"); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
-		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
+		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit",source);   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
+			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud",source); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
+			if(k==="Digit3") set_view("ddi",source);        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
+			if(k==="Digit4") set_view("chase",source);      // 4 Chase
+			if(k==="Digit5") set_view("flypast",source);    // 5 Flypast
+			if(k==="Digit6") set_view("padlock",source); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
+		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit",source);   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
 		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
-		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
-		if(ch===key_of("look.target")) look_press();   // Y: latch the padlock on the target, or release it
-		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
-		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
-		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
+		if(ch===key_of("view.reset")) view_reset(source);   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
+		if(ch===key_of("look.target")) look_press(source);   // Y: latch the padlock on the target, or release it
+		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1,source);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
+		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1,source);
+		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; view_note("map",map_on?"open":"closed",source); if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // `: the fast path to match chat (#84); MP only — bots do not read
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("server"); }   // Shift+`: everyone on the server, through the lobby ring
 		if(ch===key_of("hook")) pit_press("hook",0);   // arrestor hook deploy/stow
@@ -7443,7 +7620,7 @@ stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
-	if(head_drag){ if(press_moved>=6) padlocked=false;   // a drag, not a click on a switch, takes the head back from the padlock
+	if(head_drag){ if(press_moved>=6) latch(false,"mouse");   // a drag, not a click on a switch, takes the head back from the padlock
 		head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
@@ -7622,19 +7799,22 @@ function pit_press(action,direction){ const d=direction||0;
 			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } else atc_flash=sim_time; } break;   // the key and the UFC's A/P selector: engages the mode the FLAP switch sets (atc_engage), and a refused engage flashes the advisory; toggling off is always allowed, and silent
 	} }
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
-function zoom_step(direction){
+// zoom_to moves the zoom target, held to this view's range, and records the change.
+function zoom_to(value,source){ const v=THREE.MathUtils.clamp(value,zoom_floor(),4); if(v===zoom_target) return;
+	zoom_target=v; zoom_persist(); view_note("zoom",v.toFixed(2),source); }   // i18n-format-ok: ACMI event value, not display text
+function zoom_step(direction,source){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
 	if(cfg.view==="ddi"){ ddi_range(direction); return; }   // no optical zoom on a flat panel — the notch goes to the focused page's range scale
-	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.18,direction),zoom_floor(),4); zoom_persist(); } }   // fine per-tap steps (~12 taps floor to ceiling) — a HELD key sweeps continuously for big moves, so taps can afford precision
+	if(running) zoom_to(zoom_target*Math.pow(1.18,direction),source); }   // fine per-tap steps (~12 taps floor to ceiling) — a HELD key sweeps continuously for big moves, so taps can afford precision
 // view_reset returns the CURRENT view to how it starts: zoom back to 1x, the
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){ look_home=false; padlocked=false;
+function view_reset(source){ look_home=false; latch(false,source);
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
-	zoom_target=THREE.MathUtils.clamp(1,zoom_floor(),4); zoom_persist();
+	view_note("reset",cfg.view,source); zoom_to(1,"reset");
 	// #57 parked: if(head_track&&head_pose){ head_datum={ yaw:head_pose.raw.yaw, pitch:head_pose.raw.pitch }; head_yaw.reset(); head_pitch.reset(); }   // #57: capture the physical pose as the new neutral FIRST — zeroing alone would snap the view straight back off
 	head_az=0; head_el=0;
 	if(cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }
@@ -7653,7 +7833,7 @@ function scan_zoom(pad,bind){
 		for(const index of String(list).split(",")){ const b=+index;
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed, was=pad_buttons[action+"/"+b]||false;
-			if(down!==was){ pad_buttons[action+"/"+b]=down; if(down) zoom_step(action==="zoom.in"?1:-1); } } } }
+			if(down!==was){ pad_buttons[action+"/"+b]=down; if(down) zoom_step(action==="zoom.in"?1:-1,"stick"); } } } }
 stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any mouse wheel; the VelocityOne trim wheel in DIGITAL mode arrives as button pulses instead — see zoom.in/zoom.out)
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
@@ -7663,7 +7843,7 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 		ddi_wheel+=notch;
 		if(Math.abs(ddi_wheel)>=1){ ddi_range(Math.sign(ddi_wheel)); ddi_wheel=0; ddi_stepped=now; }
 		return; }
-	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
+	zoom_to(zoom_target*Math.pow(1.5,notch),"wheel");
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults in ./keys (one table, shared with
@@ -7890,7 +8070,7 @@ function read_input(dt){
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			// A KEYLESS action cannot be replayed. "None" is truthy, so the generic path below dispatched a synthetic event carrying the code "None", and EVERY unbound action matched it at once — a stick button bound to Cycle view also toggled the HUD reject switch and zeroed the trim. These two are the keyless actions a stick may reasonably carry, so they fire directly on the press edge, the same shape as guns and the zoom notches above; that also hands trim reset to the stick without inventing a keyboard chord for an action deliberately left unbound.
 			if(action==="view"||action==="trim.reset"||action==="gear.emergency"){ const edge=pad_buttons[action+"/"+b]||false;
-				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else trim_reset(); }
+				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit","stick"); else if(action==="gear.emergency") pit_press("gear.emergency",0); else trim_reset(); }
 				pad_buttons[action+"/"+b]=down; continue; }
 			const was=pad_buttons[action+"/"+b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[action+"/"+b]=down; const bindText=key_of(action);
@@ -7947,15 +8127,16 @@ function read_input(dt){
 
 let sim_time=0;
 // Flight recorder (#212): a rolling buffer saved from the log page. The
-// bot's doctrine state rides along in developer builds only — free to capture
-// (the brain runs in-process in wasm for a local joust) but it is the AI's
-// hand, so a shipped replay does not show it.
+// bot's doctrine state rides along in every build - free to capture (the brain
+// runs in-process in wasm for a local joust), and what a recording a player
+// shares with the developers needs to say about the bot - but it is the AI's
+// hand, so the player's own download leaves it out (acmi.ts conceal).
 const recorder=new Recorder();
 let record_started=null;
 // bandit_notes drains the brain's decision journal into the recorder's channels.
-// DEV_MODE only, and only while a brain flies: the drain EMPTIES the journal, so
-// calling it anywhere else would steal entries from the recording.
-function bandit_notes(){ if(!DEV_MODE||!bandit_brain) return {};
+// Only while a brain flies: the drain EMPTIES the journal, so calling it
+// anywhere else would steal entries from the recording.
+function bandit_notes(){ if(!bandit_brain) return {};
 	const drained=bandit_journal(); return drained?journal_notes(drained):{}; }
 // damage_words is a core state's damage in the order the recording carries it:
 // the forty per-element losses, the three gear struts, the eight jammed channels.
@@ -8014,6 +8195,7 @@ function recording_sample(){
 		// the dropped frame. A press with no effect writes nothing - the Radar
 		// channel not moving already says that.
 		...(due&&radar_events.length?{input:radar_events.splice(0).join(";")}:{}),
+		...(due&&view_events.length?{view:view_events.splice(0).join(";")}:{}),   // view changes and what made them (#70), drained the same way
 		// Why the ownship's own hard lock broke, when it did (#33 debrief): the
 		// automatic, physics-driven counterpart to Input above - never a press,
 		// so kept on its own channel rather than folded into that vocabulary.
@@ -8026,7 +8208,7 @@ function recording_sample(){
 		// battle channels (#238): what the fight did to ME, from the same
 		// state the CAS alerts and damage visuals read
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
-		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
+		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0, cooking:burning_stores(ownship).join("+"),
 		...(ownship.fate?{fate:ownship.fate}:{}), ...(own_killer?{killer:own_killer}:{}),   // WHO, beside the mechanism: the debrief keeps Fate and gains the attribution
 		// The hands on the controls (shipped, where they were developer-only):
 		// the one way to judge the handling against what the jet did.
@@ -8044,10 +8226,10 @@ function recording_sample(){
 		...(due&&record_radio.length?{radio:record_radio.splice(0)}:{}), ...(due&&record_notices.length?{notice:record_notices.splice(0)}:{}) }:undefined;
 	if(own!=="gone") add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
+		add(bandit,2,"Bandit","Red",bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				speedbrake:bandit.speedbrake??0,   // the board, for a replay to draw
-				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
+				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0, cooking:burning_stores(bandit).join("+"),
 				structure:bandit.harm.wreck||0, wing:bandit.harm.wing||0, ...(bandit.fate?{fate:bandit.fate}:{}),   // #103: the element TOTAL and the aero-relevant wing loss are different numbers, and only the total used to be recorded — under the name Wing, which is what made a fight's damage unattributable
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
 				missiles:Math.max(0,(bandit.msl??bandit_remaining())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
@@ -8061,8 +8243,8 @@ function recording_sample(){
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R,
 					surfaces:[bandit_words[STATE.stabilator]||0,bandit_words[STATE.stabilator+1]||0,bandit_words[STATE.flaperon]||0,bandit_words[STATE.flaperon+1]||0,bandit_words[STATE.rudder]||0,bandit_words[STATE.slat]||0],
 					damage:damage_words(bandit_words) }:{}),
-				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), developer recordings only: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
-			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
+				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), left out of the player's own download: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
+			cfg.task==="joust"?(cfg.bandit||"expert"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		// Everything the wire already told us about him (#163/#164), mapped by
@@ -8070,7 +8252,7 @@ function recording_sample(){
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange",undefined,
 			channels({ spent:st.spent, struck:st.struck, speed:st.speed, burning:st.burning, burn:st.burn,
 				thrust:st.thrust, leak:st.leak, reheat:st.reheat, gear:st.gearTarget, speedbrake:st.speedbrakeTarget, missiles:st.msl,
-				aoa:st.aoa, beta:st.beta, g:st.gload },
+				aoa:st.aoa, beta:st.beta, g:st.gload, cooking:burning_stores(st) },
 				net.emitters.get(slot), net.slot)); } }
 	// Missiles ride as their own objects (#33), plus one grace sample after the
 	// end so the fate is written. Ids are unique per launch (pool slot × shot
@@ -8493,7 +8675,7 @@ if(DEV_MODE) (globalThis as any).dev_vapour=(set)=>{   // dev: every jet's vapou
 		jets[name]={ flight:round(rig.flight), shown:round(rig.shown), drawn:rig.drawn, humid:Math.round((vapour_humid??humidity(cfg.clouds,presented(st).y))*1000)/1000 }; }
 	const rig=ownship.vapour, rows=rig&&rig.cores[0].visible?rig.rows[0].map(r=>[r.x,r.y,r.z,r.width,r.alpha].map(v=>Math.round(v*10000)/10000)):[];
 	return { puffs:vapour_pool.activeList.length, pinned:{ humid:vapour_humid, flight:vapour_force }, jets, rope:rows }; };   // rope: the pilot's starboard LEX rope while it shows, apex first, in the jet's frame - x, y, z, width (m) and density
-if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
+if(DEV_MODE) (globalThis as any).dev_chase=(az,el,dist)=>{ if(cfg.view!=="chase") set_view("chase","dev"); cam_az=+az||0; cam_el=+el||0; if(dist) cam_dist=+dist; return { az:cam_az, el:cam_el, dist:cam_dist }; };   // dev: pose the chase camera (radians, metres) for captures
 if(DEV_MODE) (globalThis as any).dev_wake=()=>{ const w=flight_wake(), at=(st)=>({ x:+st.pos.x.toFixed(1), y:+st.pos.y.toFixed(1), z:+st.pos.z.toFixed(1), vx:+(st.velx||0).toFixed(1), vy:+(st.vely||0).toFixed(1), vz:+(st.velz||0).toFixed(1) });   // i18n-format-ok: developer telemetry, never shown to a user
 	const others={}; if(has_enemy&&bandit.group.visible) others.bandit=at(bandit); for(const [slot,st] of remotes) if(st.group.visible) others["r"+slot]=at(st);
 	return w?{ pieces:w.pieces, trails:w.trails, swirl:w.swirl.map(v=>Math.round(v*1000)/1000), g:Math.round((ownship.gload??1)*1000)/1000, roll:last_out?Math.round((last_out[STATE.omega]||0)/D2R*100)/100:null, own:at(ownship), others }:null; };   // dev: the wake the pilot's core was handed on its last frame, how many jets have one laid, the air it made at the CG (m/s), the jet's g and roll rate, and where every jet is
@@ -8516,9 +8698,9 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
-	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification)
-	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off, y:bandit.pos.y-bandit.fwd.y*back+right.y*off, z:bandit.pos.z-bandit.fwd.z*back+right.z*off},
+if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side,below){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0, low=+below||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification); below: metres under it, so it can run along the rounds hung beneath the wing
+	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off-up.x*low, y:bandit.pos.y-bandit.fwd.y*back+right.y*off-up.y*low, z:bandit.pos.z-bandit.fwd.z*back+right.z*off-up.z*low},
 		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
@@ -8545,7 +8727,7 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
 	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
 	return { ownship:read(ownship), bandit:has_enemy?read(bandit):null, ownshipShed:gone }; };   // dev (#wing loss): panel visibility and the element verdict behind it
-if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, stores:burning_stores(bandit), heaters:bandit.msl??null, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flare(bandit); dispense_chaff(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
 if(DEV_MODE) (globalThis as any).dev_heat=()=>{ const z=heat_zone(); if(!z) return null;   // #47: the live 9M ladder and its cue, as the HUD draws them
@@ -8683,7 +8865,7 @@ function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_writt
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238): every path names its own reason, the ejection "eject"
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
-	padlocked=false; look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
+	latch(false,"auto"); look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
@@ -9067,6 +9249,7 @@ function playback_damage(p,words){ const v=(p.Damage||"").split("|").map(Number)
 function playback_effects(st,pose,own,dt){ if(dt<=0) return;
 	const n=(key,fallback)=>playback_number(pose.properties,key,fallback);
 	if(n("Burning",0)>0) burn_trail(st.pos,0.8,st.velx,st.vely,st.velz);
+	{ const cooking=String(pose.properties.Cooking??""); if(cooking||(st.cooking&&st.cooking.size)) adopt(st,cooking?cooking.split("+"):[]); store_fires(st); }   // a round burning on its rail: first in its launch order, its fire at the station
 	const leak=n("Leak",0); if(leak>0.05) leak_trail(st.pos,leak,st.velx,st.vely,st.velz);
 	const thrust=n("Thrust",0); if(thrust>0.06) engine_smoke(st.pos,thrust,st.velx,st.vely,st.velz);
 	// The pilot's jet counts its magazines down; the bandit counts its dispenses up.
@@ -9280,7 +9463,7 @@ function scenery(){
 	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
 }
 // The sea and the clouds follow the wind the jet flies in; in a calm they keep the line they had.
-function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); }
+function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); ocean_mat.uniforms.u_slope.value=0.003+0.00512*speed; }   // u_slope: the sea's mean square slope, Cox-Munk at this wind
 // The single-player environment: the map's own seed and wrap, the mission's weather.
 function weather(){
 	const cl=CLOUDS[cfg.clouds];
@@ -9333,7 +9516,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; rearm_order(ownship); update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); external_fill(b); flight_set(b); }   // the deck crew top the externals too — every spawn and service is a full-tank fill (#17)
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
@@ -9345,7 +9528,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; rearm_order(ownship); update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); external_fill(b); flight_set(b); }
 }
 function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
@@ -9484,6 +9667,7 @@ function fly_player(dt){
 			if(flown.graze&&(!graze||flown.graze.gap<graze.gap)) graze={...flown.graze}; }   // the burst's closest MISS: kept as a running minimum, because a burst is many ticks and only its best moment says anything
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)|(extinguish_flag?4:0)); battle_reset=false; extinguish_flag=false;   // bit 4: the fire extinguisher discharged this frame (2.14.2)
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
+		cooked(ownship,battle[62]); if(has_enemy) cooked(bandit,battle[63]);   // a round's motor alight on a rail: it jumps the launch order, and its fire is drawn at the station
 		shed_panels(ownship,last_out);   // our own wing too: in any external view a lost panel is the loudest damage cue there is
 		if(has_enemy) bandit_racks();   // keep the hulk's rails in step before the next tick judges hits on them
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
@@ -9495,6 +9679,7 @@ function fly_player(dt){
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
 			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, (bandit.reheat??0)>0.3); }   // the bandit's roar carries its burner (#88 audit): its plume state is a core mechanic and it was hardcoded cold
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
+		store_fires(ownship);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
 		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire",has_enemy?BANDIT:""); }   // the fuel fire's fuse ran out
 		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship("pilot",has_enemy?BANDIT:""); }
@@ -9650,7 +9835,7 @@ function fly_bandit(dt){
 	}
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
-		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: bandit_seed(), wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
+		bandit_brain=bandit_init({ level: cfg.bandit||"expert", seed: bandit_seed(), wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
 			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // no fuel: the bandit carries the load its own fit fights best on (bots_fuel), not the player's slider, which may be the wrong choice (2026-10-12)   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
@@ -9745,6 +9930,7 @@ function shed_panels(st,words){ if(!st||!st.group||!words) return;
 function bandit_wounds(){ const harm=bandit.harm; if(!harm) return;
 	shed_panels(bandit,bandit_words);   // a wing the battle model tore off stops being drawn
 	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,(harm.wing||0)*0.9),bandit.velx,bandit.vely,bandit.velz);
+	store_fires(bandit);
 	if((harm.thrust||0)>0.06) engine_smoke(bandit.pos,harm.thrust,bandit.velx,bandit.vely,bandit.velz);
 	if((harm.leak||0)>0.04) leak_trail(bandit.pos,Math.min(1,harm.leak*3),bandit.velx,bandit.vely,bandit.velz);
 }
@@ -10019,11 +10205,11 @@ function reset_ownship(){
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	bandit_acc=0; missile_acc=0;   // no stale fixed-step debt across spawns
-	designated=-1; padlocked=false;   // a respawn drops the acquisition and the padlock
+	designated=-1; latch(false,"auto");   // a respawn drops the acquisition and the padlock
 	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
@@ -10043,8 +10229,8 @@ function reset_ownship(){
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
-	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=st==="carrier"||st==="runway";   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise
-	altitude_set.radar=0; altitude_set.baro=5000; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3)
+	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=false;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise; the set already on from that pre-flight, so a spawn on the deck or the runway is no power-up and does not whoop
+	altitude_set.radar=0; altitude_set.baro=["carrier","runway","case1","case2","case3"].includes(st)?5000:0; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3), kept by the recoveries, where Case III's call comes at its 5,000 ft platform; off for the free flight air start, which begins at 5,000 ft and would call on every dip, and for the joust, where the sea is the only floor and the call would hold back the damage voices
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
@@ -10158,14 +10344,14 @@ function update_camera(dt){
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; padlocked=false; }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; latch(false,"look"); }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
 	}
 	// Padlock (#243): latched by the look key (look_press), the head follows the
 	// target in the first-person views; released, it eases home. Exponential ease
 	// with a rate cap. The clamps are the mask: a target past ±150° az or under
 	// the sill stays out of view, head parked at its limit.
 	{ const first=cfg.view==="hud"||cfg.view==="cockpit", t=padlocked&&first?look_target():null;
-		if(padlocked&&!t){ padlocked=false; look_home=true; if(first) notice(translate("NO TARGET")); }   // the target lost, or the view left: release and ease home
+		if(padlocked&&!t){ latch(false,"auto"); look_home=true; if(first) notice(translate("NO TARGET")); }   // the target lost, or the view left: release and ease home
 		if(padlocked){ look_home=false;
 			_look_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
@@ -10181,7 +10367,7 @@ function update_camera(dt){
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
 		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
-			else if(cfg.view!=="ddi"){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
+			else if(cfg.view!=="ddi") zoom_to(zoom_target*Math.pow(2.4,sweep),"key"); } }
 	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
 		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
@@ -11170,19 +11356,21 @@ function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]
 function lowered(clear,elevation){ return elevation<(clear?PEDESTAL_UP:PEDESTAL_DOWN); }
 function pedestal_step(){ const clear=cfg.view==="cockpit"&&lowered(pedestal_clear,head_el); if(clear===pedestal_clear) return;
 	pedestal_clear=clear; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=!clear; }
-function set_view(v){
+function set_view(v,source){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
-		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
+		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; view_note("display",d,source); return; }
 	if(v==="ddi"){ ddi_open(); ddi_view_last=0; }   // entering: draw the display's face this frame
 	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
 	if(v!==cfg.view) hist_valid=false;   // a view switch is a camera CUT: reprojecting cloud history across it smears the old view over the new one for a beat
-	zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
+	if(v!==cfg.view) view_note("view",v,source);
+	{ const was=zoom_target; zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
+		if(zoom_target!==was) view_note("zoom",zoom_target.toFixed(2),"view"); }   // i18n-format-ok: ACMI event value, not display text
 	cfg.view=v;
 	cockpit_hidden();
 }
-function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits();
+function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits(); apply_waves();
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); }
 
 // ============================================================================
@@ -11949,7 +12137,9 @@ function remote_racks(st,slot){ if(!net) return;
 			const keep=new Set(stores_entries(station,next[String(station)]||{fixture:"",stores:[]}));
 			for(const name of stores_entries(station,before)) if(!keep.has(name)) gone.push(name); }
 		separate_debris(st, gone); }
+	const previous=st.loadout?sequence(st):undefined, burning=st.cooking;
 	assign_loadout(st, next);
+	if(previous) stores_retain(st,previous,burning);   // a jettison keeps his launch order, a burning round's promotion included
 	if(st.msl===undefined) st.msl=stores_rounds(st.loadout).length;
 	else st.msl=Math.min(st.msl, stores_rounds(st.loadout).length);
 	update_rails(st, st.msl); }
@@ -11991,9 +12181,10 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; padlocked=false; update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
-		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); rearm_order(ownship); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
+		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); rearm_order(st); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
+	case "store": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st&&e.name) ignite(st,String(e.name)); break; }   // a round's motor caught fire on that jet's rail: it goes first in the launch order, and its fire is drawn until it leaves
 	case "missile":
 		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
 		break;
@@ -12106,6 +12297,7 @@ function net_frame(dt){
 		if(mine){ own_burn[0]=mine.burn[0]; own_burn[1]=mine.burn[1]; own_burning=!!mine.burning; own_leak=mine.leak;
 			if(mine.alive){ const worst=Math.max(own_burn[0],own_burn[1],own_burning?1:0);
 				if(worst>0) burn_trail(ownship.pos,worst,ownship.velx,ownship.vely,ownship.velz);
+				store_fires(ownship);
 				if(own_leak>0.1) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz); } } }
 	const seen=new Set(), wakes=[];
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
@@ -12145,6 +12337,7 @@ function net_frame(dt){
 		else audio_remote_drop("r"+slot);
 		if(pose.alive){ const burning=Math.max(pose.burn?pose.burn[0]:0, pose.burn?pose.burn[1]:0);   // #78: the damage you inflicted shows on their jet
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
+			store_fires(st);
 			if((pose.thrust||0)>0.06) engine_smoke(st.pos,pose.thrust,st.velx,st.vely,st.velz);   // harmless no-op on wires that do not carry it
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
 	flight_wake_shed(wakes);
@@ -12220,19 +12413,19 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
-	set_view("hud");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
+	set_view("hud","start");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
 	const cheatq=devq.get("cheat"); if(cheatq){ const on={...(cfg.cheats as Record<string,boolean>)}; for(const c of cheatq.split(",")) if(c==="invulnerable"||c==="ammunition"||c==="fuel") on[c]=true; cfg.cheats=on; }   // &cheat=invulnerable,... — harness survival without teaching the rig to fly BFM
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
-	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="pilot"||banditq==="ace"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
+	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="intermediate"||banditq==="expert"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
 	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
-	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	const viewq=devq.get("view"); if(viewq) set_view(viewq,"start");   // ?view=cockpit|hud|chase — headless capture hook (#105)
 	{ const pounds=parseFloat(devq.get("fuel")||""); if(pounds>0) cfg.fuel=pounds; }   // &fuel=<lb> — headless fuel pin: ?fly=1 mounts with the saved config or the defaults, whichever arrives first, and the catapult shot flown at 2,100 lb and at 10,800 lb are different shots
 	const storesq=devq.get("stores");   // &stores=gun|fox2|fox3|tanks|right|spam|heat — headless loadout hook (#17): the presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the ten-round AMRAAM twin fit, and the ten-heater fit (#27)
 	if(storesq){ const extra={
@@ -12249,7 +12442,7 @@ function start_mission(){
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
 	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
-	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
+	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase","start"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects(); apply_wind();
@@ -12267,6 +12460,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
+	view_events.length=0; view_note("view",cfg.view,"start"); view_note("zoom",zoom_target.toFixed(2),"start");   // the recording opens on the view and zoom the match began with; anything noted before this (the last match's tail, the start's own set_view) is not this match's - i18n-format-ok: ACMI event value, not display text
 	if(!playback){ recorder.clear(); record_started=new Date(); publish_recording(recording_file); } passes=[];   // a fresh recording per mission, and a fresh LSO book (#212) - but a replay records nothing, and publishing would hand the log page's buffer of the last flight over to an empty one
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
@@ -12274,7 +12468,7 @@ function start_mission(){
 	if(shotp!==null){ const [saz,sel,salt,sdist]=shotp.split(",").map(Number);
 		setTimeout(()=>{ try{
 			flight_level(CARRIER.x+2500, isNaN(salt)?100:salt, CARRIER.z+2500, 0.9, -0.45, 120, 2450);
-			set_view("chase"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
+			set_view("chase","start"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
 		}catch(e){ console.warn("shot preset failed", e); } }, 6000); }
 	try{ window.focus(); stage.focus(); }catch{ /* focus best-effort */ }
 }
@@ -12332,7 +12526,7 @@ function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // 
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
-	if(!map_on&&zoom_wheel&&running&&!game_paused){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),zoom_floor(),4); zoom_persist(); }   // axis-form wheels steer the target too
+	if(!map_on&&zoom_wheel&&running&&!game_paused) zoom_to(zoom_target*Math.pow(3,zoom_wheel*4*dt),"axis");   // axis-form wheels steer the target too
 	view_zoom+=(zoom_target-view_zoom)*Math.min(1,dt*10);   // ease toward the notch target — direct FOV steps read as jerky
 	{ const base=cfg.view==="cockpit"?72:cfg.view==="hud"?HUD_FIELD:45;   // wide field in the pit — at 45° the glareshield swallowed the canopy; the HUD view's 60° reaches 30° above the boresight (HUD_FIELD); 45° elsewhere
 		const fov=base/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }

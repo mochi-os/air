@@ -312,12 +312,6 @@ msgstr "அணுகல் நிலை"
 msgid "Account type"
 msgstr "கணக்கு வகை"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "ஏஸ்"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "எல்லா முறைகளும்"
 msgid "All servers"
 msgstr "எல்லா சேவையகங்களும்"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "அனுமதி"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "{entityLabel} தேட அனைவரையும் அனுமதி"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "விளையாட்டை மேம்படுத்த, உங்கள் விமானப் பதிவுகளைப் படிக்க டெவலப்பர்களை அனுமதி"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "தூர LOD"
 msgid "Does not match the required pattern"
 msgstr "தேவையான வடிவத்துடன் பொருந்தவில்லை"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "அனுமதிக்க வேண்டாம்"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "விரிவாக்கு"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "பக்கப்பட்டியை விரிவாக்கு"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "நிபுணர்"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "பறத்தல் குறிப்புகள்"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "பறத்தல் பதிவு"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "விமானப் பதிவுகள்"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "ஆர்வம் {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "ஆர்வங்கள்"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "இடைநிலை"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "மக்கள்"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "விமானி"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "விமானி"
 
 #: src/components/GameCanvas.tsx

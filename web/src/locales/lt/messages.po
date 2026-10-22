@@ -312,12 +312,6 @@ msgstr "Prieigos lygis"
 msgid "Account type"
 msgstr "Paskyros tipas"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Asas"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Visi režimai"
 msgid "All servers"
 msgstr "Visi serveriai"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Leisti"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Leisti visiems ieškoti: {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Leisti kūrėjams skaityti jūsų skrydžių įrašus, kad būtų patobulintas žaidimas"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "Atstumo LOD"
 msgid "Does not match the required pattern"
 msgstr "Neatitinka reikalaujamo šablono"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Neleisti"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Išskleisti"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Išskleisti šoninę juostą"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Ekspertas"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Skrydžio patarimai"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Skrydžių žurnalas"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Skrydžių įrašai"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Susidomėjimas {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Pomėgiai"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Vidutinis"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Žmonės"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "pilotas"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Pilotas"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

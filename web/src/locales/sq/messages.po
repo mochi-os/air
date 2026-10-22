@@ -312,12 +312,6 @@ msgstr "Niveli i qasjes"
 msgid "Account type"
 msgstr "Lloji i llogarisë"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "As"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Të gjitha mënyrat"
 msgid "All servers"
 msgstr "Të gjithë serverët"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Lejo"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Lejo këdo të kërkojë për {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Lejo zhvilluesit të lexojnë regjistrimet e fluturimeve tuaja për të përmirësuar lojën"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LOD sipas largësisë"
 msgid "Does not match the required pattern"
 msgstr "Nuk përputhet me modelin e kërkuar"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Mos lejo"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Zgjero"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Zgjero shiritin anësor"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Ekspert"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Këshilla fluturimi"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Ditari i fluturimeve"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Regjistrimet e fluturimeve"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Interesi {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Interesat"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Mesatar"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Njerëz"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "pilot"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Pilot"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

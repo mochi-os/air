@@ -518,23 +518,165 @@ export function resolve(raw: {
   return { ...raw, index }
 }
 
+// Firing is a jet's launch order: its heaters and its AMRAAMs in the SMS
+// priority order its loadout gives (rounds(), amraams()), with a round burning
+// on the rail moved to the head of the rounds still carried, so the next press
+// of the trigger fires it off. The rounds already fired are the first ones of
+// each list. Mirrors world/games/air/stores.go firing.
+export interface Firing {
+  heaters: string[]
+  amraams: string[]
+}
+
+// order is a loadout's launch order before anything has burned.
+export function order(loadout: Loadout): Firing {
+  return {
+    heaters: rounds(loadout).map((r) => r.name),
+    amraams: amraams(loadout),
+  }
+}
+
+// promote moves name to index fired in list - the head of the rounds still to
+// fire - when it is still carried, and returns the list unchanged otherwise.
+export function promote(list: string[], fired: number, name: string): string[] {
+  const at = list.lastIndexOf(name)
+  if (at < 0 || at < fired) return list
+  return [
+    ...list.slice(0, fired),
+    name,
+    ...list.slice(fired, at),
+    ...list.slice(at + 1),
+  ]
+}
+
+// kept is a launch order after a jettison: the same sequence, a burning
+// round's promotion included, less the rounds that went with their stations.
+// A loadout carrying a round the sequence never held is a new grant, not a
+// jettison, and starts its own order.
+export function kept(sequence: Firing, loadout: Loadout): Firing {
+  const carried = order(loadout)
+  const heaters = new Set(carried.heaters)
+  const amraam = new Set(carried.amraams)
+  const held = new Set([...sequence.heaters, ...sequence.amraams])
+  if ([...heaters, ...amraam].some((name) => !held.has(name))) return carried
+  return {
+    heaters: sequence.heaters.filter((name) => heaters.has(name)),
+    amraams: sequence.amraams.filter((name) => amraam.has(name)),
+  }
+}
+
+// Rails is the part of a jet's state its launch order reads: the loadout, the
+// heaters and AMRAAMs still carried (no count: all of them), the order itself
+// and the rounds whose motors burn on the rails.
+export interface Rails {
+  loadout?: Loadout
+  msl?: number
+  amraam?: number
+  order?: Firing
+  cooking?: Set<string>
+}
+
+// revision counts every change to any jet's launch order: the attach masks
+// memoise on it.
+let revision = 0
+export function revised(): number {
+  return revision
+}
+
+// sequence is a jet's launch order, seeded from its loadout the first time a
+// life asks for it: the rails empty, the masks clear and the next round leaves
+// in this order.
+export function sequence(st: Rails): Firing {
+  if (!st.order) {
+    st.order = order(st.loadout ?? {})
+    revision++
+  }
+  return st.order
+}
+
+// rearm starts a fresh life's launch order: the loadout's own, nothing burning.
+export function rearm(st: Rails): void {
+  st.order = undefined
+  st.cooking = new Set()
+  revision++
+}
+
+// departed counts the rounds of a launch order already away, with `left`
+// still carried.
+export function departed(list: string[], left?: number): number {
+  return Math.max(0, list.length - Math.max(0, (left ?? list.length) | 0))
+}
+
+// ignite moves a round whose motor has caught fire on the rail to the head of
+// the rounds still carried, as the server's and the battle core's copies do,
+// so the trigger fires it off next, and marks it burning.
+export function ignite(st: Rails, name: string): void {
+  const s = sequence(st)
+  const heaters = promote(s.heaters, departed(s.heaters, st.msl), name)
+  const amraams = promote(s.amraams, departed(s.amraams, st.amraam), name)
+  if (heaters !== s.heaters || amraams !== s.amraams) {
+    st.order = { heaters, amraams }
+    revision++
+  }
+  ;(st.cooking ??= new Set()).add(name)
+}
+
+// adopt makes names the rounds burning on a jet's rails: each new one jumps
+// the launch order.
+export function adopt(st: Rails, names: string[]): void {
+  for (const name of names) if (!st.cooking?.has(name)) ignite(st, name)
+  st.cooking = new Set(names)
+}
+
+// burning lists the rounds burning on a jet's rails that it still carries,
+// forgetting any that have left: fired off, jettisoned or gone with the jet.
+export function burning(st: Rails): string[] {
+  if (!st.cooking?.size) return []
+  const s = sequence(st)
+  const live = new Set([
+    ...s.heaters.slice(departed(s.heaters, st.msl)),
+    ...s.amraams.slice(departed(s.amraams, st.amraam)),
+  ])
+  for (const name of st.cooking) if (!live.has(name)) st.cooking.delete(name)
+  return [...st.cooking]
+}
+
+// retain gives a jet that has jettisoned stations its launch order from
+// before, less the rounds that went with them, and keeps its fires burning.
+export function retain(
+  st: Rails,
+  before: Firing,
+  cooking: Set<string> | undefined
+): void {
+  st.order = kept(before, st.loadout ?? {})
+  st.cooking = cooking ?? new Set()
+  revision++
+}
+
+// masked names the catalog stores a mask carries: bit i the catalog's store i,
+// as a float64 the way the battle core's masks cross.
+export function masked(mask: number, index: Map<string, number>): string[] {
+  const out: string[] = []
+  if (mask > 0)
+    for (const [name, bit] of index)
+      if (Math.floor(mask / 2 ** bit) % 2 === 1) out.push(name)
+  return out
+}
+
 // mask computes the core attach bitmask for a loadout with `fired` heaters
-// (rounds() order) and `expended` AMRAAMs (amraams() order) already away.
-// Fixtures and tanks always attach; tips ride their catalog bits so the bare
-// jet stays a subset.
+// and `expended` AMRAAMs already away, in the jet's launch order (the
+// loadout's own order when none is given). Fixtures and tanks always attach;
+// tips ride their catalog bits so the bare jet stays a subset.
 export function mask(
   loadout: Loadout,
   fired: number,
   book: Catalog,
-  expended = 0
+  expended = 0,
+  sequence: Firing = order(loadout)
 ): number {
   let bits = 0
-  const spent = new Set(
-    rounds(loadout)
-      .slice(0, Math.max(0, fired))
-      .map((r) => r.name)
-  )
-  for (const name of amraams(loadout).slice(0, Math.max(0, expended)))
+  const spent = new Set(sequence.heaters.slice(0, Math.max(0, fired)))
+  for (const name of sequence.amraams.slice(0, Math.max(0, expended)))
     spent.add(name)
   for (let station = 1; station <= 9; station++) {
     for (const name of entries(

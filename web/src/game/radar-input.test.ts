@@ -11,7 +11,7 @@ import * as identification from './identification'
 import * as mids from './mids'
 import * as countermeasures from './countermeasures'
 import * as helmet from './helmet'
-import { amraams as stores_amraams, eject as stores_eject } from './stores'
+import { amraams as stores_amraams, eject as stores_eject, sequence, departed } from './stores'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
 // against the recording (#33 debrief): Enter and Backspace either land on the
@@ -827,7 +827,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
   type Fed = { position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }
   function zones() {
     return new Function(
-      'Radar', 'THREE', 'stores_amraams', 'stores_eject',
+      'Radar', 'THREE', 'stores_amraams', 'stores_eject', 'sequence', 'departed',
       `const RADAR=new Radar();
        const MULTIPLAYER=false, has_enemy=true, remotes=new Map(), WORLD_WRAP=0, wrap_axis=(v)=>v, RADAR_FRAME=${FRAME};
        const bandit={ group:{ visible:true }, pos:{ x:0, y:6000, z:-30000 }, velx:0, vely:0, velz:250, fwd:{ x:0, y:0, z:1 }, speed:250, reheat:0.5 };
@@ -838,7 +838,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
        const heater_ladder=(own,target,swing,reheat)=>{ fed.shooter=own; fed.heater=target; fed.reheat=reheat; return { max:8000, escape:4000, minimum:500 }; };
        ${lift('radar_target')} ${lift('amraam_departure')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')} ${lift('heat_lead')} ${lift('track_range')}
        return { RADAR, bandit, ownship, fed, launch_zone, heat_zone, ranging, heat_lead, track_range };`
-    )(Radar, THREE, stores_amraams, stores_eject) as { RADAR: Radar; bandit: { group: { visible: boolean } }; ownship: { velx: number; vely: number; velz: number; fwd: { x: number; y: number; z: number }; loadout: Record<string, { fixture: string; stores: string[] }>; amraam: number }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null; shooter: Fed | null; launcher: Fed | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null; heat_lead(): unknown; track_range(): number | null }
+    )(Radar, THREE, stores_amraams, stores_eject, sequence, departed) as { RADAR: Radar; bandit: { group: { visible: boolean } }; ownship: { velx: number; vely: number; velz: number; fwd: { x: number; y: number; z: number }; loadout: Record<string, { fixture: string; stores: string[] }>; amraam: number }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null; shooter: Fed | null; launcher: Fed | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null; heat_lead(): unknown; track_range(): number | null }
   }
   // the trackfile's last fix: 40 km out two seconds ago, inside a scan frame, closing at 250 m/s
   const held = { id: 'bandit', x: 0, y: 6000, z: -40000, vx: 0, vy: 0, vz: 250, at: 0, hits: 1 }

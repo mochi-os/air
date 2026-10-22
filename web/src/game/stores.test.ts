@@ -30,8 +30,21 @@ import {
   rounds,
   strip,
   weight,
+  order,
+  promote,
+  kept,
+  sequence,
+  rearm,
+  departed,
+  ignite,
+  adopt,
+  burning,
+  retain,
+  masked,
+  revised,
   type Catalog,
   type Fitment,
+  type Rails,
 } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
@@ -720,5 +733,107 @@ describe('the demonstration flies its own fit', () => {
       expect(d.stores).toEqual(clean)
       expect(d.fuel).toBeCloseTo(10800 / 2.2046, 6)
     }
+  })
+})
+
+// A round whose motor catches fire on the rail goes first in its jet's launch
+// order, so the trigger fires it off; the server and the battle core keep the
+// same order (world/games/air/stores.go firing).
+describe('launch order', () => {
+  const has = (m: number, name: string) =>
+    Math.floor(m / 2 ** BOOK.index.get(name)!) % 2 === 1
+
+  it('promotes a round to the head of those still carried', () => {
+    const list = ['tip9', 'tip1', '9m8', '9m2']
+    expect(promote(list, 0, '9m2')).toEqual(['9m2', 'tip9', 'tip1', '9m8'])
+    expect(promote(list, 1, '9m8')).toEqual(['tip9', '9m8', 'tip1', '9m2'])
+    expect(promote(list, 2, 'tip9')).toBe(list) // already fired
+    expect(promote(list, 0, '120c4')).toBe(list) // never carried
+    expect(list).toEqual(['tip9', 'tip1', '9m8', '9m2'])
+  })
+
+  it('clears the attach mask in the launch order', () => {
+    const lo = normalize({
+      1: { fixture: 'rail', stores: ['9m'] },
+      2: { fixture: 'rail', stores: ['9m'] },
+      8: { fixture: 'rail', stores: ['9m'] },
+      9: { fixture: 'rail', stores: ['9m'] },
+    })
+    const jumped = {
+      heaters: promote(order(lo).heaters, 0, '9m2'),
+      amraams: [],
+    }
+    const one = mask(lo, 1, BOOK, 0, jumped)
+    expect(has(one, '9m2')).toBe(false)
+    expect(has(one, 'tip9')).toBe(true)
+    expect(has(mask(lo, 1, BOOK), 'tip9')).toBe(false) // no order given: the SMS order
+  })
+
+  it('fires the burning round next and forgets its fire once it has gone', () => {
+    const st: Rails = { loadout: PRESETS.fox2 }
+    const heaters = sequence(st).heaters
+    st.msl = heaters.length - 1 // one away
+    const name = heaters[heaters.length - 1]
+    const before = revised()
+    ignite(st, name)
+    expect(revised()).toBeGreaterThan(before)
+    const now = sequence(st).heaters
+    expect(now[0]).toBe(heaters[0]) // the round already fired keeps its place
+    expect(now[departed(now, st.msl)]).toBe(name)
+    expect(burning(st)).toEqual([name])
+    st.msl -= 1 // the trigger: it leaves
+    expect(burning(st)).toEqual([])
+    expect(st.cooking?.size).toBe(0)
+    ignite(st, heaters[0]) // a round already away cannot catch fire
+    expect(sequence(st).heaters).toEqual(now)
+  })
+
+  it('promotes a burning AMRAAM in its own magazine', () => {
+    const st: Rails = { loadout: PRESETS.fox3 }
+    const amraams = sequence(st).amraams
+    const last = amraams[amraams.length - 1]
+    ignite(st, last)
+    expect(sequence(st).amraams[0]).toBe(last)
+    expect(sequence(st).heaters).toEqual(order(PRESETS.fox3).heaters)
+  })
+
+  it('adopts the battle core mask, promoting only what newly caught fire', () => {
+    const st: Rails = { loadout: PRESETS.fox2 }
+    const heaters = sequence(st).heaters
+    const a = heaters[2]
+    const b = heaters[4]
+    const bits = 2 ** BOOK.index.get(a)! + 2 ** BOOK.index.get(b)!
+    expect(masked(bits, BOOK.index).sort()).toEqual([a, b].sort())
+    expect(masked(0, BOOK.index)).toEqual([])
+    adopt(st, [a])
+    adopt(st, [b, a]) // the core lists by catalog bit, not by when each caught fire
+    expect(sequence(st).heaters.slice(0, 2)).toEqual([b, a])
+    const settled = revised()
+    adopt(st, [b, a]) // every frame reports the same fires: nothing moves
+    expect(revised()).toBe(settled)
+    expect(sequence(st).heaters.slice(0, 2)).toEqual([b, a])
+    adopt(st, [b]) // a went out: its place is kept, the fire is not
+    expect(burning(st)).toEqual([b])
+    rearm(st)
+    expect(sequence(st).heaters).toEqual(heaters)
+    expect(burning(st)).toEqual([])
+  })
+
+  it('keeps the order through a jettison, and restarts it on a new grant', () => {
+    const lo = normalize({
+      1: { fixture: 'rail', stores: ['9m'] },
+      2: { fixture: 'rail', stores: ['9m'] },
+      8: { fixture: 'rail', stores: ['9m'] },
+      9: { fixture: 'rail', stores: ['9m'] },
+    })
+    const st: Rails = { loadout: lo, msl: 4 }
+    ignite(st, '9m2')
+    const before = sequence(st)
+    const fires = st.cooking
+    st.loadout = jettison(lo, 8, 'stores')
+    retain(st, before, fires)
+    expect(sequence(st).heaters).toEqual(['9m2', 'tip9', 'tip1'])
+    expect(st.cooking?.has('9m2')).toBe(true)
+    expect(kept(before, PRESETS.fox3)).toEqual(order(PRESETS.fox3))
   })
 })

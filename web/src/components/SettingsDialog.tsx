@@ -1361,16 +1361,6 @@ function GeneralPanel({
         />
       </div>
 
-      <div>
-        <SwitchRow
-          id='record'
-          tight
-          label={<Trans>Record flights</Trans>}
-          checked={config.record !== false}
-          onChange={(v) => set('record', v)}
-        />
-      </div>
-
       {/* Coaching through the comms area as you fly — the carrier recovery
           procedures first (#70). On by default: the players who need it most
           never find a buried toggle, and it only speaks on approach. */}
@@ -1381,6 +1371,33 @@ function GeneralPanel({
           label={<Trans>Flight hints</Trans>}
           checked={config.hints !== false}
           onChange={(v) => set('hints', v)}
+        />
+      </div>
+
+      <div>
+        <SwitchRow
+          id='record'
+          tight
+          label={<Trans>Record flights</Trans>}
+          checked={config.record !== false}
+          onChange={(v) => set('record', v)}
+        />
+      </div>
+
+      {/* The answer the first Fly asked for, changed here. Unset reads as
+          not allowed. */}
+      <div>
+        <SwitchRow
+          id='sharing'
+          tight
+          label={
+            <Trans>
+              Allow developers to read your flight recordings to improve the
+              game
+            </Trans>
+          }
+          checked={config.sharing === true}
+          onChange={(v) => set('sharing', v)}
         />
       </div>
     </div>

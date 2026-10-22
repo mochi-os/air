@@ -312,12 +312,6 @@ msgstr "ئاستی دەستڕاگەیشتن"
 msgid "Account type"
 msgstr "جۆری هەژمار"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "پاڵەوان"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "هەموو دۆخەکان"
 msgid "All servers"
 msgstr "هەموو ڕاژەکان"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "ڕێگەپێدان"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ڕێگە بدە بە هەموان بۆ گەڕان بەدوای {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "ڕێگە بە گەشەپێدەران بدە تۆمارەکانی فڕینەکانت بخوێننەوە بۆ باشترکردنی یارییەکە"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LODی دووری"
 msgid "Does not match the required pattern"
 msgstr "لەگەڵ ئەو نەخشەیەی داواکراوە ناگونجێت"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "ڕێگەنەدان"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "فراوانکردن"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "فراوانکردنی لاتەنیشت"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "شارەزا"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "ئامۆژگارییەکانی فڕین"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "تۆماری فڕین"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "تۆمارەکانی فڕین"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "ئارەزوو {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "ئارەزووەکان"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "ناوەندی"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3321,12 +3344,6 @@ msgstr "خەڵک"
 #: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "pilot"
-msgstr "فڕۆکەوان"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
 msgstr "فڕۆکەوان"
 
 #: src/components/GameCanvas.tsx

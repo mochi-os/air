@@ -312,12 +312,6 @@ msgstr "Matakin shiga"
 msgid "Account type"
 msgstr "Nau'in asusu"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Gwani"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Duk hanyoyin"
 msgid "All servers"
 msgstr "Duk sabar"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Bayar da izini"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Bar kowa ya nemi {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Bayar da izini ga masu haɓakawa su karanta rikodin tashin jirginka don inganta wasan"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "LOD na nisa"
 msgid "Does not match the required pattern"
 msgstr "Bai dace da tsarin da ake buƙata ba"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Kada a bayar da izini"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Faɗaɗa"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Faɗaɗa sidebar"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Gwani"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Shawarwarin tashi"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Rajistar tashi"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Rikodin tashin jirgi"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Sha'awa {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Abubuwan sha'awa"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Matsakaici"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Mutane"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "matuƙi"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Matuƙi"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"

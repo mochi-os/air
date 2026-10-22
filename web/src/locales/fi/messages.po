@@ -312,12 +312,6 @@ msgstr "Käyttöoikeustaso"
 msgid "Account type"
 msgstr "Tilin tyyppi"
 
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Ace"
-msgstr "Ässä"
-
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
@@ -442,9 +436,18 @@ msgstr "Kaikki tilat"
 msgid "All servers"
 msgstr "Kaikki palvelimet"
 
+#: src/routes/index.tsx
+msgid "Allow"
+msgstr "Salli"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Salli kaikkien etsiä {entityLabel}"
+
+#: src/components/SettingsDialog.tsx
+#: src/routes/index.tsx
+msgid "Allow developers to read your flight recordings to improve the game"
+msgstr "Salli kehittäjien lukea lentotallenteitasi pelin parantamiseksi"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
@@ -1617,6 +1620,10 @@ msgstr "Etäisyys-LOD"
 msgid "Does not match the required pattern"
 msgstr "Ei vastaa vaadittua kaavaa"
 
+#: src/routes/index.tsx
+msgid "Don't allow"
+msgstr "Älä salli"
+
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1830,6 +1837,12 @@ msgstr "Laajenna"
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Laajenna sivupalkki"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Expert"
+msgstr "Asiantuntija"
 
 #: src/components/MissionSetup.tsx
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
@@ -2065,6 +2078,10 @@ msgstr "Lentovihjeet"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Lentopäiväkirja"
+
+#: src/routes/index.tsx
+msgid "Flight recordings"
+msgstr "Lentotallenteet"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2362,6 +2379,12 @@ msgstr "Kiinnostus {weight}"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Interests"
 msgstr "Kiinnostuksen kohteet"
+
+#: src/components/MissionSetup.tsx
+#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
+msgid "Intermediate"
+msgstr "Keskitaso"
 
 #: src/components/MissionSetup.tsx
 msgid "Internal fuel"
@@ -3322,12 +3345,6 @@ msgstr "Henkilöt"
 #: src/components/Multiplayer.tsx
 msgid "pilot"
 msgstr "lentäjä"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-#: src/components/Multiplayer.tsx
-msgid "Pilot"
-msgstr "Lentäjä"
 
 #: src/components/GameCanvas.tsx
 msgid "PILOT DOWN"
