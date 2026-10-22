@@ -16,7 +16,7 @@ type Net = InstanceType<typeof Net>
 // the left high), his sideslip at 30, leak at 31, the radar emitter at 34
 // (#30), the gun expenditure at 35 (#163) and his alpha and g at 37/38
 // (#164). Only the fields this test asserts on are filled; the
-// rest stay zero — except the emitter byte, whose "nothing" is 63.
+// rest stay zero.
 const RECORD = 39
 function pose(options: {
   slot: number
@@ -45,7 +45,8 @@ function pose(options: {
   v.setUint8(29, (fire(options.fire?.[0] ?? 0) << 4) | fire(options.fire?.[1] ?? 0))
   v.setInt8(30, options.beta ?? 0) // sideslip, whole degrees
   v.setUint8(31, Math.round((options.leak ?? 0) * 10))
-  v.setUint8(34, ((options.emitter ?? 0) << 6) | (options.target ?? 63))
+  const target = options.target ?? -1
+  v.setUint8(34, target >= 0 ? 0x80 | target : (options.emitter ?? 0)) // STT on a slot sets the high bit
   v.setUint16(35, options.spent ?? 0, true)
   v.setInt8(37, options.aoa ?? 0) // #164: alpha, whole degrees
   v.setInt8(38, Math.round((options.load ?? 0) * 10)) // #164: g at a tenth
@@ -210,6 +211,20 @@ describe('emitters (#30)', () => {
     expect(s.emitters.get(3)).toEqual({ mode: 2, target: 0 })
     expect(s.emitters.get(5)).toEqual({ mode: 1, target: -1 })
     expect(s.emitters.get(0)).toEqual({ mode: 0, target: -1 })
+  })
+  it('names any slot, a server bot from 99 down included', () => {
+    const s = session(0)
+    feed(
+      s,
+      concat([
+        pose({ slot: 0, emitter: 2, target: 99 }), // our STT on the bot at 99
+        pose({ slot: 99, emitter: 2, target: 0 }), // and its on us
+        pose({ slot: 4, emitter: 2 }), // STT holding nothing
+      ])
+    )
+    expect(s.emitters.get(0)).toEqual({ mode: 2, target: 99 })
+    expect(s.emitters.get(99)).toEqual({ mode: 2, target: 0 })
+    expect(s.emitters.get(4)).toEqual({ mode: 2, target: -1 })
   })
   it('a later record replaces the state — a broken lock goes quiet', () => {
     const s = session(0)

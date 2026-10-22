@@ -749,10 +749,13 @@ export class Net {
           // record rather than feed NaN through shortest()/rewrap() into
           // Three.js. Attitude/direction/speed are int-derived and finite.
           if (!pose.position.every(Number.isFinite)) continue
-          const emitter = view.getUint8(base + 34) // #30: high two bits the mode, low six the locked slot (63 = none)
+          // Byte 34 is the radar: with the high bit set, STT locked on the slot
+          // in the low seven bits, a server bot's included; clear, the mode
+          // alone (0 silent, 1 search, 2 STT holding nothing).
+          const emitter = view.getUint8(base + 34)
           this.emitters.set(slot, {
-            mode: (emitter >> 6) & 3,
-            target: (emitter & 63) === 63 ? -1 : emitter & 63,
+            mode: emitter & 0x80 ? 2 : emitter & 3,
+            target: emitter & 0x80 ? emitter & 0x7f : -1,
           })
           let ring = this.rings.get(slot)
           if (!ring) {
