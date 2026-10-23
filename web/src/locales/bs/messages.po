@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} se srušio"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> za nagib"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> za udaljavanje"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> za približavanje"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> za približavanje"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> za udaljavanje"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> za nagib"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> za pogled"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Povucite</0> ili <1>←→</1> za kruženje"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Povucite</0> ili <1>{orbit}</1> za kruženje"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Nivo pristupa"
 msgid "Account type"
 msgstr "Vrsta računa"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Zaključaj metu"
@@ -407,10 +402,6 @@ msgstr "Forsaž"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Avion"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Nosač aviona <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> autor <1>Muhamad Mirza Arrafi</1> (Sketchfab), licencirano pod <2>CC BY 4.0</2>. Izmijenjeno: promijenjena veličina, preorijentirano, potopljeno do vodene linije i pojednostavljeno za web."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Sve što je pretplaćeno na ovaj kanal prestat će ga primati. Nakon toga možete kopirati novi URL."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Snaga prilaza (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Jeste li sigurni da želite predati partiju?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Jeste li sigurni da želite predati partiju? {opponentName} će pobijediti."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Kuka za zaustavljanje"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, oružje slobodno od početka"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Zaključaj / oslobodi"
 
@@ -784,10 +772,6 @@ msgstr "JAVI LOPTU"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Pozivni znak"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Udaljenost kamere"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Središnja linija"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Dipolni reflektori"
 
@@ -938,6 +921,10 @@ msgstr "Promijenjeno {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Izmijenjeno pojavljivanje"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Pogled iz potjere"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Oblaci"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Font za ekrane kokpita <0>“Hornet Display”</0> autor <1>Mørkvitnir</1>, © 2022, licencirano pod <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Pogled iz kokpita"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Sklopi"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Napomene"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Komentari ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Komunikacija"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Provjera s tim računom nije uspjela. Molimo pokušajte ponovo."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Protivmjere"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Postavi kurs lijevo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Postavi kurs desno"
@@ -1367,7 +1355,6 @@ msgstr "Prilagođeno"
 msgid "CUT"
 msgstr "OPASNO"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Promijeni pogled"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Opis"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Označi"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Upravljač označavanja"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Označivač dolje"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Označivač lijevo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Označivač desno"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Označivač gore"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Odbaci"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Izbacivač"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "IZBACIVAČ ISKLJUČEN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Ponavljač ekrana"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Pogled ekrana"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "HITNO ODBACIVANJE"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Hitno izvlačenje stajnog trapa"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Hitno odbacivanje (drži)"
@@ -1842,6 +1824,10 @@ msgstr "Napusti reprodukciju"
 msgid "Expand"
 msgstr "Proširi"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Proširi bočnu traku"
@@ -1860,7 +1846,6 @@ msgstr "Animacija eksplozije <0>“Explosion02HD”</0> od <1>Unity Technologies
 msgid "Export"
 msgstr "Izvezi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Zakrilca van"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "paljba"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Otvori vatru"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Fiksne tipke leta"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Leti ponovo"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Vodi igle nadolje: 1200' na 3NM, 800' na 2NM, 400' na 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Pogled preleta"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Iz teme"
 msgid "FUEL"
 msgstr "GORIVO"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Ispuštanje goriva"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ISPUŠTANJE GORIVA"
@@ -2195,6 +2183,10 @@ msgstr "Trup"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Pojačanje"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Igra"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Praćenje glave"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Postavi smjer lijevo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Postavi smjer desno"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KUKA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Premošćenje kuke"
 
@@ -2342,6 +2331,10 @@ msgstr "Pojednostavljenje HUD-a"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD igle: drži glisadu i osnu liniju"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD pogled"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Avatar s inicijalima za {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Ulazni hardver"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Instrumenti"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Detalji stavke"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Ometač"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Odbaci poklopac kabine"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Odbaci rezervoare"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "L TRAP"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Stajni trap"
 
@@ -2543,7 +2536,6 @@ msgstr "Veliko"
 msgid "LATE"
 msgstr "KASNO"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lansiranje (katapult)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "svjetla"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Svjetla"
 
@@ -2606,7 +2597,6 @@ msgstr "Svjetla"
 msgid "LIGHTS"
 msgstr "SVJETLA"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Test svjetala"
@@ -2622,6 +2612,10 @@ msgstr "Veze"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Lista"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Pogled"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Pogled / orbita"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Gledaj metu"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Spusti postavku visinomjera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Spusti indeks male visine"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Spusti radarsku antenu"
@@ -2758,7 +2746,6 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Označi sve kao pročitano"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Glavni prekidač naoružanja"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "meni"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Meni"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Drugo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Premošćenje G-limita"
 
@@ -3303,6 +3288,10 @@ msgstr "POGLED VEZAN"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "POGLED SLOBODAN"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Pogled s fiksiranim ciljem"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Obrazac (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pauza"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Pauziraj snimak"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "D TRAP"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radarska tišina"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Podigni postavku visinomjera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Podigni indeks male visine"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Podigni radarsku antenu"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Resetuj"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Poništi glavno upozorenje"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Poništi trim"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Poništi pogled"
@@ -3782,7 +3768,6 @@ msgstr "Rezultat"
 msgid "Resume"
 msgstr "Nastavi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Zakrilca unutra"
@@ -3952,6 +3937,14 @@ msgstr "Pretraživanje..."
 msgid "SEAT SAFE"
 msgstr "SJEDIŠTE OSIGURANO"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Ugasi lijevi motor"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Ugasi desni motor"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Odabir"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Odaberi prethodnu karticu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Odaberi oružje"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Pošalji poruku"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Prekidač senzora nazad"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Prekidač senzora naprijed"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Prekidač senzora lijevo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Prekidač senzora desno"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Senzori"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Odjavljivanje..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Utišaj ton stajnog trapa"
 
@@ -4162,7 +4153,6 @@ msgstr "Samo jedan red teksta"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Najbolje penjanje s jednim motorom (Vyse, forsaž)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Uspori vrijeme"
@@ -4206,11 +4196,9 @@ msgstr "vazdušna kočnica"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Vazdušna kočnica"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Ubrzaj vrijeme"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistemi"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTIČKA KARTA"
@@ -4326,6 +4318,10 @@ msgstr "Oznaka mora imati najviše 50 znakova"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Tagovi"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Polijetanje i slijetanje"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Gas"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Smanji gas"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Dodaj gas"
@@ -4532,10 +4526,6 @@ msgstr "Putovanje"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trimuj za žuto svjetlo pored HUD-a (8.1° AOA), snaga za visinu"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim kapica"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: nos dolje"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: nos gore"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: nagib lijevo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: nagib desno"
@@ -4620,7 +4606,6 @@ msgstr "Nedodijeljeno"
 msgid "Unavailable"
 msgstr "Nedostupno"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Poništi označavanje cilja"
@@ -4764,9 +4749,9 @@ msgstr "Pregledaj i uredi detalje stavke"
 msgid "View controls"
 msgstr "Kontrole pregleda"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Pogledi"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "pogledi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Srijeda"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Točkovne kočnice"
 
@@ -4847,7 +4831,6 @@ msgstr "Točkovne kočnice"
 msgid "Wind"
 msgstr "Vjetar"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Sklapanje krila"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Skretanje"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Skretanje lijevo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Skretanje desno"

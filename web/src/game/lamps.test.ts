@@ -568,7 +568,8 @@ describe('the MASTER CAUTION and silence button clicks', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
     expect(keys).toMatch(/'tone\.silence': 'Shift\+KeyG'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
-    expect(settings.match(/id: 'tone\.silence', label: msg`Silence gear tone`, group: 'aircraft'/g)?.length).toBe(2)
+    expect(settings.match(/id: 'tone\.silence',\s*label: msg`Silence gear tone`,\s*group: 'systems'/g)?.length).toBe(1) // one row, which both tabs draw
+    expect(/const BUTTONS = new Set\(\[[^\]]*'tone\.silence',/.test(settings)).toBe(true)
   })
 })
 
@@ -759,7 +760,8 @@ describe('the lights test', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
     expect(keys).toMatch(/'lights\.test': 'Shift\+KeyL'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
-    expect(settings.match(/id: 'lights\.test', label: msg`Lights test`, group: 'aircraft'/g)?.length).toBe(2)
+    expect(settings.match(/id: 'lights\.test',\s*label: msg`Lights test`,\s*group: 'systems'/g)?.length).toBe(1) // one row, which both tabs draw
+    expect(/const BUTTONS = new Set\(\[[^\]]*'lights\.test',/.test(settings)).toBe(true)
   })
 })
 

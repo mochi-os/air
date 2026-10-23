@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} 墜毀"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> 俯仰"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> 拉遠"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> 拉近"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> 拉近"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> 拉遠"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> 俯仰"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "視角用 <0>1</0>–<1>5</1>"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>拖曳</0> 或 <1>←→</1> 環繞"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>拖曳</0> 或 <1>{orbit}</1> 環繞"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "存取層級"
 msgid "Account type"
 msgstr "帳戶類型"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "鎖定目標"
@@ -407,10 +402,6 @@ msgstr "後燃器"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "機體"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "航空母艦 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>，作者 <1>Muhamad Mirza Arrafi</1>（Sketchfab），採用 <2>CC BY 4.0</2> 授權。已修改：重新縮放，重新調整朝向，下沉至吃水線，並針對網頁進行了簡化。"
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "任何訂閱此訂閱源的程式都將無法再接收更新。之後你可以複製新的網址。"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "進場功率 (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "確定要認輸嗎?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "確定要認輸嗎?{opponentName} 將贏得比賽。"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "攔阻鉤"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR，開局即可自由開火"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "鎖定 / 解鎖"
 
@@ -784,10 +772,6 @@ msgstr "報告燈球"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "呼號"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "鏡頭距離"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "中線"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "箔條"
 
@@ -938,6 +921,10 @@ msgstr "已變更{field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "已變更的活動"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "追逐視角"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "雲層"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "座艙顯示器字型 <0>“Hornet Display”</0>，作者 <1>Mørkvitnir</1>，© 2022，採用 <2>MIT</2> 授權。"
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "座艙視角"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "收合"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "備註"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "留言 ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "通訊"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "無法使用該帳戶進行驗證。請重試。"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "對抗措施"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "航線設定向左"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "航線設定向右"
@@ -1367,7 +1355,6 @@ msgstr "自訂"
 msgid "CUT"
 msgstr "危險"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "切換視角"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "說明"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "指定"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "目標指示控制器"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "指示器向下"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "指示器向左"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "指示器向右"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "指示器向上"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "關閉"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "投放器"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "投放器關閉"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "顯示複示器"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "顯示器視角"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "緊急拋放"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "起落架應急放下"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "緊急拋放（按住）"
@@ -1842,6 +1824,10 @@ msgstr "退出播放"
 msgid "Expand"
 msgstr "展開"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
@@ -1860,7 +1846,6 @@ msgstr "爆炸動畫 <0>“Explosion02HD”</0>，作者 <1>Unity Technologies</
 msgid "Export"
 msgstr "匯出"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "放襟翼"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "開火"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "發射武器"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "固定飛行按鍵"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "再飛一次"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "跟隨指針下降: 3NM 時 1200'，2NM 時 800'，1NM 時 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "飛越視角"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "來自主題"
 msgid "FUEL"
 msgstr "燃油"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "放油"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "放油"
@@ -2195,6 +2183,10 @@ msgstr "機身"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "增益"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "遊戲"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "頭部追蹤"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "航向設定向左"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "航向設定向右"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "尾鉤"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "攔阻鉤旁路"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD簡化顯示"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD 指針: 保持下滑道與中線"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD視角"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name} 的首字母頭像"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "輸入裝置"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "儀表"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "項目詳情"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "干擾機"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "拋棄座艙罩"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "拋掉副油箱"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "左起落架"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "起落架"
 
@@ -2543,7 +2536,6 @@ msgstr "大"
 msgid "LATE"
 msgstr "延遲"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "燈光"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "燈光"
 
@@ -2606,7 +2597,6 @@ msgstr "燈光"
 msgid "LIGHTS"
 msgstr "燈光"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "燈光測試"
@@ -2622,6 +2612,10 @@ msgstr "連結"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "清單"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "視角"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "視角 / 環繞"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "注視目標"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "降低高度表撥正值"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "降低低高度指標"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "降低雷達天線"
@@ -2758,7 +2746,6 @@ msgstr "地圖"
 msgid "Mark all as read"
 msgstr "全部標示為已讀"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "主軍械開關"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "選單"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "選單"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "其他"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "超越G限制"
 
@@ -3303,6 +3288,10 @@ msgstr "視線鎖定"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "視線解鎖"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "鎖定視角"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "格式(正規表示式)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "暫停"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "暫停重播"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "右起落架"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "雷達靜默"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "升高高度表撥正值"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "升高低高度指標"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "升高雷達天線"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "重設"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "復位主警告"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "重置配平"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "重置視角"
@@ -3782,7 +3768,6 @@ msgstr "結果"
 msgid "Resume"
 msgstr "恢復"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "收襟翼"
@@ -3952,6 +3937,14 @@ msgstr "搜尋中..."
 msgid "SEAT SAFE"
 msgstr "座椅保險"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "關閉左發動機"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "關閉右發動機"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "選擇"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "選擇上一張卡片"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "選擇武器"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "傳送訊息"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "感測器開關向後"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "感測器開關向前"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "感測器開關向左"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "感測器開關向右"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "感測器"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "登出中..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "靜音起落架警告音"
 
@@ -4162,7 +4153,6 @@ msgstr "僅限單行文字"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "單發動機最佳爬升 (Vyse, 後燃器)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "減慢時間"
@@ -4206,11 +4196,9 @@ msgstr "減速板"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "減速板"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "加快時間"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "系統"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "系統"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "戰術地圖"
@@ -4326,6 +4318,10 @@ msgstr "標籤不得超過 50 個字元"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "標籤"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "起降"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "油門"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "減小油門"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "加大油門"
@@ -4532,10 +4526,6 @@ msgstr "行進中"
 msgid "trim"
 msgstr "配平"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "配平"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "配平至 HUD 旁琥珀燈點亮 (8.1° AOA)，用油門控制高度"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "配平帽"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "配平：機頭向下"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "配平：機頭向上"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "配平：左滾轉"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "配平：右滾轉"
@@ -4620,7 +4606,6 @@ msgstr "未指派"
 msgid "Unavailable"
 msgstr "無法使用"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "取消目標指定"
@@ -4764,8 +4749,8 @@ msgstr "檢視與編輯項目詳細資料"
 msgid "View controls"
 msgstr "檢視控制項"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "視角"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "星期三"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "機輪剎車"
 
@@ -4847,7 +4831,6 @@ msgstr "機輪剎車"
 msgid "Wind"
 msgstr "風聲"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "機翼摺疊"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "偏航"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "向左偏航"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "向右偏航"

@@ -284,9 +284,8 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
 
 // The in-game help line as actions, not key caps: the caps are read from the
 // binding table at render, so the line follows the player's remaps. Two actions
-// on one entry render as "W/S". Views (Digit1..5) are handled directly by
-// engine.ts, so they are appended as literals. A solo entry is single player's
-// alone, and left off the line in a match.
+// on one entry render as "W/S", and the six views as "1/2/3/4/5/6". A solo
+// entry is single player's alone, and left off the line in a match.
 const HINTS: { actions: string[]; label: React.ReactNode; solo?: boolean }[] = [
   { actions: ['pitch.down', 'pitch.up'], label: <Trans>pitch</Trans> },
   { actions: ['roll.left', 'roll.right'], label: <Trans>roll</Trans> },
@@ -312,6 +311,17 @@ const HINTS: { actions: string[]; label: React.ReactNode; solo?: boolean }[] = [
   },
   { actions: ['chat'], label: <Trans>chat</Trans> },
   { actions: ['menu'], label: <Trans>menu</Trans> },
+  {
+    actions: [
+      'view.cockpit',
+      'view.hud',
+      'view.displays',
+      'view.chase',
+      'view.flypast',
+      'view.padlock',
+    ],
+    label: <Trans>views</Trans>,
+  },
 ]
 
 // clock reads seconds as m:ss, as the mission-over line does.
@@ -407,6 +417,12 @@ export function GameCanvas({
   // The player's remap wins over the default, exactly as the engine's key_of does.
   const binding = (action: string) =>
     config?.keys?.[action] ?? KEY_DEFAULTS[action]
+  // The chase camera's keys for its help line: the look keys orbit and tilt it,
+  // the zoom keys dolly it.
+  const orbit = pretty(binding('look.left')) + pretty(binding('look.right'))
+  const tilt = pretty(binding('look.up')) + pretty(binding('look.down'))
+  const back = pretty(binding('zoom.out'))
+  const closer = pretty(binding('zoom.in'))
 
   useEffect(() => {
     const translate = (text: string, values?: Record<string, unknown>) => {
@@ -886,28 +902,24 @@ export function GameCanvas({
             </span>
           )
         )}
-        {' · '}
-        <Trans>
-          <kbd>1</kbd>–<kbd>5</kbd> for the view
-        </Trans>
         <br />
         <b>
           <Trans>Chase view:</Trans>
         </b>{' '}
         <Trans>
-          <b>Drag</b> or <kbd>←→</kbd> to orbit
+          <b>Drag</b> or <kbd>{orbit}</kbd> to orbit
         </Trans>
         {' · '}
         <Trans>
-          <kbd>↑↓</kbd> to tilt
+          <kbd>{tilt}</kbd> to tilt
         </Trans>
         {' · '}
         <Trans>
-          <kbd>−</kbd> to pull back
+          <kbd>{back}</kbd> to pull back
         </Trans>
         {' · '}
         <Trans>
-          <kbd>=</kbd> to move closer
+          <kbd>{closer}</kbd> to move closer
         </Trans>
       </div>
     </div>

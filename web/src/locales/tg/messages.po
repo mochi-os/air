@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} суқут кард"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> барои хам кардан"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> барои ақиб рафтан"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> барои наздик шудан"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> барои наздик шудан"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> барои ақиб рафтан"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> барои хам кардан"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> барои намуд"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Кашед</0> ё <1>←→</1> барои давр задан"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Кашед</0> ё <1>{orbit}</1> барои давр задан"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Сатҳи дастрасӣ"
 msgid "Account type"
 msgstr "Намуди ҳисоб"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Гирифтани ҳадаф"
@@ -407,10 +402,6 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Ҳавопаймо"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Киштии ҳавопаймобар <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> аз <1>Muhamad Mirza Arrafi</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: андоза иваз карда шуд, самт иваз карда шуд, то сатҳи об ғарқ карда шуд ва барои веб содда карда шуд."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Ҳама чизе, ки ба ин ҷараён обуна шудааст, гирифтани онро қатъ мекунад. Пас аз он шумо метавонед URL-и навро нусха бардоред."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Қувваи наздикшавӣ (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Шумо мутмаин ҳастед, ки мехоҳед таслим �
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Шумо мутмаин ҳастед, ки мехоҳед таслим шавед? {opponentName} бозиро мебарад."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Чангаки тормоз"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, силоҳ аз оғоз озод"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Қулф кардан / озод кардан"
 
@@ -784,10 +772,6 @@ msgstr "ТӮБРО ЭЪЛОН КУН"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Тахаллус"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Масофаи камера"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Хатти марказӣ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Инъикоскунандаҳои диполӣ"
 
@@ -938,6 +921,10 @@ msgstr "{field} тағйир дода шуд"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Такрори тағйирёфта"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Намои таъқиб"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Абрҳо"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Ҳуруфи экранҳои кабина <0>“Hornet Display”</0> аз <1>Mørkvitnir</1>, © 2022, таҳти иҷозатномаи <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Намои кабина"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Печондан"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Эзоҳҳо"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Шарҳҳо ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Алоқа"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Бо он ҳисоб тасдиқ кардан имконнопазир буд. Лутфан, бори дигар кӯшиш кунед."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Чораҳои муқобил"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Танзими хати роҳ ба чап"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Танзими хати роҳ ба рост"
@@ -1367,7 +1355,6 @@ msgstr "Танзимшаванда"
 msgid "CUT"
 msgstr "ХАТАРНОК"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Иваз кардани намуд"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Тавсиф"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Таъин кардан"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Идоракунаки таъини ҳадаф"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Таъинкунанда поён"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Таъинкунанда ба чап"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Таъинкунанда ба рост"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Таъинкунанда боло"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Пӯшидан"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Партобкунак"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ПАРТОБКУНАК ХОМӮШ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Такроркунандаи экран"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Намои экран"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "ПАРТОФТАНИ ИЗТИРОРӢ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Баровардани изтирории шасси"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Партофтани изтирорӣ (нигоҳ доред)"
@@ -1842,6 +1824,10 @@ msgstr "Баромадан аз пахш"
 msgid "Expand"
 msgstr "Васеъ кардан"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Васеъ кардани панели канорӣ"
@@ -1860,7 +1846,6 @@ msgstr "Аниматсияи таркиш <0>“Explosion02HD”</0> аз <1>Uni
 msgid "Export"
 msgstr "Содирот"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Флапҳоро баровардан"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "оташ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Оташ кушодан"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Клавишаҳои доимии парвоз"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Боз парвоз кунед"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Аз рӯи ақрабакҳо фуруд ой: 1200' дар 3NM, 800' дар 2NM, 400' дар 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Намои аз болои гузариш"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Аз мавзӯъ"
 msgid "FUEL"
 msgstr "СӮЗИШВОРӢ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Хориҷ кардани сӯзишворӣ"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ХОРИҶ КАРДАНИ СӮЗИШВОРӢ"
@@ -2195,6 +2183,10 @@ msgstr "Фюзеляж"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Пурзӯркунӣ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Бозӣ"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Пайгирии сар"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Танзими самт ба чап"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Танзими самт ба рост"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "ЧАНГАК"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Гузариши чангак"
 
@@ -2342,6 +2331,10 @@ msgstr "Соддакунии HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Ақрабакҳои HUD: глиссада ва хатти марказиро нигоҳ дор"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "Намои HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Аватари ҳарфҳои аввал барои {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Таҷҳизоти вуруд"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Асбобҳо"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Тафсилоти ашё"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Халалрасон"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Партофтани фонуси кабина"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Бакҳоро партофтан"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ШАССИ ЧАП"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Шасси"
 
@@ -2543,7 +2536,6 @@ msgstr "Калон"
 msgid "LATE"
 msgstr "ДЕР"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Партоб (катапулт)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "чароғҳо"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Чароғҳо"
 
@@ -2606,7 +2597,6 @@ msgstr "Чароғҳо"
 msgid "LIGHTS"
 msgstr "ЧАРОҒҲО"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Санҷиши чароғҳо"
@@ -2622,6 +2612,10 @@ msgstr "Пайвандҳо"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Рӯйхат"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Нигоҳ"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Нигоҳ / чархзанӣ"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Ба ҳадаф нигаред"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Паст кардани танзими баландисанҷ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Паст кардани индекси баландии паст"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Паст кардани антеннаи радар"
@@ -2758,7 +2746,6 @@ msgstr "Харита"
 msgid "Mark all as read"
 msgstr "Аломатгузорӣ ҳамчун хондашуда"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Калиди асосии силоҳ"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "меню"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Меню"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Дигар"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Аз ҳадди G гузаштан"
 
@@ -3303,6 +3288,10 @@ msgstr "НИГОҲ БАСТА"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "НИГОҲ ОЗОД"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Намои қулфшуда"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Намуна (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Таваққуф"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Таваққуфи такрор"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ШАССИ РОСТ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Хомӯшии радар"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Баланд кардани танзими баландисанҷ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Баланд кардани индекси баландии паст"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Баланд кардани антеннаи радар"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Барқарорсозӣ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Огоҳии асосиро бознишонӣ кунед"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Тримро сифр кардан"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Намоишро сифр кардан"
@@ -3782,7 +3768,6 @@ msgstr "Натиҷа"
 msgid "Resume"
 msgstr "Идома додан"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Флапҳоро ғундоштан"
@@ -3952,6 +3937,14 @@ msgstr "Ҷустуҷӯ карда мешавад..."
 msgid "SEAT SAFE"
 msgstr "КУРСӢ ҲИФЗ ШУДААСТ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Хомӯш кардани муҳаррики чап"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Хомӯш кардани муҳаррики рост"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Интихоб"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Корти қаблиро интихоб кунед"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Интихоби силоҳ"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Паём фиристодан"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Гузарондаки сенсорҳо ба қафо"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Гузарондаки сенсорҳо ба пеш"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Гузарондаки сенсорҳо ба чап"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Гузарондаки сенсорҳо ба рост"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Сенсорҳо"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Аз ҳисоб баромадан..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Хомӯш кардани сигнали шасси"
 
@@ -4162,7 +4153,6 @@ msgstr "Танҳо як сатри матн"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Беҳтарин авҷгирӣ бо як муҳаррик (Vyse, форсаж)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Вақтро суст кардан"
@@ -4206,11 +4196,9 @@ msgstr "тормози ҳавоӣ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Тормози ҳавоӣ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Вақтро тезонидан"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Системаҳо"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "ХАРИТАИ ТАКТИКӢ"
@@ -4326,6 +4318,10 @@ msgstr "Барчасп бояд то 50 аломат бошад"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Барчаспҳо"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Парвоз ва фуруд"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Газ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Кам кардани газ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Зиёд кардани газ"
@@ -4532,10 +4526,6 @@ msgstr "Сафар"
 msgid "trim"
 msgstr "тример"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Трим"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Барои чароғи каҳрабоии паҳлӯи HUD трим кун (8.1° AOA), қувва барои баландӣ"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Кулоҳи трим"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Тример: бинӣ поён"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Тример: бинӣ боло"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Трим: хам ба чап"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Трим: хам ба рост"
@@ -4620,7 +4606,6 @@ msgstr "Таъин нашудааст"
 msgid "Unavailable"
 msgstr "Дастрас нест"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Бекор кардани таъини ҳадаф"
@@ -4764,9 +4749,9 @@ msgstr "Тафсилоти ҷузъро дидан ва таҳрир карда�
 msgid "View controls"
 msgstr "Назоратҳои намоиш"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Намоишҳо"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "намудҳо"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Чоршанбе"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Тормози чарх"
 
@@ -4847,7 +4831,6 @@ msgstr "Тормози чарх"
 msgid "Wind"
 msgstr "Шамол"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Қатшавии бол"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Инҳироф"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Инҳироф ба чап"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Инҳироф ба рост"

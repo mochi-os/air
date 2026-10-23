@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} erori da"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> okertzeko"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> atzera egiteko"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> hurbiltzeko"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> hurbiltzeko"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> atzera egiteko"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> okertzeko"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> ikuspegirako"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Arrastatu</0> edo <1>←→</1> orbitatzeko"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Arrastatu</0> edo <1>{orbit}</1> orbitatzeko"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Sarbide maila"
 msgid "Account type"
 msgstr "Kontu mota"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Jomuga finkatu"
@@ -407,10 +402,6 @@ msgstr "Postkonbustioa"
 msgid "AI"
 msgstr "AA"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Hegazkina"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "<0>“USS Nimitz CVN-68 Aircraft Carrier”</0> hegazkin-ontzia, <1>Muhamad Mirza Arrafi</1>-ren lana (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldatua: birreskalatua, berbideratua, flotazio-lerroraino hondoratua eta weberako sinplifikatua."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Jario honetara harpidetutako guztiak jasotzeari utziko dio. Ondoren URL berri bat kopia dezakezu."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Hurbilketa-potentzia (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Ziur al zaude amore eman nahi duzula?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Ziur al zaude amore eman nahi duzula? {opponentName}-(e)k irabaziko du jokoa."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Gelditze-kakoa"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, armak aske hasieratik"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Blokeatu / askatu"
 
@@ -784,10 +772,6 @@ msgstr "ESAN BOLA"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Dei-izena"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Kameraren distantzia"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Erdiko lerroa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Chaff"
 
@@ -938,6 +921,10 @@ msgstr "{field} aldatu da"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Aldatutako agerraldia"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Jarraipen-ikuspegia"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Hodeiak"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Kabinako pantailen letra-tipoa <0>“Hornet Display”</0>, <1>Mørkvitnir</1>-ren lana, © 2022, <2>MIT</2> lizentziapean."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Kabina-ikuspegia"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Tolestu"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Oharrak"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Iruzkinak ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Komunikazioa"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Ezin izan da kontu horrekin egiaztatu. Saiatu berriro."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Kontraneurriak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Ibilbidea ezarri ezkerrera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Ibilbidea ezarri eskuinera"
@@ -1367,7 +1355,6 @@ msgstr "Pertsonalizatua"
 msgid "CUT"
 msgstr "ARRISKUTSUA"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Aldatu ikuspegia"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Deskribapena"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Izendatu"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Izendapen-kontrolagailua"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Izendatzailea behera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Izendatzailea ezkerrera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Izendatzailea eskuinera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Izendatzailea gora"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Baztertu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Jaurtigailua"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "JAURTIGAILUA ITZALITA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Pantaila-errepikagailua"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Pantaila-ikuspegia"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "LARRIALDIKO ASKATZEA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Lurreratze-trenaren larrialdiko hedapena"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Larrialdiko askatzea (eutsi)"
@@ -1842,6 +1824,10 @@ msgstr "Irten erreprodukziotik"
 msgid "Expand"
 msgstr "Zabaldu"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Zabaldu alboko barra"
@@ -1860,7 +1846,6 @@ msgstr "Leherketa-animazioa <0>“Explosion02HD”</0>, <1>Unity Technologies</1
 msgid "Export"
 msgstr "Esportatu"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flapak atera"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "tiro egin"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Armaz tiro egin"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Hegaldi-tekla finkoak"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Hegan egin berriro"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Jarraitu orratzei behera: 1200' 3NM-an, 800' 2NM-an, 400' 1NM-an"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Gainetik pasatzeko ikuspegia"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Gaiatik"
 msgid "FUEL"
 msgstr "ERREGAIA"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Erregaia hustea"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ERREGAIA HUSTEN"
@@ -2195,6 +2183,10 @@ msgstr "Fuselajea"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Irabazia"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Jokoa"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Buruaren jarraipena"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Norabidea ezarri ezkerrera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Norabidea ezarri eskuinera"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KAKO"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Kakoaren saihesbidea"
 
@@ -2342,6 +2331,10 @@ msgstr "HUDaren sinplifikazioa"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD orratzak: eutsi planeo-bideari eta erdiko lerroari"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD ikuspegia"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}(r)en inizialen avatarra"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Sarrerako hardwarea"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Tresnak"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Elementuaren xehetasunak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Interferitzailea"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Kupula jaurti"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Askatu tangak"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "EZKER TREN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Lurreratze-trena"
 
@@ -2543,7 +2536,6 @@ msgstr "Handia"
 msgid "LATE"
 msgstr "BERANDU"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Jaurtiketa (katapulta)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "argiak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Argiak"
 
@@ -2606,7 +2597,6 @@ msgstr "Argiak"
 msgid "LIGHTS"
 msgstr "ARGIAK"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Argien proba"
@@ -2622,6 +2612,10 @@ msgstr "Estekak"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Zerrenda"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Begiratu"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Begirada / orbita"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Begiratu jomugari"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Altimetroaren doikuntza jaitsi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Altuera baxuko indizea jaitsi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Radarraren antena jaitsi"
@@ -2758,7 +2746,6 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Markatu denak irakurritzat"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Armatze nagusia"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menua"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menua"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Bestelakoa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G muga gainditu"
 
@@ -3303,6 +3288,10 @@ msgstr "PADLOCK"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "PADLOCK ITZALITA"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Begirada blokeatuaren ikuspegia"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Eredua (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pausatu"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Pausatu errepikapena"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ESKUIN TREN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radar isila"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Altimetroaren doikuntza igo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Altuera baxuko indizea igo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Radarraren antena igo"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Berrezarri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Berrezarri abisu nagusia"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Trim berrezarri"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Berrezarri ikuspegia"
@@ -3782,7 +3768,6 @@ msgstr "Emaitza"
 msgid "Resume"
 msgstr "Berriro hasi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flapak bildu"
@@ -3952,6 +3937,14 @@ msgstr "Bilatzen..."
 msgid "SEAT SAFE"
 msgstr "ESERLEKUA SEGURTATUTA"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Itzali ezkerreko motorra"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Itzali eskuineko motorra"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Hautapena"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Hautatu aurreko txartela"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Hautatu arma"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Bidali mezua"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Sentsore-kontrola atzera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Sentsore-kontrola aurrera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Sentsore-kontrola ezkerrera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Sentsore-kontrola eskuinera"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Sentsoreak"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Saioa amaitzen..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Isildu lur-trenaren tonua"
 
@@ -4162,7 +4153,6 @@ msgstr "Lerro bakarreko testua soilik"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Motor bakarreko igoera onena (Vyse, posterrekuntza)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Moteldu denbora"
@@ -4206,11 +4196,9 @@ msgstr "aire-balazta"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Aire-balazta"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Azkartu denbora"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistema"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistemak"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "MAPA TAKTIKOA"
@@ -4326,6 +4318,10 @@ msgstr "Etiketak gehienez 50 karaktere izan behar ditu"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Etiketak"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Aireratzea eta lurreratzea"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Azelerazioa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Azelerazioa jaitsi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Azelerazioa igo"
@@ -4532,10 +4526,6 @@ msgstr "Bidaian"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trimatu HUD ondoko argi anbarrera (8.1° AOA), potentzia altuerarako"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim kapela"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: sudurra behera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: sudurra gora"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: alborapena ezkerrera"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: alborapena eskuinera"
@@ -4620,7 +4606,6 @@ msgstr "Esleitu gabe"
 msgid "Unavailable"
 msgstr "Ez dago erabilgarri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Helburu-izendapena bertan behera utzi"
@@ -4764,9 +4749,9 @@ msgstr "Ikusi eta editatu elementuaren xehetasunak"
 msgid "View controls"
 msgstr "Ikuspegi-kontrolak"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Ikuspegiak"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "ikuspegiak"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Asteazkena"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Gurpileko balaztak"
 
@@ -4847,7 +4831,6 @@ msgstr "Gurpileko balaztak"
 msgid "Wind"
 msgstr "Haizea"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Hegal-tolestea"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Gingada"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Ezkerrera biratu"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Eskuinera biratu"

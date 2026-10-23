@@ -122,7 +122,8 @@ describe('the hook bypass wiring', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
     expect(keys).toMatch(/'hook\.bypass': 'Shift\+KeyH'/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
-    expect(settings.match(/id: 'hook\.bypass', label: msg`Hook bypass`, group: 'aircraft'/g)?.length).toBe(2)
+    expect(settings.match(/id: 'hook\.bypass',\s*label: msg`Hook bypass`,\s*group: 'landing'/g)?.length).toBe(1) // one row, which both tabs draw
+    expect(/const BUTTONS = new Set\(\[[^\]]*'hook\.bypass',/.test(settings)).toBe(true)
     expect(source).toMatch(/if\(ch===key_of\("hook\.bypass"\)\) pit_press\("hook\.bypass",0\);/)
     expect(source).toMatch(/case "hook\.bypass": hook_bypass=hook_bypass==="field"\?"carrier":"field"; break;/)
     expect(source).toMatch(/\{ name:"hookbypass", track:\/\^SWITCH_HOOKBYPASS_LEFTPANEL_AN\/i, drive:"hookbypass" \}/)
@@ -334,7 +335,7 @@ describe('the clickable switches', () => {
     expect(source).toMatch(/if\(ch===key_of\("radar\.silent"\)\) pit_press\("radar",0\);/)
     expect(source).toMatch(/if\(ch===key_of\("flaps\.extend"\)\) pit_press\("flaps",-1\);/)
     expect(source).toMatch(/if\(ch===key_of\("flaps\.retract"\)\) pit_press\("flaps",1\);/)
-    expect(source).toMatch(/if\(k==="Digit2"\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud",source\); \}/)
+    expect(source).toMatch(/if\(ch===key_of\("view\.hud"\)\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud",source\); \}/)
   })
 
   it('open the canopy on a right click and close it on a left, on the ground only', () => {

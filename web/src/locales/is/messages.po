@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} brotlenti"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> til að halla"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> til að fjarlægjast"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> til að nálgast"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> til að nálgast"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> til að fjarlægjast"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> til að halla"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> fyrir sjónarhornið"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Dragðu</0> eða <1>←→</1> til að sveima"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Dragðu</0> eða <1>{orbit}</1> til að sveima"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Aðgangsstig"
 msgid "Account type"
 msgstr "Tegund reiknings"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Læsa á skotmark"
@@ -407,10 +402,6 @@ msgstr "Eftirbrennari"
 msgid "AI"
 msgstr "Gervigreind"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Flugvél"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Flugmóðurskipið <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> eftir <1>Muhamad Mirza Arrafi</1> (Sketchfab), með leyfi samkvæmt <2>CC BY 4.0</2>. Breytt: kvarða breytt, stefnu breytt, sökkt niður að vatnslínu og einfaldað fyrir vefinn."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Allt sem er áskrifandi að þessari veitu hættir að fá hana. Þú getur afritað nýja vefslóð á eftir."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Aðflugsafl (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Ertu viss um að þú viljir gefast upp?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Ertu viss um að þú viljir gefast upp? {opponentName} mun vinna leikinn."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Stöðvunarkrókur"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, vopn frjáls frá upphafi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Læsa / losa"
 
@@ -784,10 +772,6 @@ msgstr "TILKYNNTU BOLTANN"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Kallmerki"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Fjarlægð myndavélar"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Miðlína"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Ratsjárþynnur"
 
@@ -938,6 +921,10 @@ msgstr "Breytti {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Breytt tilvik"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Eltingarsýn"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Ský"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Letur stjórnklefaskjáa <0>“Hornet Display”</0> eftir <1>Mørkvitnir</1>, © 2022, með leyfi samkvæmt <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Stjórnklefasýn"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Fella saman"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Athugasemdir"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Athugasemdir ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Samskipti"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Ekki tókst að staðfesta með þeim reikningi. Reyndu aftur."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Mótvægisaðgerðir"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Stilla feril til vinstri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Stilla feril til hægri"
@@ -1367,7 +1355,6 @@ msgstr "Sérsniðið"
 msgid "CUT"
 msgstr "HÆTTULEGT"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Skipta um sýn"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Lýsing"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Tilnefna"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Tilnefningarstýring"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Tilnefnari niður"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Tilnefnari til vinstri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Tilnefnari til hægri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Tilnefnari upp"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Hunsa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Skammtari"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "SKAMMTARI SLÖKKTUR"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Skjáendurvarpi"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Skjásýn"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "NEYÐARVARP"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Neyðarútfelling lendingarbúnaðar"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Neyðarvarp (halda)"
@@ -1842,6 +1824,10 @@ msgstr "Hætta spilun"
 msgid "Expand"
 msgstr "Fletta út"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Útvíkka hliðarstiku"
@@ -1860,7 +1846,6 @@ msgstr "Sprengingarhreyfimynd <0>“Explosion02HD”</0> eftir <1>Unity Technolo
 msgid "Export"
 msgstr "Flytja út"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Vængbörð út"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "skjóta"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Skjóta úr vopni"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Fastir fluglyklar"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Fljúga aftur"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Fylgdu nálunum niður: 1200' við 3NM, 800' við 2NM, 400' við 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Yfirflugssýn"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Frá þema"
 msgid "FUEL"
 msgstr "ELDSNEYTI"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Eldsneytislosun"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ELDSNEYTISLOSUN"
@@ -2195,6 +2183,10 @@ msgstr "Skrokkur"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Mögnun"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Leikur"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Höfuðrakning"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Stilla stefnu til vinstri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Stilla stefnu til hægri"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KRÓKUR"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Króka-framhjáhlaup"
 
@@ -2342,6 +2331,10 @@ msgstr "Einföldun HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD nálar: haltu aðflugshalla og miðlínu"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD-sýn"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Upphafsstafaauðkenni fyrir {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Inntaksbúnaður"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Mælitæki"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Upplýsingar um atriði"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Truflunarsendir"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Varpa hvelfingunni"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Varpa tönkum"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "V HJÓL"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Lendingarbúnaður"
 
@@ -2543,7 +2536,6 @@ msgstr "Stórt"
 msgid "LATE"
 msgstr "SEINT"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Skot (katapúlta)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "ljós"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Ljós"
 
@@ -2606,7 +2597,6 @@ msgstr "Ljós"
 msgid "LIGHTS"
 msgstr "LJÓS"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Ljósaprófun"
@@ -2622,6 +2612,10 @@ msgstr "Tenglar"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Listi"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Horfa"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Horfa / hringsóla"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Horfa á skotmark"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Lækka hæðarmælisstillingu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Lækka lághæðarvísi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Lækka ratsjárloftnet"
@@ -2758,7 +2746,6 @@ msgstr "Kort"
 msgid "Mark all as read"
 msgstr "Merkja allt sem lesið"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Aðalvopnarofi"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "valmynd"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Valmynd"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Annað"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Fara fram úr G-mörkum"
 
@@ -3303,6 +3288,10 @@ msgstr "SJÓNLÆSING"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "SJÓN FRJÁLS"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Læst sýn"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Mynstur (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Hlé"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Gera hlé á endurspilun"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "H HJÓL"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Ratsjárþögn"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Hækka hæðarmælisstillingu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Hækka lághæðarvísi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Hækka ratsjárloftnet"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Endurstilla"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Endurstilla aðalviðvörun"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Núllstilla trim"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Núllstilla útsýni"
@@ -3782,7 +3768,6 @@ msgstr "Niðurstaða"
 msgid "Resume"
 msgstr "Halda áfram"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Vængbörð inn"
@@ -3952,6 +3937,14 @@ msgstr "Leita..."
 msgid "SEAT SAFE"
 msgstr "SÆTI TRYGGT"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Slökkva á vinstri hreyfli"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Slökkva á hægri hreyfli"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Val"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Velja fyrra spjald"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Velja vopn"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Senda skilaboð"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Skynjararofi aftur"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Skynjararofi fram"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Skynjararofi til vinstri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Skynjararofi til hægri"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Skynjarar"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Skrái út..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Þagga lendingarbúnaðartón"
 
@@ -4162,7 +4153,6 @@ msgstr "Aðeins ein lína af texta"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Besta klifur á einum hreyfli (Vyse, eftirbrennari)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Hægja á tíma"
@@ -4206,11 +4196,9 @@ msgstr "loftbremsa"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Loftbremsa"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Hraða tíma"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Kerfi"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Kerfi"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTÍSKT KORT"
@@ -4326,6 +4318,10 @@ msgstr "Merkið má mest vera 50 stafir"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Merki"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Flugtak og lending"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Inngjöf"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Minnka inngjöf"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Auka inngjöf"
@@ -4532,10 +4526,6 @@ msgstr "Á ferðalagi"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trimmaðu á gula ljósið við HUD (8.1° AOA), afl fyrir hæð"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim-hattur"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: nef niður"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: nef upp"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: velta til vinstri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: velta til hægri"
@@ -4620,7 +4606,6 @@ msgstr "Ekki úthlutað"
 msgid "Unavailable"
 msgstr "Ekki tiltækt"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Afvelja skotmark"
@@ -4764,9 +4749,9 @@ msgstr "Skoða og breyta upplýsingum hlutarins"
 msgid "View controls"
 msgstr "Skoða stjórntæki"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Útsýni"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "sýnir"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Miðvikudagur"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Hjólbremsur"
 
@@ -4847,7 +4831,6 @@ msgstr "Hjólbremsur"
 msgid "Wind"
 msgstr "Vindur"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Vængjafelling"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Snúningur"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Nef til vinstri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Nef til hægri"

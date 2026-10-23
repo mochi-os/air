@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} ተከሰከሰ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> ለማዘንበል"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> ወደ ኋላ ለመመለስ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> ለመቅረብ"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> ለመቅረብ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> ወደ ኋላ ለመመለስ"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> ለማዘንበል"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> ለእይታ"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>ጎትት</0> ወይም <1>←→</1> ለመዞር"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>ጎትት</0> ወይም <1>{orbit}</1> ለመዞር"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "የመዳረሻ ደረጃ"
 msgid "Account type"
 msgstr "የመለያ ዓይነት"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "ዒላማ ያዝ"
@@ -407,10 +402,6 @@ msgstr "አፍተርበርነር"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "አውሮፕላን"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "አውሮፕላን ተሸካሚ መርከብ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> በ<1>Muhamad Mirza Arrafi</1> (Sketchfab)፣ በ<2>CC BY 4.0</2> ፍቃድ ስር። ተስተካክሏል፦ መጠኑ ተቀይሯል፣ አቅጣጫው ተቀይሯል፣ እስከ ውሃ መስመር ድረስ ተጠምቋል፣ ለድር ቀለል ተደርጓል።"
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "በዚህ ፊድ የተመዘገበ ማንኛውም ነገር መቀበሉን ያቆማል። ከዚያ በኋላ አዲስ URL መቅዳት ይችላሉ።"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "የአቀራረብ ኃይል (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "በእርግጥ መልቀቅ ይፈልጋሉ?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "በእርግጥ መልቀቅ ይፈልጋሉ? {opponentName} ጨዋታውን ያሸንፋል።"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "መቆሚያ መንጠቆ"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR፣ ውጊያ ከመነሻ ይጀምራል"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ቆልፍ / ልቀቅ"
 
@@ -784,10 +772,6 @@ msgstr "ኳሱን ጥራ"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "የጥሪ ስም"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "የካሜራ ርቀት"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "መሃል መስመር"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "ቻፍ"
 
@@ -938,6 +921,10 @@ msgstr "{field} ተቀይሯል"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "የተቀየረ ድግግሞሽ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "የክትትል እይታ"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "ደመናዎች"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "የኮክፒት ማሳያ ቅርጸ-ቁምፊ <0>“Hornet Display”</0> በ<1>Mørkvitnir</1>፣ © 2022፣ በ<2>MIT</2> ፍቃድ ስር።"
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "የኮክፒት እይታ"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "ሰብስብ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "ማስታወሻዎች"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "አስተያየቶች ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "ግንኙነት"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "በዚያ መለያ ማረጋገጥ አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "መከላከያ እርምጃዎች"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "የጉዞ መስመር ማስተካከያ ወደ ግራ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "የጉዞ መስመር ማስተካከያ ወደ ቀኝ"
@@ -1367,7 +1355,6 @@ msgstr "ብጁ"
 msgid "CUT"
 msgstr "አደገኛ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "እይታ ቀይር"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "መግለጫ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "ዒላማ ምረጥ"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "የዒላማ መምረጫ መቆጣጠሪያ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "መምረጫ ወደ ታች"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "መምረጫ ወደ ግራ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "መምረጫ ወደ ቀኝ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "መምረጫ ወደ ላይ"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "ዝጋ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "ማሰራጫ"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ማሰራጫ ጠፍቷል"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "የማሳያ ደጋሚ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "የማሳያ እይታ"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "የአደጋ መጣል"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "የማረፊያ ማርሽ የአደጋ ጊዜ ማውረድ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "የአደጋ ጊዜ መጣል (ያዙ)"
@@ -1842,6 +1824,10 @@ msgstr "ከማጫወት ውጣ"
 msgid "Expand"
 msgstr "ዘርጋ"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "ጎንደርን ዘርጋ"
@@ -1860,7 +1846,6 @@ msgstr "የፍንዳታ እነማ <0>“Explosion02HD”</0> በ<1>Unity Technol
 msgid "Export"
 msgstr "ላክ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "ፍላፕስ መዘርጋት"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "ተኩስ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "የጦር መሣሪያ ተኩስ"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "ቋሚ የበረራ ቁልፎች"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "እንደገና ብረር"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "መርፌዎቹን ወደታች ተከተል: በ3NM 1200'፣ በ2NM 800'፣ በ1NM 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "የአልፎ በረራ እይታ"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "ከገጽታ"
 msgid "FUEL"
 msgstr "ነዳጅ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "ነዳጅ ማፍሰስ"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ነዳጅ ማፍሰስ"
@@ -2195,6 +2183,10 @@ msgstr "የአውሮፕላን አካል"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "ማጉላት"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "ጨዋታ"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "የራስ ክትትል"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "አቅጣጫ ማስተካከያ ወደ ግራ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "አቅጣጫ ማስተካከያ ወደ ቀኝ"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "ሰቃ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "የመንጠቆ ማለፊያ"
 
@@ -2342,6 +2331,10 @@ msgstr "የHUD ማሳያ ማቅለል"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "የHUD መርፌዎች: የማረፊያ ቁልቁለትና የመሃል መስመር ያዝ"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "የHUD እይታ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "የ{name} የመነሻ ፊደላት አምሳያ"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "የግቤት ሃርድዌር"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "መሣሪያዎች"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "የንጥል ዝርዝሮች"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "አደናቃፊ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "ካኖፒውን ጣል"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "ታንኮችን ጣል"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ግራ ጎማ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "ማረፊያ ማርሽ"
 
@@ -2543,7 +2536,6 @@ msgstr "ትልቅ"
 msgid "LATE"
 msgstr "ዘግይቷል"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ማስወንጨፍ (ወንጭፍ)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "መብራቶች"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "መብራቶች"
 
@@ -2606,7 +2597,6 @@ msgstr "መብራቶች"
 msgid "LIGHTS"
 msgstr "መብራቶች"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "የመብራቶች ሙከራ"
@@ -2622,6 +2612,10 @@ msgstr "አገናኞች"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "ዝርዝር"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "ተመልከት"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "እይታ / ዙረት"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "ዒላማ ተመልከት"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "የከፍታ መለኪያ ቅንብርን ዝቅ አድርግ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "ዝቅተኛ ከፍታ ጠቋሚን ዝቅ አድርግ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "የራዳር አንቴናን ዝቅ አድርግ"
@@ -2758,7 +2746,6 @@ msgstr "ካርታ"
 msgid "Mark all as read"
 msgstr "ሁሉንም እንደተነበበ ምልክት አድርግ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "ዋና ማስታጠቂያ"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "ምናሌ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "ምናሌ"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "ሌላ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "የG ገደብ መሻር"
 
@@ -3303,6 +3288,10 @@ msgstr "እይታ ተቆልፏል"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "እይታ ተከፍቷል"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "የተቆለፈ እይታ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "ስርዓተ-ጥለት (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "ለአፍታ አቁም"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "ድጋሚ ማጫወትን ለአፍታ አቁም"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ቀኝ ጎማ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "የራዳር ዝምታ"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "የከፍታ መለኪያ ቅንብርን ከፍ አድርግ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "ዝቅተኛ ከፍታ ጠቋሚን ከፍ አድርግ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "የራዳር አንቴናን ከፍ አድርግ"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "ዳግም አስጀምር"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "ዋና ማስጠንቀቂያ ዳግም አስጀምር"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "ትሪም ዳግም ማስጀመር"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "እይታን ዳግም ማስጀመር"
@@ -3782,7 +3768,6 @@ msgstr "ውጤት"
 msgid "Resume"
 msgstr "ይቀጥሉ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "ፍላፕስ መሰብሰብ"
@@ -3952,6 +3937,14 @@ msgstr "በመፈለግ ላይ..."
 msgid "SEAT SAFE"
 msgstr "መቀመጫው ደህንነቱ የተጠበቀ ነው"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "የግራ ሞተርን አጥፋ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "የቀኝ ሞተርን አጥፋ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "ምርጫ"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "ቀዳሚውን ካርድ ምረጥ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "መሣሪያ መምረጥ"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "መልዕክት ይላኩ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "የሴንሰር መቆጣጠሪያ ወደ ኋላ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "የሴንሰር መቆጣጠሪያ ወደ ፊት"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "የሴንሰር መቆጣጠሪያ ወደ ግራ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "የሴንሰር መቆጣጠሪያ ወደ ቀኝ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "ዳሳሾች"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "በመውጣት ላይ..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "የማረፊያ መሣሪያ ድምፅ አጥፋ"
 
@@ -4162,7 +4153,6 @@ msgstr "የአንድ መስመር ጽሁፍ ብቻ"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "በአንድ ሞተር የተሻለ መውጣት (Vyse፣ አፍተርበርነር)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "ጊዜን አዘግይ"
@@ -4206,11 +4196,9 @@ msgstr "የአየር ብሬክ"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "የአየር ብሬክ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "ጊዜን አፋጥን"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "ስርዓቱ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "ሥርዓቶች"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "ስልታዊ ካርታ"
@@ -4326,6 +4318,10 @@ msgstr "መለያው 50 ቁምፊዎች ወይም ያነሰ መሆን አለበ�
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "መለያዎች"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "መነሳት እና ማረፍ"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "ስሮትል"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "ስሮትል ቀንስ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "ስሮትል ጨምር"
@@ -4532,10 +4526,6 @@ msgstr "በጉዞ ላይ"
 msgid "trim"
 msgstr "ትሪም"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "ትሪም"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "ከHUD አጠገብ ያለው ብርቱካናማ መብራት እንዲበራ ትሪም አድርግ (8.1° AOA)፣ ለከፍታ ኃይል ተጠቀም"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "የትሪም ኮፍያ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "ትሪም፦ አፍንጫ ወደ ታች"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "ትሪም፦ አፍንጫ ወደ ላይ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "ትሪም፦ ወደ ግራ ማዘንበል"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "ትሪም፦ ወደ ቀኝ ማዘንበል"
@@ -4620,7 +4606,6 @@ msgstr "ያልተመደበ"
 msgid "Unavailable"
 msgstr "የማይገኝ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "የዒላማ ምርጫ ሰርዝ"
@@ -4764,8 +4749,8 @@ msgstr "የእቃ ዝርዝሮችን ይመልከቱ እና ያርትዑ"
 msgid "View controls"
 msgstr "የእይታ መቆጣጠሪያዎች"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "እይታዎች"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "ረቡዕ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "የጎማ ፍሬን"
 
@@ -4847,7 +4831,6 @@ msgstr "የጎማ ፍሬን"
 msgid "Wind"
 msgstr "ነፋስ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "ክንፍ ማጠፊያ"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "ያው"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "ያው ወደ ግራ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ያው ወደ ቀኝ"

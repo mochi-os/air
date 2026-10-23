@@ -110,22 +110,30 @@ function useGamepads(): PadState[] {
   return pads
 }
 
+// The Keys and Buttons tabs group the controls by what they work, in the order a
+// pilot meets them: flying the jet, its takeoff and landing controls, the
+// weapons and the sensors that find their targets, the instruments and the
+// jet's other systems, then the views and the game itself.
 const GROUP_ORDER = [
   'flight',
-  'trim',
+  'landing',
   'weapons',
-  'aircraft',
+  'sensors',
+  'instruments',
+  'systems',
   'view',
-  'comms',
+  'game',
 ] as const
 type Group = (typeof GROUP_ORDER)[number]
 const GROUP_TITLES: Record<Group, ReactNode> = {
   flight: <Trans>Flight</Trans>,
-  trim: <Trans>Trim</Trans>,
+  landing: <Trans>Takeoff and landing</Trans>,
   weapons: <Trans>Weapons</Trans>,
-  aircraft: <Trans>Aircraft</Trans>,
+  sensors: <Trans>Sensors</Trans>,
+  instruments: <Trans>Instruments</Trans>,
+  systems: <Trans>Systems</Trans>,
   view: <Trans>View</Trans>,
-  comms: <Trans>Communication</Trans>,
+  game: <Trans>Game</Trans>,
 }
 type Row = { id: string; label: MessageDescriptor; group: Group }
 
@@ -175,82 +183,11 @@ function AxisMeter({ live }: { live: number }) {
   )
 }
 
-const BUTTON_ROWS: Row[] = [
-  { id: 'brake.speed', label: msg`Speed brake`, group: 'flight' },
-  { id: 'brake.wheel', label: msg`Wheel brakes`, group: 'flight' },
-  { id: 'override', label: msg`Override G limit`, group: 'flight' },
-  { id: 'yaw.left', label: msg`Yaw left`, group: 'flight' },
-  { id: 'yaw.right', label: msg`Yaw right`, group: 'flight' },
-  { id: 'throttle.up', label: msg`Throttle up`, group: 'flight' },
-  { id: 'throttle.down', label: msg`Throttle down`, group: 'flight' },
-  { id: 'trim.up', label: msg`Trim nose up`, group: 'trim' },
-  { id: 'trim.down', label: msg`Trim nose down`, group: 'trim' },
-  { id: 'trim.left', label: msg`Trim roll left`, group: 'trim' },
-  { id: 'trim.right', label: msg`Trim roll right`, group: 'trim' },
-  { id: 'trim.reset', label: msg`Reset trim`, group: 'trim' },
-  { id: 'fire', label: msg`Fire weapon`, group: 'weapons' },
-  { id: 'select', label: msg`Select weapon`, group: 'weapons' },
-  { id: 'acquire', label: msg`Acquire target`, group: 'weapons' },
-  { id: 'radar.undesignate', label: msg`Undesignate target`, group: 'weapons' },
-  { id: 'uncage', label: msg`Cage / uncage`, group: 'weapons' },
-  { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
-  { id: 'arm', label: msg`Master arm`, group: 'weapons' },
-  { id: 'dispenser', label: msg`Dispenser`, group: 'weapons' },
-  { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
-  { id: 'sensor.forward', label: msg`Sensor control forward`, group: 'weapons' },
-  { id: 'sensor.aft', label: msg`Sensor control aft`, group: 'weapons' },
-  { id: 'sensor.left', label: msg`Sensor control left`, group: 'weapons' },
-  { id: 'sensor.right', label: msg`Sensor control right`, group: 'weapons' },
-  { id: 'tdc.up', label: msg`Designator up`, group: 'weapons' },
-  { id: 'tdc.down', label: msg`Designator down`, group: 'weapons' },
-  { id: 'tdc.left', label: msg`Designator left`, group: 'weapons' },
-  { id: 'tdc.right', label: msg`Designator right`, group: 'weapons' },
-  { id: 'tdc.designate', label: msg`Designate`, group: 'weapons' },
-  { id: 'antenna.up', label: msg`Raise radar antenna`, group: 'weapons' },
-  { id: 'antenna.down', label: msg`Lower radar antenna`, group: 'weapons' },
-  { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
-  { id: 'chaff', label: msg`Chaff`, group: 'weapons' },
-  { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
-  {
-    id: 'jettison.emergency',
-    label: msg`Emergency jettison (hold)`,
-    group: 'weapons',
-  },
-  { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
-  { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
-  { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
-  { id: 'gear', label: msg`Landing gear`, group: 'aircraft' },
-  { id: 'gear.emergency', label: msg`Emergency gear extension`, group: 'aircraft' },
-  { id: 'tone.silence', label: msg`Silence gear tone`, group: 'aircraft' },
-  { id: 'hook', label: msg`Arrestor hook`, group: 'aircraft' },
-  { id: 'hook.bypass', label: msg`Hook bypass`, group: 'aircraft' },
-  { id: 'index.down', label: msg`Lower low-altitude index`, group: 'aircraft' },
-  { id: 'index.up', label: msg`Raise low-altitude index`, group: 'aircraft' },
-  { id: 'atc', label: msg`Approach power (ATC)`, group: 'aircraft' },
-  { id: 'fold', label: msg`Wing fold`, group: 'aircraft' },
-  { id: 'canopy.jettison', label: msg`Jettison canopy`, group: 'aircraft' },
-  { id: 'heading.left', label: msg`Heading set left`, group: 'aircraft' },
-  { id: 'heading.right', label: msg`Heading set right`, group: 'aircraft' },
-  { id: 'course.left', label: msg`Course set left`, group: 'aircraft' },
-  { id: 'course.right', label: msg`Course set right`, group: 'aircraft' },
-  { id: 'launch', label: msg`Launch (catapult)`, group: 'aircraft' },
-  { id: 'lights', label: msg`Lights`, group: 'aircraft' },
-  { id: 'lights.test', label: msg`Lights test`, group: 'aircraft' },
-  { id: 'view', label: msg`Cycle view`, group: 'view' },
-  { id: 'view.reset', label: msg`Reset view`, group: 'view' },
-  { id: 'repeater', label: msg`Display repeater`, group: 'view' },
-  { id: 'look.up', label: msg`Look up`, group: 'view' },
-  { id: 'look.down', label: msg`Look down`, group: 'view' },
-  { id: 'look.left', label: msg`Look left`, group: 'view' },
-  { id: 'look.right', label: msg`Look right`, group: 'view' },
-  { id: 'look.target', label: msg`Look at target`, group: 'view' },
-  { id: 'zoom.in', label: msg`Zoom in`, group: 'view' },
-  { id: 'zoom.out', label: msg`Zoom out`, group: 'view' },
-  { id: 'time.faster', label: msg`Speed up time`, group: 'view' },
-  { id: 'time.slower', label: msg`Slow down time`, group: 'view' },
-  { id: 'menu', label: msg`Menu`, group: 'comms' },
-]
-
+// Every bindable control, grouped and in order: within a group the commonest
+// first, and each pair up before down, left before right, raise before lower,
+// starting in the left of the tab's two columns so the two halves sit side by
+// side. The Buttons tab shows the same rows, in the same order, for the
+// controls a stick button can work.
 const KEY_ROWS: Row[] = [
   { id: 'pitch.up', label: msg`Pitch up`, group: 'flight' },
   { id: 'pitch.down', label: msg`Pitch down`, group: 'flight' },
@@ -260,80 +197,191 @@ const KEY_ROWS: Row[] = [
   { id: 'yaw.right', label: msg`Yaw right`, group: 'flight' },
   { id: 'throttle.up', label: msg`Throttle up`, group: 'flight' },
   { id: 'throttle.down', label: msg`Throttle down`, group: 'flight' },
+  { id: 'trim.up', label: msg`Trim nose up`, group: 'flight' },
+  { id: 'trim.down', label: msg`Trim nose down`, group: 'flight' },
+  { id: 'trim.left', label: msg`Trim roll left`, group: 'flight' },
+  { id: 'trim.right', label: msg`Trim roll right`, group: 'flight' },
+  { id: 'trim.reset', label: msg`Reset trim`, group: 'flight' },
   { id: 'brake.speed', label: msg`Speed brake`, group: 'flight' },
-  { id: 'brake.wheel', label: msg`Wheel brakes`, group: 'flight' },
-  { id: 'brake.parking', label: msg`Parking brake`, group: 'flight' },
+  { id: 'atc', label: msg`Approach power (ATC)`, group: 'flight' },
   { id: 'override', label: msg`Override G limit`, group: 'flight' },
-  { id: 'trim.up', label: msg`Trim nose up`, group: 'trim' },
-  { id: 'trim.down', label: msg`Trim nose down`, group: 'trim' },
-  { id: 'trim.left', label: msg`Trim roll left`, group: 'trim' },
-  { id: 'trim.right', label: msg`Trim roll right`, group: 'trim' },
-  { id: 'trim.reset', label: msg`Reset trim`, group: 'trim' },
-  { id: 'fire', label: msg`Fire weapon`, group: 'weapons' },
-  { id: 'select', label: msg`Select weapon`, group: 'weapons' },
-  { id: 'acquire', label: msg`Acquire target`, group: 'weapons' },
-  { id: 'radar.undesignate', label: msg`Undesignate target`, group: 'weapons' },
-  { id: 'uncage', label: msg`Cage / uncage`, group: 'weapons' },
-  { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
+  { id: 'gear', label: msg`Landing gear`, group: 'landing' },
+  {
+    id: 'gear.emergency',
+    label: msg`Emergency gear extension`,
+    group: 'landing',
+  },
+  { id: 'flaps.extend', label: msg`Extend flaps`, group: 'landing' },
+  { id: 'flaps.retract', label: msg`Retract flaps`, group: 'landing' },
+  { id: 'hook', label: msg`Arrestor hook`, group: 'landing' },
+  { id: 'hook.bypass', label: msg`Hook bypass`, group: 'landing' },
+  { id: 'brake.wheel', label: msg`Wheel brakes`, group: 'landing' },
+  { id: 'brake.parking', label: msg`Parking brake`, group: 'landing' },
+  { id: 'launch', label: msg`Launch (catapult)`, group: 'landing' },
+  { id: 'fold', label: msg`Wing fold`, group: 'landing' },
+  { id: 'canopy', label: msg`Canopy`, group: 'landing' },
   { id: 'arm', label: msg`Master arm`, group: 'weapons' },
-  { id: 'dispenser', label: msg`Dispenser`, group: 'weapons' },
-  { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
-  { id: 'sensor.forward', label: msg`Sensor control forward`, group: 'weapons' },
-  { id: 'sensor.aft', label: msg`Sensor control aft`, group: 'weapons' },
-  { id: 'sensor.left', label: msg`Sensor control left`, group: 'weapons' },
-  { id: 'sensor.right', label: msg`Sensor control right`, group: 'weapons' },
-  { id: 'tdc.up', label: msg`Designator up`, group: 'weapons' },
-  { id: 'tdc.down', label: msg`Designator down`, group: 'weapons' },
-  { id: 'tdc.left', label: msg`Designator left`, group: 'weapons' },
-  { id: 'tdc.right', label: msg`Designator right`, group: 'weapons' },
-  { id: 'tdc.designate', label: msg`Designate`, group: 'weapons' },
-  { id: 'antenna.up', label: msg`Raise radar antenna`, group: 'weapons' },
-  { id: 'antenna.down', label: msg`Lower radar antenna`, group: 'weapons' },
+  { id: 'select', label: msg`Select weapon`, group: 'weapons' },
+  { id: 'fire', label: msg`Fire weapon`, group: 'weapons' },
+  { id: 'uncage', label: msg`Cage / uncage`, group: 'weapons' },
   { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
   { id: 'chaff', label: msg`Chaff`, group: 'weapons' },
+  { id: 'dispenser', label: msg`Dispenser`, group: 'weapons' },
+  { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
   { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
   {
     id: 'jettison.emergency',
     label: msg`Emergency jettison (hold)`,
     group: 'weapons',
   },
-  { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
-  { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
-  { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
-  { id: 'gear', label: msg`Landing gear`, group: 'aircraft' },
-  { id: 'gear.emergency', label: msg`Emergency gear extension`, group: 'aircraft' },
-  { id: 'tone.silence', label: msg`Silence gear tone`, group: 'aircraft' },
-  { id: 'hook', label: msg`Arrestor hook`, group: 'aircraft' },
-  { id: 'hook.bypass', label: msg`Hook bypass`, group: 'aircraft' },
-  { id: 'index.down', label: msg`Lower low-altitude index`, group: 'aircraft' },
-  { id: 'index.up', label: msg`Raise low-altitude index`, group: 'aircraft' },
-  { id: 'baro.down', label: msg`Lower altimeter setting`, group: 'aircraft' },
-  { id: 'baro.up', label: msg`Raise altimeter setting`, group: 'aircraft' },
-  { id: 'atc', label: msg`Approach power (ATC)`, group: 'aircraft' },
-  { id: 'probe', label: msg`Fuel probe`, group: 'aircraft' },
-  { id: 'canopy', label: msg`Canopy`, group: 'aircraft' },
-  { id: 'canopy.jettison', label: msg`Jettison canopy`, group: 'aircraft' },
-  { id: 'heading.left', label: msg`Heading set left`, group: 'aircraft' },
-  { id: 'heading.right', label: msg`Heading set right`, group: 'aircraft' },
-  { id: 'course.left', label: msg`Course set left`, group: 'aircraft' },
-  { id: 'course.right', label: msg`Course set right`, group: 'aircraft' },
-  { id: 'fold', label: msg`Wing fold`, group: 'aircraft' },
-  { id: 'lights', label: msg`Lights`, group: 'aircraft' },
-  { id: 'lights.test', label: msg`Lights test`, group: 'aircraft' },
-  { id: 'launch', label: msg`Launch (catapult)`, group: 'aircraft' },
-  { id: 'eject', label: msg`Eject`, group: 'aircraft' },
+  { id: 'acquire', label: msg`Acquire target`, group: 'sensors' },
+  { id: 'radar.silent', label: msg`Radar silent`, group: 'sensors' },
+  { id: 'tdc.designate', label: msg`Designate`, group: 'sensors' },
+  { id: 'radar.undesignate', label: msg`Undesignate target`, group: 'sensors' },
+  {
+    id: 'sensor.forward',
+    label: msg`Sensor control forward`,
+    group: 'sensors',
+  },
+  { id: 'sensor.aft', label: msg`Sensor control aft`, group: 'sensors' },
+  { id: 'sensor.left', label: msg`Sensor control left`, group: 'sensors' },
+  { id: 'sensor.right', label: msg`Sensor control right`, group: 'sensors' },
+  { id: 'tdc.up', label: msg`Designator up`, group: 'sensors' },
+  { id: 'tdc.down', label: msg`Designator down`, group: 'sensors' },
+  { id: 'tdc.left', label: msg`Designator left`, group: 'sensors' },
+  { id: 'tdc.right', label: msg`Designator right`, group: 'sensors' },
+  { id: 'antenna.up', label: msg`Raise radar antenna`, group: 'sensors' },
+  { id: 'antenna.down', label: msg`Lower radar antenna`, group: 'sensors' },
+  { id: 'altitude', label: msg`HUD altitude source`, group: 'instruments' },
+  { id: 'reject', label: msg`HUD declutter`, group: 'instruments' },
+  { id: 'baro.up', label: msg`Raise altimeter setting`, group: 'instruments' },
+  {
+    id: 'baro.down',
+    label: msg`Lower altimeter setting`,
+    group: 'instruments',
+  },
+  {
+    id: 'index.up',
+    label: msg`Raise low-altitude index`,
+    group: 'instruments',
+  },
+  {
+    id: 'index.down',
+    label: msg`Lower low-altitude index`,
+    group: 'instruments',
+  },
+  { id: 'heading.left', label: msg`Heading set left`, group: 'instruments' },
+  { id: 'heading.right', label: msg`Heading set right`, group: 'instruments' },
+  { id: 'course.left', label: msg`Course set left`, group: 'instruments' },
+  { id: 'course.right', label: msg`Course set right`, group: 'instruments' },
+  { id: 'probe', label: msg`Fuel probe`, group: 'systems' },
+  { id: 'dump', label: msg`Fuel dump`, group: 'systems' },
+  { id: 'secure.port', label: msg`Secure left engine`, group: 'systems' },
+  { id: 'secure.starboard', label: msg`Secure right engine`, group: 'systems' },
+  { id: 'lights', label: msg`Lights`, group: 'systems' },
+  { id: 'lights.test', label: msg`Lights test`, group: 'systems' },
+  { id: 'caution.reset', label: msg`Reset master caution`, group: 'systems' },
+  { id: 'tone.silence', label: msg`Silence gear tone`, group: 'systems' },
+  { id: 'canopy.jettison', label: msg`Jettison canopy`, group: 'systems' },
+  { id: 'eject', label: msg`Eject`, group: 'systems' },
+  { id: 'view.cockpit', label: msg`Cockpit view`, group: 'view' },
+  { id: 'view.hud', label: msg`HUD view`, group: 'view' },
+  { id: 'view.displays', label: msg`Display view`, group: 'view' },
+  { id: 'view.chase', label: msg`Chase view`, group: 'view' },
+  { id: 'view.flypast', label: msg`Flypast view`, group: 'view' },
+  { id: 'view.padlock', label: msg`Padlock view`, group: 'view' },
   { id: 'view', label: msg`Cycle view`, group: 'view' },
   { id: 'view.reset', label: msg`Reset view`, group: 'view' },
-  { id: 'time.faster', label: msg`Speed up time`, group: 'view' },
-  { id: 'time.slower', label: msg`Slow down time`, group: 'view' },
+  { id: 'look.up', label: msg`Look up`, group: 'view' },
+  { id: 'look.down', label: msg`Look down`, group: 'view' },
+  { id: 'look.left', label: msg`Look left`, group: 'view' },
+  { id: 'look.right', label: msg`Look right`, group: 'view' },
+  { id: 'zoom.in', label: msg`Zoom in`, group: 'view' },
+  { id: 'zoom.out', label: msg`Zoom out`, group: 'view' },
+  { id: 'look.target', label: msg`Look at target`, group: 'view' },
   { id: 'repeater', label: msg`Display repeater`, group: 'view' },
-  { id: 'altitude', label: msg`HUD altitude source`, group: 'view' },
-  { id: 'reject', label: msg`HUD declutter`, group: 'view' },
   { id: 'map', label: msg`Map`, group: 'view' },
-  { id: 'chat', label: msg`Chat`, group: 'comms' },
-  { id: 'shout', label: msg`Chat to everyone`, group: 'comms' },
-  { id: 'menu', label: msg`Menu`, group: 'comms' },
+  { id: 'time.faster', label: msg`Speed up time`, group: 'game' },
+  { id: 'time.slower', label: msg`Slow down time`, group: 'game' },
+  { id: 'pause', label: msg`Pause replay`, group: 'game' },
+  { id: 'menu', label: msg`Menu`, group: 'game' },
+  { id: 'chat', label: msg`Chat`, group: 'game' },
+  { id: 'shout', label: msg`Chat to everyone`, group: 'game' },
 ]
+
+// The controls a stick button can work: the rest are on the keyboard alone.
+const BUTTONS = new Set([
+  'yaw.left',
+  'yaw.right',
+  'throttle.up',
+  'throttle.down',
+  'brake.speed',
+  'atc',
+  'override',
+  'trim.up',
+  'trim.down',
+  'trim.left',
+  'trim.right',
+  'trim.reset',
+  'gear',
+  'gear.emergency',
+  'tone.silence',
+  'flaps.extend',
+  'flaps.retract',
+  'hook',
+  'hook.bypass',
+  'brake.wheel',
+  'launch',
+  'fold',
+  'arm',
+  'select',
+  'fire',
+  'uncage',
+  'flares',
+  'chaff',
+  'dispenser',
+  'jammer',
+  'jettison.tanks',
+  'jettison.emergency',
+  'acquire',
+  'tdc.designate',
+  'radar.undesignate',
+  'sensor.forward',
+  'sensor.aft',
+  'sensor.left',
+  'sensor.right',
+  'tdc.up',
+  'tdc.down',
+  'tdc.left',
+  'tdc.right',
+  'antenna.up',
+  'antenna.down',
+  'radar.silent',
+  'index.up',
+  'index.down',
+  'heading.left',
+  'heading.right',
+  'course.left',
+  'course.right',
+  'lights',
+  'lights.test',
+  'caution.reset',
+  'canopy.jettison',
+  'view',
+  'view.reset',
+  'look.up',
+  'look.down',
+  'look.left',
+  'look.right',
+  'look.target',
+  'zoom.in',
+  'zoom.out',
+  'repeater',
+  'menu',
+  'time.faster',
+  'time.slower',
+])
+const BUTTON_ROWS = KEY_ROWS.filter((row) => BUTTONS.has(row.id))
 
 function JoystickPanel({
   config,
@@ -1116,51 +1164,6 @@ function KeysPanel({
           </section>
         )
       })}
-
-      {/* Not rows, so there is nothing here for the search to match: the
-          section would just sit under an empty result looking like a hit. */}
-      <section hidden={hunt !== ''}>
-        <SectionLabel>
-          <Trans>Fixed flight keys</Trans>
-        </SectionLabel>
-
-        <div>
-          <div className='grid gap-x-6 gap-y-2 text-xs sm:grid-cols-2'>
-            <ControlRow
-              action={<Trans>Views</Trans>}
-              keys={
-                <>
-                  <Key>1</Key>–<Key>5</Key>
-                </>
-              }
-            />
-            <ControlRow
-              action={<Trans>Reset view</Trans>}
-              keys={<Key>0</Key>}
-            />
-            <ControlRow
-              action={<Trans>Look / orbit</Trans>}
-              keys={
-                <>
-                  <Key>←</Key>
-                  <Key>→</Key>
-                  <Key>↑</Key>
-                  <Key>↓</Key>
-                </>
-              }
-            />
-            <ControlRow
-              action={<Trans>Camera distance</Trans>}
-              keys={
-                <>
-                  <Key>−</Key>
-                  <Key>=</Key>
-                </>
-              }
-            />
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
@@ -1170,15 +1173,6 @@ function Key({ children }: { children: ReactNode }) {
     <kbd className='bg-muted text-foreground border-border inline-flex items-center justify-center rounded border px-1.5 py-0.5 font-mono text-[11px] leading-none font-semibold shadow-2xs'>
       {children}
     </kbd>
-  )
-}
-
-function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
-  return (
-    <div className='flex items-center justify-between gap-4 py-1'>
-      <span className='text-muted-foreground'>{action}</span>
-      <span className='flex items-center gap-1 whitespace-nowrap'>{keys}</span>
-    </div>
   )
 }
 

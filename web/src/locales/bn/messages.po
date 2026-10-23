@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} বিধ্বস্ত হয়েছে"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> কাত করতে"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> পিছিয়ে যেতে"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> কাছে আনতে"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> কাছে আনতে"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> পিছিয়ে যেতে"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> কাত করতে"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> দৃশ্যের জন্য"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>টেনে আনুন</0> বা <1>←→</1> ঘোরাতে"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>টেনে আনুন</0> বা <1>{orbit}</1> ঘোরাতে"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "অ্যাক্সেস লেভেল"
 msgid "Account type"
 msgstr "অ্যাকাউন্টের ধরন"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "টার্গেট লক করুন"
@@ -407,10 +402,6 @@ msgstr "আফটারবার্নার"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "বিমান"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "বিমানবাহী রণতরী <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> <1>Muhamad Mirza Arrafi</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: পুনরায় মাপ করা হয়েছে, অভিমুখ পরিবর্তন করা হয়েছে, জলরেখা পর্যন্ত ডোবানো হয়েছে, এবং ওয়েবের জন্য সরলীকৃত করা হয়েছে।"
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "এই ফিডে সাবস্ক্রাইব করা সবকিছু এটি পাওয়া বন্ধ করবে। পরে আপনি একটি নতুন URL কপি করতে পারেন।"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "অ্যাপ্রোচ পাওয়ার (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "আপনি কি সত্যিই হার মানতে চা�
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "আপনি কি নিশ্চিত যে আপনি হার মানতে চান? {opponentName} খেলায় জিতবে।"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "প্রতিরোধক হুক"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, শুরু থেকেই অস্ত্র মুক্ত"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "লক করুন / মুক্ত করুন"
 
@@ -784,10 +772,6 @@ msgstr "বল ঘোষণা করো"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "কলসাইন"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "ক্যামেরার দূরত্ব"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "কেন্দ্ররেখা"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "চ্যাফ"
 
@@ -938,6 +921,10 @@ msgstr "{field} পরিবর্তন করা হয়েছে"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "পরিবর্তিত পুনরাবৃত্তি"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "অনুসরণ দৃশ্য"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "মেঘ"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "ককপিট ডিসপ্লে ফন্ট <0>“Hornet Display”</0> <1>Mørkvitnir</1> দ্বারা, © 2022, <2>MIT</2> এর অধীনে লাইসেন্সপ্রাপ্ত।"
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "ককপিট দৃশ্য"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "সংকুচিত করুন"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "মন্তব্য"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "মন্তব্য ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "যোগাযোগ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "ওই অ্যাকাউন্ট দিয়ে যাচাই করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "প্রতিব্যবস্থা"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "কোর্স সেট বামে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "কোর্স সেট ডানে"
@@ -1367,7 +1355,6 @@ msgstr "কাস্টম"
 msgid "CUT"
 msgstr "বিপজ্জনক"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "দৃশ্য পরিবর্তন"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "বিবরণ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "নির্ধারণ করুন"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "ডিজিগনেটর নিয়ন্ত্রক"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "ডিজিগনেটর নিচে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "ডিজিগনেটর বামে"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "ডিজিগনেটর ডানে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "ডিজিগনেটর উপরে"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "বাতিল করুন"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "ডিসপেনসার"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ডিসপেনসার বন্ধ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "ডিসপ্লে রিপিটার"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "ডিসপ্লে দৃশ্য"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "জরুরি নিক্ষেপ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "ল্যান্ডিং গিয়ারের জরুরি নামানো"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "জরুরি নিক্ষেপ (ধরে রাখুন)"
@@ -1842,6 +1824,10 @@ msgstr "প্লেব্যাক ত্যাগ"
 msgid "Expand"
 msgstr "প্রসারিত করুন"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "সাইডবার প্রসারিত করুন"
@@ -1860,7 +1846,6 @@ msgstr "বিস্ফোরণ অ্যানিমেশন <0>“Explosion0
 msgid "Export"
 msgstr "এক্সপোর্ট"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "ফ্ল্যাপ খোলা"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "ফায়ার"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "অস্ত্র ফায়ার করুন"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "স্থির উড়ান কী"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "আবার উড়ুন"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "সূচগুলো নিচে নামান: 3NM-এ 1200', 2NM-এ 800', 1NM-এ 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "ফ্লাইপাস্ট দৃশ্য"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "থিম থেকে"
 msgid "FUEL"
 msgstr "জ্বালানি"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "জ্বালানি নিষ্কাশন"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "জ্বালানি নিষ্কাশন"
@@ -2195,6 +2183,10 @@ msgstr "ফিউজেলাজ"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "গেইন"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "খেলা"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "মাথা ট্র্যাকিং"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "হেডিং সেট বামে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "হেডিং সেট ডানে"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "হুক"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "হুক বাইপাস"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD সরলীকরণ"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD সূচ: গ্লাইডস্লোপ ও কেন্দ্ররেখা ধরে রাখুন"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD দৃশ্য"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}-এর আদ্যক্ষর অবতার"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "ইনপুট হার্ডওয়্যার"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "যন্ত্রপাতি"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "আইটেমের বিবরণ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "জ্যামার"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "ক্যানোপি নিক্ষেপ করুন"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "ট্যাংক ফেলে দিন"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "বাম গিয়ার"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "ল্যান্ডিং গিয়ার"
 
@@ -2543,7 +2536,6 @@ msgstr "বড়"
 msgid "LATE"
 msgstr "দেরি"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "উৎক্ষেপণ (ক্যাটাপাল্ট)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "বাতি"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "বাতি"
 
@@ -2606,7 +2597,6 @@ msgstr "বাতি"
 msgid "LIGHTS"
 msgstr "লাইট"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "বাতি পরীক্ষা"
@@ -2622,6 +2612,10 @@ msgstr "লিঙ্কসমূহ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "তালিকা"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "তাকান"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "দৃষ্টি / অরবিট"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "লক্ষ্যের দিকে তাকান"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "অল্টিমিটার সেটিং কমান"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "নিম্ন উচ্চতা সূচক কমান"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "রাডার অ্যান্টেনা নিচে নামান"
@@ -2758,7 +2746,6 @@ msgstr "মানচিত্র"
 msgid "Mark all as read"
 msgstr "সবগুলি পঠিত হিসেবে চিহ্নিত করুন"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "মাস্টার আর্ম"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "মেনু"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "মেনু"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "অন্যান্য"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G সীমা অগ্রাহ্য"
 
@@ -3303,6 +3288,10 @@ msgstr "দৃষ্টি স্থির"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "দৃষ্টি মুক্ত"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "প্যাডলক দৃশ্য"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "প্যাটার্ন (রেজেক্স)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "বিরতি"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "রিপ্লে বিরতি"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ডান গিয়ার"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "রাডার নীরব"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "অল্টিমিটার সেটিং বাড়ান"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "নিম্ন উচ্চতা সূচক বাড়ান"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "রাডার অ্যান্টেনা উপরে তুলুন"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "রিসেট"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "প্রধান সতর্কতা রিসেট করুন"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "ট্রিম রিসেট"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "দৃশ্য রিসেট"
@@ -3782,7 +3768,6 @@ msgstr "ফলাফল"
 msgid "Resume"
 msgstr "পুনরায় শুরু করুন"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "ফ্ল্যাপ গোটানো"
@@ -3952,6 +3937,14 @@ msgstr "অনুসন্ধান করা হচ্ছে..."
 msgid "SEAT SAFE"
 msgstr "আসন নিরাপদ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "বাম ইঞ্জিন বন্ধ করুন"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "ডান ইঞ্জিন বন্ধ করুন"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "নির্বাচন"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "পূর্ববর্তী কার্ড নির্বাচন করুন"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "অস্ত্র নির্বাচন"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "বার্তা পাঠান"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "সেন্সর নিয়ন্ত্রণ পিছনে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "সেন্সর নিয়ন্ত্রণ সামনে"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "সেন্সর নিয়ন্ত্রণ বামে"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "সেন্সর নিয়ন্ত্রণ ডানে"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "সেন্সর"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "সাইন আউট করা হচ্ছে..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "ল্যান্ডিং গিয়ার টোন নিঃশব্দ করুন"
 
@@ -4162,7 +4153,6 @@ msgstr "শুধুমাত্র একক লাইনের টেক্স
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "একক-ইঞ্জিনে সেরা আরোহণ (Vyse, আফটারবার্নার)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "সময় ধীর করুন"
@@ -4206,11 +4196,9 @@ msgstr "বায়ু ব্রেক"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "বায়ু ব্রেক"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "সময় দ্রুত করুন"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "সিস্টেম"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "সিস্টেম"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "কৌশলগত মানচিত্র"
@@ -4326,6 +4318,10 @@ msgstr "ট্যাগ ৫০ অক্ষর বা তার কম হতে
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "ট্যাগ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "উড্ডয়ন ও অবতরণ"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "থ্রটল"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "থ্রটল কমান"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "থ্রটল বাড়ান"
@@ -4532,10 +4526,6 @@ msgstr "ভ্রমণরত"
 msgid "trim"
 msgstr "ট্রিম"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "ট্রিম"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD-এর পাশে অ্যাম্বার আলো জ্বলার জন্য ট্রিম করুন (8.1° AOA), উচ্চতার জন্য শক্তি"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "ট্রিম টুপি"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "ট্রিম: নাক নিচে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "ট্রিম: নাক উপরে"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "ট্রিম: বামে হেলা"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "ট্রিম: ডানে হেলা"
@@ -4620,7 +4606,6 @@ msgstr "অ্যাসাইন করা হয়নি"
 msgid "Unavailable"
 msgstr "অনুপলব্ধ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "লক্ষ্য নির্ধারণ বাতিল"
@@ -4764,8 +4749,8 @@ msgstr "আইটেমের বিস্তারিত দেখুন এব
 msgid "View controls"
 msgstr "কন্ট্রোল দেখুন"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "দৃশ্য"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "বুধবার"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "চাকার ব্রেক"
 
@@ -4847,7 +4831,6 @@ msgstr "চাকার ব্রেক"
 msgid "Wind"
 msgstr "বাতাস"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "ডানা ভাঁজ"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "ইয়াও"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "ইয়াও বামে"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ইয়াও ডানে"
