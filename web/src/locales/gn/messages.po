@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} ho'a"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> oñeñapymi hag̃ua"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> ojei hag̃ua"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> oñemboja hag̃ua"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> oñemboja hag̃ua"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> ojei hag̃ua"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> oñeñapymi hag̃ua"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> ehecha hag̃ua"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Emyaña</0> térã <1>←→</1> ojere hag̃ua"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Emyaña</0> térã <1>{orbit}</1> ojere hag̃ua"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Jeike nivel"
 msgid "Account type"
 msgstr "Mba'ete peteĩchagua"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Ejagarra objetivo"
@@ -407,10 +402,6 @@ msgstr "Posquemador"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Avión"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Mba'yru-veve rerahaha <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ojapo <1>Muhamad Mirza Arrafi</1> (Sketchfab), oñemboguata <2>CC BY 4.0</2> rehe. Oñemoambue: oñemomichĩ jey, oñembohape jey, oñemoñemi y renda peve, ha oñemosimplifika web peg̃uarã."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Opa mba'e osuscribíva ko feed-pe ndohupytyvéima. Upéi ikatu embokopia peteĩ URL pyahu."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Mbarete ñembojarã (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Añetehápe reñeme'ẽse?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Añetehápe reñeme'ẽse? {opponentName} ipu'akáta ñembosaráipe."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Jokoha gancho"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, mboka sãso ñepyrũ guive"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Mboty / emosãso"
 
@@ -784,10 +772,6 @@ msgstr "EMOMBE'U PELOTA"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Ñehenói réra"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Cámara mombyrykue"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Línea mbytegua"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Chaff"
 
@@ -938,6 +921,10 @@ msgstr "{field} oñemoambue"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Evento oñemoambuéva"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Muña jehecha"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Arai"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Cabina pantalla letra <0>“Hornet Display”</0> ojapo <1>Mørkvitnir</1>, © 2022, oñemboguata <2>MIT</2> rehe."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Cabina jehecha"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Momichĩ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Comentariokuéra"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Comentariokuéra ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Ñemongeta"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Ndaikatúi ojehechajey upe mba'ete ndive. Eha'ã jey."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Ñemo'ã rembiapo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Emohenda tape asu gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Emohenda tape akatúa gotyo"
@@ -1367,7 +1355,6 @@ msgstr "Ñemomba'e"
 msgid "CUT"
 msgstr "PELIGROSO"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Jehecha ñemoambue"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Ñemombe'u"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Ehechauka"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Jehechaukarã ñangarekoha"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Jehechaukarã yvy gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Jehechaukarã asu gotyo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Jehechaukarã akatúa gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Jehechaukarã yvate gotyo"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Emokañy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Mombóha"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "MOMBÓHA OGUE"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Pantalla mbojoapyha"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Pantalla jehecha"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "POI PYA'E"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Ñemboguejy ruéda moguejy pya'e"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Poi pya'e (jejoko)"
@@ -1842,6 +1824,10 @@ msgstr "Jehechauka jeheja"
 msgid "Expand"
 msgstr "Mbotuicha"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Embotuicha yke panel"
@@ -1860,7 +1846,6 @@ msgstr "Mbokapu ra'ãnga myĩva <0>“Explosion02HD”</0>, <1>Unity Technologie
 msgid "Export"
 msgstr "Ñemosẽ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flaps ñemosẽ"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "japi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Embokapu arma"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Tecla fija veve rehegua"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Eveve jey"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Eho aguja rapykuéri oguejývo: 1200' 3NM-pe, 800' 2NM-pe, 400' 1NM-pe"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Veve ohasáva jehecha"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Téma guive"
 msgid "FUEL"
 msgstr "COMBUSTIBLE"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Combustible ñemosẽ"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "COMBUSTIBLE ÑEMOSẼ"
@@ -2195,6 +2183,10 @@ msgstr "Hete"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Mbotuichave"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Ñembosarái"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Akã jehapykuehóva"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Emohenda tape renondegua asu gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Emohenda tape renondegua akatúa gotyo"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "GANCHO"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Gancho jeheja"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD ñemohesakã"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD aguja: ereko senda ha línea mbyte"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD jehecha"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name} avatar tai ñepyrũrãva"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Hardware jeike rehegua"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Tembiporu"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Artículo detalles"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Mbyai mba'e'oka"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Emombo cúpula"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Tanque poi"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "TREN ASU"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Ñemboguejy ruéda"
 
@@ -2543,7 +2536,6 @@ msgstr "Tuicha"
 msgid "LATE"
 msgstr "TARDE"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Emosẽ (katapúlta)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "tesapekuéra"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Tesapekuéra"
 
@@ -2606,7 +2597,6 @@ msgstr "Tesapekuéra"
 msgid "LIGHTS"
 msgstr "MBA'ERENDY"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Tesapekuéra ñeha'ã"
@@ -2622,6 +2612,10 @@ msgstr "Juajuhakuéra"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Tysýi"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Ma'ẽ"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Ma'ẽ / jere"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Ema'ẽ ta'ãngáre"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Emboguejy altímetro ñemboheko"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Emboguejy yvatekue michĩ rechaukaha"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Emboguejy radar antena"
@@ -2758,7 +2746,6 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Emarka opavave oñemoñe'ẽmahaicha"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Árma mboguataha guasu"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Ambue"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G apyra jehasa"
 
@@ -3303,6 +3288,10 @@ msgstr "MAÑA JOKOPY"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "MAÑA SÃSO"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Ñemboja'o jehecha"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Patrón (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Embopytu'u"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Embopytu'u jehechajey"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "TREN AKATÚA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radar kirirĩ"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Embojupi altímetro ñemboheko"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Embojupi yvatekue michĩ rechaukaha"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Embojupi radar antena"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Embojevy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Ñemomarandu guasu ñembojevy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Trim ñemboguevi"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Embojevy jehecha"
@@ -3782,7 +3768,6 @@ msgstr "Resultado"
 msgid "Resume"
 msgstr "Eñepyrũ jey"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flaps ñemboty"
@@ -3952,6 +3937,14 @@ msgstr "Ojehekahína..."
 msgid "SEAT SAFE"
 msgstr "APYKA OÑEÑANGAREKOPYRE"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Embogue motor asu"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Embogue motor akatúa"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Eiporavo"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Eiporavo kuatia mboyvegua"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Eiporavo ñorãirõ rembipuru"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Emondo ñe'ẽmondo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Sensor ñangarekoha tapykue gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Sensor ñangarekoha tenonde gotyo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Sensor ñangarekoha asu gotyo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Sensor ñangarekoha akatúa gotyo"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Ñandukuéra"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Osẽhína..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Emboki gear pu"
 
@@ -4162,7 +4153,6 @@ msgstr "Peteĩ tysýi jehaipyre añoite"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Jupi iporãvéva peteĩ motórpe (Vyse, posquemador)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Embombeguevé ára"
@@ -4206,11 +4196,9 @@ msgstr "aerofreno"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Aerofreno"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Embopya'eve ára"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistema"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistemakuéra"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "MAPA TÁKTIKO"
@@ -4326,6 +4318,10 @@ msgstr "Teramoĩ oguerekova'erã 50 tai térã sa'ive"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Teramoĩnguéra"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Ojupi ha oguejy"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Acelerador"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Acelerador guejy"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Acelerador jupi"
@@ -4532,10 +4526,6 @@ msgstr "Ojeguatáva"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Etrima luz ámbar HUD ykére (8.1° AOA), potencia yvatekue rehe"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim akãngao"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: tĩ yvype"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: tĩ yvate"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: jere asúpe"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: jere akatúape"
@@ -4620,7 +4606,6 @@ msgstr "Avave'ỹre"
 msgid "Unavailable"
 msgstr "Ndaipóri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Eipe'a destino"
@@ -4764,9 +4749,9 @@ msgstr "Ehecha ha embosako'i mba'e detalle"
 msgid "View controls"
 msgstr "Ehecha control"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Jehechakuéra"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "jehechakuéra"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Araapy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Freno rueda"
 
@@ -4847,7 +4831,6 @@ msgstr "Freno rueda"
 msgid "Wind"
 msgstr "Yvytu"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Pepo ñemama"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Jere yképe"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Tĩ asu gotyo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Tĩ akatúa gotyo"

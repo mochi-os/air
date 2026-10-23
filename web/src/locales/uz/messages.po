@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} qulab tushdi"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> egish uchun"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> orqaga chekinish uchun"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> yaqinlashish uchun"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> yaqinlashish uchun"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> orqaga chekinish uchun"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> egish uchun"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> ko'rinish uchun"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Torting</0> yoki <1>←→</1> aylanish uchun"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Torting</0> yoki <1>{orbit}</1> aylanish uchun"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Kirish darajasi"
 msgid "Account type"
 msgstr "Hisob turi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Nishonga olish"
@@ -407,10 +402,6 @@ msgstr "Forsaj"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Samolyot"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Samolyot tashuvchi kema <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> — muallif <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2> litsenziyasi asosida. O‘zgartirilgan: o‘lchami o‘zgartirildi, yo‘nalishi o‘zgartirildi, suv sathigacha cho‘ktirildi va veb uchun soddalashtirildi."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Bu tasmaga obuna boʻlgan hamma narsa uni olishni toʻxtatadi. Keyin yangi URL nusxalashingiz mumkin."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Yaqinlashish quvvati (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Taslim boʻlishga ishonchingiz komilmi?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Taslim boʻlishga ishonchingiz komilmi? {opponentName} oʻyinda gʻalaba qozonadi."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Tormoz ilgagi"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, boshidanoq qurollar erkin"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Qulflash / bo'shatish"
 
@@ -784,10 +772,6 @@ msgstr "TOʻPNI EʼLON QIL"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Chaqiruv belgisi"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Kamera masofasi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Markaziy chiziq"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Dipol qaytargichlar"
 
@@ -938,6 +921,10 @@ msgstr "{field} oʻzgartirildi"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Oʻzgartirilgan takror"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Ta'qib ko'rinishi"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Bulutlar"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Kabina displeylari shrifti <0>“Hornet Display”</0> — muallif <1>Mørkvitnir</1>, © 2022, <2>MIT</2> litsenziyasi asosida."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Kabina ko'rinishi"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Yigʻish"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Izohlar"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Izohlar ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Aloqa"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Ushbu hisob bilan tasdiqlab bo‘lmadi. Iltimos, qayta urinib ko‘ring."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Qarshi choralar"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Yoʻl chizigʻini chapga oʻrnatish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Yoʻl chizigʻini oʻngga oʻrnatish"
@@ -1367,7 +1355,6 @@ msgstr "Maxsus"
 msgid "CUT"
 msgstr "XAVFLI"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Koʻrinishni almashtirish"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Tavsif"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Belgilash"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Belgilash boshqaruvchisi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Belgilagich pastga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Belgilagich chapga"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Belgilagich oʻngga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Belgilagich yuqoriga"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Bekor qilish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Tashlagich"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "TASHLAGICH OʻCHIQ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Ekran takrorlagichi"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Displey ko'rinishi"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "FAVQULODDA TASHLASH"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Shassini favqulodda chiqarish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Favqulodda tashlash (ushlab turing)"
@@ -1842,6 +1824,10 @@ msgstr "Ijrodan chiqish"
 msgid "Expand"
 msgstr "Yoyish"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Yon panelni kengaytirish"
@@ -1860,7 +1846,6 @@ msgstr "Portlash animatsiyasi <0>“Explosion02HD”</0>, muallifi <1>Unity Tech
 msgid "Export"
 msgstr "Eksport"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flaplarni chiqarish"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "otish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Quroldan otish"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "O‘zgarmas parvoz tugmalari"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Yana uchish"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Strelkalar boʻyicha pasay: 3NM-da 1200', 2NM-da 800', 1NM-da 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Uchib o'tish ko'rinishi"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Mavzudan"
 msgid "FUEL"
 msgstr "YOQILGʻI"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Yoqilg'ini to'kish"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "YOQILGʻINI TOʻKISH"
@@ -2195,6 +2183,10 @@ msgstr "Fyuzelyaj"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Kuchaytirish"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "O'yin"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Bosh kuzatuvi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Yoʻnalishni chapga oʻrnatish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Yoʻnalishni oʻngga oʻrnatish"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KANCA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Ilgak aylanmasi"
 
@@ -2342,6 +2331,10 @@ msgstr "HUDni soddalashtirish"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD strelkalari: glissada va markaz chizigʻini ushla"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD ko'rinishi"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name} uchun bosh harflar avatari"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Kiritish qurilmalari"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Asboblar"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Element tafsilotlari"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Xalaqit beruvchi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Kabina qopqogʻini tashlash"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Baklarni tashlash"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "CHAP SHASSI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Shassi"
 
@@ -2543,7 +2536,6 @@ msgstr "Katta"
 msgid "LATE"
 msgstr "KECH"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Uchirish (katapulta)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "chiroqlar"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Chiroqlar"
 
@@ -2606,7 +2597,6 @@ msgstr "Chiroqlar"
 msgid "LIGHTS"
 msgstr "CHIROQLAR"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Chiroqlarni sinash"
@@ -2622,6 +2612,10 @@ msgstr "Havolalar"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Roʻyxat"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Qarash"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Qarash / aylanish"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Nishonga qara"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Balandlik o'lchagich sozlamasini pasaytirish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Past balandlik indeksini pasaytirish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Radar antennasini tushirish"
@@ -2758,7 +2746,6 @@ msgstr "Xarita"
 msgid "Mark all as read"
 msgstr "Hammasini oʻqilgan deb belgilash"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Qurolning bosh kaliti"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menyu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menyu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Boshqa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G chegarasidan o'tish"
 
@@ -3303,6 +3288,10 @@ msgstr "NIGOH QULFLANDI"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "NIGOH ERKIN"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Qulflangan nigoh ko'rinishi"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Naqsh (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pauza"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Takrorni pauza qilish"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "O'NG SHASSI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radar sukunati"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Balandlik o'lchagich sozlamasini oshirish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Past balandlik indeksini oshirish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Radar antennasini koʻtarish"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Tiklash"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Asosiy ogohlantirishni tiklash"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Trimni nolga qaytarish"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Ko'rinishni tiklash"
@@ -3782,7 +3768,6 @@ msgstr "Natija"
 msgid "Resume"
 msgstr "Davom etish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flaplarni yig'ish"
@@ -3952,6 +3937,14 @@ msgstr "Qidirilmoqda..."
 msgid "SEAT SAFE"
 msgstr "OʻRINDIQ HIMOYALANGAN"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Chap dvigatelni o'chirish"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "O'ng dvigatelni o'chirish"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Tanlov"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Oldingi kartani tanlang"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Qurol tanlash"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Xabar yuborish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Sensor kaliti orqaga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Sensor kaliti oldinga"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Sensor kaliti chapga"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Sensor kaliti oʻngga"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Sensorlar"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Chiqilmoqda..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Shassi signalini o'chirish"
 
@@ -4162,7 +4153,6 @@ msgstr "Faqat bir qator matn"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Bitta dvigatelda eng yaxshi ko'tarilish (Vyse, forsaj)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Vaqtni sekinlashtirish"
@@ -4206,11 +4196,9 @@ msgstr "tezlik tormozi"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Tezlik tormozi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Vaqtni tezlashtirish"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Tizim"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Tizimlar"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTIK XARITA"
@@ -4326,6 +4318,10 @@ msgstr "Teg 50 ta belgidan oshmasligi kerak"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Teglar"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Uchish va qo'nish"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Gaz"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Gazni kamaytirish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Gazni oshirish"
@@ -4532,10 +4526,6 @@ msgstr "Sayohatda"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD yonidagi sariq chiroq uchun trimla (8.1° AOA), balandlik uchun gaz"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim qalpog'i"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: burun pastga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: burun yuqoriga"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: chapga og'ish"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: o'ngga og'ish"
@@ -4620,7 +4606,6 @@ msgstr "Tayinlanmagan"
 msgid "Unavailable"
 msgstr "Mavjud emas"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Nishon belgilashni bekor qilish"
@@ -4764,9 +4749,9 @@ msgstr "Element tafsilotlarini koʻrish va tahrirlash"
 msgid "View controls"
 msgstr "Boshqaruvni koʻrish"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Koʻrinishlar"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "ko'rinishlar"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Chorshanba"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "G'ildirak tormozlari"
 
@@ -4847,7 +4831,6 @@ msgstr "G'ildirak tormozlari"
 msgid "Wind"
 msgstr "Shamol"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Qanot buklash"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Burilish"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Burilish chapga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Burilish oʻngga"

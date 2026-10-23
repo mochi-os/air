@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} האט זיך צעבראכן"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> צו נייגן"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> צו ציִען צוריק"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> צו קומען נענטער"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> צו קומען נענטער"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> צו ציִען צוריק"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> צו נייגן"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> פֿאַרן אויסזען"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>שלעפּ</0> אָדער <1>←→</1> צו קרייַזן"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>שלעפּ</0> אָדער <1>{orbit}</1> צו קרייַזן"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "צוטריט שטאַפּל"
 msgid "Account type"
 msgstr "קאָנטע סאָרט"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "פֿאַרכאַפּן ציל"
@@ -407,10 +402,6 @@ msgstr "נאָכברענער"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "עראָפּלאַן"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "פֿליגער־טרעגער־שיף <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> פֿון <1>Muhamad Mirza Arrafi</1> (Sketchfab), ליצענצירט אונטער <2>CC BY 4.0</2>. געביטן: איבערגעמאָסטן, איבערגעדרייט, פֿאַרזונקען ביזן וואַסער־ליניע, און פּשוטער געמאַכט פֿאַרן וועב."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "אַלץ וואָס איז אַבאָנירט אויף דעם פֿיד וועט אויפֿהערן עס צו באַקומען. איר קענט קאָפּירן אַ נייַעם URL דערנאָך."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "דערנעענטערונג־כּוח (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "זענט איר זיכער איר ווילט רעזיגנירן?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "זענט איר זיכער איר ווילט רעזיגנירן? {opponentName} וועט געווינען די שפּיל."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "אָפּשטעל-האָק"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, וואָפֿן פֿרײַ פֿון אָנהייב"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "פֿאַרשליסן / באַפֿרײַען"
 
@@ -784,10 +772,6 @@ msgstr "מעלד די באַלל"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "רוף־נאָמען"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "קאַמערע-דיסטאַנץ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "צענטער ליניע"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "ראַדאַר־שטרויען"
 
@@ -938,6 +921,10 @@ msgstr "געענדערט {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "געביטענע פֿאָרקומעניש"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "נאָכיאָג־בליק"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "וואָלקנס"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "שריפֿט פֿון די קאַבינע־עקראַנען <0>“Hornet Display”</0> פֿון <1>Mørkvitnir</1>, © 2022, ליצענצירט אונטער <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "קאַבינע־בליק"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "צונויפֿקלאַפּן"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "באַמערקונגען"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "קאָמענטאַרן ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "קאָמוניקאַציע"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "מע האָט נישט געקענט באַשטעטיקן מיט יענעם קאָנטע. ביטע פּרובירט נאָך אַ מאָל."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "קעגן־מיטלען"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "שטעלן קורס לינקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "שטעלן קורס רעכטס"
@@ -1367,7 +1355,6 @@ msgstr "אָנגעפּאַסט"
 msgid "CUT"
 msgstr "געפֿערלעך"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "בייט בליק"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "באַשרײַבונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "באַצייכענען"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "באַצייכענער־קאָנטראָלער"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "באַצייכענער אַראָפּ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "באַצייכענער לינקס"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "באַצייכענער רעכטס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "באַצייכענער אַרויף"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "אַראָפּזאָגן"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "אויסטיילער"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "אויסטיילער אויסגעלאָשן"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "איבערחזרער פֿון דיספּלײ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "עקראַן־בליק"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "נויטפֿאַל אַראָפּוואַרף"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "נויטפֿאַל־אַראָפּלאָזן פֿון לאַנדונג-געצייג"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "נויטפֿאַל אַראָפּוואַרף (האַלט)"
@@ -1842,6 +1824,10 @@ msgstr "אַרויסגיין פֿון שפּילן"
 msgid "Expand"
 msgstr "אויסשפּרייטן"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "פֿאַרברייטערן זײַטלאַסט"
@@ -1860,7 +1846,6 @@ msgstr "אויפרייס-אַנימאַציע <0>“Explosion02HD”</0> פֿו�
 msgid "Export"
 msgstr "עקספּאָרט"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "פֿלאַפּס אַרויס"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "שיסן"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "שיסן מיטן וואָפֿן"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "פֿעסטע פֿלי־קלאַווישן"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "פֿלי ווידער"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "פֿלי אַראָפּ נאָך די נאָדלען: 1200' בײַ 3NM, 800' בײַ 2NM, 400' בײַ 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "פֿאַרבייפֿלי־בליק"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "פֿון טעמע"
 msgid "FUEL"
 msgstr "ברענשטאָף"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "ברענשטאָף אויסגיסן"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ברענשטאָף אויסגיסן"
@@ -2195,6 +2183,10 @@ msgstr "גוף פונעם עראָפּלאַן"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "פֿאַרשטאַרקונג"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "שפּיל"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "קאָפּ־נאָכשפּירונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "שטעלן ריכטונג לינקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "שטעלן ריכטונג רעכטס"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "האַק"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "האָק אַרומגיין"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD פֿאַרפּשוטערן"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD-נאָדלען: האַלט גליטשליניע און מיטלליניע"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD־בליק"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "ראשי־תיבות אַװאַטאַר פֿאַר {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "אַרײַנגאַבע־האַרדוואַרע"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "אינסטרומענטן"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "פּונקט־דעטאַלן"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "שטערער"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "אַוועקוואַרפֿן דעם קאַנאָפּי"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "וואַרף אַראָפּ די טאַנקען"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ל שאַסי"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "לאַנדונג-געצייג"
 
@@ -2543,7 +2536,6 @@ msgstr "גרויס"
 msgid "LATE"
 msgstr "שפּעט"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "לאַנצירן (קאַטאַפּולט)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "ליכטער"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "ליכטער"
 
@@ -2606,7 +2597,6 @@ msgstr "ליכטער"
 msgid "LIGHTS"
 msgstr "ליכטער"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "ליכטער־פּרובע"
@@ -2622,6 +2612,10 @@ msgstr "לינקס"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "רשימה"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "קוק"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "קוק / אָרביט"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "קוק אויף ציל"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "נידעריקן די הייכמעסער־איינשטעלונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "נידעריקן דעם נידעריק־הייך אינדעקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "נידעריקן די ראַדאַר־אַנטענע"
@@ -2758,7 +2746,6 @@ msgstr "מאַפּע"
 msgid "Mark all as read"
 msgstr "צייכענען אַלץ ווי געלייענט"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "הויפּט־באַוואָפֿענונג"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "מעניו"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "מעניו"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "אַנדער"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "אַריבער דעם G-גרענעץ"
 
@@ -3303,6 +3288,10 @@ msgstr "בליק פארשלאסן"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "בליק פריי"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "פֿאַרשלאָסענער בליק"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "מוסטער (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "פּויזע"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "פּויזע די איבערשפּיל"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ר שאַסי"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "ראַדאַר שטיל"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "העכערן די הייכמעסער־איינשטעלונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "העכערן דעם נידעריק־הייך אינדעקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "הייבן די ראַדאַר־אַנטענע"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "צוריקזעצן"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "באַנײַען הויפּט־װאָרענונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "טרים צוריקשטעלן"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "צוריקשטעלן דעם בליק"
@@ -3782,7 +3768,6 @@ msgstr "רעזולטאַט"
 msgid "Resume"
 msgstr "פֿאָרזעצן"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "פֿלאַפּס אַרײַן"
@@ -3952,6 +3937,14 @@ msgstr "זוכן..."
 msgid "SEAT SAFE"
 msgstr "זיץ פֿאַרזיכערט"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "לעש אויס דעם לינקן מאָטאָר"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "לעש אויס דעם רעכטן מאָטאָר"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "אויסוואַל"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "קלײַב פֿריִערדיקע קאַרטל"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "קלײַב אויס וואַפֿן"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "שיק אַ מעלדונג"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "סענסאָר־שאַלטער צוריק"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "סענסאָר־שאַלטער פֿאָרויס"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "סענסאָר־שאַלטער לינקס"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "סענסאָר־שאַלטער רעכטס"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "סענסאָרן"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "ארויסמעלדן זיך..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "שטיל דעם לאַנדינג גיר טאָן"
 
@@ -4162,7 +4153,6 @@ msgstr "בלויז איין שורה טעקסט"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "בעסטע שטײַגונג מיט אײן מאָטאָר (Vyse, נאָכברענער)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "פֿאַרפּאַמעלעכן די צײַט"
@@ -4206,11 +4196,9 @@ msgstr "לופֿטברעמז"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "לופֿטברעמז"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "פֿאַרגיכערן די צײַט"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "סיסטעם"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "סיסטעמען"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "טאַקטישע מאַפּע"
@@ -4326,6 +4318,10 @@ msgstr "דער טאַג מוז זײַן 50 שריפֿטצײכנס אָדער װ�
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "טאַגן"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "אויפֿפֿליִען און לאַנדן"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "גאַז"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "גאַז אַראָפּ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "גאַז אַרויף"
@@ -4532,10 +4526,6 @@ msgstr "רײַזנדיק"
 msgid "trim"
 msgstr "טרים"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "טרים"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "טרימיר ביזן בורשטינענעם ליכטל לעבן HUD (8.1° AOA), קראַפֿט פֿאַר דער הייך"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "טרים-הוט"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "טרים: נאָז אַראָפּ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "טרים: נאָז אַרויף"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "טרים: קײַקל לינקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "טרים: קײַקל רעכטס"
@@ -4620,7 +4606,6 @@ msgstr "אומצוגעטיילט"
 msgid "Unavailable"
 msgstr "נישט פֿאַראַן"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "אָפּזאָגן ציל־באַצייכענונג"
@@ -4764,8 +4749,8 @@ msgstr "זע און רעדאַקטיר אַרטיקל־פּרטים"
 msgid "View controls"
 msgstr "בליק־קאָנטראָלן"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "בליקן"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "מיטוואָך"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "ראָד ברעמזן"
 
@@ -4847,7 +4831,6 @@ msgstr "ראָד ברעמזן"
 msgid "Wind"
 msgstr "ווינט"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "פֿליגל פֿאַלטן"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "יאָ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "יאָ לינקס"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "יאָ רעכטס"

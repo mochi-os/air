@@ -65,6 +65,17 @@ export const KEY_DEFAULTS: Record<string, string> = {
   reject: 'None',
   repeater: 'KeyI',
   'view.reset': 'Digit0',
+  'view.cockpit': 'Digit1', // the number row selects the views: head-forward on 1-3, external on 4-6
+  'view.hud': 'Digit2',
+  'view.displays': 'Digit3',
+  'view.chase': 'Digit4',
+  'view.flypast': 'Digit5',
+  'view.padlock': 'Digit6',
+  'look.up': 'ArrowUp', // the head in the first-person views, the chase camera's orbit, and the map's pan
+  'look.down': 'ArrowDown',
+  'look.left': 'ArrowLeft',
+  'look.right': 'ArrowRight',
+  pause: 'Space', // a replay's pause: Space fires in flight, and a replay answers no key that works the jet
   'look.target': 'KeyY',
   'zoom.in': 'Equal',
   'zoom.out': 'Minus',

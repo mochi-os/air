@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} തകർന്നുവീണു"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> ചരിക്കാൻ"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> പിന്നോട്ട് പോകാൻ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> അടുത്തുവരാൻ"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> അടുത്തുവരാൻ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> പിന്നോട്ട് പോകാൻ"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> ചരിക്കാൻ"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> കാഴ്ചയ്ക്ക്"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>വലിക്കുക</0> അല്ലെങ്കിൽ <1>←→</1> ചുറ്റാൻ"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>വലിക്കുക</0> അല്ലെങ്കിൽ <1>{orbit}</1> ചുറ്റാൻ"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "ആക്സസ് ലെവൽ"
 msgid "Account type"
 msgstr "അക്കൗണ്ട് തരം"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "ലക്ഷ്യം ലോക്ക് ചെയ്യുക"
@@ -407,10 +402,6 @@ msgstr "ആഫ്റ്റർബർണർ"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "വിമാനം"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "വിമാനവാഹിനിക്കപ്പൽ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> നിർമ്മിച്ചത് (Sketchfab), <2>CC BY 4.0</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു. പരിഷ്കരിച്ചു: വലുപ്പം പുനഃക്രമീകരിച്ചു, ദിശ മാറ്റി, ജലരേഖ വരെ മുക്കി, വെബിനായി ലളിതമാക്കി."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "ഈ ഫീഡ് സബ്‌സ്‌ക്രൈബ് ചെയ്ത എല്ലാം അത് ലഭിക്കുന്നത് നിർത്തും. പിന്നീട് നിങ്ങൾക്ക് ഒരു പുതിയ URL പകർത്താം."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "സമീപന ശക്തി (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "നിങ്ങൾ തീർച്ചയായും രാജി വയ
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "നിങ്ങൾ കീഴടങ്ങാൻ തീർച്ചയാണോ? {opponentName} ഗെയിം ജയിക്കും."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "തടയൽ കൊളുത്ത്"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, തുടക്കം മുതൽ ആയുധങ്ങൾ സ്വതന്ത്രം"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ലോക്ക് ചെയ്യുക / സ്വതന്ത്രമാക്കുക"
 
@@ -784,10 +772,6 @@ msgstr "ബോൾ അറിയിക്കുക"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "കോൾസൈൻ"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "ക്യാമറ ദൂരം"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "മധ്യരേഖ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "ചാഫ്"
 
@@ -938,6 +921,10 @@ msgstr "{field} മാറ്റി"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "മാറ്റിയ ആവർത്തനം"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "പിന്തുടരൽ കാഴ്ച"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "മേഘങ്ങൾ"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "കോക്ക്പിറ്റ് ഡിസ്‌പ്ലേ ഫോണ്ട് <0>“Hornet Display”</0>, <1>Mørkvitnir</1> നിർമ്മിച്ചത്, © 2022, <2>MIT</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "കോക്ക്പിറ്റ് കാഴ്ച"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "ചുരുക്കുക"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "കുറിപ്പുകൾ"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "കമന്റുകൾ ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "ആശയവിനിമയം"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "ആ അക്കൗണ്ട് ഉപയോഗിച്ച് പരിശോധിക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "പ്രതിരോധ നടപടികൾ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "കോഴ്സ് സെറ്റ് ഇടത്തേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "കോഴ്സ് സെറ്റ് വലത്തേക്ക്"
@@ -1367,7 +1355,6 @@ msgstr "ഇഷ്ടാനുസൃതം"
 msgid "CUT"
 msgstr "അപകടകരം"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "കാഴ്ച മാറ്റുക"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "വിവരണം"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "നിർണയിക്കുക"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "ഡെസിഗ്നേറ്റർ നിയന്ത്രണം"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "ഡെസിഗ്നേറ്റർ താഴേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "ഡെസിഗ്നേറ്റർ ഇടത്തേക്ക്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "ഡെസിഗ്നേറ്റർ വലത്തേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "ഡെസിഗ്നേറ്റർ മുകളിലേക്ക്"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "ഒഴിവാക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "ഡിസ്പെൻസർ"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ഡിസ്പെൻസർ ഓഫ്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "ഡിസ്പ്ലേ റിപ്പീറ്റർ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "ഡിസ്‌പ്ലേ കാഴ്ച"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "അടിയന്തര ഉപേക്ഷ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "ലാൻഡിംഗ് ഗിയറിന്റെ അടിയന്തര വിന്യാസം"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "അടിയന്തര ഉപേക്ഷിക്കൽ (പിടിക്കുക)"
@@ -1842,6 +1824,10 @@ msgstr "പ്ലേബാക്ക് അവസാനിപ്പിക്ക�
 msgid "Expand"
 msgstr "വികസിപ്പിക്കുക"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "സൈഡ്‌ബാർ വികസിപ്പിക്കുക"
@@ -1860,7 +1846,6 @@ msgstr "സ്ഫോടന ആനിമേഷൻ <0>“Explosion02HD”</0>, <1>
 msgid "Export"
 msgstr "കയറ്റുമതി"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "ഫ്ലാപ്പ് പുറത്തേക്ക്"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "ഫയർ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "ആയുധം ഫയർ ചെയ്യുക"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "സ്ഥിര ഫ്ലൈറ്റ് കീകൾ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "വീണ്ടും പറക്കുക"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "സൂചികൾ പിന്തുടർന്ന് താഴുക: 3NM-ൽ 1200', 2NM-ൽ 800', 1NM-ൽ 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "ഫ്ലൈപാസ്റ്റ് കാഴ്ച"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "തീമിൽ നിന്ന്"
 msgid "FUEL"
 msgstr "ഇന്ധനം"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "ഇന്ധനം പുറന്തള്ളൽ"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ഇന്ധനം പുറന്തള്ളൽ"
@@ -2195,6 +2183,10 @@ msgstr "ഫ്യൂസ്‌ലേജ്"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "ഗെയിൻ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "കളി"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "ഹെഡ് ട്രാക്കിംഗ്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "ഹെഡിങ് സെറ്റ് ഇടത്തേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "ഹെഡിങ് സെറ്റ് വലത്തേക്ക്"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "കൊളുത്ത്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "ഹുക്ക് ബൈപാസ്"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD ലളിതമാക്കൽ"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD സൂചികൾ: ഗ്ലൈഡ്‌സ്ലോപ്പും സെന്റർലൈനും നിലനിർത്തുക"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD കാഴ്ച"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}-ന്റെ ഇനിഷ്യൽ അവതാർ"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "ഇൻപുട്ട് ഹാർഡ്‌വെയർ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "ഉപകരണങ്ങൾ"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "ഇനം വിശദാംശങ്ങൾ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "ജാമർ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "കാനോപ്പി വേർപെടുത്തുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "ടാങ്കുകൾ ഉപേക്ഷിക്കുക"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ഇടത് ചക്രം"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "ലാൻഡിംഗ് ഗിയർ"
 
@@ -2543,7 +2536,6 @@ msgstr "വലുത്"
 msgid "LATE"
 msgstr "വൈകി"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "വിക്ഷേപണം (കാറ്റപൾട്ട്)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "വിളക്കുകൾ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "വിളക്കുകൾ"
 
@@ -2606,7 +2597,6 @@ msgstr "വിളക്കുകൾ"
 msgid "LIGHTS"
 msgstr "ലൈറ്റുകൾ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "വിളക്ക് പരിശോധന"
@@ -2622,6 +2612,10 @@ msgstr "ലിങ്കുകൾ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "ലിസ്റ്റ്"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "നോക്കുക"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "നോട്ടം / ഭ്രമണം"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "ലക്ഷ്യം നോക്കുക"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "ആൾട്ടിമീറ്റർ ക്രമീകരണം കുറയ്ക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "താഴ്ന്ന ഉയര സൂചിക കുറയ്ക്കുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "റഡാർ ആന്റിന താഴ്ത്തുക"
@@ -2758,7 +2746,6 @@ msgstr "ഭൂപടം"
 msgid "Mark all as read"
 msgstr "എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "മാസ്റ്റർ ആം"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "മെനു"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "മെനു"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G പരിധി മറികടക്കൽ"
 
@@ -3303,6 +3288,10 @@ msgstr "നോട്ടം ലോക്ക്"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "നോട്ടം സ്വതന്ത്രം"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "പാഡ്‌ലോക്ക് കാഴ്ച"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "പാറ്റേൺ (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "താൽക്കാലികമായി നിർത്തുക"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "റീപ്ലേ താൽക്കാലികമായി നിർത്തുക"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "വലത് ചക്രം"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "റഡാർ നിശ്ശബ്ദം"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "ആൾട്ടിമീറ്റർ ക്രമീകരണം കൂട്ടുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "താഴ്ന്ന ഉയര സൂചിക കൂട്ടുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "റഡാർ ആന്റിന ഉയർത്തുക"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "പുനഃസജ്ജമാക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "പ്രധാന മുന്നറിയിപ്പ് പുനഃസജ്ജമാക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "ട്രിം പുനഃസജ്ജമാക്കുക"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "കാഴ്ച പുനഃസജ്ജമാക്കുക"
@@ -3782,7 +3768,6 @@ msgstr "ഫലം"
 msgid "Resume"
 msgstr "പുനരാരംഭിക്കുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "ഫ്ലാപ്പ് അകത്തേക്ക്"
@@ -3952,6 +3937,14 @@ msgstr "തിരയുന്നു..."
 msgid "SEAT SAFE"
 msgstr "സീറ്റ് സുരക്ഷിതം"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "ഇടത് എഞ്ചിൻ നിർത്തുക"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "വലത് എഞ്ചിൻ നിർത്തുക"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "തിരഞ്ഞെടുപ്പ്"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "മുൻ കാർഡ് തിരഞ്ഞെടുക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "ആയുധം തിരഞ്ഞെടുക്കുക"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "സന്ദേശം അയയ്ക്കുക"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "സെൻസർ നിയന്ത്രണം പിന്നോട്ട്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "സെൻസർ നിയന്ത്രണം മുന്നോട്ട്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "സെൻസർ നിയന്ത്രണം ഇടത്തേക്ക്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "സെൻസർ നിയന്ത്രണം വലത്തേക്ക്"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "സെൻസറുകൾ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "സൈൻ ഔട്ട് ചെയ്യുന്നു..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "ലാൻഡിംഗ് ഗിയർ ടോൺ നിശ്ശബ്ദമാക്കുക"
 
@@ -4162,7 +4153,6 @@ msgstr "ഒറ്റ വരി ടെക്സ്റ്റ് മാത്രം
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ഒറ്റ എൻജിൻ മികച്ച കയറ്റം (Vyse, ആഫ്റ്റർബർണർ)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "സമയം മന്ദഗതിയിലാക്കുക"
@@ -4206,11 +4196,9 @@ msgstr "ഏർ ബ്രേക്ക്"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "ഏർ ബ്രേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "സമയം വേഗത്തിലാക്കുക"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "സിസ്റ്റം"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "സിസ്റ്റങ്ങൾ"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "തന്ത്രപരമായ ഭൂപടം"
@@ -4326,6 +4318,10 @@ msgstr "ടാഗ് 50 പ്രതീകങ്ങളോ അതിൽ കുറ
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "ടാഗുകൾ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "ടേക്ക്ഓഫും ലാൻഡിംഗും"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "ത്രോട്ടിൽ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "ത്രോട്ടിൽ കുറയ്ക്കുക"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "ത്രോട്ടിൽ കൂട്ടുക"
@@ -4532,10 +4526,6 @@ msgstr "യാത്ര ചെയ്യുന്നു"
 msgid "trim"
 msgstr "ട്രിം"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "ട്രിം"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD ന് അരികിലെ ആമ്പർ ലൈറ്റിന് (8.1° AOA) ട്രിം ചെയ്യുക, ഉയരത്തിന് പവർ"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "ട്രിം ഹാറ്റ്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "ട്രിം: മൂക്ക് താഴേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "ട്രിം: മൂക്ക് മുകളിലേക്ക്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "ട്രിം: ഇടത്തേക്ക് ചരിവ്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "ട്രിം: വലത്തേക്ക് ചരിവ്"
@@ -4620,7 +4606,6 @@ msgstr "നിയോഗിച്ചിട്ടില്ല"
 msgid "Unavailable"
 msgstr "ലഭ്യമല്ല"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "ലക്ഷ്യ നിർണയം റദ്ദാക്കുക"
@@ -4764,8 +4749,8 @@ msgstr "ഇനത്തിന്റെ വിശദാംശങ്ങൾ കാ�
 msgid "View controls"
 msgstr "നിയന്ത്രണങ്ങൾ കാണുക"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "കാഴ്ചകൾ"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "ബുധനാഴ്ച"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "ചക്ര ബ്രേക്കുകൾ"
 
@@ -4847,7 +4831,6 @@ msgstr "ചക്ര ബ്രേക്കുകൾ"
 msgid "Wind"
 msgstr "കാറ്റ്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "ചിറക് മടക്കൽ"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "യാവ്"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "യാവ് ഇടത്തേക്ക്"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "യാവ് വലത്തേക്ക്"

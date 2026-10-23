@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} kraze"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> pou panche"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> pou rale dèyè"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> pou pwoche"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> pou pwoche"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> pou rale dèyè"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> pou panche"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> pou vi a"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Trennen</0> oswa <1>←→</1> pou vire"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Trennen</0> oswa <1>{orbit}</1> pou vire"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Nivo aksè"
 msgid "Account type"
 msgstr "Tip kont"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Kenbe sib"
@@ -407,10 +402,6 @@ msgstr "Postkonbisyon"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Avyon"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Pòtavyon <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> pa <1>Muhamad Mirza Arrafi</1> (Sketchfab), lisansye anba <2>CC BY 4.0</2>. Modifye: rechanje echèl, reoryante, koule jouk nan liy dlo a, epi senplifye pou wèb la."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Tout sa ki abòne nan fil sa a ap sispann resevwa l. Ou ka kopye yon nouvo URL apre."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Pisans apwòch (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Èske ou sèten ou vle bay vag?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Èske ou sèten ou vle bay vag? {opponentName} pral genyen jwèt la."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Kwòk arè"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, zam lib depi kòmansman"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Bloke / lage"
 
@@ -784,10 +772,6 @@ msgstr "ANONSE BOUL LA"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Non apèl"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Distans kamera a"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Liy santral"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Pay rada"
 
@@ -938,6 +921,10 @@ msgstr "{field} chanje"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Repetisyon ki chanje"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Vi swivi"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Nyaj"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Polis ekran kokpit la <0>“Hornet Display”</0> pa <1>Mørkvitnir</1>, © 2022, lisansye anba <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Vi kabin"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Pliye"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Remak"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Kòmantè ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Kominikasyon"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Nou pa t kapab verifye ak kont sa a. Tanpri eseye ankò."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Kontmezi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Regle wout agoch"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Regle wout adwat"
@@ -1367,7 +1355,6 @@ msgstr "Pèsonalize"
 msgid "CUT"
 msgstr "DANJERE"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Chanje vi"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Deskripsyon"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Deziyen"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Kontwolè deziyasyon"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Deziyatè anba"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Deziyatè agoch"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Deziyatè adwat"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Deziyatè anwo"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Fèmen"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Distribitè"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "DISTRIBITÈ ETENN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Repetè ekran"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Vi ekran"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "LAGE IJANS"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Desann tren daterisaj an ijans"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Lage ijans (kenbe)"
@@ -1842,6 +1824,10 @@ msgstr "Kite lekti a"
 msgid "Expand"
 msgstr "Elaji"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Elaji ba kote"
@@ -1860,7 +1846,6 @@ msgstr "Animasyon eksplozyon <0>“Explosion02HD”</0> pa <1>Unity Technologies
 msgid "Export"
 msgstr "Ekspòte"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flap yo deyò"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "tire"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Tire zam"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Touch vòl fiks yo"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Vole ankò"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Swiv zegwi yo desann: 1200' nan 3NM, 800' nan 2NM, 400' nan 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Vi pase"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Soti nan tèm"
 msgid "FUEL"
 msgstr "KONBISTIB"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Vide konbistib"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "VIDE KONBISTIB"
@@ -2195,6 +2183,10 @@ msgstr "Kò avyon an"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Ranfòsman"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Jwèt"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Swiv tèt"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Regle kap agoch"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Regle kap adwat"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KWÒK"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Kontoune kwòk"
 
@@ -2342,6 +2331,10 @@ msgstr "Senplifye HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Zegwi HUD: kenbe pant desant ak liy santral"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "Vi HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Avata ak inisyal pou {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Materyèl antre"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Enstriman"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Detay atik"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Bwouyè"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Jete kouvèti kabin nan"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Lage tank yo"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "TREN GÒCH"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Tren daterisaj"
 
@@ -2543,7 +2536,6 @@ msgstr "Gwo"
 msgid "LATE"
 msgstr "ANRETA"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lanse (katapil)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "limyè"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Limyè"
 
@@ -2606,7 +2597,6 @@ msgstr "Limyè"
 msgid "LIGHTS"
 msgstr "LIMYÈ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Tès limyè"
@@ -2622,6 +2612,10 @@ msgstr "Lyen"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Lis"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Gade"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Gade / òbit"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Gade sib la"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Bese reglaj altimèt la"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Bese endèks altitid ba"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Bese antèn rada a"
@@ -2758,7 +2746,6 @@ msgstr "Kat"
 msgid "Mark all as read"
 msgstr "Make tout kòm li"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Amman prensipal"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "meni"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Meni"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Lòt"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Depase limit G"
 
@@ -3303,6 +3288,10 @@ msgstr "JE FIKSE"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "JE LIB"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Vi bloke"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Modèl (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pòz"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Mete rejwe an sou pòz"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "TREN DWAT"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Rada an silans"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Monte reglaj altimèt la"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Monte endèks altitid ba"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Monte antèn rada a"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Reyinisyalize"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Reyajiste avètisman prensipal"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Reyajiste trim"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Reyajiste vi a"
@@ -3782,7 +3768,6 @@ msgstr "Rezilta"
 msgid "Resume"
 msgstr "Repran"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flap yo antre"
@@ -3952,6 +3937,14 @@ msgstr "Ap chèche..."
 msgid "SEAT SAFE"
 msgstr "CHÈZ LA AN SEKIRITE"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Fèmen motè gòch"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Fèmen motè dwat"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Chwa"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Chwazi kat anvan an"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Chwazi zam"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Voye mesaj"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Kontwòl detektè dèyè"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Kontwòl detektè devan"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Kontwòl detektè agoch"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Kontwòl detektè adwat"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Detektè"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Ap dekonekte..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Fè silans ton tren aterisaj"
 
@@ -4162,7 +4153,6 @@ msgstr "Yon sèl liy tèks sèlman"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Pi bon monte ak yon sèl motè (Vyse, postkonbisyon)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Ralanti tan an"
@@ -4206,11 +4196,9 @@ msgstr "frèn lè"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Frèn lè"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Akselere tan an"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistèm"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistèm"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "KAT TAKTIK"
@@ -4326,6 +4318,10 @@ msgstr "Etikèt la dwe gen 50 karaktè oswa mwens"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Tag yo"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Dekolaj ak aterisaj"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Gaz"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Diminye gaz"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Ogmante gaz"
@@ -4532,10 +4526,6 @@ msgstr "Vwayaje"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trim pou limyè jòn kote HUD la (8.1° AOA), pisans pou wotè"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Chapo trim"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: nen anba"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: nen anlè"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: woulo agoch"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: woulo adwat"
@@ -4620,7 +4606,6 @@ msgstr "Pa asiyen"
 msgid "Unavailable"
 msgstr "Pa disponib"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Anile chwa sib la"
@@ -4764,9 +4749,9 @@ msgstr "Wè epi modifye detay atik"
 msgid "View controls"
 msgstr "Kontwòl vi"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Vi"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "vi"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Mèkredi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Fren wou"
 
@@ -4847,7 +4831,6 @@ msgstr "Fren wou"
 msgid "Wind"
 msgstr "Van"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Pliye zèl"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Lasèt"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Nen agoch"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Nen adwat"

@@ -11,6 +11,21 @@ import { KEY_DEFAULTS, pretty } from './keys'
 const read = (relative: string) =>
   readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8')
 
+// The settings tab's rows in their order, and the controls its Buttons tab offers.
+function rows(settings: string): { id: string; group: string }[] {
+  const block = /const KEY_ROWS: Row\[\] = \[([\s\S]*?)\n\]/.exec(settings)
+  expect(block, 'KEY_ROWS not found').toBeTruthy()
+  return Array.from(
+    block![1].matchAll(/id:\s*'([\w.]+)',[\s\S]*?group:\s*'(\w+)'/g),
+    (m) => ({ id: m[1], group: m[2] })
+  )
+}
+function buttonIds(settings: string): string[] {
+  const block = /const BUTTONS = new Set\(\[([\s\S]*?)\]\)/.exec(settings)
+  expect(block, 'BUTTONS not found').toBeTruthy()
+  return Array.from(block![1].matchAll(/'([\w.]+)'/g), (m) => m[1])
+}
+
 // The engine and the menu's Keys tab share KEY_DEFAULTS, so the tables cannot
 // disagree; these tests guard the two remaining ways the sets can fall out of
 // step.
@@ -47,44 +62,29 @@ describe('key bindings', () => {
 
   it('offers every bindable action in the Keys and Buttons tabs', () => {
     const settings = read('../components/SettingsDialog.tsx')
-    // The row tables are `const KEY_ROWS: Row[] = [...]` / `BUTTON_ROWS`; take
-    // each `{ id: '...'` inside them. A row whose id has no default renders as
-    // '—', telling the player a working control is unbound.
-    for (const table of ['KEY_ROWS', 'BUTTON_ROWS']) {
-      const block = new RegExp(
-        `const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`
-      ).exec(settings)
-      expect(block, `${table} not found`).toBeTruthy()
-      const ids = Array.from(
-        block![1].matchAll(/\{\s*id:\s*'([\w.]+)'/g),
-        (m) => m[1]
-      )
+    // KEY_ROWS is every row, `{ id: '...'` each; the Buttons tab is the subset
+    // the BUTTONS set names. A row whose id has no default renders as '—',
+    // telling the player a working control is unbound.
+    const keys = rows(settings).map((row) => row.id)
+    const buttons = buttonIds(settings)
+    for (const [table, ids] of [
+      ['KEY_ROWS', keys],
+      ['BUTTONS', buttons],
+    ] as const) {
       expect(ids.length).toBeGreaterThan(10)
-      // The four look DIRECTIONS carry no key: the pad drives the camera
-      // directly and the keyboard uses the fixed arrow keys. look.target is NOT
-      // exempt - it is a bound press and must own a key for a pad button to
-      // replay.
-      const keyless = new Set([
-        'look.up',
-        'look.down',
-        'look.left',
-        'look.right',
-      ])
-      const missing = ids
-        .filter((id) => !keyless.has(id) && !(id in KEY_DEFAULTS))
-        .sort()
+      const missing = ids.filter((id) => !(id in KEY_DEFAULTS)).sort()
       expect(missing, `${table} rows with no default binding`).toEqual([])
     }
+    const orphans = buttons.filter((id) => !keys.includes(id)).sort()
+    expect(orphans, 'BUTTONS naming a control KEY_ROWS lacks').toEqual([])
   })
 
   it('offers the antenna elevation in the Keys and Buttons tabs', () => {
     const settings = read('../components/SettingsDialog.tsx')
-    for (const table of ['KEY_ROWS', 'BUTTON_ROWS']) {
-      const block = new RegExp(
-        `const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`
-      ).exec(settings)![1]
-      for (const id of ['antenna.up', 'antenna.down'])
-        expect(block, `${table} lacks ${id}`).toContain(`id: '${id}'`)
+    const keys = rows(settings).map((row) => row.id)
+    for (const id of ['antenna.up', 'antenna.down']) {
+      expect(keys, `KEY_ROWS lacks ${id}`).toContain(id)
+      expect(buttonIds(settings), `BUTTONS lacks ${id}`).toContain(id)
     }
   })
 
@@ -103,7 +103,9 @@ describe('key bindings', () => {
   it('gives each chord to one action, so a keypress is never ambiguous', () => {
     // Enter deliberately serves both: it launches the selected missile and,
     // with nothing selected, acquires. They can never both apply at once.
-    const shared = new Set(['acquire/launch'])
+    // Space fires in flight and pauses a replay, which answers no key that
+    // works the jet.
+    const shared = new Set(['acquire/launch', 'fire/pause'])
     const byChord = new Map<string, string[]>()
     for (const [action, chord] of Object.entries(KEY_DEFAULTS)) {
       if (chord === 'None') continue // unbound is not a collision
@@ -138,16 +140,243 @@ describe('key bindings', () => {
     // The controls this help line exists to teach.
     for (const action of ['flares', 'flaps.extend', 'trim.up'])
       expect(actions).toContain(action)
-    // No hand-written key caps left: a bare <kbd>F</kbd> is how it went stale.
-    // The number row is the one legitimate literal (views are not rebindable).
+    // No hand-written key caps left: a bare <kbd>F</kbd> is how it went stale,
+    // and the chase line's arrows and −/= stayed put when the keys moved.
     const caps = Array.from(
-      canvas.matchAll(/<kbd>([A-Za-z][\w/]*)<\/kbd>/g),
+      canvas.matchAll(/<kbd>([^<{\s][^<]*)<\/kbd>/g),
       (m) => m[1]
     )
     expect(
       caps,
       'hand-written key caps drift; derive them from the bindings'
     ).toEqual([])
+  })
+
+  it('offers every view, look, zoom and replay key in the Keys tab', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    const block = rows(settings).map((row) => row.id)
+    for (const id of [
+      'view.cockpit',
+      'view.hud',
+      'view.displays',
+      'view.chase',
+      'view.flypast',
+      'view.padlock',
+      'look.up',
+      'look.down',
+      'look.left',
+      'look.right',
+      'look.target',
+      'zoom.in',
+      'zoom.out',
+      'pause',
+      'dump',
+      'secure.port',
+      'secure.starboard',
+    ])
+      expect(block, `KEY_ROWS lacks ${id}`).toContain(id)
+  })
+
+  it('groups the rows in the order the tabs draw them, each group in one run', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    const order = Array.from(
+      /const GROUP_ORDER = \[([^\]]*)\]/
+        .exec(settings)![1]
+        .matchAll(/'(\w+)'/g),
+      (m) => m[1]
+    )
+    const runs = rows(settings)
+      .map((row) => row.group)
+      .filter((group, index, all) => group !== all[index - 1])
+    expect(runs).toEqual(order) // every group drawn, in order, none split
+  })
+
+  it('keeps each control beside the ones it works with', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    const group = new Map(rows(settings).map((row) => [row.id, row.group]))
+    // The pilot's example: the gear, the brakes, the hook and the flaps are all
+    // takeoff and landing, and the parking brake sat in Flight.
+    for (const id of [
+      'gear',
+      'brake.wheel',
+      'brake.parking',
+      'hook',
+      'flaps.extend',
+      'launch',
+    ])
+      expect(group.get(id), id).toBe('landing')
+    for (const id of ['acquire', 'tdc.designate', 'antenna.up', 'radar.silent'])
+      expect(group.get(id), id).toBe('sensors')
+    for (const id of ['dump', 'secure.port', 'lights', 'eject'])
+      expect(group.get(id), id).toBe('systems')
+    for (const id of ['altitude', 'reject', 'baro.up', 'heading.left'])
+      expect(group.get(id), id).toBe('instruments')
+    for (const id of ['menu', 'time.faster', 'pause', 'chat', 'shout'])
+      expect(group.get(id), id).toBe('game')
+    for (const id of ['pitch.up', 'throttle.up', 'trim.up', 'trim.reset'])
+      expect(group.get(id), id).toBe('flight')
+  })
+
+  it('pairs each control with its opposite, up before down, left before right', () => {
+    const ids = rows(read('../components/SettingsDialog.tsx')).map(
+      (row) => row.id
+    )
+    const pairs: [string, string][] = []
+    for (const [first, second] of [
+      ['up', 'down'],
+      ['left', 'right'],
+      ['extend', 'retract'],
+      ['in', 'out'],
+      ['faster', 'slower'],
+      ['forward', 'aft'],
+      ['port', 'starboard'],
+    ])
+      for (const id of ids)
+        if (id.endsWith('.' + first))
+          pairs.push([id, id.slice(0, -first.length) + second])
+    expect(pairs.length).toBeGreaterThan(15)
+    for (const [first, second] of pairs)
+      expect(ids.indexOf(second), `${second} right after ${first}`).toBe(
+        ids.indexOf(first) + 1
+      )
+  })
+
+  it('starts each pair in the left column, so its halves share a line in both tabs', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    const buttons = new Set(buttonIds(settings))
+    const all = rows(settings)
+    for (const [tab, shown] of [
+      ['Keys', all],
+      ['Buttons', all.filter((row) => buttons.has(row.id))],
+    ] as const) {
+      const column = new Map<string, number>()
+      const seen = new Map<string, number>()
+      for (const row of shown) {
+        const index = seen.get(row.group) ?? 0
+        column.set(row.id, index % 2)
+        seen.set(row.group, index + 1)
+      }
+      const opposite = (id: string) =>
+        id
+          .replace(/\.up$/, '.down')
+          .replace(/\.left$/, '.right')
+          .replace(/\.extend$/, '.retract')
+          .replace(/\.in$/, '.out')
+          .replace(/\.faster$/, '.slower')
+          .replace(/\.forward$/, '.aft')
+          .replace(/\.port$/, '.starboard')
+      const split = shown
+        .filter(
+          (row) => opposite(row.id) !== row.id && column.has(opposite(row.id))
+        )
+        .filter((row) => column.get(row.id) !== 0)
+        .map((row) => row.id)
+      expect(split, `${tab} pairs that straddle two lines`).toEqual([])
+    }
+  })
+
+  it('shows no hand-written key caps in the Keys tab: every key there is a binding', () => {
+    const settings = read('../components/SettingsDialog.tsx')
+    const caps = Array.from(
+      settings.matchAll(/<Key>([^<{][^<]*)<\/Key>/g),
+      (m) => m[1]
+    )
+    expect(caps, 'a fixed key the player can no longer trust').toEqual([])
+  })
+
+  it('draws the Buttons tab from the same rows, so its order cannot drift', () => {
+    expect(read('../components/SettingsDialog.tsx')).toContain(
+      'const BUTTON_ROWS = KEY_ROWS.filter((row) => BUTTONS.has(row.id))'
+    )
+  })
+
+  it('keeps the number row, the arrows, −/= and Space as defaults', () => {
+    expect(
+      [
+        'view.cockpit',
+        'view.hud',
+        'view.displays',
+        'view.chase',
+        'view.flypast',
+        'view.padlock',
+      ].map((action) => KEY_DEFAULTS[action])
+    ).toEqual(['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'])
+    expect(
+      ['look.up', 'look.down', 'look.left', 'look.right'].map(
+        (action) => KEY_DEFAULTS[action]
+      )
+    ).toEqual(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'])
+    expect([KEY_DEFAULTS['zoom.in'], KEY_DEFAULTS['zoom.out']]).toEqual([
+      'Equal',
+      'Minus',
+    ])
+    expect(KEY_DEFAULTS.pause).toBe('Space')
+  })
+
+  it('reads no player key by its code: views, looks, zoom and the replay pause go through the bindings', () => {
+    const engine = read('./engine.ts')
+    expect(engine).not.toMatch(/keys\.has\("(Arrow\w+|Minus|Equal)"\)/)
+    expect(engine).not.toMatch(/k==="(Digit[1-6]|Space)"/)
+    expect(engine).not.toMatch(/\^Digit\[1-6\]/)
+    const views: Record<string, string> = {
+      'view.cockpit': 'cockpit',
+      'view.displays': 'ddi',
+      'view.chase': 'chase',
+      'view.flypast': 'flypast',
+      'view.padlock': 'padlock',
+    }
+    for (const [action, view] of Object.entries(views))
+      expect(engine).toContain(
+        `if(ch===key_of("${action}")) set_view("${view}",source);`
+      )
+    expect(engine).toMatch(
+      /if\(ch===key_of\("view\.hud"\)\)\{ if\(cfg\.view==="hud"\) pit_press\("reject",0\); else set_view\("hud",source\); \}/
+    )
+    for (const action of ['look.up', 'look.down', 'look.left', 'look.right'])
+      expect(
+        engine.match(
+          new RegExp(`held\\("${action.replace('.', '\\.')}"\\)`, 'g')
+        )
+      ).toHaveLength(3) // the head, the chase orbit and the map's pan
+    for (const action of ['zoom.in', 'zoom.out'])
+      expect(
+        engine.match(
+          new RegExp(`held\\("${action.replace('.', '\\.')}"\\)`, 'g')
+        )
+      ).toHaveLength(2) // the chase dolly and the map
+  })
+
+  it('answers a replay on the keys the pilot bound: a rebound view, and a rebound pause', () => {
+    const engine = read('./engine.ts')
+    const fn =
+      /\nfunction watching\(ch\)\{[^\n]*\n[^\n]*\n/.exec(engine)?.[0] ?? ''
+    expect(fn).not.toBe('')
+    const watch = (ch: string) =>
+      new Function(
+        'ch',
+        `let playback_held=false; const bind={ "view.chase":"KeyQ", pause:"KeyP" }, key_of=(a)=>bind[a]??({ "view.cockpit":"Digit1", map:"KeyM", fire:"Space" })[a], playback_hold=(v)=>{ playback_held=v; };
+        ${fn} return [watching(ch), playback_held];`
+      )(ch) as [boolean, boolean]
+    expect(watch('KeyQ')).toEqual([true, false]) // the chase view, rebound
+    expect(watch('Digit4')).toEqual([false, false]) // its old key is gone
+    expect(watch('Digit1')).toEqual([true, false])
+    expect(watch('KeyP')).toEqual([false, true]) // pause, rebound: it pauses and goes no further
+    expect(watch('Space')).toEqual([false, false]) // Space no longer pauses, nor fires
+  })
+
+  it('lists the six views on the help line, from their bindings', () => {
+    const canvas = read('../components/GameCanvas.tsx')
+    const block = /const HINTS: \{[\s\S]*?\n\]/.exec(canvas)![0]
+    expect(block).toMatch(
+      /actions: \[\s*'view\.cockpit',\s*'view\.hud',\s*'view\.displays',\s*'view\.chase',\s*'view\.flypast',\s*'view\.padlock',\s*\]/
+    )
+    for (const [name, actions] of Object.entries({
+      orbit: "pretty(binding('look.left')) + pretty(binding('look.right'))",
+      tilt: "pretty(binding('look.up')) + pretty(binding('look.down'))",
+      back: "pretty(binding('zoom.out'))",
+      closer: "pretty(binding('zoom.in'))",
+    }))
+      expect(canvas).toContain(`const ${name} = ${actions}`)
   })
 
   it('shows both halves of every axis pair the engine reads as a pair', () => {

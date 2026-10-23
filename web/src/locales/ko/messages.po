@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim}이(가) 추락"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> 로 기울이기"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> 로 물러나기"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> 로 가까이"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> 로 가까이"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> 로 물러나기"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> 로 기울이기"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "보기는 <0>1</0>–<1>5</1>"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>드래그</0> 또는 <1>←→</1> 로 선회"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>드래그</0> 또는 <1>{orbit}</1> 로 선회"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "접근 수준"
 msgid "Account type"
 msgstr "계정 유형"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "표적 획득"
@@ -407,10 +402,6 @@ msgstr "애프터버너"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "기체"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "항공모함 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> 제작 (Sketchfab), <2>CC BY 4.0</2>에 따라 라이선스가 부여됨. 수정됨: 크기 재조정, 방향 재정렬, 흘수선까지 침수, 웹에 맞게 단순화."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "이 피드를 구독 중인 모든 것이 수신을 중단합니다. 이후에 새 URL을 복사할 수 있습니다."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "접근 출력 (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "정말 기권하시겠습니까?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "정말 기권하시겠습니까? {opponentName}이(가) 게임에서 이깁니다."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "어레스팅 후크"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, 시작부터 무기 자유"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "고정 / 해제"
 
@@ -784,10 +772,6 @@ msgstr "볼 콜"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "콜사인"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "카메라 거리"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "중심선"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "채프"
 
@@ -938,6 +921,10 @@ msgstr "{field} 변경됨"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "변경된 일정"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "추적 시점"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "구름"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "조종석 디스플레이 글꼴 <0>“Hornet Display”</0>, <1>Mørkvitnir</1> 제작, © 2022, <2>MIT</2>에 따라 라이선스가 부여됨."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "조종석 시점"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "접기"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "비고"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "댓글 ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "통신"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "해당 계정으로 인증하지 못했습니다. 다시 시도해 주세요."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "대응 수단"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "코스 설정 왼쪽"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "코스 설정 오른쪽"
@@ -1367,7 +1355,6 @@ msgstr "사용자 지정"
 msgid "CUT"
 msgstr "위험"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "시점 전환"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "설명"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "지정"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "표적 지정 컨트롤러"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "지정기 아래"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "지정기 왼쪽"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "지정기 오른쪽"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "지정기 위"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "닫기"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "디스펜서"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "디스펜서 꺼짐"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "디스플레이 리피터"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "디스플레이 시점"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "비상 투하"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "착륙 장치 비상 전개"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "비상 투하(길게 누름)"
@@ -1842,6 +1824,10 @@ msgstr "재생 종료"
 msgid "Expand"
 msgstr "펼치기"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "사이드바 펼치기"
@@ -1860,7 +1846,6 @@ msgstr "폭발 애니메이션 <0>“Explosion02HD”</0>, 제작 <1>Unity Techn
 msgid "Export"
 msgstr "내보내기"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "플랩 전개"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "발사"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "무기 발사"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "고정 비행 키"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "다시 비행하기"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "지시침을 따라 강하: 3NM에서 1200', 2NM에서 800', 1NM에서 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "근접 비행 시점"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "테마에서"
 msgid "FUEL"
 msgstr "연료"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "연료 방출"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "연료 방출"
@@ -2195,6 +2183,10 @@ msgstr "동체"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "게인"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "게임"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "헤드 트래킹"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "기수 방위 설정 왼쪽"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "기수 방위 설정 오른쪽"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "훅"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "후크 바이패스"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD 간소화"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD 지시침: 활공각과 중심선 유지"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD 시점"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}의 이니셜 아바타"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "입력 장치"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "계기"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "항목 세부 정보"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "재머"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "캐노피 투하"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "탱크 투하"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "좌 기어"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "착륙 장치"
 
@@ -2543,7 +2536,6 @@ msgstr "크게"
 msgid "LATE"
 msgstr "늦음"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "등화"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "등화"
 
@@ -2606,7 +2597,6 @@ msgstr "등화"
 msgid "LIGHTS"
 msgstr "라이트"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "등화 테스트"
@@ -2622,6 +2612,10 @@ msgstr "링크"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "목록"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "보기"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "시점 / 회전"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "표적 보기"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "고도계 설정값 낮추기"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "저고도 인덱스 낮추기"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "레이더 안테나 내리기"
@@ -2758,7 +2746,6 @@ msgstr "지도"
 msgid "Mark all as read"
 msgstr "모두 읽음으로 표시"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "마스터 암"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "메뉴"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "메뉴"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "기타"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G 한계 해제"
 
@@ -3303,6 +3288,10 @@ msgstr "패드록"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "패드록 해제"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "패드록 시점"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "패턴 (정규식)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "일시 정지"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "리플레이 일시 정지"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "우 기어"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "레이더 침묵"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "고도계 설정값 높이기"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "저고도 인덱스 높이기"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "레이더 안테나 올리기"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "재설정"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "마스터 코션 재설정"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "트림 초기화"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "시점 초기화"
@@ -3782,7 +3768,6 @@ msgstr "결과"
 msgid "Resume"
 msgstr "재개"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "플랩 수납"
@@ -3952,6 +3937,14 @@ msgstr "검색 중..."
 msgid "SEAT SAFE"
 msgstr "좌석 안전"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "왼쪽 엔진 정지"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "오른쪽 엔진 정지"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "선택"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "이전 카드 선택"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "무기 선택"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "메시지 보내기"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "센서 스위치 뒤"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "센서 스위치 앞"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "센서 스위치 왼쪽"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "센서 스위치 오른쪽"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "센서"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "로그아웃 중..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "랜딩기어 경고음 끄기"
 
@@ -4162,7 +4153,6 @@ msgstr "한 줄 텍스트만"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "단발 최대 상승률 (Vyse, 애프터버너)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "시간 감속"
@@ -4206,11 +4196,9 @@ msgstr "감속판"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "감속판"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "시간 가속"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "시스템"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "시스템"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "전술 지도"
@@ -4326,6 +4318,10 @@ msgstr "태그는 50자 이하여야 해요"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "태그"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "이착륙"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "스로틀"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "스로틀 감소"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "스로틀 증가"
@@ -4532,10 +4526,6 @@ msgstr "이동 중"
 msgid "trim"
 msgstr "트림"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "트림"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD 옆 황색등에 맞춰 트림 (8.1° AOA), 고도는 출력으로"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "트림 해트"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "트림: 기수 내림"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "트림: 기수 올림"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "트림: 좌측 롤"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "트림: 우측 롤"
@@ -4620,7 +4606,6 @@ msgstr "할당되지 않음"
 msgid "Unavailable"
 msgstr "사용할 수 없음"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "표적 지정 해제"
@@ -4764,8 +4749,8 @@ msgstr "항목 세부 정보 보기 및 수정"
 msgid "View controls"
 msgstr "보기 컨트롤"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "시점"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "수요일"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "바퀴 브레이크"
 
@@ -4847,7 +4831,6 @@ msgstr "바퀴 브레이크"
 msgid "Wind"
 msgstr "바람"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "날개 접기"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "요"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "왼쪽 요"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "오른쪽 요"

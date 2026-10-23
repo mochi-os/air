@@ -652,8 +652,8 @@ describe('the standby altimeter knob', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
     expect(keys).toMatch(/'baro\.down': 'None',[^\n]*\n  'baro\.up': 'None',/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
-    expect(settings).toMatch(/id: 'baro\.down', label: msg`Lower altimeter setting`, group: 'aircraft'/)
-    expect(settings).toMatch(/id: 'baro\.up', label: msg`Raise altimeter setting`, group: 'aircraft'/)
+    expect(settings).toMatch(/id: 'baro\.down',\s*label: msg`Lower altimeter setting`,\s*group: 'instruments'/)
+    expect(settings).toMatch(/id: 'baro\.up',\s*label: msg`Raise altimeter setting`,\s*group: 'instruments'/)
   })
 })
 

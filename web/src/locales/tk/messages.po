@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} heläk boldy"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> egmek üçin"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> yza çekilmek üçin"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> ýakynlaşmak üçin"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> ýakynlaşmak üçin"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> yza çekilmek üçin"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> egmek üçin"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> görnüş üçin"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Süýşüriň</0> ýa-da <1>←→</1> aýlanmak üçin"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Süýşüriň</0> ýa-da <1>{orbit}</1> aýlanmak üçin"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Giriş derejesi"
 msgid "Account type"
 msgstr "Hasap görnüşi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Nyşana al"
@@ -407,10 +402,6 @@ msgstr "Forsaž"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Uçar"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Uçar gämisi <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> — <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2> boýunça ygtyýarlandyrylan. Üýtgedildi: ölçegi üýtgedildi, ugry üýtgedildi, suw çyzygyna çenli batyryldy we web üçin ýönekeýleşdirildi."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Bu akyma ýazylan ähli zat ony almagy bes eder. Soňra täze URL göçürip bilersiňiz."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Golaýlaşma kuwwaty (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Boýun egmek isleýärsiňizmi?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Boýun egmek isleýärsiňizmi? {opponentName} oýny utar."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Tormoz çeňňegi"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, ýaraglar başdan erkin"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Gulpla / boşat"
 
@@ -784,10 +772,6 @@ msgstr "TOPY HABAR BER"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Çagyryş belgisi"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Kamera aralygy"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Merkez çyzygy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Dipol serpikdirijiler"
 
@@ -938,6 +921,10 @@ msgstr "{field} üýtgedildi"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Üýtgedilen gaýtalanma"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Yzarlaýyş görnüşi"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Bulutlar"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Kabina ekranlarynyň şrifti <0>“Hornet Display”</0> — <1>Mørkvitnir</1>, © 2022, <2>MIT</2> boýunça ygtyýarlandyrylan."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Kabina görnüşi"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Ýygnamak"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Bellikler"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Teswirler ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Aragatnaşyk"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Şol hasap bilen barlap bolmady. Täzeden synanyşyň."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Garşy çäreler"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Ýol çyzygyny çepe sazla"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Ýol çyzygyny saga sazla"
@@ -1367,7 +1355,6 @@ msgstr "Hususy"
 msgid "CUT"
 msgstr "HOWPLY"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Görnüşi çalyş"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Düşündiriş"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Belle"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Belleýji dolandyryjy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Belleýji aşak"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Belleýji çepe"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Belleýji saga"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Belleýji ýokary"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Goýbermek"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Zyňyjy"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ZYŇYJY ÖÇÜK"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Ekran gaýtalaýjysy"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Ekran görnüşi"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "GYSSAGLY TAŞLAMA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Şassini gyssagly çykarmak"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Gyssagly taşlama (sakla)"
@@ -1842,6 +1824,10 @@ msgstr "Oýnatmakdan çyk"
 msgid "Expand"
 msgstr "Giňeltmek"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Gapdal paneli giňelt"
@@ -1860,7 +1846,6 @@ msgstr "Partlama animasiýasy <0>“Explosion02HD”</0>, <1>Unity Technologies<
 msgid "Export"
 msgstr "Eksport etmek"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flaplary çykarmak"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "ot açmak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Ýaragdan ot aç"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Üýtgemeýän uçuş düwmeleri"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Ýene uç"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Oklar boýunça aşak uç: 1200' 3NM-de, 800' 2NM-de, 400' 1NM-de"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Geçiş görnüşi"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Temadan"
 msgid "FUEL"
 msgstr "ÝANGYÇ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Ýangyç dökülmegi"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ÝANGYÇ DÖKÜLMEGI"
@@ -2195,6 +2183,10 @@ msgstr "Göwre"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Güýçlendirme"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Oýun"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Kelläni yzarlamak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Ugry çepe sazla"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Ugry saga sazla"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "ÇEŇŇEK"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Çeňňek aýlawy"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD-y ýönekeýleşdirmek"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD oklary: glissadany we merkez çyzygyny sakla"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD görnüşi"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name} üçin baş harplar awatary"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Giriş enjamlary"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Abzallar"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Element jikme-jiklikleri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Päsgelçi"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Kabina gapagyny taşla"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Baklary taşla"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ÇEP ŞASSI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Şassi"
 
@@ -2543,7 +2536,6 @@ msgstr "Uly"
 msgid "LATE"
 msgstr "GIÇ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Uçuryş (katapult)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "çyralar"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Çyralar"
 
@@ -2606,7 +2597,6 @@ msgstr "Çyralar"
 msgid "LIGHTS"
 msgstr "ÇYRALAR"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Çyralary barlamak"
@@ -2622,6 +2612,10 @@ msgstr "Baglanyşyklar"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Sanaw"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Seret"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Serediş / aýlaw"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Nyşana seret"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Beýiklik ölçerijiniň sazlamasyny peselt"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Pes beýiklik indeksini peselt"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Radaryň antennasyny aşak düşür"
@@ -2758,7 +2746,6 @@ msgstr "Karta"
 msgid "Mark all as read"
 msgstr "Hemmesini okaldy diýip belgile"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Ýaragyň baş açary"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menýu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menýu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Beýleki"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G çäginden geçmek"
 
@@ -3303,6 +3288,10 @@ msgstr "GARAÝYŞ GULPLY"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "GARAÝYŞ ERKIN"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Gulplanan görnüş"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Nusga (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Arakesme"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Gaýtalamany sakla"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "SAG ŞASSI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radaryň ümsümligi"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Beýiklik ölçerijiniň sazlamasyny ýokarlandyr"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Pes beýiklik indeksini ýokarlandyr"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Radaryň antennasyny ýokary göter"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Täzeden başlat"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Esasy duýduryşy täzeden düz"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Trimi nollamak"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Görnüşi nollamak"
@@ -3782,7 +3768,6 @@ msgstr "Netije"
 msgid "Resume"
 msgstr "Dowam et"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flaplary ýygnamak"
@@ -3952,6 +3937,14 @@ msgstr "Gözlenýär..."
 msgid "SEAT SAFE"
 msgstr "OTURGYÇ GORAGLY"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Çep hereketlendirijini öçür"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Sag hereketlendirijini öçür"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Saýlaw"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Öňki kartoçkany saýla"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Ýarag saýlamak"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Habar iber"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Sensor açary yza"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Sensor açary öňe"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Sensor açary çepe"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Sensor açary saga"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Datçikler"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Çykylýar..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Şassi sesini öçür"
 
@@ -4162,7 +4153,6 @@ msgstr "Diňe bir setir tekst"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Bir hereketlendirijili iň gowy galyş (Vyse, forsaž)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Wagty haýallat"
@@ -4206,11 +4196,9 @@ msgstr "howa tormoz"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Howa tormoz"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Wagty çaltlandyr"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Ulgam"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Ulgamlar"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTIKI KARTA"
@@ -4326,6 +4318,10 @@ msgstr "Bellik iň köp 50 harp bolmaly"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Bellikler"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Uçuş we gonuş"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Gaz"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Gazy azalt"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Gazy artdyr"
@@ -4532,10 +4526,6 @@ msgstr "Sapar"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD-yň gapdalyndaky sary çyra üçin trimle (8.1° AOA), beýiklik üçin gaz"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trim şlýapasy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: burun aşak"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: burun ýokary"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: çepe ýapgytlyk"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: saga ýapgytlyk"
@@ -4620,7 +4606,6 @@ msgstr "Bellenilmedik"
 msgid "Unavailable"
 msgstr "Elýeterli däl"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Nyşana bellemegi ýatyrmak"
@@ -4764,9 +4749,9 @@ msgstr "Element jikme-jikliklerini görkez we redaktirle"
 msgid "View controls"
 msgstr "Görnüş dolandyryşlary"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Görnüşler"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "görnüşler"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Çarşenbe"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Teker tormozy"
 
@@ -4847,7 +4831,6 @@ msgstr "Teker tormozy"
 msgid "Wind"
 msgstr "Şemal"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Ganat eplemek"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Ryskan"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Ryskan çepe"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Ryskan saga"

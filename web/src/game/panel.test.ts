@@ -538,7 +538,8 @@ describe('the emergency gear extension (#128)', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
     expect(keys).toMatch(/'gear\.emergency': 'None',/)
     const dialog = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
-    expect(dialog.match(/\{ id: 'gear\.emergency', label: msg`Emergency gear extension`, group: 'aircraft' \},/g)?.length).toBe(2)
+    expect(dialog.match(/id: 'gear\.emergency',\s*label: msg`Emergency gear extension`,\s*group: 'landing'/g)?.length).toBe(1) // one row, which both tabs draw
+    expect(/const BUTTONS = new Set\(\[[^\]]*'gear\.emergency',/.test(dialog)).toBe(true)
   })
 
   it('draws the handle turned 90° clockwise about its shaft and then pulled 1.5 in', () => {

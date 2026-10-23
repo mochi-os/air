@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} ჩამოვარდა"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> დახრისთვის"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> დაშორებისთვის"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> მიახლოებისთვის"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> მიახლოებისთვის"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> დაშორებისთვის"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> დახრისთვის"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> ხედისთვის"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>გადაათრიეთ</0> ან <1>←→</1> შემოვლისთვის"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>გადაათრიეთ</0> ან <1>{orbit}</1> შემოვლისთვის"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "წვდომის დონე"
 msgid "Account type"
 msgstr "ანგარიშის ტიპი"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "სამიზნის დაჭერა"
@@ -407,10 +402,6 @@ msgstr "ფორსაჟი"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "თვითმფრინავი"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "ავიამზიდი <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, ავტორი <1>Muhamad Mirza Arrafi</1> (Sketchfab), ლიცენზირებულია <2>CC BY 4.0</2>-ის მიხედვით. შეცვლილია: მასშტაბი შეცვლილია, ორიენტაცია შეცვლილია, ჩაძირულია წყლის ხაზამდე და გამარტივებულია ვებისთვის."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "ყველაფერი, რაც ამ არხზეა გამოწერილი, შეწყვეტს მის მიღებას. შემდეგ შეგიძლიათ დააკოპიროთ ახალი URL."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "მიახლოების სიმძლავრე (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "დარწმუნებული ხართ, რომ გსუ�
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "დარწმუნებული ხართ, რომ გსურთ დათმობა? {opponentName} მოიგებს თამაშს."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "სამუხრუჭე კაუჭი"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, იარაღი თავისუფალია დასაწყისიდან"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ჩაკეტვა / გათავისუფლება"
 
@@ -784,10 +772,6 @@ msgstr "ᲒᲐᲛᲝᲐᲪᲮᲐᲓᲔ ᲑᲣᲠᲗᲘ"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "გამოძახების ნიშანი"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "კამერის მანძილი"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "ცენტრალური ხაზი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "დიპოლური ამრეკლები"
 
@@ -938,6 +921,10 @@ msgstr "შეიცვალა {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "შეცვლილი გამეორება"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "დევნის ხედი"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "ღრუბლები"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "კაბინის ეკრანების შრიფტი <0>“Hornet Display”</0>, ავტორი <1>Mørkvitnir</1>, © 2022, ლიცენზირებულია <2>MIT</2>-ის მიხედვით."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "კაბინის ხედი"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "ჩაკეცვა"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "შენიშვნები"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "კომენტარები ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "კავშირი"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "ამ ანგარიშით ვერ მოხერხდა გადამოწმება. გთხოვთ, სცადოთ თავიდან."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "საწინააღმდეგო ზომები"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "გზის ხაზის დაყენება მარცხნივ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "გზის ხაზის დაყენება მარჯვნივ"
@@ -1367,7 +1355,6 @@ msgstr "მორგებული"
 msgid "CUT"
 msgstr "საშიში"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "ხედის გადართვა"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "აღწერა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "მონიშვნა"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "მონიშვნის მართვა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "მონიშვნა ქვემოთ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "მონიშვნა მარცხნივ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "მონიშვნა მარჯვნივ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "მონიშვნა ზემოთ"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "დახურვა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "გამტყორცნი"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "გამტყორცნი გამორთულია"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "ეკრანის გამმეორებელი"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "ეკრანის ხედი"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "ავარიული ჩამოგდება"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "სავალი ნაწილის ავარიული გამოშვება"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "ავარიული ჩამოგდება (გეჭიროთ)"
@@ -1842,6 +1824,10 @@ msgstr "დაკვრიდან გასვლა"
 msgid "Expand"
 msgstr "გაშლა"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "გვერდითი პანელის გაშლა"
@@ -1860,7 +1846,6 @@ msgstr "აფეთქების ანიმაცია <0>“Explosion02HD
 msgid "Export"
 msgstr "ექსპორტი"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "ფლაპების გაშლა"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "სროლა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "იარაღიდან სროლა"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "ფრენის ფიქსირებული ღილაკები"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "ისევ ფრენა"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "იფრინე ისრებით ქვევით: 1200' 3NM-ზე, 800' 2NM-ზე, 400' 1NM-ზე"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "გადაფრენის ხედი"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "თემიდან"
 msgid "FUEL"
 msgstr "საწვავი"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "საწვავის ჩაღვრა"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "საწვავის ჩაღვრა"
@@ -2195,6 +2183,10 @@ msgstr "ფიუზელაჟი"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "გაძლიერება"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "თამაში"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "თავის თვალთვალი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "კურსის დაყენება მარცხნივ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "კურსის დაყენება მარჯვნივ"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "კაუჭი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "კაუჭის შემოვლა"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD-ის გამარტივება"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD-ის ისრები: დაიჭირე გლისადა და ღერძული ხაზი"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD ხედი"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}-ის ინიციალების ავატარი"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "შეყვანის მოწყობილობები"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "ხელსაწყოები"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "ელემენტის დეტალები"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "ხელშემშლელი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "კაბინის ხუფის ჩამოგდება"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "ავზების ჩამოგდება"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "მარცხენა შასი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "სავალი ნაწილი"
 
@@ -2543,7 +2536,6 @@ msgstr "დიდი"
 msgid "LATE"
 msgstr "ᲒᲕᲘᲐᲜ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "გაშვება (კატაპულტი)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "შუქები"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "შუქები"
 
@@ -2606,7 +2597,6 @@ msgstr "შუქები"
 msgid "LIGHTS"
 msgstr "შუქები"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "შუქების ტესტი"
@@ -2622,6 +2612,10 @@ msgstr "ბმულები"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "სია"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "ყურება"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "მიმოხედვა / ორბიტა"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "სამიზნეს ყურება"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "სიმაღლემზომის პარამეტრის დაწევა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "დაბალი სიმაღლის ინდექსის დაწევა"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "რადარის ანტენის დაწევა"
@@ -2758,7 +2746,6 @@ msgstr "რუკა"
 msgid "Mark all as read"
 msgstr "ყველას წაკითხულად მონიშვნა"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "იარაღის მთავარი ჩამრთველი"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "მენიუ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "მენიუ"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "სხვა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G ლიმიტის გადალახვა"
 
@@ -3303,6 +3288,10 @@ msgstr "მზერა ჩაკეტილია"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "მზერა თავისუფალია"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "ჩაკეტილი მზერის ხედი"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "შაბლონი (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "პაუზა"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "გამეორების პაუზა"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "მარჯვენა შასი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "რადარის სიჩუმე"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "სიმაღლემზომის პარამეტრის აწევა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "დაბალი სიმაღლის ინდექსის აწევა"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "რადარის ანტენის აწევა"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "გადაყენება"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "მთავარი გაფრთხილების გადატვირთვა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "ტრიმის განულება"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "ხედის განულება"
@@ -3782,7 +3768,6 @@ msgstr "შედეგი"
 msgid "Resume"
 msgstr "გაგრძელება"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "ფლაპების აკეცვა"
@@ -3952,6 +3937,14 @@ msgstr "ძიება..."
 msgid "SEAT SAFE"
 msgstr "სავარძელი დაცულია"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "მარცხენა ძრავის გამორთვა"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "მარჯვენა ძრავის გამორთვა"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "არჩევა"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "აირჩიეთ წინა ბარათი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "იარაღის არჩევა"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "შეტყობინების გაგზავნა"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "სენსორების გადამრთველი უკან"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "სენსორების გადამრთველი წინ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "სენსორების გადამრთველი მარცხნივ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "სენსორების გადამრთველი მარჯვნივ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "სენსორები"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "გასვლა მიმდინარეობს..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "შასის სიგნალის გაჩუმება"
 
@@ -4162,7 +4153,6 @@ msgstr "მხოლოდ ერთი სტრიქონი ტექსტ
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ერთი ძრავით საუკეთესო ასვლა (Vyse, ფორსაჟი)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "დროის შენელება"
@@ -4206,11 +4196,9 @@ msgstr "სიჩქარის მუხრუჭი"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "სიჩქარის მუხრუჭი"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "დროის აჩქარება"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "სისტემა"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "სისტემები"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "ტაქტიკური რუკა"
@@ -4326,6 +4318,10 @@ msgstr "ტეგი უნდა იყოს მაქსიმუმ 50 ს�
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "ტეგები"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "აფრენა და დაშვება"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "ღაზი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "ღაზის დაკლება"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "ღაზის მომატება"
@@ -4532,10 +4526,6 @@ msgstr "მოგზაურობა"
 msgid "trim"
 msgstr "ტრიმი"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "ტრიმი"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "დატრიმე HUD-ის გვერდით ყვითელ შუქზე (8.1° AOA), სიმაღლე სიმძლავრით"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "ტრიმის ქუდი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "ტრიმი: ცხვირი ქვევით"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "ტრიმი: ცხვირი ზევით"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "ტრიმი: გადახრა მარცხნივ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "ტრიმი: გადახრა მარჯვნივ"
@@ -4620,7 +4606,6 @@ msgstr "მიუნიჭებელი"
 msgid "Unavailable"
 msgstr "მიუწვდომელი"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "სამიზნის მონიშვნის გაუქმება"
@@ -4764,8 +4749,8 @@ msgstr "ელემენტის დეტალების ნახვა 
 msgid "View controls"
 msgstr "ხედის მართვა"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "ხედები"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "ოთხშაბათი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "ბორბლის მუხრუჭები"
 
@@ -4847,7 +4831,6 @@ msgstr "ბორბლის მუხრუჭები"
 msgid "Wind"
 msgstr "ქარი"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "ფრთის დაკეცვა"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "რისკანი"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "ცხვირი მარცხნივ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ცხვირი მარჯვნივ"

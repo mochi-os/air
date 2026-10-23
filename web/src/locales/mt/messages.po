@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} ġġarraf"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> biex tmejjel"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> biex tirtira"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> biex toqrob"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> biex toqrob"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> biex tirtira"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> biex tmejjel"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> għall-veduta"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Kaxkar</0> jew <1>←→</1> biex iddur"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Kaxkar</0> jew <1>{orbit}</1> biex iddur"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Livell ta' aċċess"
 msgid "Account type"
 msgstr "Tip ta' kont"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Illokkja l-mira"
@@ -407,10 +402,6 @@ msgstr "Postkombustjoni"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Ajruplan"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Bastiment tal-ajruplani <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> minn <1>Muhamad Mirza Arrafi</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Modifikat: skalat mill-ġdid, orjentat mill-ġdid, mgħaddas sal-linja tal-ilma, u ssimplifikat għall-web."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Kull ma huwa abbonat għal din il-feed se jieqaf jirċeviha. Wara tista' tikkopja URL ġdid."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Qawwa tal-avviċinament (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Żgur trid tirriżenja?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Żgur trid tirriżenja? {opponentName} tirbaħ il-logħba."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Ganċ tal-waqfien"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, armi ħielsa mill-bidu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Illokkja / illibera"
 
@@ -784,10 +772,6 @@ msgstr "ĦABBAR IL-BALLUN"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Sinjal tas-sejħa"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Distanza tal-kamera"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Linja ċentrali"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Chaff"
 
@@ -938,6 +921,10 @@ msgstr "Inbidel {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Okkorrenza mibdula"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Veduta tal-insegwiment"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Sħab"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Font tal-iskrins tal-cockpit <0>“Hornet Display”</0> minn <1>Mørkvitnir</1>, © 2022, liċenzjat taħt <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Veduta tal-kabina"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Aġbor"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Rimarki"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Kummenti ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Komunikazzjoni"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Ma stajniex nivverifikaw b'dak il-kont. Jekk jogħġbok erġa' pprova."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Kontromiżuri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Issettja l-kors lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Issettja l-kors lejn il-lemin"
@@ -1367,7 +1355,6 @@ msgstr "Personalizzat"
 msgid "CUT"
 msgstr "PERIKOLUŻ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Ibdel il-veduta"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Deskrizzjoni"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Iddeżinja"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Kontrollur tad-deżinjazzjoni"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Deżinjatur 'l isfel"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Deżinjatur lejn ix-xellug"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Deżinjatur lejn il-lemin"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Deżinjatur 'il fuq"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Warrab"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Dispenser"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "DISPENSER MITFI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Ripetitur tal-iskrin"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Veduta tal-iskrin"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "TFIGĦ TA' EMERĠENZA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Estensjoni ta' emerġenza tal-karrell tal-inżul"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Tfigħ ta' emerġenza (żomm)"
@@ -1842,6 +1824,10 @@ msgstr "Oħroġ mir-riproduzzjoni"
 msgid "Expand"
 msgstr "Espandi"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Espandi s-sidebar"
@@ -1860,7 +1846,6 @@ msgstr "Animazzjoni ta' splużjoni <0>“Explosion02HD”</0> minn <1>Unity Tech
 msgid "Export"
 msgstr "Esporta"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flaps 'il barra"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "spara"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Spara l-arma"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Tasti fissi tat-titjir"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Erġa' tir"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Segwi l-labar 'l isfel: 1200' f'3NM, 800' f'2NM, 400' f'1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Veduta tal-passaġġ"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Mit-tema"
 msgid "FUEL"
 msgstr "FJUWIL"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Tixrid tal-fjuwil"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "TIXRID TAL-FJUWIL"
@@ -2195,6 +2183,10 @@ msgstr "Buq tal-ajruplan"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Amplifikazzjoni"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Logħba"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Traċċar tar-ras"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Issettja r-rotta tal-pruwa lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Issettja r-rotta tal-pruwa lejn il-lemin"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "GANĊ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Bypass tal-ganċ"
 
@@ -2342,6 +2331,10 @@ msgstr "Simplifikazzjoni tal-HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Labar tal-HUD: żomm il-glideslope u l-linja ċentrali"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "Veduta HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Avatar bl-inizjali għal {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Ħardwer tal-input"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Strumenti"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Dettalji tal-oġġett"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Interferitur"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Armi l-għatu tal-kabina"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Itfa' t-tankijiet"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ROTA XELLUG"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Karrell tal-inżul"
 
@@ -2543,7 +2536,6 @@ msgstr "Kbir"
 msgid "LATE"
 msgstr "TARD"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "dwal"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Dwal"
 
@@ -2606,7 +2597,6 @@ msgstr "Dwal"
 msgid "LIGHTS"
 msgstr "DAWLIJIET"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Test tad-dwal"
@@ -2622,6 +2612,10 @@ msgstr "Ħoloq"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Lista"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Ħares"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Ħares / orbita"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Ħares lejn il-mira"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Niżżel l-issettjar tal-altimetru"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Niżżel l-indiċi tal-altitudni baxxa"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Niżżel l-antenna tar-radar"
@@ -2758,7 +2746,6 @@ msgstr "Mappa"
 msgid "Mark all as read"
 msgstr "Immarka kollox bħala maqru"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Armar ewlieni"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Oħra"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Aqbeż il-limitu G"
 
@@ -3303,6 +3288,10 @@ msgstr "ĦARSA MSAKKRA"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "ĦARSA ĦIELSA"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Veduta msakkra"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Mudell (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pawża"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Waqqaf ir-replay"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ROTA LEMIN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radar sieket"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Għolli l-issettjar tal-altimetru"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Għolli l-indiċi tal-altitudni baxxa"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Għolli l-antenna tar-radar"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Irrisettja"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Irrisettja t-twissija ewlenija"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Irrisettja t-trim"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Irrisettja l-veduta"
@@ -3782,7 +3768,6 @@ msgstr "Riżultat"
 msgid "Resume"
 msgstr "Kompli"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flaps 'il ġewwa"
@@ -3952,6 +3937,14 @@ msgstr "Qed ifittex..."
 msgid "SEAT SAFE"
 msgstr "SIĠGU SIGUR"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Itfi l-magna tax-xellug"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Itfi l-magna tal-lemin"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Għażla"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Agħżel il-karta preċedenti"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Agħżel arma"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Ibgħat messaġġ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Kontroll tas-sensuri lura"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Kontroll tas-sensuri 'il quddiem"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Kontroll tas-sensuri lejn ix-xellug"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Kontroll tas-sensuri lejn il-lemin"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Sensuri"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Qed toħroġ..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Sikket it-ton tal-gear tal-inżul"
 
@@ -4162,7 +4153,6 @@ msgstr "Linja waħda biss ta' test"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "L-aħjar tlugħ b'magna waħda (Vyse, postkombustjoni)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Naqqas il-ħin"
@@ -4206,11 +4196,9 @@ msgstr "fren tal-veloċità"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Fren tal-veloċità"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Għaġġel il-ħin"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistema"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistemi"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "MAPPA TATTIKA"
@@ -4326,6 +4318,10 @@ msgstr "It-tikketta trid tkun sa 50 karattru"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Tikketti"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Tlugħ u nżul"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Aċċeleratur"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Naqqas it-throttle"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Żid it-throttle"
@@ -4532,10 +4526,6 @@ msgstr "Qed jivvjaġġa"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Ittrimja għad-dawl ambra ħdejn l-HUD (8.1° AOA), qawwa għall-għoli"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Kappell tat-trim"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: pruwa 'l isfel"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: pruwa 'l fuq"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: rombli xellug"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: rombli lemin"
@@ -4620,7 +4606,6 @@ msgstr "Mhux assenjat"
 msgid "Unavailable"
 msgstr "Mhux disponibbli"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Ħassar l-għażla tal-mira"
@@ -4764,9 +4749,9 @@ msgstr "Ara u editja d-dettalji tal-oġġett"
 msgid "View controls"
 msgstr "Ara l-kontrolli"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Vedute"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "vedut"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "L-Erbgħa"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Freni tar-rota"
 
@@ -4847,7 +4831,6 @@ msgstr "Freni tar-rota"
 msgid "Wind"
 msgstr "Riħ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Tiwi tal-ġwienaħ"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Dawran"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Yaw lejn ix-xellug"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw lejn il-lemin"

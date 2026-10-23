@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} се разби"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> за наклон"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> за отдалечаване"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> за приближаване"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> за приближаване"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> за отдалечаване"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> за наклон"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> за изгледа"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Плъзнете</0> или <1>←→</1> за обиколка"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Плъзнете</0> или <1>{orbit}</1> за обиколка"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Ниво на достъп"
 msgid "Account type"
 msgstr "Тип акаунт"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Прихващане на цел"
@@ -407,10 +402,6 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Самолет"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Самолетоносач <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> от <1>Muhamad Mirza Arrafi</1> (Sketchfab), лицензиран под <2>CC BY 4.0</2>. Променен: преоразмерен, преориентиран, потопен до водолинията и опростен за уеб."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Всичко, абонирано за този канал, ще спре да го получава. След това можете да копирате нов URL адрес."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Мощност при подход (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Сигурни ли сте, че искате да се откажете
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Сигурни ли сте, че искате да се откажете? {opponentName} ще спечели играта."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Спирачна кука"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, свободна стрелба от старта"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Фиксиране / освобождаване"
 
@@ -784,10 +772,6 @@ msgstr "ОБЯВИ ТОПКАТА"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Позивна"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Разстояние на камерата"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Централна линия"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Диполни отражатели"
 
@@ -938,6 +921,10 @@ msgstr "Променено {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Променено повторение"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Следящ изглед"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Облаци"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Шрифт за дисплеите в кабината <0>“Hornet Display”</0> от <1>Mørkvitnir</1>, © 2022, лицензиран под <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Изглед от кабината"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Свиване"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Бележки"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Коментари ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Комуникация"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Потвърждаването с този акаунт не бе успешно. Моля, опитайте отново."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Противодействие"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Задаване на линия на пътя наляво"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Задаване на линия на пътя надясно"
@@ -1367,7 +1355,6 @@ msgstr "Персонализирано"
 msgid "CUT"
 msgstr "ОПАСНО"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Смяна на изгледа"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Описание"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Посочи"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Контролер за посочване на цел"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Посочвач надолу"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Посочвач наляво"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Посочвач надясно"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Посочвач нагоре"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Отхвърли"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Диспенсър"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ДИСПЕНСЪРЪТ Е ИЗКЛЮЧЕН"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Повторител на дисплея"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Изглед на дисплея"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "АВАРИЙНО ИЗХВЪРЛЯНЕ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Аварийно спускане на колесника"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Аварийно изхвърляне (задръж)"
@@ -1842,6 +1824,10 @@ msgstr "Изход от възпроизвеждането"
 msgid "Expand"
 msgstr "Разгъване"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Разгъване на страничната лента"
@@ -1860,7 +1846,6 @@ msgstr "Анимация на експлозия <0>“Explosion02HD”</0> от
 msgid "Export"
 msgstr "Експортиране"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Пускане на задкрилки"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "огън"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Откриване на огън"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Фиксирани полетни клавиши"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Лети отново"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Води стрелките надолу: 1200' на 3NM, 800' на 2NM, 400' на 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Изглед при прелитане"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "От темата"
 msgid "FUEL"
 msgstr "ГОРИВО"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Изхвърляне на гориво"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ИЗХВЪРЛЯНЕ ГОРИВО"
@@ -2195,6 +2183,10 @@ msgstr "Фюзелаж"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Усилване"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Игра"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Проследяване на главата"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Задаване на курс наляво"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Задаване на курс надясно"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "КУКА"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Байпас на куката"
 
@@ -2342,6 +2331,10 @@ msgstr "Опростяване на HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Стрелки на HUD: дръж глисадата и осевата линия"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD изглед"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Аватар с инициали за {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Входен хардуер"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Уреди"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Подробности за елемента"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Заглушител"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Изхвърляне на фенера"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Изхвърляне на резервоарите"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "Л КОЛЕСНИК"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Колесник"
 
@@ -2543,7 +2536,6 @@ msgstr "Голям"
 msgid "LATE"
 msgstr "КЪСНО"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Изстрелване (катапулта)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "светлини"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Светлини"
 
@@ -2606,7 +2597,6 @@ msgstr "Светлини"
 msgid "LIGHTS"
 msgstr "СВЕТЛИНИ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Тест на светлините"
@@ -2622,6 +2612,10 @@ msgstr "Връзки"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Списък"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Поглед"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Оглед / орбита"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Гледай целта"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Понижаване на настройката на висотомера"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Понижаване на индекса за малка височина"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Спускане на радарната антена"
@@ -2758,7 +2746,6 @@ msgstr "Карта"
 msgid "Mark all as read"
 msgstr "Маркирай всички като прочетени"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Главен ключ на оръжията"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "меню"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Меню"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Друго"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Надхвърляне на G-лимита"
 
@@ -3303,6 +3288,10 @@ msgstr "ЗАКЛЮЧЕН ПОГЛЕД"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "СВОБОДЕН ПОГЛЕД"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Изглед със заключен поглед"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Шаблон (регулярен израз)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Пауза"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Пауза на повторението"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "Д КОЛЕСНИК"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Радарно мълчание"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Повишаване на настройката на висотомера"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Повишаване на индекса за малка височина"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Повдигане на радарната антена"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Нулирай"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Нулиране на главното предупреждение"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Нулиране на тримера"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Нулиране на изгледа"
@@ -3782,7 +3768,6 @@ msgstr "Резултат"
 msgid "Resume"
 msgstr "Възобнови"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Прибиране на задкрилки"
@@ -3952,6 +3937,14 @@ msgstr "Търси се..."
 msgid "SEAT SAFE"
 msgstr "СЕДАЛКАТА Е ОБЕЗОПАСЕНА"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Изключване на левия двигател"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Изключване на десния двигател"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Падащ списък"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Избор на предишна карта"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Избор на оръжие"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Изпрати съобщение"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Превключвател на сензорите назад"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Превключвател на сензорите напред"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Превключвател на сензорите наляво"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Превключвател на сензорите надясно"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Сензори"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Излизане..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Заглуши тона на колесника"
 
@@ -4162,7 +4153,6 @@ msgstr "Само един ред текст"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Най-добро изкачване с един двигател (Vyse, форсаж)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Забавяне на времето"
@@ -4206,11 +4196,9 @@ msgstr "въздушна спирачка"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Въздушна спирачка"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Ускоряване на времето"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Система"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Системи"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "ТАКТИЧЕСКА КАРТА"
@@ -4326,6 +4318,10 @@ msgstr "Етикетът трябва да е най-много 50 знака"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Етикети"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Излитане и кацане"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Тяга"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Намали тягата"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Увеличи тягата"
@@ -4532,10 +4526,6 @@ msgstr "Пътуване"
 msgid "trim"
 msgstr "тример"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Тример"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Тримирай за кехлибарената лампа до HUD (8.1° AOA), тягата за височина"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Тример-шапка"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Тример: нос надолу"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Тример: нос нагоре"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Тример: крен наляво"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Тример: крен надясно"
@@ -4620,7 +4606,6 @@ msgstr "Неприсвоено"
 msgid "Unavailable"
 msgstr "Недостъпно"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Отмяна на посочването на цел"
@@ -4764,9 +4749,9 @@ msgstr "Преглед и редакция на детайлите за елем
 msgid "View controls"
 msgstr "Контроли за изглед"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Изгледи"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "изгледи"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Сряда"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Колесни спирачки"
 
@@ -4847,7 +4831,6 @@ msgstr "Колесни спирачки"
 msgid "Wind"
 msgstr "Вятър"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Сгъване на крилата"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Рискание"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Рискане наляво"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Рискане надясно"

@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} terhempas"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> untuk mencondongkan"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> untuk menjauh"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> untuk mendekat"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> untuk mendekat"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> untuk menjauh"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> untuk mencondongkan"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> untuk paparan"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Seret</0> atau <1>←→</1> untuk mengorbit"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Seret</0> atau <1>{orbit}</1> untuk mengorbit"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Tahap akses"
 msgid "Account type"
 msgstr "Jenis akaun"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Kunci sasaran"
@@ -407,10 +402,6 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Pesawat"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Kapal induk <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> oleh <1>Muhamad Mirza Arrafi</1> (Sketchfab), dilesenkan di bawah <2>CC BY 4.0</2>. Diubah suai: diskala semula, diorientasikan semula, ditenggelamkan hingga garisan air, dan dipermudah untuk web."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Apa-apa yang melanggan suapan ini akan berhenti menerimanya. Anda boleh menyalin URL baharu selepas itu."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Kuasa pendekatan (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Adakah anda pasti mahu menyerah?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Adakah anda pasti mahu mengaku kalah? {opponentName} akan memenangi permainan."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Cangkuk penahan"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, senjata bebas dari mula"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Kunci / lepaskan"
 
@@ -784,10 +772,6 @@ msgstr "LAPORKAN BOLA"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Tanda panggilan"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Jarak kamera"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Garisan tengah"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Chaff"
 
@@ -938,6 +921,10 @@ msgstr "{field} diubah"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Ulangan yang diubah"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Pandangan kejar"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Awan"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Fon paparan kokpit <0>“Hornet Display”</0> oleh <1>Mørkvitnir</1>, © 2022, dilesenkan di bawah <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Pandangan kokpit"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Runtuhkan"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Catatan"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Komen ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Komunikasi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Tidak dapat mengesahkan dengan akaun itu. Sila cuba lagi."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Langkah balas"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Tetapkan laluan ke kiri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Tetapkan laluan ke kanan"
@@ -1367,7 +1355,6 @@ msgstr "Tersuai"
 msgid "CUT"
 msgstr "BERBAHAYA"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Tukar pandangan"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Penerangan"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Tetapkan"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Pengawal penetap"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Penetap ke bawah"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Penetap ke kiri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Penetap ke kanan"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Penetap ke atas"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Tutup"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Pelepas"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "PELEPAS DIMATIKAN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Pengulang paparan"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Pandangan paparan"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "BUANGAN KECEMASAN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Penurunan kecemasan roda pendaratan"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Pembuangan kecemasan (tahan)"
@@ -1842,6 +1824,10 @@ msgstr "Keluar dari main balik"
 msgid "Expand"
 msgstr "Kembangkan"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Kembangkan bar sisi"
@@ -1860,7 +1846,6 @@ msgstr "Animasi letupan <0>“Explosion02HD”</0> oleh <1>Unity Technologies</1
 msgid "Export"
 msgstr "Eksport"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Flap keluar"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "tembak"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Tembakkan senjata"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Kekunci penerbangan tetap"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Terbang semula"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Ikut jarum turun: 1200' pada 3NM, 800' pada 2NM, 400' pada 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Pandangan lintas"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Daripada tema"
 msgid "FUEL"
 msgstr "BAHAN API"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Buang bahan api"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "BUANG BAHAN API"
@@ -2195,6 +2183,10 @@ msgstr "Badan pesawat"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Gandaan"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Permainan"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Penjejakan kepala"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Tetapkan haluan ke kiri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Tetapkan haluan ke kanan"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "KAIT"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Pintasan cangkuk"
 
@@ -2342,6 +2331,10 @@ msgstr "Ringkaskan HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Jarum HUD: kekalkan glideslope dan garis tengah"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "Pandangan HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Avatar inisial untuk {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Perkakasan input"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Instrumen"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Butiran item"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Pengacau isyarat"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Buang kanopi"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Buang tangki"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "GEAR KIRI"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Roda pendaratan"
 
@@ -2543,7 +2536,6 @@ msgstr "Besar"
 msgid "LATE"
 msgstr "LEWAT"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lancarkan (ketapel)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "lampu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Lampu"
 
@@ -2606,7 +2597,6 @@ msgstr "Lampu"
 msgid "LIGHTS"
 msgstr "LAMPU"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Ujian lampu"
@@ -2622,6 +2612,10 @@ msgstr "Pautan"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Senarai"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Pandang"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Pandang / orbit"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Lihat sasaran"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Rendahkan tetapan altimeter"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Rendahkan indeks altitud rendah"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Turunkan antena radar"
@@ -2758,7 +2746,6 @@ msgstr "Peta"
 msgid "Mark all as read"
 msgstr "Tanda semua sebagai dibaca"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Suis senjata utama"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Lain-lain"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Melangkaui had G"
 
@@ -3303,6 +3288,10 @@ msgstr "PANDANGAN DIKUNCI"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "PANDANGAN BEBAS"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Pandangan kunci"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Corak (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Jeda"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Jeda main semula"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "GEAR KANAN"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radar senyap"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Tinggikan tetapan altimeter"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Tinggikan indeks altitud rendah"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Naikkan antena radar"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Tetapkan semula"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Tetapkan semula amaran utama"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Set semula trim"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Set semula paparan"
@@ -3782,7 +3768,6 @@ msgstr "Keputusan"
 msgid "Resume"
 msgstr "Sambung semula"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Flap masuk"
@@ -3952,6 +3937,14 @@ msgstr "Sedang mencari..."
 msgid "SEAT SAFE"
 msgstr "TEMPAT DUDUK SELAMAT"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Matikan enjin kiri"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Matikan enjin kanan"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Pilihan"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Pilih kad sebelumnya"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Pilih senjata"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Hantar mesej"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Kawalan sensor ke belakang"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Kawalan sensor ke hadapan"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Kawalan sensor ke kiri"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Kawalan sensor ke kanan"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Penderia"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Sedang log keluar..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Senyapkan nada gear pendaratan"
 
@@ -4162,7 +4153,6 @@ msgstr "Satu baris teks sahaja"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Pendakian terbaik satu enjin (Vyse, afterburner)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Perlahankan masa"
@@ -4206,11 +4196,9 @@ msgstr "brek laju"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Brek laju"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Percepatkan masa"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Sistem"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Sistem"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "PETA TAKTIKAL"
@@ -4326,6 +4318,10 @@ msgstr "Tag mestilah 50 aksara atau kurang"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Tag"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Berlepas dan mendarat"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Pendikit"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Kurangkan pendikit"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Tambah pendikit"
@@ -4532,10 +4526,6 @@ msgstr "Sedang dalam perjalanan"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trim"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trim untuk lampu kuning di sebelah HUD (8.1° AOA), kuasa untuk ketinggian"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Topi trim"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trim: hidung turun"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trim: hidung naik"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trim: guling kiri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trim: guling kanan"
@@ -4620,7 +4606,6 @@ msgstr "Tidak diberikan"
 msgid "Unavailable"
 msgstr "Tidak tersedia"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Batalkan penetapan sasaran"
@@ -4764,9 +4749,9 @@ msgstr "Lihat dan edit butiran item"
 msgid "View controls"
 msgstr "Kawalan paparan"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Paparan"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "pandangan"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Rabu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Brek roda"
 
@@ -4847,7 +4831,6 @@ msgstr "Brek roda"
 msgid "Wind"
 msgstr "Angin"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Lipatan sayap"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Rewang"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Yaw ke kiri"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Yaw ke kanan"

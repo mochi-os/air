@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} lezuhant"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> a döntéshez"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> a távolodáshoz"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> a közelítéshez"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> a közelítéshez"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> a távolodáshoz"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> a döntéshez"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> a nézethez"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Húzza</0> vagy <1>←→</1> a keringéshez"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Húzza</0> vagy <1>{orbit}</1> a keringéshez"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Hozzáférési szint"
 msgid "Account type"
 msgstr "Fióktípus"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Célbefogás"
@@ -407,10 +402,6 @@ msgstr "Utánégető"
 msgid "AI"
 msgstr "MI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Repülőgép"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "<0>“USS Nimitz CVN-68 Aircraft Carrier”</0> repülőgép-hordozó, készítette <1>Muhamad Mirza Arrafi</1> (Sketchfab), a <2>CC BY 4.0</2> licenc alatt. Módosítva: átméretezve, újratájolva, a vízvonalig süllyesztve, és a web számára egyszerűsítve."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Minden, ami feliratkozott erre a hírcsatornára, nem kapja meg többé. Utána másolhat egy új URL-t."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Megközelítési teljesítmény (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Biztos, hogy feladod a játszmát?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Biztosan feladja? {opponentName} fog nyerni."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Fékezőhorog"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, tűzszabadság az indulástól"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Rögzítés / kioldás"
 
@@ -784,10 +772,6 @@ msgstr "JELENTSD A LABDÁT"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Hívójel"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Kameratávolság"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Középvonal"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Dipólköteg"
 
@@ -938,6 +921,10 @@ msgstr "{field} módosítva"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Módosított előfordulás"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Követő nézet"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Felhők"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "A pilótafülke kijelzőinek betűtípusa, <0>“Hornet Display”</0>, készítette <1>Mørkvitnir</1>, © 2022, <2>MIT</2> licenc alatt."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Pilótafülke-nézet"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Összecsukás"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Megjegyzések"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Megjegyzések ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Kommunikáció"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Nem sikerült ellenőrizni azzal a fiókkal. Kérjük, próbálja újra."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Ellenintézkedések"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Útirány beállítása balra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Útirány beállítása jobbra"
@@ -1367,7 +1355,6 @@ msgstr "Egyéni"
 msgid "CUT"
 msgstr "VESZÉLYES"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Nézet váltása"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Leírás"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Kijelölés"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Célkijelölő vezérlő"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Kijelölő le"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Kijelölő balra"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Kijelölő jobbra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Kijelölő fel"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Elvetés"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Kiszóró"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "KISZÓRÓ KIKAPCSOLVA"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Kijelzőismétlő"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Kijelzőnézet"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "VÉSZLEDOBÁS"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Futómű vészkiengedése"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Vészledobás (tartsd)"
@@ -1842,6 +1824,10 @@ msgstr "Kilépés a lejátszásból"
 msgid "Expand"
 msgstr "Kibontás"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Oldalsáv kibontása"
@@ -1860,7 +1846,6 @@ msgstr "Robbanásanimáció <0>“Explosion02HD”</0> a <1>Unity Technologies</
 msgid "Export"
 msgstr "Exportálás"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Fékszárnyak ki"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "tűz"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Fegyver elsütése"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Rögzített repülési billentyűk"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Repülj újra"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Kövesd a tűket lefelé: 1200' 3NM-nél, 800' 2NM-nél, 400' 1NM-nél"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Elrepülési nézet"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Témából"
 msgid "FUEL"
 msgstr "ÜZEMANYAG"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Üzemanyag-leeresztés"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ÜZEMANYAG-LEERESZTÉS"
@@ -2195,6 +2183,10 @@ msgstr "Törzs"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Erősítés"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Játék"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Fejkövetés"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Géptengelyirány beállítása balra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Géptengelyirány beállítása jobbra"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "HOROG"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Horog-áthidalás"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD-egyszerűsítés"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD tűk: tartsd a siklópályát és a középvonalat"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD-nézet"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name} monogramos profilképe"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Beviteli hardver"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Műszerek"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Elem részletei"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Zavaró adó"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Kabintető ledobása"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Tartályok ledobása"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "BAL FUTÓ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Futómű"
 
@@ -2543,7 +2536,6 @@ msgstr "Nagy"
 msgid "LATE"
 msgstr "KÉSŐN"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Indítás (katapult)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "fények"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Fények"
 
@@ -2606,7 +2597,6 @@ msgstr "Fények"
 msgid "LIGHTS"
 msgstr "FÉNYEK"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Lámpateszt"
@@ -2622,6 +2612,10 @@ msgstr "Hivatkozások"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Lista"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Nézés"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Körülnézés / keringés"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Célpont nézése"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Magasságmérő-beállítás csökkentése"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Alacsony magassági index csökkentése"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Radarantenna leengedése"
@@ -2758,7 +2746,6 @@ msgstr "Térkép"
 msgid "Mark all as read"
 msgstr "Összes megjelölése olvasottként"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Fegyverzet főkapcsoló"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "menü"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menü"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Egyéb"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G-határ felülbírálása"
 
@@ -3303,6 +3288,10 @@ msgstr "PADLOCK"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "PADLOCK KI"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Rögzített nézet"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Minta (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Szünet"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Visszajátszás szüneteltetése"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "JOBB FUTÓ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radarcsend"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Magasságmérő-beállítás növelése"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Alacsony magassági index növelése"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Radarantenna felemelése"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Visszaállítás"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Fő figyelmeztetés visszaállítása"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Trimm nullázása"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Nézet visszaállítása"
@@ -3782,7 +3768,6 @@ msgstr "Eredmény"
 msgid "Resume"
 msgstr "Folytatás"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Fékszárnyak be"
@@ -3952,6 +3937,14 @@ msgstr "Keresés folyamatban..."
 msgid "SEAT SAFE"
 msgstr "ÜLÉS BIZTOSÍTVA"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Bal hajtómű leállítása"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Jobb hajtómű leállítása"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Kiválasztás"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Előző kártya kijelölése"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Fegyver választása"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Üzenet küldése"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Szenzorkapcsoló hátra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Szenzorkapcsoló előre"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Szenzorkapcsoló balra"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Szenzorkapcsoló jobbra"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Érzékelők"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Kijelentkezés..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Futómű hangjelzés némítása"
 
@@ -4162,7 +4153,6 @@ msgstr "Csak egy sornyi szöveg"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Legjobb egyhajtóműves emelkedés (Vyse, utánégető)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Idő lassítása"
@@ -4206,11 +4196,9 @@ msgstr "sebességfék"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Sebességfék"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Idő gyorsítása"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Rendszer"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Rendszerek"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTIKAI TÉRKÉP"
@@ -4326,6 +4318,10 @@ msgstr "A címke legfeljebb 50 karakter lehet"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Címkék"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Felszállás és leszállás"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Gázkar"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Gázelvétel"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Gázadás"
@@ -4532,10 +4526,6 @@ msgstr "Utazás"
 msgid "trim"
 msgstr "trimm"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Trimm"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Trimmelj a HUD melletti sárga fényre (8.1° AOA), gázzal tartsd a magasságot"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Trimm-kalap"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Trimm: orr le"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Trimm: orr fel"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Trimm: orsózás balra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Trimm: orsózás jobbra"
@@ -4620,7 +4606,6 @@ msgstr "Hozzárendelés nélküli"
 msgid "Unavailable"
 msgstr "Nem elérhető"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Céljelölés törlése"
@@ -4764,9 +4749,9 @@ msgstr "Tétel adatainak megtekintése és szerkesztése"
 msgid "View controls"
 msgstr "Vezérlők megtekintése"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Nézetek"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "nézetek"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Szerda"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Kerékfékek"
 
@@ -4847,7 +4831,6 @@ msgstr "Kerékfékek"
 msgid "Wind"
 msgstr "Szél"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Szárnybehajtás"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Legyezés"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Legyezés balra"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Legyezés jobbra"

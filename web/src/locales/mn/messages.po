@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} сүйрэв"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> хазайлгахын тулд"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> ухрахын тулд"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> ойртохын тулд"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> ойртохын тулд"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> ухрахын тулд"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> хазайлгахын тулд"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> харагдацад"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Чирнэ</0> эсвэл <1>←→</1> тойрохын тулд"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Чирнэ</0> эсвэл <1>{orbit}</1> тойрохын тулд"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Хандалтын түвшин"
 msgid "Account type"
 msgstr "Бүртгэлийн төрөл"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Бай түгжих"
@@ -407,10 +402,6 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Онгоц"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Онгоц тээгч хөлөг онгоц <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, зохиогч <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2>-ийн дагуу лицензжүүлсэн. Өөрчилсөн: хэмжээг өөрчилж, чиглэлийг өөрчилж, усны шугам хүртэл живүүлж, вэбэд зориулан хялбаршуулсан."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Энэ хангамжид бүртгүүлсэн бүх зүйл хүлээн авахаа болино. Дараа нь та шинэ URL хуулж болно."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Ойртолтын чадал (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Бууж өгөхдөө итгэлтэй байна уу?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Бууж өгөхдөө итгэлтэй байна уу? {opponentName} тоглоомд ялна."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Тоормослох дэгээ"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, эхнээсээ зэвсэг чөлөөтэй"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Түгжих / чөлөөлөх"
 
@@ -784,10 +772,6 @@ msgstr "БӨМБӨГИЙГ МЭДЭГД"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Дуудлагын нэр"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Камерын зай"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Төв шугам"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Диполь ойлгогч"
 
@@ -938,6 +921,10 @@ msgstr "{field} өөрчилсөн"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Өөрчлөгдсөн давталт"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Хөөх харагдац"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Үүл"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Бүхээгийн дэлгэцийн фонт <0>“Hornet Display”</0>, зохиогч <1>Mørkvitnir</1>, © 2022, <2>MIT</2>-ийн дагуу лицензжүүлсэн."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Бүхээгийн харагдац"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Хураах"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Тэмдэглэл"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Сэтгэгдэлүүд ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Холбоо"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "Тэр бүртгэлээр баталгаажуулж чадсангүй. Дахин оролдоно уу."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Сөрөг арга хэмжээ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Замын шугамыг зүүн тийш тохируулах"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Замын шугамыг баруун тийш тохируулах"
@@ -1367,7 +1355,6 @@ msgstr "Захиалгат"
 msgid "CUT"
 msgstr "АЮУЛТАЙ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Харагдац солих"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Тайлбар"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Тэмдэглэх"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Бай тэмдэглэгчийн удирдлага"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Тэмдэглэгч доош"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Тэмдэглэгч зүүн тийш"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Тэмдэглэгч баруун тийш"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Тэмдэглэгч дээш"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Болих"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Цацагч"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "ЦАЦАГЧ УНТРААЛТТАЙ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Дэлгэцийн давтагч"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Дэлгэцийн харагдац"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "ОСЛЫН ХАЯЛТ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Буултын тоногийг ослоор гаргах"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Ослын хаялт (барих)"
@@ -1842,6 +1824,10 @@ msgstr "Тоглуулалтаас гарах"
 msgid "Expand"
 msgstr "Дэлгэх"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Хажуугийн самбарыг тэлэх"
@@ -1860,7 +1846,6 @@ msgstr "Дэлбэрэлтийн хөдөлгөөнт зураг <0>“Explosion
 msgid "Export"
 msgstr "Экспортлох"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Флап гаргах"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "буудах"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Зэвсгээр буудах"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Нислэгийн тогтмол товчлуурууд"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Дахин нисэх"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Зүүг дагаж доошил: 3NM-д 1200', 2NM-д 800', 1NM-д 400'"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Дайран нисэх харагдац"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Загвараас"
 msgid "FUEL"
 msgstr "ТҮЛШ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Түлш ялгаруулах"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ТҮЛШ ЯЛГАРУУЛАХ"
@@ -2195,6 +2183,10 @@ msgstr "Их бие"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Өсгөлт"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Тоглоом"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Толгой хянах"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Чиглэлийг зүүн тийш тохируулах"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Чиглэлийг баруун тийш тохируулах"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "ДЭГЭЭ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Дэгээний тойрох"
 
@@ -2342,6 +2331,10 @@ msgstr "HUD хялбарчлах"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "HUD зүүнүүд: глиссад ба төв шугамыг барь"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "HUD харагдац"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "{name}-ийн товч нэрийн аватар"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Оролтын техник хангамж"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Багаж"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Зүйлийн дэлгэрэнгүй"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Саадлагч"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Бүхээгийн бүрхүүлийг шидэх"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Сав хаях"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ЗҮҮН ШАССИ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Буултын тоног"
 
@@ -2543,7 +2536,6 @@ msgstr "Том"
 msgid "LATE"
 msgstr "ОРОЙ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Хөөргөх (катапульт)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "гэрлүүд"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Гэрлүүд"
 
@@ -2606,7 +2597,6 @@ msgstr "Гэрлүүд"
 msgid "LIGHTS"
 msgstr "ГЭРЛҮҮД"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Гэрлийн шалгалт"
@@ -2622,6 +2612,10 @@ msgstr "Холбоосууд"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Жагсаалт"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Харах"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Харах / тойрох"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Байг харах"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Өндөр хэмжигчийн тохиргоог бууруулах"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Нам өндрийн индексийг бууруулах"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Радарын антенныг буулгах"
@@ -2758,7 +2746,6 @@ msgstr "Газрын зураг"
 msgid "Mark all as read"
 msgstr "Бүгдийг уншсан гэж тэмдэглэх"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Зэвсгийн ерөнхий унтраалга"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "цэс"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Цэс"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Бусад"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "G хязгаар давах"
 
@@ -3303,6 +3288,10 @@ msgstr "ХАРЦ ТҮГЖИГДСЭН"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "ХАРЦ ЧӨЛӨӨТЭЙ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Түгжсэн харцны харагдац"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Загвар (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Түр зогсоох"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Давталтыг түр зогсоох"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "БАРУУН ШАССИ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Радарын чимээгүй байдал"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Өндөр хэмжигчийн тохиргоог өсгөх"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Нам өндрийн индексийг өсгөх"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Радарын антенныг өргөх"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Шинэчлэх"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Үндсэн анхааруулгыг дахин тохируулах"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Трим тэглэх"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Харагдацыг тэглэх"
@@ -3782,7 +3768,6 @@ msgstr "Үр дүн"
 msgid "Resume"
 msgstr "Үргэлжлүүлэх"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Флап хураах"
@@ -3952,6 +3937,14 @@ msgstr "Хайж байна..."
 msgid "SEAT SAFE"
 msgstr "СУУДАЛ ХАМГААЛАГДСАН"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Зүүн хөдөлгүүрийг унтраах"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Баруун хөдөлгүүрийг унтраах"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Сонголт"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Өмнөх карт сонгох"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Зэвсэг сонгох"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Зурвас илгээх"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Мэдрэгчийн унтраалга хойш"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Мэдрэгчийн унтраалга урагш"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Мэдрэгчийн унтраалга зүүн тийш"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Мэдрэгчийн унтраалга баруун тийш"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Мэдрэгчүүд"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Гарч байна..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Шассигийн дохиог унтраах"
 
@@ -4162,7 +4153,6 @@ msgstr "Зөвхөн нэг мөр текст"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Нэг хөдөлгүүрт хамгийн сайн авиралт (Vyse, форсаж)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Цагийг удаашруулах"
@@ -4206,11 +4196,9 @@ msgstr "хурдны гальм"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Хурдны гальм"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Цагийг хурдасгах"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Систем"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Системүүд"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "ТАКТИКИЙН ЗУРАГ"
@@ -4326,6 +4318,10 @@ msgstr "Шошго 50 тэмдэгтээс ихгүй байх ёстой"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Тэгүүд"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Хөөрөлт ба буулт"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Хурдатгал"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Хурдатгал бууруулах"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Хурдатгал нэмэх"
@@ -4532,10 +4526,6 @@ msgstr "Аялж байна"
 msgid "trim"
 msgstr "трим"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Трим"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "HUD-ийн хажуугийн шар гэрэлд (8.1° AOA) триммдэ, өндөрт хий нэм"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Тримийн малгай"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Трим: хошуу доош"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Трим: хошуу дээш"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Трим: зүүн налалт"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Трим: баруун налалт"
@@ -4620,7 +4606,6 @@ msgstr "Хариуцсан хүн оноогоогүй"
 msgid "Unavailable"
 msgstr "Боломжгүй"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Байны тэмдэглэгээг цуцлах"
@@ -4764,9 +4749,9 @@ msgstr "Зүйлийн дэлгэрэнгүйг үзэх, засварлах"
 msgid "View controls"
 msgstr "Хяналт үзэх"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Харагдацууд"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "харагдацууд"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Лхагва гараг"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Дугуйн гальм"
 
@@ -4847,7 +4831,6 @@ msgstr "Дугуйн гальм"
 msgid "Wind"
 msgstr "Салхи"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Далавч эвхэх"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Эргэлт"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Эргэлт зүүн тийш"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Эргэлт баруун тийш"

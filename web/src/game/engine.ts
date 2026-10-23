@@ -7546,18 +7546,18 @@ function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; retu
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 // watching: the keys a replay answers - the views, the zoom, the corner
-// repeater, the map and the menu. Nothing that works the jet. Space pauses
-// and plays it, as it does any player, wherever the focus is: this handler
-// cancels Space's default (the page must not scroll), so a focused control
-// bar button never answers Space itself.
-function watching(ch,k,shift){ if(k==="Space"&&!shift){ playback_hold(!playback_held); return false; }
-	return (!shift&&/^Digit[1-6]$/.test(k)) || ["view","view.reset","look.target","zoom.in","zoom.out","repeater","map","menu"].some(action=>ch===key_of(action)); }
+// repeater, the map and the menu. Nothing that works the jet. The pause key
+// (Space) pauses and plays it, as it does any player, wherever the focus is:
+// this handler cancels Space's default (the page must not scroll), so a
+// focused control bar button never answers Space itself.
+function watching(ch){ if(ch===key_of("pause")){ playback_hold(!playback_held); return false; }
+	return ["view.cockpit","view.hud","view.displays","view.chase","view.flypast","view.padlock","view","view.reset","look.target","zoom.in","zoom.out","repeater","map","menu"].some(action=>ch===key_of(action)); }
 addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","Home","End","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		const ch=(e.shiftKey?"Shift+":"")+k, source=e.isTrusted?"key":"stick";   // the source a view change records: a stick button arrives here as a synthetic key — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
-		if(!playback||watching(ch,k,e.shiftKey)){   // a replay answers only the keys that choose what to see
+		if(!playback||watching(ch)){   // a replay answers only the keys that choose what to see
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
@@ -7595,12 +7595,12 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
-		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit",source);   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
-			if(k==="Digit2"){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud",source); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
-			if(k==="Digit3") set_view("ddi",source);        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
-			if(k==="Digit4") set_view("chase",source);      // 4 Chase
-			if(k==="Digit5") set_view("flypast",source);    // 5 Flypast
-			if(k==="Digit6") set_view("padlock",source); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
+		if(ch===key_of("view.cockpit")) set_view("cockpit",source);   // 1 Cockpit — the whole chord: Shift+1 starts a landing test scenario and must not also flip the view (#72)
+		if(ch===key_of("view.hud")){ if(cfg.view==="hud") pit_press("reject",0); else set_view("hud",source); }   // 2 HUD; re-press cycles the reject switch NORM -> REJ 1 -> REJ 2 (the cycle lives HERE, not in set_view — mission start resets the view through set_view("hud") and must never bump the declutter)
+		if(ch===key_of("view.displays")) set_view("ddi",source);   // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
+		if(ch===key_of("view.chase")) set_view("chase",source);   // 4 Chase
+		if(ch===key_of("view.flypast")) set_view("flypast",source);   // 5 Flypast
+		if(ch===key_of("view.padlock")) set_view("padlock",source);   // 6 Padlock — head-forward views on 1-3, external on 4-6
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit",source);   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
 		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
 		if(ch===key_of("view.reset")){ view_reset(source); if(!playback) compression=1; }   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit — and the world back to real time
@@ -10447,8 +10447,8 @@ function update_camera(dt){
 	// #57 parked: head_apply(dt);   // #57: the tracked pose first — a held arrow still nudges on top for the frame
 	if(cfg.view!=="chase" && cfg.view!=="ddi" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit, and head-down DDI work leaves the head where it was. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
 		const hr=dt*1.6;
-		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
-		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
+		const daz=(((held("look.left")||pad_looks.left)?1:0)-((held("look.right")||pad_looks.right)?1:0))*hr;
+		const del=(((held("look.up")||pad_looks.up)?1:0)-((held("look.down")||pad_looks.down)?1:0))*hr;   // look up (↑) raises the head (head_el positive = up; the compose carries the sign); the castle joins the look keys in both views
 		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; latch(false,"look"); }   // a manual look cancels any ease-home in progress, and takes the head back from the padlock
 	}
 	// Padlock (#243): latched by the look key (look_press), the head follows the
@@ -10473,12 +10473,12 @@ function update_camera(dt){
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
 		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
 			else if(cfg.view!=="ddi") zoom_to(zoom_target*Math.pow(2.4,sweep),"key"); } }
-	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
+	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): the look keys (the arrows) turn and tilt it, the zoom keys (−/=) dolly it — keys.md §5; with the map up, the zoom keys zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
-		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
-		cam_el=THREE.MathUtils.clamp(cam_el+(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*ar,-1.2,1.45);   // ↑/↓ tilt
-		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
-		if(keys.has("Equal")) cam_dist=Math.max(14,cam_dist-zr);            // = in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
+		cam_az+=(((held("look.right")||pad_looks.right)?1:0)-((held("look.left")||pad_looks.left)?1:0))*ar;           // orbit (keyboard or castle)
+		cam_el=THREE.MathUtils.clamp(cam_el+(((held("look.up")||pad_looks.up)?1:0)-((held("look.down")||pad_looks.down)?1:0))*ar,-1.2,1.45);   // tilt
+		if(held("zoom.out")) cam_dist=Math.min(140,cam_dist+zr);           // back
+		if(held("zoom.in")) cam_dist=Math.max(14,cam_dist-zr);            // in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
 	}
 	// Buffet, the seat cue: the core's STATE.buffet low-passed (~0.4 s - the raw
 	// channel arrives as a step on a brisk pull) then cubed, so onset is a tremble
@@ -12691,12 +12691,12 @@ function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // 
 	stage.style.cursor=(running && !game_paused && !playback && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
 	if(running){ draw_hud();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
-	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
-		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
-		if(keys.has("Equal")) map_range=Math.max(MAP_RANGE_MIN,map_range/zf);
+	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // the held zoom keys zoom (smooth; wheel does notches); the look keys pan, scaled to the zoom
+		if(held("zoom.out")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
+		if(held("zoom.in")) map_range=Math.max(MAP_RANGE_MIN,map_range/zf);
 		if(zoom_wheel) map_range=THREE.MathUtils.clamp(map_range*Math.pow(2.2,-zoom_wheel*4*dt),MAP_RANGE_MIN,MAP_RANGE_MAX);   // the thumbwheel zooms the MAP while it's up (same notch gain as the view zoom)
-		if(keys.has("ArrowLeft")) map_px-=pr; if(keys.has("ArrowRight")) map_px+=pr;
-		if(keys.has("ArrowUp")) map_pz-=pr; if(keys.has("ArrowDown")) map_pz+=pr;
+		if(held("look.left")) map_px-=pr; if(held("look.right")) map_px+=pr;
+		if(held("look.up")) map_pz-=pr; if(held("look.down")) map_pz+=pr;
 		draw_map(); }
 	__raf = requestAnimationFrame(frame); }
 function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath

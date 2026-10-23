@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} havaroval"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> pre naklonenie"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> pre oddialenie"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> pre priblíženie"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> pre priblíženie"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> pre oddialenie"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> pre naklonenie"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> pre pohľad"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>Ťahajte</0> alebo <1>←→</1> pre obiehanie"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>Ťahajte</0> alebo <1>{orbit}</1> pre obiehanie"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "Úroveň prístupu"
 msgid "Account type"
 msgstr "Typ účtu"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "Zamerať cieľ"
@@ -407,10 +402,6 @@ msgstr "Prídavné spaľovanie"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "Lietadlo"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Lietadlová loď <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> od <1>Muhamad Mirza Arrafi</1> (Sketchfab), licencované pod <2>CC BY 4.0</2>. Upravené: zmenená mierka, zmenená orientácia, potopené po čiaru ponoru a zjednodušené pre web."
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "Všetko, čo je prihlásené na tento kanál, ho prestane dostávať. Potom môžete skopírovať novú adresu URL."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "Výkon pri priblížení (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "Naozaj sa chcete vzdať?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "Naozaj sa chcete vzdať? Hru vyhrá {opponentName}."
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "Záchytný hák"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, paľba voľná od štartu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "Zaistiť / uvoľniť"
 
@@ -784,10 +772,6 @@ msgstr "OHLÁS LOPTU"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "Volací znak"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "Vzdialenosť kamery"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "Stredová os"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "Dipólové reflektory"
 
@@ -938,6 +921,10 @@ msgstr "Zmenené {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "Zmenený výskyt"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "Prenasledovací pohľad"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "Oblaky"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "Písmo displejov kokpitu <0>“Hornet Display”</0> od <1>Mørkvitnir</1>, © 2022, licencované pod <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "Pohľad z kokpitu"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "Zbaliť"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "Poznámky"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "Komentáre ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "Komunikácia"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "S týmto účtom sa nepodarilo overiť. Skúste to znova."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "Protiopatrenia"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "Nastavenie trate vľavo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "Nastavenie trate vpravo"
@@ -1367,7 +1355,6 @@ msgstr "Vlastné"
 msgid "CUT"
 msgstr "NEBEZPEČNÉ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "Prepnúť pohľad"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "Popis"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "Označiť"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "Ovládač označovania"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "Označovač nadol"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "Označovač vľavo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "Označovač vpravo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "Označovač nahor"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "Zatvoriť"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "Výmetnica"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "VÝMETNICA VYPNUTÁ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "Opakovač displeja"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "Pohľad na displej"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "NÚDZOVÝ ODHOZ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "Núdzové vysunutie podvozka"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "Núdzové odhodenie (držať)"
@@ -1842,6 +1824,10 @@ msgstr "Ukončiť prehrávanie"
 msgid "Expand"
 msgstr "Rozbaliť"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "Rozbaliť bočný panel"
@@ -1860,7 +1846,6 @@ msgstr "Animácia výbuchu <0>“Explosion02HD”</0> od <1>Unity Technologies</
 msgid "Export"
 msgstr "Exportovať"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "Vysunúť klapky"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "streľba"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "Spustiť streľbu"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "Pevné letové klávesy"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "Letieť znova"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "Klesaj podľa ručičiek: 1200' na 3NM, 800' na 2NM, 400' na 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "Pohľad na prelet"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "Z motívu"
 msgid "FUEL"
 msgstr "PALIVO"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "Vypúšťanie paliva"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "VYPÚŠŤANIE PALIVA"
@@ -2195,6 +2183,10 @@ msgstr "Trup"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "Zosilnenie"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "Hra"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "Sledovanie hlavy"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "Nastavenie kurzu lietadla vľavo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "Nastavenie kurzu lietadla vpravo"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "HÁK"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "Obtok háku"
 
@@ -2342,6 +2331,10 @@ msgstr "Zjednodušenie HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "Ručičky HUD: drž zostupovú rovinu a os dráhy"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "Pohľad HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "Avatar s iniciálami používateľa {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "Vstupný hardvér"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "Prístroje"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "Podrobnosti položky"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "Rušička"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "Odhodiť prekryt"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "Odhodiť nádrže"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "Ľ PODVOZ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "Podvozok"
 
@@ -2543,7 +2536,6 @@ msgstr "Veľké"
 msgid "LATE"
 msgstr "NESKORO"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Vypustenie (katapult)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "svetlá"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "Svetlá"
 
@@ -2606,7 +2597,6 @@ msgstr "Svetlá"
 msgid "LIGHTS"
 msgstr "SVETLÁ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "Test svetiel"
@@ -2622,6 +2612,10 @@ msgstr "Odkazy"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "Zoznam"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "Pohľad"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "Pohľad / krúženie"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "Pozrieť na cieľ"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "Znížiť nastavenie výškomera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "Znížiť index malej výšky"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "Sklopiť anténu radaru"
@@ -2758,7 +2746,6 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Označiť všetko ako prečítané"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "Hlavný spínač zbraní"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "ponuka"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "Menu"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "Iné"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "Obísť limit G"
 
@@ -3303,6 +3288,10 @@ msgstr "PADLOCK"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "PADLOCK VYPNUTÝ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "Pohľad so zámkom na cieľ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "Vzor (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "Pozastaviť"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "Pozastaviť záznam"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "P PODVOZ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "Radarové ticho"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "Zvýšiť nastavenie výškomera"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "Zvýšiť index malej výšky"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "Zdvihnúť anténu radaru"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "Obnoviť"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "Resetovať hlavnú výstrahu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "Vynulovať vyváženie"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "Vynulovať pohľad"
@@ -3782,7 +3768,6 @@ msgstr "Výsledok"
 msgid "Resume"
 msgstr "Pokračovať"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "Zasunúť klapky"
@@ -3952,6 +3937,14 @@ msgstr "Hľadám..."
 msgid "SEAT SAFE"
 msgstr "SEDADLO ZAISTENÉ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "Vypnúť ľavý motor"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "Vypnúť pravý motor"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Výber"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "Vybrať predchádzajúcu kartu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Vybrať zbraň"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "Odoslať správu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "Spínač senzorov dozadu"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "Spínač senzorov dopredu"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "Spínač senzorov vľavo"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "Spínač senzorov vpravo"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "Senzory"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "Odhlasuje sa..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "Stlmiť tón podvozku"
 
@@ -4162,7 +4153,6 @@ msgstr "Iba jeden riadok textu"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Najlepšie stúpanie na jeden motor (Vyse, forsáž)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "Spomaliť čas"
@@ -4206,11 +4196,9 @@ msgstr "aerodynamická brzda"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "Aerodynamická brzda"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "Zrýchliť čas"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "Systém"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "Systémy"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "TAKTICKÁ MAPA"
@@ -4326,6 +4318,10 @@ msgstr "Štítok môže mať najviac 50 znakov"
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "Tagy"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "Vzlet a pristátie"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "Plyn"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "Ubrať plyn"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "Pridať plyn"
@@ -4532,10 +4526,6 @@ msgstr "Cestujem"
 msgid "trim"
 msgstr "vyváženie"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "Vyváženie"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "Vytrimuj na jantárové svetlo vedľa HUD (8.1° AOA), výkonom drž výšku"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "Klobúčik vyváženia"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "Vyváženie: nos nadol"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "Vyváženie: nos nahor"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "Vyváženie: náklon vľavo"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "Vyváženie: náklon vpravo"
@@ -4620,7 +4606,6 @@ msgstr "Nepriradené"
 msgid "Unavailable"
 msgstr "Nedostupné"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "Zrušiť označenie cieľa"
@@ -4764,9 +4749,9 @@ msgstr "Zobraziť a upraviť podrobnosti položky"
 msgid "View controls"
 msgstr "Ovládacie prvky zobrazenia"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
-msgstr "Pohľady"
+#: src/components/GameCanvas.tsx
+msgid "views"
+msgstr "pohľady"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Voice recording is not supported in this browser"
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "Streda"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "Brzdy kolies"
 
@@ -4847,7 +4831,6 @@ msgstr "Brzdy kolies"
 msgid "Wind"
 msgstr "Vietor"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "Sklápanie krídel"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "Vybočenie"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "Vybočenie doľava"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "Vybočenie doprava"

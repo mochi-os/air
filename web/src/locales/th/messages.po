@@ -216,24 +216,20 @@ msgid "{victim} crashed"
 msgstr "{victim} ตก"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>↑↓</0> to tilt"
-msgstr "<0>↑↓</0> เพื่อเอียง"
+msgid "<0>{back}</0> to pull back"
+msgstr "<0>{back}</0> เพื่อถอยออก"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>=</0> to move closer"
-msgstr "<0>=</0> เพื่อเข้าใกล้"
+msgid "<0>{closer}</0> to move closer"
+msgstr "<0>{closer}</0> เพื่อเข้าใกล้"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>−</0> to pull back"
-msgstr "<0>−</0> เพื่อถอยออก"
+msgid "<0>{tilt}</0> to tilt"
+msgstr "<0>{tilt}</0> เพื่อเอียง"
 
 #: src/components/GameCanvas.tsx
-msgid "<0>1</0>–<1>5</1> for the view"
-msgstr "<0>1</0>–<1>5</1> สำหรับมุมมอง"
-
-#: src/components/GameCanvas.tsx
-msgid "<0>Drag</0> or <1>←→</1> to orbit"
-msgstr "<0>ลาก</0> หรือ <1>←→</1> เพื่อโคจร"
+msgid "<0>Drag</0> or <1>{orbit}</1> to orbit"
+msgstr "<0>ลาก</0> หรือ <1>{orbit}</1> เพื่อโคจร"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -316,7 +312,6 @@ msgstr "ระดับการเข้าถึง"
 msgid "Account type"
 msgstr "ประเภทบัญชี"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Acquire target"
 msgstr "ล็อกเป้าหมาย"
@@ -407,10 +402,6 @@ msgstr "สันดาปท้าย"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx
-msgid "Aircraft"
-msgstr "เครื่องบิน"
-
 #: src/components/MissionSetup.tsx
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "เรือบรรทุกเครื่องบิน <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> โดย <1>Muhamad Mirza Arrafi</1> (Sketchfab) อนุญาตภายใต้ <2>CC BY 4.0</2> แก้ไข: ปรับขนาดใหม่ ปรับทิศทางใหม่ จมลงถึงแนวระดับน้ำ และปรับให้เรียบง่ายสำหรับเว็บ"
@@ -497,7 +488,6 @@ msgid "Anything subscribed to this feed will stop receiving it. You can copy a n
 msgstr "ทุกอย่างที่สมัครรับฟีดนี้จะหยุดรับ คุณสามารถคัดลอก URL ใหม่ได้ภายหลัง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Approach power (ATC)"
 msgstr "กำลังช่วงร่อนลงจอด (ATC)"
 
@@ -534,7 +524,6 @@ msgstr "แน่ใจว่าต้องการยอมแพ้?"
 msgid "Are you sure you want to resign? {opponentName} will win the game."
 msgstr "คุณแน่ใจหรือไม่ว่าต้องการยอมแพ้? {opponentName} จะชนะเกม"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Arrestor hook"
 msgstr "ตะขอหยุด"
@@ -768,7 +757,6 @@ msgid "BVR, fight's on from the start"
 msgstr "BVR, ใช้อาวุธได้อิสระตั้งแต่เริ่ม"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Cage / uncage"
 msgstr "ล็อก / ปลด"
 
@@ -784,10 +772,6 @@ msgstr "แจ้งบอล"
 #: src/components/SettingsDialog.tsx
 msgid "Callsign"
 msgstr "นามเรียกขาน"
-
-#: src/components/SettingsDialog.tsx
-msgid "Camera distance"
-msgstr "ระยะกล้อง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "Camera permission denied"
@@ -913,7 +897,6 @@ msgid "Centerline"
 msgstr "เส้นกึ่งกลาง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Chaff"
 msgstr "แชฟฟ์"
 
@@ -938,6 +921,10 @@ msgstr "เปลี่ยน {field}"
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Changed occurrence"
 msgstr "ครั้งที่ถูกเปลี่ยนแปลง"
+
+#: src/components/SettingsDialog.tsx
+msgid "Chase view"
+msgstr "มุมมองไล่ตาม"
 
 #: src/components/GameCanvas.tsx
 msgid "Chase view:"
@@ -1060,12 +1047,20 @@ msgstr "เมฆ"
 msgid "Cockpit display font <0>“Hornet Display”</0> by <1>Mørkvitnir</1>, © 2022, licensed under <2>MIT</2>."
 msgstr "ฟอนต์จอแสดงผลในห้องนักบิน <0>“Hornet Display”</0> โดย <1>Mørkvitnir</1> © 2022 อนุญาตภายใต้ <2>MIT</2>."
 
+#: src/components/SettingsDialog.tsx
+msgid "Cockpit view"
+msgstr "มุมมองห้องนักบิน"
+
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/comment-tree-layout.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 msgid "Collapse"
 msgstr "ยุบ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Collapse all"
+msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Collapse sidebar"
@@ -1126,10 +1121,6 @@ msgstr "หมายเหตุ"
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Comments ({0})"
 msgstr "ความคิดเห็น ({0})"
-
-#: src/components/SettingsDialog.tsx
-msgid "Communication"
-msgstr "การสื่อสาร"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Compact"
@@ -1280,16 +1271,13 @@ msgid "Couldn't verify with that account. Please try again."
 msgstr "ไม่สามารถยืนยันด้วยบัญชีนั้นได้ โปรดลองอีกครั้ง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Countermeasures"
 msgstr "มาตรการตอบโต้"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Course set left"
 msgstr "ตั้งเส้นทางไปทางซ้าย"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Course set right"
 msgstr "ตั้งเส้นทางไปทางขวา"
@@ -1367,7 +1355,6 @@ msgstr "กำหนดเอง"
 msgid "CUT"
 msgstr "อันตราย"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Cycle view"
 msgstr "สลับมุมมอง"
@@ -1495,7 +1482,6 @@ msgid "Description"
 msgstr "คำอธิบาย"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designate"
 msgstr "กำหนด"
 
@@ -1504,21 +1490,17 @@ msgid "Designator controller"
 msgstr "ตัวควบคุมการกำหนดเป้าหมาย"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator down"
 msgstr "ตัวกำหนดลง"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator left"
 msgstr "ตัวกำหนดซ้าย"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Designator right"
 msgstr "ตัวกำหนดขวา"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Designator up"
 msgstr "ตัวกำหนดขึ้น"
@@ -1603,7 +1585,6 @@ msgid "Dismiss"
 msgstr "ปิด"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Dispenser"
 msgstr "เครื่องปล่อยเป้าลวง"
 
@@ -1612,9 +1593,12 @@ msgid "DISPENSER OFF"
 msgstr "เครื่องปล่อยเป้าลวง ปิด"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Display repeater"
 msgstr "ตัวทวนหน้าจอ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Display view"
+msgstr "มุมมองจอแสดงผล"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx
 msgid "Displays the mobile sidebar."
@@ -1755,11 +1739,9 @@ msgid "EMERG JETT"
 msgstr "สลัดทิ้งฉุกเฉิน"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Emergency gear extension"
 msgstr "การกางล้อลงจอดฉุกเฉิน"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Emergency jettison (hold)"
 msgstr "สลัดทิ้งฉุกเฉิน (กดค้าง)"
@@ -1842,6 +1824,10 @@ msgstr "ออกจากการเล่น"
 msgid "Expand"
 msgstr "ขยาย"
 
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Expand all"
+msgstr ""
+
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx
 msgid "Expand sidebar"
 msgstr "ขยายแถบด้านข้าง"
@@ -1860,7 +1846,6 @@ msgstr "แอนิเมชันการระเบิด <0>“Explosion02
 msgid "Export"
 msgstr "ส่งออก"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Extend flaps"
 msgstr "กางแฟลป"
@@ -2035,13 +2020,8 @@ msgid "fire"
 msgstr "ยิง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Fire weapon"
 msgstr "ยิงอาวุธ"
-
-#: src/components/SettingsDialog.tsx
-msgid "Fixed flight keys"
-msgstr "ปุ่มการบินคงที่"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Flags"
@@ -2112,6 +2092,10 @@ msgstr "บินอีกครั้ง"
 msgid "Fly needles down: 1200' at 3NM, 800' at 2NM, 400' at 1NM"
 msgstr "ลดระดับตามเข็ม: 1200' ที่ 3NM, 800' ที่ 2NM, 400' ที่ 1NM"
 
+#: src/components/SettingsDialog.tsx
+msgid "Flypast view"
+msgstr "มุมมองบินผ่าน"
+
 #: src/components/GameCanvas.tsx
 #: src/components/GameCanvas.tsx
 msgid "Follow time compression"
@@ -2155,6 +2139,10 @@ msgstr "จากธีม"
 msgid "FUEL"
 msgstr "เชื้อเพลิง"
 
+#: src/components/SettingsDialog.tsx
+msgid "Fuel dump"
+msgstr "ทิ้งเชื้อเพลิง"
+
 #: src/components/GameCanvas.tsx
 msgid "FUEL DUMP"
 msgstr "ทิ้งเชื้อเพลิง"
@@ -2195,6 +2183,10 @@ msgstr "ลำตัวเครื่องบิน"
 #: src/lib/parked.ts
 msgid "Gain"
 msgstr "อัตราขยาย"
+
+#: src/components/SettingsDialog.tsx
+msgid "Game"
+msgstr "เกม"
 
 #: src/components/GameCanvas.tsx
 msgid "gear"
@@ -2280,11 +2272,9 @@ msgid "Head tracking"
 msgstr "การติดตามศีรษะ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Heading set left"
 msgstr "ตั้งทิศหัวเครื่องไปทางซ้าย"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Heading set right"
 msgstr "ตั้งทิศหัวเครื่องไปทางขวา"
@@ -2319,7 +2309,6 @@ msgid "HOOK"
 msgstr "ตะขอ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Hook bypass"
 msgstr "บายพาสตะขอ"
 
@@ -2342,6 +2331,10 @@ msgstr "ลดรายละเอียด HUD"
 #: src/components/GameCanvas.tsx
 msgid "HUD needles: hold glideslope and centreline"
 msgstr "เข็ม HUD: ตรึงเส้นร่อนและเส้นกึ่งกลาง"
+
+#: src/components/SettingsDialog.tsx
+msgid "HUD view"
+msgstr "มุมมอง HUD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "ID"
@@ -2384,6 +2377,10 @@ msgstr "อวาตาร์ตัวย่อของ {name}"
 #: src/components/SettingsDialog.tsx
 msgid "Input hardware"
 msgstr "ฮาร์ดแวร์อินพุต"
+
+#: src/components/SettingsDialog.tsx
+msgid "Instruments"
+msgstr "เครื่องวัด"
 
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Interest {weight}"
@@ -2430,16 +2427,13 @@ msgid "Item details"
 msgstr "รายละเอียดรายการ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jammer"
 msgstr "เครื่องรบกวนสัญญาณ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Jettison canopy"
 msgstr "ปลดฝาครอบห้องนักบิน"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Jettison tanks"
 msgstr "สลัดถังทิ้ง"
@@ -2530,7 +2524,6 @@ msgid "L GEAR"
 msgstr "ล้อซ้าย"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Landing gear"
 msgstr "ล้อลงจอด"
 
@@ -2543,7 +2536,6 @@ msgstr "ใหญ่"
 msgid "LATE"
 msgstr "ช้า"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
@@ -2598,7 +2590,6 @@ msgid "lights"
 msgstr "ไฟ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lights"
 msgstr "ไฟ"
 
@@ -2606,7 +2597,6 @@ msgstr "ไฟ"
 msgid "LIGHTS"
 msgstr "ไฟ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lights test"
 msgstr "ทดสอบไฟ"
@@ -2622,6 +2612,10 @@ msgstr "ลิงก์"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "List"
 msgstr "รายการ"
+
+#: ../../../lib/web/src/components/diff-viewer.tsx
+msgid "Load diff"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx
 msgid "Load more"
@@ -2686,10 +2680,6 @@ msgid "Look"
 msgstr "มอง"
 
 #: src/components/SettingsDialog.tsx
-msgid "Look / orbit"
-msgstr "มอง / หมุนรอบ"
-
-#: src/components/SettingsDialog.tsx
 msgid "Look at target"
 msgstr "มองเป้าหมาย"
 
@@ -2724,11 +2714,9 @@ msgid "Lower altimeter setting"
 msgstr "ลดค่าตั้งเครื่องวัดความสูง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Lower low-altitude index"
 msgstr "ลดดัชนีความสูงต่ำ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Lower radar antenna"
 msgstr "ลดเสาอากาศเรดาร์ลง"
@@ -2758,7 +2746,6 @@ msgstr "แผนที่"
 msgid "Mark all as read"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Master arm"
 msgstr "สวิตช์อาวุธหลัก"
@@ -2810,7 +2797,6 @@ msgid "menu"
 msgstr "เมนู"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Menu"
 msgstr "เมนู"
@@ -3287,7 +3273,6 @@ msgid "Other"
 msgstr "อื่น ๆ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Override G limit"
 msgstr "ข้ามขีดจำกัด G"
 
@@ -3303,6 +3288,10 @@ msgstr "ล็อกสายตา"
 #: src/components/GameCanvas.tsx
 msgid "PADLOCK OFF"
 msgstr "สายตาอิสระ"
+
+#: src/components/SettingsDialog.tsx
+msgid "Padlock view"
+msgstr "มุมมองล็อกสายตา"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
@@ -3348,6 +3337,10 @@ msgstr "รูปแบบ (regex)"
 msgctxt "recording"
 msgid "Pause"
 msgstr "หยุดชั่วคราว"
+
+#: src/components/SettingsDialog.tsx
+msgid "Pause replay"
+msgstr "หยุดเล่นซ้ำชั่วคราว"
 
 #: src/components/GameCanvas.tsx
 msgid "Paused"
@@ -3533,7 +3526,6 @@ msgid "R GEAR"
 msgstr "ล้อขวา"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Radar silent"
 msgstr "เรดาร์เงียบ"
 
@@ -3542,11 +3534,9 @@ msgid "Raise altimeter setting"
 msgstr "เพิ่มค่าตั้งเครื่องวัดความสูง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Raise low-altitude index"
 msgstr "เพิ่มดัชนีความสูงต่ำ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Raise radar antenna"
 msgstr "ยกเสาอากาศเรดาร์ขึ้น"
@@ -3747,17 +3737,13 @@ msgid "Reset"
 msgstr "รีเซ็ต"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset master caution"
 msgstr "รีเซ็ตคำเตือนหลัก"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Reset trim"
 msgstr "รีเซ็ตทริม"
 
-#: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Reset view"
 msgstr "รีเซ็ตมุมมอง"
@@ -3782,7 +3768,6 @@ msgstr "ผล"
 msgid "Resume"
 msgstr "ดำเนินการต่อ"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Retract flaps"
 msgstr "เก็บแฟลป"
@@ -3952,6 +3937,14 @@ msgstr "กำลังค้นหา..."
 msgid "SEAT SAFE"
 msgstr "ที่นั่งปลอดภัย"
 
+#: src/components/SettingsDialog.tsx
+msgid "Secure left engine"
+msgstr "ดับเครื่องยนต์ซ้าย"
+
+#: src/components/SettingsDialog.tsx
+msgid "Secure right engine"
+msgstr "ดับเครื่องยนต์ขวา"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "ตัวเลือก"
@@ -3997,7 +3990,6 @@ msgid "Select previous card"
 msgstr "เลือกการ์ดก่อนหน้า"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "เลือกอาวุธ"
 
@@ -4033,24 +4025,24 @@ msgid "Send message"
 msgstr "ส่งข้อความ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control aft"
 msgstr "สวิตช์เซนเซอร์ถอยหลัง"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Sensor control forward"
 msgstr "สวิตช์เซนเซอร์ไปข้างหน้า"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control left"
 msgstr "สวิตช์เซนเซอร์ซ้าย"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Sensor control right"
 msgstr "สวิตช์เซนเซอร์ขวา"
+
+#: src/components/SettingsDialog.tsx
+msgid "Sensors"
+msgstr "เซ็นเซอร์"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Serif"
@@ -4149,7 +4141,6 @@ msgid "Signing out..."
 msgstr "กำลังออกจากระบบ..."
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Silence gear tone"
 msgstr "ปิดเสียงเตือนล้อลงจอด"
 
@@ -4162,7 +4153,6 @@ msgstr "ข้อความบรรทัดเดียวเท่านั
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ไต่ระดับดีที่สุดด้วยเครื่องยนต์เดียว (Vyse, สันดาปท้าย)"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Slow down time"
 msgstr "ชะลอเวลา"
@@ -4206,11 +4196,9 @@ msgstr "เบรกลม"
 
 #: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Speed brake"
 msgstr "เบรกลม"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Speed up time"
 msgstr "เร่งเวลา"
@@ -4310,6 +4298,10 @@ msgctxt "actor"
 msgid "System"
 msgstr "ระบบ"
 
+#: src/components/SettingsDialog.tsx
+msgid "Systems"
+msgstr "ระบบ"
+
 #: src/components/GameCanvas.tsx
 msgid "TACTICAL MAP"
 msgstr "แผนที่ยุทธวิธี"
@@ -4326,6 +4318,10 @@ msgstr "แท็กต้องมีไม่เกิน 50 อักขร�
 #: ../../../lib/web/src/components/post-tags.tsx
 msgid "Tags"
 msgstr "แท็ก"
+
+#: src/components/SettingsDialog.tsx
+msgid "Takeoff and landing"
+msgstr "การขึ้นและลงจอด"
 
 #: src/components/GameCanvas.tsx
 msgid "TALLY"
@@ -4449,11 +4445,9 @@ msgid "Throttle"
 msgstr "คันเร่ง"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Throttle down"
 msgstr "ลดคันเร่ง"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Throttle up"
 msgstr "เพิ่มคันเร่ง"
@@ -4532,10 +4526,6 @@ msgstr "กำลังเดินทาง"
 msgid "trim"
 msgstr "ทริม"
 
-#: src/components/SettingsDialog.tsx
-msgid "Trim"
-msgstr "ทริม"
-
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
 msgstr "ปรับทริมให้ไฟเหลืองอำพันข้าง HUD ติด (8.1° AOA), ใช้กำลังคุมความสูง"
@@ -4545,21 +4535,17 @@ msgid "Trim hat"
 msgstr "หมวกทริม"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim nose down"
 msgstr "ทริม: หัวลง"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim nose up"
 msgstr "ทริม: หัวขึ้น"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Trim roll left"
 msgstr "ทริม: เอียงซ้าย"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Trim roll right"
 msgstr "ทริม: เอียงขวา"
@@ -4620,7 +4606,6 @@ msgstr "ยังไม่กำหนด"
 msgid "Unavailable"
 msgstr "ไม่พร้อมใช้งาน"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Undesignate target"
 msgstr "ยกเลิกการกำหนดเป้าหมาย"
@@ -4764,8 +4749,8 @@ msgstr "ดูและแก้ไขรายละเอียดรายก
 msgid "View controls"
 msgstr "ตัวควบคุมมุมมอง"
 
-#: src/components/SettingsDialog.tsx
-msgid "Views"
+#: src/components/GameCanvas.tsx
+msgid "views"
 msgstr "มุมมอง"
 
 #: ../../../lib/web/src/lib/shell-errors.ts
@@ -4839,7 +4824,6 @@ msgid "Wednesday"
 msgstr "วันพุธ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Wheel brakes"
 msgstr "เบรกล้อ"
 
@@ -4847,7 +4831,6 @@ msgstr "เบรกล้อ"
 msgid "Wind"
 msgstr "ลม"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Wing fold"
 msgstr "พับปีก"
@@ -4890,11 +4873,9 @@ msgid "Yaw"
 msgstr "ยอ"
 
 #: src/components/SettingsDialog.tsx
-#: src/components/SettingsDialog.tsx
 msgid "Yaw left"
 msgstr "ยอซ้าย"
 
-#: src/components/SettingsDialog.tsx
 #: src/components/SettingsDialog.tsx
 msgid "Yaw right"
 msgstr "ยอขวา"
