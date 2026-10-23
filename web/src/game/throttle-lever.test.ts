@@ -104,9 +104,9 @@ describe('the afterburner lockout', () => {
   type Throttle = { frame(held: boolean, dt: number): number; pull(): void }
   const throttle = (w: { bar?: number; hook?: number; ground?: boolean }) => {
     if (!state || !keys) throw new Error('the lockout not found in engine.ts')
-    return new Function('w', `const keys=new Set(), key_of=(a)=>a, ownship={ throttle:1, burner:0, bar:w.bar??0, hook:w.hook??0 }; let sim_time=0;
+    return new Function('w', `const keys=new Set(), key_of=(a)=>a, ownship={ throttle:1, burner:0, bar:w.bar??0, hook:w.hook??0 }; let sim_time=0, glance=0;
       const on_ground=()=>w.ground??true; ${state}
-      return { frame(held,dt){ if(held) keys.add("throttle.up"); else keys.delete("throttle.up"); sim_time+=dt; ${keys} return ownship.burner; }, pull(){ ownship.burner=0; } };`)(w) as Throttle
+      return { frame(held,dt){ if(held) keys.add("throttle.up"); else keys.delete("throttle.up"); sim_time+=dt; glance+=dt; ${keys} return ownship.burner; }, pull(){ ownship.burner=0; } };`)(w) as Throttle
   }
   const hold = (t: Throttle, seconds: number, held = true) => { let b = 0; for (let i = 0; i < seconds * 10; i++) b = t.frame(held, 0.1); return b }
 

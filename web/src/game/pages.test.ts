@@ -33,6 +33,7 @@ interface Drawn { text: [string, number, number][]; rects: [number, number, numb
 function page(name: string, setup: string, display = 'left'): Drawn {
   const run = new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const master="nav"; const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
+    const glance=typeof sim_time==='undefined'?0:sim_time;   // the pilot's clock, which runs with the sim's at 1×
     ${lift('ddi_legend')} ${lift(name)}
     const text=[], rects=[], arcs=[], rotate=[], moves=[], styled=[], lines=[], fills=[], fonts=[]; let style='', fill='', font='', at=[0,0];
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s,px,py)=>{ text.push([String(s),px,py]); fonts.push([String(s),font]); }; if(k==='strokeRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='fillRect') return (a,b,c,d)=>fills.push([a,b,c,d,fill]); if(k==='arc') return (ax,ay,r)=>arcs.push([ax,ay,r]); if(k==='rotate') return (a)=>rotate.push(a); if(k==='moveTo') return (mx,my)=>{ moves.push([mx,my]); styled.push([style,mx,my]); at=[mx,my]; }; if(k==='lineTo') return (lx,ly)=>{ lines.push([at[0],at[1],lx,ly,style]); at=[lx,ly]; }; if(k==='measureText') return (s)=>({ width:10*String(s).length }); return ()=>{}; }, set:(t,k,v)=>{ if(k==='strokeStyle') style=v; if(k==='fillStyle') fill=v; if(k==='font') font=v; return true; } });
@@ -225,7 +226,7 @@ function repeat(o: Repeat = {}): Shown {
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
   const names = ['ddi_hud', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
   return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
-    const law_active=false, hud_cue="", sim_time=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
+    const law_active=false, hud_cue="", sim_time=0, glance=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
     const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
@@ -1905,7 +1906,7 @@ describe('the UFC pushbuttons', () => {
     expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
-    expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=sim_time; pit_press\("atc",0\); \}/)
+    expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=glance; pit_press\("atc",0\); \}/)
     expect(source).toMatch(/case "atc": if\(atc_on\)\{ atc_on=false; atc_flash=-Infinity; \} else \{ const mode=atc_engage\(\); if\(mode\)\{ atc_on=true;/)
     expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
     expect(source).toMatch(/ufc\.func=""; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true; Object\.assign\(radios,radios_tuned\(\)\); emcon_set\(false\);/)
@@ -2086,7 +2087,7 @@ describe('the TAC and SUPT menus', () => {
   const built = [...(/\nconst DDI_PAGES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? '').matchAll(/(\w+):\{draw:/g)].map((m) => m[1])
   function run(menu: string, press = 0, designator = 'center', shows = 'hud', computers = { one: true, two: true }, time = 0, priority = false) {
     return new Function('avionics', `let ddi_draws=0, ddi_dirty=false, shown='', spin_up=false, last_out=[], designator=${JSON.stringify(designator)};
-      const sim_time=${time}, mc=()=>(${JSON.stringify(computers)}), display_test={ on:false }, hmd={ priority:${priority} }, helmet={ exit:()=>{} };
+      const sim_time=${time}, glance=${time}, mc=()=>(${JSON.stringify(computers)}), display_test={ on:false }, hmd={ priority:${priority} }, helmet={ exit:()=>{} };
       const ddi_state={ left:{ page:${JSON.stringify(shows)}, menu:${JSON.stringify(menu)} } }, DDI_PAGES={}, DDI_MENUS=${JSON.stringify(menus)};
       function cautions_draw(){} function ddi_show(d,p){ shown=p; } const caution_page=()=>null, caution_host=()=>null;
       ${lift('ddi_legend')} ${lift('ddi_render')} ${lift('ddi_press')} ${lift('diamond')}

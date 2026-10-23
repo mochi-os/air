@@ -462,7 +462,7 @@ function handle(c: Handle): { opacity: number; lit: number; greens: number[] } {
   const block = /\n\tif\(l\.transit\)\{ const locked=[\s\S]*?lamp_set\(l\.right,locked\[2\]\); \}\n/.exec(source)?.[0] ?? ''
   const collapse = /\nconst GEAR_COLLAPSE=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block || !collapse) throw new Error('gear handle light block not found in engine.ts')
-  const run = new Function('c', `const ext=c.ext, sim_time=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse}
+  const run = new Function('c', `const ext=c.ext, sim_time=c.t, glance=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse}
     const STATE={ gear_harm:0 }, out=c.harm??[0,0,0], ownship={ gearTarget:c.up?1:0 }, buses={ essential:true };
     const lamp_set=(m,on)=>{ m.on=!!on; }, l={transit:{material:{opacity:0}},nose:{},left:{},right:{}}; ${block}
     return { opacity:l.transit.material.opacity, lit:handle_lit, greens:[+!!l.nose.on,+!!l.left.on,+!!l.right.on] };`)
@@ -685,7 +685,7 @@ describe('the lights test', () => {
       const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{};
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
-      const wheels_warning=()=>false, sim_time=0, GEAR_COLLAPSE=0.7, flap_select=0;
+      const wheels_warning=()=>false, sim_time=0, glance=0, GEAR_COLLAPSE=0.7, flap_select=0;
       const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
       ${update}
       return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);

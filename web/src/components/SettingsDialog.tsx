@@ -246,6 +246,8 @@ const BUTTON_ROWS: Row[] = [
   { id: 'look.target', label: msg`Look at target`, group: 'view' },
   { id: 'zoom.in', label: msg`Zoom in`, group: 'view' },
   { id: 'zoom.out', label: msg`Zoom out`, group: 'view' },
+  { id: 'time.faster', label: msg`Speed up time`, group: 'view' },
+  { id: 'time.slower', label: msg`Slow down time`, group: 'view' },
   { id: 'menu', label: msg`Menu`, group: 'comms' },
 ]
 
@@ -322,6 +324,8 @@ const KEY_ROWS: Row[] = [
   { id: 'eject', label: msg`Eject`, group: 'aircraft' },
   { id: 'view', label: msg`Cycle view`, group: 'view' },
   { id: 'view.reset', label: msg`Reset view`, group: 'view' },
+  { id: 'time.faster', label: msg`Speed up time`, group: 'view' },
+  { id: 'time.slower', label: msg`Slow down time`, group: 'view' },
   { id: 'repeater', label: msg`Display repeater`, group: 'view' },
   { id: 'altitude', label: msg`HUD altitude source`, group: 'view' },
   { id: 'reject', label: msg`HUD declutter`, group: 'view' },

@@ -32,10 +32,14 @@ const settle = () => new Promise((done) => setTimeout(done, 0))
 
 describe('when a flight saves', () => {
   it('first as it becomes a sortie, then every period', () => {
-    expect(due(SORTIE - 0.1, -Infinity)).toBe(false) // an aborted start leaves nothing
-    expect(due(SORTIE, -Infinity)).toBe(true)
-    expect(due(SORTIE + PERIOD - 0.1, SORTIE)).toBe(false)
-    expect(due(SORTIE + PERIOD, SORTIE)).toBe(true)
+    expect(due(SORTIE - 0.1, SORTIE - 0.1, -Infinity)).toBe(false) // an aborted start leaves nothing
+    expect(due(SORTIE, SORTIE, -Infinity)).toBe(true)
+    expect(due(SORTIE + PERIOD - 0.1, SORTIE + PERIOD - 0.1, SORTIE)).toBe(false)
+    expect(due(SORTIE + PERIOD, SORTIE + PERIOD, SORTIE)).toBe(true)
+  })
+  it('counts the period on the wall clock, whatever the time compression', () => {
+    expect(due(64 * PERIOD, PERIOD - 0.1, 0)).toBe(false) // an hour flown at 64× in under a minute
+    expect(due(PERIOD / 4, SORTIE + PERIOD, SORTIE)).toBe(true) // a minute at ¼× is 15 s flown
   })
 })
 
@@ -77,7 +81,7 @@ type Saved = [Record<string, unknown> | null, { session: string; text: string } 
 function engine(setup: string) {
   return new Function(
     'checkpoint_due',
-    `let running=true, playback=false, MULTIPLAYER=false, sim_time=0, mission_zero=0, checkpoint_at=-Infinity, onExit=null;
+    `let running=true, playback=false, MULTIPLAYER=false, sim_time=0, glance=0, mission_zero=0, checkpoint_at=-Infinity, onExit=null;
      const cfg={ task:'joust', cheats:{} }; let own_kills=0, own_deaths=0; const passes=[]; const mission_began=1700;
      let net=null, match_started=0, session_over=false; const join={ server:'world', title:'Match', session:'world-session' }; const remotes=new Map();
      const saves=[], rows=[];
@@ -86,7 +90,7 @@ function engine(setup: string) {
      const CHECKPOINT_FLYING='flying', CHECKPOINT_SORTIE=5;
      const recording_file=()=>({ session:MULTIPLAYER?'world-session':'local-1700', started:MULTIPLAYER?900:1700, text:'at '+Math.round(sim_time) });
      ${['sortie_row', 'match_row', 'recording_checkpoint', 'exit_match', 'net_finish'].map(lift).join('\n')}
-     const fly=(seconds)=>{ for(let k=0;k<seconds*10;k++){ sim_time=Math.round(sim_time*10+1)/10; recording_checkpoint(); } };
+     const fly=(seconds,rate=1)=>{ for(let k=0;k<seconds*10;k++){ sim_time=Math.round(sim_time*10+rate)/10; glance=Math.round(glance*10+1)/10; recording_checkpoint(); } };
      ${setup}`
   )(due) as { saves: Saved[]; rows: Record<string, unknown>[] }
 }
@@ -104,6 +108,11 @@ describe('the engine saves a flight as it flies', () => {
     expect(saves.map(([row]) => row && row.reason)).toEqual(['flying', 'flying', 'flying'])
     expect(saves.map(([, replay]) => replay && replay.text)).toEqual(['at 5', 'at 65', 'at 125'])
     expect(saves[0][0]).toMatchObject({ world: 'local', session: 'local-1700', started: 1700, mode: 'joust' })
+  })
+  it('saves every minute of play at 64×, not every minute flown', () => {
+    const { saves } = engine('fly(130, 64); return { saves };') // 8,320 s flown, which a period on the flight clock would save 139 times
+    expect(saves).toHaveLength(3)
+    expect(saves[0][1]?.text).toBe('at 6')
   })
   it('saves nothing while a replay plays, or before a match has started', () => {
     expect(engine('playback=true; fly(70); return { saves };').saves).toEqual([])
@@ -134,6 +143,6 @@ describe('the engine saves a flight as it flies', () => {
   })
   it('starts each mission\'s saves afresh', () => {
     expect(lift('start_mission')).toContain('mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity;')
-    expect(source).toContain('step_world(dt); radar_step(dt); rwr_step(dt); recording_checkpoint();')
+    expect(source).toContain('step_world(h); radar_step(h); rwr_step(h); recording_checkpoint();')
   })
 })

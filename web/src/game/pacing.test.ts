@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { Pacing } from './pacing'
+import { Hysteresis, Pacing } from './pacing'
 
 const BUDGET = 18 // ms: the governor lowers the scale past this mean
 
@@ -68,12 +68,69 @@ describe('the frame record', () => {
     expect(pacing.recent()).not.toBeNull()
   })
 
+  it('says it is settling for the second after a reset', () => {
+    const pacing = new Pacing()
+    expect(pacing.settling).toBe(false)
+    fly(pacing, [8], 180)
+    pacing.reset()
+    expect(pacing.settling).toBe(true)
+    fly(pacing, [8], 120)
+    expect(pacing.settling).toBe(true)
+    fly(pacing, [8], 6)
+    expect(pacing.settling).toBe(false)
+  })
+
   it('does not record a hidden or suspended page as a frame', () => {
     const pacing = new Pacing()
     fly(pacing, [8], 180)
     pacing.record(12)
     expect(pacing.recent()!.mean).toBeCloseTo(8, 6)
     expect(pacing.readout().average).toBeCloseTo(8, 6)
+  })
+})
+
+describe('the hysteresis', () => {
+  const judged = (hysteresis: Hysteresis, readouts: boolean[]) =>
+    readouts.map((bad) => hysteresis.judge(bad))
+
+  it('holds after its run of bad readouts and lets go after its run of clear ones', () => {
+    const hysteresis = new Hysteresis(4, 12)
+    expect(judged(hysteresis, [true, true, true])).toEqual([
+      false,
+      false,
+      false,
+    ])
+    expect(hysteresis.judge(true)).toBe(true)
+    expect(judged(hysteresis, new Array(11).fill(false))).toEqual(
+      new Array(11).fill(true)
+    )
+    expect(hysteresis.judge(false)).toBe(false)
+  })
+
+  it('starts each run again when a readout breaks it', () => {
+    const hysteresis = new Hysteresis(4, 12)
+    expect(
+      judged(hysteresis, [true, true, true, false, true, true, true])
+    ).toEqual(new Array(7).fill(false))
+    hysteresis.judge(true)
+    expect(judged(hysteresis, [...new Array(11).fill(false), true])).toEqual(
+      new Array(12).fill(true)
+    )
+    expect(judged(hysteresis, new Array(11).fill(false))).toEqual(
+      new Array(11).fill(true)
+    ) // the bad readout began the clear run again
+  })
+
+  it('lets go at once when reset', () => {
+    const hysteresis = new Hysteresis(4, 12)
+    judged(hysteresis, [true, true, true, true])
+    hysteresis.reset()
+    expect(hysteresis.held).toBe(false)
+    expect(judged(hysteresis, [true, true, true])).toEqual([
+      false,
+      false,
+      false,
+    ])
   })
 })
 

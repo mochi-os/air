@@ -65,7 +65,7 @@ interface Heard {
   seen: number // when its condition was last on
 }
 interface Queue {
-  until: number
+  until: number // the wall time the message playing ends, with its gap
   heard: Map<Message, Heard>
 }
 
@@ -81,12 +81,17 @@ export function voice_queue(): Queue {
   }
 }
 
-// voice_step advances the queue to time (seconds) with the messages whose
-// conditions are on, and starts the one due, if any: speak plays it and
-// returns its length in seconds.
+// voice_step advances the queue to time (seconds of the world's clock) with
+// the messages whose conditions are on, and starts the one due, if any: speak
+// plays it and returns its length in seconds. A message plays out at its own
+// length on the wall clock (wall, seconds), whatever the time compression, so
+// the queue is busy until then; its repeats and the 5 s clearing run on the
+// world's clock, and a message whose condition has gone by the queue's turn is
+// not spoken.
 export function voice_step(
   queue: Queue,
   time: number,
+  wall: number,
   active: ReadonlySet<Message>,
   speak: (message: Message) => number
 ): Message | null {
@@ -94,7 +99,7 @@ export function voice_step(
     if (active.has(message)) heard.seen = time
     else if (time - heard.seen >= CLEAR) heard.spoken = -Infinity
   }
-  if (time < queue.until) return null
+  if (wall < queue.until) return null
   for (const message of MESSAGES) {
     if (!active.has(message)) continue
     const heard = queue.heard.get(message) as Heard
@@ -104,7 +109,7 @@ export function voice_step(
       (period !== undefined && time - heard.spoken >= period)
     ) {
       heard.spoken = time
-      queue.until = time + speak(message) + GAP
+      queue.until = wall + speak(message) + GAP
       return message
     }
   }

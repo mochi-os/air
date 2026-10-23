@@ -105,6 +105,17 @@ describe('coupling', () => {
     expect(P.select(ap, 'coupled', level)).toBe(false) // nothing to couple to
     expect([ap.modes.coupled, P.cautions(ap, 100), ap.flash]).toEqual([false, ['AUTO PILOT'], 110])
     expect([P.cue(ap, 100), P.cue(ap, 100.25), P.cue(ap, 100.5), P.cue(ap, 109.5), P.cue(ap, 110)]).toEqual([true, false, true, true, false]) // twice a second, ten seconds
+    // Under time compression the ten seconds are the jet's and the flash the pilot's eye's:
+    // at 64x the jet's 100.0 to 100.25 is under 4 ms of the pilot's time, and the cue holds its phase.
+    expect([P.cue(ap, 100, 0.1), P.cue(ap, 100.25, 0.1 + 0.25 / 64), P.cue(ap, 100.5, 0.1 + 0.5 / 64), P.cue(ap, 100, 0.3)]).toEqual([true, true, true, false])
+    expect(P.cue(ap, 110, 0.1)).toBe(false) // the ten seconds are over, whatever the phase
+  })
+  it('moves its references with the trim switch on the pilot\'s time, not the world\'s', () => {
+    const trimmed = (dt: number, hand: number) => { const ap = on('attitude')(); P.step(ap, jet({ trim: { pitch: 1, roll: 1 } }), dt, hand); return [ap.pitch, ap.bank] }
+    const real = trimmed(1, 1), fast = trimmed(64, 1), slow = trimmed(0.25, 1)
+    expect(fast).toEqual(real) // one second of the switch held at 64x moves them a second's worth, not 64
+    expect(slow).toEqual(real)
+    expect(trimmed(1, 1)).not.toEqual(trimmed(1, 0.5))
   })
   it('lets a steering or traffic control couple go to heading hold with a second CPL, and no caution', () => {
     for (const couple of [steering, traffic]) {

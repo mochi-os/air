@@ -1006,7 +1006,7 @@ describe('the volume', () => {
 describe('the engine', () => {
   it("draws every jet's vapour in the shared frame, the replay's included, and flushes its puffs", () => {
     expect(source).toMatch(
-      /\tcontrail_effects\(\);[^\n]*\n\tvapour_effects\(dt\);/
+      /\tcontrail_effects\(\);[^\n]*\n\tif\(presenting\) vapour_effects\(framed\);/
     )
     expect(source).toMatch(/\+flush_points\(vapour_pool,vp_pts\);/)
     expect(source).toMatch(

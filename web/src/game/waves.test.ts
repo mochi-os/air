@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import type * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 import { CASCADES, SIZE } from './spectrum'
-import { FFT, Waves } from './waves'
+import { EVOLVE, FFT, REPEAT, Waves } from './waves'
 
 // The FFT pass's own index and twiddle lines, run as JavaScript: the GLSL's integer
 // division truncates, and the rest is the same syntax once the types are dropped
@@ -151,5 +153,34 @@ describe('a step of the sea', () => {
     const still = recorder()
     waves.update(still.renderer, 10)
     expect(still.log.length).toBe(0)
+  })
+})
+
+// Time compression runs the sea's clock for days. Each wave's frequency is
+// whole cycles in REPEAT, so the clock wraps there without a seam and a phase
+// never outgrows a float.
+describe('the sea\'s clock', () => {
+  it('wraps every REPEAT seconds, the sea there exactly as it was', () => {
+    const { renderer, log } = recorder()
+    new Waves({ speed: 12.9, direction: 0.29, fetch: 200000 }, 1).update(renderer, 7 * REPEAT + 10)
+    expect(log[0].uniforms.u_time).toBeCloseTo(10, 9)
+    const w = /float w=sqrt\(9\.81\*kl\+7\.4e-5\*kl\*kl\*kl\); w=floor\(w\*([\d.e-]+)\+0\.5\)\*([\d.e-]+);/.exec(EVOLVE)
+    expect(w, 'the dispersion rounded to whole cycles').not.toBeNull()
+    for (const k of [0.003, 0.05, 1, 30]) {
+      const exact = Math.sqrt(9.81 * k + 7.4e-5 * k ** 3), rounded = Math.floor(exact * Number(w![1]) + 0.5) * Number(w![2])
+      const cycles = (rounded * REPEAT) / (2 * Math.PI)
+      expect(Math.abs(cycles - Math.round(cycles)), `k ${k}`).toBeLessThan(1e-6)
+      expect(Math.abs(rounded - exact), `k ${k}`).toBeLessThanOrEqual(Math.PI / REPEAT + 1e-12) // the longest swell runs a few per cent slow at most
+    }
+  })
+  it('is wrapped by the analytic sea\'s period, which REPEAT divides', () => {
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    const period = Number(/\nconst SEA_PERIOD=(\d+);/.exec(engine)?.[1])
+    expect(period % REPEAT).toBe(0)
+    expect(engine).toMatch(/function sea_advance\(seconds\)\{ const u=ocean_mat\.uniforms\.u_time; u\.value=\(u\.value\+seconds\)%SEA_PERIOD; \}/)
+    expect(engine).not.toMatch(/u_time\.value\+=/) // every advance of the sea's clock wraps
+    const fragment = engine.slice(engine.indexOf('const SEA_TURN='))
+    expect(fragment).not.toMatch(/u_time\*\(/) // every swell rate rounded: u_time*sea_rate(...)
+    expect(fragment).not.toMatch(/u_time\*vec2\(/) // every drift rounded: u_time*sea_drift(vec2(...))
   })
 })

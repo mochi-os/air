@@ -94,7 +94,7 @@ describe('the BINGO judgements', () => {
 
   it('colours the fuel readout for BINGO on internal fuel', () => {
     expect(colour).not.toBe('')
-    const run = (ownship: object, low = false) => new Function('ownship', `const fuel_lo={ on:${low} }, BINGO=1361, sim_time=0, hctx={ fillStyle:"g" }; ${colour} return hctx.fillStyle;`)(ownship) as string
+    const run = (ownship: object, low = false) => new Function('ownship', `const fuel_lo={ on:${low} }, BINGO=1361, glance=0, hctx={ fillStyle:"g" }; ${colour} return hctx.fillStyle;`)(ownship) as string
     expect(run(tanks.below)).toBe('#ffb050')
     expect(run(tanks.above)).toBe('g')
     expect(run(tanks.above, true)).toBe('#ff5050') // FUEL LO flashes it, from the feed tanks
@@ -126,7 +126,7 @@ describe('the FUEL LO condition', () => {
 
   it('comes on with a feed tank at 800 lb, stepped with the cautions', () => {
     expect(state).not.toBe('')
-    expect(source).toMatch(/\nfunction cautions_update\(\)\{\n\tfuel_low_step\(\);/)
+    expect(source).toMatch(/\nfunction cautions_update\(dt\)\{\n\tfuel_low_step\(\);/)
     expect(run([[0, 1995], [1, 1985]])).toEqual([false, true])
   })
 

@@ -68,6 +68,8 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'look.target': 'KeyY',
   'zoom.in': 'Equal',
   'zoom.out': 'Minus',
+  'time.faster': 'Home', // single player's time compression: Home doubles the rate, End halves it, and the view reset returns it to 1×
+  'time.slower': 'End',
   'jettison.tanks': 'KeyJ',
   'jettison.emergency': 'Shift+KeyJ',
   'caution.reset': 'Shift+KeyM',

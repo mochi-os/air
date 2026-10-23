@@ -129,6 +129,11 @@ interface Flight {
   // heater / radar SHOOT states, the breakaway X, or empty).
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
+  // Single player's time compression, the world's seconds to the pilot's
+  // (0.25 to 64), written at the start and on each change: a replay can play a
+  // compressed stretch back as the pilot saw it, and a debrief can tell a long
+  // compressed cruise from a long fight.
+  compression?: number
   // This burst's closest MISS: how far the nearest round passed from the
   // target's skin, and which way it went by, in the TARGET's body frame. The
   // gun's answer to a missile's least and off. Struck counts what connected,
@@ -541,6 +546,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
   const braked = new Map<number, number>() // last written speed brake position, per object
   const held = new Map<string, string>() // last written value of each replay state channel, per object and channel
   const cued = new Map<number, string>() // last written cue, per object
+  const compressed = new Map<number, number>() // last written time compression, per object
   const overridden = new Map<number, boolean>() // last written g-limit override state, per object (#33)
   const grazed = new Map<number, number>() // last written burst miss, per object
   const journalled = new Map<string, string>() // last written decision-journal value, per object and channel
@@ -706,6 +712,10 @@ export function writer(): (sample: Sample, out: string[]) => void {
         if (d.cue !== undefined && cued.get(o.id) !== d.cue) {
           cued.set(o.id, d.cue)
           line += `,Cue=${field(d.cue)}`
+        }
+        if (d.compression !== undefined && compressed.get(o.id) !== d.compression) {
+          compressed.set(o.id, d.compression)
+          line += `,Compression=${d.compression}`
         }
         // The burst's miss. Written whenever it improves within a burst and
         // once more when it clears, so the value standing at any sample is

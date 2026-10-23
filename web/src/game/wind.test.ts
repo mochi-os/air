@@ -209,10 +209,10 @@ describe("the sea's frame", () => {
       [...fragment.matchAll(/vec2 (xr\d)=vec2\(([^()]*)\)/g)].map((m) => [m[1], m[2]])
     )
     const drifts = [
-      ...[...fragment.matchAll(/hexslope\((xr\d)\/[\d.]+, (-?)u_time\*vec2\(([-\d.e]+),([-\d.e]+)\)\)/g)].map(
+      ...[...fragment.matchAll(/hexslope\((xr\d)\/[\d.]+, (-?)u_time\*sea_drift\(vec2\(([-\d.e]+),([-\d.e]+)\)\)\)/g)].map(
         (m) => ({ uv: octaves[m[1]], sign: m[2] === '-' ? -1 : 1, d: vec2(Number(m[3]), Number(m[4])) })
       ),
-      ...[...fragment.matchAll(/texture2D\(u_detail,xz\/[\d.]+([+-])u_time\*vec2\(([-\d.e]+),([-\d.e]+)\)\)/g)].map(
+      ...[...fragment.matchAll(/texture2D\(u_detail,xz\/[\d.]+([+-])u_time\*sea_drift\(vec2\(([-\d.e]+),([-\d.e]+)\)\)\)/g)].map(
         (m) => ({ uv: 'xz.x, xz.y', sign: m[1] === '-' ? -1 : 1, d: vec2(Number(m[2]), Number(m[3])) })
       ),
     ]

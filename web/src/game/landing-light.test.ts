@@ -68,7 +68,7 @@ interface Jet { lights?: boolean; gear?: number; gearTarget?: number; at?: numbe
 function frame(jet: Jet): Frame {
   const update = body('update_aircraft_lights')
   if (!update) throw new Error('update_aircraft_lights not found in engine.ts')
-  return new Function('jet', `const performance={ now:()=>jet.at??0 }, instrument_backlight=()=>{}, cfg={ view:"hud" }, lighting={ flood:0, consoles:0 };
+  return new Function('jet', `const sim_time=(jet.at??0)/1000, instrument_backlight=()=>{}, cfg={ view:"hud" }, lighting={ flood:0, consoles:0 };
     const cockpit_flood={ position:{ set(){} }, intensity:0 }, console_lights=[];
     const exterior={ position:1, formation:1, strobe:"bright", landing:false, ...jet.exterior };
     const v=()=>{ const o={ copy(){ return o; }, addScaledVector(){ return o; } }; return o; }, point=()=>({ visible:false, material:{ opacity:1 } });

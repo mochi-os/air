@@ -102,7 +102,7 @@ describe('the RWR control indicator\'s pushbuttons', () => {
 
 describe('the RWR\'s tones', () => {
   it('sound at the RWR volume control\'s level, and not at all with the set off or without ac power', () => {
-    expect(source).toMatch(/\n\tconst level=suite\.receiver\.power&&buses\.ac\?uhf\.panel\.volume\.receiver:0;[^\n]*\n\tif\(events\.fresh>0\) audio_rwr_paint\(level\);\n\tif\(events\.missile&&level>0&&sim_time-rwr_called>3\)\{ rwr_called=sim_time; notice\(translate\("MISSILE"\)\); \}[^\n]*\n\taudio_rwr\(RWR\.locked\(\),level\); \}/)
+    expect(source).toMatch(/\n\tconst level=suite\.receiver\.power&&buses\.ac\?uhf\.panel\.volume\.receiver:0;[^\n]*\n\tif\(rwr_fresh>0\) audio_rwr_paint\(level\);\n\tif\(rwr_missile&&level>0&&glance-rwr_called>3\)\{ rwr_called=glance; notice\(translate\("MISSILE"\)\); \}[^\n]*\n\trwr_fresh=0; rwr_missile=false;\n\taudio_rwr\(RWR\.locked\(\),level\); \}/)
   })
   it('scale the lock warble and the new-threat chirp by that level', () => {
     const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')

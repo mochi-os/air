@@ -46,15 +46,32 @@
   ); /* opaque — the scene showing through read as map features */
 }
 
-/* fps + 1% low readout, top-right; shown only when the Framerate graphics setting is on */
+/* The top-right corner: single player's time compression while it is not 1×,
+   then the fps + 1% low readout when the Framerate graphics setting is on, and
+   under them, in amber, a warning that the world has slowed. Written as the
+   top-left radio and hint log is, with no box, and above the map, which is
+   opaque. */
 .air-game #framerate {
+  position: fixed;
   top: 10px;
   right: 10px;
   display: none;
-  padding: 5px 10px;
-  font-size: 12px;
-  letter-spacing: 0.3px;
+  font:
+    15px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  color: #9fd0ff;
+  text-shadow: 1px 1px 0 #00000090;
+  white-space: nowrap;
+  text-align: right;
   pointer-events: none;
+  user-select: none;
+  z-index: 25;
+}
+
+.air-game #framerate .warning {
+  color: var(--hud-amber);
 }
 
 .air-game .panel {

@@ -406,6 +406,19 @@ it('records the structural total and the wing loss as separate channels', () => 
   expect(wounded).not.toContain('Wing=8.71')
 })
 
+// Single player's time compression rides the ownship as Compression=, written
+// at the start and on each change, so a replay can follow it and a debrief can
+// tell a compressed cruise from a fight.
+it('records the time compression once at the start and again on each change', () => {
+  const jet = (compression: number): Sample['objects'][number] => ({
+    id: 1, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0, name: 'FA-18C', label: 'P', colour: 'Blue', kind: 'Air+FixedWing',
+    data: { compression },
+  })
+  const text = acmi([1, 1, 4, 4, 64, 0.25, 1].map((rate, k) => ({ time: k / 10, objects: [jet(rate)] })), new Date(0), 't')
+  const written = text.split('\n').filter((l) => l.startsWith('1,T=')).map((l) => /Compression=([\d.]+)/.exec(l)?.[1] ?? null)
+  expect(written).toEqual(['1', null, '4', null, '64', '0.25', '1'])
+})
+
 // Missiles are their own objects and the ownship carries the HUD's cue and
 // its stores count (#33 debrief). Before this a fight won with six 9Ms
 // recorded two structural wounds on the bandit and nothing else, and the
@@ -1726,7 +1739,7 @@ describe("the ownship's death in the recording", () => {
   it('is wired where the engine samples and where the jet dies', () => {
     expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
     const sample = lift('recording_sample')
-    expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tconst own=own_record\(due\);/)
+    expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tif\(!due\) return;[^\n]*\n\tconst own=own_record\(due\);/)
     expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)
     expect(sample).toMatch(/\n\tif\(own!=="gone"\) add\(ownship,1,/)
   })

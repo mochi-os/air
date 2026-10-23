@@ -194,7 +194,7 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
     const c = record(), nav = navigate.fresh(1)
     navigate.ready(nav, { x: 0, z: 0 })
     change(nav)
-    const left = new Function('hctx', 'pa', 'bore', 'hs', 'GR', 'navigate', 'nav', 'reference', 'fpm', 'ghost', 'sim_time',
+    const left = new Function('hctx', 'pa', 'bore', 'hs', 'GR', 'navigate', 'nav', 'reference', 'fpm', 'ghost', 'glance',
       `${section('\t// ---- waterline symbol', '\t// ---- the velocity vector')} return { fpm, ghost };`)(c.hctx, pa, [100, 100], 1, 'g', navigate, nav, reference, [50, 60], [70, 60], time) as { fpm: number[] | null; ghost: number[] | null }
     return { paths: c.paths, ...left }
   }
@@ -228,7 +228,7 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
 
   it('draws the ghost as the wings and tail without the circle, solid', () => {
     const c = record()
-    new Function('hctx', 'fpm', 'ghost', 'fpm_limited', 'ghost_limited', 'cage', 'bore', 'hs', 'GR', 'sim_time', 'hud_ladder',
+    new Function('hctx', 'fpm', 'ghost', 'fpm_limited', 'ghost_limited', 'cage', 'bore', 'hs', 'GR', 'glance', 'hud_ladder',
       `${section('\t// ---- the velocity vector, placed above', '\t// ---- the course line')}`)(c.hctx, [100, 100], [140, 100], false, false, true, [100, 80], 1, 'g', 0, {})
     expect(c.arcs.map(([x, y]) => [x, y])).toEqual([[100, 100]])
     const ghost = c.paths.find(path => path.points.some(([, x]) => x > 125))
