@@ -72,8 +72,9 @@ export const STATE = {
 } as const
 const EXTRA = 8
 
-const DT = 1 / 240
+const DT = 1 / 240 // the core's step: what the server and multiplayer prediction always fly
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
+let stride = DT // the seconds a core step covers now: DT, or as much as 1/60 s while single player's time compression runs
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
 // demands, ±1.
@@ -115,6 +116,7 @@ interface Core {
   set(state: Uint8Array): string
   get(state: Uint8Array): string
   frame(input: Uint8Array, output: Uint8Array): string
+  interval?(seconds: number): string
   mark(input: Uint8Array): string
   ack(sequence: number, state: Uint8Array): number
   level(
@@ -327,17 +329,35 @@ export function flight_frame(
   elapsed: number
 ): Float64Array {
   accumulator += Math.max(0, elapsed)
-  let count = Math.floor(accumulator / DT)
+  let count = Math.floor(accumulator / stride)
   if (count > CAP) {
     count = CAP
     accumulator = 0 // a long stall: drop the debt rather than fast-forward
   } else {
-    accumulator -= count * DT
+    accumulator -= count * stride
   }
   steps.value = count
   fill(controls, count)
   core?.frame(input_bytes, output_bytes)
   return output
+}
+
+// flight_debt is the seconds of flight the last frame left unstepped, less
+// than a step: slow motion draws the jet that far along, rather than stopping
+// it between steps.
+export function flight_debt(): number {
+  return accumulator
+}
+
+// flight_interval sets the seconds each core step covers, for the pilot's model
+// and the bandit's: DT, or longer while single player's time compression runs,
+// where the step count a frame needs would otherwise outrun the frame. A 1/60 s
+// step stays within about 1.6 degrees of attitude of DT over half a minute of
+// hard turning (world flight TestIntervalCompression).
+export function flight_interval(seconds: number): void {
+  if (seconds === stride) return
+  stride = seconds
+  core?.interval?.(seconds)
 }
 
 // flight_mark records the post-frame state under the sample's sequence for

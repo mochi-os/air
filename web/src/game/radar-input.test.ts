@@ -119,7 +119,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number; vx?: numbe
      const wrap_axis=(v)=>v;
      const MULTIPLAYER=false; let designated=-1;
      let radar_events=[];
-     let sim_time=0, castle=null;
+     let sim_time=0, glance=0, castle=null;
      const radar_cursor={ azimuth:0, range:0 };
      const ownship={ pos:{x:0,y:0,z:0}, fwd:{x:0,y:0,z:-1}, up:{x:0,y:1,z:0}, right:{x:1,y:0,z:0}, gauges:{heading:0} };
      const pad_levers={}, hotas={ tdc:{ x:0, y:0, at:-Infinity } };
@@ -133,7 +133,7 @@ function rig(contacts: { id: string; x: number; y: number; z: number; vx?: numbe
        rdrClick:(azimuth,range)=>rdr_face(rdr_x(azimuth,RADAR.half()),rdr_y(range,RADAR.scale*NM)),
        rdrX:(azimuth)=>rdr_x(azimuth,RADAR.half()),
        rdrPress:(pb)=>rdr_press(pb),
-       events:()=>radar_events, clock:(t)=>{ sim_time=t; },
+       events:()=>radar_events, clock:(t)=>{ sim_time=t; glance=t; },
        sensor, slew:tdc_slew, tdc:tdc_press, acm:acm_press, cursor:radar_cursor, grid:(up)=>{ grid_up=up; return grid_calls; },
        levers:pad_levers, state:()=>({ designator, master }), set:(d,m)=>{ designator=d; master=m; }, show:(d,p)=>{ ddi_state[d].page=p; },
        helmet:(on)=>{ Object.assign(hmd,helmet.fresh(on,{ azimuth:0, elevation:0, roll:0 },0)); }, look:(v)=>{ line=v; }, priority:()=>hmd.priority, castle:()=>castle };`
@@ -801,7 +801,7 @@ describe('the known picture: what the SA page and the map draw', () => {
 // The attack format's SHOOT and breakaway X, worked out by the mission computer rather than read from
 // the HUD's frame, which the head-down view never draws. The HUD's own cues come from the same pieces.
 describe("the attack format's cues (attack_cue)", () => {
-  const cue = (body: string) => new Function(`let master='9m', weapons_hold=false, sim_time=0, steered=true, landing=false;
+  const cue = (body: string) => new Function(`let master='9m', weapons_hold=false, glance=0, steered=true, landing=false;
     const THREE={MathUtils:{clamp:(v,a,b)=>Math.min(Math.max(v,a),b)}};
     const ownship={ msl:2, amraam:2 }, seeker_now={ lockon:true };
     let boxed={}, radar={ range:2000, closure:100 };
@@ -812,11 +812,11 @@ describe("the attack format's cues (attack_cue)", () => {
   it("lights the heater's SHOOT with a lock in its zone and the dot in the circle, flashing inside Rne", () => {
     expect(cue('return attack_cue();')).toEqual({ shoot: true, brk: false })
     for (const off of ['steered=false;', 'weapons_hold=true;', 'seeker_now.lockon=false;', 'ownship.msl=0;']) expect(cue(`${off} return attack_cue();`), off).toEqual({ shoot: false, brk: false })
-    expect([cue('heat.range=800; return attack_cue();').shoot, cue('heat.range=800; sim_time=0.3; return attack_cue();').shoot]).toEqual([true, false])
+    expect([cue('heat.range=800; return attack_cue();').shoot, cue('heat.range=800; glance=0.3; return attack_cue();').shoot]).toEqual([true, false])
   })
   it("lights the AMRAAM's from its zone, flashing inside Rne", () => {
     expect(cue("master='120c'; return attack_cue();")).toEqual({ shoot: true, brk: false })
-    expect([cue("master='120c'; amraam.range=5000; return attack_cue();").shoot, cue("master='120c'; amraam.range=5000; sim_time=0.3; return attack_cue();").shoot]).toEqual([true, false])
+    expect([cue("master='120c'; amraam.range=5000; return attack_cue();").shoot, cue("master='120c'; amraam.range=5000; glance=0.3; return attack_cue();").shoot]).toEqual([true, false])
   })
   it("crosses the format for the closing breakaway or either missile's minimum range, and holds SHOOT off then", () => {
     expect(cue('heat.range=200; return attack_cue();')).toEqual({ shoot: false, brk: true })

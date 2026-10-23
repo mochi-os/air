@@ -126,17 +126,26 @@ describe('the time lines', () => {
   })
 
   it('ET starts, freezes the display while timing continues, resumes, and a long hold resets', () => {
+    const at = (seconds: number) => new Date(noon.getTime() + seconds * 1000) // the clock, seconds on
     let s = fresh()
-    expect(face(reading(), s, noon, 100).elapsed).toBe('0:00:00')
-    s = press(s, 'et', 100) // start
-    expect(face(reading(), s, noon, 165).elapsed).toBe('0:01:05')
-    s = press(s, 'et', 170) // freeze at 1:10
-    expect(face(reading(), s, noon, 200).elapsed).toBe('0:01:10')
-    s = press(s, 'et', 200) // back to the running time, which never stopped
-    expect(face(reading(), s, noon, 220).elapsed).toBe('0:02:00')
-    s = press(s, 'et', 230, HOLD) // hold: stop and reset
-    expect(face(reading(), s, noon, 300).elapsed).toBe('0:00:00')
+    expect(face(reading(), s, at(100), 100).elapsed).toBe('0:00:00')
+    s = press(s, 'et', 100, 0, at(100)) // start
+    expect(face(reading(), s, at(165), 165).elapsed).toBe('0:01:05')
+    s = press(s, 'et', 170, 0, at(170)) // freeze at 1:10
+    expect(face(reading(), s, at(200), 200).elapsed).toBe('0:01:10')
+    s = press(s, 'et', 200, 0, at(200)) // back to the running time, which never stopped
+    expect(face(reading(), s, at(220), 220).elapsed).toBe('0:02:00')
+    s = press(s, 'et', 230, HOLD, at(230)) // hold: stop and reset
+    expect(face(reading(), s, at(300), 300).elapsed).toBe('0:00:00')
     expect(elapsed(3600 * 12 + 61)).toBe('9:01:01')
+  })
+  it('ET runs on the clock, not on the press time: under time compression the two part', () => {
+    const at = (seconds: number) => new Date(noon.getTime() + seconds * 1000)
+    let s = press(fresh(), 'et', 10, 0, at(10)) // started with the clock and the hand together
+    // a wall second later the clock, at 64x, has run on 64 s
+    expect(face(reading(), s, at(10 + 64), 11).elapsed).toBe('0:01:04')
+    s = press(s, 'et', 12, 0, at(10 + 128)) // frozen by the clock's reading
+    expect(face(reading(), s, at(10 + 640), 20).elapsed).toBe('0:02:08')
   })
 
 })
@@ -281,8 +290,9 @@ describe('the engine wiring', () => {
   it('reads the tanks from the FUEL page\'s apportionment, and gives the ZTOD the IFEI\'s clock, reset on a fresh jet', () => {
     expect(source).toMatch(/internal, external, tanks:fuel_tanks\(internal,\{ wing:gz\.wingRaw\?\?0, centre:gz\.centreRaw\?\?0 \},fuel_aboard\(\),wing_held\) \}; \}/)
     expect(source).toMatch(/zulu:ifei_zulu\(ifei_view\(\),now\),/)
-    expect(source).toMatch(/function ifei_view\(\)\{ ifei_state=ifei_settle\(ifei_state,performance\.now\(\)\/1000,new Date\(\)\);/)
-    expect(source).toMatch(/const next=ifei_press\(ifei_view\(\),button,performance\.now\(\)\/1000,hold\|\|0,new Date\(\)\);/)
+    expect(source).toMatch(/\n\tconst now=mission_clock\(\);/) // the cockpit clock and ZTOD run with the sim, under time compression too
+    expect(source).toMatch(/function ifei_view\(\)\{ ifei_state=ifei_settle\(ifei_state,performance\.now\(\)\/1000,mission_clock\(\)\);/)
+    expect(source).toMatch(/const next=ifei_press\(ifei_view\(\),button,performance\.now\(\)\/1000,hold\|\|0,mission_clock\(\)\);/)
     expect(source).toMatch(/\n\ttimer_reset\(\);[^\n]*\n\tifei_state=ifei_reset\(ifei_state,new Date\(\)\.getTimezoneOffset\(\)\/60\);/)
     expect(source).toMatch(/let ifei_state=ifei_fresh\(fuel_state\.bingo,new Date\(\)\.getTimezoneOffset\(\)\/60\)/)
   })
@@ -351,7 +361,7 @@ describe('the lights test face', () => {
     const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
     const line = /\nfunction ifei_current\(\)\{[^\n]*\n/.exec(engine)?.[0] ?? ''
     expect(line).not.toBe('')
-    const shown = (on: boolean, bit = false) => new Function('on', 'bit', `const lamps_testing=on, ifei_test=()=>"test", ifei_face=(r)=>r.rpm?r:"face", ifei_reading=()=>({ fuel:1 }), ifei_view=()=>0, avionics={ testing:(b,k)=>b&&k==="ifei" }; ${line} return ifei_current();`)(on, bit)
+    const shown = (on: boolean, bit = false) => new Function('on', 'bit', `const lamps_testing=on, ifei_test=()=>"test", ifei_face=(r)=>r.rpm?r:"face", ifei_reading=()=>({ fuel:1 }), ifei_view=()=>0, mission_clock=()=>0, avionics={ testing:(b,k)=>b&&k==="ifei" }; ${line} return ifei_current();`)(on, bit)
     expect([shown(true), shown(false)]).toEqual(['test', 'face'])
     expect(shown(false, true)).toEqual({ fuel: 1, rpm: [50, 50], egt: [555, 555], flow: [5200, 5200], noz: [40, 40], oil: [150, 150] }) // its initiated BIT: the test figures of 2.20.3.10.2, the fuel as it is
     expect(shown(true, true)).toBe('test')

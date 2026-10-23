@@ -7,11 +7,13 @@ import { type MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react'
 import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
+import { useFormat } from '@mochi/web'
 import { Button } from '@mochi/web/components/ui/button'
 import { Slider } from '@mochi/web/components/ui/slider'
 import {
   FastForward,
   LogOut,
+  Gauge,
   Pause,
   Play,
   Rewind,
@@ -33,6 +35,11 @@ import { SettingsDialog } from './SettingsDialog'
 // (KCAS, FT, NM, kt, IR, G, M, α, THR, CV) stay untranslated.
 const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   GUN: msg`GUN`,
+  // The frame rate readout's 99th percentile, after its figure; "fps" beside it is a unit
+  '1% low': msg`1% low`,
+  // The warning under the time compression readout when the machine cannot run
+  // the world as fast as the pilot asked: {rate} is the rate it reached, as 41×
+  'Slowed to {rate}': msg({ message: 'Slowed to {rate}' }),
   FLARES: msg`FLARES`,
   CHAFF: msg`CHAFF`,
   GEAR: msg`GEAR`,
@@ -278,8 +285,9 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
 // The in-game help line as actions, not key caps: the caps are read from the
 // binding table at render, so the line follows the player's remaps. Two actions
 // on one entry render as "W/S". Views (Digit1..5) are handled directly by
-// engine.ts, so they are appended as literals.
-const HINTS: { actions: string[]; label: React.ReactNode }[] = [
+// engine.ts, so they are appended as literals. A solo entry is single player's
+// alone, and left off the line in a match.
+const HINTS: { actions: string[]; label: React.ReactNode; solo?: boolean }[] = [
   { actions: ['pitch.down', 'pitch.up'], label: <Trans>pitch</Trans> },
   { actions: ['roll.left', 'roll.right'], label: <Trans>roll</Trans> },
   { actions: ['yaw.left', 'yaw.right'], label: <Trans>yaw</Trans> },
@@ -297,6 +305,11 @@ const HINTS: { actions: string[]; label: React.ReactNode }[] = [
   { actions: ['brake.wheel'], label: <Trans>brakes</Trans> },
   { actions: ['brake.speed'], label: <Trans>speed brake</Trans> },
   { actions: ['map'], label: <Trans>map</Trans> },
+  {
+    actions: ['time.slower', 'time.faster'],
+    label: <Trans>time</Trans>,
+    solo: true,
+  },
   { actions: ['chat'], label: <Trans>chat</Trans> },
   { actions: ['menu'], label: <Trans>menu</Trans> },
 ]
@@ -357,6 +370,8 @@ export function GameCanvas({
     clock: number
     duration: number
     held: boolean
+    compressed: boolean
+    following: boolean
   } | null>(null)
   useEffect(() => {
     if (!replay) return
@@ -386,6 +401,9 @@ export function GameCanvas({
   const { i18n } = useLingui()
   const i18nRef = useRef(i18n)
   i18nRef.current = i18n
+  const { formatNumber } = useFormat()
+  const formatRef = useRef(formatNumber)
+  formatRef.current = formatNumber
   // The player's remap wins over the default, exactly as the engine's key_of does.
   const binding = (action: string) =>
     config?.keys?.[action] ?? KEY_DEFAULTS[action]
@@ -420,6 +438,7 @@ export function GameCanvas({
         onChat: (scope) => setChat(scope as Scope),
         replay,
         translate,
+        figure: (value, decimals) => formatRef.current(value, decimals),
       })
     } catch (error) {
       // The engine constructor throws where WebGL 2 is missing (#55): return
@@ -528,7 +547,10 @@ export function GameCanvas({
       <canvas id='stage' ref={stageRef} tabIndex={0} />
       <canvas id='hud' ref={hudRef} />
       <canvas id='map' ref={mapRef} />
-      <div className='panel' id='framerate' ref={framerateRef} />
+      <div id='framerate' ref={framerateRef}>
+        <div />
+        <div className='warning' />
+      </div>
       {replay && timeline && !menu && (
         <div className='fixed bottom-6 left-1/2 z-30 flex w-[min(46rem,calc(100vw-2rem))] -translate-x-1/2 items-center gap-1 rounded border border-white/30 bg-black/70 px-2 py-1 text-white'>
           <button
@@ -573,6 +595,26 @@ export function GameCanvas({
           >
             <FastForward className='size-4' />
           </button>
+          {timeline.compressed && (
+            // the pilot compressed time on this flight: play it back at their rate, or in real time
+            <button
+              type='button'
+              aria-label={t`Follow time compression`}
+              aria-pressed={timeline.following}
+              title={t`Follow time compression`}
+              className={
+                timeline.following
+                  ? 'rounded p-1.5 text-white'
+                  : 'rounded p-1.5 text-white/50 hover:text-white'
+              }
+              onClick={() => {
+                handleRef.current?.follow(!timeline.following)
+                setTimeline(handleRef.current?.timeline() ?? null)
+              }}
+            >
+              <Gauge className='size-4' />
+            </button>
+          )}
           <span className='px-2 font-mono text-xs whitespace-nowrap tabular-nums'>
             {clock(timeline.clock)} / {clock(timeline.duration)}
           </span>
@@ -833,15 +875,17 @@ export function GameCanvas({
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>; the action beside each is prose and stays wrapped. The two <b> below
             are emphasis on translated text, not keys. Legends derive from the binding table - hand-written ones went stale. */}
-        {HINTS.map(({ actions, label }, index) => (
-          <span key={index}>
-            {index > 0 && ' · '}
-            <kbd>
-              {actions.map((action) => pretty(binding(action))).join('/')}
-            </kbd>{' '}
-            {label}
-          </span>
-        ))}
+        {HINTS.filter((hint) => !hint.solo || !join).map(
+          ({ actions, label }, index) => (
+            <span key={index}>
+              {index > 0 && ' · '}
+              <kbd>
+                {actions.map((action) => pretty(binding(action))).join('/')}
+              </kbd>{' '}
+              {label}
+            </span>
+          )
+        )}
         {' · '}
         <Trans>
           <kbd>1</kbd>–<kbd>5</kbd> for the view

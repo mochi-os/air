@@ -138,7 +138,7 @@ describe('the break stands on the glass until the roll-out', () => {
   it('retires only the lines a surface raised itself', () => {
     // The break and the 90 are one key in both patterns, and each surface's
     // 6 NM retirement took the other surface's break and 90 down every frame.
-    expect(source).toMatch(/hint_rows=rows; hint_key=key; hint_since=sim_time; hint_set=hinting;/)
+    expect(source).toMatch(/hint_rows=rows; hint_key=key; hint_since=glance; hint_set=hinting;/)
     expect(runway).toMatch(/^unction hints_runway\(st\)\{ hinting="runway";/)
     expect(carrier).toMatch(/^unction hints_carrier\(st\)\{ hinting="carrier";/)
     expect(body('hints_launch')).toMatch(/^unction hints_launch\(ship\)\{ hinting="launch";/)
@@ -260,12 +260,12 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     expect(launch).toMatch(/if\(ownship\.launching\) stroked=true;/)
     expect(launch).toMatch(/if\(!ownship\.launching\) hint\(HINT\.flyaway\);/)
     expect(launch).toMatch(/\(ownship\.vely\?\?0\)>0\.508/)
-    expect(launch).toMatch(/sim_time-rising>=1&&\(hint_key!==HINT\.flyaway\|\|sim_time-hint_since>=2\)\) hint\(HINT\.positive\)/)
+    expect(launch).toMatch(/sim_time-rising>=1&&\(hint_key!==HINT\.flyaway\|\|glance-hint_since>=2\)\) hint\(HINT\.positive\)/)
   })
 
   it('shows the departure once clean, after the gear call has been read', () => {
     expect(launch).toMatch(/const clean=\(ownship\.gearTarget\?\?0\)>0\.5&&flap_select===0;/)
-    expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|sim_time-hint_since>=3\)\) hint\(HINT\.clearing,\{side:cat_idx<2\?translate\("right"\):translate\("left"\)/)
+    expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|glance-hint_since>=3\)\) hint\(HINT\.clearing,\{side:cat_idx<2\?translate\("right"\):translate\("left"\)/)
   })
 
   it('ends the departure at 7 miles, or when the pilot leaves it', () => {
@@ -285,7 +285,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // One standard display time, applied where every set is dispatched, so a
     // line with nothing to wait for cannot stand on the glass for minutes.
     expect(source).toMatch(/const HINT_DWELL=5;/)
-    expect(watch).toMatch(/if\(hint_key!=null&&!WAITING\.has\(hint_key\)&&sim_time-hint_since>=HINT_DWELL\) hint_rows=hint_key=null;/)
+    expect(watch).toMatch(/if\(hint_key!=null&&!WAITING\.has\(hint_key\)&&glance-hint_since>=HINT_DWELL\) hint_rows=hint_key=null;/)
     // The lines whose end the sets track from the pilot doing what they say.
     const waiting = source.match(/const WAITING=new Set\(\[([^\]]*)\]\)/)?.[1] ?? ''
     expect(waiting.split(',').map((key) => key.replace('HINT.', '')).sort()).toEqual(

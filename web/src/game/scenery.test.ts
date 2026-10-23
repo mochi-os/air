@@ -97,6 +97,19 @@ describe('the scenery', () => {
     expect(wire).toMatch(/map\?: \{ name: string; hash: string \}/)
   })
 
+  it('sweeps the midair over the world step, so a long step cannot fly two jets through each other', () => {
+    const run = (dt: number, gap: number) => new Function('dt', 'gap', `const THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(b,Math.max(a,v)) } }, wrap_axis=(v)=>v;
+      const crashed=[]; let crash_t=0, has_enemy=true; const BANDIT='bandit', bandit_destroy=()=>{}, crash_ownship=(why)=>{ crashed.push(why); }, ground_height=()=>0;
+      const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-250 }, bandit={ pos:{ x:5, y:3000, z:gap }, velx:0, vely:0, velz:250 };
+      ${body('swept')}
+${body('check_collisions')}
+check_collisions(dt); return crashed;`)(dt, gap) as string[]
+    // head on at 500 m/s closure, 5 m apart abeam: at the end of a 1/15 s step they are 20 m past
+    // each other, having passed within 5 m 0.04 s before
+    expect(run(1 / 15, 20)).toEqual(['midair'])
+    expect(run(1 / 15, 60)).toEqual([]) // 60 m past at the step's end: within the step they came no closer than 27 m
+    expect(run(1 / 15, -20)).toEqual([]) // 20 m apart and still closing: the pass is the next step's
+  })
   it('leaves the client no scenery test of its own: the crash probes judge buildings, masts and the island', () => {
     const check = body('check_collisions')
     expect(check).not.toMatch(/obstacles\.buildings|obstacles\.posts|deck_y_at|"building"|"post"|"island"/)

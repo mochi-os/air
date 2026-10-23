@@ -23,6 +23,13 @@ import * as THREE from 'three'
 import { amplitudes, CASCADES, SIZE, type Wind } from './spectrum'
 
 export const CHOPPY = 1.25
+// REPEAT is the seconds after which the FFT sea repeats exactly: each wave's
+// frequency is rounded to whole cycles in it (the dispersion's repeat time), so
+// its clock wraps there without a seam and its phases stay small enough for a
+// float however long the world has run - which time compression makes days.
+// It divides the analytic sea's period (engine.ts SEA_PERIOD), which the clock
+// handed to update has already been wrapped by.
+export const REPEAT = 1024
 
 const VERTEX = `void main(){ gl_Position=vec4(position.xy,0.0,1.0); }`
 
@@ -39,7 +46,8 @@ void main(){
 	vec2 k=vec2(float(x-${SIZE / 2}),float(p.y-${SIZE / 2}))*(6.2831853/L); float kl=length(k);
 	if(kl<1.0e-6){ o_first=vec4(0.0); o_second=vec4(0.0); return; }
 	vec4 h0=texelFetch(u_amplitudes,p,0);
-	float w=sqrt(9.81*kl+7.4e-5*kl*kl*kl); float phase=w*u_time; vec2 e=vec2(cos(phase),sin(phase));
+	float w=sqrt(9.81*kl+7.4e-5*kl*kl*kl); w=floor(w*${REPEAT / (2 * Math.PI)}+0.5)*${(2 * Math.PI) / REPEAT};   // whole cycles in REPEAT s
+	float phase=w*u_time; vec2 e=vec2(cos(phase),sin(phase));
 	vec2 h=cmul(h0.xy,vec2(e.x,-e.y))+cmul(h0.zw,e);   // travels along +k
 	vec2 ih=muli(h); float ik=1.0/kl;
 	vec2 dx=ih*(u_choppy*k.x*ik), dz=ih*(u_choppy*k.y*ik);
@@ -181,7 +189,7 @@ export class Waves {
     const was = renderer.getRenderTarget(),
       clear = renderer.autoClear
     renderer.autoClear = false // every pass writes every texel of its target: a clear first is bandwidth for nothing
-    this.evolve.uniforms.u_time.value = time
+    this.evolve.uniforms.u_time.value = time % REPEAT
     this.pass(renderer, this.evolve, this.ping)
     let from = this.ping,
       to = this.pong

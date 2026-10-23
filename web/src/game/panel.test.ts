@@ -46,11 +46,11 @@ const running = words(), stopped = words({ spoolL: 0, spoolR: 0 })
 type System = any
 function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multiplayer?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
-  return new Function('THREE', 'STATE', 'o', `let sim_time=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
+  return new Function('THREE', 'STATE', 'o', `let sim_time=0, glance=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
-    return { press:pit_press, step(t,out){ sim_time=t; power_step(out); }, at(t){ sim_time=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
+    return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, at(t){ sim_time=t; glance=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
@@ -610,7 +610,7 @@ function drive(name: string, setup: string, entry = name): number {
   const cases = /\n\t\tcase "warncaut": f=knob_level\("warn"\); break;[\s\S]*?\n\t\tcase "travel": [^\n]*\n/.exec(source)?.[0] ?? ''
   if (!cases) throw new Error('panel drives not found in engine.ts')
   const detents = /\nconst BLEED_DETENTS=[^\n]*\n/.exec(source)?.[0] ?? ''
-  return new Function(`const knob_level=()=>0.5, sim_time=10, r={ name:${JSON.stringify(entry)} }; let reference="auto", rudder_trim=0;
+  return new Function(`const knob_level=()=>0.5, sim_time=10, glance=10, r={ name:${JSON.stringify(entry)} }; let reference="auto", rudder_trim=0;
     const electrics={ battery:"on", switches:[true,true] }, ecs={ bleed:1 }, fire_test={ at:-Infinity, loop:0 }, transfer={ wing:0, centre:0 }, thrown={}, TRAVEL={ crank:3, apu:2 }, TRAVEL_REST={ crank:1 };
     const travel_at=(n)=>thrown[n]??TRAVEL_REST[n]??0; ${detents} ${setup} let f; switch(${JSON.stringify(name)}){ ${cases} } return f;`)() as number
 }

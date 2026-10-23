@@ -14,19 +14,20 @@ import { MESSAGES, SPOKEN, voice_queue, voice_step, type Message } from './voice
 // hud-status.test.ts does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const tool = readFileSync(fileURLToPath(new URL('../../../tools/voice.py', import.meta.url)), 'utf8')
-const tail = /\n\tcaution_list=rows;\n[\s\S]*?\n\tvoice_step\(voice,sim_time,active,audio_voice\); \}\n/.exec(source)?.[0] ?? ''
+const tail = /\n\tcaution_list=rows;\n[\s\S]*?\n\tvoice_step\(voice,sim_time,glance,active,audio_voice\); \}\n/.exec(source)?.[0] ?? ''
 const constants = ['DDI_CAPTIONS', 'relight', 'BATTERY_VOICES'].map((n) => new RegExp(`\\nconst ${n}=[^\\n]*\\n`).exec(source)?.[0] ?? '').join('')
 const ground = /\n\t\t\t\{ const slow=\(ownship\.cas\?\?ownship\.speed\)<102\.9;[\s\S]*?gpws\.waveoff\)>60; \}\n/.exec(source)?.[0] ?? ''
 
 const LENGTH: Record<Message, number> = { 'PULL UP': 1.3, POWER: 1.3, 'ROLL LEFT': 1.7, 'ROLL RIGHT': 1.7, 'ENGINE FIRE LEFT': 2.8, 'ENGINE FIRE RIGHT': 2.7, 'CHECK GEAR': 1.7, ALTITUDE: 1.7, 'FLIGHT CONTROLS': 2.6, 'ENGINE LEFT': 2.1, 'ENGINE RIGHT': 2, 'FUEL LOW': 1.6, BINGO: 1.1 }
 
-// Runs the queue at 10 Hz from 0 to end seconds, with the messages each time
-// has on, and returns what started when.
-function listen(end: number, on: (time: number) => Message[]): [number, Message][] {
+// Runs the queue at 10 Hz of the world's clock from 0 to end seconds, with the
+// messages each time has on, and returns what started when; rate is the time
+// compression, the world's seconds to a wall second.
+function listen(end: number, on: (time: number) => Message[], rate = 1): [number, Message][] {
   const queue = voice_queue(), heard: [number, Message][] = []
   for (let tick = 0; tick <= end * 10; tick++) {
     const time = tick / 10
-    voice_step(queue, time, new Set(on(time)), (message) => { heard.push([time, message]); return LENGTH[message] })
+    voice_step(queue, time, time / rate, new Set(on(time)), (message) => { heard.push([time, message]); return LENGTH[message] })
   }
   return heard
 }
@@ -68,6 +69,21 @@ describe('the voice alert queue', () => {
     expect(listen(30, () => ['CHECK GEAR']).map(([time]) => time)).toEqual([0, 8, 16, 24])
     expect(listen(100, (t) => (t < 40 ? ['BINGO'] : [])).map(([time]) => time)).toEqual([0, 30]) // refuelled
   })
+
+  it('plays each message out at its own length while the world runs fast, its repeats on the world\'s clock', () => {
+    const fast = listen(120, () => ['BINGO'], 64) // 1.1 s of BINGO and the gap are 90 s of the world at 64x
+    expect(fast.map(([time]) => time)).toHaveLength(2)
+    expect(fast[1][0]).toBeGreaterThanOrEqual(64 * (LENGTH.BINGO + 0.3) - 1e-9); expect(fast[1][0]).toBeLessThan(64 * (LENGTH.BINGO + 0.3) + 0.2) // the first 10 Hz tick after it
+    expect(listen(30, () => ['BINGO'], 0.25).map(([time]) => time)).toEqual([0, 30]) // slow motion: the repeat is the world's 30 s, two minutes of the pilot's
+    const waiting = listen(300, (t) => (t >= 1 ? ['FUEL LOW', 'ENGINE FIRE LEFT'] : ['FUEL LOW']), 16)
+    expect(waiting[1][1]).toBe('ENGINE FIRE LEFT')
+    expect(waiting[1][0]).toBeGreaterThanOrEqual(16 * (LENGTH['FUEL LOW'] + 0.3) - 1e-9) // FUEL LOW is never cut short
+    expect(waiting[1][0]).toBeLessThan(16 * (LENGTH['FUEL LOW'] + 0.3) + 0.2)
+    const late = listen(300, (t) => (t >= 41 ? ['FUEL LOW', 'ENGINE FIRE LEFT'] : t >= 40 ? ['FUEL LOW'] : []), 16) // the world 40 s in, the pilot 2.5 s
+    expect(late.map(([, message]) => message)).toEqual(['FUEL LOW', 'ENGINE FIRE LEFT'])
+    expect(late[1][0]).toBeGreaterThanOrEqual(40 + 16 * (LENGTH['FUEL LOW'] + 0.3) - 1e-9)
+    expect(late[1][0]).toBeLessThan(40 + 16 * (LENGTH['FUEL LOW'] + 0.3) + 0.2)
+  })
 })
 
 describe('the messages', () => {
@@ -106,7 +122,7 @@ describe('the messages', () => {
 })
 
 type Row = [string, string, boolean]
-interface Moment { rows: Row[]; ready: boolean; gear?: boolean; altitude?: boolean; call?: string; test?: boolean; captions?: string[]; battery?: boolean; grounded?: boolean; rpm?: number; reset?: boolean; essential?: boolean; fire?: boolean }
+interface Moment { rows: Row[]; ready: boolean; dt?: number; rate?: number; gear?: boolean; altitude?: boolean; call?: string; test?: boolean; captions?: string[]; battery?: boolean; grounded?: boolean; rpm?: number; reset?: boolean; essential?: boolean; fire?: boolean }
 interface Result { tones: string[]; lamp: boolean; active: string[] }
 // Runs cautions_update's tail once per moment, and returns each moment's tones,
 // the MASTER CAUTION lamp and the messages handed to the queue. The fuel is under
@@ -117,17 +133,17 @@ interface Result { tones: string[]; lamp: boolean; active: string[] }
 // CAUTION press (reset).
 function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
-  const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_list=[], sim_time=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
+  const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_free=-1e9, caution_list=[], sim_time=0, glance=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
     const voice={}, gpws={gear:false, call:""}, ownship={ grounded:false, gauges:{} }; ${constants}
     let buses={ ac:true, essential:true }, firetest=false; const fire_testing=()=>firetest;
-    const audio_caution=()=>tones.push("caution"), audio_voiced=()=>ready, audio_voice=()=>0;
-    const voice_step=(queue,time,set)=>{ active_passed=[...set]; };
-    function cautions_update(rows,test,m){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO");
+    const audio_caution=()=>{ tones.push("caution"); return 0.5; }, audio_voiced=()=>ready, audio_voice=()=>0;
+    const voice_step=(queue,time,wall,set)=>{ active_passed=[...set]; };
+    function cautions_update(rows,test,m,dt){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO");
       const captions=m.captions??rows.map((r)=>DDI_CAPTIONS[r[0]]).filter(Boolean), battery=!!m.battery; ${tail}
-    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; sim_time+=1/60; if(m.altitude) altitude_called=sim_time;
+    return moments.map((m)=>{ ready=m.ready; gpws.gear=!!m.gear; gpws.call=m.call??""; tones=[]; const dt=m.dt??1/60; sim_time+=dt; glance+=dt/(m.rate??1); if(m.altitude) altitude_called=sim_time;
       ownship.grounded=!!m.grounded; ownship.gauges={ rpmL:m.rpm??0, rpmR:m.rpm??0 }; if(m.reset) caution_lamp=false;
       buses={ ac:!m.battery, essential:m.essential??true }; firetest=!!m.fire;
-      cautions_update(m.rows,!!m.test,m); return { tones, lamp:caution_lamp, active:active_passed }; });`)
+      cautions_update(m.rows,!!m.test,m,dt); return { tones, lamp:caution_lamp, active:active_passed }; });`)
   return run(SPOKEN, moments) as Result[]
 }
 const row = (key: string, red = false): Row => [key, key, red]
@@ -251,6 +267,16 @@ describe('the voice takes over from the caution tone', () => {
     const minute = (ready: boolean) => cautions(Array.from({ length: 3700 }, () => ({ rows: [row('BINGO')], ready })))
     expect(minute(false).flatMap((m) => m.tones)).toEqual(['caution', 'caution', 'caution']) // the new caution, then 30 s and 60 s
     expect(minute(true).flatMap((m) => m.tones)).toEqual([])
+  })
+
+  it('counts the BINGO repeat in seconds, whatever the frame rate', () => {
+    const minute = cautions(Array.from({ length: 7400 }, () => ({ rows: [row('BINGO')], ready: false, dt: 1 / 120 })))
+    expect(minute.flatMap((m) => m.tones)).toEqual(['caution', 'caution', 'caution']) // 61.7 s at 120 fps: the new caution, then 30 s and 60 s
+  })
+
+  it('plays the tone out whole before the next while the world runs fast', () => {
+    const fast = cautions(Array.from({ length: 3700 }, () => ({ rows: [row('BINGO')], ready: false, rate: 64 }))) // 61.7 s of the world in under a second
+    expect(fast.flatMap((m) => m.tones)).toEqual(['caution', 'caution']) // the 30 s repeat waits for the first tone's half second, and the 60 s one moves past the end
   })
 
   it('says FUEL LOW alone for a FLBIT above bingo, and does not repeat BINGO for it', () => {

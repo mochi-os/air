@@ -24,9 +24,9 @@ function indexer(moments: Moment[]): Result[] {
   if (!block) throw new Error('indexer block not found in engine.ts')
   const run = new Function('moments', `const D2R=Math.PI/180, glow=1, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:0,grounded:false};
-    let sim_time=0, hook_bypass="carrier", buses={ essential:true };
+    let glance=0, hook_bypass="carrier", buses={ essential:true };
     const out=[8.1*D2R, 1];
-    return moments.map((m)=>{ ownship.hook=m.hook; hook_bypass=m.bypass; sim_time=m.time; buses={ essential:m.essential??true };
+    return moments.map((m)=>{ ownship.hook=m.hook; hook_bypass=m.bypass; glance=m.time; buses={ essential:m.essential??true };
       if(false){} ${block}
       return { lit: ind.donut.opacity>0.5, bypass: hook_bypass }; });`)
   return run(moments) as Result[]
@@ -41,7 +41,7 @@ function testing(on: boolean): number[] {
   if (!block || !tested) throw new Error('indexer block not found in engine.ts')
   return new Function('on', `const D2R=Math.PI/180, glow=1, buses={ essential:true }, STATE={alpha:0, extension:1}, INDEXER_TEST="", lamps_testing=on;
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:true};
-    let sim_time=0, hook_bypass="carrier";
+    let glance=0, hook_bypass="carrier";
     const out=[8.1*D2R, 0];
     ${tested}${block}
     return [ind.slow.opacity, ind.donut.opacity, ind.fast.opacity];`)(on) as number[]
@@ -87,7 +87,7 @@ function lamps(alpha: number): { slow: number; donut: number; fast: number } {
   if (!block) throw new Error('indexer block not found in engine.ts')
   return new Function('alpha', `const D2R=Math.PI/180, glow=1, buses={ essential:true }, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:false};
-    let sim_time=0, hook_bypass="carrier";
+    let glance=0, hook_bypass="carrier";
     const out=[alpha*D2R, 1];
     if(false){} ${block}
     return { slow:ind.slow.opacity, donut:ind.donut.opacity, fast:ind.fast.opacity };`)(alpha)
@@ -285,7 +285,7 @@ function press(action: string, direction: number, state: Pit = {}): Pressed {
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopy:state.canopy??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let canopy_gone=!!state.gone, cranked=false, seat_armed=state.armed??true; const buses={ essential:state.essential??true };
     let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity;
-    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
+    const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, glance=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn} ${foldfn} ${crankfn}
     fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
     pit_press(action, direction);
@@ -491,7 +491,7 @@ describe('the clickable switches', () => {
   })
 
   it('put the LT TEST switch to TEST on a click, from which it springs back', () => {
-    expect(press('lights.test', 1).clicked).toBe(10) // the click's sim_time
+    expect(press('lights.test', 1).clicked).toBe(10) // the click's time on the pilot's clock
     expect(press('lights.test', -1).clicked).toBe(10)
     expect(press('sari.test', 0).sari).toBe(10) // the standby attitude indicator's TEST switch too
   })

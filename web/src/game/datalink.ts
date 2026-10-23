@@ -226,9 +226,10 @@ export function notice(link: Link, time: number): string {
   return time - link.ten < NOTICE ? '10 SEC' : ''
 }
 // flashing: DATA on the HUD, twice a second for ten seconds after new data
-// comes up on the Link 4 display (24.6.1.1.2).
-export function flashing(link: Link, time: number): boolean {
-  return time - link.data < 10 && Math.floor(time * 4) % 2 === 0
+// comes up on the Link 4 display (24.6.1.1.2). The ten seconds are the jet's
+// (time), the flash the pilot's eye's (wall), as the autopilot's cue.
+export function flashing(link: Link, time: number, wall = time): boolean {
+  return time - link.data < 10 && Math.floor(wall * 4) % 2 === 0
 }
 // couple: what the autopilot's CPL option couples to. The SPN-42's commands
 // in mode 1, both axes; else the controller's heading. A traffic control

@@ -133,7 +133,7 @@ describe('the waveoff', () => {
   it('lights the lens\'s waveoff lights for every waveoff the LSO calls, flashing in phase with it', () => {
     expect(lights).not.toBe('')
     const shown = (waving: boolean, since: number) => new Function('waving', 'since', `const o={ wavePts:{ visible:false } }, low=false;
-      const ownship={ waving, wavet:1000, groove:true }, performance={ now:()=>1000+since };
+      const ownship={ waving, wavet:1, groove:true }, sim_time=1+since/1000;
       ${lights} return o.wavePts.visible;`)(waving, since) as boolean
     expect(shown(true, 100)).toBe(true)    // a waveoff on lineup, on glideslope: the lens is not low
     expect(shown(true, 300)).toBe(false)   // the dark half of the flash
@@ -144,7 +144,7 @@ describe('the waveoff', () => {
   it('has PADDLES call it on the radio once, as the call begins', () => {
     expect(call).not.toBe('')
     const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, HINT={ abort:'a', wave:'w' };
-      const performance={ now:()=>1000 }, radio=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
+      const sim_time=1, radio=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
       for(let i=0;i<frames;i++){ ${call}
       }
       return comms;`)(frames) as string[]
@@ -154,8 +154,8 @@ describe('the waveoff', () => {
 
   it('flashes the WAVE OFF banner in the HUD view only', () => {
     expect(banner).not.toBe('')
-    const drawn = (view: string) => new Function('view', `const shown=[], crash_t=0, net_notice_t=0, cfg={ view }, ownship={ waving:true, wavet:1000 };
-      const performance={ now:()=>1100 }, translate=(t)=>t, hud_message=(t)=>shown.push(t);
+    const drawn = (view: string) => new Function('view', `const shown=[], crash_t=0, net_notice_t=0, cfg={ view }, ownship={ waving:true, wavet:1 };
+      const sim_time=1.1, translate=(t)=>t, hud_message=(t)=>shown.push(t);
       ${banner}
       return shown;`)(view) as string[]
     expect(drawn('hud')).toEqual(['WAVE OFF'])

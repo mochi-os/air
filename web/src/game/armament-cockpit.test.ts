@@ -43,7 +43,7 @@ interface Jet { grounded?: boolean; handle?: number; gear?: number; rounds?: num
 function cockpit<T>(body: string, o: Jet = {}): T {
   for (const [name, text] of [['pit_press', press], ['the panels', panels]]) if (!text) throw new Error(name + ' not found in engine.ts')
   return new Function('o', ...Object.keys(modules), `const SHIP={ channels:[305000,262500,275800,318500], icls:11 }, CHAFF_LOAD=20, FLARE_LOAD=40, secured=o.pushed||[false,false], D2R=Math.PI/180;
-    let sim_time=0, master=o.master||"nav", apu_accumulator=0.4, isolate_clicked=3, taping="off", ufc_dirty=false, ddi_dirty=false, recalled=0;
+    let sim_time=0, glance=0, master=o.master||"nav", apu_accumulator=0.4, isolate_clicked=3, taping="off", ufc_dirty=false, ddi_dirty=false, recalled=0;
     const ownship={ gearTarget:o.handle??1, gear:o.gear??1, rounds:o.rounds??578, msl:o.missiles??2, amraam:o.amraams??4, failures:[7], loadout:{} }, on_ground=()=>!!o.grounded;
     const said=[], notice=(t)=>said.push(t), translate=(t)=>t, dropped=[], jettison_stations=(stations,what)=>{ dropped.push([stations,what]); return true; }, ddi_recall=()=>{ recalled++; };
     ${line('EMERGENCY_HOLD')} ${line('EMERGENCY_PAIRS')} ${line('emergency')} ${panels} ${lift('ddi_family')} ${lift('set_master')} ${line('air_weapon')} ${lift('air_press')} ${lift('jettison_press')} ${lift('emergency_update')} ${press}
@@ -170,8 +170,8 @@ describe('the selective jettison controls', () => {
 
 describe('the emergency jettison button', () => {
   // a click cannot be held, so it holds the button for the whole sequence: the three pairs, 0.3 s apart
-  const clicked = (frames: number, hold = '') => cockpit<[number[], string][]>(`${hold} sim_time=10; pit_press("jettison.emergency",0);
-    for(let k=0;k<${frames};k++){ emergency_update(0.05, sim_time-emergency_clicked<EMERGENCY_HOLD); sim_time+=0.05; } return dropped;`)
+  const clicked = (frames: number, hold = '') => cockpit<[number[], string][]>(`${hold} sim_time=10; glance=10; pit_press("jettison.emergency",0);
+    for(let k=0;k<${frames};k++){ emergency_update(0.05, glance-emergency_clicked<EMERGENCY_HOLD); sim_time+=0.05; glance+=0.05; } return dropped;`)
   it('releases the outboard pair, the inboard pair and the centreline with their racks from one click', () => {
     expect(clicked(40)).toEqual([[[2, 8], 'rack'], [[3, 7], 'rack'], [[5], 'rack']])
   })
@@ -182,7 +182,7 @@ describe('the emergency jettison button', () => {
     expect(clicked(40, 'arms.arm=false;')).toHaveLength(3)
   })
   it('is held by its key or by a click, each frame', () => {
-    expect(source).toMatch(/\n\temergency_update\(dt, keys\.has\(key_of\("jettison\.emergency"\)\)\|\|sim_time-emergency_clicked<EMERGENCY_HOLD\);/)
+    expect(source).toMatch(/\n\temergency_update\(dt\/world_rate\(\), keys\.has\(key_of\("jettison\.emergency"\)\)\|\|glance-emergency_clicked<EMERGENCY_HOLD\);/)
   })
 })
 

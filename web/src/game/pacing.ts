@@ -41,6 +41,11 @@ export class Pacing {
     this.since += length
   }
 
+  // settling is the second after a reset, whose frames are discarded
+  get settling(): boolean {
+    return this.skip > 0
+  }
+
   // The newest frames covering at least span ms, so one shader-compile hitch
   // is diluted by a second of frames while stalls arriving several times a
   // second still lift the mean. Mean and 90th percentile, in ms; null until a
@@ -69,5 +74,32 @@ export class Pacing {
       average: sorted.reduce((sum, v) => sum + v, 0) / sorted.length,
       low: sorted[Math.floor(sorted.length * 0.99)],
     }
+  }
+}
+
+// Hysteresis holds a warning on once its condition has held for `on` readouts
+// in a row, and off once it has been clear for `off`, so one hitch does not
+// flash it and a recovering machine does not flicker it.
+export class Hysteresis {
+  held = false
+  run = 0 // readouts in a row that disagree with what is held
+
+  constructor(
+    readonly on: number,
+    readonly off: number
+  ) {}
+
+  judge(bad: boolean): boolean {
+    if (bad === this.held) this.run = 0
+    else if (++this.run >= (bad ? this.on : this.off)) {
+      this.held = bad
+      this.run = 0
+    }
+    return this.held
+  }
+
+  reset() {
+    this.held = false
+    this.run = 0
   }
 }

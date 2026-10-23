@@ -313,7 +313,7 @@ describe('every jet, every frame', () => {
     const scene = { removed: [] as unknown[], remove(m: unknown) { this.removed.push(m) } }
     const contrails = new Set<Rig>()
     const made = { rigs: 0 }
-    const body = `let sim_time=0, crash_t=0;
+    const body = `let sim_time=0, crash_t=0, presenting=true;
       ${lift('contrail_air')}\n${lift('contrail_band')}\n${lift('contrail_shape')}\n${lift('contrail_lay')}\n${lift('contrail_vertices')}\n${lift('contrail_engines')}\n${lift('contrail_effects')}
       return { run:contrail_effects, clock:(t)=>{ sim_time=t }, crash:(t)=>{ crash_t=t } };`
     const w = new Function('ownship', 'bandit', 'remotes', 'scene', 'camera', 'renderer', 'contrails', 'presented', 'body_offset', 'nozzle', 'wrap_axis', 'contrail_rig', body)(
@@ -425,7 +425,7 @@ describe('every jet, every frame', () => {
 
 describe('the wiring', () => {
   it('runs the contrails after the gun effects each world step', () => {
-    expect(source).toMatch(/\n\tgun_effects\(dt\);[^\n]*\n\tcontrail_effects\(\);/)
+    expect(source).toMatch(/\n\tif\(presenting\) gun_effects\(framed\);[^\n]*\n\tcontrail_effects\(\);/)
   })
 
   it('reads each engine\'s achieved power beside its reheat for the ownship and the bandit', () => {

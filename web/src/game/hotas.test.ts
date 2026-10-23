@@ -76,7 +76,7 @@ describe('the stick and the pedals', () => {
 type Part = { node: string; move: () => [number, number, number] }
 function parts(o: { paddle?: boolean; tdc?: [number, number]; pressed?: number; target?: number; brake?: number; way?: number; dispensed?: number; atc?: number } = {}): Record<string, [number, number, number]> {
   if (!grip) throw new Error('GRIP not found in engine.ts')
-  const list = new Function('o', `const sim_time=10, ownship={ speedbrakeTarget:o.target??0, speedbrake:o.brake??0 }; ${constant('hotas')} ${lift('speedbrake_switch')}
+  const list = new Function('o', `const glance=10, ownship={ speedbrakeTarget:o.target??0, speedbrake:o.brake??0 }; ${constant('hotas')} ${lift('speedbrake_switch')}
     hotas.paddle=!!o.paddle; hotas.tdc.x=(o.tdc||[0,0])[0]; hotas.tdc.y=(o.tdc||[0,0])[1]; hotas.tdc.at=o.pressed??-Infinity;
     hotas.dispense.way=o.way??0; hotas.dispense.at=o.dispensed??-Infinity; hotas.atc=o.atc??-Infinity;
     ${grip} return GRIP;`)(o) as Part[]
@@ -120,8 +120,8 @@ describe('the grips\' loose switches', () => {
   })
 
   it('press the ATC button with the ATC key, and the TDC with its own', () => {
-    expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=sim_time; pit_press\("atc",0\); \}/) // the grip's button, not the UFC's A/P selector
-    expect(lift('tdc_press')).toMatch(/hotas\.tdc\.at=sim_time;/)
+    expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=glance; pit_press\("atc",0\); \}/) // the grip's button, not the UFC's A/P selector
+    expect(lift('tdc_press')).toMatch(/hotas\.tdc\.at=glance;/)
   })
 })
 
@@ -131,7 +131,7 @@ describe('the grips\' loose switches', () => {
 describe('the dispense switch', () => {
   type Dispensed = { flares: number; chaff: number; flare: boolean; solo: boolean; bloom: boolean; dropped: string[]; way: number; said: string[]; lit: boolean }
   function dispense(way: number, o: { flares?: number; chaff?: number; squish?: number; cheat?: boolean; dispenser?: string; programme?: string } = {}): Dispensed {
-    return new Function('way', 'o', 'countermeasures', `const sim_time=5, ownship={ flares:o.flares??10, chaff:o.chaff??10, squish:o.squish??0 }, dropped=[], said=[];
+    return new Function('way', 'o', 'countermeasures', `const sim_time=5, glance=5, ownship={ flares:o.flares??10, chaff:o.chaff??10, squish:o.squish??0 }, dropped=[], said=[];
       let flare_flag=false, solo_flag=false, chaff_flag=false; ${constant('hotas')}
       const suite=countermeasures.fresh(true); suite.dispenser=o.dispenser||"on";
       const dispenser_programme=()=>countermeasures.PROGRAMMES[o.programme||"mixed"];

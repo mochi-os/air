@@ -292,9 +292,11 @@ export function advisories(ap: Autopilot): string[] {
 }
 // cue: whether the coupled cue shows on the HUD and HSI - steady while
 // coupled, flashing twice a second for ten seconds after a couple that failed
-// or let go by itself (24.2.9.3, 24.6.1.1.2).
-export function cue(ap: Autopilot, time: number): boolean {
-  return ap.modes.coupled || (time < ap.flash && Math.floor(time * 4) % 2 === 0)
+// or let go by itself (24.2.9.3, 24.6.1.1.2). The ten seconds are the jet's
+// (time); the flash is drawn for the pilot's eye (wall), so time compression
+// cannot turn it into a flicker.
+export function cue(ap: Autopilot, time: number, wall = time): boolean {
+  return ap.modes.coupled || (time < ap.flash && Math.floor(wall * 4) % 2 === 0)
 }
 
 // step flies a frame: the stick for each axis the autopilot holds, null for an
@@ -306,7 +308,9 @@ export function cue(ap: Autopilot, time: number): boolean {
 // are taken up afresh - pitch stick takes BALT and RALT off (2.9.2.3), half an
 // inch of roll stick decouples (2.9.2.6), either stick lets the carrier's
 // commands go (24.6.1.2.3), and under HSEL the turn simply resumes.
-export function step(ap: Autopilot, s: Sense, dt: number): { pitch: number | null; roll: number | null } {
+// step flies dt seconds; hand is the pilot's seconds in them (dt over the time
+// compression), which the trim switch held moves the references by.
+export function step(ap: Autopilot, s: Sense, dt: number, hand = dt): { pitch: number | null; roll: number | null } {
   const none = { pitch: null, roll: null }
   const tick = Math.max(dt, 1e-3)
   ap.acceleration += ((s.vertical - ap.vertical) / tick - ap.acceleration) * Math.min(1, tick * 4)
@@ -338,7 +342,7 @@ export function step(ap: Autopilot, s: Sense, dt: number): { pitch: number | nul
     ap.modes.barometric = ap.modes.radar = false
     ap.pitch = clamp(s.pitch, -PITCH, PITCH)
   } else if (ap.hands.pitch) ap.pitch = clamp(s.pitch, -PITCH, PITCH)
-  else if (!ap.modes.barometric && !ap.modes.radar) ap.pitch = clamp(ap.pitch + s.trim.pitch * NOSE * dt, -PITCH, PITCH)
+  else if (!ap.modes.barometric && !ap.modes.radar) ap.pitch = clamp(ap.pitch + s.trim.pitch * NOSE * hand, -PITCH, PITCH)
   ap.hands.pitch = nose
 
   // roll: the same
@@ -346,8 +350,8 @@ export function step(ap: Autopilot, s: Sense, dt: number): { pitch: number | nul
   if (!wing && ap.hands.roll) {
     if (!ap.modes.select && !couple) basic(ap, { ...s, pitch: ap.pitch })
   } else if (!wing) {
-    if (held) ap.bank = clamp(ap.bank + s.trim.roll * WING * dt, -BANK, BANK)
-    else if (!ap.modes.select && !couple) ap.heading = (((ap.heading + s.trim.roll * WING * dt) % 360) + 360) % 360
+    if (held) ap.bank = clamp(ap.bank + s.trim.roll * WING * hand, -BANK, BANK)
+    else if (!ap.modes.select && !couple) ap.heading = (((ap.heading + s.trim.roll * WING * hand) % 360) + 360) % 360
   }
   ap.hands.roll = wing
 

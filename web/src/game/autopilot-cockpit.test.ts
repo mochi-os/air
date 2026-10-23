@@ -27,8 +27,8 @@ const D = Math.PI / 180, FOOT = 0.3048
 // The jet: 13 km astern on the final bearing of 060 at 1,200 ft over the deck, on speed with full flaps and the
 // ATC, everything on; the suite aligned with the steering on the TACAN.
 const world = `const D2R=Math.PI/180, HOOK_AFT=9, HOOK_DROP=4; let MULTIPLAYER=false;
-  let sim_time=100, master="nav", emcon=false, flap_select=2, atc_on=true, atc_speed=null, demonstration=null, ddi_dirty=false, ufc_dirty=false, law=true, inhibited=false, surface=-1e9, station={ bearing:1, range:20000 }, computers={ one:true, two:true };
-  let carrier_ols={ dy:20 }; const shown=[], mc=()=>computers, buses={ ac:true }, radios={ tacan:{ on:true }, ils:{ on:false, channel:11 }, link:{ on:false }, beacon:{ on:false } }, hotas={ paddle:false }, input={ pitch:0, roll:0, trim:0, lean:0 };
+  let sim_time=100, glance=100, master="nav", emcon=false, flap_select=2, atc_on=true, atc_speed=null, demonstration=null, ddi_dirty=false, ufc_dirty=false, law=true, inhibited=false, surface=-1e9, station={ bearing:1, range:20000 }, computers={ one:true, two:true };
+  let carrier_ols={ dy:20 }; const world_rate=()=>1, shown=[], mc=()=>computers, buses={ ac:true }, radios={ tacan:{ on:true }, ils:{ on:false, channel:11 }, link:{ on:false }, beacon:{ on:false } }, hotas={ paddle:false }, input={ pitch:0, roll:0, trim:0, lean:0 };
   const ownship={ pos:{ x:0, y:20+4+1200*0.3048, z:0 }, grounded:false, waving:false, speed:70, aoa:8.1, gauges:{ track:61*D2R } };
   let picture={ pitch:2, bank:0, heading:60, track:61, altitude:ownship.pos.y, vertical:0, cas:70, roll:0.01, rate:0.02, groove:{ along:13000-9, right:0, heading:60 } };
   const demonstration_picture=()=>picture, trim_law=()=>law, on_ground=()=>!!ownship.grounded, radalt_inhibited=()=>inhibited, ground_height=()=>surface, ddi_show=(d,p)=>shown.push([d,p]), tacan=()=>station;
@@ -237,7 +237,7 @@ describe('the HUD\'s cues', () => {
   it('shows the data link\'s cue only with ACL boxed in NAV: W/O, TILT, 10 SEC, or DATA flashing (24.6.1.1.2 b)', () => {
     expect(cockpit('return hud_link();')).toBe('')
     expect(cockpit('boxed(); return hud_link();')).toBe('')
-    expect(cockpit('boxed(); link.data=100; return [hud_link(), (sim_time=100.25, hud_link()), (sim_time=109.6, hud_link()), (sim_time=110.1, hud_link())];')).toEqual(['DATA', '', 'DATA', ''])
+    expect(cockpit('boxed(); link.data=100; return [hud_link(), (sim_time=glance=100.25, hud_link()), (sim_time=glance=109.6, hud_link()), (sim_time=glance=110.1, hud_link())];')).toEqual(['DATA', '', 'DATA', ''])
     expect(cockpit('boxed(); link.data=100; link.ten=90; return hud_link();')).toBe('10 SEC')
     expect(cockpit('boxed(); picture.groove.along=101*1852; datalink.step(link,link_picture(),1/60); link.ten=90; return hud_link();')).toBe('TILT')
     expect(cockpit('boxed(); ownship.waving=true; datalink.step(link,link_picture(),1/60); link.ten=90; return hud_link();')).toBe('W/O')
@@ -246,7 +246,7 @@ describe('the HUD\'s cues', () => {
   it('shows what the flight controls are coupled to, flashing after a couple that failed, else ACL RDY as it is sent (24.6.1.1.2 c)', () => {
     expect(cockpit('return hud_coupled();')).toBe('')
     expect(cockpit('hold.modes.coupled=true; coupled="CPL WYPT"; return hud_coupled();')).toBe('CPL WYPT')
-    expect(cockpit('hold.flash=110; coupled="CPLD HDG"; return [hud_coupled(), (sim_time=100.25, hud_coupled()), (sim_time=110, hud_coupled())];')).toEqual(['CPLD HDG', '', ''])
+    expect(cockpit('hold.flash=110; coupled="CPLD HDG"; return [hud_coupled(), (sim_time=glance=100.25, hud_coupled()), (sim_time=glance=110, hud_coupled())];')).toEqual(['CPLD HDG', '', ''])
     expect(cockpit('picture.groove.along=4*1852; boxed(); return hud_coupled();')).toBe('ACL RDY')
     expect(cockpit('picture.groove.along=4*1852; boxed(); hold.modes.coupled=true; coupled="CPLD P/R"; return hud_coupled();')).toBe('CPLD P/R')
     expect(cockpit('picture.groove.along=4*1852; boxed(); master="gun"; return hud_coupled();')).toBe('')

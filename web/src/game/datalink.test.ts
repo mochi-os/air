@@ -266,6 +266,8 @@ describe('what changed', () => {
     run(link, [{ along: 4.9 * NM }], 2)
     expect([link.changed, link.data]).toEqual(['discrete', 2])
     expect([L.flashing(link, 2), L.flashing(link, 2.25), L.flashing(link, 2.5), L.flashing(link, 11.9), L.flashing(link, 12)]).toEqual([true, false, true, false, false])
+    // the ten seconds are the jet's, the flash the pilot's eye's: at 64x it keeps its phase
+    expect([L.flashing(link, 2, 0.1), L.flashing(link, 2.25, 0.1 + 0.25 / 64), L.flashing(link, 2, 0.3), L.flashing(link, 12, 0.1)]).toEqual([true, true, false, false])
     run(link, [{ along: 4.8 * NM }], 3)
     expect([link.changed, link.data]).toEqual(['discrete', 2]) // nothing new: the underline stays
   })

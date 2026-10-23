@@ -131,7 +131,7 @@ describe('the reject switch keeps the airspeed and altitude', () => {
   const start = source.indexOf('\t// ---- airspeed box (left)'), end = source.indexOf('\t// ---- target ranging data', start)
   const boxes = source.slice(start, end)
   const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
-  const draw = (declutter: number) => new Function('rej', `const limited=false, keep=(symbol,level)=>rej<level, GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
+  const draw = (declutter: number) => new Function('rej', `const limited=false, keep=(symbol,level)=>rej<level, GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, glance=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
     const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0, fpas={ climb:false }; ${reading}
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
     const text=[], rects=[];

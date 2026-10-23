@@ -47,7 +47,7 @@ export interface State {
   level: number // 0 normal, 1-5 the QTY sub-levels
   zulu: boolean // the ZONE selection
   bingo: number // lb, the pilot's setting
-  started: number | null // elapsed time's start, in the caller's seconds; null = stopped at zero
+  started: number | null // elapsed time's start, in the clock's seconds (the host's mission clock, which runs with the sim); null = stopped at zero
   frozen: number | null // the held elapsed display, while timing continues underneath
   clock: Clock
   armed: number | null // the first MODE press's time, awaiting the second
@@ -220,11 +220,13 @@ export function elapsed(seconds: number): string {
   return Math.min(9, Math.floor(s / 3600)) + ':' + two(Math.floor(s / 60) % 60) + ':' + two(s % 60)
 }
 
-// The elapsed seconds the display shows at time `at`.
-function running(state: State, at: number): number {
+// The elapsed seconds the display shows with the clock at now. Elapsed time is
+// the clock's, as the time lines are: it runs with the world under time
+// compression, where the press windows (`at`, the pilot's own time) do not.
+function running(state: State, now: Date): number {
   if (state.started === null) return 0
   if (state.frozen !== null) return state.frozen
-  return at - state.started
+  return now.getTime() / 1000 - state.started
 }
 
 // press applies one pushbutton at time `at` (seconds), held for `hold` seconds,
@@ -253,10 +255,10 @@ export function press(state: State, button: Button, at: number, hold = 0, now = 
         next.started = null
         next.frozen = null
       } else if (state.started === null) {
-        next.started = at
+        next.started = now.getTime() / 1000
         next.frozen = null
       } else if (state.frozen === null) {
-        next.frozen = at - state.started
+        next.frozen = now.getTime() / 1000 - state.started
       } else {
         next.frozen = null
       }
@@ -381,7 +383,7 @@ export function face(reading: Reading, state: State, now: Date, at: number): Fac
     },
     clock: line(shown(state, now)),
     zulu: state.zulu,
-    elapsed: elapsed(running(state, at)),
+    elapsed: elapsed(running(state, now)),
   }
 }
 

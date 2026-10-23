@@ -246,7 +246,7 @@ function baroset(moments: Moment[]): (string | null)[] {
   const run = new Function('moments', `let baro_set=2992, baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;
     const GR='#0f0', lx=0, wly=0, rej=0, limited=false, keep=(symbol,level)=>rej<level, ownship={cas:0, speed:0};
     return moments.map((m)=>{ let drawn=null; const hctx={ fillText:(s)=>{ drawn=s; }, font:'', textAlign:'', fillStyle:'' };
-      const baro=m.feet, sim_time=m.t; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
+      const baro=m.feet, sim_time=m.t, glance=m.t; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
       ${block} return drawn; });`)
   return run(moments) as (string | null)[]
 }
@@ -438,7 +438,7 @@ describe('the standby instrument faces', () => {
   it('hold the TEST switch two seconds from a click on the face, clear at a spawn', () => {
     const fn = /\nfunction sari_testing\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(fn).not.toBe('')
-    const testing = (now: number, clicked: number) => new Function('now', 'clicked', `const sim_time=now, sari_clicked=clicked; ${fn} return sari_testing();`)(now, clicked) as boolean
+    const testing = (now: number, clicked: number) => new Function('now', 'clicked', `const glance=now, sari_clicked=clicked; ${fn} return sari_testing();`)(now, clicked) as boolean
     expect([testing(10, 9), testing(10, 8.01), testing(10, 8), testing(10, -Infinity)]).toEqual([true, true, false, false])
     expect(source).toMatch(/if\(u&&u\.adi&&_click_ray\.intersectObject\(u\.adi\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("sari\.test",0\); return; \} \}/)
     expect(source).toMatch(/\n\tlights_clicked=-Infinity; sari_clicked=-Infinity;/)

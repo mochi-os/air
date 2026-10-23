@@ -827,6 +827,28 @@ async function bake(): Promise<void> {
 // play a named one-shot at a volume, optionally lowpassed (distance dulling).
 // playAt: a one-shot with a POSITION — the panner contributes direction only
 // (rolloff zero), so the hand-shaped distance curves (#66) keep the loudness.
+// pace is single player's time compression, the world's seconds to a wall
+// second. A sound's flight through the air takes the world's time, so its wall
+// delay is that over the pace; and while the world runs fast a one-shot starts
+// at most once a sixtieth of a wall second, which a compressed fight would
+// otherwise ask of the audio thread thousands of times a second.
+let pace = 1
+const started: Record<string, number> = {}
+export function audio_pace(rate: number): void {
+  pace = rate
+}
+function crowded(name: string): boolean {
+  if (pace <= 1 || !context) return false
+  const at = context.currentTime
+  if (at - (started[name] ?? -Infinity) < 1 / 60) return true
+  started[name] = at
+  return false
+}
+// travel is the wall seconds a sound takes to cover distance metres.
+function travel(distance: number): number {
+  return distance / 343 / pace
+}
+
 function playAt(
   name: string,
   volume: number,
@@ -839,6 +861,7 @@ function playAt(
   const log = (globalThis as any).dev_sounds
   if (log) log.push(name)
   if (!context || !master || !shots[name] || context.state !== 'running') return
+  if (crowded(name)) return
   const source = context.createBufferSource()
   source.buffer = shots[name]
   const gain = context.createGain()
@@ -870,6 +893,7 @@ function play(
   const log = (globalThis as any).dev_sounds
   if (log) log.push(name) // armed by probes: headless Chrome never grants the user activation an AudioContext needs, so the intent is the testable surface
   if (!context || !master || !shots[name] || context.state !== 'running') return
+  if (crowded(name)) return
   const source = context.createBufferSource()
   source.buffer = shots[name]
   const gain = context.createGain()
@@ -1083,9 +1107,9 @@ export function audio_explosion(
   const level = blast_level(distance)
   const cutoff = 180 + 7800 * crack + 1200 * fade * fade
   if (x !== undefined)
-    playAt('explosion', level, x, y as number, z as number, cutoff, distance / 343)
-  else play('explosion', level, cutoff, distance / 343)
-  if (crack > 0) play('hit', 0.5 * crack, undefined, distance / 343) // the blast overpressure felt through the structure, on the same channel as taking rounds
+    playAt('explosion', level, x, y as number, z as number, cutoff, travel(distance))
+  else play('explosion', level, cutoff, travel(distance))
+  if (crack > 0) play('hit', 0.5 * crack, undefined, travel(distance)) // the blast overpressure felt through the structure, on the same channel as taking rounds
 }
 
 export function audio_launch(): void {
@@ -1144,8 +1168,11 @@ export function audio_eject(): void {
 // The alert tones sit 8 to 12 dB over the engine at full afterburner, A-weighted
 // at the output, where the voice alerts sit (voicecheck.py measures both); the
 // 250 Hz gear horn needs the most gain, since that is where the engine is.
-export function audio_caution(): void {
+// audio_caution sounds the master caution tone and returns its length in
+// seconds, so a compressed world can wait it out before sounding the next.
+export function audio_caution(): number {
   play('caution', 3.4)
+  return shots.caution?.duration ?? 0
 }
 
 // audio_voiced reports whether a voice alert's recording is ready to play.
@@ -1263,9 +1290,9 @@ export function audio_flyby(
       y as number,
       z as number,
       voice.cutoff,
-      distance / 343
+      travel(distance)
     )
-  else play('flyby', voice.volume, voice.cutoff, distance / 343)
+  else play('flyby', voice.volume, voice.cutoff, travel(distance))
 }
 
 // audio_seeker drives the 9M tone each frame: 0 silent, 1 search growl,
@@ -1365,12 +1392,48 @@ interface Distant {
   gain: GainNode
   panner: PannerNode
   filter: BiquadFilterNode
-  range?: number
-  passAt?: number
 }
-const hearer = { x: 0, y: 0, z: 0 }
 const distants = new Map<string, Distant>()
 
+// audio_pass judges a close pass from a jet's range to the pilot at each world
+// step: the moment the range starts opening after closing inside 180 m at a
+// real speed between the two, the passer gets the same near-pass roar a
+// missile earned in #80 — the Doppler hum alone undersold a jet tearing past.
+// Judged once a frame, time compression put the pass between two looks: at 64×
+// a head-on pair closes a kilometre a frame. The speed is the two jets'
+// relative speed, not the closure along the line between them: that falls
+// through zero at the closest point, so a pass judged on it at 80 m/s almost
+// never sounded.
+type Pass = { range?: number; at?: number }
+const passes = new Map<string, Pass>()
+// passed reads one look at a jet's range and the two jets' relative speed at
+// time (seconds), and returns the closest range of a pass that has just
+// opened, or null: inside 180 m at over 80 m/s, at most one pass in 5 s.
+export function passed(p: Pass, range: number, speed: number, time: number): number | null {
+  const last = p.range
+  p.range = range
+  if (last === undefined || range <= last || last >= 180 || speed <= 80 || time - (p.at ?? -9) <= 5) return null
+  p.at = time
+  return last
+}
+export function audio_pass(
+  key: string,
+  range: number,
+  speed: number,
+  reheat: boolean,
+  x: number,
+  y: number,
+  z: number
+): void {
+  if (!context || !master || context.state !== 'running') return
+  const p = passes.get(key) ?? {}
+  passes.set(key, p)
+  const closest = passed(p, range, speed, now())
+  if (closest !== null) audio_flyby(closest, reheat, x, y, z)
+}
+
+// audio_remote voices a distant jet's roar, once a frame; its close passes are
+// the caller's to judge with audio_pass.
 export function audio_remote(
   key: string,
   x: number,
@@ -1405,21 +1468,6 @@ export function audio_remote(
   d.panner.positionX.setTargetAtTime(x, t, smooth)
   d.panner.positionY.setTargetAtTime(y, t, smooth)
   d.panner.positionZ.setTargetAtTime(z, t, smooth)
-  // A close pass: the moment the range starts opening after closing inside
-  // 180 m at real closure, the passer gets the same near-pass roar a missile
-  // earned in #80 — the Doppler hum alone undersold a jet tearing past.
-  const range = Math.hypot(x - hearer.x, y - hearer.y, z - hearer.z)
-  if (
-    d.range !== undefined &&
-    range > d.range &&
-    d.range < 180 &&
-    closure > 80 &&
-    t - (d.passAt ?? -9) > 5
-  ) {
-    d.passAt = t
-    audio_flyby(d.range, reheat, x, y, z)
-  }
-  d.range = range
   const doppler = Math.max(0.7, Math.min(1.3, 1 + closure / 343))
   d.filter.frequency.setTargetAtTime((reheat ? 900 : 600) * doppler, t, smooth) // Doppler bends the roar's colour — noise has no pitch to bend
   d.gain.gain.setTargetAtTime(reheat ? 0.75 : 0.5, t, smooth)
@@ -1427,6 +1475,7 @@ export function audio_remote(
 
 export function audio_remote_drop(key: string): void {
   heat.delete(key)
+  passes.delete(key)
   const d = distants.get(key)
   if (!d) return
   d.gain.gain.value = 0
@@ -1449,9 +1498,6 @@ export function audio_listener(
   if (!context || context.state !== 'running') return
   const l = context.listener
   const t = now()
-  hearer.x = x
-  hearer.y = y
-  hearer.z = z
   if (l.positionX) {
     l.positionX.setTargetAtTime(x, t, smooth)
     l.positionY.setTargetAtTime(y, t, smooth)

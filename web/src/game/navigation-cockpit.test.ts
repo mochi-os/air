@@ -35,7 +35,7 @@ const pages = /\nconst UFC_PAGES=\{[\s\S]*?\n\tstation:[^\n]*\n/.exec(source)?.[
 const D = Math.PI / 180, NM = 1852
 // The jet: at 3,000 m over the map's origin heading north at 200 m/s, the ship 10.8 nm to the west-south-west.
 const world = `const D2R=Math.PI/180, NM=1852;
-  let sim_time=0, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
+  let sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
   const cfg={ task:"free" }, wrap_axis=(v)=>v, CARRIER={ x:-18500, z:7500, deckY:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };
   const RADAR={ silent:()=>false, mode:"rws", stt:null, tracks:[], ls:null }, radar_undesignate=()=>{ radar_calls++; return false; }, radar_events=[], carrier_ols=true;
   const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-200, speed:200, grounded:false, vel_dir:{ x:0, y:0, z:-1 }, gauges:{ heading:0, pitch:0, bank:0, track:0, ground:389, zulu:0 } };
@@ -115,7 +115,7 @@ describe('a spawn', () => {
     expect(s).toEqual({ cold: ['INS ATT'], ready: [], mode: 'nav', home: true, heading: 1 }) // a later call, or nav_frame, does not ready it again
     const fly = lift('fly_player'), at = fly.indexOf('\tsync_core(out); last_out=out;\n\tnav_ready();')
     expect(at).toBeGreaterThan(0)
-    expect(fly.indexOf('cautions_update();')).toBeGreaterThan(at)
+    expect(fly.indexOf('cautions_update(dt);')).toBeGreaterThan(at)
   })
   it('loads the airfields when they arrive after it', () => {
     expect(cockpit<unknown[]>('const late=airports.splice(0); nav_reset(); nav_frame(0.1); const before=nav.waypoints[2]; airports.push(...late); nav_frame(0.1); return [before, nav.waypoints[2].name];')).toEqual([null, 'PMDY'])
@@ -144,10 +144,16 @@ describe('the INS knob and the set switches', () => {
     expect(s.dirty).toBe(true)
   })
   it('slews on a held key: a degree on the press, then 30° a second after 0.4 s', () => {
-    const s = cockpit<number[]>(`nav.heading=0; sim_time=10; keys_down.add("heading.right"); nav_frame(0.1); const pressed=nav.heading; sim_time=10.2; nav_frame(0.1); const waiting=nav.heading;
-      sim_time=10.5; nav_frame(0.1); const slewing=nav.heading; keys_down.clear(); sim_time=11; nav_frame(0.1); const released=nav.heading;
+    const s = cockpit<number[]>(`nav.heading=0; glance=10; keys_down.add("heading.right"); nav_frame(0.1); const pressed=nav.heading; glance=10.2; nav_frame(0.1); const waiting=nav.heading;
+      glance=10.5; nav_frame(0.1); const slewing=nav.heading; keys_down.clear(); glance=11; nav_frame(0.1); const released=nav.heading;
       keys_down.add("heading.left"); nav_frame(0.1); return [pressed,waiting,slewing,released,nav.heading].map(v=>Math.round(v/D2R*1000)/1000);`)
     expect(s).toEqual([1, 1, 4, 4, 3])
+  })
+  it('slews on the pilot\'s time, once a frame, however many world steps a compressed frame runs', () => {
+    const s = cockpit<number[]>(`nav.heading=0; glance=10; keys_down.add("heading.right"); nav_frame(0.1); glance=10.5;
+      presenting=false; for(let k=0;k<63;k++){ sim_time+=1/60; nav_frame(1/60); } const between=nav.heading; presenting=true; nav_frame(1/60);
+      return [between,nav.heading].map(v=>Math.round(v/D2R*1000)/1000);`)
+    expect(s).toEqual([1, 4]) // a 0.1 s frame at 64× slews 3°, not 64 times that
   })
   it('sets the course from its own keys, not the heading\'s', () => {
     const s = cockpit<{ course: number; heading: number }>('nav.heading=0; keys_down.add("course.right"); nav_frame(0.1); return { course:nav.course, heading:nav.heading };')

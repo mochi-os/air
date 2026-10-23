@@ -128,7 +128,7 @@ describe('the ATC advisory', () => {
   // flight core's angle: 26 at FULL where the jet has 45, 17.3 at HALF where it has 30.
   interface Jet { on?: boolean; flap?: number; tef?: number; grounded?: boolean; speed?: number; gearTarget?: number }
   const switched = (j: Jet) =>
-    new Function('j', `let atc_on=!!j.on, atc_flash=5, atc_alpha=0, atc_speed=null, atc_last=0; const sim_time=50, D2R=Math.PI/180, STATE={ flap:0 }, last_out=[(j.tef??26)*D2R];
+    new Function('j', `let atc_on=!!j.on, atc_flash=5, atc_alpha=0, atc_speed=null, atc_last=0, atc_seen=0; const glance=50, sim_time=50, D2R=Math.PI/180, STATE={ flap:0 }, last_out=[(j.tef??26)*D2R];
       const flap_select=j.flap??1, ownship={ gearTarget:j.gearTarget??0, aoa:8, speed:j.speed??150 }, on_ground=()=>!!j.grounded, pad_levers={};
       ${engage} switch("atc"){ ${press} } return { on:atc_on, flash:atc_flash, speed:atc_speed };`)(j) as { on: boolean; flash: number; speed: number | null }
 
@@ -159,7 +159,7 @@ describe('the ATC advisory', () => {
   // The drop-outs, run against a jet in either mode: approach (speed null) or cruise.
   interface Flight { cruise?: boolean; flap?: number; tef?: number; bank?: number; grounded?: boolean; throttling?: boolean; gearTarget?: number }
   const flown = (f: Flight) =>
-    new Function('f', `let atc_on=true, atc_flash=-Infinity, atc_alpha=8, atc_speed=f.cruise?300:null, atc_last=300; const sim_time=70, dt=1/60, D2R=Math.PI/180, STATE={ flap:0 }, TEF_DOWN=26*D2R*27/45;
+    new Function('f', `let atc_on=true, atc_flash=-Infinity, atc_alpha=8, atc_speed=f.cruise?300:null, atc_last=300, atc_seen=0; const glance=70, sim_time=70, dt=1/60, D2R=Math.PI/180, STATE={ flap:0 }, TEF_DOWN=26*D2R*27/45;
       const last_out=[(f.tef??26)*D2R], flap_select=f.flap??(f.cruise?0:1), throttling=!!f.throttling;
       const ownship={ gearTarget:f.gearTarget??0, aoa:8, throttle:0.5, speed:300/1.944, gauges:{ bank:(f.bank??0)*D2R } }, on_ground=()=>!!f.grounded, pad_levers={};
       let stepped=""; const atc_step=(t)=>{ stepped="approach"; return t; }, cruise_step=(t)=>{ stepped="cruise"; return t; };
@@ -193,6 +193,24 @@ describe('the ATC advisory', () => {
     }
   })
 
+  // Slow motion runs world steps shorter than the core's: the alpha moves on one
+  // world step in several. The law is flown the same way however the core's
+  // steps fall among the world's.
+  const slowed = (alphas: number[], chunk: number, every: number) =>
+    new Function('alphas', 'chunk', 'every', 'atc_step', 'cruise_step', `let atc_on=true, atc_flash=-Infinity, atc_alpha=alphas[0], atc_speed=null, atc_last=0, atc_seen=0, sim_time=0, glance=0, dt=chunk;
+      const D2R=Math.PI/180, STATE={ flap:0 }, TEF_DOWN=26*D2R*27/45, last_out=[26*D2R], flap_select=1, throttling=false, on_ground=()=>false, pad_levers={};
+      const ownship={ gearTarget:1, aoa:alphas[0], throttle:0.5, speed:70, gauges:{ bank:0 } };
+      for(let k=1;k<alphas.length*every;k++){ sim_time+=chunk; if(k%every===0) ownship.aoa=alphas[k/every];
+        ${drop} }
+      return ownship.throttle;`)(alphas, chunk, every, atc_step, cruise_step) as number
+  it('measures the alpha rate over the core\'s own step in slow motion', () => {
+    const alphas = Array.from({ length: 240 }, (_, k) => 8.1 + 0.3 * Math.sin(k / 12)) // a 240 Hz core, the alpha swinging about on-speed at up to 6 degrees a second
+    const real = slowed(alphas, 1 / 240, 1)
+    expect(real).toBeGreaterThan(0.2); expect(real).toBeLessThan(0.9) // the levers inside their stops, where the rate term shows
+    expect(slowed(alphas, 1 / 960, 4)).toBeCloseTo(real, 9) // a quarter as fast at 240 fps: four world steps to a core step
+    expect(slowed(alphas, 1 / 480, 2)).toBeCloseTo(real, 9)
+  })
+
   it('makes the AUTO ball call in approach mode only, and clears cruise at a spawn', () => {
     expect(source).toMatch(/\(atc_on&&atc_speed===null\?" "\+translate\("AUTO"\):""\)/)
     expect(source).toMatch(/atc_on=false; atc_flash=-Infinity; atc_speed=null;/)
@@ -203,7 +221,7 @@ describe('the ATC advisory', () => {
     let style = ''
     const hctx = new Proxy({}, { get: (_, k) => k === 'fillText' ? (text: string, x: number, y: number) => drawn.push({ text, x, y, style }) : () => {},
       set: (_, k, v) => { if (k === 'fillStyle') style = v; return true } })
-    new Function('hctx', 'atc_on', 'atc_flash', 'sim_time', 'GR', 'lx', 'cy', 'ppdv', 'const limited=false; ' + draw)(hctx, on, flash, time, 'green', 700, 400, 16)
+    new Function('hctx', 'atc_on', 'atc_flash', 'glance', 'GR', 'lx', 'cy', 'ppdv', 'const limited=false; ' + draw)(hctx, on, flash, time, 'green', 700, 400, 16)
     return drawn
   }
 

@@ -22,10 +22,13 @@ export type Recording = { session: string; started: number; text: string } | nul
 
 let queue: Promise<unknown> = Promise.resolve()
 
-// due: whether a flight `flown` seconds in, last saved `last` seconds in
-// (-Infinity before its first), is owed a save now.
-export function due(flown: number, last: number): boolean {
-  return flown >= SORTIE && flown - last >= PERIOD
+// due: whether a flight `flown` seconds in, at `now` on the wall clock and last
+// saved at `last` on it (-Infinity before its first), is owed a save now. The
+// sortie is flight time; the period is the pilot's time, so a frozen tab loses
+// a minute of play at any time compression, and 64× does not save the whole
+// recording every second.
+export function due(flown: number, now: number, last: number): boolean {
+  return flown >= SORTIE && now - last >= PERIOD
 }
 
 // save stores the row, then the recording, after every earlier save has

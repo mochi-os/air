@@ -33,7 +33,7 @@ const D = Math.PI / 180
 // The eye at the origin looking down -z, the jet's nose there too; look turns the eye, azimuth + right.
 const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const devicePixelRatio=1;
-  let sim_time=0, ddi_dirty=false, master='nav', designator='right', canopy_gone=false, law_active=false, head_az=0, head_el=0;
+  let sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, master='nav', designator='right', canopy_gone=false, law_active=false, head_az=0, head_el=0;
   const cfg={ view:'cockpit', tod:'day' }, keys=new Set(), key_of=(a)=>a==='uncage'?'KeyU':a==='sensor.forward'?'Forward':'None';
   let buses={ ac:true }, computers={ one:true, two:true }; const mc=()=>computers;
   const knobs={ hmd:1 }, knob_level=(k)=>knobs[k]??1;
@@ -52,7 +52,7 @@ const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blank
   'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
-    const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; helmet_frame(dt); } };
+    const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; glance+=dt; beat=dt; helmet_frame(dt); } };
     const unaligned=()=>{ Object.assign(hmd,helmet.fresh(false,{ azimuth:2*D2R, elevation:-1*D2R, roll:3*D2R },0)); frames(helmet.SBIT+0.1); };
     const deg=(r)=>Math.round(r/D2R*1000)/1000;
     ${body}`)(THREE, helmet, avionics, navigate) as T
@@ -87,7 +87,7 @@ describe('the helmet each frame', () => {
       expect(pit(`RADAR.auto=true; RADAR.acm='${mode}'; frames(0.1); const kept=RADAR.acm; computers={ one:true, two:false }; frames(0.1); return [kept,RADAR.acm];`)).toEqual([mode, 'vacq'])
   })
   it('turns HACQ to LACQ with the sensor switch held forward 800 ms, and leaves it HACQ released sooner (the DCS guide)', () => {
-    const held = (seconds: number) => pit<string>(`RADAR.auto=true; RADAR.acm='hacq'; castle=sim_time; keys.add('Forward'); frames(${seconds}); keys.delete('Forward'); frames(1); return RADAR.acm+' '+castle;`)
+    const held = (seconds: number) => pit<string>(`RADAR.auto=true; RADAR.acm='hacq'; castle=glance; keys.add('Forward'); frames(${seconds}); keys.delete('Forward'); frames(1); return RADAR.acm+' '+castle;`)
     expect([held(0.5), held(0.9)]).toEqual(['hacq null', 'lacq null'])
   })
   it('gives the TDC back to the displays out of NAV', () => {
@@ -225,8 +225,8 @@ describe('the helmet display', () => {
     expect(out.rects[0][0] + half).toBeCloseTo(500 + R - 1.5 * half, 6) // held at the field's right edge
     expect(out.text).toContain('40')
     // Held at the edge it flashes, so it is never read as the box on the jet; on the jet it stays steady.
-    expect(show(`sim_time=0.3; const boxed={ pos:at(40,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(0)
-    expect(show(`sim_time=0.3; const boxed={ pos:at(3,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(1)
+    expect(show(`glance=0.3; const boxed={ pos:at(40,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(0)
+    expect(show(`glance=0.3; const boxed={ pos:at(3,0,2000) };`, 'draw_hmd(null,false,boxed,0,null,null)').rects).toHaveLength(1)
   })
   it('writes the AMRAAM\'s SHOOT over its box, as the HUD does over its own, and leaves it to the HUD through the glass', () => {
     const shoot = (lit: boolean, setup = '', call = 'draw_hmd(null,false,boxed,0,null,null)') => show(`master='120c'; const attack_cue=()=>({ shoot:${lit}, brk:false }); const boxed={ pos:at(3,0,2000) }; ${setup}`, call).text.includes('SHOOT')
@@ -267,7 +267,7 @@ describe('the helmet display', () => {
     expect(show(`${point} master='9m';`).text).not.toContain('30') // a NAV designation: no diamond in the A/A masters
   })
   it('flashes ENTERING IBIT while its test runs, then shows its test patterns, and nothing else', () => {
-    const testing = show(`bit.tests.hmd=10; sim_time=0;`)
+    const testing = show(`bit.tests.hmd=10; glance=0;`)
     expect([testing.text, testing.cluster]).toEqual([['ENTERING IBIT'], []])
     const patterns = show(`hmd.patterns=hmd.time;`)
     expect([patterns.text, patterns.cluster]).toEqual([['STROKE', '-800', '-400', '400', '800', '0.0', '400', '-400'], []])
@@ -337,7 +337,7 @@ describe('the helmet display', () => {
     const d = show(`master='9m'; RADAR.auto=true; RADAR.acm='lacq';`)
     expect(d.dashed.map(([x, y, r]) => [x, y, Math.round(r / ppd * 100) / 100])).toEqual([[500, 400, 2.5]])
     expect(d.text).toContain('LACQ')
-    const past = (time: number) => show(`master='9m'; RADAR.auto=true; RADAR.acm='hacq'; look(75); sim_time=${time};`).text.includes('HACQ')
+    const past = (time: number) => show(`master='9m'; RADAR.auto=true; RADAR.acm='hacq'; look(75); glance=${time};`).text.includes('HACQ')
     expect([past(0.1), past(0.3)]).toEqual([true, false])
   })
 })
@@ -401,10 +401,10 @@ describe('REJECT SETUP on the HMD format', () => {
 
 describe('the 9M\'s cues, for the HUD or the helmet', () => {
   const line = /\n\tconst heat_shown=[^\n]*\n/.exec(source)?.[0] ?? ''
-  const cues = (setup: string) => new Function(`let lockon=true, brk=false, weapons_hold=false, sim_time=0, cue='steady'; const ownship={ msl:2 }; ${setup} ${lift('heat_lit')} ${line} return heat_shown.shoot;`)() as boolean
+  const cues = (setup: string) => new Function(`let lockon=true, brk=false, weapons_hold=false, glance=0, cue='steady'; const ownship={ msl:2 }; ${setup} ${lift('heat_lit')} ${line} return heat_shown.shoot;`)() as boolean
   it('cue SHOOT with tone inside the zone, steady or flashing inside Rne, and never inside the breakaway, in the joust\'s hold or with none left (#47)', () => {
     expect(cues('')).toBe(true)
-    expect([cues('cue="flash"; sim_time=0.1;'), cues('cue="flash"; sim_time=0.3;')]).toEqual([true, false])
+    expect([cues('cue="flash"; glance=0.1;'), cues('cue="flash"; glance=0.3;')]).toEqual([true, false])
     expect([cues('brk=true;'), cues('weapons_hold=true;'), cues('ownship.msl=0;'), cues('cue="break";'), cues('lockon=false;')]).toEqual([false, false, false, false, false])
   })
   it('carry the zone\'s ranges on the steering circle, not on a staff beside the boresight', () => {
