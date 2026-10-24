@@ -74,7 +74,7 @@ describe('the MC switch', () => {
       .toEqual([{ one: true, two: true }, { one: false, two: true }, { one: true, two: false }, { one: false, two: false }])
   })
   it('has its click spot aft of HYD ISOL on the left console', () => {
-    expect(source).toMatch(/\{ action:"computer", at:\[5\.42,-0\.027,-0\.451\] \}/)
+    expect(source).toMatch(/\{ action:"computer", at:\[5\.408,-0\.027,-0\.446\] \}/)
   })
 })
 

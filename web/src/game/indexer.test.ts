@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 
 // The AOA indexer's flash rule (NATOPS 2.12.10): the symbols flash with the
@@ -323,8 +324,8 @@ describe('the clickable switches', () => {
     expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ right_press=\(cfg\.view==="cockpit"&&running&&!map_on\)\?\{ x:e\.clientX, y:e\.clientY \}:null; e\.preventDefault\(\); return; \}/)
     expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
     expect(source).toMatch(/if\(e\.button===2\)\{ if\(!playback\) pit_switch\(e\); return; \}/)   // a replay's switches are the recording's
-    // a left click reaches the switches only after the screens miss, ahead of the panel-point measurement
-    expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
+    // a left click reaches the displays' bezel pushbuttons and then the switches only after the screens miss, ahead of the panel-point measurement
+    expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\t\{ const b=ddi_button_at\(e\.clientX,e\.clientY\); if\(b\)\{ if\(ddi_press\(b\.display,b\.pb\)\) screens_update\(\); return; \} \}[^\n]*\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
     expect(source).toMatch(/if\(hit\.action\) pit_press\(hit\.action,e\.button===2\?1:-1\);/)
   })
 
@@ -502,5 +503,205 @@ describe('the clickable switches', () => {
     expect(press('dump', 1, { fuellow: true }).fuel_dump).toBe(false)
     expect(press('dump', 1, { fuel_dump: true, fuellow: true }).fuel_dump).toBe(false)
     expect(press('dump', 1, { fuel_dump: true }).fuel_dump).toBe(false)
+  })
+})
+
+// The cockpit pointer (#105): the mouse is the pilot's hand on the panel, so the
+// pointer shows while it moves, and a ring marks what a click there would work.
+describe('the cockpit pointer', () => {
+  const top = (name: string) => {
+    const start = source.indexOf(`function ${name}(`)
+    expect(start, name).toBeGreaterThan(0)
+    const rest = source.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    return end ? rest.slice(0, end.index + 1) : rest
+  }
+
+  it('shows in the cockpit view for two seconds after the mouse moves, and nowhere else', () => {
+    const shown = (view: string, ago: number, map = false) => new Function('view', 'ago', 'map', `
+      const POINTER_IDLE=2, cfg={ view }, map_on=map, performance={ now:()=>100000 }, pointer={ moved:100-ago };
+      ${top('pointer_shown')} return pointer_shown();`)(view, ago, map) as boolean
+    expect(shown('cockpit', 0.5)).toBe(true)
+    expect(shown('cockpit', 1.9)).toBe(true)
+    expect(shown('cockpit', 2.1)).toBe(false) // still: it hides again
+    expect(shown('cockpit', 0.5, true)).toBe(false) // the map is up
+    for (const view of ['hud', 'chase', 'flypast', 'padlock']) expect(shown(view, 0.5), view).toBe(false)
+  })
+
+  it('lets the pointer through the flying cursor rule while it is shown, and rings the target after the HUD', () => {
+    expect(source).toMatch(/stage\.style\.cursor=\(running && !game_paused && !playback && cfg\.view!=="ddi" && !pointer_shown\(\) && !PANEL_POINT/)
+    expect(source).toMatch(/if\(running\)\{ draw_hud\(\); pointer_draw\(\);/)
+    expect(source).toMatch(/stage\.addEventListener\("pointermove",pointer_seen,\{ signal \}\);/)
+    expect(source).toMatch(/stage\.addEventListener\("pointerdown",pointer_seen,\{ signal \}\);/)
+  })
+
+  // decl lifts a top-level const declaration, to the next line that starts in column one.
+  const decl = (prefix: string) => {
+    const start = source.indexOf(prefix)
+    expect(start, prefix).toBeGreaterThan(0)
+    const rest = source.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    return end ? rest.slice(0, end.index + 2) : rest
+  }
+  // The pilot's eye in the jet's frame, looking down at the displays, on a 1280 by 761 view.
+  const eye = () => {
+    const camera = new THREE.PerspectiveCamera(60, 1280 / 761, 0.01, 10)
+    camera.position.set(5.55, 0.62, 0)
+    camera.lookAt(6.163, 0.3, 0)
+    camera.updateMatrixWorld(true)
+    return camera
+  }
+  const displays = ['left', 'right', 'center'] as const
+  type Display = (typeof displays)[number]
+
+  it('presses the pushbutton beside each legend', () => {
+    const lifted = new Function('THREE', `${decl('const DDI_BUTTONS=')}${decl('const DDI_BUTTON=')}${decl('const DDI_FACE=')}${top('button_of')}${top('ddi_button')} return { button_of, ddi_button, DDI_FACE };`)(THREE) as {
+      button_of: (x: number, y: number) => number
+      ddi_button: (display: Display, pb: number) => THREE.Vector3
+      DDI_FACE: Record<Display, { y: [number, number]; z: [number, number] }>
+    }
+    for (const display of displays) {
+      const face = lifted.DDI_FACE[display], sums = new Map<number, [number, number, number]>()
+      for (let x = 2; x < 512; x += 4) for (let y = 2; y < 512; y += 4) {
+        const pb = lifted.button_of(x, y), sum = sums.get(pb) ?? [0, 0, 0]
+        if (pb) sums.set(pb, [sum[0] + x, sum[1] + y, sum[2] + 1])
+      }
+      expect(sums.size, display).toBe(20)
+      // each legend's edge of the glass, and where along it the legend reads: across from the left, down from the top
+      const sides = { left: [] as number[][], top: [] as number[][], right: [] as number[][], bottom: [] as number[][] }
+      for (const [pb, [x, y, n]] of sums) {
+        const [u, v] = [x / n, y / n]
+        if (u < 56) sides.left.push([pb, v]); else if (v < 56) sides.top.push([pb, u]); else if (u > 456) sides.right.push([pb, v]); else sides.bottom.push([pb, u])
+      }
+      const outside = { left: (c: THREE.Vector3) => c.z < face.z[0], top: (c: THREE.Vector3) => c.y > face.y[1], right: (c: THREE.Vector3) => c.z > face.z[1], bottom: (c: THREE.Vector3) => c.y < face.y[0] }
+      const along = { left: (c: THREE.Vector3) => -c.y, top: (c: THREE.Vector3) => c.z, right: (c: THREE.Vector3) => -c.y, bottom: (c: THREE.Vector3) => c.z }
+      for (const side of ['left', 'top', 'right', 'bottom'] as const) {
+        const legends = sides[side]
+        expect(legends.length, `${display} ${side}`).toBe(5)
+        for (const [pb] of legends) expect(outside[side](lifted.ddi_button(display, pb)), `${display} ${pb} beside the ${side} edge`).toBe(true)
+        const byLegend = [...legends].sort((a, b) => a[1] - b[1]).map((l) => l[0])
+        const byCap = [...legends].sort((a, b) => along[side](lifted.ddi_button(display, a[0])) - along[side](lifted.ddi_button(display, b[0]))).map((l) => l[0])
+        expect(byCap, `${display} ${side}`).toEqual(byLegend)
+      }
+    }
+  })
+
+  it('finds the pushbutton under the pointer on each bezel, within its cap', () => {
+    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const DDI_BUTTONS=')}${decl('const DDI_BUTTON=')}${top('ddi_button')}${decl('const _screen_at=')}${top('screen_of')}${top('ddi_button_at')} return { ddi_button, screen_of, ddi_button_at, DDI_BUTTON };`)(
+      THREE, { group: new THREE.Group() }, eye(), 1280, 761
+    ) as {
+      ddi_button: (display: Display, pb: number) => THREE.Vector3
+      screen_of: (local: THREE.Vector3, radius: number) => [number, number, number] | null
+      ddi_button_at: (x: number, y: number) => { display: Display; pb: number } | null
+      DDI_BUTTON: number
+    }
+    for (const display of displays) for (let pb = 1; pb <= 20; pb++) {
+      const at = lifted.screen_of(lifted.ddi_button(display, pb), lifted.DDI_BUTTON)
+      expect(at, `${display} ${pb}`).not.toBeNull()
+      const [x, y, r] = at as [number, number, number]
+      expect(r, `${display} ${pb}`).toBeGreaterThan(3)
+      expect(lifted.ddi_button_at(x, y), `${display} ${pb}`).toEqual({ display, pb })
+      expect(lifted.ddi_button_at(x + r * 0.9, y), `${display} ${pb} at its edge`).toEqual({ display, pb })
+    }
+    const one = lifted.screen_of(lifted.ddi_button('left', 1), lifted.DDI_BUTTON) as number[], two = lifted.screen_of(lifted.ddi_button('left', 2), lifted.DDI_BUTTON) as number[]
+    expect(lifted.ddi_button_at((one[0] + two[0]) / 2, (one[1] + two[1]) / 2)).toBeNull() // between two caps
+  })
+
+  it('rings every control round, at its centre, in one of three standard sizes', () => {
+    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const _screen_at=')}${top('screen_of')}${decl('const MARK_SIZES=')}${decl('const _ring_at=')}${top('mark_ring')} return { mark_ring, screen_of, MARK_SIZES };`)(
+      THREE, { group: new THREE.Group() }, eye(), 1280, 761
+    ) as {
+      mark_ring: (mark: object) => [number, number, number] | null
+      screen_of: (local: THREE.Vector3, radius: number) => [number, number, number] | null
+      MARK_SIZES: { radius: number; bound: number }[]
+    }
+    const [small, medium, large] = lifted.MARK_SIZES.map((k) => k.radius)
+    const at = new THREE.Vector3(6.163, 0.3, 0)
+    const sized = (radius: number) => lifted.screen_of(at, radius)
+    const cube = (half: number) => ({ box: new THREE.Box3(at.clone().subScalar(half), at.clone().addScalar(half)) })
+    expect(lifted.mark_ring({ at, radius: 0.006 })).toEqual(sized(small)) // a display pushbutton
+    expect(lifted.mark_ring({ at, radius: 0.003 })).toEqual(lifted.mark_ring({ at, radius: 0.0095 })) // a toggle and a lens: one size
+    expect(lifted.mark_ring(cube(0.013))).toEqual(sized(medium)) // a console switch, measured by its box
+    expect(lifted.mark_ring(cube(0.02))).toEqual(sized(medium))
+    expect(lifted.mark_ring(cube(0.025))).toEqual(sized(large)) // a handle
+    expect(lifted.mark_ring(cube(0.04))).toEqual(sized(large)) // an instrument's face
+    const lever = new THREE.Box3(new THREE.Vector3(6.15, 0.29, -0.004), new THREE.Vector3(6.17, 0.33, 0.004)) // 4 cm tall: centred on its box, not its corner
+    expect(lifted.mark_ring({ box: lever })?.slice(0, 2)).toEqual(lifted.screen_of(new THREE.Vector3(6.16, 0.31, 0), medium)?.slice(0, 2))
+    expect(lifted.mark_ring({ at: new THREE.Vector3(14, 0.3, 0), radius: 0.006 })?.[2]).toBe(6) // a far one stays in sight
+    const drawn: number[][] = []
+    const hctx = { save() {}, restore() {}, setTransform() {}, beginPath() {}, stroke() {}, arc: (...a: number[]) => drawn.push(a) }
+    const pointer = { x: 0, y: 0, key: '', mark: null, screen: null as number[] | null }
+    new Function('THREE', 'hctx', 'pointer', 'mark_ring', `const running=true, game_paused=false, playback=null, head_az=0, head_el=0, view_zoom=1, devicePixelRatio=1;
+      const pointer_shown=()=>true, pit_hover=()=>({});
+      ${top('pointer_draw')} pointer_draw();`)(THREE, hctx, pointer, () => [400, 300, 12])
+    expect(drawn[0].slice(0, 3)).toEqual([400, 300, 12]) // drawn round, at the size mark_ring gives
+    expect(pointer.screen).toEqual([400, 300, 12])
+  })
+
+  it('rings only what the eye sees of a part that runs on into the panel, and looks again once the head turns', () => {
+    const g = new THREE.Group(), model = new THREE.Group()
+    g.add(model)
+    const panel = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.4), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }))
+    panel.rotation.y = Math.PI / 2 // facing the pilot, at x 6.2
+    panel.position.set(6.2, 0.3, 0)
+    const lever = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.01, 0.01)) // x 6.15 to 6.25: half of it behind the panel
+    lever.position.set(6.2, 0.3, 0)
+    model.add(panel, lever)
+    g.updateMatrixWorld(true)
+    const run = new Function('THREE', 'ownship', 'cockpit_cam', 'model_of', `const D2R=Math.PI/180, LAYER_OWN=1; let head_az=0, head_el=0;
+      ${top('shown')}${decl('const SEEN_VERTICES=')}${decl('const _seen_ray=')}${decl('const _seen=')}${top('seen_of')}
+      return (az, meshes) => { head_az=az*D2R; return seen_of(meshes,"lever"); };`)(THREE, { group: g }, eye(), () => model) as (az: number, meshes: THREE.Mesh[]) => { box: THREE.Box3 }
+    const seen = run(0, [lever])
+    expect(seen.box.min.x).toBeCloseTo(6.15, 6)
+    expect(seen.box.max.x).toBeCloseTo(6.15, 6) // the near end only: the far end is behind the panel
+    expect(run(1, [lever]).box).toBe(seen.box) // kept while the head stays within two degrees
+    panel.visible = false
+    expect(run(1, [lever]).box).toBe(seen.box)
+    expect(run(3, [lever]).box.max.x).toBeCloseTo(6.25, 6) // looked at again: with the panel gone, all of it
+  })
+
+  it('drags the cockpit along with the pointer on both axes', () => {
+    const handler = /stage\.addEventListener\("pointermove",e=>\{ if\(!dragging\) return;[\s\S]*?\}, \{ signal \}\);/.exec(source)?.[0] ?? ''
+    const compose = /camera\.quaternion\.copy\(ownship\.q\)\.multiply\(_headq\.setFromAxisAngle\(_yaxis,head_az\)\)\.multiply\(_pitq\.setFromAxisAngle\(_zaxis,head_el\+PIT_REST\)\)\.multiply\(CAMFIX\);/.exec(source)?.[0] ?? ''
+    expect(handler, 'the drag handler').not.toBe('')
+    expect(compose, 'the cockpit camera').not.toBe('')
+    // a point on the panel ahead, seen through the cockpit camera as update_camera turns it, before and after a drag
+    const drag = new Function('THREE', `const D2R=Math.PI/180; ${decl('const PIT_REST=')}${decl('const _headq=')}${decl('const CAMFIX=')}
+      let dragging=true, head_drag=true, drag_x=640, drag_y=380, press_moved=0, head_az=0, head_el=0, cam_az=0, cam_el=0, move=null;
+      const latch=()=>{}, ownship={ q:new THREE.Quaternion() }, stage={ addEventListener:(type, f)=>{ move=f; } }, signal=null;
+      ${handler}
+      const camera=new THREE.PerspectiveCamera(60, 1280/761, 0.01, 10);
+      const seen=()=>{ ${compose} camera.updateMatrixWorld(true); const p=new THREE.Vector3(0.6,-0.1,0.05).project(camera); return [p.x, p.y]; };
+      return (dx, dy)=>{ const before=seen(); move({ clientX:drag_x+dx, clientY:drag_y+dy }); const after=seen(); return [after[0]-before[0], after[1]-before[1]]; };`)(THREE) as (dx: number, dy: number) => [number, number]
+    const right = drag(20, 0) // the pointer right: the panel follows it right
+    expect(right[0]).toBeGreaterThan(0)
+    expect(Math.abs(right[1])).toBeLessThan(right[0] / 4)
+    const down = drag(0, 20) // the pointer down: the panel follows it down (screen y up)
+    expect(down[1]).toBeLessThan(0)
+    expect(Math.abs(down[0])).toBeLessThan(-down[1] / 4)
+  })
+
+  it('maps a quad\'s texture coordinates to its corners in the world', () => {
+    const plane_point = new Function('THREE', `${top('plane_point')} return plane_point;`)(THREE) as (
+      mesh: THREE.Mesh,
+      u: number,
+      v: number
+    ) => THREE.Vector3
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.2))
+    mesh.position.set(6, 0.5, -0.2)
+    mesh.updateMatrixWorld(true)
+    expect(plane_point(mesh, 0, 1).toArray()).toEqual([5.8, 0.6, -0.2]) // u left, v top
+    plane_point(mesh, 1, 0).toArray().forEach((n, k) => expect(n).toBeCloseTo([6.2, 0.4, -0.2][k], 9))
+    expect(plane_point(mesh, 0.5, 0.5).toArray()).toEqual([6, 0.5, -0.2])
+  })
+
+  it('looks for the target in the order a click does', () => {
+    const order = (fn: string, marks: string[]) => marks.map((mark) => top(fn).indexOf(mark))
+    const hover = order('pit_hover', ['sb.alt.mesh', 'sb.adi.mesh', 'u.radalt.mesh', 'ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(x,y)', 'pit_target('])
+    const click = order('pit_click', ['u.alt.mesh', 'u.adi.mesh', 'pit_press("index"', 'ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(e.clientX,e.clientY)', 'if(pit_switch(e)) return;'])
+    for (const [name, at] of [['hover', hover], ['click', click]] as const) {
+      expect(at.every((k) => k > 0), `${name}: ${at}`).toBe(true)
+      expect([...at].sort((a, b) => a - b), name).toEqual(at)
+    }
   })
 })

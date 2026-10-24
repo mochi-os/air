@@ -17,12 +17,15 @@ import { BUTTONS } from './armament'
 import { DISPENSER, JAMMER, type Dispenser, type Indicator, type Jammer } from './countermeasures'
 
 // A control on a face: the action a click on it sends, and where it is - its
-// centre and its reach, in the face's own pixels.
+// centre and its reach, in the face's own pixels - and the width and height it
+// is drawn at about that centre, which the cockpit pointer rings.
 export interface Control {
   action: string
   x: number
   y: number
   r: number
+  w: number
+  h: number
 }
 export interface Face {
   width: number
@@ -67,21 +70,21 @@ export const FACES: Record<Name, Face> = {
   arm: {
     width: 204, height: 436,
     controls: [
-      { action: 'extinguisher', x: 149, y: 57, r: 46 },
-      { action: 'mode.air', x: 100, y: 174, r: 30 },
-      { action: 'mode.ground', x: 100, y: 218, r: 30 },
-      { action: 'arm', x: 124, y: 320, r: 50 },
+      { action: 'extinguisher', x: 149, y: 57, r: 46, w: 86, h: 70 },
+      { action: 'mode.air', x: 100, y: 174, r: 30, w: 78, h: 36 },
+      { action: 'mode.ground', x: 100, y: 218, r: 30, w: 78, h: 36 },
+      { action: 'arm', x: 124, y: 320, r: 50, w: 40, h: 66 },
     ],
   },
-  emergency: { width: 136, height: 136, controls: [{ action: 'jettison.emergency', x: 68, y: 68, r: 68 }] },
-  stations: { width: 160, height: 184, controls: BUTTONS.map((b) => ({ action: 'jettison.station.' + b.station, x: STATIONS[b.station][0], y: STATIONS[b.station][1], r: 36 })) },
+  emergency: { width: 136, height: 136, controls: [{ action: 'jettison.emergency', x: 68, y: 68, r: 68, w: 128, h: 128 }] },
+  stations: { width: 160, height: 184, controls: BUTTONS.map((b) => ({ action: 'jettison.station.' + b.station, x: STATIONS[b.station][0], y: STATIONS[b.station][1], r: 36, w: 68, h: 52 })) },
   defence: {
     width: 436, height: 452,
     controls: [
-      ...RECEIVER.map((b, k) => ({ action: 'receiver.' + b.button, x: receiver(k), y: 144, r: 42 })),
-      { action: 'jammer.jettison', x: 56, y: 276, r: 44 },
-      { action: 'dispenser', x: SWITCH.x, y: SWITCH.y, r: 46 },
-      { action: 'jammer', x: KNOB.x, y: KNOB.y, r: 62 },
+      ...RECEIVER.map((b, k) => ({ action: 'receiver.' + b.button, x: receiver(k), y: 144, r: 42, w: 78, h: 66 })),
+      { action: 'jammer.jettison', x: 56, y: 282, r: 44, w: 52, h: 52 },
+      { action: 'dispenser', x: SWITCH.x, y: SWITCH.y, r: 46, w: 40, h: 66 },
+      { action: 'jammer', x: KNOB.x, y: KNOB.y, r: 62, w: 2 * KNOB.r, h: 2 * KNOB.r },
     ],
   },
 }
