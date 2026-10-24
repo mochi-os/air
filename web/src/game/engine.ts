@@ -1423,8 +1423,8 @@ function make_jet(){ const g=new THREE.Group();   // afterburner cones only — 
 const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
-		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
-		pedestalHide:/^(Control_Column_380|Object_1357|Object_1369)$/,   // the stick and the pilot's body and arms: between the eye and the pedestal's controls, and gone while the pilot looks down at them (pedestal_step)
+		shift:[{ node:"Column_Base_383", by:[-0.15,0,0] }],   // the stick's assembly, 15 cm aft: the model stands it with its grip flush with the AMPCD, where no forward stick fits, and the pilot figure's hand held it here
+		cockpitHide:/^(Pilot_Head_769|Object_1357|Object_1369)$/,   // first person: the pilot's head subtree (head, helmet, visor, mask), his arms and his body - a figure posed for another cockpit, whose right hand holds a stick of its own 15 cm behind the jet's
 		cut:[ { node:"Object_1372", boxes:[   // see model_cut: the cockpit shell's blocks over the modelled panels
 			{ lo:[0.275,0.325,4.165], hi:[0.525,0.852,4.508] },     // the lower left panel: brake gauge, HOOK BYPASS, LDG/TAXI, fire test and ground power
 			{ lo:[-0.125,0.320,4.340], hi:[0.125,0.715,4.800] },    // the pedestal under the AMPCD: the clock and the cockpit altimeter
@@ -1478,8 +1478,8 @@ const AIRCRAFT_MODELS={
 	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
 	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttleL" },   // 0.698 rad, 40°: the clip's whole travel, IDLE to MAX
 	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttleR" },
-	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.35, gauge:"stickPitch" },
-	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
+	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.164, gauge:"stickPitch" },   // 3 in at the grip either way: the grip 0.466 m above this pivot. The manual gives the lateral throw (11.1.7) and no pitch figure; more forward travel puts the grip into the panel
+	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.188, gauge:"stickRoll" },    // full lateral stick, 3 in at the grip (NATOPS 11.1.7): the grip 0.405 m above this pivot
 	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },   // the model's glideslope and localizer carriages stay hidden (spec.hide): the pointers are stowed, and adi_face draws them centred under TEST (25.2.4.2)
 	      // ---- #99 batch 2: needles are shaped in update_gauges (nonlinear dials measured off the
 	      // face textures — the GLB's needle tracks are uncalibrated double-spins, useless beyond
@@ -1804,9 +1804,9 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	}); });
 	g.userData.glow=[...glow.values()]; g.userData.burner=[...burner.values()];
 	if(spec.cockpitHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.cockpitHide.test(o.name)) hide.push(o); });
-		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask)
-	if(spec.pedestalHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.pedestalHide.test(o.name)) hide.push(o); }); g.userData.pedestalHide=hide; }
+		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask), arms and body
 	g.add(m);
+	for(const s of spec.shift||[]){ const o=m.getObjectByName(s.node); if(o) shift_node(g,o,s.by); }
 	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
@@ -1822,6 +1822,10 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.canopy=[]; m.traverse(o=>{ if(/^Canopy_ParentAction_AN_Parent/i.test(o.name)) for(const c of o.children) if(!/^Canopy_Arm/i.test(c.name)) g.userData.canopy.push(c); });   // the canopies the model carries (outside, cockpit and its low detail copy), less the actuator arm that stays with the jet, for the jettison (#113)
 		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean);
 		{ const o=m.getObjectByName(INS_KNOB.node); g.userData.insknob=o?{ object:o, rest:o.quaternion.clone() }:null; } } }
+// shift_node moves a node of the model by an offset in the group frame (forward x, up y, right z),
+// whatever frames the model's own nodes are in (spec.shift).
+function shift_node(g,o,by){ g.updateMatrixWorld(true); const at=o.getWorldPosition(new THREE.Vector3()), to=g.localToWorld(g.worldToLocal(at.clone()).add(new THREE.Vector3(...by)));
+	o.position.add(o.parent.worldToLocal(to).sub(o.parent.worldToLocal(at))); o.updateMatrixWorld(true); }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 // model_of is the airframe the model load hung on the group: the pit's sightline
 // casts test only it. The group also carries effects - the gun's flash, plume
@@ -6043,7 +6047,6 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
-const PEDESTAL_DOWN=-20*D2R, PEDESTAL_UP=-15*D2R; let pedestal_clear=false;   // the head's elevation that clears the stick from in front of the pedestal, the one that brings it back, and whether it is cleared (pedestal_step); here, with the ownship, because a model applied early finds cockpit_hidden
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
 function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): six for Fox 2, zero for Gun or a guns-only match
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1;
@@ -10651,7 +10654,7 @@ function update_camera(dt){
 		if(buffet_rot>1e-5) camera.quaternion.multiply(_headq.setFromAxisAngle(_zaxis,(Math.random()*2-1)*buffet_rot)).multiply(_pitq.setFromAxisAngle(_yaxis,(Math.random()*2-1)*buffet_rot));   // the temps are free again after the compose consumed them
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
-		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye); pedestal_step();
+		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el+PIT_REST)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
 		}
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
@@ -11626,17 +11629,7 @@ if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 }
 
 // ============================================================================ UI / menu
-function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit";   // hide the pilot's head in first person; every external view keeps him
-	pedestal_clear=false; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=true; }   // and the stick and his arms drawn until the next frame's look says otherwise: a view switch and a fresh model both start from here
-// The pedestal under the AMPCD carries the dispenser switch, the ECM knob and the RWR control indicator
-// (FACE_SEATS.defence), and from the design eye the stick and the pilot's hand on it stand in front of
-// them. A pilot looks past his own hand: with the head pitched down at the pedestal the stick and the
-// pilot's body are not drawn, and they return when the head comes back up. The two angles are the head's
-// elevation from its rest - the face comes into the lower quarter of the view near 20 degrees down - and
-// are apart so a head held at the edge does not flicker (PEDESTAL_DOWN, PEDESTAL_UP, beside the ownship).
-function lowered(clear,elevation){ return elevation<(clear?PEDESTAL_UP:PEDESTAL_DOWN); }
-function pedestal_step(){ const clear=cfg.view==="cockpit"&&lowered(pedestal_clear,head_el); if(clear===pedestal_clear) return;
-	pedestal_clear=clear; for(const o of ownship.group.userData.pedestalHide||[]) o.visible=!clear; }
+function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit"; }   // hide the pilot in first person - the jet's own stick and throttles stay, drawn wherever the head looks; every external view keeps him
 function set_view(v,source){
 	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
 		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; view_note("display",d,source); return; }
