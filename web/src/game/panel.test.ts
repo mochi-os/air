@@ -661,56 +661,52 @@ describe('the spin recovery display (#12, figure 2-14)', () => {
   })
 })
 
-// The pedestal under the AMPCD carries the dispenser switch, the ECM knob and the RWR control indicator, and
-// from the design eye the stick and the pilot's hand stand in front of them (#136): looking down at it the
-// stick and the pilot's body are not drawn, and they come back when the head comes up.
-describe('the pedestal behind the stick', () => {
-  const D = Math.PI / 180
-  const state = /\nconst PEDESTAL_DOWN=[^;]*; let pedestal_clear=false;/.exec(source)?.[0] ?? ''
-  function view() {
-    if (!state) throw new Error('the pedestal state not found in engine.ts')
-    return new Function(`const D2R=Math.PI/180, cfg={ view:"cockpit" }; let head_el=0;
-      const node=()=>({ visible:true }), ownship={ group:{ userData:{ cockpitHide:[node()], pedestalHide:[node(),node(),node()] } } };
-      ${state}
+// The pilot figure is a separate static mesh posed for another cockpit: its right hand holds a stick of its
+// own 15 cm behind the jet's (#114). In the cockpit view the figure is not drawn - head, arms and body - and
+// the jet's own stick is, wherever the head looks; it stands 15 cm further aft than the model places it, and
+// throws 3 inches at the grip each way (NATOPS 11.1.7), so full forward stick stays clear of the panel.
+describe('the pilot and the stick in the cockpit view', () => {
+  const hidden = /\n\t\tcockpitHide:(\/[^,]*\/),/.exec(source)?.[1] ?? ''
+  it('hides the figure\'s head, arms and body in the cockpit view, and only those', () => {
+    expect(hidden).not.toBe('')
+    const re = new Function(`return ${hidden};`)() as RegExp
+    for (const name of ['Pilot_Head_769', 'Object_1357', 'Object_1369']) expect(re.test(name), name).toBe(true)
+    for (const name of ['Control_Column_380', 'Stick_ForeAft_Action_AN_Base_382', 'lever_throttle0_580', 'lever_throttle1_586', 'F14_Pilot_Body_770']) expect(re.test(name), name).toBe(false)
+  })
+  it('draws the figure in every other view, and hides it again in the cockpit', () => {
+    const run = new Function(`const cfg={ view:"cockpit" }, nodes=[{ visible:true },{ visible:true },{ visible:true }], ownship={ group:{ userData:{ cockpitHide:nodes } } };
       ${lift('cockpit_hidden')}
-      ${lift('lowered')}
-      ${lift('pedestal_step')}
-      return { cfg, lowered, step(el){ head_el=el; pedestal_step(); return ownship.group.userData.pedestalHide.map((o)=>o.visible); }, hidden:cockpit_hidden,
-        head:()=>ownship.group.userData.cockpitHide[0].visible, drawn:()=>ownship.group.userData.pedestalHide.map((o)=>o.visible), fresh(){ ownship.group.userData.pedestalHide=[node(),node(),node()]; } };`)()
-  }
-  const all = [true, true, true], none = [false, false, false]
-  it('clears at 20 degrees down and comes back at 15, so a head held at the edge does not flicker', () => {
-    const v = view()
-    expect([v.lowered(false, -19 * D), v.lowered(false, -21 * D)]).toEqual([false, true])
-    expect([v.lowered(true, -16 * D), v.lowered(true, -14 * D)]).toEqual([true, false])
+      return (view)=>{ cfg.view=view; cockpit_hidden(); return nodes.map((o)=>o.visible); };`)() as (view: string) => boolean[]
+    expect(run('cockpit')).toEqual([false, false, false])
+    for (const view of ['hud', 'chase', 'flypast', 'padlock']) expect(run(view), view).toEqual([true, true, true])
+    expect(run('cockpit')).toEqual([false, false, false])
   })
-  it('stops drawing the stick and the pilot\'s body while the head is down at the pedestal, and draws them again when it comes up', () => {
-    const v = view()
-    expect(v.step(0)).toEqual(all); expect(v.step(-19 * D)).toEqual(all)
-    expect(v.step(-25 * D)).toEqual(none)
-    expect(v.step(-17 * D)).toEqual(none) // between the two angles: as it was
-    expect(v.step(-10 * D)).toEqual(all)
-    expect(v.step(-17 * D)).toEqual(all)
+  it('never hides the stick or the figure by where the head looks', () => {
+    expect(source).not.toMatch(/pedestalHide|pedestal_step|PEDESTAL_DOWN|PEDESTAL_UP/)
+    expect(source).toMatch(/else if\(cfg\.view==="cockpit"\)\{ const at=ownship\.group\.userData\.eye[^\n]*\n\t\tconst eye=[^\n]*camera\.position\.copy\(eye\);\n/)
   })
-  it('draws them in every other view, wherever the head was left', () => {
-    const v = view()
-    expect(v.step(-40 * D)).toEqual(none)
-    v.cfg.view = 'chase'; v.hidden()
-    expect(v.drawn()).toEqual(all); expect(v.head()).toBe(true)
-    expect(v.step(-40 * D)).toEqual(all)
-    v.cfg.view = 'cockpit'; v.hidden()
-    expect(v.head()).toBe(false); expect(v.step(-40 * D)).toEqual(none)
+  it('throws the stick 3 inches at the grip in pitch and in roll', () => {
+    const gain = (name: string) => Number(new RegExp(`\\{ name:"${name}",\\s*node:"[^"]+",\\s*axis:"[xyz]", gain:(-?[0-9.]+),`).exec(source)?.[1])
+    const inch = 0.0254
+    expect(Math.abs(gain('stickPitch')) * 0.466 / inch).toBeCloseTo(3, 1) // the grip 0.466 m above the fore-aft pivot
+    expect(Math.abs(gain('stickRoll')) * 0.405 / inch).toBeCloseTo(3, 1) // and 0.405 m above the lateral one
   })
-  it('clears a model applied while the head is down', () => {
-    const v = view()
-    expect(v.step(-30 * D)).toEqual(none)
-    v.fresh(); v.hidden() // a model (re)applied: its nodes are new, and drawn
-    expect(v.drawn()).toEqual(all)
-    expect(v.step(-30 * D)).toEqual(none)
+  it('stands the stick 15 cm further aft than the model places it', () => {
+    expect(source).toMatch(/\n\t\tshift:\[\{ node:"Column_Base_383", by:\[-0\.15,0,0\] \}\],/)
+    expect(source).toMatch(/\n\tg\.add\(m\);\n\tfor\(const s of spec\.shift\|\|\[\]\)\{ const o=m\.getObjectByName\(s\.node\); if\(o\) shift_node\(g,o,s\.by\); \}\n/)
   })
-  it('is the stick and the pilot\'s body, looked for as the cockpit view composes its camera', () => {
-    expect(source).toMatch(/pedestalHide:\/\^\(Control_Column_380\|Object_1357\|Object_1369\)\$\/,/)
-    expect(source).toMatch(/if\(spec\.pedestalHide\)\{ const hide=\[\]; m\.traverse\(o=>\{ if\(o\.name&&spec\.pedestalHide\.test\(o\.name\)\) hide\.push\(o\); \}\); g\.userData\.pedestalHide=hide; \}/)
-    expect(source).toMatch(/else if\(cfg\.view==="cockpit"\)\{ const at=ownship\.group\.userData\.eye[^\n]*\n\t\tconst eye=[^\n]*camera\.position\.copy\(eye\); pedestal_step\(\);\n/)
+  it('moves a node by an offset in the jet\'s frame, whatever frames the model\'s own nodes are in', () => {
+    const shift_node = new Function('THREE', `${lift('shift_node')} return shift_node;`)(THREE) as (g: THREE.Object3D, o: THREE.Object3D, by: number[]) => void
+    const g = new THREE.Group(), parent = new THREE.Group(), node = new THREE.Object3D()
+    g.position.set(100, 20, -50); g.rotation.set(0.3, 1.1, -0.4) // the jet somewhere in the world, banked and climbing
+    parent.rotation.set(0, Math.PI / 2, 0); parent.scale.setScalar(0.5); parent.position.set(4, 1, 0) // the model's frame: yawed and scaled
+    node.position.set(0.3, 0.2, 0.1)
+    g.add(parent); parent.add(node); g.updateMatrixWorld(true)
+    const before = g.worldToLocal(node.getWorldPosition(new THREE.Vector3()))
+    shift_node(g, node, [-0.15, 0, 0])
+    const after = g.worldToLocal(node.getWorldPosition(new THREE.Vector3()))
+    expect(after.x - before.x).toBeCloseTo(-0.15, 9)
+    expect(after.y - before.y).toBeCloseTo(0, 9)
+    expect(after.z - before.z).toBeCloseTo(0, 9)
   })
 })
