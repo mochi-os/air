@@ -7051,7 +7051,8 @@ const PIT_REST=-8*D2R;   // the cockpit view's resting head pitch: from the desi
 // hud_landing: the HUD's landing symbology gate, the gear down and locked (NATOPS 2.13.4.8.11 item 13).
 // (A one-liner without a trailing comment: the tests lift it by text.)
 function hud_landing(){ return (ownship.gear??1)<0.02; }
-let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
+let head_az=0, head_el=0, head_drag=false;
+const looks={ hud:{ az:0, el:0 }, cockpit:{ az:0, el:0 } };   // each first-person view's own look direction for the flight (#115): set_view keeps the one it leaves and brings back the one it enters, and a new flight starts both ahead. The zoom is kept per view in the config (#209)   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
 /* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
 block, the import at the top, the head_apply/head_begin/head_close call sites,
 the view_reset datum capture, the dev_probe tracking field, the dev_head devq
@@ -11641,6 +11642,9 @@ function set_view(v,source){
 	if(v!==cfg.view) view_note("view",v,source);
 	{ const was=zoom_target; zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
 		if(zoom_target!==was) view_note("zoom",zoom_target.toFixed(2),"view"); }   // i18n-format-ok: ACMI event value, not display text
+	if(v!==cfg.view){ const out=looks[cfg.view], into=looks[v];
+		if(out){ out.az=look_home?0:head_az; out.el=look_home?0:head_el; }   // a head easing home was going there anyway
+		if(into){ head_az=into.az; head_el=into.el; look_home=false; } }
 	cfg.view=v;
 	cockpit_hidden();
 }

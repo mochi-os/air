@@ -29,7 +29,7 @@ function line(fragment: string): string {
   return lines[0]
 }
 
-type Rig = { events: string[]; zoom: number; view: string; padlocked: boolean }
+type Rig = { events: string[]; zoom: number; view: string; padlocked: boolean; head: number[] }
 // rig runs a body in the HUD view at 1x, the HUD view's saved zoom 1.38 and
 // the chase view's 1, with the clock at 12.34 s
 function rig(body: string): Rig {
@@ -38,9 +38,10 @@ function rig(body: string): Rig {
     const cfg={ view:"hud", zoom_hud:1.38, zoom_chase:1, ddi:"left" }, HUD_FIELD=60, on_config=null, window={ setTimeout:()=>1 }, clearTimeout=()=>{};
     let ddi_view_last=0, cam_psi=0, cam_az=0, cam_el=0, cam_dist=0, flyby_pos=null, hist_valid=true;
     const ownship={ fwd:{x:0,z:1} }, cockpit_hidden=()=>{}, ddi_open=()=>{}, ddi_range=()=>{}, DDI_ORDER=["left","right","center"], ddi_focus=()=>cfg.ddi, ddi_state={}, DDI_PAGES={};
+    ${line('const looks=')}
     ${['view_note', 'zoom_floor', 'zoom_recall', 'zoom_persist', 'zoom_to', 'zoom_step', 'latch', 'set_view', 'view_reset'].map(lift).join('\n')}
     ${body}
-    return { events:view_events, zoom:zoom_target, view:cfg.view, padlocked };`)(THREE) as Rig
+    return { events:view_events, zoom:zoom_target, view:cfg.view, padlocked, head:[head_az, head_el] };`)(THREE) as Rig
 }
 
 describe('the View channel', () => {
@@ -125,5 +126,35 @@ describe('the View channel', () => {
 
   it('drains into the ownship sample on a frame the recorder keeps', () => {
     expect(source).toContain('...(due&&view_events.length?{view:view_events.splice(0).join(";")}:{}),')
+  })
+})
+
+// Each first-person view keeps its own look direction for the flight (#115): looking round the cockpit and
+// switching to the HUD view finds the HUD view's head where it was left, and switching back finds the
+// cockpit's. A new flight starts both ahead; the reset key recentres only the view it is pressed in.
+describe('the look direction', () => {
+  it('is kept per first-person view across a switch', () => {
+    const s = rig(`head_az=0.5; head_el=0.1;   // looking left and up in the HUD view
+      set_view("cockpit","key"); const entered=[head_az, head_el];
+      head_az=-0.3; head_el=-0.2;   // down and right in the cockpit
+      set_view("hud","key"); const back=[head_az, head_el];
+      set_view("cockpit","key"); view_events.splice(0, view_events.length, entered.join("|"), back.join("|"));`)
+    expect(s.events).toEqual(['0|0', '0.5|0.1']) // the cockpit starts ahead; the HUD view comes back where it was left
+    expect(s.head).toEqual([-0.3, -0.2]) // and the cockpit where it was left
+  })
+  it('stays where it was through a view that is not first person', () => {
+    expect(rig('set_view("cockpit","key"); head_az=0.4; set_view("ddi","key"); set_view("cockpit","key");').head).toEqual([0.4, 0])
+    expect(rig('set_view("cockpit","key"); head_az=0.4; set_view("chase","key"); head_az=2; set_view("cockpit","key");').head).toEqual([0.4, 0])
+  })
+  it('recentres only the view the reset key is pressed in', () => {
+    const s = rig(`head_az=0.5; set_view("cockpit","key"); head_az=-0.3; view_reset("key"); set_view("hud","key");`)
+    expect(s.head).toEqual([0.5, 0])
+  })
+  it('keeps a head that was easing home as home', () => {
+    expect(rig('set_view("cockpit","key"); head_az=0.2; look_home=true; set_view("hud","key"); set_view("cockpit","key");').head).toEqual([0, 0])
+  })
+  it('starts each flight ahead in both views', () => {
+    expect(line('const looks=')).toMatch(/^const looks=\{ hud:\{ az:0, el:0 \}, cockpit:\{ az:0, el:0 \} \};/)
+    expect(source.indexOf('const looks=')).toBeGreaterThan(source.indexOf('export function startGame(')) // built afresh with each flight
   })
 })
