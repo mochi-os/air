@@ -59,9 +59,28 @@ describe('a click on a face', () => {
   it('finds the RWR control indicator\'s buttons left to right: BIT, OFFSET, SPECIAL, DISPLAY, POWER', () => {
     expect([50, 134, 218, 302, 386].map((x) => F.control(F.FACES.defence, x, 144)?.action)).toEqual(['receiver.test', 'receiver.offset', 'receiver.special', 'receiver.display', 'receiver.power'])
   })
+  it('gives each pushbutton the size the face draws it at, which the cockpit pointer rings', () => {
+    // the pushbutton faces a control's reach holds - its lenses or its cap, not its guard's stripes or the
+    // panel behind - span exactly the control's drawn width and height; a lever, a knob and the striped
+    // emergency button are drawn round and paint none
+    const HATCH = '#e8b923'
+    let checked = 0
+    for (const [name, face] of Object.entries(F.FACES) as [F.Name, F.Face][]) {
+      const filled = draw(name, shown()).filled.filter(([fill, , , w]) => fill !== HATCH && w < face.width)
+      for (const c of face.controls) {
+        const own = filled.filter(([, x, y, w, h]) => Math.hypot(x + w / 2 - c.x, y + h / 2 - c.y) <= c.r)
+        if (name === 'emergency' || !own.length) continue
+        const span = [Math.min(...own.map((f) => f[1])), Math.max(...own.map((f) => f[1] + f[3])), Math.min(...own.map((f) => f[2])), Math.max(...own.map((f) => f[2] + f[4]))]
+        expect(span, name + ' ' + c.action).toEqual([c.x - c.w / 2, c.x + c.w / 2, c.y - c.h / 2, c.y + c.h / 2])
+        checked++
+      }
+    }
+    expect(checked).toBe(14) // the extinguisher, A/A, A/G, the five station buttons, the RWR indicator's five and ECM JETT
+  })
   it('keeps every control inside its face', () => {
     for (const [name, face] of Object.entries(F.FACES)) for (const c of face.controls) {
       expect(c.x >= 0 && c.x <= face.width && c.y >= 0 && c.y <= face.height, name + ' ' + c.action).toBe(true)
+      expect(c.x - c.w / 2 >= 0 && c.x + c.w / 2 <= face.width && c.y - c.h / 2 >= 0 && c.y + c.h / 2 <= face.height, name + ' ' + c.action + ' drawn').toBe(true)
     }
   })
 })

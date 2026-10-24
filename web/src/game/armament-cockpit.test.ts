@@ -161,7 +161,7 @@ describe('the selective jettison controls', () => {
     expect(jett(set, { gear: 0.5 })).toEqual({ dropped: [], said: ['JETTISON: GEAR'] })
   })
   it('have the JETT button in the knob: a middle click on it', () => {
-    expect(source).toMatch(/\{ action:"jettison\.select", at:\[6\.193,0\.017,-0\.281\], hold:"jettison\.release" \}/)
+    expect(source).toMatch(/\{ action:"jettison\.select", at:\[6\.193,0\.017,-0\.281\], r:0\.016, hold:"jettison\.release" \}/)
   })
   it('keep the tanks key behind MASTER ARM too', () => {
     expect(source).toMatch(/if\(ch===key_of\("jettison\.tanks"\) && !dev_parked\)\{[^\n]*\n\t\t\tif\(!arms\.arm\) notice\(translate\("MASTER ARM SAFE"\)\);[^\n]*\n\t\t\telse if\(on_ground\(\)\|\|\(ownship\.gearTarget\?\?1\)<0\.5\) notice\(translate\("JETTISON: GEAR"\)\);/)
@@ -310,6 +310,6 @@ describe('the panels drawn over the model', () => {
     expect(pit('return face_target();')).toBeNull()
   })
   it('is asked before the model\'s own switches and the click spots', () => {
-    expect(source).toMatch(/function pit_target\(e\)\{ const list=ownship\.group\.userData\.switches\|\|\[\];\n\t\{ const on=face_target\(\); if\(on\) return on; \}/)
+    expect(source).toMatch(/function pit_target\(e\)\{ const g=ownship\.group, list=g\.userData\.switches\|\|\[\];\n\t\{ const on=face_target\(\); if\(on\) return on; \}/)
   })
 })

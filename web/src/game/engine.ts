@@ -1604,31 +1604,40 @@ const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.
 	instpnl:"knob.instrument", consoles:"knob.consoles", flood:"knob.flood", warncaut:"knob.warn", symbology:"knob.symbology", indexer:"knob.indexer", ufcbrt:"knob.ufc",
 	volumereceiver:"volume.receiver", volumeweapon:"volume.weapon", attswitch:"attitude", insknob:"ins", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
 	wingtanks:"transfer.wing", centretank:"transfer.centre", ...Object.fromEntries(Object.keys(TRAVEL).map(k=>[k,"travel."+k])) };
+// SWITCH_SEATS: the switches whose model parts lie wholly behind the panel face, where no head sees
+// them - the five on the HUD control panel under the UFC and the UFC's BRT knob - seated on the knobs
+// the panel paints, so a click and the pointer's ring work there and not over the hidden parts: each
+// centre in the group frame, picked on the painted face (dev_pick), and its radius in metres.
+const SWITCH_SEATS={ rejswitch:{ at:[6.166,0.298,-0.072], r:0.008 }, symbology:{ at:[6.166,0.298,-0.044], r:0.008 }, indexer:{ at:[6.166,0.298,0.013], r:0.008 },
+	altswitch:{ at:[6.166,0.298,0.041], r:0.008 }, attswitch:{ at:[6.166,0.298,0.069], r:0.008 }, ufcbrt:{ at:[6.135,0.469,0.085], r:0.008 } };
 // Controls with no animated node (#115, #19, #18, #129), each a point on the panel, group frame: a
-// click within a few pixels of it works it as a switch's click does.
+// click within a few pixels of it, or on its face where that is larger, works it as a switch's click
+// does. r is the face's radius in metres where it is not PIT_SPOT_RADIUS's 8 mm toggle, measured on
+// zoomed captures.
+const PIT_SPOT_RADIUS=0.008;
 const PIT_SPOTS=[
-	{ action:"display.left.mode", at:[6.163,0.469,-0.223] }, { action:"display.left.brt", at:[6.163,0.288,-0.305] },
-	{ action:"display.right.mode", at:[6.163,0.469,0.208] }, { action:"display.right.brt", at:[6.163,0.288,0.125] },
-	{ action:"display.center.brt", at:[6.163,0.211,0] }, { action:"display.center.mode", at:[6.163,0.205,-0.08] },
-	{ action:"knob.ifei", at:[6.211,0.049,-0.305] }, { action:"clock", at:[6.231,-0.069,0.077] }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
-	{ action:"knob.hmd", at:[6.195,0.315,0.361] },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
+	{ action:"display.left.mode", at:[6.163,0.469,-0.223], r:0.006 }, { action:"display.left.brt", at:[6.163,0.288,-0.305], r:0.006 },
+	{ action:"display.right.mode", at:[6.163,0.469,0.213], r:0.006 }, { action:"display.right.brt", at:[6.163,0.288,0.125], r:0.006 },
+	{ action:"display.center.brt", at:[6.163,0.211,0] }, { action:"display.center.mode", at:[6.163,0.205,-0.08], r:0.005 },
+	{ action:"knob.ifei", at:[6.211,0.049,-0.305], r:0.006 }, { action:"clock", at:[6.231,-0.069,0.077], r:0.005 }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
+	{ action:"knob.hmd", at:[6.195,0.315,0.361], r:0.007 },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
 	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
-	{ action:"canopy.jettison", at:[6.05,0.175,-0.313] },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
+	{ action:"canopy.jettison", at:[6.05,0.175,-0.313], r:0.017 },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
 	{ action:"canopy.crank", at:[5.46,0.28,-0.377] },   // the canopy hand crank under the left sill (2.15.1.1.3, FO-5 sheet 2 item 19), where the model draws only the wall
 	{ action:"seat", at:[5.6,0.22,0.25] },
-	{ action:"computer", at:[5.42,-0.027,-0.451] },   // the MC switch, aft of HYD ISOL on the MC/HYD ISOL panel (2.13.1.3, FO-5 sheet 2 left console item 12): painted, no node to move
-	{ action:"heading.set", at:[6.163,0.211,-0.095] }, { action:"course.set", at:[6.163,0.209,0.091] },
+	{ action:"computer", at:[5.408,-0.027,-0.446] },   // the MC switch, aft of HYD ISOL on the MC/HYD ISOL panel (2.13.1.3, FO-5 sheet 2 left console item 12): painted, no node to move
+	{ action:"heading.set", at:[6.163,0.211,-0.095], r:0.006 }, { action:"course.set", at:[6.163,0.209,0.091], r:0.006 },
 	// the UFC's comm controls (figure 23-1, #20): each radio's volume control beside the keypad and its channel selector knob below, turned by a click and pulled by a middle click
-	{ action:"comm.one.volume", at:[6.14,0.417,-0.089] }, { action:"comm.two.volume", at:[6.14,0.417,0.086] },
+	{ action:"comm.one.volume", at:[6.14,0.417,-0.089], r:0.007 }, { action:"comm.two.volume", at:[6.14,0.417,0.086], r:0.007 },
 	{ action:"comm.one.channel", at:[6.157,0.34,-0.088], hold:"comm.one.channel" }, { action:"comm.two.channel", at:[6.157,0.34,0.085], hold:"comm.two.channel" },
-	{ action:"jettison.select", at:[6.193,0.017,-0.281], hold:"jettison.release" },   // the SELECT JETT knob (2.17.1.2.2, FO-5 item 32): turned by a click, its JETT button pushed by a middle click; the model's knob is fixed, and a mark beside it shows the position (jettison_mark)
-	{ action:"dispense", at:[5.863,0.196,-0.326] },   // the dispense button on the left sill (FO-5 sheet 2 left console item 16)
-	{ action:"recorder", at:[6.211,0.055,-0.206] },   // the video record mode selector, right of the HUD/LDDI selector on the panel under the IFEI (2.13.8.7, FO-5 item 23)
+	{ action:"jettison.select", at:[6.193,0.017,-0.281], r:0.016, hold:"jettison.release" },   // the SELECT JETT knob (2.17.1.2.2, FO-5 item 32): turned by a click, its JETT button pushed by a middle click; the model's knob is fixed, and a mark beside it shows the position (jettison_mark)
+	{ action:"dispense", at:[5.863,0.196,-0.326], r:0.02 },   // the dispense button on the left sill (FO-5 sheet 2 left console item 16)
+	{ action:"recorder", at:[6.211,0.055,-0.206], r:0.006 },   // the video record mode selector, right of the HUD/LDDI selector on the panel under the IFEI (2.13.8.7, FO-5 item 23)
 	// the communication and antenna select panels (FO-5 sheet 2 left console items 7 and 13, #20): painted switches, their levers part of a merged mesh
 	{ action:"antenna.comm", at:[5.565,-0.04,-0.431] }, { action:"antenna.identification", at:[5.619,-0.041,-0.431] },
 	{ action:"comm.relay", at:[5.556,-0.05,-0.373] }, { action:"comm.guard", at:[5.628,-0.049,-0.38] }, { action:"comm.landing", at:[5.649,-0.057,-0.331] }, { action:"comm.channel", at:[5.592,-0.056,-0.338] },
 	{ action:"identification.crypto", at:[5.558,-0.065,-0.283] }, { action:"identification.alert", at:[5.601,-0.066,-0.284] }, { action:"identification.master", at:[5.641,-0.065,-0.282] },
-	{ action:"volume.tacan", at:[5.681,-0.04,-0.367] },
+	{ action:"volume.tacan", at:[5.681,-0.04,-0.367], r:0.011 },
 	{ action:"hydraulic.isolate", at:[5.468,-0.037,-0.45] },   // HYD ISOL, forward of the MC switch on its panel (2.7.4)
 	{ action:"generator.tie", at:[5.9,-0.035,-0.43] } ];   // the GEN TIE CONTROL switch, outboard of the exterior lights panel where FO-5 draws it (2.5.1.3): this model has none   // the heading and course set switches at the AMPCD's upper corners (2.13.4.9, 2.13.4.10, #8), painted on the shell: the model's own pair are an older panel's, behind it   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
 // THROTTLE_OFF: a lever's place at OFF, as a fraction of its 40° IDLE to MAX travel: the finger lift raised,
@@ -1808,7 +1817,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.switches=g.userData.rig.filter(r=>r.clip&&r.name in PIT_SWITCHES).map(r=>{   // the click targets (#19): the clip's nodes and every mesh under them
 			const objects=[...new Set(r.clip.tracks.map(t=>m.getObjectByName(t.name.split(".")[0])))].filter(Boolean), meshes=[];
 			for(const o of objects) o.traverse(c=>{ if(c.isMesh) meshes.push(c); });
-			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes }; });
+			return { name:r.name, action:PIT_SWITCHES[r.name], objects, meshes, seat:SWITCH_SEATS[r.name]||null }; });
 		g.userData.handle=["node_50_480","node_51_481"].map(n=>m.getObjectByName(n)).filter(Boolean);   // the gear handle's lever and grip, under its clip's node, for the emergency turn and pull (#128)
 		g.userData.canopy=[]; m.traverse(o=>{ if(/^Canopy_ParentAction_AN_Parent/i.test(o.name)) for(const c of o.children) if(!/^Canopy_Arm/i.test(c.name)) g.userData.canopy.push(c); });   // the canopies the model carries (outside, cockpit and its low detail copy), less the actuator arm that stays with the jet, for the jettison (#113)
 		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean);
@@ -7659,7 +7668,7 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
 	if(head_drag){ if(press_moved>=6) latch(false,"mouse");   // a drag, not a click on a switch, takes the head back from the padlock
-		head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
+		head_az=THREE.MathUtils.clamp(head_az+dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el. The drag carries the cockpit with the pointer, as the chase orbit's does: drag right and the head turns left, drag down and it looks up
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
 stage.addEventListener("pointerup",e=>{ if(e.button===2||e.button===1){ const r=right_press; right_press=null; if(r&&Math.abs(e.clientX-r.x)+Math.abs(e.clientY-r.y)<6) pit_click(e); return; }   // a stationary right press: the switch under it, the other way
@@ -7703,6 +7712,7 @@ function pit_click(e){
 		if(on){ if(on.object===u.silence) tone_silence(); else if(on.object===l.fireL||on.object===l.fireR){ if(!playback) fire_press(on.object===l.fireL?0:1); } else caution_press(); return; } }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
+		{ const b=ddi_button_at(e.clientX,e.clientY); if(b){ if(ddi_press(b.display,b.pb)) screens_update(); return; } }   // a pushbutton on a display's bezel, where the pilot presses it (#105); its legend inside the glass presses it too
 		if(pit_switch(e)) return;   // a switch or handle under the pointer (#19), tested after the screens so the bezel and TDC paths are unchanged
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // measuring click: report where on the panel the pilot pointed
 			if(h){ const p=ownship.group.worldToLocal(h.point.clone());
@@ -7716,21 +7726,22 @@ function pit_click(e){
 	if(pb===0&&st&&!st.menu&&st.page==="grid"){ if(grid_face(px,py)){ ddi_dirty=true; screens_update(); } return; }   // and on the square identification grid
 	if(ddi_press(sc.display,pb)) screens_update(); }   // dirty redraw NOW — a press must answer this frame
 // pit_switch finds the switch or handle under the pointer and presses it (#19): a
-// raycast at the switch meshes first, then the nearest switch origin within a few
-// pixels, because a 16 mm lever is a handful of pixels at 1x. The right button
+// raycast at the switch meshes first, then the nearest switch origin, seat or
+// painted control within a few pixels, because a 16 mm lever is a handful of
+// pixels at 1x, or within its face where zoom makes that larger. The right button
 // (up, forward, clockwise) is +1, the left -1; two-position controls toggle on either.
 const _click_p=new THREE.Vector3();
-function pit_target(e){ const list=ownship.group.userData.switches||[];
+function pit_target(e){ const g=ownship.group, list=g.userData.switches||[];
 	{ const on=face_target(); if(on) return on; }   // a control drawn on one of the faces (FACE_SEATS)
-	const meshes=[]; for(const s of list) for(const m of s.meshes) if(shown(m)) meshes.push(m);
+	const meshes=[]; for(const s of list) if(!s.seat) for(const m of s.meshes) if(shown(m)) meshes.push(m);   // a seated switch's parts are hidden: it is found at its seat
 	const h=meshes.length?_click_ray.intersectObjects(meshes,false)[0]:null;
 	if(h) return list.find(s=>s.meshes.includes(h.object));
-	let best=PIT_CLICK_RADIUS*PIT_CLICK_RADIUS, hit=null;
-	const near=(s)=>{ _click_p.project(cockpit_cam); if(_click_p.z>1) return;
-		const dx=(_click_p.x*0.5+0.5)*HW-e.clientX, dy=(-_click_p.y*0.5+0.5)*HH-e.clientY, dd=dx*dx+dy*dy;
-		if(dd<best){ best=dd; hit=s; } };
-	for(const s of list){ const o=s.objects[0]; if(!o||!shown(o)) continue; o.getWorldPosition(_click_p); near(s); }
-	for(const s of PIT_SPOTS){ _click_p.set(s.at[0],s.at[1],s.at[2]); ownship.group.localToWorld(_click_p); near(s); }   // the painted controls (PIT_SPOTS)
+	let least=Infinity, hit=null;
+	const near=(s,local,radius)=>{ const at=screen_of(local,radius); if(!at) return;
+		const d=Math.hypot(at[0]-e.clientX,at[1]-e.clientY); if(d<=Math.max(PIT_CLICK_RADIUS,at[2])&&d<least){ least=d; hit=s; } };
+	for(const s of list){ if(s.seat){ near(s,_click_p.fromArray(s.seat.at),s.seat.r); continue; }
+		const o=s.objects[0]; if(!o||!shown(o)) continue; near(s,g.worldToLocal(o.getWorldPosition(_click_p)),0); }
+	for(const s of PIT_SPOTS) near(s,_click_p.fromArray(s.at),s.r||PIT_SPOT_RADIUS);   // the painted controls (PIT_SPOTS)
 	return hit; }
 function pit_switch(e){ const hit=pit_target(e); if(!hit) return false;
 	if(hit.action) pit_press(hit.action,e.button===2?1:-1);
@@ -7738,6 +7749,148 @@ function pit_switch(e){ const hit=pit_target(e); if(!hit) return false;
 if(DEV_MODE) (globalThis as any).dev_target=function(px,py){ _click_ray.setFromCamera(_click_at.set((px/HW)*2-1,-(py/HH)*2+1),cockpit_cam);   // dev: the control a click on a css pixel would work - its switch's name, its action and what a middle click does
 	const s=pit_target({ clientX:px, clientY:py }); return s?{ name:s.name||"", action:s.action||"", hold:s.hold||"" }:null; };
 const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
+// ---- the cockpit pointer (#105) ----
+// In the cockpit the mouse is the pilot's hand on the panel, so the pointer
+// shows while it moves and for a couple of seconds after; every other flying
+// view keeps it hidden. A ring marks the control a left click there would work,
+// found in pit_click's order and kept in the jet's frame so it rides the panel.
+const POINTER_IDLE=2;   // wall seconds of stillness before the pointer hides again
+// MARK_SIZES: the ring round the control under the pointer comes in three sizes, its
+// radius in metres so it grows with the zoom as the control does: small for the
+// pushbuttons, keys, panel toggles and small knobs, whose half sizes measure 3-10 mm;
+// medium for the console switches, the larger knobs and the lamps, 11-20 mm; large for
+// the handles and the instruments' faces, 21 mm and up. Each bound sits in the gap
+// between two of those clusters. MARK_SMALLEST keeps a far ring in sight (css px).
+const MARK_SIZES=[{ radius:0.01, bound:0.0105 }, { radius:0.018, bound:0.021 }, { radius:0.03, bound:Infinity }], MARK_SMALLEST=6;
+const pointer={ x:0, y:0, moved:-Infinity, key:"", mark:null, screen:null };   // mark: the control under it, { at, radius } in the jet's frame; screen: where the ring was drawn
+function pointer_seen(e){ pointer.x=e.clientX; pointer.y=e.clientY; pointer.moved=performance.now()/1000; }
+stage.addEventListener("pointermove",pointer_seen,{ signal });
+stage.addEventListener("pointerdown",pointer_seen,{ signal });
+function pointer_shown(){ return cfg.view==="cockpit"&&!map_on&&performance.now()/1000-pointer.moved<POINTER_IDLE; }
+// plane_point is a point on a PlaneGeometry quad, from its texture coordinates, in the world.
+function plane_point(mesh,u,v){ const p=mesh.geometry.parameters; return mesh.localToWorld(new THREE.Vector3((u-0.5)*p.width,(v-0.5)*p.height,0)); }
+// DDI_BUTTONS: the modelled pushbuttons round each display, outside its glass,
+// measured off head-on captures of the bare panel (dev_overlays, dev_pick): the
+// centre line of each row (y of the top and bottom rows, z of the side columns)
+// and the five centres along the sides, top to bottom, and along the top and
+// bottom rows, left to right. The top rows sit in the glare shield's shadow and
+// take the bottom rows' centres, as the display's own layout does.
+const DDI_BUTTONS={
+	left:{ top:0.4535, bottom:0.2843, left:-0.3053, right:-0.1295, down:[0.415,0.393,0.368,0.3455,0.3225], across:[-0.264,-0.241,-0.218,-0.194,-0.170] },
+	right:{ top:0.454, bottom:0.2846, left:0.126, right:0.3015, down:[0.416,0.3925,0.368,0.3455,0.322], across:[0.167,0.192,0.214,0.238,0.261] },
+	center:{ top:0.202, bottom:0.0398, left:-0.0815, right:0.077, down:[0.1575,0.1355,0.1115,0.0895,0.068], across:[-0.0465,-0.0235,-0.001,0.021,0.044] } };
+const DDI_BUTTON=0.006, DDI_PANEL=6.163;   // m: a pushbutton cap's half width, and the panel face the caps sit on
+// ddi_button is pushbutton pb's centre on a display's bezel in the jet's frame: 1-5 up the left, 6-10 across the top, 11-15 down the right, 16-20 back along the bottom.
+function ddi_button(display,pb){ const b=DDI_BUTTONS[display]; let y,z;
+	if(pb<=5){ y=b.down[5-pb]; z=b.left; }
+	else if(pb<=10){ y=b.top; z=b.across[pb-6]; }
+	else if(pb<=15){ y=b.down[pb-11]; z=b.right; }
+	else { y=b.bottom; z=b.across[20-pb]; }
+	return new THREE.Vector3(DDI_PANEL,y,z); }
+// screen_of is where a point in the jet's frame lands on screen, css px, with the
+// screen length of a radius about it: [x, y, r], or null behind the eye.
+const _screen_at=new THREE.Vector3(), _screen_edge=new THREE.Vector3(), _screen_right=new THREE.Vector3();
+function screen_of(local,radius){ ownship.group.localToWorld(_screen_at.copy(local));
+	_screen_right.setFromMatrixColumn(cockpit_cam.matrixWorld,0); _screen_edge.copy(_screen_at).addScaledVector(_screen_right,radius);
+	_screen_at.project(cockpit_cam); if(_screen_at.z>1) return null; _screen_edge.project(cockpit_cam);
+	const x=(_screen_at.x*0.5+0.5)*HW, y=(-_screen_at.y*0.5+0.5)*HH;
+	return [x,y,Math.hypot((_screen_edge.x*0.5+0.5)*HW-x,(-_screen_edge.y*0.5+0.5)*HH-y)]; }
+// ddi_button_at is the bezel pushbutton under a css pixel, { display, pb }, or null:
+// the nearest cap whose face holds it, a few pixels' grace on a small one.
+function ddi_button_at(x,y){ let best=null, least=Infinity;
+	for(const display of Object.keys(DDI_BUTTONS)) for(let pb=1;pb<=20;pb++){ const at=screen_of(ddi_button(display,pb),DDI_BUTTON); if(!at) continue;
+		const d=Math.hypot(at[0]-x,at[1]-y); if(d<=Math.max(at[2],6)&&d<least){ least=d; best={ display, pb }; } }
+	return best; }
+// extent_of is the box a set of meshes fills in the jet's frame: a lens, a lamp
+// or an instrument's face, all of it in the pilot's sight.
+const _extent_part=new THREE.Box3(), _extent_frame=new THREE.Matrix4();
+function extent_of(meshes,name){ const box=new THREE.Box3(), inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
+	for(const m of meshes){ const g=m.geometry; if(!g) continue; if(!g.boundingBox) g.computeBoundingBox();
+		box.union(_extent_part.copy(g.boundingBox).applyMatrix4(_extent_frame.multiplyMatrices(inverse,m.matrixWorld))); }
+	return box.isEmpty()?null:{ box, name }; }
+// seen_of is the box of what the eye can see of a switch or a lever in the model,
+// in the jet's frame: its vertices, each kept only when nothing else lies on the
+// sight line to it, since a lever's root, a knob's shaft and a handle's linkage
+// run on into the panel and a box round the whole part rings the panel. Every
+// vertex counts when none is seen. Kept per control while the head stays put.
+const SEEN_VERTICES=160, SEEN_SLACK=0.003, SEEN_HEAD=2*D2R;   // the most vertices tested; how far short of one (m) another surface must lie to hide it; how far the head turns (rad) before the parts are looked at again
+const _seen_ray=new THREE.Raycaster(); _seen_ray.layers.enable(LAYER_OWN);   // cast at the model alone (model_of), as the pit's sightlines are: the canvas faces over it are see-through where they draw nothing
+const _seen=new Map(), _seen_eye=new THREE.Vector3(), _seen_way=new THREE.Vector3(), _seen_at=new THREE.Vector3();
+function seen_of(meshes,name){ const was=_seen.get(name);
+	if(was&&Math.abs(was.az-head_az)<SEEN_HEAD&&Math.abs(was.el-head_el)<SEEN_HEAD) return { box:was.box, name };
+	const g=ownship.group, model=model_of(g), inverse=new THREE.Matrix4().copy(g.matrixWorld).invert(); cockpit_cam.getWorldPosition(_seen_eye);
+	let total=0; for(const m of meshes) total+=m.geometry.attributes.position.count;
+	const stride=Math.max(1,Math.ceil(total/SEEN_VERTICES)), seen=new THREE.Box3(), all=new THREE.Box3();
+	let k=0;
+	for(const m of meshes){ const p=m.geometry.attributes.position;
+		for(let i=0;i<p.count;i++,k++){ if(k%stride) continue;
+			_seen_at.fromBufferAttribute(p,i).applyMatrix4(m.matrixWorld); const d=_seen_way.subVectors(_seen_at,_seen_eye).length();
+			_seen_ray.set(_seen_eye,_seen_way.divideScalar(d)); _seen_ray.far=d-SEEN_SLACK;
+			const hidden=_seen_ray.intersectObject(model,true).some(h=>shown(h.object)&&!meshes.includes(h.object));
+			_seen_at.applyMatrix4(inverse); all.expandByPoint(_seen_at); if(!hidden) seen.expandByPoint(_seen_at); } }
+	const box=seen.isEmpty()?all:seen; _seen.set(name,{ box, az:head_az, el:head_el });
+	return { box, name }; }
+// mark_ring is the ring a mark is drawn with, [x, y, radius] css px, or null behind
+// the eye: round, at the mark's centre, in the standard size its half size takes.
+const _ring_at=new THREE.Vector3(), _ring_size=new THREE.Vector3();
+function mark_ring(mark){ let half=mark.radius, at=mark.at;
+	if(mark.box){ at=mark.box.getCenter(_ring_at); mark.box.getSize(_ring_size); half=Math.max(_ring_size.x,_ring_size.y,_ring_size.z)/2; }
+	const size=MARK_SIZES.find(k=>half<=k.bound), ring=screen_of(at,size.radius);
+	return ring&&[ring[0],ring[1],Math.max(ring[2],MARK_SMALLEST)]; }
+const IFEI_CAP=[0.006,0.004], UFC_KEY_RADIUS=0.007;   // m: an IFEI pushbutton's half width and half height, and a UFC key's face, for their rings
+// pit_hover is what a left click at a css pixel would work, tested in pit_click's
+// order, in the jet's frame: the box its meshes fill, { box }, or a painted
+// control's centre and radius in metres, { at, radius } - or null.
+const _hover_ray=new THREE.Ray(), _hover_inverse=new THREE.Matrix4();
+function pit_hover(x,y){ const g=ownship.group, u=g.userData, list=u.screens; if(!list) return null;
+	_click_ray.setFromCamera(_click_at.set((x/HW)*2-1,-(y/HH)*2+1),cockpit_cam);
+	const on=(m)=>m?_click_ray.intersectObject(m,false)[0]:null, local=(w)=>g.worldToLocal(w.clone());
+	const sb=u.standby;
+	for(const m of [sb&&sb.alt&&sb.alt.mesh, sb&&sb.adi&&sb.adi.mesh, u.radalt&&u.radalt.mesh]) if(m&&on(m)) return extent_of([m],m.name||"standby");   // the standby altimeter's knob, the standby ADI's TEST and the radar altimeter's knob: the whole face
+	{ const h=u.ifei&&on(u.ifei.mesh), b=h&&ifei_button_at(h.point);
+		if(b){ const x=local(h.point).x;
+			return { box:new THREE.Box3(new THREE.Vector3(x,IFEI_BUTTONS[b]-IFEI_CAP[1],IFEI_BUTTON_Z-IFEI_CAP[0]),new THREE.Vector3(x,IFEI_BUTTONS[b]+IFEI_CAP[1],IFEI_BUTTON_Z+IFEI_CAP[0])), name:"ifei."+b }; } }
+	if(u.ufc){ _hover_ray.copy(_click_ray.ray).applyMatrix4(_hover_inverse.copy(g.matrixWorld).invert());   // the panel plane first, so the jet-wide raycast pit_click makes runs only over a painted key
+		const t=(6.14-_hover_ray.origin.x)/_hover_ray.direction.x, y0=_hover_ray.origin.y+t*_hover_ray.direction.y, z0=_hover_ray.origin.z+t*_hover_ray.direction.z;
+		if(t>0&&ufc_button_at(y0,z0)){ const h=_click_ray.intersectObject(g,true).find(k=>!k.object.userData.overlay&&shown(k.object));
+			const p=h&&local(h.point), name=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null, b=name&&UFC_BUTTONS.find(k=>k.name===name);
+			if(b){ p.y=b.y; p.z=b.z; return { at:p, radius:UFC_KEY_RADIUS, name:"ufc."+name }; } } }
+	{ const l=u.lamps||{}, targets=[l.caution,u.silence,l.fireL,l.fireR].filter(Boolean), h=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
+		if(h) return extent_of([h.object],h.object.name||"lamp"); }
+	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
+	if(hit&&hit.uv){ const pb=button_of(hit.uv.x*512,(1-hit.uv.y)*512); if(!pb) return null;   // the face itself: the TDC on the attack format, not a control
+		const sc=list.find(k=>k.mesh===hit.object); return { at:ddi_button(sc.display,pb), radius:DDI_BUTTON, name:"ddi."+sc.display+"."+pb }; }   // a legend presses the cap beside it: ring the cap
+	{ const b=ddi_button_at(x,y); if(b) return { at:ddi_button(b.display,b.pb), radius:DDI_BUTTON, name:"ddi."+b.display+"."+b.pb }; }
+	if(u.faces){ const built=Object.values(u.faces), h=_click_ray.intersectObjects(built.map(f=>f.mesh),false)[0];   // a control drawn on one of the faces, as pit_target tries first
+		if(h&&h.uv){ const f=built.find(k=>k.mesh===h.object), c=faces.control(f.face,h.uv.x*f.face.width,(1-h.uv.y)*f.face.height);
+			if(c){ const corner=(dx,dy)=>local(plane_point(f.mesh,(c.x+dx*c.w/2)/f.face.width,1-(c.y+dy*c.h/2)/f.face.height));   // the control as the face draws it, not its reach
+				return { box:new THREE.Box3().setFromPoints([corner(-1,-1),corner(1,-1),corner(-1,1),corner(1,1)]), name:c.action }; } } }
+	const target=pit_target({ clientX:x, clientY:y }); if(!target) return null;
+	const name=target.name||target.action;
+	if(target.seat) return { at:new THREE.Vector3().fromArray(target.seat.at), radius:target.seat.r, name };
+	if(target.meshes&&target.meshes.length) return seen_of(target.meshes,name);
+	if(target.objects&&target.objects[0]) return { at:local(target.objects[0].getWorldPosition(new THREE.Vector3())), radius:PIT_SPOT_RADIUS, name };
+	if(target.at) return { at:new THREE.Vector3().fromArray(target.at), radius:target.r||PIT_SPOT_RADIUS, name };
+	return null; }
+// pointer_draw rings the control under the pointer on the HUD canvas, once a frame
+// after the HUD, in its standard size: found again only when the pointer, the
+// head or the zoom moves, and kept in the jet's frame between.
+function pointer_draw(){ pointer.screen=null;
+	if(!running||game_paused||playback||!pointer_shown()){ pointer.key=""; pointer.mark=null; return; }
+	const key=pointer.x+","+pointer.y+","+head_az+","+head_el+","+view_zoom;
+	if(key!==pointer.key){ pointer.key=key; pointer.mark=pit_hover(pointer.x,pointer.y); }
+	if(!pointer.mark) return;
+	const ring=mark_ring(pointer.mark); if(!ring) return;
+	const dpr=Math.min(devicePixelRatio||1,2);
+	hctx.save(); hctx.setTransform(dpr,0,0,dpr,0,0); hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3;
+	hctx.strokeStyle="#ffffff"; hctx.lineWidth=1.5; hctx.beginPath(); hctx.arc(ring[0],ring[1],ring[2],0,Math.PI*2); hctx.stroke(); hctx.restore();
+	pointer.screen=ring; }
+if(DEV_MODE) (globalThis as any).dev_pointer=()=>({ shown:pointer_shown(), cursor:stage.style.cursor, mark:pointer.screen });   // dev (#105): the cockpit pointer, its cursor and where its ring is drawn [x, y, radius]
+if(DEV_MODE) (globalThis as any).dev_bezel=(display,pb)=>screen_of(ddi_button(display,pb),DDI_BUTTON);   // dev (#105): where a display's bezel pushbutton lands on screen, [x, y, radius]
+if(DEV_MODE) (globalThis as any).dev_seat=function(name){ const s=(ownship.group.userData.switches||[]).find(k=>k.name===name); return s&&s.seat?s.seat.at:null; };   // dev (#105): a seated switch's seat in the group frame, where its click and ring are
+if(DEV_MODE) (globalThis as any).dev_pages=()=>Object.fromEntries(DDI_ORDER.map(d=>[d,{ ...ddi_state[d] }]));   // dev (#105): each display's page and open menu
+if(DEV_MODE) (globalThis as any).dev_hover=function(x,y){ const m=pit_hover(x,y), ring=m&&mark_ring(m); if(!ring) return null;   // dev (#105): the ring pointer_draw puts round the control a click on a css pixel would work, [x, y, radius], its name and its measured half size in metres
+	const size=m.box?m.box.getSize(new THREE.Vector3()):null; return [...ring,m.name,size?Math.max(size.x,size.y,size.z)/2:m.radius]; };
 // pit_press works one cockpit control, from its key (direction 0: toggle, or cycle
 // for the reject switch) or from a click (+1 up/forward/clockwise, -1 the other way).
 // Every gate lives here so a click and its key can never disagree. A two-position
@@ -12688,8 +12841,8 @@ function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // 
 	// resized buffer is repainted below before the compositor ever sees it.
 	refresh_perf(wall); dynamic_res(wall);   // the governor's timers run on wall time too: a clamped step slowed them fivefold through a run of stalls
 	render_frame();
-	stage.style.cursor=(running && !game_paused && !playback && cfg.view!=="ddi" && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
-	if(running){ draw_hud();
+	stage.style.cursor=(running && !game_paused && !playback && cfg.view!=="ddi" && !pointer_shown() && !PANEL_POINT && !(document.activeElement instanceof HTMLInputElement))?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down, in the cockpit while the mouse moves (#105), or panel-measuring, where the mouse IS the hand on the panel, and while the keyboard is in a text field (the chat prompt), whose X the mouse must be able to find
+	if(running){ draw_hud(); pointer_draw();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // the held zoom keys zoom (smooth; wheel does notches); the look keys pan, scaled to the zoom
 		if(held("zoom.out")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);

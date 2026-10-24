@@ -173,7 +173,7 @@ describe('the INS knob and the set switches', () => {
   })
   it('holds the knob\'s clip at OFF, and takes clicks on the painted set switches at the AMPCD\'s upper corners', () => {
     expect(source).toMatch(/\n\t\tcase "insknob": f=0; break;/)
-    expect(source).toMatch(/\{ action:"heading\.set", at:\[6\.163,0\.211,-0\.095\] \}, \{ action:"course\.set", at:\[6\.163,0\.209,0\.091\] \}/)
+    expect(source).toMatch(/\{ action:"heading\.set", at:\[6\.163,0\.211,-0\.095\], r:0\.006 \}, \{ action:"course\.set", at:\[6\.163,0\.209,0\.091\], r:0\.006 \}/)
     expect(source).not.toMatch(/EFD_Switch/) // the model's own pair, an older panel's behind the shell, are not driven
   })
 })
