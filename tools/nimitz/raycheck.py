@@ -1,12 +1,14 @@
 """Sky-through-ship regression rays: exact Moller-Trumbore casts of straight paths through the hull
-volume against nimitz-clean.glb; a clear ray means that sightline shows sky in game. Run after any edit
-touching the hull, skirt, deck strip, underside or band-clear rules; exits non-zero on a clear ray.
-Necessary but not sufficient: the user has seen sky-through from viewpoints these rays do not reproduce
-(accepted unresolved). If reopened, reproduce the exact in-game camera as a ray here first, watch it
-fail, then design the fix."""
-import json, struct
+volume against nimitz-clean.glb. A ray passes only if the first surface it meets is DRAWN: every ship
+material is single-sided, so a face met from behind is culled and shows what lies beyond it. Counting
+any triangle as a block is what let the deck underside plate face up, invisible from below, while every
+ray here passed (v80-v82: sky through the deck from sea level). Run after any edit touching the hull,
+skirt, deck strip, underside or band-clear rules; exits non-zero on a see-through ray. A new sighting:
+reproduce the in-game camera as a ray here first, watch it fail, then fix.
+Usage: raycheck.py [glb]   (default nimitz-clean.glb)"""
+import json, struct, sys
 import numpy as np
-GLB='nimitz-clean.glb'
+GLB=sys.argv[1] if len(sys.argv)>1 else 'nimitz-clean.glb'
 CX,CZ,DECKY,S=6361.3,-469.3,776.0,0.025
 d=open(GLB,'rb').read()
 cl=struct.unpack('<I',d[12:16])[0]
@@ -34,9 +36,10 @@ def walk(i,P):
     W[i]=P@trs(G['nodes'][i])
     for c in G['nodes'][i].get('children',[]): walk(c,W[i])
 for r in G['scenes'][G.get('scene',0)]['nodes']: walk(r,np.eye(4))
-T=[]
+T=[]; NRM=[]; DS=[]
 for ni,n in enumerate(G['nodes']):
     if 'mesh' not in n: continue
+    det=np.linalg.det(W[ni][:3,:3])
     for p in G['meshes'][n['mesh']]['primitives']:
         v=readA(p['attributes']['POSITION']).astype(np.float64)
         w=(W[ni][:3,:3]@v.T).T+W[ni][:3,3]
@@ -46,7 +49,12 @@ for ni,n in enumerate(G['nodes']):
         else: t=w[:len(w)//3*3].reshape(-1,3,3)
         fa=(t[:,:,0]-CX)*S; la=(t[:,:,2]-CZ)*S; hh=(t[:,:,1]-DECKY)*S
         T.append(np.stack([fa,la,hh],axis=2))
-T=np.concatenate(T)
+        # front normal from the model-frame winding (a mirrored node flips it, as the renderer
+        # does), then the same axis permutation as the points so the facing test can use it
+        fn=np.cross(t[:,1]-t[:,0],t[:,2]-t[:,0])*(1 if det>=0 else -1)
+        NRM.append(np.stack([fn[:,0],fn[:,2],fn[:,1]],axis=1))
+        m=p.get('material'); DS.append(np.full(len(t),bool(m is not None and G['materials'][m].get('doubleSided',False))))
+T=np.concatenate(T); NRM=np.concatenate(NRM); DS=np.concatenate(DS)
 print(f"tris: {len(T):,}")
 A=T[:,0]; E1=T[:,1]-T[:,0]; E2=T[:,2]-T[:,0]
 def cast(o,e):
@@ -65,8 +73,14 @@ def cast(o,e):
         vv=np.einsum('j,ij->i',dv,q)*inv
         tt=np.einsum('ij,ij->i',e2,q)*inv
         ok=m&(u>=-1e-9)&(vv>=-1e-9)&(u+vv<=1+1e-9)&(tt>0.01)&(tt<L-0.01)
-        if ok.any(): hits.extend(tt[ok].tolist())
+        for k in np.nonzero(ok)[0]:
+            g=c0+k; hits.append((tt[k], bool(DS[g] or NRM[g]@dv<0)))
     return sorted(hits)
+def first_drawn(h):
+    """the first surface along the ray, faces within 2 cm counted together (the authored model
+    pairs most faces back to back): drawn if any of them faces the eye"""
+    if not h: return False
+    return any(d for t,d in h if t-h[0][0]<0.02)
 RAYS=[
  ("el4 diagonal port-aft -> stbd-fwd", (-30,-45,-3),(40,45,-2)),
  ("under-skirt graze at waist",        (-66,-60,-4),(-40,60,-1)),
@@ -78,13 +92,16 @@ RAYS=[
  ("stern overhang beam",               (-160,-25,-3),(-160,25,-3)),
  ("shallow fore-aft through bow",      (100,-14,-4),(180,0,-2)),
  ("stern low to bow high diagonal",    (-170,-10,-8),(-100,15,0)),
+ ("sea level up through port waist",   (-72,-54,-21),(-72,-27.75,6)),   # the user's view: the jet on cat 4 seen through the deck
+ ("vertical under port waist overhang",(-72,-36,-21),(-72,-36,10)),
 ]
 allhit=True
 for name,o,e in RAYS:
     h=cast(o,e)
-    status="HIT %d (first at %.1fm)"%(len(h),h[0]) if h else "*** CLEAR — SEE-THROUGH ***"
-    if not h: allhit=False
+    if first_drawn(h): status="HIT %d (first at %.1fm)"%(len(h),h[0][0])
+    elif h: status="*** CULLED at %.1fm — SEE-THROUGH ***"%h[0][0]
+    else: status="*** CLEAR — SEE-THROUGH ***"
+    if not first_drawn(h): allhit=False
     print(f"  {name:36s} {status}")
-print("\nALL RAYS HIT (necessary, not sufficient - see header)" if allhit else "\nCLEAR RAYS - sky through ship")
-import sys
+print("\nALL RAYS HIT (necessary, not sufficient - see header)" if allhit else "\nSEE-THROUGH RAYS - sky through ship")
 sys.exit(0 if allhit else 1)

@@ -19,7 +19,7 @@ and iteration knobs, so multiple attempts don't lose the design.
   (the generated fascia) → ICCS cab transplant + generated railings → GC repack. Reads
   `decktex12.png` + `cab38.npy`/`cab1.npy`. Writes `nimitz-clean.glb` + `outline.json`.
   The header docstring carries the accumulated lessons (sources of truth, why the life
-  rafts are gone, the accepted-unresolved sky-from-below class, verification protocol) —
+  rafts are gone, why every generated mesh's winding is flipped, verification protocol) —
   read it before changing any rule.
 - **`bake_decktex.py`** — bakes the deck texture (`decktex12.png`, 8192×2400) from the
   original's up-facing paint + catapult tracks + rubber, all anti-aliased. Reads
@@ -38,10 +38,11 @@ and iteration knobs, so multiple attempts don't lose the design.
 - **`cdp_shot.py`** — headless capture via Chrome DevTools Protocol (the old
   `--virtual-time-budget` one-shot broke in Chrome 141). `cdp_shot.py "<query>" out.png [wait-s]`.
 - **`raycheck.py`** — sky-through-ship regression rays: exact triangle ray-casts of the
-  known see-through path classes against `nimitz-clean.glb`; non-zero exit on a clear
-  ray. Run after any edit touching the hull, skirt, deck strip, underside, or band-clear
-  rules. Necessary but NOT sufficient — see its header for the v76-v80 history and the
-  reproduce-the-camera-first rule.
+  known see-through path classes against `nimitz-clean.glb`. A ray passes only if the
+  first surface it meets faces it: every ship material is single-sided, so a face met
+  from behind is culled. Non-zero exit on a see-through ray. Run after any edit touching
+  the hull, skirt, deck strip, underside, or band-clear rules. A new sighting: add the
+  in-game camera as a ray first and watch it fail.
 - **`skyprobe.py`** — bulk corridor finder: voxelizes the built GLB at 0.5 m and scans
   straight lines per height/angle for free stretches flanked by hull on both sides.
   Discovery tool only; over-reports open air under the bow/stern overhangs and the hull
@@ -62,13 +63,15 @@ python3 bake_decktex.py                # bootstrap texture (uses previous/placeh
 python3 build_carrier.py               # writes outline.json, reads decktex12.png
 python3 bake_decktex.py                # re-bake with the real traced outline
 python3 build_carrier.py               # final model
-../../web/node_modules/.bin/gltfpack -i nimitz-clean.glb -o ../../web/src/assets/nimitz.glb -cc -kn -noq
+../gltfpack-native -i nimitz-clean.glb -o ../../web/src/assets/nimitz.glb -cc -kn -noq -tc -tu
 python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
 # then run `make` in apps/air — Vite content-hashes the GLB into the bundle,
 # so the new bytes get a new URL automatically (no version constant to bump).
-# gltfpack (a web devDependency) meshopt-compresses the shipped copy
-# (~21 MB -> ~12; most of the rest is the embedded deck JPEG); the engine's
-# GLTFLoader has the meshopt decoder registered. -noq is REQUIRED: with
+# Native gltfpack (meshoptimizer release binary, not committed; the npm build
+# has no BasisU) meshopt-compresses the shipped copy and encodes the deck as
+# KTX2/UASTC (-tc -tu, #200: ~70 MB of GPU memory as a PNG); ~21 MB -> ~12, most
+# of it the deck texture. The engine's GLTFLoader has the meshopt decoder
+# registered. -noq is REQUIRED: with
 # quantization on, gltfpack moves UV dequantization into KHR_texture_transform,
 # which the engine's manual texture rebinding bypasses (the deck paints
 # vanished into a blur), and the quantized positions shifted the measured
@@ -118,8 +121,10 @@ means the build ran before the cp landed).
 - **Sources of truth**: 1:200 GA plan = 2D layout (markings, fixtures; outranks the
   model's own paint). Model = 3D structure (outline shape, sheer, hull, island). The
   fascia is generated — the skirt IS the ship's side below the deck edge.
-- **Sky-from-below is accepted-unresolved** (v80, user decision, v77-v79 reverted).
-  Four successive fixes sealed every measurable path; the user still saw sky from
-  viewpoints the measurements never reproduced. If reopened: capture the user's exact
-  camera, add it as a failing ray to `raycheck.py` first, and do not patch sightlines
-  one screenshot at a time.
+- **Sky from below was culling, not missing geometry** (resolved 2026-10-25). `add_soup`
+  maps (fa, lat, h) to (x, y, z) by swapping two axes, a mirror that reversed every
+  generated triangle's winding: the underside plate faced up and was culled from below,
+  and the railings rendered inside out. The earlier fixes (v77-v79) were judged by a
+  `raycheck.py` that counted culled faces as blocking, so they measured sealed while sky
+  still showed. `add_soup` now restores the winding and `raycheck.py` counts only drawn
+  faces.

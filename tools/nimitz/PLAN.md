@@ -74,9 +74,11 @@ Model lateral squash factor: `S_lat = 76.8 / (measured model max beam in m)`. Ex
   material_9, material_38, and dark frames beyond the three rack materials); nothing is
   regenerated; the uniform skirt is the fascia. Also from this arc: a steel deck
   UNDERSIDE plate (the strip is single-sided - sky showed through from beneath), and the
-  sky-from-below sightline class is ACCEPTED-UNRESOLVED after four sealed-by-measurement
+  sky-from-below sightline class was left ACCEPTED-UNRESOLVED after four sealed-by-measurement
   attempts (deeper skirt, hangar walls, closed interior liner - v77-v79) still showed
-  sky from viewpoints the measurements never reproduced; all three are reverted. Tools
+  sky from viewpoints the measurements never reproduced; all three are reverted. The cause
+  was back-face culling of mirrored generated faces, resolved 2026-10-25 (README standing
+  decisions). Tools
   that survive the saga: `raycheck.py` (regression rays, necessary-not-sufficient) and
   `skyprobe.py` (bulk corridor finder, over-reports). If rafts or the sky class are ever
   reopened, start from the README's standing-decisions section, not from scratch.

@@ -18,8 +18,9 @@ REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_deck
 (extract_cab.py).
 
 Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. Life
-rafts are removed by decision - do not re-add without a design discussion. Sky-from-below is accepted
-unresolved; if reopened, reproduce the exact in-game camera as a raycheck.py ray first. After rule changes
+rafts are removed by decision - do not re-add without a design discussion. Every ship material is
+single-sided: a generated face must be wound to face the viewer (add_soup restores the winding its
+deck-frame axis swap mirrors). A sky sighting: reproduce the in-game camera as a raycheck.py ray first. After rule changes
 compare the deleted/repainted counters against the previous run, run raycheck.py after any hull/skirt/deck
 edit, and judge cavities in game, not in Cycles. The GLB is a Vite content-hashed asset: after make,
 md5-compare dist/assets/nimitz-*.glb against src/assets/nimitz.glb.
@@ -712,7 +713,11 @@ def add_soup(verts, mat_idx, name, deckframe):
     if deckframe:
         wpos=np.empty_like(verts)
         wpos[:,0]=CX+verts[:,0]/S; wpos[:,1]=DECKY+verts[:,2]/S; wpos[:,2]=CZ+verts[:,1]/S
-        pos=wpos.astype(np.float32)
+        # (fa, lat, h) -> (x, y, z) swaps two axes, a mirror that reverses every triangle's
+        # winding: swap two corners back so a face wound outward in the deck frame faces
+        # outward in the model. Without it the underside plate faced up and was culled from
+        # below (sky through the deck), and the railings rendered inside out.
+        pos=wpos.reshape(-1,3,3)[:,[0,2,1]].reshape(-1,3).astype(np.float32)
     else:
         pos=verts.astype(np.float32)
     tw=pos.reshape(-1,3,3).astype(np.float64)
