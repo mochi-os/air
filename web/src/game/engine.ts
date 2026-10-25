@@ -7670,7 +7670,7 @@ stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&
 	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; press_at=performance.now(); ifei_hold_begin(e); try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
-	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
+	const f=head_drag?2*Math.tan(cockpit_cam.fov*D2R/2)/HH:0.005;   // radians per pixel: in the cockpit the angle one pixel spans at the middle of the view, so what the pointer grabbed stays under it at any zoom (#116); the chase orbit's 0.005 (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
 	if(head_drag){ if(press_moved>=6) latch(false,"mouse");   // a drag, not a click on a switch, takes the head back from the padlock
 		head_az=THREE.MathUtils.clamp(head_az+dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el. The drag carries the cockpit with the pointer, as the chase orbit's does: drag right and the head turns left, drag down and it looks up
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
