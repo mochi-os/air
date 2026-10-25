@@ -55,6 +55,85 @@ describe('the AOA indexer under the lights test', () => {
   })
 })
 
+// The indexer on the modeled unit (#119): the model paints the unit's three lamps
+// lit, on the main panel's self-lit placards (Object_1066), so an opaque plate
+// covers them and the symbols light on it at the painted lamps' centres, and a
+// cover lies along the unit's left inner wall, where the paint spills their glow.
+// The points are the painted surfaces as dev_pick measured them on the calibrated
+// model; the shelf that crosses the unit stands at x 6.2473 in front of them.
+describe('the AOA indexer on the modeled unit', () => {
+  const PAINT = [[6.2486, 0.582, -0.1066], [6.2486, 0.570, -0.1066], [6.2484, 0.559, -0.1065], [6.2488, 0.5845, -0.1066], [6.2484, 0.5549, -0.1065]] // the three lamps' centres, and the face's top and bottom
+  const SHELF = 6.2473
+  const WALL = [[6.2425, 0.584, -0.1128], [6.2453, 0.5836, -0.1126], [6.2412, 0.5647, -0.1118], [6.2482, 0.5832, -0.1124], [6.2421, 0.5547, -0.1113], [6.2444, 0.5642, -0.1117], [6.2463, 0.5737, -0.1121], [6.2432, 0.5594, -0.1115]]
+  const lift = (name: string) => {
+    const start = source.indexOf(`function ${name}(`)
+    const rest = source.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    return end ? rest.slice(0, end.index + 1) : rest
+  }
+  const constants = /\nconst INDEXER=\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  const build = (outline: boolean): THREE.Group => {
+    if (!constants) throw new Error('the indexer constants not found in engine.ts')
+    const g = new THREE.Group()
+    g.userData = { glass: { x: 6.3, y: 0.6, hw: 0.08, hh: 0.06 }, eye: { x: 5.6, y: 0.66, z: 0 }, outline }
+    new Function('THREE', 'g', `const LAYER_OWN=2, INDEXER_TEST="", noop=()=>{};
+      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
+      ${constants} ${lift('build_indexer')} build_indexer(g);`)(THREE, g)
+    g.updateMatrixWorld(true)
+    return g.userData.indexerGroup as THREE.Group
+  }
+  const at = (o: THREE.Object3D) => o.getWorldPosition(new THREE.Vector3())
+
+  it('lights the symbols on the painted lamps, in front of the paint and behind the shelf, dark until driven', () => {
+    const box = build(true)
+    expect((box.children[1] as THREE.Mesh).geometry).toBeInstanceOf(THREE.RingGeometry) // the donut stays children[1], which dev_probe's mount reads
+    for (const [k, mesh] of box.children.slice(0, 3).entries()) {
+      const p = at(mesh), paint = PAINT[k]
+      expect(Math.abs(p.y - paint[1]), `row ${k}`).toBeLessThan(0.0015)
+      expect(Math.abs(p.z - paint[2]), `row ${k}`).toBeLessThan(0.0015)
+      expect(p.x, `row ${k} behind the shelf`).toBeGreaterThan(SHELF)
+      expect(p.x, `row ${k} in front of the paint`).toBeLessThan(paint[0])
+      expect(((mesh as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity).toBe(0)
+    }
+  })
+
+  it('covers the painted lamps with an opaque plate between the shapes and the paint, the whole face from top to bottom', () => {
+    const box = build(true), plate = box.children[3] as THREE.Mesh
+    const material = plate.material as THREE.MeshBasicMaterial
+    expect(material.transparent).toBe(false)
+    const bounds = new THREE.Box3().setFromObject(plate)
+    for (const paint of PAINT) {
+      expect(paint[0] - bounds.max.x, `in front of the paint at y ${paint[1]}`).toBeGreaterThan(0.0003)
+      expect(bounds.min.y).toBeLessThan(paint[1])
+      expect(bounds.max.y).toBeGreaterThan(paint[1])
+      expect(bounds.min.z).toBeLessThan(paint[2] - 0.006) // the chevrons' half width
+      expect(bounds.max.z).toBeGreaterThan(paint[2] + 0.006)
+    }
+    expect(bounds.min.x, 'behind the shapes and the shelf').toBeGreaterThan(at(box.children[1]).x)
+  })
+
+  it('lays a cover along the left inner wall a fraction of a millimetre in front of it, over every measured point', () => {
+    const box = build(true), wall = box.children[4] as THREE.Mesh
+    expect(wall.material).toBe((box.children[3] as THREE.Mesh).material)
+    const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(wall.getWorldQuaternion(new THREE.Quaternion()))
+    const centre = at(wall), inverse = wall.matrixWorld.clone().invert()
+    const size = (wall.geometry as THREE.PlaneGeometry).parameters
+    for (const point of WALL) {
+      const w = new THREE.Vector3(...point), gap = -normal.dot(w.clone().sub(centre)), local = w.clone().applyMatrix4(inverse)
+      expect(gap, `${point}`).toBeGreaterThan(0.00005)
+      expect(gap, `${point}`).toBeLessThan(0.0006)
+      expect(Math.abs(local.x), `${point}`).toBeLessThan(size.width / 2)
+      expect(Math.abs(local.y), `${point}`).toBeLessThan(size.height / 2)
+    }
+  })
+
+  it('keeps the plain 12 mm stack, with no plate, on a model with no calibrated outline', () => {
+    const box = build(false)
+    expect(box.children).toHaveLength(3)
+    ;[0.012, 0, -0.012].forEach((y, i) => expect(box.children[i].position.y).toBeCloseTo(y, 6))
+  })
+})
+
 describe('the AOA indexer flash', () => {
   it('flashes with the hook up in CARRIER', () => {
     const t1 = [0.1, 0.4].find(on) as number, t0 = [0.1, 0.4].find(dark) as number
