@@ -1920,10 +1920,20 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 			glass.field={ top:up, floor:angle(eye.y-floor,base?base.x:glass.x), side:isFinite(side)?side:angle(glass.hw,glass.x) }; } }
 	try{ build_indexer(g); }catch(e){ build_error=String(e&&e.message||e); }
 	console.warn("cockpit eye", g.userData.eye.x.toFixed(3), g.userData.eye.y.toFixed(3), "glass floor", g.userData.glass&&g.userData.glass.floor.toFixed(3)); }   // i18n-format-ok: developer console output, never shown to a user
-// AoA indexer (#99): the GLB has no indexer lights, so three unlit emissive
-// shapes beside the combining glass stand in (green chevron slow, amber donut
-// on-speed, red chevron fast). Driven from alpha in update_gauges; LAYER_OWN so
-// only the cockpit pass pays for it.
+// AoA indexer (#99): three shapes (green chevron slow, amber donut on-speed, red
+// chevron fast), driven from alpha in update_gauges; LAYER_OWN so only the cockpit
+// pass pays for it. The model paints the unit's three lamps lit, on Object_1066,
+// the main panel's self-lit placards (#119), so on the calibrated model an opaque
+// plate covers them and the shapes light on it at the painted lamps' centres,
+// measured headless on the painted face (dev_pick): the face leans from x 6.2488 at
+// the green lamp to 6.2484 at the red, and the shelf that crosses the unit stands at
+// 6.2473, so the plate sits at 6.2480, proud of the paint, and the shapes at 6.2476,
+// behind the shelf, which hides them where it hides the paint. INDEXER_PLATE: its size,
+// z then y, in metres. The paint also spills the lamps' glow down the unit's left inner
+// wall, between the bezel (x 6.2407) and the face, which leans from z -0.1128 at the top
+// to -0.1113 at the bottom and 0.07 m in z per metre aft: INDEXER_WALL lies along it 0.3 mm
+// proud, its centre, its size (x then y) and its lean (about x, then y, radians).
+const INDEXER={ x:6.2476, y:0.570, z:-0.107, rows:[0.012,0,-0.011] }, INDEXER_PLATE=[0.016,0.036], INDEXER_WALL={ x:6.2446, z:-0.1117, size:[0.0086,0.036], lean:[-0.045,-0.07] };
 // shown: visible up the whole parent chain. three.js raycasts hidden meshes
 // (visible=false cascades for rendering only), so every cockpit ray that picks
 // a surface must skip them - the hidden pilot head's oxygen hose sits a
@@ -1943,17 +1953,14 @@ function build_indexer(g){
 	const geoms=[ chevron(false), new THREE.RingGeometry(0.0026,0.0046,24), chevron(true) ];   // chevrons point AT the donut: green slow (top) apex-down, red fast (bottom) apex-up — the first cut had them mirrored
 	["slow","donut","fast"].forEach((k,i)=>{ const m=new THREE.Mesh(geoms[i],parts[k]);
 		m.rotateY(Math.PI/2);   // face the shapes aft toward the pilot (DoubleSide covers the sign)
-		m.position.set(0,0.012-0.012*i,0); m.layers.set(LAYER_OWN); box.add(m); });   // 12 mm rows, the unit's own lamp pitch
+		m.position.set(0,(g.userData.outline?INDEXER.rows[i]:0.012-0.012*i),0); m.layers.set(LAYER_OWN); box.add(m); });   // the painted lamps' rows, or 12 mm, the unit's lamp pitch
 	let iy=glass.y-glass.hh*0.35, edge=-(glass.hw-0.008), depth=glass.x-0.055;   // pane box conventions — pre-outline fallback
-	if(g.userData.outline){   // calibrated model: mount ON the modeled indexer unit (#16), whose position the pilot measured by panel click — tucked at the glass's lower-left against the frame, almost masked from boresight like the real unit, which is exactly why it is a bright-lamp instrument. A straight-aft ray finds the unit's face depth regardless of what the boresight eye sees.
-		const eye=g.userData.eye, rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
-		const IY=0.586, IZ=-0.105;   // raised off the pilot's clicked point: the shelf under the unit cut the stack at ~0.566, half-sinking the donut and hiding the fast chevron entirely
-		const origin=g.localToWorld(new THREE.Vector3(eye.x,IY,IZ));
-		const aim=g.localToWorld(new THREE.Vector3(eye.x+1,IY,IZ)).sub(origin).normalize();
-		rc.set(origin,aim);
-		const h=rc.intersectObject(model_of(g),true).find(k=>!k.object.userData.overlay&&shown(k.object));
-		if(h){ const p=g.worldToLocal(h.point.clone());
-			iy=IY; depth=p.x-0.006; edge=IZ; } }   // 6 mm proud of the unit's face
+	if(g.userData.outline){   // calibrated model: ON the modeled unit's painted lamps (#16, #119), tucked at the glass's lower-left against the frame, almost masked from boresight like the real unit, which is exactly why it is a bright-lamp instrument
+		depth=INDEXER.x; iy=INDEXER.y; edge=INDEXER.z;
+		const plate=new THREE.Mesh(new THREE.PlaneGeometry(INDEXER_PLATE[0],INDEXER_PLATE[1]), new THREE.MeshBasicMaterial({ color:0x0b0c0b, side:THREE.DoubleSide, toneMapped:false }));
+		plate.rotateY(Math.PI/2); plate.position.set(0.0004,0,0); plate.layers.set(LAYER_OWN); box.add(plate);   // 0.4 mm behind the shapes; added after them, so the donut stays children[1]
+		const wall=new THREE.Mesh(new THREE.PlaneGeometry(INDEXER_WALL.size[0],INDEXER_WALL.size[1]), plate.material);
+		wall.rotation.set(INDEXER_WALL.lean[0],INDEXER_WALL.lean[1],0); wall.position.set(INDEXER_WALL.x-INDEXER.x,0,INDEXER_WALL.z-INDEXER.z); wall.layers.set(LAYER_OWN); box.add(wall); }
 	box.position.set(depth, iy, edge);
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
@@ -4369,7 +4376,7 @@ if(DEV_MODE) (globalThis as any).dev_view=function(above){   // dev: the first-p
 if(DEV_MODE) (globalThis as any).dev_pick=function(px,py,all){ const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=4;   // dev: the surface stack under a css pixel in cockpit view - node, material and how it blends
 	rc.setFromCamera(new THREE.Vector2(px/HW*2-1,-(py/HH)*2+1),cockpit_cam); ownship.group.updateMatrixWorld(true);
 	return rc.intersectObject(ownship.group,true).filter(h=>all||shown(h.object)).slice(0,8).map(h=>{ const m=(Array.isArray(h.object.material)?h.object.material[0]:h.object.material)||{}; const p=ownship.group.worldToLocal(h.point.clone());
-		return { at:p.toArray().map(n=>+n.toFixed(3)), node:h.object.name, parent:h.object.parent&&h.object.parent.name, material:m.name, type:m.type, transparent:m.transparent, opacity:m.opacity, depthWrite:m.depthWrite, map:!!m.map, emissive:m.emissive&&m.emissive.getHexString(), colour:m.color&&m.color.getHexString(), metal:m.metalness, rough:m.roughness, shown:shown(h.object), overlay:!!h.object.userData.overlay }; }); };   // i18n-format-ok: dev readout
+		return { at:p.toArray().map(n=>+n.toFixed(4)), node:h.object.name, parent:h.object.parent&&h.object.parent.name, material:m.name, type:m.type, transparent:m.transparent, opacity:m.opacity, depthWrite:m.depthWrite, map:!!m.map, emissive:m.emissive&&m.emissive.getHexString(), colour:m.color&&m.color.getHexString(), metal:m.metalness, rough:m.roughness, shown:shown(h.object), overlay:!!h.object.userData.overlay }; }); };   // i18n-format-ok: dev readout
 if(DEV_MODE) (globalThis as any).dev_hide=function(name,hidden){ const o=ownship.group.getObjectByName(name); if(!o) return false; o.visible=!hidden; return true; };   // dev: hide a model node (the stick, say) to measure what it covers
 if(DEV_MODE) (globalThis as any).dev_overlays=function(on){ let n=0; ownship.group.traverse(o=>{ if(o.userData&&o.userData.overlay){ o.visible=!!on; n++; } }); return n; };   // dev: hide or show every canvas face laid over the model, to see the modeled surface beneath
 if(DEV_MODE) (globalThis as any).dev_origin=function(name){ const o=ownship.group.getObjectByName(name); if(!o) return null; ownship.group.updateMatrixWorld(true);   // dev: a model node's origin in the group frame — a needle's pivot, a ball's centre (pit calibration)

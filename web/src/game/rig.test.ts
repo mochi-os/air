@@ -107,7 +107,7 @@ describe("the pit's sightline casts", () => {
   })
   it('casts every sightline against the airframe, not the whole group', () => {
     expect(source).not.toMatch(/rc\.intersectObject\(g,true\)/)
-    for (const [name, count] of [['calibrate_eye', 1], ['build_indexer', 1], ['surface_fit', 2]] as const)
+    for (const [name, count] of [['calibrate_eye', 1], ['build_indexer', 0], ['surface_fit', 2]] as const) // the indexer sits on its painted lamps, measured, and casts none (#119)
       expect(block(name).split('rc.intersectObject(model_of(g),true)').length - 1, name).toBe(count)
   })
 })
