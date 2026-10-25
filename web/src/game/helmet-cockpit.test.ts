@@ -591,7 +591,7 @@ describe('the heading scale on the helmet (the DCS guide)', () => {
 
 describe('the wiring', () => {
   it('has its OFF/BRT knob on the spin recovery panel, where the model paints MAP GAIN, OFF on the wheels', () => {
-    expect(source).toMatch(/\{ action:"knob\.hmd", at:\[6\.195,0\.315,0\.361\] \}/)
+    expect(source).toMatch(/\{ action:"knob\.hmd", at:\[6\.195,0\.315,0\.361\](?:, r:[\d.]+)? \}/)
     expect(line('knobs')).toContain('hmd:null')
     expect(lift('reset_ownship')).toMatch(/Object\.assign\(hmd,helmet\.fresh\(air,[^\n]*\); if\(!air\) knobs\.hmd=0; \}/)
   })

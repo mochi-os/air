@@ -262,6 +262,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'Hand off stick; press enter to salute and launch': msg`Hand off stick; press enter to salute and launch`,
   'Off the cat: hand off stick, let jet rotate 12° nose up': msg`Off the cat: hand off stick, let jet rotate 12° nose up`,
   'Positive rate: take stick, gear up, flaps auto': msg`Positive rate: take stick, gear up, flaps auto`,
+  'On catapult: extend launch bar to hook up': msg`On catapult: extend launch bar to hook up`,
   "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles":
     msg({
       message:

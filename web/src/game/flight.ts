@@ -100,6 +100,7 @@ export interface Controls {
   hook: boolean
   probe: boolean // refuelling probe out (drag; the real ~300 KCAS limit stays procedural)
   launch: boolean
+  retract: boolean // the LAUNCH BAR switch at RETRACT: the crew cannot hook the jet up, and a hook-up not yet in tension is released (NATOPS 2.10.4)
   override: boolean
   dump: boolean // fuel dump switch: the core drains toward the bingo floor while on
   port: boolean // port engine fuel OFF (the fire drill / runaway shutdown)
@@ -295,6 +296,7 @@ function fill(controls: Controls, count: number): void {
     (controls.mechanical ? 8192 : 0) |
     (controls.hook ? 8 : 0) |
     (controls.launch ? 16 : 0) |
+    (controls.retract ? 65536 : 0) |
     (controls.override ? 32 : 0) |
     (controls.probe ? 64 : 0) |
     (controls.reset ? 128 : 0) |

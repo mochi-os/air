@@ -265,7 +265,7 @@ describe('the video record mode selector', () => {
     expect(on('manual', { ac: false })).toBe(false)
   })
   it('has its switch on the left of the main panel', () => {
-    expect(source).toMatch(/\{ action:"recorder", at:\[6\.211,0\.055,-0\.206\] \}/)
+    expect(source).toMatch(/\{ action:"recorder", at:\[6\.211,0\.055,-0\.206\](?:, r:[\d.]+)? \}/)
   })
 })
 
@@ -273,13 +273,13 @@ describe('the left console\'s click spots', () => {
   it('put each switch of the communication and antenna select panels where FO-5 draws it', () => {
     for (const [action, at] of Object.entries({ 'antenna.comm': '5.565,-0.04,-0.431', 'antenna.identification': '5.619,-0.041,-0.431', 'comm.relay': '5.556,-0.05,-0.373', 'comm.guard': '5.628,-0.049,-0.38', 'comm.landing': '5.649,-0.057,-0.331',
       'comm.channel': '5.592,-0.056,-0.338', 'identification.crypto': '5.558,-0.065,-0.283', 'identification.alert': '5.601,-0.066,-0.284', 'identification.master': '5.641,-0.065,-0.282', 'volume.tacan': '5.681,-0.04,-0.367' }))
-      expect(source, action).toContain(`{ action:"${action}", at:[${at}] }`)
+      expect(source, action).toMatch(new RegExp(`\\{ action:"${action.replace(/\./g, '\\.')}", at:\\[${at.replace(/\./g, '\\.')}\\](?:, r:[\\d.]+)? \\}`))
   })
   it('put the radios\' volume controls at the UFC\'s lower corners', () => {
-    expect(source).toContain('{ action:"comm.one.volume", at:[6.14,0.417,-0.089] }'); expect(source).toContain('{ action:"comm.two.volume", at:[6.14,0.417,0.086] }')
+    expect(source).toMatch(/\{ action:"comm\.one\.volume", at:\[6\.14,0\.417,-0\.089\](?:, r:[\d.]+)? \}/); expect(source).toMatch(/\{ action:"comm\.two\.volume", at:\[6\.14,0\.417,0\.086\](?:, r:[\d.]+)? \}/)
   })
   it('give every click spot an action pit_press answers', () => {
-    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2]].filter(Boolean))
+    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, r:[\d.]+)?(?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2]].filter(Boolean))
     expect(spots.length).toBeGreaterThan(30)
     for (const action of new Set(spots)) {
       const prefix = ['knob.', 'travel.', 'display.', 'jettison.station.', 'receiver.'].some((p) => action.startsWith(p))

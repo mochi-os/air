@@ -289,7 +289,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // The lines whose end the sets track from the pilot doing what they say.
     const waiting = source.match(/const WAITING=new Set\(\[([^\]]*)\]\)/)?.[1] ?? ''
     expect(waiting.split(',').map((key) => key.replace('HINT.', '')).sort()).toEqual(
-      ['brk', 'cleanup', 'depart', 'dirty', 'flyaway', 'form', 'lineup', 'positive', 'rollout', 'rotate', 'salute', 'tension'],
+      ['bar', 'brk', 'cleanup', 'depart', 'dirty', 'flyaway', 'form', 'lineup', 'positive', 'rollout', 'rotate', 'salute', 'tension'],
     )
   })
 

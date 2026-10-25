@@ -76,12 +76,12 @@ describe('the flap position lights', () => {
 // jammer: the ECM knob's position; painted: a radar has the jet locked or a missile is guiding; tested: seconds since
 // the knob came to BIT; dispensed: seconds since a programme ran; contacts: what
 // the RWR holds, each a lock or a search paint, a missile's seeker or not, heard that long ago; receiver: its POWER.
-interface Panel { speedbrake?: number; bar?: number; target?: number; jammer?: string; painted?: boolean; tested?: number; dispensed?: number; contacts?: { locked?: boolean; missile?: boolean; age?: number }[]; receiver?: boolean; ac?: boolean; master?: string; taping?: string }
+interface Panel { speedbrake?: number; bar?: number; target?: number; extend?: boolean; jammer?: string; painted?: boolean; tested?: number; dispensed?: number; contacts?: { locked?: boolean; missile?: boolean; age?: number }[]; receiver?: boolean; ac?: boolean; master?: string; taping?: string }
 function panel(p: Panel): string[] {
   const block = /\n\t\/\/ glareshield panels \(#12\)[\s\S]*?lamp_set\(l\.rcdr,[^\n]*\n/.exec(source)?.[0] ?? ''
   const recording = /\nfunction recording\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!block || !recording) throw new Error('glareshield panel block not found in engine.ts')
-  const run = new Function('p', 'countermeasures', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0}, sim_time=100, ASPJ_TEST=20;
+  const run = new Function('p', 'countermeasures', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0}, bar_switch=p.extend?"extend":"retract", sim_time=100, ASPJ_TEST=20;
     const suite=countermeasures.fresh(true); suite.jammer=p.jammer||"off"; suite.tested=100-(p.tested??0); if(p.dispensed!==undefined) suite.dispensed=100-p.dispensed; suite.receiver.power=p.receiver??true;
     const RWR={ time:100, contacts:(p.contacts||[]).map(c=>({ locked:!!c.locked, missile:!!c.missile, at:100-(c.age||0) })), locked:()=>!!p.painted, warned:()=>false };
     const buses={ ac:p.ac??true }, master=p.master||"nav", taping=p.taping||"automatic"; ${recording}
@@ -124,15 +124,16 @@ describe('the glareshield panels', () => {
     expect(place(lamps.go)).toEqual([0, 1, -1])
   })
 
-  it('put the green L BAR out with the switch at RETRACT while the bar is still coming up (2.10.4)', () => {
+  it('light the green L BAR from the switch: out at RETRACT while the bar is still down, and on at EXTEND before it moves and after the springs raise it (2.10.4)', () => {
     expect(panel({ bar: 1, target: 0 })).toEqual([])
-    expect(panel({ bar: 0.02, target: 1 })).toEqual(['lbar']) // on as the bar starts down
+    expect(panel({ bar: 0.02, target: 1, extend: true })).toEqual(['lbar']) // on as the bar starts down
+    expect(panel({ bar: 0, target: 0, extend: true })).toEqual(['lbar']) // off the bow with the switch left at EXTEND, which on this jet it does not leave by itself
   })
 
   it('light SPD BRK off the stop and L BAR extended', () => {
     expect(panel({})).toEqual([])
     expect(panel({ speedbrake: 0.5 })).toEqual(['spdbrk'])
-    expect(panel({ bar: 1 })).toEqual(['lbar'])
+    expect(panel({ bar: 1, extend: true })).toEqual(['lbar'])
   })
 
   it('show the jammer by the ECM knob: STBY, REC alone at REC, ASPJ ON with REC at XMIT, and XMIT while it radiates', () => {
@@ -687,7 +688,7 @@ describe('the lights test', () => {
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, glance=0, GEAR_COLLAPSE=0.7, flap_select=0;
-      const ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
+      const bar_switch="retract", ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
       ${update}
       return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);
         const seen={ blank }; Object.assign(seen,l); const r={};

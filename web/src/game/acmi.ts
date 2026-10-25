@@ -232,6 +232,7 @@ interface Flight {
   wire?: number // the wire caught, 0 none
   waving?: boolean // the LSO waving the pass off
   lights?: boolean // position, strobe and formation lights
+  bar?: boolean // the LAUNCH BAR switch at EXTEND (#127): a replay lowers the bar before the shot from it
   canopy?: number // 0 closed .. 1 open
   fold?: number // 0 spread .. 1 folded
   probe?: number // refuelling probe, 0 stowed .. 1 out
@@ -667,6 +668,7 @@ export function writer(): (sample: Sample, out: string[]) => void {
           ['Canopy', d.canopy === undefined ? undefined : round(d.canopy, 2)],
           ['Fold', d.fold === undefined ? undefined : round(d.fold, 2)],
           ['Probe', d.probe === undefined ? undefined : round(d.probe, 2)],
+          ['Bar', flag(d.bar)],
         ] as const) {
           if (value === undefined) continue
           const v = String(value)

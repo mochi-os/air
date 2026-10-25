@@ -23,6 +23,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   uncage: 'Delete', // one switch on the real jet: CIA <-> VISUAL for the AIM-120 (#27), the velocity vector cage in NAV, the 9M's seeker uncaged off the helmet's line of sight, and held or pressed in a helmet alignment (#103)
   acquire: 'Enter',
   launch: 'Enter',
+  'launch.bar': 'Shift+Enter', // the LAUNCH BAR switch, EXTEND <-> RETRACT (NATOPS 2.10.4): a chord on the launch key, as it is rarely needed
   'brake.wheel': 'KeyB',
   'brake.parking': 'Shift+KeyB',
   'trim.up': 'Period',

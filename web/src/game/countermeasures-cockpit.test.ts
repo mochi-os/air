@@ -51,7 +51,7 @@ describe('the DISPENSER switch', () => {
 describe('the sill\'s dispense button', () => {
   it('runs the programme, as neither way on the throttle\'s switch', () => {
     expect(cockpit('pit_press("dispense",0); pit_press("dispense",1); return ran;')).toEqual([0, 0])
-    expect(source).toMatch(/\{ action:"dispense", at:\[5\.863,0\.196,-0\.326\] \}/)
+    expect(source).toMatch(/\{ action:"dispense", at:\[5\.863,0\.196,-0\.326\](?:, r:[\d.]+)? \}/)
   })
 })
 
