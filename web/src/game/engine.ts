@@ -1627,6 +1627,11 @@ const PIT_SPOTS=[
 	{ action:"seat", at:[5.6,0.22,0.25] },
 	{ action:"computer", at:[5.408,-0.027,-0.446] },   // the MC switch, aft of HYD ISOL on the MC/HYD ISOL panel (2.13.1.3, FO-5 sheet 2 left console item 12): painted, no node to move
 	{ action:"heading.set", at:[6.163,0.211,-0.095], r:0.006 }, { action:"course.set", at:[6.163,0.209,0.091], r:0.006 },
+	// the standby instruments' controls, outside their dials: the altimeter's baro set knob at its lower left (2.12.4); the height indicator's
+	// knob at its lower right, pushed to test by a middle click (2.12.5.4.1); and on the attitude indicator, the pull to cage knob at the lower
+	// right, turned to trim the miniature airplane and pulled by a middle click, and the TEST switch at the lower left (figure 25-1)
+	{ action:"baro", at:[6.211,0.049,0.192], r:0.0055 }, { action:"index", at:[6.193,0.005,0.296], r:0.005, hold:"radalt.test" },
+	{ action:"sari.trim", at:[6.211,0.126,0.203], r:0.0075, hold:"sari.cage" }, { action:"sari.test", at:[6.211,0.129,0.103], r:0.004 },
 	// the UFC's comm controls (figure 23-1, #20): each radio's volume control beside the keypad and its channel selector knob below, turned by a click and pulled by a middle click
 	{ action:"comm.one.volume", at:[6.14,0.417,-0.089], r:0.007 }, { action:"comm.two.volume", at:[6.14,0.417,0.086], r:0.007 },
 	{ action:"comm.one.channel", at:[6.157,0.34,-0.088], hold:"comm.one.channel" }, { action:"comm.two.channel", at:[6.157,0.34,0.085], hold:"comm.two.channel" },
@@ -2027,7 +2032,8 @@ function build_standby(g){
 		faces[name]={ mesh, canvas, tex }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,gz.pitch||0,gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential);
+	const caged=sari_caged();
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||caged,sari_trim);
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
@@ -2082,12 +2088,13 @@ function vsi_face(f,angle){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R;
 // seen through a round window in a black mask that carries the fixed bank scale; the ADI
 // page's sign conventions. Its vertical and horizontal pointers stay stowed, the vertical one behind the pointer
 // shield, until the TEST switch is pressed, which centres both on the miniature airplane and deflects the turn
-// needle two needle widths (25.2.4.2); a click on the face presses it (sari_clicked). The ball's pitch stops at about 90° climb and
+// needle two needle widths (25.2.4.2); a click on it presses it (sari_clicked). trim raises the miniature airplane
+// that many degrees of the ball's pitch (sari_trim), and TEST centres the horizontal pointer on it. The ball's pitch stops at about 90° climb and
 // 80° dive (2.12.2), and the needle and ball sit at the bottom of the mask: the needle
 // deflects one needle width for a turn of 90° a minute, to the side the ADI page's turn
 // indicator goes; the ball slides to the side the velocity vector lies, as the rudder
 // that centres it would push the nose.
-function adi_face(f,pitch,bank,yaw=0,slip=0,test=false,off=false){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8;
+function adi_face(f,pitch,bank,yaw=0,slip=0,test=false,off=false,trim=0){ const x=face_start(f), C=STANDBY_C, R=STANDBY_R, W=R*0.8, A=C-trim*ADI_PIXELS;   // A: the miniature airplane's height on the canvas
 	const white="#dcdcd4", black="#141514";
 	x.save(); x.beginPath(); x.arc(C,C,W,0,Math.PI*2); x.clip();
 	x.translate(C,C); x.rotate(-bank); x.translate(0,THREE.MathUtils.clamp(pitch,-80*D2R,90*D2R)/D2R*ADI_PIXELS);
@@ -2109,8 +2116,8 @@ function adi_face(f,pitch,bank,yaw=0,slip=0,test=false,off=false){ const x=face_
 		x.strokeStyle=black; x.lineWidth=1.5; for(const s of [-1,1]){ x.beginPath(); x.moveTo(C+s*7,by-5); x.lineTo(C+s*7,by+5); x.stroke(); }   // its reference wires
 		x.fillStyle=black; x.beginPath(); x.arc(C+ball,by,5,0,Math.PI*2); x.fill(); }
 	if(test) for(const [ink,width] of [[black,6],["#f2d23c",3]]){ x.strokeStyle=ink; x.lineWidth=width;   // the pointers centred, yellow edged in black to read on both halves of the ball
-		x.beginPath(); x.moveTo(C,C-W+6); x.lineTo(C,C+W-6); x.moveTo(C-W+6,C); x.lineTo(C+W-6,C); x.stroke(); }
-	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,C); x.lineTo(C-18,C); x.lineTo(C-8,C+10); x.lineTo(C,C); x.lineTo(C+8,C+10); x.lineTo(C+18,C); x.lineTo(C+48,C); x.stroke();
+		x.beginPath(); x.moveTo(C,C-W+6); x.lineTo(C,C+W-6); x.moveTo(C-W+6,A); x.lineTo(C+W-6,A); x.stroke(); }
+	x.strokeStyle="#ffb020"; x.lineWidth=5; x.beginPath(); x.moveTo(C-48,A); x.lineTo(C-18,A); x.lineTo(C-8,A+10); x.lineTo(C,A); x.lineTo(C+8,A+10); x.lineTo(C+18,A); x.lineTo(C+48,A); x.stroke();
 	if(off){ const fx=C-W+4, fy=C-34, fw=30, fh=44;   // the OFF flag (2.12.2, #116): out at the left of the ball with both its ac power and its inverter's essential bus gone
 		x.save(); x.beginPath(); x.rect(fx,fy,fw,fh); x.clip(); x.fillStyle="#e8e8e0"; x.fillRect(fx,fy,fw,fh);
 		x.fillStyle="#d8342a"; for(let k=-fh;k<fw+fh;k+=12){ x.beginPath(); x.moveTo(fx+k,fy); x.lineTo(fx+k+6,fy); x.lineTo(fx+k+6-fh,fy+fh); x.lineTo(fx+k-fh,fy+fh); x.closePath(); x.fill(); }
@@ -2154,6 +2161,13 @@ function legend(text,colour,w=0.026,h=0.010){
 // a frame into lamps_testing, which holds every light lamp_set drives on.
 let lamps_testing=false, lights_clicked=-Infinity, sari_clicked=-Infinity;   // sari_clicked: when the standby attitude indicator's TEST switch was last clicked (sim_time)
 function sari_testing(){ return glance-sari_clicked<2; }   // the switch held two seconds from a click, as LT TEST
+// The standby attitude indicator's pull to cage knob (25.2.4.2 items 1-3): turned, it trims the miniature
+// airplane over +5° to -10° (sari_trim, degrees); pulled, it cages the gyro to the case, which reads 4° nose
+// up and wings level whatever the jet's attitude (2.12.2), with the OFF flag in view. Held two seconds from
+// a click (sari_pulled), as TEST is; released, the gyro reads the jet again, as it never drifts here.
+const SARI_TRIM=[-10,5], SARI_CAGE=4*D2R;
+let sari_trim=0, sari_pulled=-Infinity;
+function sari_caged(){ return glance-sari_pulled<2; }
 function lights_switch(){ return !playback&&(held("lights.test")||glance-lights_clicked<2); }
 function lights_test(){ return lights_switch()&&!unpowered; }
 function lamp_set(m,on){ if(!m) return; on=(!!on||lamps_testing)&&buses.essential;   // every warning, caution and advisory light is on the essential bus (#116)
@@ -7694,17 +7708,10 @@ function pit_click(e){
 	if(map_on||!running) return;
 	const list=ownship.group.userData.screens; if(!list) return;
 	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
-	if(e.button===1){ const u=ownship.group.userData.radalt;   // the middle button pushes and pulls: the height indicator's knob (2.12.5.4.1), the T/O TRIM button in the RUD TRIM knob (#19) and the gear handle turned and pulled (#128)
+	if(e.button===1){   // the middle button pushes and pulls: the height indicator's knob (2.12.5.4.1), the standby attitude indicator's pull to cage knob (25.2.4.2), the T/O TRIM button in the RUD TRIM knob (#19) and the gear handle turned and pulled (#128)
 		if(playback) return;
-		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ pit_press("radalt.test",0); return; }
 		const s=pit_target(e); if(s&&s.name==="ruddertrim") pit_press("trim.takeoff",0); else if(s&&s.name==="gearlever") pit_press("gear.emergency",0); else if(s&&s.action==="canopy.jettison") pit_press("canopy.jettison",0); else if(s&&s.hold) pit_press(s.hold,0);   // and a control that is pushed or pulled as well as turned (hold)
 		return; }
-	{ const u=ownship.group.userData.standby;   // the standby altimeter: a click turns its knob, right clockwise raising the setting and left back, as the height indicator's
-		if(u&&u.alt&&_click_ray.intersectObject(u.alt.mesh,false)[0]){ if(!playback) pit_press("baro",e.button===2?1:-1); return; } }
-	{ const u=ownship.group.userData.standby;   // the standby attitude indicator: a click presses its TEST switch (25.2.4.2), as a click on the altimeter turns its knob
-		if(u&&u.adi&&_click_ray.intersectObject(u.adi.mesh,false)[0]){ if(!playback) pit_press("sari.test",0); return; } }
-	{ const u=ownship.group.userData.radalt;   // the height indicator: a click turns its knob (2.12.5.4.1), right clockwise and left back, as the switches' buttons go
-		if(u&&_click_ray.intersectObject(u.mesh,false)[0]){ if(!playback) pit_press("index",e.button===2?1:-1); return; } }
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		const button=on&&ifei_button_at(on.point); if(button){ ifei_click(button,(performance.now()-press_at)/1000); return; } }   // a click elsewhere on the unit falls through to the panel behind it
@@ -7717,7 +7724,7 @@ function pit_click(e){
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
 	if(!hit||!hit.uv){
 		{ const b=ddi_button_at(e.clientX,e.clientY); if(b){ if(ddi_press(b.display,b.pb)) screens_update(); return; } }   // a pushbutton on a display's bezel, where the pilot presses it (#105); its legend inside the glass presses it too
-		if(pit_switch(e)) return;   // a switch or handle under the pointer (#19), tested after the screens so the bezel and TDC paths are unchanged
+		if(!playback&&pit_switch(e)) return;   // a switch or handle under the pointer (#19), tested after the screens so the bezel and TDC paths are unchanged; a replay's are the recording's
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // measuring click: report where on the panel the pilot pointed
 			if(h){ const p=ownship.group.worldToLocal(h.point.clone());
 				dev_probe_text="panel y="+p.y.toFixed(3)+" z="+p.z.toFixed(3)+" x="+p.x.toFixed(3)+" ("+(h.object.name||"?")+")";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -7849,8 +7856,6 @@ const _hover_ray=new THREE.Ray(), _hover_inverse=new THREE.Matrix4();
 function pit_hover(x,y){ const g=ownship.group, u=g.userData, list=u.screens; if(!list) return null;
 	_click_ray.setFromCamera(_click_at.set((x/HW)*2-1,-(y/HH)*2+1),cockpit_cam);
 	const on=(m)=>m?_click_ray.intersectObject(m,false)[0]:null, local=(w)=>g.worldToLocal(w.clone());
-	const sb=u.standby;
-	for(const m of [sb&&sb.alt&&sb.alt.mesh, sb&&sb.adi&&sb.adi.mesh, u.radalt&&u.radalt.mesh]) if(m&&on(m)) return extent_of([m],m.name||"standby");   // the standby altimeter's knob, the standby ADI's TEST and the radar altimeter's knob: the whole face
 	{ const h=u.ifei&&on(u.ifei.mesh), b=h&&ifei_button_at(h.point);
 		if(b){ const x=local(h.point).x;
 			return { box:new THREE.Box3(new THREE.Vector3(x,IFEI_BUTTONS[b]-IFEI_CAP[1],IFEI_BUTTON_Z-IFEI_CAP[0]),new THREE.Vector3(x,IFEI_BUTTONS[b]+IFEI_CAP[1],IFEI_BUTTON_Z+IFEI_CAP[0])), name:"ifei."+b }; } }
@@ -7984,6 +7989,8 @@ function pit_press(action,direction){ const d=direction||0;
 		else if(action.startsWith("travel.")) travel_press(action.slice(7),d||1);
 		else if(action.startsWith("display.")){ const [,which,control]=action.split("."); display_press(which,control,d||1); }
 		break;
+	case "sari.trim": sari_trim=THREE.MathUtils.clamp(sari_trim+(d||1),SARI_TRIM[0],SARI_TRIM[1]); break;   // the pull to cage knob turned: the miniature airplane a degree a click, right clockwise raising it (25.2.4.2 item 2)
+	case "sari.cage": sari_pulled=glance; break;   // the pull to cage knob pulled out and held two seconds, as a click cannot be held (25.2.4.2 item 3)
 	case "sari.test": sari_clicked=glance; break;   // the standby attitude indicator's TEST switch (25.2.4.2), held two seconds   // a click on the LT TEST switch holds it at TEST two seconds
 	case "radalt.test": if(radalt_on) radalt_test=sim_time; break;   // pushing the knob runs the BIT (2.12.5.4.1, 2.12.5.4.5)
 	case "gear": if(!on_ground()&&!gear_emergency){ const up=(ownship.gearTarget??0)>0.5; ownship.gearTarget=d>0?1:d<0?0:up?0:1;
@@ -9298,6 +9305,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		const u=ownship.group.userData, extra={ rwr:u.rwr&&u.rwr.mesh, radalt:u.radalt&&u.radalt.mesh, ifei:u.ifei&&u.ifei.mesh, ufc:u.ufc&&u.ufc.mesh, caution:u.lamps&&u.lamps.caution, silence:u.silence, adiface:u.standby&&u.standby.adi.mesh };   // the canvas faces (#28, #6, #1) and the two click targets (#20), which the rig does not drive
 		for(const [name,mesh] of Object.entries(extra)){ if(!mesh) continue; mesh.getWorldPosition(v); v.project(cockpit_cam); if(v.z<1) out[name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
+	sari:{ trim:sari_trim, caged:sari_caged(), testing:sari_testing() },   // the standby attitude indicator's knob and TEST switch: its miniature airplane's trim in degrees, caged, and TEST held
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH), baro:f(g.baro) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, ufc:u.ufc?{ at:u.ufc.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ufc.mesh.layers.mask, ...ufc_face(ufc,ufc_live(),performance.now()/1000) }:null, ifei:u.ifei?{ calibration:u.ifei.at, at:u.ifei.mesh.position.toArray().map(n=>+n.toFixed(3)), mask:u.ifei.mesh.layers.mask, face:ifei_current(),   // i18n-format-ok: dev probe readout, never shown to a user
@@ -10487,7 +10495,7 @@ function reset_ownship(){
 	landing.nz=null; landing.grounded=true;   // a fresh jet has made no landing
 	flbit=-Infinity; fuel_lo.on=false; fuel_lo.at=-Infinity; relight.low=sim_time; relight.high=false; relight.sat=false;   // a fresh jet has run no fuel low BIT, nor sat on the wheels at idle for MASTER CAUTION's re-light
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
-	lights_clicked=-Infinity; sari_clicked=-Infinity;   // a fresh jet's LT TEST switch at OFF, and the standby indicator's TEST switch out
+	lights_clicked=-Infinity; sari_clicked=-Infinity; sari_pulled=-Infinity; sari_trim=0;   // a fresh jet's LT TEST switch at OFF, and the standby indicator's TEST switch out, its knob in and its miniature airplane centred
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
 	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
 	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)

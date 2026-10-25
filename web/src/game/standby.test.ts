@@ -287,16 +287,16 @@ function lift(name: string): string {
   const end = /\n(?=\S)/.exec(rest.slice(1))
   return end ? rest.slice(0, end.index + 1) : rest
 }
-interface Drawn { text: string[]; rotate: number[]; translate: [number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; strokes: number }
+interface Drawn { text: string[]; rotate: number[]; translate: [number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; points: [number, number][]; strokes: number }
 function face(name: string, ...args: number[]): Drawn {
   const consts = /\nconst ASI_DIAL=[^\n]*\nconst VSI_DIAL=[^\n]*\n/.exec(source)?.[0] ?? ''
   const sizes = /\nconst STANDBY_C=[^\n]*\nconst ADI_PIXELS=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!consts || !sizes) throw new Error('standby constants not found in engine.ts')
   const run = new Function('args', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${consts} ${sizes}
     ${lift('dial')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
-    const text=[], rotate=[], translate=[], rects=[], arcs=[]; let strokes=0;
-    const x=new Proxy({}, { get:(t,k)=>{ if(k==='stroke') return ()=>{ strokes++; }; if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); return ()=>{}; }, set:()=>true });
-    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs, strokes };`)
+    const text=[], rotate=[], translate=[], rects=[], arcs=[], points=[]; let strokes=0;
+    const x=new Proxy({}, { get:(t,k)=>{ if(k==='stroke') return ()=>{ strokes++; }; if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); if(k==='moveTo'||k==='lineTo') return (a,b)=>points.push([a,b]); return ()=>{}; }, set:()=>true });
+    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs, points, strokes };`)
   return run(args) as Drawn
 }
 const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
@@ -418,7 +418,6 @@ describe('the standby instrument faces', () => {
     expect(ball(0)).toBe(128)
     expect(ball(0.5)).toBe(128 + 12)
     expect(ball(-2)).toBe(128 - 24)
-    expect(source).toMatch(/adi_face\(faces\.adi,gz\.pitch\|\|0,gz\.bank\|\|0,gz\.yaw\|\|0,gz\.slip\|\|0,sari_testing\(\),!buses\.essential\);/)
   })
 
   // NATOPS 25.2.4.2: the vertical and horizontal pointers stay stowed, the vertical one behind the pointer
@@ -432,16 +431,45 @@ describe('the standby instrument faces', () => {
     expect(test.strokes - rest.strokes).toBe(2) // the pointer pair, black under yellow
     expect(needle(face('adi_face', 0, 0, 0, 0, 1))).toBeCloseTo(128 + 8 - 2, 6)
     expect(needle(face('adi_face', 0, 0, 0, 0))).toBe(128 - 2)
-    expect(lift('adi_face')).toMatch(/x\.moveTo\(C,C-W\+6\); x\.lineTo\(C,C\+W-6\); x\.moveTo\(C-W\+6,C\); x\.lineTo\(C\+W-6,C\);/) // vertical and horizontal through the centre
+    expect(lift('adi_face')).toMatch(/x\.moveTo\(C,C-W\+6\); x\.lineTo\(C,C\+W-6\); x\.moveTo\(C-W\+6,A\); x\.lineTo\(C\+W-6,A\);/) // vertical through the centre, horizontal through the miniature airplane
   })
 
-  it('hold the TEST switch two seconds from a click on the face, clear at a spawn', () => {
+  // NATOPS 25.2.4.2 item 2: the miniature airplane trims +5° to -10° of pitch, and TEST centres the
+  // horizontal pointer on it wherever it sits.
+  it('raise the miniature airplane by the trim in degrees of the ball\'s pitch, the TEST pointer with it', () => {
+    const pixels = 118 * 0.22 / 10 // ADI_PIXELS
+    const airplane = (d: Drawn) => d.points.find(([x]) => x === 128 - 48)?.[1] // its left wing tip
+    const pointer = (d: Drawn) => d.points.find(([x]) => Math.abs(x - (128 - 118 * 0.8 + 6)) < 1e-9)?.[1]
+    expect(airplane(face('adi_face', 0, 0))).toBe(128)
+    expect(airplane(face('adi_face', 0, 0, 0, 0, 0, 0, 5))).toBeCloseTo(128 - 5 * pixels, 9)
+    expect(airplane(face('adi_face', 0, 0, 0, 0, 0, 0, -10))).toBeCloseTo(128 + 10 * pixels, 9)
+    expect(pointer(face('adi_face', 0, 0, 0, 0, 1, 0, 5))).toBeCloseTo(128 - 5 * pixels, 9)
+    expect(pointer(face('adi_face', 0, 0, 0, 0, 1, 0, 0))).toBe(128)
+  })
+
+  // NATOPS 2.12.2 and 25.2.4.2 items 1 and 3: pulled, the knob cages the gyro to the case, 4° nose up and
+  // wings level whatever the jet's attitude, with the OFF flag in view.
+  it('read the case\'s 4° nose up and wings level with the OFF flag while caged, the jet and the trim otherwise', () => {
+    const draw = (caged: boolean, essential = true, trim = 0) => new Function('caged', 'essential', 'trim', `const D2R=Math.PI/180, drawn=[], buses={ essential };
+      ${/\nconst SARI_TRIM=[^\n]*\n/.exec(source)?.[0] ?? ''} let sari_trim=trim; const sari_caged=()=>caged, sari_testing=()=>false;
+      const asi_face=()=>{}, alt_face=()=>{}, vsi_face=()=>{}, adi_face=(f,...a)=>drawn.push(a);
+      ${lift('standby_draw')} standby_draw({ asi:{tex:{}}, alt:{tex:{}}, vsi:{tex:{}}, adi:{tex:{}} }, { pitch:0.3, bank:-0.5, yaw:0.01, slip:0.2 }); return drawn[0];`)(caged, essential, trim) as unknown[]
+    expect(draw(false)).toEqual([0.3, -0.5, 0.01, 0.2, false, false, 0])
+    expect(draw(true)).toEqual([4 * Math.PI / 180, 0, 0.01, 0.2, false, true, 0]) // the turn needle and the ball are not the gyro's
+    expect(draw(false, false)[5]).toBe(true) // its power gone
+    expect(draw(false, true, -3)[6]).toBe(-3)
+  })
+
+  it('hold the TEST switch two seconds from a click on it, and the cage knob two from a middle click, both clear at a spawn', () => {
     const fn = /\nfunction sari_testing\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(fn).not.toBe('')
     const testing = (now: number, clicked: number) => new Function('now', 'clicked', `const glance=now, sari_clicked=clicked; ${fn} return sari_testing();`)(now, clicked) as boolean
     expect([testing(10, 9), testing(10, 8.01), testing(10, 8), testing(10, -Infinity)]).toEqual([true, true, false, false])
-    expect(source).toMatch(/if\(u&&u\.adi&&_click_ray\.intersectObject\(u\.adi\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("sari\.test",0\); return; \} \}/)
-    expect(source).toMatch(/\n\tlights_clicked=-Infinity; sari_clicked=-Infinity;/)
+    const cage = /\nfunction sari_caged\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(cage).not.toBe('')
+    const caged = (now: number, pulled: number) => new Function('now', 'pulled', `const glance=now, sari_pulled=pulled; ${cage} return sari_caged();`)(now, pulled) as boolean
+    expect([caged(10, 9), caged(10, 8.01), caged(10, 8), caged(10, -Infinity)]).toEqual([true, true, false, false])
+    expect(source).toMatch(/\n\tlights_clicked=-Infinity; sari_clicked=-Infinity; sari_pulled=-Infinity; sari_trim=0;/)
   })
 
   it('letter the ball CLIMB on its white half and DIVE on its black half, as FO-5 item 25 draws it', () => {
@@ -537,9 +565,9 @@ describe('the low-altitude index knob', () => {
     expect(step(5000, 1)).toBe(5000)
   })
 
-  it('is the only thing that moves the index, from the face, the keys and nothing else', () => {
+  it('is the only thing that moves the index, from its knob, the keys and nothing else', () => {
     expect(source).toMatch(/case "index": if\(!radalt_on\)\{ if\(\(d\|\|1\)>0\)\{ radalt_on=true; radalt_greet=!!ownship\.grounded; \} \} else if\(\(d\|\|1\)<0&&law_index<=0\) radalt_on=false; else law_index=index_step\(law_index,d\|\|1\); break;/)
-    expect(source).toMatch(/if\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("index",e\.button===2\?1:-1\); return; \}/)
+    expect(source).toMatch(/\{ action:"index", at:\[6\.193,0\.005,0\.296\], r:0\.005, hold:"radalt\.test" \}/) // turned by a click, pushed to test by a middle click
     expect(source).toMatch(/if\(ch===key_of\("index\.up"\)\) pit_press\("index",1\);/)
     expect(source).toMatch(/if\(ch===key_of\("index\.down"\)\) pit_press\("index",-1\);/)
     expect((source.match(/law_index=/g) ?? []).length).toBe(3) // its declaration, the knob, and the spawn's pre-flight setting
@@ -639,8 +667,8 @@ describe('the standby altimeter knob', () => {
     expect(turn(2810, -1)).toBe(2810)
   })
 
-  it('is turned by a click on the face and set back to 29.92 on a fresh jet', () => {
-    expect(source).toMatch(/const u=ownship\.group\.userData\.standby;[^\n]*\n\t\tif\(u&&u\.alt&&_click_ray\.intersectObject\(u\.alt\.mesh,false\)\[0\]\)\{ if\(!playback\) pit_press\("baro",e\.button===2\?1:-1\); return; \} \}/)
+  it('is turned by a click on its knob and set back to 29.92 on a fresh jet', () => {
+    expect(source).toMatch(/\{ action:"baro", at:\[6\.211,0\.049,0\.192\], r:0\.0055 \}/)
     expect(source).toMatch(/baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;/)
   })
 
@@ -650,7 +678,7 @@ describe('the standby altimeter knob', () => {
     const press = (ch: string) => new Function('ch', `const turned=[], key_of=(a)=>({ "baro.up":"KeyU", "baro.down":"KeyD" })[a], pit_press=(a,d)=>turned.push(a+" "+d); ${lines} return turned;`)(ch) as string[]
     expect([press('KeyU'), press('KeyD'), press('KeyX')]).toEqual([['baro 1'], ['baro -1'], []])
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')
-    expect(keys).toMatch(/'baro\.down': 'None',[^\n]*\n  'baro\.up': 'None',/)
+    expect(keys).toMatch(/'baro\.down': 'None',[^\n]*\n {2}'baro\.up': 'None',/)
     const settings = readFileSync(fileURLToPath(new URL('../components/SettingsDialog.tsx', import.meta.url)), 'utf8')
     expect(settings).toMatch(/id: 'baro\.down',\s*label: msg`Lower altimeter setting`,\s*group: 'instruments'/)
     expect(settings).toMatch(/id: 'baro\.up',\s*label: msg`Raise altimeter setting`,\s*group: 'instruments'/)
@@ -723,8 +751,8 @@ describe('the radar altimeter height indicator', () => {
     expect(source).not.toMatch(/radalt_greet=st===/)
   })
 
-  it('pushes the knob with the middle button on the face, and nothing but the push and pull controls with it', () => {
-    expect(source).toMatch(/if\(e\.button===1\)\{ const u=ownship\.group\.userData\.radalt;[^\n]*\n\t\tif\(playback\) return;\n\t\tif\(u&&_click_ray\.intersectObject\(u\.mesh,false\)\[0\]\)\{ pit_press\("radalt\.test",0\); return; \}\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\); else if\(s&&s\.action==="canopy\.jettison"\) pit_press\("canopy\.jettison",0\); else if\(s&&s\.hold\) pit_press\(s\.hold,0\);[^\n]*\n\t\treturn; \}/)
+  it('pushes the knob with the middle button, as its seat\'s hold, and nothing but the push and pull controls with it', () => {
+    expect(source).toMatch(/if\(e\.button===1\)\{[^\n]*\n\t\tif\(playback\) return;\n\t\tconst s=pit_target\(e\); if\(s&&s\.name==="ruddertrim"\) pit_press\("trim\.takeoff",0\); else if\(s&&s\.name==="gearlever"\) pit_press\("gear\.emergency",0\); else if\(s&&s\.action==="canopy\.jettison"\) pit_press\("canopy\.jettison",0\); else if\(s&&s\.hold\) pit_press\(s\.hold,0\);[^\n]*\n\t\treturn; \}/)
   })
 })
 
