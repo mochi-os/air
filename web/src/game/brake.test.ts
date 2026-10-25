@@ -218,12 +218,13 @@ describe('the emergency/parking brake handle', () => {
 // and 45 degrees a thousand, redrawn whenever the pressure moves.
 describe('the brake pressure gauge', () => {
   const draw = /\nfunction brake_draw\(b, psi\)\{[\s\S]*?\n\tb\.psi=Math\.round\(psi\); b\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
+  const context = /\nfunction face_context\(f\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   // the needle: the last stroke drawn, from its tail through the pivot to its tip
   const needle = (psi: number) => {
-    if (!draw) throw new Error('brake_draw not found in engine.ts')
+    if (!draw || !context) throw new Error('brake_draw or face_context not found in engine.ts')
     return new Function('psi', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; const moves=[], lines=[];
       const x=new Proxy({}, { get:(o,k)=>k==="lineTo"?((a,b)=>lines.push([a,b])):k==="moveTo"?((a,b)=>moves.push([a,b])):()=>{}, set:()=>true });
-      const b={ canvas:{ getContext:()=>x }, tex:{} }; ${draw} brake_draw(b,psi); return { tail:moves[moves.length-1], tip:lines[lines.length-1], psi:b.psi };`)(psi) as { tail: [number, number]; tip: [number, number]; psi: number }
+      const b={ canvas:{ getContext:()=>x }, tex:{}, scale:1 }; ${context} ${draw} brake_draw(b,psi); return { tail:moves[moves.length-1], tip:lines[lines.length-1], psi:b.psi };`)(psi) as { tail: [number, number]; tip: [number, number]; psi: number }
   }
 
   it('points up at 3,000 psi, 45 degrees a thousand either side, and stops at the dial ends', () => {

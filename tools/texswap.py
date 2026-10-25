@@ -3,6 +3,13 @@
 # in place. BufferView order and indices are preserved (offsets recomputed);
 # geometry, animations and materials are untouched - gltfpack never sees the
 # real model.
+#
+# usage: texswap.py SRC DST [MODE] [UASTC]. MODE (etc1s or uastc) encodes every
+# image; UASTC lists image indices encoded UASTC whatever MODE says. ETC1S's 4x4
+# blocks smear lettering a few texels tall, so an atlas carrying text keeps
+# UASTC. fa18c.glb is SRC = the JPEG model before #200 (git show
+# bdd7ebc63^:web/src/assets/fa18c.glb), etc1s, UASTC 15,19,20,21,22: the
+# cockpit's panel atlases and the lit placards' emissive map (#121).
 import json, struct, subprocess, sys, os, base64
 
 import os
@@ -16,6 +23,7 @@ APP = ROOT / "apps" / "air"
 
 
 SRC, DST, MODE = sys.argv[1], sys.argv[2], (sys.argv[3] if len(sys.argv) > 3 else "etc1s")
+UASTC = {int(i) for i in sys.argv[4].split(",")} if len(sys.argv) > 4 else set()
 WORK = os.path.dirname(os.path.abspath(DST))
 GLTFPACK = str(Path(__file__).resolve().parent / "gltfpack-native")   # native build from github.com/zeux/meshoptimizer/releases (the npm gltfpack is wasm and lacks BasisU); NOT committed - fetch and chmod +x when regenerating
 MIN = 50000
@@ -39,7 +47,7 @@ def save_glb(p, js, bin_):
         f.write(struct.pack("<II", len(jb), 0x4E4F534A)); f.write(jb)
         f.write(struct.pack("<II", len(bin_), 0x004E4942)); f.write(bin_)
 
-def encode_ktx2(data, mime, tag):
+def encode_ktx2(data, mime, tag, mode):
     ext = "png" if "png" in mime else "jpg"
     img = f"{WORK}/tex_{tag}.{ext}"
     open(img, "wb").write(data)
@@ -67,7 +75,7 @@ def encode_ktx2(data, mime, tag):
     wrapper = f"{WORK}/wrap_{tag}.gltf"
     json.dump(gltf, open(wrapper, "w"))
     out = f"{WORK}/wrap_{tag}.glb"
-    mode = ["-tc", "-tu", "-tj", "8"] if MODE == "uastc" else ["-tc", "-tq", "10", "-tj", "8"]
+    mode = ["-tc", "-tu", "-tj", "8"] if mode == "uastc" else ["-tc", "-tq", "10", "-tj", "8"]
     env = dict(os.environ, BWRAP_PROJECT=os.environ.get("BWRAP_PROJECT", str(ROOT)))
     r = subprocess.run([os.path.expanduser("~/bin/bwrap-build"), GLTFPACK, "-i", wrapper, "-o", out] + mode,
                       capture_output=True, text=True, env=env)
@@ -88,10 +96,11 @@ for i, im in enumerate(js.get("images", [])):
     bv = views[im["bufferView"]]
     if bv["byteLength"] < MIN: continue
     data = bin_[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
-    ktx = encode_ktx2(data, im["mimeType"], str(i))
+    mode = "uastc" if i in UASTC else MODE
+    ktx = encode_ktx2(data, im["mimeType"], str(i), mode)
     swaps[im["bufferView"]] = ktx
     im["mimeType"] = "image/ktx2"
-    print(f"image {i}: {len(data)} -> {len(ktx)} bytes")
+    print(f"image {i}: {len(data)} -> {len(ktx)} bytes ({mode})")
 
 # Rebuild the BIN preserving bufferView order/indices; recompute offsets.
 newbin = bytearray()

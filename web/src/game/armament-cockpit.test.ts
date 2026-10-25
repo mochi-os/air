@@ -245,7 +245,7 @@ describe('the panels drawn over the model', () => {
       const arms=armament.fresh(true), suite=countermeasures.fresh(true);
       const document={ createElement:()=>({ width:0, height:0, getContext(){ const canvas=this; return new Proxy({}, { get:(t,k)=>k==="clearRect"?()=>drawn.push(canvas.width):()=>{}, set:()=>true }); } }) };
       const g=new THREE.Group(), ownship={ group:g }, _click_ray={ intersectObjects:(meshes)=>hit?[{ object:meshes[hit.face], uv:{ x:hit.u, y:hit.v } }]:[] }; let hit=null;
-      ${seats} ${mark} ${lift('seat_pose')} ${line('faces_key')}
+      ${seats} ${mark} ${lift('seat_pose')} ${lift('face_canvas')} ${lift('face_context')} ${line('faces_key')}
       ${lift('faces_shown')}
       ${lift('faces_update')}
       ${lift('face_target')}

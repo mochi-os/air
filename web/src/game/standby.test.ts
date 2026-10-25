@@ -150,8 +150,8 @@ function radalt_face(agl: number, index: number, silent: boolean): { off: boolea
   const draw = /\nfunction radalt_draw\(r, agl, index, silent, test\)\{[\s\S]*?r\.tex\.needsUpdate=true; \}\n/.exec(source)?.[0] ?? ''
   if (!draw) throw new Error('radalt_draw not found in engine.ts')
   const run = new Function('agl', 'index', 'silent', `const D2R=Math.PI/180, RADALT_DIAL=[], dial=()=>0;
-    const x=new Proxy({}, { get:()=>()=>{}, set:()=>true }); const r={ canvas:{ getContext:()=>x }, tex:{} };
-    ${draw} radalt_draw(r,agl,index,silent,false); return { off:!!r.off, lamp:!!r.lamp };`)
+    const x=new Proxy({}, { get:()=>()=>{}, set:()=>true }); const r={ canvas:{ getContext:()=>x }, tex:{}, scale:1 };
+    ${lift('face_context')} ${draw} radalt_draw(r,agl,index,silent,false); return { off:!!r.off, lamp:!!r.lamp };`)
   return run(agl, index, silent) as { off: boolean; lamp: boolean }
 }
 function hud_altitude(feet: number, rdr: boolean, silent: boolean): { alt: number; radar: boolean; flashB: boolean } {
@@ -293,10 +293,10 @@ function face(name: string, ...args: number[]): Drawn {
   const sizes = /\nconst STANDBY_C=[^\n]*\nconst ADI_PIXELS=[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!consts || !sizes) throw new Error('standby constants not found in engine.ts')
   const run = new Function('args', `const D2R=Math.PI/180, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${consts} ${sizes}
-    ${lift('dial')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
+    ${lift('dial')} ${lift('face_context')} ${lift('face_start')} ${lift('face_needle')} ${lift('face_tick')} ${lift('face_label')} ${lift(name)}
     const text=[], rotate=[], translate=[], rects=[], arcs=[], points=[]; let strokes=0;
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='stroke') return ()=>{ strokes++; }; if(k==='fillText') return (s)=>text.push(String(s)); if(k==='rotate') return (a)=>rotate.push(a); if(k==='translate') return (dx,dy)=>translate.push([dx,dy]); if(k==='fillRect') return (a,b,c,d)=>rects.push([a,b,c,d]); if(k==='arc') return (a,b,r)=>arcs.push([a,b,r]); if(k==='moveTo'||k==='lineTo') return (a,b)=>points.push([a,b]); return ()=>{}; }, set:()=>true });
-    ${name}({ canvas:{ getContext:()=>x } }, ...args); return { text, rotate, translate, rects, arcs, points, strokes };`)
+    ${name}({ canvas:{ getContext:()=>x }, scale:1 }, ...args); return { text, rotate, translate, rects, arcs, points, strokes };`)
   return run(args) as Drawn
 }
 const has = (list: number[], v: number) => list.some((a) => Math.abs(a - v) < 1e-6)
@@ -485,7 +485,7 @@ describe('the standby instrument faces', () => {
     expect(source).toMatch(/const STANDBY=\{ x:6\.207, asi:\{ y:0\.082, z:0\.132, r:0\.031 \}, alt:\{ y:0\.083, z:0\.218, r:0\.031 \}, vsi:\{ y:0\.083, z:0\.304, r:0\.031 \}, adi:\{ y:0\.177, z:0\.158, r:0\.043 \} \};/) // the tub's painted discs, fitted as circles
     expect(source).not.toMatch(/function clock_face\(/) // no clock face yet: the model's rigged clock sits behind the shell, out of sight
     expect(source).toMatch(/for\(const name of \["asi","alt","vsi","adi"\]\)\{ const seat=STANDBY\[name\];/)
-    expect(source).toMatch(/new THREE\.CircleGeometry\(seat\.r,48\), gauge_material\(tex\)\)/) // lit like the model's own gauges
+    expect(source).toMatch(/new THREE\.CircleGeometry\(seat\.r,48\), gauge_material\(f\.tex\)\)/) // lit like the model's own gauges
     expect(source).toMatch(/build_radalt\(g\); build_rwr\(g\); build_standby\(g\);/)
     expect(source).toMatch(/surface_pose\(mesh,STANDBY\.x,0,seat\.y,seat\.z\); mesh\.layers\.set\(LAYER_OWN\);/)
     expect(source).toMatch(/if\(now-\(sb\.last\|\|0\)>100\)\{ sb\.last=now; standby_draw\(sb,ownship\.gauges\|\|\{\}\); \}/)
@@ -698,8 +698,8 @@ describe('the radar altimeter height indicator', () => {
     const text=[], lights=[]; let strokes=0, fill='';
     const x=new Proxy({}, { get:(t,k)=>{ if(k==='fillText') return (s)=>text.push(String(s)); if(k==='stroke') return ()=>{ strokes++; }; if(k==='arc') return (ax,ay,r)=>{ if(r===7) lights.push([ax,ay,fill]); }; return ()=>{}; },
       set:(t,k,v)=>{ if(k==='fillStyle') fill=v; return true; } });
-    const r={ canvas:{ getContext:()=>x }, tex:{} };
-    ${draw} radalt_draw(r,agl,200,silent,test); return { text, strokes, lights, off:!!r.off };`)(agl, silent, test) as { text: string[]; strokes: number; lights: [number, number, string][]; off: boolean }
+    const r={ canvas:{ getContext:()=>x }, tex:{}, scale:1 };
+    ${lift('face_context')} ${draw} radalt_draw(r,agl,200,silent,test); return { text, strokes, lights, off:!!r.off };`)(agl, silent, test) as { text: string[]; strokes: number; lights: [number, number, string][]; off: boolean }
 
   it('puts the scale where FO-5 draws it: 0 at twelve o\'clock, 1,000 ft at 258°, 5,000 at 320°', () => {
     const degrees = (ft: number) => new Function('ft', `const D2R=Math.PI/180; ${consts} ${lift('dial')} return dial(RADALT_DIAL,ft)/D2R;`)(ft) as number

@@ -375,7 +375,7 @@ describe('the ECS and the fire and bleed air test (#14, #17, #22)', () => {
     const needle = (feet: number) => {
       const lines: number[][] = []; let at = [0, 0]
       const x = new Proxy({}, { get: (_t, k) => k === 'moveTo' ? (a: number, b: number) => { at = [a, b] } : k === 'lineTo' ? (a: number, b: number) => lines.push([...at, a, b]) : () => {}, set: () => true })
-      new Function('THREE', 'x', 'feet', `const D2R=Math.PI/180; ${lift('cabin_draw')} cabin_draw({ canvas:{ getContext:()=>x }, tex:{} },feet);`)(THREE, x, feet)
+      new Function('THREE', 'x', 'feet', `const D2R=Math.PI/180; ${lift('face_context')} ${lift('cabin_draw')} cabin_draw({ canvas:{ getContext:()=>x }, tex:{}, scale:1 },feet);`)(THREE, x, feet)
       const l = lines[lines.length - 1]; return [Math.round(l[2]), Math.round(l[3])]
     }
     expect(needle(0)).toEqual([80, 150])
