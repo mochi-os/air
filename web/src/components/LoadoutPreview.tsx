@@ -15,7 +15,7 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import { model } from '../game/library'
-import { NEUTRAL, POSE, SCRUBS } from '../game/model'
+import { posed } from '../game/model'
 import { ANCHORS, TIPS, entries, normalize } from '../game/stores'
 import { normalize_round, amraam_anchor, amraam_aim } from '../game/weapons'
 import type { StationSlot } from '../lib/config'
@@ -32,38 +32,7 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
       model(stores_model_url, renderer),
       model(amraam_model_url, renderer),
     ])
-    airframe = jet.scene.clone(true) // the library's stock is shared with the flight: pose a clone
-    for (const fix of POSE) {
-      // The same static pose corrections the engine applies before anything
-      // else — without them the stabs render planform-reversed.
-      const node = airframe.getObjectByName(fix.node)
-      if (node) node.quaternion.set(...fix.quaternion)
-    }
-    // Neutral-scrub every animated family to its first key: some authored
-    // STATIC poses rest deployed (the port spoiler plate); the engine drives
-    // these per-frame, the preview poses them once.
-    const mixer = new THREE.AnimationMixer(airframe)
-    for (const family of SCRUBS) {
-      const tracks = jet.animations.flatMap((clip) =>
-        clip.tracks.filter((track) =>
-          family.test(track.name.slice(0, track.name.lastIndexOf('.')))
-        )
-      )
-      if (!tracks.length) continue
-      const action = mixer.clipAction(
-        new THREE.AnimationClip('prep', -1, tracks)
-      )
-      action.play()
-      action.paused = true
-      action.time = tracks[0].times[0]
-    }
-    mixer.update(0)
-    for (const rest of NEUTRAL) {
-      // Direct-driven surfaces (stabs, ailerons, rudders) to their neutral —
-      // the mixer never touches these; the engine drives them per frame.
-      const node = airframe.getObjectByName(rest.node)
-      if (node) node.quaternion.set(...rest.quaternion)
-    }
+    airframe = posed(jet)
     racks = stores.scene.clone(true)
     amraam = normalize_round(round.scene.clone(true))
   })().catch((error) => {

@@ -174,6 +174,14 @@ export default defineConfig(
     },
   },
   {
+    // The model viewer (/air/models) is a developer page, English only by
+    // decision. Must come after the i18n block to win for these files.
+    files: ['src/components/ModelViewer.tsx', 'src/routes/models.tsx'],
+    rules: {
+      'lingui/no-unlocalized-strings': 'off',
+    },
+  },
+  {
     // GameCanvas is the engine's React host: it reports asset, WebGL and
     // transport failures the same way game/ does, so it gets the same
     // warn/error allowance — and the same ban on stray console.log.

@@ -165,7 +165,7 @@ export const GEAR = /(^|_)[clr]_(gear|wheel)_AN_/i
 // rig). Each family's timeline holds its NEUTRAL value at the first key, while
 // some authored static poses rest deployed. Keep in sync when the engine gains
 // a family.
-export const SCRUBS: RegExp[] = [
+const SCRUBS: RegExp[] = [
   GEAR,
   /^Hook_AN_/i,
   /^RefuelDoorAction_AN/i,
@@ -179,7 +179,7 @@ export const SCRUBS: RegExp[] = [
 // NEUTRAL: the direct-driven control surfaces' neutral base quaternions (x, y,
 // z, w), mirrored from the engine's rig entries - the authored static poses
 // rest deflected. Keep in sync with AIRCRAFT_MODELS fa18c.
-export const NEUTRAL: {
+const NEUTRAL: {
   node: string
   quaternion: [number, number, number, number]
 }[] = [
@@ -196,6 +196,42 @@ export const NEUTRAL: {
     quaternion: [0, 0.19423, 0, 0.98096],
   },
 ]
+
+// posed returns a clone of the parsed fa18c at rest, as the engine poses it
+// before anything else: the library's stock is shared with the flight, so it
+// is never posed in place.
+export function posed(jet: GLTF): THREE.Group {
+  const airframe = jet.scene.clone(true)
+  for (const fix of POSE) {
+    // The static pose corrections - without them the stabs render
+    // planform-reversed.
+    const node = airframe.getObjectByName(fix.node)
+    if (node) node.quaternion.set(...fix.quaternion)
+  }
+  // Every animated family to its first key: some authored static poses rest
+  // deployed (the port spoiler plate); the engine drives these per frame.
+  const mixer = new THREE.AnimationMixer(airframe)
+  for (const family of SCRUBS) {
+    const tracks = jet.animations.flatMap((clip) =>
+      clip.tracks.filter((track) =>
+        family.test(track.name.slice(0, track.name.lastIndexOf('.')))
+      )
+    )
+    if (!tracks.length) continue
+    const action = mixer.clipAction(new THREE.AnimationClip('prep', -1, tracks))
+    action.play()
+    action.paused = true
+    action.time = tracks[0].times[0]
+  }
+  mixer.update(0)
+  for (const rest of NEUTRAL) {
+    // Direct-driven surfaces (stabs, ailerons, rudders) to their neutral: the
+    // mixer never touches these.
+    const node = airframe.getObjectByName(rest.node)
+    if (node) node.quaternion.set(...rest.quaternion)
+  }
+  return airframe
+}
 
 // decode turns captured image bytes into a texture: KTX2 through the transcoder
 // (self-hosted under basis/), everything else through createImageBitmap. glTF
