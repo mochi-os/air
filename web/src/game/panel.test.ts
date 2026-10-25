@@ -233,7 +233,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/l\.transit\.material\.opacity=!buses\.essential\?0:wheels_warning\(\)/)
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
-    expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\);/)
+    expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
     expect(source).toMatch(/power_step\(out\); displays_light\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)

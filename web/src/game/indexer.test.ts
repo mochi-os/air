@@ -139,17 +139,17 @@ describe('the hook bypass wiring', () => {
 const cases = /\/\/ switches from state \(#18\) ---\n([\s\S]*?)\t\t\/\/ --- end switches/.exec(source)?.[1] ?? ''
 interface Craft { canopyTarget?: number; canopy?: number; foldTarget?: number; barTarget?: number; probeTarget?: number; lights?: boolean }
 interface Panel { position: number; formation: number; strobe: string; landing: boolean }
-interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel>; handle?: string; cranked?: boolean }
+interface Own { parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean; exterior?: Partial<Panel>; handle?: string; cranked?: boolean; bar?: string }
 // The exterior lights panel's state and the STROBE switch's positions, aft to forward, as engine.ts declares them.
 const strobe = JSON.parse(/\nconst STROBE=(\[[^\n]*\]);/.exec(source)?.[1] ?? 'null') as string[] | null
 const panel = new Function(`return ${/\nconst exterior=(\{[^\n]*\});/.exec(source)?.[1] ?? 'null'};`)() as Panel | null
 // Runs one drive case for the aircraft st, which is the ownship unless foreign is set.
 function drive(name: string, st: Craft, own: Own = {}, foreign = false): number | undefined {
   if (!cases) throw new Error('switch drive cases not found in engine.ts')
-  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE', 'fold_handle', 'cranked',
+  const run = new Function('name', 'st', 'ownship', 'parking', 'alt_radar', 'declutter', 'fuel_dump', 'RADAR', 'exterior', 'STROBE', 'fold_handle', 'cranked', 'bar_switch',
     `let f; switch(name){ ${cases} } return f;`)
   const ownship = foreign ? {} : st
-  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe, own.handle ?? 'lock', !!own.cranked) as number | undefined
+  return run(name, st, ownship, !!own.parking, !!own.alt_radar, own.declutter ?? 0, !!own.fuel_dump, { sil: !!own.sil }, { ...panel, ...own.exterior }, strobe, own.handle ?? 'lock', !!own.cranked, own.bar ?? 'retract') as number | undefined
 }
 
 describe('the state-driven switches', () => {
@@ -182,8 +182,10 @@ describe('the state-driven switches', () => {
     expect(['fold', 'hold', 'spread', 'lock'].map((handle) => drive('foldswitch', {}, { handle }))).toEqual([1, 0.5, 0, 0])
     expect(drive('foldswitch', { foldTarget: 1 }, { handle: 'lock' }, true)).toBe(1) // another jet's follows its wings
     expect(drive('foldswitch', { foldTarget: 0 }, {}, true)).toBe(0)
-    expect(drive('barswitch', { barTarget: 1 })).toBe(1)
-    expect(drive('barswitch', {})).toBe(0)
+    expect(drive('barswitch', {}, { bar: 'extend' })).toBe(1) // the ownship's lever is its switch (#127)...
+    expect(drive('barswitch', { barTarget: 1 }, { bar: 'retract' })).toBe(0) // ...not where its bar happens to be
+    expect(drive('barswitch', { barTarget: 1 }, {}, true)).toBe(1) // another jet's follows its bar
+    expect(drive('barswitch', {}, {}, true)).toBe(0)
     // the PROBE clip runs EMERG EXTD (aft) to EXTEND (forward), RETRACT in the middle (FO-5)
     expect(drive('probeswitch', { probeTarget: 1 })).toBe(1)
     expect(drive('probeswitch', { probeTarget: 0 })).toBe(0.5)
@@ -298,10 +300,10 @@ function press(action: string, direction: number, state: Pit = {}): Pressed {
 }
 
 describe('the clickable switches', () => {
-  it('list every driven switch and handle with the action a click fires, the launch bar with none', () => {
+  it('list every driven switch and handle with the action a click fires', () => {
     const table = /const PIT_SWITCHES=\{([\s\S]*?)\};/.exec(source)?.[1] ?? ''
     const expected: [string, string | null][] = [
-      ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', null],
+      ['canopyswitch', 'canopy'], ['foldswitch', 'fold'], ['parkbrake', 'brake.parking'], ['parkpull', 'brake.parking'], ['barswitch', 'launch.bar'],
       ['probeswitch', 'probe'], ['altswitch', 'altitude'], ['rejswitch', 'reject'], ['ldglight', 'landing'], ['strobe', 'strobe'], ['formation', 'formation'], ['position', 'position'],
       ['dumpswitch', 'dump'], ['radaropr', 'radar'], ['hookbypass', 'hook.bypass'], ['antiskid', 'antiskid'], ['gearlever', 'gear'], ['hooklever', 'hook'], ['flaplever', 'flaps'], ['lttest', 'lights.test'],
       // G1: the interior lights' knobs (#23), the HUD panel and the UFC's BRT (#11, #115), the electrical panel (#21), BLEED AIR (#22), FIRE TEST (#17), RUD TRIM (#19) and EXT TANKS (#18)

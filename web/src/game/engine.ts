@@ -1588,8 +1588,7 @@ const AIRCRAFT_MODELS={
 	      { name:"pedalright",   track:/^Rudder_Right_AN/i,                             drive:"pedals" },
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 // The clickable rig entries (#19): each names the action a click on its node fires
-// through pit_press. The launch bar switch is listed with no action - its state is
-// derived from the catapult spot every frame, so a click there changes nothing.
+// through pit_press.
 // TRAVEL: the controls that move and act on nothing (#16, #17, #22, #25), each with its number of
 // positions; a click throws one a position, right toward its clip's end and left back (travel_press).
 const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3, groundfour:3, antiice:3, pitot:2, avcool:2, cabintemp:5, windshield:3, windlever:2,
@@ -1598,7 +1597,7 @@ const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3
 // switches centred (ENG CRANK OFF, EXT PWR NORM, GND PWR AUTO, the anti-ice switches OFF), and the two whose
 // clips run the other way (flip) at their drawn end
 const TRAVEL_REST={ crank:1, extpwr:1, groundone:1, groundtwo:1, groundthree:1, groundfour:1, antiice:1, windshield:1, oxygen:1, floodswitch:1 };
-const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:null, probeswitch:"probe",
+const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.parking", parkpull:"brake.parking", barswitch:"launch.bar", probeswitch:"probe",
 	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
 	hookbypass:"hook.bypass", antiskid:"antiskid", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test",
 	instpnl:"knob.instrument", consoles:"knob.consoles", flood:"knob.flood", warncaut:"knob.warn", symbology:"knob.symbology", indexer:"knob.indexer", ufcbrt:"knob.ufc",
@@ -2323,7 +2322,7 @@ function lamps_update(out){
 	lamp_set(l.caution,caution_lamp);   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
 	// glareshield panels (#12): SAM, AAA and CW stay dark, the world having no missile site, gun radar or continuous-wave illuminator to light them, and the BLEEDs and APU FIRE light only in the fire test
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
-	lamp_set(l.lbar,(ownship.barTarget??0)>0.5);   // green with the launch bar switch at EXTEND, out when it goes to RETRACT (2.10.4, #11); the red L BAR needs a retraction fault the game has none of
+	lamp_set(l.lbar,bar_switch==="extend");   // green with the launch bar switch at EXTEND, out when it goes to RETRACT, which on this jet it does not do by itself at MIL (2.10.4, #11, #127); the red L BAR needs a retraction fault the game has none of
 	{ const j=countermeasures.lamps(suite,RWR.locked()||RWR.warned(),buses.ac,ASPJ_TEST,sim_time);   // the jammer's lights follow the ECM knob (countermeasures.ts, #10): STBY, ASPJ ON, REC and XMIT, and GO from its test at BIT; NO GO stays dark, the jammer having no failure to find
 		lamp_set(l.aspj,j.on); lamp_set(l.xmit,j.transmit); lamp_set(l.rec,j.receive); lamp_set(l.stby,j.standby); lamp_set(l.go,j.go); }
 	lamp_set(l.disp,countermeasures.dispensing(suite,sim_time));   // DISP while a dispenser programme runs
@@ -7275,6 +7274,7 @@ const HINT={
 	salute:"Hand off stick; press enter to salute and launch",
 	flyaway:"Off the cat: hand off stick, let jet rotate 12\u00b0 nose up",   // NATOPS 8.3.6's "monitor rotation of the aircraft to 12° nose up": the law rotates the jet to the launch trim's reference AOA (fa18c.go Control.Capture), the pilot does not fly it
 	positive:"Positive rate: take stick, gear up, flaps auto",
+	bar:"On catapult: extend launch bar to hook up",   // a jet on a catapult with its bar up (#127): the crew hook up only a bar that is down
 	clearing:"Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles",
 	climb:"7 miles: climb on course",
 };
@@ -7286,7 +7286,7 @@ const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.n
 // clean-up, the takeoff roll, the break, the gear - which the sets track, and
 // which ends it or brings the next line.
 const HINT_DWELL=5;
-const WAITING=new Set([HINT.tension,HINT.salute,HINT.flyaway,HINT.positive,HINT.lineup,HINT.rotate,HINT.cleanup,HINT.depart,HINT.rollout,HINT.brk,HINT.dirty,HINT.form]);
+const WAITING=new Set([HINT.bar,HINT.tension,HINT.salute,HINT.flyaway,HINT.positive,HINT.lineup,HINT.rotate,HINT.cleanup,HINT.depart,HINT.rollout,HINT.brk,HINT.dirty,HINT.form]);
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
 // hull course, the downwind its reciprocal, and the groove the angled deck's
@@ -7463,6 +7463,10 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 	const st=mission_start(), ap=airports[0];
 	const ship=Math.hypot(wrap_axis(ownship.pos.x-CARRIER.x),wrap_axis(ownship.pos.z-CARRIER.z));
 	const field=ap?Math.hypot(wrap_axis(ownship.pos.x-ap.start.x),wrap_axis(ownship.pos.z-ap.start.z)):Infinity;
+	// The launch bar (#127): a jet on a catapult spot with the bar up is told how to get hooked up, and the line
+	// holds until the bar goes down or the jet leaves the spot, which re-arms it for the next catapult.
+	if((ownship.squish??0)>0.5&&!ownship.launching&&bar_switch==="retract"&&on_cat_spot()>=0) hint(HINT.bar);
+	else { hint_retire(HINT.bar); delete hinted[HINT.bar]; }
 	// Retiring a set's last line belongs HERE, not inside the set, because a
 	// pilot leaves a pattern by flying away from it - which is the moment
 	// proximity hands the coaching to the other surface. Left in the case I
@@ -7656,6 +7660,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("baro.down")) pit_press("baro",-1);
 		if(ch===key_of("arm")) pit_press("arm",0);   // the MASTER ARM switch and the DISPENSER switch, for the views without the panel
 		if(ch===key_of("dispenser")) pit_press("dispenser",0);
+		if(ch===key_of("launch.bar")) pit_press("launch.bar",0);   // the LAUNCH BAR switch (NATOPS 2.10.4)
 		if(ch===key_of("hook.bypass")) pit_press("hook.bypass",0);   // the hook bypass switch (NATOPS 2.12.10); with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 		if(ch===key_of("dump")) pit_press("dump",0);   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
 		if(ch===key_of("secure.port")) fire_press(0);   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
@@ -7923,7 +7928,8 @@ function pit_press(action,direction){ const d=direction||0;
 	case "formation": exterior.formation=THREE.MathUtils.clamp(exterior.formation+(d<0?-0.25:0.25),0,1); break;
 	case "dump": fuel_dump=!fuel_dump&&!bingo_low()&&!fuel_low(); break;   // held ON only with BINGO and FUEL LO off (NATOPS 2.2.7)
 	case "radar": RADAR.sil=d>0?false:d<0?true:!RADAR.sil; break;   // clockwise to OPR, back to STBY
-	case "antiskid": antiskid=!antiskid; break;   // the ANTI SKID switch, ON or OFF (NATOPS 2.10.3.2)
+	case "antiskid": antiskid=!antiskid; break;
+	case "launch.bar": bar_switch=d>0?"retract":d<0?"extend":bar_switch==="extend"?"retract":"extend"; break;   // up to RETRACT, down to EXTEND; its key toggles   // the ANTI SKID switch, ON or OFF (NATOPS 2.10.3.2)
 	case "hook.bypass": hook_bypass=hook_bypass==="field"?"carrier":"field"; break;   // with the hook down the solenoid cannot hold FIELD, and update_gauges drops it straight back
 	case "baro": baro_set=THREE.MathUtils.clamp(baro_set+(d||1),2810,3100); break;   // the standby altimeter's knob, 0.01 inHg a click over the window's 28.10 to 31.00
 	case "index": if(!radalt_on){ if((d||1)>0){ radalt_on=true; radalt_greet=!!ownship.grounded; } } else if((d||1)<0&&law_index<=0) radalt_on=false; else law_index=index_step(law_index,d||1); break;   // the height indicator's knob (NATOPS 2.12.5.4.1): clockwise, the right button, powers the set and then raises the index; anticlockwise past 0 turns it off
@@ -8139,6 +8145,11 @@ let parking=false;   // the parking brake: forces the wheel-brake input while se
 // nothing below 10 kt; locked-wheel protection needs each main's wheel speed, which the core does
 // not model. OFF, the pedals get the full 3,000 psi: the sample says so, and the core blows the
 // main tyres braking at speed. Carrier operations fly it OFF (reset_ownship).
+// The LAUNCH BAR switch (#127, NATOPS 2.10.4), EXTEND or RETRACT: extended with weight on the wheels the bar
+// rides on the deck, and the crew can hook it over a shuttle; retracted, the core refuses the hook-up and
+// lifts a bar not yet in tension off it. The shuttle holds the bar down through the stroke and its springs
+// raise it as the jet flies off, whatever the switch says; the green L BAR follows the switch.
+let bar_switch="retract";
 let pulled=false;   // the same handle out to its detent without the turn: EMERG, the emergency brakes (2.10.3.3)
 let antiskid=true;
 function guarded(){ return antiskid&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
@@ -8450,7 +8461,7 @@ function recording_sample(){
 		surfaces:[out[STATE.stabilator]||0,out[STATE.stabilator+1]||0,out[STATE.flaperon]||0,out[STATE.flaperon+1]||0,out[STATE.rudder]||0,out[STATE.slat]||0],
 		master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, amraams:Math.max(0,ownship.amraam|0),
 		catapult:core_catapult, stroke:core_stroke, wire:ownship.trapped?(ownship.wire|0):0, waving:!!ownship.waving,
-		lights:!!ownship.lights, canopy:ownship.canopy??0, fold:ownship.fold??0, probe:ownship.probe??0, spool:ownship.spool??0,
+		lights:!!ownship.lights, bar:bar_switch==="extend", canopy:ownship.canopy??0, fold:ownship.fold??0, probe:ownship.probe??0, spool:ownship.spool??0,
 		damage:damage_words(out), ...(ejected?{eject:true}:{}), coach:hint_rows?[...hint_rows]:[],
 		...(due&&record_radio.length?{radio:record_radio.splice(0)}:{}), ...(due&&record_notices.length?{notice:record_notices.splice(0)}:{}) }:undefined;
 	if(own!=="gone") add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
@@ -8879,7 +8890,7 @@ if(DEV_MODE) (globalThis as any).dev_sky=(count=6)=>{   // dev: the brightest ca
 if(DEV_MODE) (globalThis as any).dev_hud=()=>hud_stack;   // dev (#186): the laid-out legend stacks, so a probe can assert an even pitch and no shared row
 if(DEV_MODE) (globalThis as any).dev_slot=()=>hint_rows;   // dev (#189): the coaching slot as the pilot sees it right now, not dev_comms' running log — the probes assert that a finished set takes its line down
 if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_flyby(+distance||30,!!burning); return "flyby at "+distance+" m"+(burning?" (boost)":""); };   // #80: audition the near-pass sound at any range from the console — a real miss inside 200 m is slightly tricky to arrange on demand   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlocked, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, throttle:ownship.throttle??0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlocked, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -9576,6 +9587,7 @@ function playback_own(pose,dt){
 	const wire=n("Wire",0); ownship.trapped=wire>0; ownship.wire=wire;
 	ownship.waving=n("Waving",0)>0;
 	const lights=n("Lights",-1); if(lights>=0) ownship.lights=lights>0;   // the master switch; the panel's knobs are not recorded
+	const bar=n("Bar",-1); if(bar>=0) bar_switch=bar>0?"extend":"retract";   // the LAUNCH BAR switch (#127); a recording from before it keeps the start's
 	ownship.canopyTarget=n("Canopy",ownship.canopyTarget??0); ownship.foldTarget=n("Fold",ownship.foldTarget??0); ownship.probeTarget=n("Probe",ownship.probeTarget??0);
 	fold_handle=ownship.foldTarget>0.5?"fold":(ownship.fold??0)>0.02?"spread":"lock";   // the recording carries the wings, not the handle
 	if(p.Master&&p.Master!==master) set_master(p.Master);
@@ -9894,7 +9906,7 @@ function fly_player(dt){
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_flag, reverted:!mc().one, held:wing_kept(), flap:flap_select,
-		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
+		launch:launch_flag, retract:bar_switch==="retract", override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
 		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
@@ -10245,7 +10257,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "foldswitch": f=st===ownship?(fold_handle==="fold"?1:fold_handle==="hold"?0.5:0):(st.foldTarget??0)>0.5?1:0; break;
 		case "parkbrake": f=(st===ownship&&parking)?1:0; break;
 		case "parkpull": f=(st===ownship&&(parking||pulled))?1:0; break;
-		case "barswitch": f=(st.barTarget??0)>0.5?1:0; break;
+		case "barswitch": f=(st===ownship?bar_switch==="extend":(st.barTarget??0)>0.5)?1:0; break;
 		case "probeswitch": f=(st.probeTarget??0)>0.5?1:0.5; break;   // EXTEND or RETRACT; the game has no emergency extension
 		case "altswitch": f=(st===ownship&&alt_radar)?1:0; break;
 		case "rejswitch": f=st===ownship?declutter/2:0; break;
@@ -10378,7 +10390,7 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	if(st===ownship && (fold_handle==="fold"||fold_handle==="hold") && st.speed>13) fold_set("spread");   // rolling for takeoff spreads folded wings before the airflow rips them...
 	if(st===ownship && fold_handle==="spread" && (st.fold??0)<=0.001 && st.speed>13) fold_handle="lock";   // ...and locks them once spread
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
-	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
+	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && bar_switch==="extend"))?1:0;   // the LAUNCH BAR switch lowers the bar with weight on the wheels; the shuttle holds it down through the stroke, and its springs raise it as the jet flies off — the real bar's retraction IS automatic
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
 	if(st===ownship&&steering<0){ const sp=Math.max(st.speed||0,0.3), rate=(ownship.gauges||{}).yaw||0;   // steering off (#36): the nosewheel castors, trailing the path its leg travels 5.4 m ahead of the mains
 		const target=THREE.MathUtils.clamp(Math.atan2(rate*5.4,sp),-_NWS,_NWS)*(st.squish??0);
@@ -10579,7 +10591,8 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
-	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
+	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }
+	bar_switch=st==="carrier"?"extend":"retract";   // a catapult start has its launch bar down on the shuttle (2.10.4); every other start has it up   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
 	flap_select=(st==="case2")?2:(st==="runway"||st==="carrier")?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
@@ -12540,7 +12553,7 @@ function net_frame(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
-		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
+		override:c?c.override:false, retract:bar_switch==="retract"&&!!ownship.grounded, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, visual:fox3_flag&&fox3_visual, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.line?helmet.pack(seeker_now.line):null };
 	// The step count rides the sample (#176): the server applies it for exactly
 	// the ticks the core integrated, so the acknowledged state and the marked
