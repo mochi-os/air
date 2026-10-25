@@ -68,7 +68,7 @@ FENCE_KILL = [(-90.2,-33.2,21.7,23.4,-0.4,1.1),(-48.2,-42.8,16.2,19.2,-0.4,1.1),
 # the two dome platforms (port waist + stern stbd): a white geodesic radome
 # fills the platform inside a black solid-fence bulwark. A geometric kill band
 # guts the dome's own mid-shell, so kill only DARK prims (the bulwark) in the
-# full box; the generated railing_ring stands in for it.
+# full box; the generated DOME_RAILS loop stands in for it.
 FENCE_KILL_DARK = [(54.1,57.9,-44.8,-41.1,-0.4,1.2),(-153.3,-148.5,23.0,28.3,-0.4,1.1)]
 # those two radome platforms' footprints (their DOME_KEEP boxes). The life-raft
 # detector clusters white material_37 near the rim, and a radome is white
@@ -685,24 +685,41 @@ def railing_run(p0,p1,base=0.0,H=0.9):
 def railing_ring(f0,f1,l0,l1,base=0.0,H=0.9):
     return np.concatenate([railing_run((f0,l0),(f1,l0),base,H), railing_run((f1,l0),(f1,l1),base,H),
                            railing_run((f1,l1),(f0,l1),base,H), railing_run((f0,l1),(f0,l0),base,H)])
+def railing_loop(points,base=0.0,H=0.9,spacing=1.4):
+    # a closed railing round a polygon: both rails along every side, posts walked
+    # along the perimeter at about `spacing` (railing_run would double them at each corner)
+    P=np.array(points+points[:1],dtype=np.float64); parts=[]
+    side=np.hypot(*np.diff(P,axis=0).T); total=side.sum()
+    for (f0,l0),(f1,l1),L in zip(P[:-1],P[1:],side):
+        ang=np.arctan2(l1-l0,f1-f0); mfa,mla=(f0+f1)/2,(l0+l1)/2
+        parts.append(box_tris(mfa,mla,base+H-0.02,L/2,0.028,0.028,ang))
+        parts.append(box_tris(mfa,mla,base+H*0.52,L/2,0.024,0.024,ang))
+    n=max(3,int(round(total/spacing))); at=np.cumsum(np.r_[0,side])
+    for k in range(n):
+        d=k*total/n; i=min(int(np.searchsorted(at,d,side='right'))-1,len(side)-1); t=(d-at[i])/side[i]
+        parts.append(box_tris(*(P[i]+(P[i+1]-P[i])*t),base+H/2,0.035,0.035,H/2))
+    return np.concatenate(parts)
+# The two radome platforms' railings stand on the platform and follow its edge 0.15 m
+# inboard, no further than 0.6 m beyond the dome (the port platform's outboard corners
+# are rounded, and a rectangle overhangs them). Measured from the built GLB by tracing
+# the platform edge out from the dome centre every 30 deg at platform height. fa,
+# pre-squash lat.
+DOME_RAILS=[([(57.69,-42.94),(57.97,-41.75),(57.14,-40.88),(56.0,-40.56),(54.86,-40.88),(54.03,-41.75),
+              (54.31,-42.94),(54.54,-43.82),(55.1,-44.55),(56.0,-44.86),(56.9,-44.55),(57.46,-43.82)],-1.483),
+            ([(-148.05,25.78),(-148.43,27.25),(-149.7,27.9),(-150.87,27.79),(-151.96,27.74),(-153.31,27.25),
+              (-153.69,25.78),(-153.31,24.31),(-152.28,23.25),(-150.87,23.08),(-149.46,23.24),(-148.43,24.31)],-2.16)]
 def deck_h(faq):   # deck surface height at this fa (flat cross-section at the rim height). v43
     faarr=[OUT[i][0] for i in range(NS)]   # raised the deck ~0.65 m, so flight-deck features
     i=int(np.clip(np.searchsorted(faarr,faq)-1,0,NS-2))   # (railings, ICCS) must sit ON it, not at h=0
     return (RIMH[i]+RIMH[2*NS-1-i])/2
-# flight-deck railings (island walkway + ammo-elevator rings): base on the raised deck. The
-# deck-edge/catwalk railings below keep their measured negative bases (the catwalk didn't rise).
+# flight-deck railings (island walkway + ammo-elevator rings): base on the raised deck. No
+# deck-edge railings: the catwalks they guarded die in the band clear, so the short runs
+# that once stood there hung off the hull with nothing beneath them.
 R=[railing_run((-89.37,22.58),(-33.76,22.58),deck_h(-61),0.9),
    railing_run((-33.76,22.58),(-33.76,19.2),deck_h(-34),0.9),
    railing_run((-89.37,22.58),(-89.37,19.2),deck_h(-89),0.9),
    railing_ring(-47.81,-43.15,16.63,18.81,deck_h(-45),0.9),
-   railing_ring(-60.82,-56.17,20.40,22.58,deck_h(-58),0.9),
-   railing_run((-121.3,-32.7),(-120.8,-31.5),-0.53,0.9),
-   railing_ring(-153.0,-148.8,23.3,28.0,-0.31,0.9),
-   railing_run((-83.4,-38.5),(-81.1,-38.5),-0.49,0.9),
-   railing_ring(54.4,57.6,-44.5,-41.4,-0.13,0.9),
-   railing_run((43.9,39.75),(45.5,39.75),-0.5,0.9),
-   railing_run((-116.1,36.1),(-115.7,36.1),-0.39,0.9),
-   railing_run((-72.6,-38.75),(-72.3,-38.75),-0.51,0.9)]
+   railing_ring(-60.82,-56.17,20.40,22.58,deck_h(-58),0.9)]+[railing_loop(p,base) for p,base in DOME_RAILS]
 RAILS=np.concatenate(R)
 RAILS[:,1]*=S_LAT   # railing sites were measured pre-squash; follow the deck
 
