@@ -269,29 +269,31 @@ describe('the state-driven switches', () => {
 const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
 const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 const crankfn = /\nfunction canopy_crank\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const saritrim = /\nconst SARI_TRIM=[^\n]*\n/.exec(source)?.[0] ?? ''
 const foldfn = /\nconst FOLD_HANDLE=[^\n]*\nlet fold_handle="lock";\nfunction fold_set\(handle\)\{[^\n]*\n(?:\/\/[^\n]*\n)*function fold_turn\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
   probeTarget?: number; lights?: boolean; parking?: boolean; alt_radar?: boolean; declutter?: number; fuel_dump?: boolean; sil?: boolean
   hook_bypass?: string; flap_select?: number; peak_g?: number; index?: number; on?: boolean; bingo?: boolean; fuellow?: boolean
-  exterior?: Partial<Panel>; handle?: string; fold?: number; gone?: boolean; essential?: boolean; armed?: boolean; canopy?: number
+  exterior?: Partial<Panel>; handle?: string; fold?: number; gone?: boolean; essential?: boolean; armed?: boolean; canopy?: number; trim?: number
 }
 interface Pressed {
   ownship: { canopyTarget: number; foldTarget: number; gearTarget: number; hookTarget: number; probeTarget: number; lights: boolean }
   parking: boolean; alt_radar: boolean; declutter: number; fuel_dump: boolean; hook_bypass: string; flap_select: number; flap_armed: number; sil: boolean; notices: string[]; masters: string[]; peak_g: number; index: number; on: boolean; greet: boolean; test: number
-  exterior: Panel; clicked: number; handle: string; sari: number; gone: boolean; cranked: boolean; armed: boolean
+  exterior: Panel; clicked: number; handle: string; sari: number; trim: number; pulled: number; gone: boolean; cranked: boolean; armed: boolean
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
-  if (!pressfn || !foldfn) throw new Error('pit_press or the fold handle not found in engine.ts')
+  if (!pressfn || !foldfn || !saritrim) throw new Error('pit_press, the fold handle or the standby attitude indicator\'s trim not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopy:state.canopy??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let canopy_gone=!!state.gone, cranked=false, seat_armed=state.armed??true; const buses={ essential:state.essential??true };
-    let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity;
+    let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity, sari_trim=state.trim??0, sari_pulled=-Infinity;
+    const D2R=Math.PI/180; ${saritrim}
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, glance=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
     ${pressfn} ${indexfn} ${foldfn} ${crankfn}
     fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
     pit_press(action, direction);
-    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle, sari:sari_clicked, gone:canopy_gone, cranked, armed:seat_armed };`)
+    return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle, sari:sari_clicked, trim:sari_trim, pulled:sari_pulled, gone:canopy_gone, cranked, armed:seat_armed };`)
   return run(action, direction, state, panel, strobe) as Pressed
 }
 
@@ -325,7 +327,7 @@ describe('the clickable switches', () => {
     expect(source).toMatch(/if\(e\.button===2\|\|e\.button===1\)\{ const r=right_press; right_press=null; if\(r&&Math\.abs\(e\.clientX-r\.x\)\+Math\.abs\(e\.clientY-r\.y\)<6\) pit_click\(e\); return; \}/)
     expect(source).toMatch(/if\(e\.button===2\)\{ if\(!playback\) pit_switch\(e\); return; \}/)   // a replay's switches are the recording's
     // a left click reaches the displays' bezel pushbuttons and then the switches only after the screens miss, ahead of the panel-point measurement
-    expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\t\{ const b=ddi_button_at\(e\.clientX,e\.clientY\); if\(b\)\{ if\(ddi_press\(b\.display,b\.pb\)\) screens_update\(\); return; \} \}[^\n]*\n\t\tif\(pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/)
+    expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\t\{ const b=ddi_button_at\(e\.clientX,e\.clientY\); if\(b\)\{ if\(ddi_press\(b\.display,b\.pb\)\) screens_update\(\); return; \} \}[^\n]*\n\t\tif\(!playback&&pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/) // and not in a replay, whose switches are the recording's
     expect(source).toMatch(/if\(hit\.action\) pit_press\(hit\.action,e\.button===2\?1:-1\);/)
   })
 
@@ -496,6 +498,18 @@ describe('the clickable switches', () => {
     expect(press('lights.test', 1).clicked).toBe(10) // the click's time on the pilot's clock
     expect(press('lights.test', -1).clicked).toBe(10)
     expect(press('sari.test', 0).sari).toBe(10) // the standby attitude indicator's TEST switch too
+  })
+
+  // NATOPS 25.2.4.2 items 2 and 3: the pull to cage knob turns the miniature airplane over +5° to -10° of
+  // pitch, and pulled it cages the gyro, held two seconds from a click as TEST is.
+  it('turn the standby attitude indicator\'s miniature airplane a degree a click, and pull its knob to cage', () => {
+    expect(press('sari.trim', 1).trim).toBe(1) // right, clockwise: up
+    expect(press('sari.trim', -1).trim).toBe(-1)
+    expect(press('sari.trim', 1, { trim: 5 }).trim).toBe(5) // its stops
+    expect(press('sari.trim', -1, { trim: -10 }).trim).toBe(-10)
+    expect(press('sari.trim', -1, { trim: 5 }).trim).toBe(4)
+    expect(press('sari.cage', 0).pulled).toBe(10) // the click's time on the pilot's clock
+    expect(press('sari.trim', 1).pulled).toBe(-Infinity)
   })
 
   it('hold the DUMP switch ON only with BINGO and FUEL LO off, and let it go OFF any time (NATOPS 2.2.7)', () => {
@@ -702,11 +716,44 @@ describe('the cockpit pointer', () => {
 
   it('looks for the target in the order a click does', () => {
     const order = (fn: string, marks: string[]) => marks.map((mark) => top(fn).indexOf(mark))
-    const hover = order('pit_hover', ['sb.alt.mesh', 'sb.adi.mesh', 'u.radalt.mesh', 'ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(x,y)', 'pit_target('])
-    const click = order('pit_click', ['u.alt.mesh', 'u.adi.mesh', 'pit_press("index"', 'ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(e.clientX,e.clientY)', 'if(pit_switch(e)) return;'])
+    const hover = order('pit_hover', ['ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(x,y)', 'pit_target('])
+    const click = order('pit_click', ['ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(e.clientX,e.clientY)', 'if(!playback&&pit_switch(e)) return;'])
     for (const [name, at] of [['hover', hover], ['click', click]] as const) {
       expect(at.every((k) => k > 0), `${name}: ${at}`).toBe(true)
       expect([...at].sort((a, b) => a - b), name).toEqual(at)
     }
+  })
+
+  // NATOPS 2.12.4, 2.12.5.4.1 and figure 25-1: the altimeter's baro set knob, the height indicator's knob and
+  // the attitude indicator's pull to cage knob and TEST switch sit on the panel outside their dials, where
+  // the model paints them. A click there works them and the pointer rings them; a dial works nothing.
+  it('works and rings the standby instruments\' knobs where they are painted, outside their dials', () => {
+    const g = new THREE.Group()
+    g.userData.switches = []
+    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const PIT_SPOT_RADIUS=')}${decl('const PIT_SPOTS=')}${decl('const STANDBY=')}${decl('const RADALT_SEAT=')}
+      ${decl('const _screen_at=')}${top('screen_of')} const PIT_CLICK_RADIUS=12, _click_p=new THREE.Vector3(), face_target=()=>null, shown=()=>true;
+      ${top('pit_target')} return { pit_target, screen_of, PIT_SPOTS, STANDBY, RADALT_SEAT };`)(THREE, { group: g }, eye(), 1280, 761) as {
+      pit_target: (e: { clientX: number; clientY: number }) => { action?: string; hold?: string } | null
+      screen_of: (local: THREE.Vector3, radius: number) => [number, number, number] | null
+      PIT_SPOTS: { action: string; at: number[]; r?: number; hold?: string }[]
+      STANDBY: Record<string, { y: number; z: number; r: number }>
+      RADALT_SEAT: { centre: number[]; r: number }
+    }
+    const at = (p: number[]) => { const s = lifted.screen_of(new THREE.Vector3(...p), 0) as number[]; return { clientX: s[0], clientY: s[1] } }
+    const dial = (name: string) => [6.207, lifted.STANDBY[name].y, lifted.STANDBY[name].z]
+    const knobs = [['baro', '', dial('alt'), lifted.STANDBY.alt.r], ['index', 'radalt.test', lifted.RADALT_SEAT.centre, lifted.RADALT_SEAT.r],
+      ['sari.trim', 'sari.cage', dial('adi'), lifted.STANDBY.adi.r], ['sari.test', '', dial('adi'), lifted.STANDBY.adi.r]] as const
+    for (const [action, hold, centre, radius] of knobs) {
+      const spot = lifted.PIT_SPOTS.find((k) => k.action === action)
+      expect(spot, action).toBeDefined()
+      const seat = (spot as { at: number[] }).at
+      expect(Math.hypot(seat[0] - centre[0], seat[1] - centre[1], seat[2] - centre[2]), `${action} outside its dial`).toBeGreaterThan(radius)
+      expect(spot?.r ?? 0.008, `${action} ringed small`).toBeLessThanOrEqual(0.0105)
+      const found = lifted.pit_target(at(seat))
+      expect(found?.action, action).toBe(action)
+      expect(found?.hold ?? '', action).toBe(hold)
+      expect(lifted.pit_target(at(centre)), `${action}'s dial`).toBeNull()
+    }
+    for (const fn of ['pit_click', 'pit_hover']) expect(top(fn), fn).not.toMatch(/userData\.standby|userData\.radalt|u\.standby|u\.radalt|\.alt\.mesh|\.adi\.mesh/)
   })
 })
