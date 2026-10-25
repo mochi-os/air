@@ -660,25 +660,30 @@ describe('the cockpit pointer', () => {
     expect(run(3, [lever]).box.max.x).toBeCloseTo(6.25, 6) // looked at again: with the panel gone, all of it
   })
 
-  it('drags the cockpit along with the pointer on both axes', () => {
+  it('drags the cockpit with the pointer on both axes, what it grabbed staying under it at any zoom', () => {
     const handler = /stage\.addEventListener\("pointermove",e=>\{ if\(!dragging\) return;[\s\S]*?\}, \{ signal \}\);/.exec(source)?.[0] ?? ''
     const compose = /camera\.quaternion\.copy\(ownship\.q\)\.multiply\(_headq\.setFromAxisAngle\(_yaxis,head_az\)\)\.multiply\(_pitq\.setFromAxisAngle\(_zaxis,head_el\+PIT_REST\)\)\.multiply\(CAMFIX\);/.exec(source)?.[0] ?? ''
     expect(handler, 'the drag handler').not.toBe('')
     expect(compose, 'the cockpit camera').not.toBe('')
-    // a point on the panel ahead, seen through the cockpit camera as update_camera turns it, before and after a drag
-    const drag = new Function('THREE', `const D2R=Math.PI/180; ${decl('const PIT_REST=')}${decl('const _headq=')}${decl('const CAMFIX=')}
+    // the point at the middle of the view, seen through the cockpit camera as update_camera turns it, before and
+    // after a drag: how many pixels it moves, on a 1280 by 761 view, at the cockpit's 72 degrees over the zoom
+    const drag = (zoom: number) => new Function('THREE', 'zoom', `const D2R=Math.PI/180, HW=1280, HH=761; ${decl('const PIT_REST=')}${decl('const _headq=')}${decl('const CAMFIX=')}
       let dragging=true, head_drag=true, drag_x=640, drag_y=380, press_moved=0, head_az=0, head_el=0, cam_az=0, cam_el=0, move=null;
       const latch=()=>{}, ownship={ q:new THREE.Quaternion() }, stage={ addEventListener:(type, f)=>{ move=f; } }, signal=null;
+      const camera=new THREE.PerspectiveCamera(72/zoom, HW/HH, 0.01, 10), cockpit_cam=camera;
       ${handler}
-      const camera=new THREE.PerspectiveCamera(60, 1280/761, 0.01, 10);
-      const seen=()=>{ ${compose} camera.updateMatrixWorld(true); const p=new THREE.Vector3(0.6,-0.1,0.05).project(camera); return [p.x, p.y]; };
-      return (dx, dy)=>{ const before=seen(); move({ clientX:drag_x+dx, clientY:drag_y+dy }); const after=seen(); return [after[0]-before[0], after[1]-before[1]]; };`)(THREE) as (dx: number, dy: number) => [number, number]
-    const right = drag(20, 0) // the pointer right: the panel follows it right
-    expect(right[0]).toBeGreaterThan(0)
-    expect(Math.abs(right[1])).toBeLessThan(right[0] / 4)
-    const down = drag(0, 20) // the pointer down: the panel follows it down (screen y up)
-    expect(down[1]).toBeLessThan(0)
-    expect(Math.abs(down[0])).toBeLessThan(-down[1] / 4)
+      ${compose} camera.updateMatrixWorld(true);
+      const grabbed=camera.getWorldDirection(new THREE.Vector3());
+      const seen=()=>{ ${compose} camera.updateMatrixWorld(true); const p=grabbed.clone().project(camera); return [p.x*HW/2, -p.y*HH/2]; };
+      return (dx, dy)=>{ const before=seen(); move({ clientX:drag_x+dx, clientY:drag_y+dy }); const after=seen(); return [after[0]-before[0], after[1]-before[1]]; };`)(THREE, zoom) as (dx: number, dy: number) => [number, number]
+    for (const zoom of [1, 4]) {
+      const right = drag(zoom)(20, 0) // the pointer 20 px right: the point it grabbed goes with it
+      expect(right[0], `${zoom}x right`).toBeCloseTo(20, 0)
+      expect(Math.abs(right[1]), `${zoom}x right`).toBeLessThan(1)
+      const down = drag(zoom)(0, 20) // and 20 px down
+      expect(down[1], `${zoom}x down`).toBeCloseTo(20, 0)
+      expect(Math.abs(down[0]), `${zoom}x down`).toBeLessThan(1)
+    }
   })
 
   it('maps a quad\'s texture coordinates to its corners in the world', () => {
