@@ -1903,14 +1903,14 @@ describe('the UFC pushbuttons', () => {
 
   it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
     expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
-    expect(source).toMatch(/if\(pit\)\{ ifei_update\(stale\); ufc_update\(stale\); \}/)
+    expect(source).toMatch(/if\(pit\)\{ if\(stale\) faces_sharpen\(dpr\); ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
     expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
     expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=glance; pit_press\("atc",0\); \}/)
     expect(source).toMatch(/case "atc": if\(atc_on\)\{ atc_on=false; atc_flash=-Infinity; \} else \{ const mode=atc_engage\(\); if\(mode\)\{ atc_on=true;/)
     expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
     expect(source).toMatch(/ufc\.func=""; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true; Object\.assign\(radios,radios_tuned\(\)\); emcon_set\(false\);/)
-    expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\); {3}\/\/ transparent: the painted keypad/)
+    expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:f\.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\); {3}\/\/ transparent: the painted keypad/)
   })
 })
 

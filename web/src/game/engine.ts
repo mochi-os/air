@@ -1966,6 +1966,40 @@ function build_indexer(g){
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
 	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_ifei(g); build_ufc(g); build_faces(g); }
+// A drawn face's resolution follows its size on screen (#121), as the DDIs' does: face_canvas makes its canvas and
+// texture at the face's own pixels, the units its drawing works in, and face_sharpen, every 120 ms in the pit, steps
+// the canvas to the screen pixels the face covers, with the DDIs' hysteresis, and back to its own pixels once it is
+// off screen. A step copies the old picture across, so the face never shows blank, and the face's owner redraws it
+// (sharp_faces); every drawing starts at face_context, which scales the context to the canvas.
+const FACE_STEPS=[1,2,4], FACE_LIMIT=2048;   // FACE_LIMIT: the most canvas pixels a side
+function face_canvas(width,height){ const canvas=document.createElement("canvas"); canvas.width=width; canvas.height=height;
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;   // the default filter would REGENERATE mipmaps on every upload
+	return { canvas, tex, pixels:[width,height], scale:1 }; }
+function face_context(f){ const x=f.canvas.getContext("2d"); x.setTransform(f.scale,0,0,f.scale,0,0); return x; }
+// face_extent: the device pixels a face's quad spans across and up on screen, or null when none of it is on screen.
+const _face_corners=[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()];
+function face_extent(mesh,dpr){ const g=mesh.geometry; if(!g.boundingBox) g.computeBoundingBox(); const b=g.boundingBox, [a,c,d,e]=_face_corners;
+	a.set(b.min.x,b.min.y,0); c.set(b.max.x,b.min.y,0); d.set(b.min.x,b.max.y,0); e.set(b.max.x,b.max.y,0);
+	let left=Infinity, right=-Infinity, low=Infinity, high=-Infinity;
+	for(const v of _face_corners){ v.applyMatrix4(mesh.matrixWorld).project(cockpit_cam); if(v.z>1) return null;   // behind the eye
+		left=Math.min(left,v.x); right=Math.max(right,v.x); low=Math.min(low,v.y); high=Math.max(high,v.y); }
+	if(right<-1||left>1||high<-1||low>1) return null;
+	return [Math.hypot((c.x-a.x)*HW,(c.y-a.y)*HH)*0.5*dpr, Math.hypot((d.x-a.x)*HW,(d.y-a.y)*HH)*0.5*dpr]; }
+// face_step: the scale for a face drawn at scale that wants need canvas pixels to each of its own, at most most.
+function face_step(scale,need,most){ if(need<=scale*1.15&&need>=scale*0.45) return scale;
+	return Math.min(FACE_STEPS.find(v=>v>=need)??FACE_STEPS[FACE_STEPS.length-1],Math.max(1,most)); }
+// face_sharpen: a face stepped to its size on screen; true when it stepped, and wants redrawing.
+function face_sharpen(f,dpr){ const e=face_extent(f.mesh,dpr), [w,h]=f.pixels;
+	const next=face_step(f.scale,e?Math.max(e[0]/w,e[1]/h):0,FACE_LIMIT/Math.max(w,h)); if(next===f.scale) return false;
+	const canvas=document.createElement("canvas"); canvas.width=Math.round(w*next); canvas.height=Math.round(h*next);
+	canvas.getContext("2d").drawImage(f.canvas,0,0,canvas.width,canvas.height);   // the old picture until the owner redraws
+	f.canvas=canvas; f.scale=next; f.tex.dispose(); f.tex.image=canvas; f.tex.needsUpdate=true; return true; }   // WebGL2 canvas textures get immutable storage: a new size needs a new allocation
+// sharp_faces: every drawn face but the DDIs, named, with what its owner does to redraw it once it has stepped.
+function sharp_faces(u){ return [["ufc",u.ufc,()=>{ ufc_dirty=true; }],["ifei",u.ifei,()=>{ ifei_dirty=true; }],["radalt",u.radalt,f=>{ f.last=0; }],["rwr",u.rwr,f=>{ f.last=0; }],
+	["brake",u.brake,f=>{ f.psi=null; }],["cabin",u.cabin,f=>{ f.feet=null; }],["clock",u.clock,clock_draw],
+	...["asi","alt","vsi","adi"].map(k=>[k,u.standby&&u.standby[k],()=>{ u.standby.last=0; }]),
+	...Object.entries(u.faces||{}).map(([k,f])=>[k,f,()=>{ faces_key=""; }])].filter(([,f])=>f); }
+function faces_sharpen(dpr){ for(const [,f,redraw] of sharp_faces(ownship.group.userData)) if(face_sharpen(f,dpr)) redraw(f); }
 // The faces (faces.ts): panels the model paints too coarsely to read or as an earlier aircraft's, drawn over it as FO-5
 // draws them, each seated on the panel it replaces - its centre, the panel's normal toward the pilot and its up, and
 // its size in metres, measured on the model (dev_pick). The master arm panel beside the left DDI and the emergency
@@ -1985,11 +2019,10 @@ function build_faces(g){
 	if(g.userData.faces&&Object.values(g.userData.faces).every(f=>f.mesh.parent===g)) return;
 	const built={};
 	for(const [name,seat] of Object.entries(FACE_SEATS)){ const face=faces.FACES[name];
-		const canvas=document.createElement("canvas"); canvas.width=face.width; canvas.height=face.height;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(seat.size[0],seat.size[1]), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:name==="emergency", side:THREE.DoubleSide }));
+		const f=face_canvas(face.width,face.height);
+		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(seat.size[0],seat.size[1]), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:name==="emergency", side:THREE.DoubleSide }));
 		seat_pose(mesh,seat,0.002); mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); g.add(mesh);
-		built[name]={ mesh, canvas, tex, face }; }
+		built[name]={ mesh, ...f, face }; }
 	const mark=new THREE.Mesh(new THREE.CircleGeometry(0.0035,16), new THREE.MeshBasicMaterial({ color:0xf4f4ec, toneMapped:false, side:THREE.DoubleSide }));   // the SELECT JETT knob's position mark
 	{ const R=new THREE.Vector3(...JETTISON_MARK.right), U=new THREE.Vector3(...JETTISON_MARK.up), N=new THREE.Vector3().crossVectors(R,U);
 		mark.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(R,U,N)); mark.userData.overlay=true; mark.layers.set(LAYER_OWN); g.add(mark); }
@@ -2001,7 +2034,7 @@ function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:
 	dispenser:suite.dispenser, jammer:suite.jammer, indicator:countermeasures.indicator(suite.receiver,sim_time) }; }
 function faces_update(){ const u=ownship.group.userData; if(!u.faces) return;
 	const shown=faces_shown(), key=JSON.stringify(shown)+arms.select; if(key===faces_key) return; faces_key=key;
-	for(const [name,f] of Object.entries(u.faces)){ faces.draw(name,f.canvas.getContext("2d"),shown); f.tex.needsUpdate=true; }
+	for(const [name,f] of Object.entries(u.faces)){ faces.draw(name,face_context(f),shown); f.tex.needsUpdate=true; }
 	if(u.jettison){ const J=JETTISON_MARK, a=J.angles[arms.select]*D2R;
 		u.jettison.position.set(...J.centre).addScaledVector(_v.set(...J.right),Math.sin(a)*J.radius).addScaledVector(_v.set(...J.up),Math.cos(a)*J.radius); } }
 // face_target: the face control under the click ray, as a switch's click target is found - the point on the face,
@@ -2031,17 +2064,16 @@ function build_standby(g){
 	if(g.userData.standby&&g.userData.standby.asi.mesh.parent) return;
 	const faces={};
 	for(const name of ["asi","alt","vsi","adi"]){ const seat=STANDBY[name];
-		const canvas=document.createElement("canvas"); canvas.width=canvas.height=256;
-		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), gauge_material(tex));
+		const f=face_canvas(256,256);
+		const mesh=new THREE.Mesh(new THREE.CircleGeometry(seat.r,48), gauge_material(f.tex));
 		surface_pose(mesh,STANDBY.x,0,seat.y,seat.z); mesh.layers.set(LAYER_OWN); mesh.name=name+"face"; g.add(mesh);
-		faces[name]={ mesh, canvas, tex }; }
+		faces[name]={ mesh, ...f }; }
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
 	const caged=sari_caged();
 	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||caged,sari_trim);
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
-function face_start(f,colour){ const x=f.canvas.getContext("2d"); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
+function face_start(f,colour){ const x=face_context(f); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
 	x.strokeStyle="#e8e8e0"; x.fillStyle="#e8e8e0"; x.lineWidth=2; x.textAlign="center"; x.textBaseline="middle"; return x; }
 function face_needle(x,angle,length,width){ x.save(); x.translate(STANDBY_C,STANDBY_C); x.rotate(angle);   // angle clockwise from twelve o'clock
@@ -2136,13 +2168,12 @@ function adi_face(f,pitch,bank,yaw=0,slip=0,test=false,off=false,trim=0){ const 
 const RWR_FACE={ x:6.207, y:0.177, z:0.277, r:0.042 };
 function build_rwr(g){
 	if(g.userData.rwr&&g.userData.rwr.mesh.parent) return;
-	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RWR_FACE.r,36), new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+	const f=face_canvas(160,160);
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RWR_FACE.r,36), new THREE.MeshBasicMaterial({ map:f.tex, side:THREE.DoubleSide, toneMapped:false }));
 	surface_pose(mesh,RWR_FACE.x,0,RWR_FACE.y,RWR_FACE.z); mesh.layers.set(LAYER_OWN); g.add(mesh);
-	g.userData.rwr={ mesh, canvas, tex, last:0, count:0 };
+	g.userData.rwr={ mesh, ...f, last:0, count:0 };
 	rwr_draw(g.userData.rwr); }
-function rwr_draw(w){ const x=w.canvas.getContext("2d");
+function rwr_draw(w){ const x=face_context(w);
 	x.fillStyle="#0b120d"; x.fillRect(0,0,160,160); x.globalAlpha=1; x.textBaseline="middle";
 	ew_draw(x,80,80,68,11); w.count=RWR.contacts.length; w.tex.needsUpdate=true; }
 // The standby magnetic compass (NATOPS 2.12.9, FO-5 item 19) is the model's own:
@@ -2152,8 +2183,10 @@ function rwr_draw(w){ const x=w.canvas.getContext("2d");
 // lit, then in its colour, as the real backlit lenses read. Annunciator text
 // is English by policy. lamp_set drives either kind of lamp - a lens by its
 // painted state, a plain quad by its opacity.
+const LEGEND_DENSITY=8000;   // a lens's canvas pixels per metre of its height at the least (#121): what the glareshield's lenses cover at zoom 4 on a 1440-line screen
 function legend(text,colour,w=0.026,h=0.010){
-	const make=(on)=>{ const c=document.createElement("canvas"); c.width=160; c.height=64; const x=c.getContext("2d");
+	const scale=Math.max(1,LEGEND_DENSITY*h/64);   // the legend is laid out on 160 x 64
+	const make=(on)=>{ const c=document.createElement("canvas"); c.width=Math.round(160*scale); c.height=Math.round(64*scale); const x=c.getContext("2d"); x.scale(scale,scale);
 		x.fillStyle=on?"#262826":"#141614"; x.fillRect(0,0,160,64);
 		x.fillStyle=on?colour:"#3a3c38"; x.font="bold 24px monospace"; x.textAlign="center"; x.textBaseline="middle";
 		const lines=text.split("\n"); lines.forEach((t,i)=>x.fillText(t,80,32+(i-(lines.length-1)/2)*26));
@@ -2428,18 +2461,17 @@ function surface_pose(mesh,x,tilt,cy,cz){
 const RADALT_SEAT={ centre:[6.222,0.010,0.285], normal:[-0.762,0.503,-0.408], up:[0.615,0.761,-0.209], r:0.0185 };
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
-	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RADALT_SEAT.r,36), gauge_material(tex));
+	const f=face_canvas(160,160);
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(RADALT_SEAT.r,36), gauge_material(f.tex));
 	const N=new THREE.Vector3(...RADALT_SEAT.normal).normalize(), Y=new THREE.Vector3(...RADALT_SEAT.up).normalize(), X=new THREE.Vector3().crossVectors(Y,N).normalize();
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
 	mesh.position.set(...RADALT_SEAT.centre).addScaledVector(N,0.001);   // over the painted dial, under its cover glass
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
 	g.add(mesh);
-	g.userData.radalt={ mesh, canvas, tex, last:0 };
+	g.userData.radalt={ mesh, ...f, last:0 };
 	radalt_draw(g.userData.radalt, 1e9, law_index, radalt_inhibited(), false); }
 function radalt_draw(r, agl, index, silent, test){   // index: the low-altitude setting the aural fires on (law_index), so the face and the warning agree; silent: the set off or inhibited by radar silence (2.12.5, #29); test: its push-to-test BIT running
-	const x=r.canvas.getContext("2d"), W=160, C=80;
+	const x=face_context(r), W=160, C=80;
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
 	x.font="16px monospace"; x.textAlign="center"; x.textBaseline="middle";
@@ -2473,17 +2505,16 @@ function radalt_draw(r, agl, index, silent, test){   // index: the low-altitude 
 const BRAKE_SEAT={ centre:[6.162,-0.038,-0.342], normal:[-0.779,0.449,0.437], up:[0.530,0.847,0.047], r:0.0165 };
 function build_brake(g){
 	if(g.userData.brake&&g.userData.brake.mesh.parent) return;
-	const canvas=document.createElement("canvas"); canvas.width=canvas.height=128;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(BRAKE_SEAT.r,36), gauge_material(tex));
+	const f=face_canvas(128,128);
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(BRAKE_SEAT.r,36), gauge_material(f.tex));
 	const N=new THREE.Vector3(...BRAKE_SEAT.normal).normalize(), up=new THREE.Vector3(...BRAKE_SEAT.up), Y=up.addScaledVector(N,-up.dot(N)).normalize(), X=new THREE.Vector3().crossVectors(Y,N).normalize();
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
 	mesh.position.set(...BRAKE_SEAT.centre).addScaledVector(N,0.001);   // over the painted dial, under its cover glass
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN);
 	g.add(mesh);
-	g.userData.brake={ mesh, canvas, tex, psi:null };
+	g.userData.brake={ mesh, ...f, psi:null };
 	brake_draw(g.userData.brake, brake_accumulator); }
-function brake_draw(b, psi){ const x=b.canvas.getContext("2d"), W=128, C=64, P=C+22, R=50;   // P: the pointer's pivot, low in the window
+function brake_draw(b, psi){ const x=face_context(b), W=128, C=64, P=C+22, R=50;   // P: the pointer's pivot, low in the window
 	const angle=p=>((p/1000-3)*45-90)*D2R;   // 3,000 psi straight up, 45° a thousand
 	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
 	x.strokeStyle="#c02020"; x.lineWidth=4; x.beginPath(); x.arc(C,P,R-2,angle(1000),angle(2000)); x.stroke();   // the redline arc
@@ -2505,13 +2536,12 @@ function seat_pose(mesh,seat,lift){ const N=new THREE.Vector3(...seat.normal).no
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N)); mesh.position.set(...seat.centre).addScaledVector(N,lift); }
 function build_cabin(g){
 	if(g.userData.cabin&&g.userData.cabin.mesh.parent) return;
-	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.CircleGeometry(CABIN_SEAT.r,40), gauge_material(tex));
+	const f=face_canvas(160,160);
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(CABIN_SEAT.r,40), gauge_material(f.tex));
 	seat_pose(mesh,CABIN_SEAT,0.001); mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); g.add(mesh);
-	g.userData.cabin={ mesh, canvas, tex, feet:null };
+	g.userData.cabin={ mesh, ...f, feet:null };
 	cabin_draw(g.userData.cabin,0); }
-function cabin_draw(c,feet){ const x=c.canvas.getContext("2d"), W=160, C=80, R=76;
+function cabin_draw(c,feet){ const x=face_context(c), W=160, C=80, R=76;
 	const angle=f=>(90+THREE.MathUtils.clamp(f,0,50000)/1000*6)*D2R;   // canvas angle: 0 ft straight down
 	x.fillStyle="#1b1d1b"; x.fillRect(0,0,W,W); x.strokeStyle="#e4e4dc"; x.fillStyle="#e4e4dc";
 	for(let k=0;k<=50;k++){ const a=angle(k*1000), long=k%5===0, r=long?R-12:R-6;
@@ -2529,14 +2559,13 @@ const CLOCK_SEAT={ centre:[6.236,-0.095,0.057], normal:[-0.958,0.276,-0.021], up
 const CLOCK_TURN=new THREE.Quaternion(), CLOCK_AXIS=new THREE.Vector3(0,0,1);
 function build_clock(g){
 	if(g.userData.clock&&g.userData.clock.mesh.parent) return;
-	const canvas=document.createElement("canvas"); canvas.width=canvas.height=128;
-	const x=canvas.getContext("2d"), C=64;
-	x.clearRect(0,0,128,128); x.fillStyle="#f2f2ea"; x.fillRect(C-1.5,C-46,3,52);   // the hand, from a stub below the hub to its arrowhead
-	x.beginPath(); x.moveTo(C,C-60); x.lineTo(C-6,C-46); x.lineTo(C+6,C-46); x.closePath(); x.fill();
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2*CLOCK_SEAT.r,2*CLOCK_SEAT.r), new THREE.MeshBasicMaterial({ map:tex, transparent:true, depthWrite:false, toneMapped:false, side:THREE.DoubleSide }));
+	const f=face_canvas(128,128);
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2*CLOCK_SEAT.r,2*CLOCK_SEAT.r), new THREE.MeshBasicMaterial({ map:f.tex, transparent:true, depthWrite:false, toneMapped:false, side:THREE.DoubleSide }));
 	seat_pose(mesh,CLOCK_SEAT,0.002); mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); g.add(mesh);
-	g.userData.clock={ mesh, base:mesh.quaternion.clone() }; }
+	g.userData.clock={ mesh, ...f, base:mesh.quaternion.clone() }; clock_draw(g.userData.clock); }
+function clock_draw(ck){ const x=face_context(ck), C=64;
+	x.clearRect(0,0,128,128); x.fillStyle="#f2f2ea"; x.fillRect(C-1.5,C-46,3,52);   // the hand, from a stub below the hub to its arrowhead
+	x.beginPath(); x.moveTo(C,C-60); x.lineTo(C-6,C-46); x.lineTo(C+6,C-46); x.closePath(); x.fill(); ck.tex.needsUpdate=true; }
 // DDI/AMPCD screens (#99): each display gets a canvas quad on the dark screen
 // the pilot sees, drawn by the shared page renderers below. left/right are the
 // monochrome DDIs, center the colour-capable AMPCD. The visible screens are
@@ -2993,8 +3022,7 @@ function spin_draw(x,out){ const direction=Math.sign(out[STATE.spin]||0), engage
 		x.lineWidth=3; x.beginPath(); x.moveTo(tip,236); x.lineTo(base,196); x.lineTo(base,208); x.lineTo(end,208); x.lineTo(end,264); x.lineTo(base,264); x.lineTo(base,276); x.closePath(); x.stroke();
 		x.font="24px monospace"; x.fillText("STICK",(base+end)/2,222); x.fillText(direction<0?"LEFT":"RIGHT",(base+end)/2,250); x.lineWidth=2; }
 	x.font="24px monospace"; x.fillText("\u03b1 "+((out[STATE.alpha]||0)/D2R).toFixed(1),256,340); }   // i18n-format-ok: canvas-drawn instrument readout, fixed-format like the real display
-const DDI_STEPS=[256,512,1024];
-const _sv1=new THREE.Vector3(), _sv2=new THREE.Vector3();
+const DDI_STEPS=[256,512,1024,2048];
 let screens_last=0;
 let repeat="";   // HUD-view corner repeater (#12): "" off, else the display it shows
 function repeat_size(){ return Math.round(Math.min(HW,HH)*0.30); }
@@ -3012,20 +3040,18 @@ function screens_update(){
 		if(!pit&&sc.display!==rep) continue;   // repeating: only the shown display spends
 		{ const st=ddi_state[sc.display];
 			if(!stale&&!(st&&!st.menu&&DDI_PAGES[st.page]&&DDI_PAGES[st.page].animated)) continue; }
-		// variable resolution: the canvas follows the consumer — the quad's
-		// projected on-screen height in the pit (stepped, with hysteresis
-		// against zoom flutter), the panel's size when repeating
+		// variable resolution: the canvas follows the consumer — the longer of the
+		// quad's projected sides in the pit (stepped, with hysteresis against zoom
+		// flutter, and the smallest step off screen), the panel's size when repeating
 		let px;
-		if(pit){ _sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-			_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-			px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr; }
+		if(pit){ const e=face_extent(sc.mesh,dpr); px=e?Math.max(e[0],e[1]):0; }
 		else px=repeat_size()*dpr;
 		const cur=sc.canvas.width;
-		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
+		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||DDI_STEPS[DDI_STEPS.length-1];
 			if(want!==cur){ sc.canvas.width=sc.canvas.height=want;
 				sc.tex.dispose(); } }   // WebGL2 canvas textures get immutable texStorage2D storage at first upload; without a dispose a resized canvas texSubImage2Ds into one corner of the old allocation and the rest of the face keeps stale texels
 		ddi_blit(sc); }
-	if(pit){ ifei_update(stale); ufc_update(stale); } }   // the IFEI and the UFC share the 120 ms economy; a button press redraws at once through their dirty flags
+	if(pit){ if(stale) faces_sharpen(dpr); ifei_update(stale); ufc_update(stale); } }   // the IFEI and the UFC share the 120 ms economy; a button press redraws at once through their dirty flags
 // Pages may declare optional handlers beyond draw: press(pb,display) for
 // page-owned bezel buttons, and range(direction)/reset() which the DDI view
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
@@ -4058,12 +4084,11 @@ function build_ifei(g){
 	const w=IFEI_FACE.z[1]-IFEI_FACE.z[0], h=IFEI_FACE.y[1]-IFEI_FACE.y[0], y=(IFEI_FACE.y[0]+IFEI_FACE.y[1])/2, z=(IFEI_FACE.z[0]+IFEI_FACE.z[1])/2;
 	const box={ lo:new THREE.Vector3(6.20,IFEI_FACE.y[0],IFEI_FACE.z[0]), hi:new THREE.Vector3(6.25,IFEI_FACE.y[1],IFEI_FACE.z[1]) };   // the fit finds the face's exact depth and lean
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
-	const canvas=document.createElement("canvas"); canvas.width=Math.round(w*IFEI_SCALE); canvas.height=Math.round(h*IFEI_SCALE);
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted buttons and legends show through, only the windows are drawn
+	const f=face_canvas(Math.round(w*IFEI_SCALE),Math.round(h*IFEI_SCALE));
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted buttons and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.211,tilt,y,z);
 	g.add(mesh);
-	g.userData.ifei={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
+	g.userData.ifei={ mesh, ...f, width:w, height:h, at:[y,z,w] };
 	ifei_dirty=true; ifei_update(true); }
 function ifei_button_at(point){ const p=ownship.group.worldToLocal(point.clone());   // the painted pushbutton nearest a click on the unit, or null
 	let best=null, bd=IFEI_RADIUS*IFEI_RADIUS;
@@ -4074,7 +4099,7 @@ function ifei_click(button,hold){
 	if(next.bingo!==fuel_state.bingo) bingo_set(next.bingo);
 	ifei_state={ ...next, bingo:fuel_state.bingo }; ifei_dirty=true; ifei_update(true); }
 function ifei_update(stale){ const u=ownship.group.userData.ifei; if(!u||!(ifei_dirty||stale)) return; ifei_dirty=false;
-	const x=u.canvas.getContext("2d"), f=ifei_current(), W=u.canvas.width, H=u.canvas.height;
+	const x=face_context(u), f=ifei_current(), [W,H]=u.pixels;
 	const rect=(win)=>({ l:(win.z[0]-IFEI_FACE.z[0])*IFEI_SCALE, t:(IFEI_FACE.y[1]-win.y[1])*IFEI_SCALE, w:(win.z[1]-win.z[0])*IFEI_SCALE, h:(win.y[1]-win.y[0])*IFEI_SCALE });
 	const lit=lighting.mode==="nite"?"#5cf08a":"#eef2ee", dim=lighting.mode==="nite"?"#3fae62":"#aab2ac";   // DAY white, NITE green (2.6.2.6)
 	const face=(r)=>{ const k=Math.min(r.w,r.h)*0.08; x.fillStyle="#040605"; x.beginPath(); x.roundRect(r.l,r.t,r.w,r.h,k); x.fill(); };
@@ -4342,19 +4367,18 @@ function build_ufc(g){
 	const y=(UFC_FACE.y[0]+UFC_FACE.y[1])/2, z=(UFC_FACE.z[0]+UFC_FACE.z[1])/2, w=UFC_FACE.z[1]-UFC_FACE.z[0], h=UFC_FACE.y[1]-UFC_FACE.y[0];
 	const box={ lo:new THREE.Vector3(6.12,y-h/2,z-w/2), hi:new THREE.Vector3(6.16,y+h/2,z+w/2) };   // the face reads at x≈6.13-6.14 with a lean of a few degrees; the fit finds both
 	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
-	const canvas=document.createElement("canvas"); canvas.width=UFC_W; canvas.height=UFC_H;
-	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
+	const f=face_canvas(UFC_W,UFC_H);
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
 	surface_pose(mesh,fit?fit.x:6.138,tilt,y,z);
 	g.add(mesh);
-	g.userData.ufc={ mesh, canvas, tex, width:w, height:h, at:[y,z,w] };
+	g.userData.ufc={ mesh, ...f, width:w, height:h, at:[y,z,w] };
 	ufc_dirty=true; ufc_update(true); }
 // ufc_update redraws when the face changes: a press marks it dirty, and the flash,
 // the blink and the equipment states are caught by comparing the face each tick.
 function ufc_update(stale){ const u=ownship.group.userData.ufc; if(!u) return;
 	const now=performance.now()/1000, face=ufc_face(ufc,ufc_live(),now), key=JSON.stringify(face);
 	if(!(ufc_dirty||stale)&&key===ufc_last) return; ufc_dirty=false; ufc_last=key;
-	const x=u.canvas.getContext("2d"); x.clearRect(0,0,UFC_W,UFC_H);
+	const x=face_context(u); x.clearRect(0,0,UFC_W,UFC_H);
 	const px=(z)=>(z-UFC_FACE.z[0])/u.width*UFC_W, py=(y)=>(UFC_FACE.y[1]-y)/u.height*UFC_H;   // panel point -> canvas pixel
 	const window_=(y0,y1,z0,z1,text,align)=>{ const l=px(z0), t=py(y1), w=px(z1)-l, h=py(y0)-t;
 		x.fillStyle="#0a140a"; x.fillRect(l,t,w,h);
@@ -9359,7 +9383,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		mount:(()=>{ const b=u.indexerGroup; if(!b) return null; const v=new THREE.Vector3(); b.children[1].getWorldPosition(v); v.project(cockpit_cam);
 			return { px:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)], at:b.position.toArray().map(n=>+n.toFixed(3)), low:u.indexlow }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		outline:(u.outline||[]).map(p=>p.map(n=>+n.toFixed(3))),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-		faces:["left","right","center"].map(d=>d+":"+(ddi_state[d].menu||ddi_state[d].page)), px:(u.screens||[]).map(sc=>sc.canvas.width),
+		faces:["left","right","center"].map(d=>d+":"+(ddi_state[d].menu||ddi_state[d].page)), px:(u.screens||[]).map(sc=>sc.canvas.width), scales:Object.fromEntries(sharp_faces(u).map(([name,f])=>[name,f.scale])),
 		rects:(u.screens||[]).map(sc=>{ const m=sc.mesh, v=new THREE.Vector3(), w=(m.geometry as THREE.PlaneGeometry).parameters.width/2, h=sc.height/2;   // projected quad corners (css px, pilot's view) — aims headless bezel clicks
 			const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 			return { tl:p(-w,h), br:p(w,-h) }; }),
