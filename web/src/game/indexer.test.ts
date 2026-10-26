@@ -77,7 +77,7 @@ describe('the AOA indexer on the modeled unit', () => {
     const g = new THREE.Group()
     g.userData = { glass: { x: 6.3, y: 0.6, hw: 0.08, hh: 0.06 }, eye: { x: 5.6, y: 0.66, z: 0 }, outline }
     new Function('THREE', 'g', `const LAYER_OWN=2, INDEXER_TEST="", noop=()=>{};
-      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_bezels=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
+      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_bezels=noop, build_centre=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
       ${constants} ${lift('build_indexer')} build_indexer(g);`)(THREE, g)
     g.updateMatrixWorld(true)
     return g.userData.indexerGroup as THREE.Group
@@ -797,8 +797,8 @@ describe('the cockpit pointer', () => {
 
   it('looks for the target in the order a click does', () => {
     const order = (fn: string, marks: string[]) => marks.map((mark) => top(fn).indexOf(mark))
-    const hover = order('pit_hover', ['ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(x,y)', 'pit_target('])
-    const click = order('pit_click', ['ifei_button_at', 'ufc_button_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(e.clientX,e.clientY)', 'if(!playback&&pit_switch(e)) return;'])
+    const hover = order('pit_hover', ['ifei_button_at', 'ufc_key_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(x,y)', 'pit_target('])
+    const click = order('pit_click', ['ifei_button_at', 'ufc_key_at', 'l.caution', 'list.map(sc=>sc.mesh)', 'ddi_button_at(e.clientX,e.clientY)', 'if(!playback&&pit_switch(e)) return;'])
     for (const [name, at] of [['hover', hover], ['click', click]] as const) {
       expect(at.every((k) => k > 0), `${name}: ${at}`).toBe(true)
       expect([...at].sort((a, b) => a - b), name).toEqual(at)
@@ -811,7 +811,7 @@ describe('the cockpit pointer', () => {
   it('works and rings the standby instruments\' knobs where they are painted, outside their dials', () => {
     const g = new THREE.Group()
     g.userData.switches = []
-    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const DDI_BUTTON=')}${decl('const BEZEL=')}${decl('const DDI_KNOBS=')}${decl('const DDI_ROCKERS=')}${top('display_spots')}${decl('const PIT_SPOT_RADIUS=')}${decl('const PIT_SPOTS=')}${decl('const STANDBY=')}${decl('const RADALT_SEAT=')}
+    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const DDI_BUTTON=')}${decl('const BEZEL=')}${decl('const DDI_KNOBS=')}${decl('const DDI_ROCKERS=')}${top('display_spots')}${decl('const CENTRE=')}${decl('const CENTRE_KEYS=')}${decl('const CENTRE_KNOBS=')}${decl('const CENTRE_TOGGLES=')}${decl('const CENTRE_LEVER=')}${top('centre_point')}${top('centre_seat')}${top('centre_spots')}${decl('const PIT_SPOT_RADIUS=')}${decl('const PIT_SPOTS=')}${decl('const STANDBY=')}${decl('const RADALT_SEAT=')}
       ${decl('const _screen_at=')}${top('screen_of')} const PIT_CLICK_RADIUS=12, _click_p=new THREE.Vector3(), face_target=()=>null, shown=()=>true;
       ${top('pit_target')} return { pit_target, screen_of, PIT_SPOTS, STANDBY, RADALT_SEAT };`)(THREE, { group: g }, eye(), 1280, 761) as {
       pit_target: (e: { clientX: number; clientY: number }) => { action?: string; hold?: string } | null

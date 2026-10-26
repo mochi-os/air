@@ -1503,9 +1503,9 @@ describe('the gauges the pages read', () => {
 
 // The UFC (#15, NATOPS 2.13.5): ufc_face is what the windows show for a state and
 // the equipment it reads; ufc_press is one pushbutton against the radios, EMCON and
-// stand-ins for the index, the warning latch and the actions it fires;
-// ufc_button_at maps a panel point to the painted button under it.
-const ufcdefs = ['UFC_PAGES', 'UFC_ENTRY', 'UFC_UNITS', 'UFC_BUTTONS', 'UFC_RADIUS'].map((n) => {
+// stand-ins for the index, the warning latch and the actions it fires. Which
+// key a click presses is the centre panel's (centre.test.ts).
+const ufcdefs = ['UFC_PAGES', 'UFC_ENTRY', 'UFC_UNITS'].map((n) => {
   const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;`).exec(source)?.[0]
   if (!m) throw new Error(`${n} not found in engine.ts`)
   return m
@@ -1557,10 +1557,6 @@ function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, soun
     for(const b of buttons){ const knob=/^(one|two)([+-]?)$/.exec(b); if(knob) comm_knob(knob[1],knob[2]==="+"?1:knob[2]==="-"?-1:0); else ufc_press(b); }   // one, two: a comm channel selector pulled; one+, one-: turned
     return { ufc, index:law_index, disabled:law_disabled, pressed, emcon, radar:RADAR.emcon, radios, face:ufc_face(ufc, ufc_live(), 2000), hold, coupled, uhf, squawk, terminal };`)
   return run(buttons, start, index, sounding, autopilot, flying, couple, communication, identification, mids) as Pressed
-}
-function ufcbutton(y: number, z: number): string | null {
-  const run = new Function('y', 'z', `${ufcdefs} ${lift('ufc_button_at')} return ufc_button_at(y, z);`)
-  return run(y, z) as string | null
 }
 const blank = ' '.repeat(9)
 
@@ -1886,31 +1882,15 @@ describe('the UFC pushbuttons', () => {
     expect(moved.ufc).toMatchObject({ func: 'tcn', entry: '' })
   })
 
-  it('map a panel point to the painted button under it, within the key pitch', () => {
-    expect(ufcbutton(0.453, -0.061)).toBe('1')
-    expect(ufcbutton(0.386, -0.018)).toBe('ent')
-    expect(ufcbutton(0.351, -0.065)).toBe('ap')
-    expect(ufcbutton(0.412, 0.006)).toBe('opt3')
-    expect(ufcbutton(0.447, 0.086)).toBe('emcon') // second down the right column (figure 23-1)
-    expect(ufcbutton(0.477, -0.088)).toBe('ip') // at the head of the left
-    expect(ufcbutton(0.450, -0.085)).toBe(null) // the ADF switch, which is no pushbutton
-    expect(ufcbutton(0.351, 0.041)).toBe('bcn')
-    expect(ufcbutton(0.351, 0.062)).toBe('onoff')
-    expect(ufcbutton(0.453 + 0.008, -0.061)).toBe('1')
-    expect(ufcbutton(0.470, -0.050)).toBe(null)
-    expect(ufcbutton(0.300, 0)).toBe(null)
-  })
-
-  it('are wired: built with the faces, redrawn on the 120 ms economy, clicked through the panel point, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
+  it('are wired: built with the faces, redrawn on the 120 ms economy, clicked on the key caps, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
     expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
     expect(source).toMatch(/if\(pit\)\{ if\(stale\) faces_sharpen\(dpr\); ifei_update\(stale\); ufc_update\(stale\); \}/)
-    expect(source).toMatch(/if\(ownship\.group\.userData\.ufc\)\{ const h=_click_ray\.intersectObject\(ownship\.group,true\)\.find\(k=>!k\.object\.userData\.overlay&&shown\(k\.object\)\);/)
-    expect(source).toMatch(/button=p&&p\.x>6\.10&&p\.x<6\.18\?ufc_button_at\(p\.y,p\.z\):null;\n\t\tif\(button\)\{ ufc_press\(button\); return; \}/)
+    expect(source).toMatch(/\{ const button=ownship\.group\.userData\.ufc&&ufc_key_at\(e\.clientX,e\.clientY\);[^\n]*\n\t\tif\(button\)\{ ufc_press\(button\); return; \} \}/)
     expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=glance; pit_press\("atc",0\); \}/)
     expect(source).toMatch(/case "atc": if\(atc_on\)\{ atc_on=false; atc_flash=-Infinity; \} else \{ const mode=atc_engage\(\); if\(mode\)\{ atc_on=true;/)
     expect(source).toMatch(/law_primary=false; law_disabled=false; law_index=st==="carrier"\?40:200;/)
     expect(source).toMatch(/ufc\.func=""; ufc\.entry=""; ufc\.error=false; ufc\.blink=0; ufc_dirty=true; Object\.assign\(radios,radios_tuned\(\)\); emcon_set\(false\);/)
-    expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:f\.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\); {3}\/\/ transparent: the painted keypad/)
+    expect(source).toMatch(/new THREE\.MeshBasicMaterial\(\{ map:f\.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE\.DoubleSide \}\)\); {3}\/\/ transparent: only the windows are drawn, over the centre panel's plate/)
   })
 })
 
