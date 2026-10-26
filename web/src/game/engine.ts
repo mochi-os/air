@@ -6598,22 +6598,22 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
 	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
 	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && m?.name==='deck_baked') jbdTop=m; });   // the deck strip's own material: same texture, same light response
-	const JBDS=[{x:27.2,z:16.76,h:3.30},{x:23.5,z:-3.44,h:0},{x:-68.7,z:-15.52,h:3.87},{x:-84.5,z:-27.75,h:0}];   // box centres from the bake's JBD table (post-squash deck frame, on the current track lines); h = atan(track slope × the 0.96 lateral squash)
+	const JBDS=[{x:27.15,z:15.887,h:3.30,w:JBD_W-1.75},{x:23.5,z:-3.44,h:0,w:JBD_W},{x:-68.7,z:-15.52,h:3.87,w:JBD_W},{x:-84.5,z:-27.75,h:0,w:JBD_W}];   // box centres and widths as the bake draws them (post-squash deck frame, on the current track lines; cat 1's starboard side comes in 1.75 m off elevator 1 - bake_decktex.py JBD_BWS); h = atan(track slope × the 0.96 lateral squash)
 	carrier_jbds=JBDS.map(cat=>{
 		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
 		const g=new THREE.Group(); g.visible=false;   // shown only while animating/raised (update_jbds)
 		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
 		const pivot=new THREE.Group(); pivot.position.set(JBD_L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
-		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,JBD_W); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
+		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,cat.w); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
 		{ const pp=pg.attributes.position, uv=pg.attributes.uv;   // taxi-face UVs = the panel footprint in the bake frame, so flat = the deck's own paint (deck_baked maps u=(fa+172)/344, v=(lat+52)/100 — bake_decktex.py FA0/FA1/LA0/LA1)
 			for(let i=0;i<pp.count;i++){ const gx=pp.getX(i)+JBD_L/2, gz=pp.getZ(i);
 				const f2=cat.x+gx*fx-gz*fz, l2=cat.z+gx*fz+gz*fx;
 				uv.setXY(i,(f2+172)/344,(l2+52)/100); } }
 		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdTop||jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck paint, all other faces steel
 		panel.castShadow=true; pivot.add(panel);
-		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,JBD_W-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
-		const pit=new THREE.Mesh(new THREE.PlaneGeometry(JBD_L+0.2,JBD_W+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
+		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,cat.w-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
+		const pit=new THREE.Mesh(new THREE.PlaneGeometry(JBD_L+0.2,cat.w+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
 		const rams=[-1,0,1].map(k=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.11,1,8),jbdRamM); m.castShadow=true; m.visible=false; g.add(m); m.userData.kz=k*3.1; return m; });
 		return { g, pivot, pit, rams, frac:0 };
 	});
