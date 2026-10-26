@@ -48,7 +48,7 @@ function scenery(): Scenery {
   const block = /function scenery\(\)\{[\s\S]*?return \{ sea:3, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('scenery not found in engine.ts')
   const run = new Function(`const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
-    const CARRIER={x:0,z:0,deckY:20}, SHIP={outline:[[0,0],[1,0],[1,1]], shuttles:[], wires:[], halfspan:1, stroke:1, speed:1};
+    const CARRIER={x:0,z:0,deckY:20}, SHIP={outline:[[0,0],[1,0],[1,1]], catapults:[], landing:{ wires:[], span:2 }};
     const physics_strips=[{a:[0,0],b:[100,0],w:46}];
     const runway_strips=[{a:[-1500,0],b:[1500,0],w:60}];
     const obstacles={ islands:[{pts:[[0,0],[10,0],[10,10]]}], buildings:[{pts:[[0,0],[10,0],[10,10],[0,10]],topY:12},{pts:[[20,0],[30,0],[30,10]],topY:8}], posts:[{x:5,z:5,r:2,y1:9}] };
