@@ -20,6 +20,7 @@ Output: decktex12.png (8192x2400, fa -172..172, lat -52..48)
 """
 import json, math, struct, sys
 import resource
+from pathlib import Path
 import numpy as np
 from PIL import Image
 
@@ -27,7 +28,12 @@ from PIL import Image
 # means a new unbounded allocation.
 resource.setrlimit(resource.RLIMIT_AS, (8 << 30, 8 << 30))
 
+# Derived, never typed: these scripts are committed, so an absolute home path
+# makes the asset pipeline runnable on exactly one machine.
+ROOT = Path(__file__).resolve().parents[4]
+APP = ROOT / "apps" / "air"
 ORIG = str(APP / "downloads" / "uss_nimitz_cvn-68_aircraft_carrier.glb")
+
 W, H = 8192, 2400
 FA0, FA1, LA0, LA1 = -172.0, 172.0, -52.0, 48.0
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
@@ -35,14 +41,6 @@ S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 OUT = [[-166,4.2],[-158,31.2]]   # placeholder; outline.json (from build_carrier) overrides
 import os as _os, json as _json
 
-import os
-from pathlib import Path
-
-# Derived, never typed: these scripts are committed, so an absolute home path
-# makes the asset pipeline runnable on exactly one machine. flipbook.py already
-# resolved its own binary this way.
-ROOT = Path(__file__).resolve().parents[4]
-APP = ROOT / "apps" / "air"
 
 if _os.path.exists('outline.json'):
     OUT=_json.load(open('outline.json'))['OUT']
@@ -103,17 +101,28 @@ JBD = [
 # 25-33 cm); the rectangle is the one the engine's animated panel fills.
 JBD_BW, JBD_BD, JBD_LW, JBD_DASH = 9.65, 4.4, 0.34, 1.55
 JBD_M = [-0.0601*S_LAT, 0.0, -0.0705*S_LAT, 0.0]   # track slope d(lat)/d(fa) per cat (post-squash)
+# Box width per cat. Cat 1's plan box would reach 0.6 m over elevator 1's inboard border:
+# the model's elevator 1 sits ~10 m forward of the plan's, which puts it beside the box
+# instead of aft of it. Its starboard side comes in 1.75 m so its border stops clear of
+# the elevator's grey safety line (lat 20.27) and its kill margin clear of the elevator's
+# red/yellow border (lat 21.06); the port side stays on the plan. engine.ts JBDS carries
+# the same centre and width.
+JBD_BWS = [7.90, JBD_BW, JBD_BW, JBD_BW]
+def jbd_frame(i):
+    # (centre, along-track unit, starboard unit, width) of cat i's drawn box
+    e, m = JBD[i], JBD_M[i]
+    u = np.array([1.0, m]); u /= np.linalg.norm(u)
+    w2 = np.array([-u[1], u[0]])
+    return np.array([e[6], e[7]])-w2*(JBD_BW-JBD_BWS[i])/2, u, w2, JBD_BWS[i]
+JBD_FRAMES = [jbd_frame(i) for i in range(len(JBD))]
 def jbd_zone(f, l, margin=0.55):
-    # Inside a plan JBD rectangle (+margin). Authored SAT paint dies here: besides stray
+    # Inside a JBD rectangle (+margin). Authored SAT paint dies here: besides stray
     # dashes, this terminates the authored cat-1 blast-zone border cleanly at the box —
     # that rectangle sits ~10 m from its plan position, so its port edge crosses the plan
     # JBD box at a shallow angle, and deck features do not overpaint each other.
-    for e, m in zip(JBD, JBD_M):
-        tf, tl = e[6], e[7]
-        nl = math.hypot(1.0, m)
-        ux, uy = 1.0/nl, m/nl
-        df, dl = f-tf, l-tl
-        if abs(df*ux+dl*uy) < JBD_BD/2+margin and abs(-df*uy+dl*ux) < JBD_BW/2+margin:
+    for c, u, w2, bw in JBD_FRAMES:
+        df, dl = f-c[0], l-c[1]
+        if abs(df*u[0]+dl*u[1]) < JBD_BD/2+margin and abs(df*w2[0]+dl*w2[1]) < bw/2+margin:
             return True
     return False
 # grey-frame mono kill boxes, not the JBD regions: the landing-area edge stripes
@@ -274,12 +283,8 @@ for ni, n in enumerate(nodes):
 # the neighbouring safety borders). Appended as mark tris at ch +10 so they
 # rasterise last through the same anti-aliased pipeline.
 JBD_RED = np.array([0.58, 0.0, 0.01])*255; JBD_YEL = np.array([0.97, 0.86, 0.02])*255
-for e, m in zip(JBD, JBD_M):
-    tf, tl = e[6], e[7]
-    u = np.array([1.0, m]); u /= np.linalg.norm(u)
-    w2 = np.array([-u[1], u[0]])
-    corners = [np.array([tf, tl])+u*JBD_BD/2+w2*JBD_BW/2, np.array([tf, tl])-u*JBD_BD/2+w2*JBD_BW/2,
-               np.array([tf, tl])-u*JBD_BD/2-w2*JBD_BW/2, np.array([tf, tl])+u*JBD_BD/2-w2*JBD_BW/2]
+for c, u, w2, bw in JBD_FRAMES:
+    corners = [c+u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2-w2*bw/2, c+u*JBD_BD/2-w2*bw/2]
     s = 0.0
     for k in range(4):
         a, b = corners[k], corners[(k+1) % 4]

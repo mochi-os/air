@@ -50,7 +50,7 @@ def runs(img, fa_c=None, lat_range=None, lat_c=None, fa_range=None):
         elif n: out.append(n); n = 0
     return out
 
-JBD = [(27.2, 16.76), (23.5, -3.44), (-68.7, -15.52), (-84.5, -27.75)]
+JBD = [(27.150, 15.887), (23.5, -3.44), (-68.7, -15.52), (-84.5, -27.75)]   # box centres as drawn (cat 1 narrowed off elevator 1: bake_decktex.py JBD_BWS)
 print("\nJBD border widths (texels; lateral cut through box centre crosses the two long edges):")
 for i, (tf, tl) in enumerate(JBD):
     r = runs(new, fa_c=tf, lat_range=(tl-6.5, tl+6.5))
