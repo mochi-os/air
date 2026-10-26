@@ -39,7 +39,8 @@ function rig(body: string): Rig {
     let ddi_view_last=0, cam_psi=0, cam_az=0, cam_el=0, cam_dist=0, flyby_pos=null, hist_valid=true;
     const ownship={ fwd:{x:0,z:1} }, cockpit_hidden=()=>{}, ddi_open=()=>{}, ddi_range=()=>{}, DDI_ORDER=["left","right","center"], ddi_focus=()=>cfg.ddi, ddi_state={}, DDI_PAGES={};
     ${line('const looks=')}
-    ${['view_note', 'zoom_floor', 'zoom_recall', 'zoom_persist', 'zoom_to', 'zoom_step', 'latch', 'set_view', 'view_reset'].map(lift).join('\n')}
+    ${line('const zoom_held=')}
+    ${['view_note', 'zoom_floor', 'zoom_recall', 'zoom_persist', 'zoom_to', 'zoom_step', 'latch', 'set_view', 'view_reset', 'views_fresh'].map(lift).join('\n')}
     ${body}
     return { events:view_events, zoom:zoom_target, view:cfg.view, padlocked, head:[head_az, head_el] };`)(THREE) as Rig
 }
@@ -157,4 +158,34 @@ describe('the look direction', () => {
     expect(line('const looks=')).toMatch(/^const looks=\{ hud:\{ az:0, el:0 \}, cockpit:\{ az:0, el:0 \} \};/)
     expect(source.indexOf('const looks=')).toBeGreaterThan(source.indexOf('export function startGame(')) // built afresh with each flight
   })
+})
+
+describe('each match start (#138)', () => {
+  // a match flown: the cockpit turned and zoomed to 2.5x, the HUD view turned and zoomed to 2x, ending in the cockpit
+  const flown = 'set_view("cockpit","key"); head_az=0.4; head_el=0.1; zoom_to(2.5,"key"); set_view("hud","key"); head_az=-0.2; zoom_to(2,"key"); cfg.zoom_hud=2; set_view("cockpit","key");'
+
+  it('turns both first-person views ahead again', () => {
+    const s = rig(`${flown} views_fresh(); const cockpit=[head_az, head_el]; set_view("hud","key"); view_events.splice(0, view_events.length, cockpit.join("|"));`)
+    expect(s.events).toEqual(['0|0'])
+    expect(s.head).toEqual([0, 0])
+  })
+
+  it('starts the cockpit at 1x and keeps the HUD view\'s zoom', () => {
+    expect(rig(`${flown} views_fresh();`).zoom).toBe(1)
+    expect(rig(`${flown} views_fresh(); set_view("hud","key");`).zoom).toBe(2)
+    expect(rig(`${flown} set_view("hud","key"); views_fresh();`).zoom).toBe(2) // a match starting in the HUD view
+  })
+
+  it('keeps the cockpit\'s zoom through the match without saving it', () => {
+    const s = rig('window.setTimeout=(f)=>{ f(); return 1; }; set_view("cockpit","key"); zoom_to(2.5,"key"); set_view("hud","key"); set_view("cockpit","key"); view_events.splice(0, view_events.length, String(cfg.zoom_cockpit));')
+    expect(s.zoom).toBe(2.5)
+    expect(s.events).toEqual(['undefined'])
+    expect(rig('window.setTimeout=(f)=>{ f(); return 1; }; zoom_to(1.6,"key"); view_events.splice(0, view_events.length, String(cfg.zoom_hud));').events).toEqual(['1.6']) // where the HUD view's is saved
+  })
+
+  it('runs at every match start: a new flight, and a joust\'s match-starting respawn in the flight already running', () => {
+    expect(source).toMatch(/on_config=onConfig\|\|null; on_over=onOver\|\|null; views_fresh\(\);/)
+    expect(source).toMatch(/case "respawn":\n\t\tif\(net&&slot===net\.slot\)\{ if\(net_waiting\) views_fresh\(\);/)
+  })
+
 })

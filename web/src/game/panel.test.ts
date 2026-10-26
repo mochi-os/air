@@ -50,7 +50,7 @@ function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multip
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
-    return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, at(t){ sim_time=t; glance=t; }, generators, knob_level, knob_turn, display_level, display_press, symbology,
+    return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, at(t){ sim_time=t; glance=t; }, generators, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
@@ -234,7 +234,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
     expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
-    expect(source).toMatch(/power_step\(out\); displays_light\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
+    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)
   })
@@ -290,6 +290,23 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
     expect(s.display_level('center')).toBeCloseTo(0.45 * (0.3 + 0.7 * 0.2), 6)
     s.buses = { ac: false, essential: true }
     expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([0, 0, 0])
+  })
+
+  it('set each display\'s contrast from its own control, a DDI\'s lower right knob and the AMPCD\'s lower right rocker, a fifth a click (#132)', () => {
+    const s = system()
+    expect(['left', 'right', 'center'].map((d) => s.display_contrast(d))).toEqual([1, 1, 1])
+    s.press('display.left.contrast', -1)
+    expect(s.displays.left.contrast).toBe(0.8)
+    expect(s.display_contrast('left')).toBeCloseTo(0.25 + 0.75 * 0.8, 9)
+    for (let i = 0; i < 6; i++) s.press('display.right.contrast', -1)
+    expect(s.display_contrast('right')).toBe(0.25) // the bottom stop: faint, never blank
+    s.press('display.center.contrast', -1); s.press('display.center.contrast', -1); s.press('display.center.contrast', 1)
+    expect(s.displays.center.contrast).toBe(0.8)
+    expect([s.displays.left.brt, s.displays.right.brt, s.displays.center.brt, s.displays.center.mode]).toEqual([1, 1, 1, 'day']) // the brightness and the mode untouched
+    expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([1, 1, 1])
+    s.press('display.left.contrast', 1); s.press('display.left.contrast', 1)
+    expect(s.displays.left.contrast).toBe(1) // the top stop
+    expect(source).toMatch(/for\(const d of Object\.values\(displays\)\)\{ d\.brt=1; d\.contrast=1; \}/) // and a new flight's at the top
   })
 
   it('dim the HUD from SYM BRT, off at its stop and without ac power', () => {
