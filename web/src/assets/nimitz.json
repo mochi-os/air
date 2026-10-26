@@ -1,5 +1,5 @@
 {
-  "note": "The Nimitz's deck layout, read by engine.ts and by the model tools (tools/nimitz/ship.py). Deck frame in metres after the model's lateral squash: x forward, z to starboard; headings in degrees, positive to port. A catapult's x, z is where the nose wheel rests on its shuttle; stroke is its throw in metres and speed its end speed in m/s; its deflector is the painted box the blast deflector lies in, width across the track and depth along it. elevators: each deck-edge elevator opening's fore-aft span and side (1 starboard, -1 port). cabs: where each catapult control cab stands and which way it points; cabs.py has their size. build_carrier.py writes the outline, traced from the deck it builds; the rest is set by hand.",
+  "note": "The Nimitz's deck layout, read by engine.ts and by the model tools (tools/nimitz/ship.py). Deck frame in metres after the model's lateral squash: x forward, z to starboard; headings in degrees, positive to port. A catapult's x, z is where the nose wheel rests on its shuttle; stroke is its throw in metres and speed its end speed in m/s; its deflector is the painted box the blast deflector lies in, width across the track and depth along it. elevators: where each deck-edge elevator's platform meets the deck edge (the outboard edge of the platform the model paints, 26.3-26.5 m long, as the real ones are 26 m) and its side (1 starboard, -1 port); the catwalk stops and the edge lights run along it. rafts: how many life-raft canisters hang on the catwalks, as many as the catwalks between the elevators and sponsons hold (the model builder's estimate of 242 needed catwalk alongside the elevator platforms); build_carrier.py racks them and edgecheck.py counts them. cabs: where each catapult control cab stands and which way it points; cabs.py has their size. build_carrier.py writes the outline, traced from the deck it builds; the rest is set by hand.",
   "catapults": [
     {
       "x": 48.98,
@@ -72,26 +72,27 @@
   },
   "elevators": [
     {
-      "aft": 11,
-      "forward": 35,
+      "aft": 13.1,
+      "forward": 39.5,
       "side": 1
     },
     {
-      "aft": -33,
-      "forward": -11,
+      "aft": -33.4,
+      "forward": -6.9,
       "side": 1
     },
     {
-      "aft": -111,
-      "forward": -89,
+      "aft": -112.1,
+      "forward": -85.6,
       "side": 1
     },
     {
-      "aft": -119,
-      "forward": -93,
+      "aft": -117.0,
+      "forward": -90.6,
       "side": -1
     }
   ],
+  "rafts": 226,
   "cabs": [
     {
       "x": 43.5,

@@ -920,10 +920,10 @@ add_soup(np.array(skirt,dtype=np.float64), GREY, 'deck_skirt', True)
 # rail side. Every piece is a convex solid wound away from its own centre, and every
 # rack is a rigid straight unit on a straight stretch of edge - nothing bends to follow
 # the deck.
-RAFT_LEN=1.65; RAFT_R=0.45; RAFT_GAP=0.06; RAFT_RACK=5; RAFT_RACK_GAP=0.25; RAFT_COUNT=242   # 65 x 35 in canisters, 25-person rafts
+RAFT_LEN=1.65; RAFT_R=0.45; RAFT_GAP=0.06; RAFT_RACK=5; RAFT_RACK_GAP=0.25; RAFT_COUNT=SHIP['rafts']   # 65 x 35 in canisters, 25-person rafts
 # where racks may go (fa spans per side): every catwalk aft of the bows, which the
-# 2013-2017 photographs show bare. The full complement needs nearly all of it; if the
-# catwalks hold more, columns are dropped evenly down to RAFT_COUNT.
+# 2013-2017 photographs show bare. The ship file's count is all the catwalks hold; if they
+# hold more, columns are dropped evenly down to RAFT_COUNT.
 RAFT_RUNS={1:[(-170,97)], -1:[(-170,97)]}
 def outward(t,centres):
     # wind each triangle away from its piece's centre (one centre, or one per triangle)

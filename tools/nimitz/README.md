@@ -51,13 +51,15 @@ and iteration knobs, so multiple attempts don't lose the design.
   from behind is culled. Non-zero exit on a see-through ray. Run after any edit touching
   the hull, skirt, deck strip, underside, or band-clear rules. A new sighting: add the
   in-game camera as a ray first and watch it fail.
-- **`edgecheck.py`** — the generated catwalks and life rafts: exactly 242 canisters, each
+- **`edgecheck.py`** — the generated catwalks and life rafts: exactly the ship file's count of canisters, each
   on its cradle beside the catwalk and along the deck edge; nothing generated crossing the
   ship or lying in a catwalk's plane over an authored plate (z-fighting); every slab on
   the skirt or the ship's side, every post on a slab, every brace slab-to-side; every face
   outward. Each check is what the authored-raft attempts (v57-v74) got wrong. It also checks
   the two catapult control cabs: where the ship file puts them, at their size, on the deck, on a
-  painted plate in the deck texture, facing out, with the original bow cab gone. Run after any
+  painted plate in the deck texture, facing out, with the original bow cab gone; and that each of
+  the ship file's elevator spans is the platform the deck texture paints, with the catwalk breaking
+  there. Run after any
   change to the catwalk plan, the walkway clear, the generator or the cabs; `-v` lists where each
   failure is.
 - **`skyprobe.py`** — bulk corridor finder: voxelizes the built GLB at 0.5 m and scans
@@ -137,8 +139,8 @@ means the build ran before the cp landed).
   bows (the bows keep their authored walkways, which follow the flare), clears the
   authored walkway there, and generates a solid catwalk 1.5 m below the rim - starting on
   whichever is further out, skirt or measured ship's side, leaving out any metre that
-  would cross the ship - with a railing, braces, and 242 canisters (25-person rafts, the
-  full complement) stacked two high in rigid straight racks of five on straight stretches.
+  would cross the ship - with a railing, braces, and 226 canisters (25-person rafts: all the
+  catwalks between the elevators and sponsons hold) stacked two high in rigid straight racks of five on straight stretches.
   The photographs (2013-2017) show both sides carrying rows and the bows bare.
   `edgecheck.py` holds every rule.
 - **Sources of truth**: 1:200 GA plan = 2D layout (markings, fixtures; outranks the

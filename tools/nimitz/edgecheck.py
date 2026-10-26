@@ -3,7 +3,7 @@ catwalk, its railings and braces, and the raft racks must hang together and on t
 the authored-raft attempts (v57-v74) produced is a check here. Run after any change to
 build_carrier.py's 1c/2a/4b, to its cabs or to cabs.py;
 exits non-zero on any failure.
-  count     exactly RAFTS canisters
+  count     exactly the ship file's raft count of canisters
   supported every canister rests on its cradle arms (no float, no sink)
   hung      every canister hangs beside the catwalk's outer edge
   aligned   every canister lies along the deck edge it hangs on, within 2 degrees, level
@@ -17,12 +17,15 @@ exits non-zero on any failure.
             and at least WHEEL_CLEAR from every catapult's centreline over the jet's whole run (its
             main wheels at the launch spot to the end of the stroke; the ship file's catapults); the
             original bow cab is gone, and every cab face faces out
+  elevators each of the ship file's elevator spans is the outboard edge of the platform the deck
+            texture paints there (within ELEVATOR_TOLERANCE), and no catwalk or raft hangs alongside it
 Usage: edgecheck.py [-v] [glb]   (default nimitz-clean.glb; -v lists where each failure is)"""
 import json, struct, sys
 import numpy as np
 ARGS=[a for a in sys.argv[1:] if a!='-v']
 GLB=ARGS[0] if ARGS else 'nimitz-clean.glb'
-RAFTS=242
+from ship import SHIP, OUTLINE as OUT
+RAFTS=SHIP['rafts']
 CX,CZ,DECKY,S=6361.3,-469.3,776.0,0.025
 GENERATED={'deck_baked','deck_underside','deck_skirt','railings','iccs_cab','iccs_glass',
            'catwalk','catwalk_railings','catwalk_braces','raft_racks','raft_straps','raft_canisters'}
@@ -72,7 +75,6 @@ VERBOSE='-v' in sys.argv
 def check(name,ok,detail):
     print(f"{'PASS' if ok else 'FAIL'}  {name}: {detail}")
     if not ok: failures.append(name)
-from ship import SHIP, OUTLINE as OUT
 def edge_project(f,l):
     # nearest point on the deck outline: (distance, unit direction of that edge, outward offset sign)
     P=np.vstack([OUT,OUT[:1]]); a=P[:-1]; dd=P[1:]-a; L2=(dd**2).sum(1)+1e-12
@@ -348,6 +350,33 @@ old=[k for k,T in tris.items() if k not in ('deck_baked','deck_underside') and
      (((T[...,0]>66.5)&(T[...,0]<71)&(T[...,1]>5.5)&(T[...,1]<9.5)&(T[...,2]>0.71)).any())]
 if old: bad_cab.append(('old bow cab still there',old))
 check('cabs',not bad_cab,f"{len(CABS)} cabs {bad_cab[:4] if bad_cab else 'placed, sized, on their plates, facing out; old bow cab gone'}")
+
+# --- elevators: the platform's painted red/yellow border runs along the deck edge for exactly the
+# ship file's span, and the catwalk breaks there ---
+ELEVATOR_TOLERANCE=0.3
+WALK=('catwalk','catwalk_railings','catwalk_braces','raft_racks','raft_straps','raft_canisters')
+def edge_z(f,side):
+    # the deck edge's lateral at fore-aft f on one side
+    a=OUT; b2=np.roll(OUT,-1,0); m=(np.minimum(a[:,0],b2[:,0])<=f)&(np.maximum(a[:,0],b2[:,0])>=f)&(a[:,0]!=b2[:,0])
+    z=a[m,1]+(f-a[m,0])*(b2[m,1]-a[m,1])/(b2[m,0]-a[m,0])
+    return z.max() if side>0 else z.min()
+def painted(f,side):
+    # red/yellow border paint within 2 m inside the deck edge at f
+    z=edge_z(f,side); return any(np.ptp(texel((f,z-side*d)))>=80 for d in np.arange(0.05,2.0,0.1))
+bad_el=[]
+for i,e in enumerate(SHIP['elevators']):
+    fs=np.round(np.arange(e['aft']-5,e['forward']+5,0.05),3); on=np.array([painted(f,e['side']) for f in fs])
+    k=int(np.argmin(np.abs(fs-(e['aft']+e['forward'])/2)))
+    if not on[k]: bad_el.append((i+1,'no painted platform')); continue
+    lo=k; hi=k
+    while lo>0 and on[lo-1]: lo-=1
+    while hi<len(fs)-1 and on[hi+1]: hi+=1
+    span=(round(float(fs[lo]),2),round(float(fs[hi]),2))
+    if abs(span[0]-e['aft'])>ELEVATOR_TOLERANCE or abs(span[1]-e['forward'])>ELEVATOR_TOLERANCE: bad_el.append((i+1,'painted',span,'file',(e['aft'],e['forward'])))
+    beside=sum(int(((T[:,:,0].mean(1)>e['aft'])&(T[:,:,0].mean(1)<e['forward'])&(np.sign(T[:,:,1].mean(1))==e['side'])).sum()) for kk,T in tris.items() if kk in WALK)
+    if beside: bad_el.append((i+1,'catwalk alongside',beside))
+    WHERE.setdefault('elevators',[]).append((i+1,span))
+check('elevators',not bad_el,f"{len(SHIP['elevators'])} elevators {bad_el if bad_el else 'on their painted platforms, the catwalk breaking there'}")
 
 if VERBOSE:
     for k,v in WHERE.items(): print(f'  {k}: {v[:30]}')

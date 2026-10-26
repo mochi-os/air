@@ -56,6 +56,11 @@ class Geometry(unittest.TestCase):
             self.assertFalse(ship.inside(end + 0.2, ship.line(c)(end + 0.2)))
         self.assertFalse(ship.inside(0, 60))
 
+    def test_rafts_fill_whole_columns(self):
+        # the build racks canisters two high, so it can only place an even count
+        self.assertGreater(ship.SHIP['rafts'], 0)
+        self.assertEqual(ship.SHIP['rafts'] % 2, 0)
+
     def test_cabs_take_their_place_from_the_file(self):
         self.assertEqual(len(cabs.CABS), len(ship.SHIP['cabs']))
         for (f, l, m), c in zip(cabs.CABS, ship.SHIP['cabs']):

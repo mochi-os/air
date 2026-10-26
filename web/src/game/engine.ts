@@ -6798,8 +6798,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	ops_lights.push(glow_points(drop,0xff3222,5));
 	const datum=[]; for(const d2 of [-6,-4,4,6]){ const q=carrier_world(-140,strip_lat(-140)+d2); datum.push(q.x,db+0.3,q.z); }   // green ramp datum bar flanking the drop line — the LSO's ramp reference
 	ops_lights.push(glow_points(datum,0x35e06a,5));
-	for(const el of SHIP.elevators){ const pts=[];   // amber elevator-edge dots along each deck-edge opening
-		for(let f=el.aft;f<=el.forward;f+=6){ const e=edge_lat(f,el.side); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
+	for(const el of SHIP.elevators){ const pts=[], n=Math.max(1,Math.ceil((el.forward-el.aft)/6));   // amber dots along each elevator platform's deck edge, at most 6 m apart, both ends lit
+		for(let k=0;k<=n;k++){ const f=el.aft+(el.forward-el.aft)*k/n, e=edge_lat(f,el.side); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
 		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
 	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
 	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set

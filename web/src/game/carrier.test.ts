@@ -70,12 +70,27 @@ describe("the carrier's deck file", () => {
     })
   })
 
-  it('stands a blast deflector on every catapult and the elevator lights on every opening, from the file', () => {
+  it('stands a blast deflector on every catapult, from the file', () => {
     expect(source).toMatch(/carrier_jbds=SHIP\.catapults\.map\(cat=>\{\n\t\tconst box=cat\.deflector, L=box\.depth-2\*JBD_INSET\.end, bw=box\.width-2\*JBD_INSET\.side;/)
     expect(source).toMatch(/const w=carrier_world\(box\.x,box\.z\), hd=cat\.heading\*D2R,/)
     expect(source).toMatch(/uv\.setXY\(i,\(f2-tx\[0\]\)\/\(tx\[1\]-tx\[0\]\),\(l2-tz\[0\]\)\/\(tz\[1\]-tz\[0\]\)\);/)
     expect(source).toMatch(/const tx=SHIP\.texture\.x, tz=SHIP\.texture\.z;/)
-    expect(source).toMatch(/for\(const el of SHIP\.elevators\)\{ const pts=\[\];[^\n]*\n\t\tfor\(let f=el\.aft;f<=el\.forward;f\+=6\)\{ const e=edge_lat\(f,el\.side\);/)
+  })
+
+  it("lights each elevator platform's deck edge from end to end", () => {
+    const loop = /\tfor\(const el of SHIP\.elevators\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+    if (!loop) throw new Error('the elevator lights loop not found in engine.ts')
+    const lit = new Function('SHIP', `const lit=[], ops_lights=[], edge_lat=(f,side)=>side*30, dh=(f,l)=>({ x:f, y:0, z:l }), glow_points=(pts)=>pts;
+      ${loop}
+      return ops_lights;`)({ ...nimitz }) as number[][]
+    expect(lit).toHaveLength(nimitz.elevators.length)
+    nimitz.elevators.forEach((e, i) => {
+      const xs = lit[i].filter((_, k) => k % 3 === 0)
+      expect(xs[0]).toBeCloseTo(e.aft, 9)
+      expect(xs[xs.length - 1]).toBeCloseTo(e.forward, 9)
+      for (let k = 1; k < xs.length; k++) expect(xs[k] - xs[k - 1]).toBeLessThanOrEqual(6 + 1e-9)
+      expect(lit[i].filter((_, k) => k % 3 === 2).every((z) => z === e.side * 30)).toBe(true)
+    })
   })
 
   it('lays its deflectors across their tracks and its elevators along the deck edge', () => {
