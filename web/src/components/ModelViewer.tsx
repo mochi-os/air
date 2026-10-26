@@ -28,25 +28,25 @@ import { posed } from '../game/model'
 import { normalize_round } from '../game/weapons'
 
 interface Entry {
-  name: string
+  name: string // the asset's file name: the bundle serves it under a content-hashed one
   url: string
   prepare: (gltf: GLTF) => THREE.Object3D // a clone: the library's stock is shared and never changed in place
 }
 
 const MODELS: Entry[] = [
   {
-    name: 'AIM-120C AMRAAM',
+    name: 'aim120c.glb',
     url: amraam_model_url,
     prepare: (gltf: GLTF) => normalize_round(gltf.scene.clone(true)),
   },
-  { name: 'F/A-18C Hornet', url: fa18c_model_url, prepare: posed },
+  { name: 'fa18c.glb', url: fa18c_model_url, prepare: posed },
   {
-    name: 'Stores',
+    name: 'stores.glb',
     url: stores_model_url,
     prepare: (gltf: GLTF) => gltf.scene.clone(true),
   },
   {
-    name: 'USS Nimitz',
+    name: 'nimitz.glb',
     url: nimitz_model_url,
     prepare: (gltf: GLTF) => gltf.scene.clone(true),
   },
@@ -116,10 +116,18 @@ function frame(view: View, object: THREE.Object3D): void {
   controls.update()
 }
 
-export function ModelViewer() {
+// file is the model the URL names (?file=nimitz.glb); an unknown or missing one shows
+// the first. onFile puts a switch back in the URL, so a view can be linked to.
+export function ModelViewer({
+  file,
+  onFile,
+}: {
+  file?: string
+  onFile: (file: string) => void
+}) {
   const mount = useRef<HTMLDivElement>(null)
   const view = useRef<View | null>(null)
-  const [chosen, setChosen] = useState(MODELS[0].name)
+  const chosen = (MODELS.find((m) => m.name === file) ?? MODELS[0]).name
   const [status, setStatus] = useState('Loading…') // empty once the model is drawn
   const [count, setCount] = useState<number | null>(null) // the shown model's polygons
   const { formatNumber } = useFormat()
@@ -228,7 +236,7 @@ export function ModelViewer() {
       <div ref={mount} className='absolute inset-0' />
       {/* Top right: the shell's menu sits over the top-left corner. */}
       <div className='absolute end-4 top-4 flex flex-col items-end gap-1'>
-        <Select value={chosen} onValueChange={setChosen}>
+        <Select value={chosen} onValueChange={onFile}>
           <SelectTrigger className='bg-background w-56'>
             <SelectValue />
           </SelectTrigger>

@@ -16,6 +16,8 @@ const ModelViewer = lazy(() =>
 )
 
 function Models() {
+  const { file } = Route.useSearch()
+  const navigate = Route.useNavigate()
   return (
     <LazyBoundary
       fallback={
@@ -26,7 +28,12 @@ function Models() {
       }
     >
       <Suspense fallback={<div className='bg-background fixed inset-0' />}>
-        <ModelViewer />
+        <ModelViewer
+          file={file}
+          onFile={(next) =>
+            void navigate({ search: { file: next }, replace: true })
+          }
+        />
       </Suspense>
     </LazyBoundary>
   )
@@ -34,4 +41,8 @@ function Models() {
 
 export const Route = createFileRoute('/models')({
   component: Models,
+  // ?file=nimitz.glb - the model being viewed; the viewer checks it against its list
+  validateSearch: (search: Record<string, unknown>): { file?: string } => ({
+    file: typeof search.file === 'string' ? search.file : undefined,
+  }),
 })
