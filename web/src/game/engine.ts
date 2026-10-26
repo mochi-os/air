@@ -77,6 +77,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // the URL changes when the bytes do, so there is no version constant to bump on
 // regen. The dev readout shows the hash.
 import nimitz_model_url from '../assets/nimitz.glb?url'
+import nimitz_deck from '../assets/nimitz.json'   // its deck layout, shared with the model tools (tools/nimitz/ship.py)
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import amraam_model_url from '../assets/aim120c.glb?url'
@@ -171,28 +172,20 @@ const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, e
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
 	view:"hud", framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
 	task:"joust", start:"carrier", tod:"day", help:false };
-// CARRIER_MODELS: per-ship deck data (shuttle points, wires, landing line, OLS,
-// deck outline), measured with the align tool; a second carrier is one more
-// entry (#100). CARRIER {x,z} is world placement, not ship data. model_stamp:
-// the content hash from an imported asset URL, for the dev readout.
+// CARRIER_MODELS: per-ship data; a second carrier is one more entry (#100). Its
+// deck layout - catapults and their blast deflectors, the landing line and wires,
+// the OLS, the elevators, the deck texture's extent and the deck outline - is the
+// JSON file beside its model, which the model tools read too (tools/nimitz/ship.py),
+// so the deck the jet flies and the deck the model paints are one set of numbers.
+// CARRIER {x,z} is world placement, not ship data. model_stamp: the content hash
+// from an imported asset URL, for the dev readout.
 function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
 	nimitz:{ url:nimitz_model_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
-		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
-		// Wires and landing line: from the 1:200 CVN-68 deck plan (real angled deck
-		// 9.05°, wire spacing 40 ft); catapults: fitted to the model's own track
-		// troughs.
-		shuttles:[ {x:48.98, z:15.50, h:3.30},            // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). PLAN-derived (Stage C, 1:200 GA drawing 2026-07-10): the plan's cat-1 track line starts at fa 45 (a slot's aft end, right behind this spot) and runs to the bow water-brake slot centre at 0.95 ridge coverage. The MODEL's painted track (z 19.41, h 5.67 — the 2026-07-07 exact fit) sits 3.9 m starboard with +2.4° excess heading and lies on no plan feature at all (0.22 coverage); the baked deck track moved with this constant, so jet, shuttle, and paint stay coherent
-		           {x:47.23, z:-3.44, h:0},              // 2: port bow (the carrier-start spawn) — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading -0.044° ≈ dead straight, line at lat -3.58 for this fa)
-		           {x:-46.61, z:-17.08, h:4.03},          // 3: starboard waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +4.225°, line at lat -17.79 for this fa); the old Hough entry had fit the angled-deck trough 27 m away
-		           {x:-66.50, z:-27.75, h:0} ],          // 4: port waist — heading stays the user's dead-straight in-game reading (2026-07-07); lat re-sourced from the 1:200 plan's track line (Stage C 2026-07-10: -27.75 at 0.99 ridge coverage over the unambiguous aft stretch; the model paint's -26.82 scores 0.15). Baked deck track moved with it
-		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:12.5,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
-		line:{ afa:-115.6, alat:1.92, bfa:-92.2, blat:-1.63 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ident:"NIM",                                      // the ship's TACAN ident, shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
-		ols:{ fa:-21.0, lat:-37.06, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
-		outline:[ [-167.0,8.11],[-164.0,16.72],[-161.0,23.5],[-158.0,24.35],[-155.0,23.36],[-152.0,24.56],[-149.0,25.74],[-146.0,26.68],[-143.0,27.34],[-140.0,28.56],[-137.0,28.88],[-134.0,29.37],[-131.0,29.85],[-128.0,30.25],[-125.0,30.36],[-122.0,30.46],[-119.0,31.88],[-116.0,33.41],[-113.0,34.89],[-110.0,35.02],[-107.0,35.11],[-104.0,35.19],[-101.0,35.28],[-98.0,35.36],[-95.0,35.44],[-92.0,35.52],[-89.0,35.6],[-86.0,36.4],[-83.0,37.35],[-80.0,38.27],[-77.0,38.45],[-74.0,38.45],[-71.0,38.27],[-68.0,38.08],[-65.0,34.5],[-62.0,31.1],[-59.0,27.37],[-56.0,27.03],[-53.0,26.7],[-50.0,26.7],[-47.0,26.7],[-44.0,30.62],[-41.0,34.53],[-38.0,38.27],[-35.0,37.35],[-32.0,36.43],[-29.0,35.69],[-26.0,35.69],[-23.0,35.69],[-20.0,35.69],[-17.0,35.69],[-14.0,35.69],[-11.0,35.69],[-8.0,36.43],[-5.0,37.16],[-2.0,37.9],[1.0,37.9],[4.0,37.9],[7.0,37.9],[10.0,37.9],[13.0,37.16],[16.0,36.43],[19.0,35.69],[22.0,35.69],[25.0,35.69],[28.0,35.69],[31.0,35.69],[34.0,35.69],[37.0,35.69],[40.0,36.43],[43.0,37.16],[46.0,37.9],[49.0,37.9],[52.0,37.9],[55.0,37.9],[58.0,37.9],[61.0,37.9],[64.0,37.85],[67.0,37.33],[70.0,36.04],[73.0,33.99],[76.0,31.65],[79.0,29.27],[82.0,26.93],[85.0,24.55],[88.0,22.43],[91.0,21.04],[94.0,20.41],[97.0,19.46],[100.0,18.47],[103.0,17.44],[106.0,17.22],[109.0,17.0],[112.0,16.76],[115.0,16.52],[118.0,16.32],[121.0,16.13],[124.0,15.95],[127.0,15.68],[130.0,15.43],[133.0,15.17],[136.0,15.0],[139.0,14.78],[142.0,14.61],[145.0,14.38],[148.0,14.16],[151.0,13.99],[154.0,13.74],[157.0,13.54],[160.0,13.23],[163.0,13.02],[164.0,12.84],[165.0,12.77],[165.0,-10.34],[164.0,-10.51],[163.0,-10.76],[160.0,-10.9],[157.0,-11.1],[154.0,-11.29],[151.0,-11.44],[148.0,-11.61],[145.0,-11.78],[142.0,-12.1],[139.0,-12.33],[136.0,-12.62],[133.0,-12.76],[130.0,-12.93],[127.0,-13.03],[124.0,-13.31],[121.0,-13.58],[118.0,-13.91],[115.0,-14.06],[112.0,-14.25],[109.0,-14.39],[106.0,-14.6],[103.0,-14.86],[100.0,-15.13],[97.0,-15.37],[94.0,-15.53],[91.0,-15.77],[88.0,-16.75],[85.0,-18.5],[82.0,-20.84],[79.0,-23.16],[76.0,-25.49],[73.0,-27.81],[70.0,-30.12],[67.0,-32.44],[64.0,-34.66],[61.0,-36.46],[58.0,-37.48],[55.0,-37.83],[52.0,-37.83],[49.0,-37.83],[46.0,-37.83],[43.0,-37.83],[40.0,-37.83],[37.0,-37.83],[34.0,-37.83],[31.0,-37.36],[28.0,-36.6],[25.0,-35.65],[22.0,-34.99],[19.0,-34.45],[16.0,-33.92],[13.0,-33.48],[10.0,-33.57],[7.0,-33.83],[4.0,-34.19],[1.0,-34.19],[-2.0,-34.32],[-5.0,-33.56],[-8.0,-33.56],[-11.0,-33.43],[-14.0,-34.2],[-17.0,-35.95],[-20.0,-35.45],[-23.0,-34.7],[-26.0,-33.0],[-29.0,-33.55],[-32.0,-34.35],[-35.0,-34.35],[-38.0,-34.35],[-41.0,-34.35],[-44.0,-34.67],[-47.0,-34.98],[-50.0,-35.3],[-53.0,-34.98],[-56.0,-34.66],[-59.0,-34.34],[-62.0,-34.34],[-65.0,-34.34],[-68.0,-35.16],[-71.0,-35.97],[-74.0,-36.79],[-77.0,-36.79],[-80.0,-36.79],[-83.0,-35.97],[-86.0,-35.16],[-89.0,-33.81],[-92.0,-33.29],[-95.0,-32.76],[-98.0,-32.76],[-101.0,-32.76],[-104.0,-32.76],[-107.0,-32.76],[-110.0,-32.76],[-113.0,-32.76],[-116.0,-32.81],[-119.0,-32.64],[-122.0,-28.11],[-125.0,-22.52],[-128.0,-17.05],[-131.0,-15.77],[-134.0,-15.39],[-137.0,-15.0],[-140.0,-14.69],[-143.0,-14.37],[-146.0,-14.06],[-149.0,-13.6],[-152.0,-13.18],[-155.0,-12.77],[-158.0,-12.42],[-161.0,-11.97],[-164.0,-9.43],[-167.0,-7.09] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
+		...nimitz_deck } };
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
@@ -5170,11 +5163,11 @@ function deck_y_at(grp,x,z,fallback){
 	_ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 function place_on_cat(i=cat_idx){
-	// A cat pose ({x,z} offset, h launch heading) was tuned at yaw 90; rotate it by the
+	// A cat pose ({x,z} offset and launch heading) was tuned at yaw 90; rotate it by the
 	// carrier's yaw delta so it tracks the ship when the heading changes. R_y: x'=x·c+z·s, z'=−x·s+z·c.
-	const cat=SHIP.shuttles[i], yaw_delta=(SHIP.yaw-(SHIP.bow??90))*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
+	const cat=SHIP.catapults[i], yaw_delta=(SHIP.yaw-(SHIP.bow??90))*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
 	const sx=CARRIER.x+(cat.x*c+cat.z*s), sz=CARRIER.z+(-cat.x*s+cat.z*c);   // the SHUTTLE, in world
-	const hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
+	const hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 	const fwd=new THREE.Vector3(fx*c+fz*s,0,-fx*s+fz*c);
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	const wx=sx-fwd.x*nose, wz=sz-fwd.z*nose;   // park the origin one nose-gear length behind the shuttle
@@ -6706,7 +6699,7 @@ function update_papi(p){ const flash=(sim_time*1000%520)<90;   // REIL: ~2 Hz sy
 let carrier_ols=null;
 let carrier_shuttles=null;   // one catapult shuttle (towing spreader) per cat spot; the active one rides the stroke with the jet
 let carrier_jbds=null;       // one Mk 7 jet blast deflector per cat spot; rises behind the hooked jet
-const JBD_W=9.4, JBD_L=4.2, JBD_T=0.28, JBD_ANG=50*Math.PI/180;   // panel fills the painted plan-derived box (~9.7x4.4 m); real Mk 7 raises to ~50°
+const JBD_T=0.28, JBD_ANG=50*Math.PI/180, JBD_INSET={ side:0.125, end:0.1 };   // the panel fills its painted box (each catapult's deflector in the ship file) inside the border; real Mk 7 raises to ~50°
 function ols_points(pts,color,size){   // like glow_points but SCREEN-SPACE (constant pixels) so the meatball reads small up close and far, not a 9 m blob
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false})); p.frustumCulled=false; scene.add(p); return p;
@@ -6717,8 +6710,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const wireMat=new THREE.MeshStandardMaterial({color:0x26282a,metalness:0.8,roughness:0.45});   // greased working steel: dark gunmetal with a faint sheen
 	const sheaveMat=new THREE.MeshStandardMaterial({color:0x6a6e73,metalness:0.5,roughness:0.6});   // grey, per user — black boxes read as holes in the deck
 	const wires=[];
-	for(const wfa of SHIP.wires){
-		const clat=strip_lat(wfa), hw=SHIP.halfspan;   // span the strip width, perpendicular to its centreline
+	for(const wfa of SHIP.landing.wires){
+		const clat=strip_lat(wfa), hw=SHIP.landing.span/2;   // span the strip width, perpendicular to its centreline
 		const a=carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
 		const ddx=b.x-a.x, ddz=b.z-a.z, len=Math.hypot(ddx,ddz);
 		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,0.05),wireMat); w.position.set((a.x+b.x)/2,dy+0.10,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);   // Mk 7 cross-deck pendant: 35 mm wire rope ~10 cm off the deck on its supports (drawn a touch fat for visibility)
@@ -6731,8 +6724,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	// Real C-13 shuttle: a low greased-steel block with a raised towing HORN at the rear that the bar hooks
 	// over — near-black worn metal, never painted ---
 	const shuttleMat=new THREE.MeshStandardMaterial({color:0x2e3136,metalness:0.75,roughness:0.4});
-	carrier_shuttles=SHIP.shuttles.map(cat=>{
-		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
+	carrier_shuttles=SHIP.catapults.map(cat=>{
+		const w=carrier_world(cat.x,cat.z), hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
 		const m=new THREE.Group();
 		const body=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.08,0.32),shuttleMat); body.position.set(0.1,0.04,0); m.add(body);   // the low deck block
@@ -6751,27 +6744,28 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
 	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
 	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && m?.name==='deck_baked') jbdTop=m; });   // the deck strip's own material: same texture, same light response
-	const JBDS=[{x:27.15,z:15.887,h:3.30,w:JBD_W-1.75},{x:23.5,z:-3.44,h:0,w:JBD_W},{x:-68.7,z:-15.52,h:3.87,w:JBD_W},{x:-84.5,z:-27.75,h:0,w:JBD_W}];   // box centres and widths as the bake draws them (post-squash deck frame, on the current track lines; cat 1's starboard side comes in 1.75 m off elevator 1 - bake_decktex.py JBD_BWS); h = atan(track slope × the 0.96 lateral squash)
-	carrier_jbds=JBDS.map(cat=>{
-		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
+	const tx=SHIP.texture.x, tz=SHIP.texture.z;   // the deck texture's extent: deck_baked maps u across tx and v across tz (bake_decktex.py)
+	carrier_jbds=SHIP.catapults.map(cat=>{
+		const box=cat.deflector, L=box.depth-2*JBD_INSET.end, bw=box.width-2*JBD_INSET.side;   // the box the bake paints, on the catapult's heading
+		const w=carrier_world(box.x,box.z), hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
 		const g=new THREE.Group(); g.visible=false;   // shown only while animating/raised (update_jbds)
 		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
-		const pivot=new THREE.Group(); pivot.position.set(JBD_L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
-		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,cat.w); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
-		{ const pp=pg.attributes.position, uv=pg.attributes.uv;   // taxi-face UVs = the panel footprint in the bake frame, so flat = the deck's own paint (deck_baked maps u=(fa+172)/344, v=(lat+52)/100 — bake_decktex.py FA0/FA1/LA0/LA1)
-			for(let i=0;i<pp.count;i++){ const gx=pp.getX(i)+JBD_L/2, gz=pp.getZ(i);
-				const f2=cat.x+gx*fx-gz*fz, l2=cat.z+gx*fz+gz*fx;
-				uv.setXY(i,(f2+172)/344,(l2+52)/100); } }
+		const pivot=new THREE.Group(); pivot.position.set(L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
+		const pg=new THREE.BoxGeometry(L,JBD_T,bw); pg.translate(-L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
+		{ const pp=pg.attributes.position, uv=pg.attributes.uv;   // taxi-face UVs = the panel footprint in the bake frame, so flat = the deck's own paint
+			for(let i=0;i<pp.count;i++){ const gx=pp.getX(i)+L/2, gz=pp.getZ(i);
+				const f2=box.x+gx*fx-gz*fz, l2=box.z+gx*fz+gz*fx;
+				uv.setXY(i,(f2-tx[0])/(tx[1]-tx[0]),(l2-tz[0])/(tz[1]-tz[0])); } }
 		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdTop||jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck paint, all other faces steel
 		panel.castShadow=true; pivot.add(panel);
-		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,cat.w-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
-		const pit=new THREE.Mesh(new THREE.PlaneGeometry(JBD_L+0.2,cat.w+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
+		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,bw-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
+		const pit=new THREE.Mesh(new THREE.PlaneGeometry(L+0.2,bw+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
 		const rams=[-1,0,1].map(k=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.11,1,8),jbdRamM); m.castShadow=true; m.visible=false; g.add(m); m.userData.kz=k*3.1; return m; });
-		return { g, pivot, pit, rams, frac:0 };
+		return { g, pivot, pit, rams, frac:0, length:L };
 	});
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
-	const twfa=SHIP.wires[SHIP.wires.length>3?2:1], ofa=SHIP.ols.fa, olat=SHIP.ols.lat;   // OLS bracket position on the carrier's port side; the glideslope targets the 3-wire on a four-wire deck (the US aim wire), the middle wire on a three-wire fit
+	const twfa=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], ofa=SHIP.ols.x, olat=SHIP.ols.z;   // OLS bracket position on the carrier's port side; the glideslope targets the 3-wire on a four-wire deck (the US aim wire), the middle wire on a three-wire fit
 	const o=carrier_world(ofa,olat), datumY=dy+(SHIP.ols.model?0.66:0.8), travel=SHIP.ols.model?1.1:1.0;   // datum height + ball travel matched to the model's lens column when it provides the structure
 	if(!SHIP.ols.model){ const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house); }
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
@@ -6804,8 +6798,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	ops_lights.push(glow_points(drop,0xff3222,5));
 	const datum=[]; for(const d2 of [-6,-4,4,6]){ const q=carrier_world(-140,strip_lat(-140)+d2); datum.push(q.x,db+0.3,q.z); }   // green ramp datum bar flanking the drop line — the LSO's ramp reference
 	ops_lights.push(glow_points(datum,0x35e06a,5));
-	for(const el of [[11,35,1],[-33,-11,1],[-111,-89,1],[-119,-93,-1]]){ const pts=[];   // amber elevator-edge dots (fa spans + side measured off the deck map)
-		for(let f=el[0];f<=el[1];f+=6){ const e=edge_lat(f,el[2]); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
+	for(const el of SHIP.elevators){ const pts=[];   // amber elevator-edge dots along each deck-edge opening
+		for(let f=el.aft;f<=el.forward;f+=6){ const e=edge_lat(f,el.side); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
 		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
 	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
 	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set
@@ -7133,7 +7127,7 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 		// rams: fixed base in the pit to an attachment on the panel underside (pivot-local
 		// x -2.5), which sweeps with the hinge angle — position/orient/stretch each frame
 		const ax=-2.5*Math.cos(th)-JBD_T*Math.sin(th), ay=2.5*Math.sin(th)-JBD_T*Math.cos(th);   // attachment on the panel UNDERSIDE (pivot-local -2.5,-T), swept by the hinge angle
-		const hx=JBD_L/2, tipx=hx+ax, tipy=0.015+ay, bx=hx-2.9, by=0.04;
+		const hx=j.length/2, tipx=hx+ax, tipy=0.015+ay, bx=hx-2.9, by=0.04;
 		for(const m of j.rams){ m.visible=show; if(!show) continue;
 			const len=Math.hypot(tipx-bx,tipy-by);
 			m.scale.set(1,Math.max(len,0.05),1);
@@ -7500,7 +7494,7 @@ let hinted={};
 function compass(dx,dz){ return String(Math.round((Math.atan2(dx,-dz)*180/Math.PI+360)%360)||360).padStart(3,"0")+"\u00b0"; }
 function ship_course(){ return compass(CARRIER_C,-CARRIER_S); }
 function ship_downwind(){ return compass(-CARRIER_C,CARRIER_S); }
-function ship_groove(){ const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat); return compass(b.x-a.x,b.z-a.z); }
+function ship_groove(){ const a=carrier_world(...SHIP.landing.line[0]), b=carrier_world(...SHIP.landing.line[1]); return compass(b.x-a.x,b.z-a.z); }
 // One pitch for every stacked HUD legend, and one function that lays a stack
 // out. Fixed per-row y values are what produced both the holes in the
 // configuration column and the odd 12 px step between the cautions and the
@@ -9217,7 +9211,7 @@ if(DEV_MODE) (globalThis as any).dev_silence=function(){ tone_silence(); return 
 if(DEV_MODE) (globalThis as any).dev_bingo=function(v){ if(v!==undefined) fuel_state.bingo=Math.max(0,+v||0); return fuel_state.bingo; };   // dev (#87): trip the HUD BINGO annunciation headless — the bug is otherwise reachable only through the fuel format's pushbuttons
 if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360;
 	const bank=Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI;
-	const a=carrier_world(SHIP.line.afa,SHIP.line.alat), b=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+	const a=carrier_world(...SHIP.landing.line[0]), b=carrier_world(...SHIP.landing.line[1]);
 	return { x:+ownship.pos.x.toFixed(1), z:+ownship.pos.z.toFixed(1), alt:+(ownship.pos.y*3.28084).toFixed(0), hdg:+hdg.toFixed(1), bank:+bank.toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		kcas:+((ownship.cas??ownship.speed)*1.94384).toFixed(0), vy:+(ownship.vely??0).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),  // i18n-format-ok: dev probe payload, never rendered to a user
 		gear:+(ownship.gear??1).toFixed(2), flap:flap_select, hook:+(ownship.hook??0).toFixed(2), throttle:+(ownship.throttle??0).toFixed(2), burner:+(ownship.burner??0).toFixed(2), clock:sim_time,  // i18n-format-ok: dev probe payload, never rendered to a user
@@ -9246,8 +9240,8 @@ if(DEV_MODE) (globalThis as any).dev_flyby=(distance=30,burning=true)=>{ audio_f
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, throttle:ownship.throttle??0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlocked, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), flap:flap_select, droop:+(((last_out||[])[STATE.flap])||0).toFixed(4), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
-	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
-	const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+	const d=nm*1852, tw=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
+	const A=carrier_world(...SHIP.landing.line[0]), B=carrier_world(...SHIP.landing.line[1]);
 	let lx=B.x-A.x, lz=B.z-A.z; const l=Math.hypot(lx,lz)||1; lx/=l; lz/=l;
 	const alt=ft!==undefined?ft*0.3048:(nm*1852*Math.tan(3.5*Math.PI/180)+CARRIER.deckY);
 	ownship.pos.set(td.x-lx*d, alt, td.z-lz*d); ownship.fwd.set(lx,0,lz).normalize();
@@ -9486,24 +9480,24 @@ const CARRIER_YD=(SHIP.yaw-(SHIP.bow??90))*D2R, CARRIER_C=Math.cos(CARRIER_YD), 
 function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
 function carrier_world(lx,lz){ return { x:CARRIER.x+lx*CARRIER_C+lz*CARRIER_S, z:CARRIER.z-lx*CARRIER_S+lz*CARRIER_C }; }   // carrier-local (fore-aft, lateral: −=port) → world x/z (same frame as place_on_cat)
 function carrier_lateral(x,z){ return (x-CARRIER.x)*CARRIER_S+(z-CARRIER.z)*CARRIER_C; }   // inverse of the lateral axis: how far port(−)/starboard(+) of the ship centreline
-function cat_spot(i=cat_idx){ const cat=SHIP.shuttles[i]; return { x:CARRIER.x+cat.x*CARRIER_C+cat.z*CARRIER_S, z:CARRIER.z-cat.x*CARRIER_S+cat.z*CARRIER_C }; }   // world position of a catapult spot
+function cat_spot(i=cat_idx){ const cat=SHIP.catapults[i]; return { x:CARRIER.x+cat.x*CARRIER_C+cat.z*CARRIER_S, z:CARRIER.z-cat.x*CARRIER_S+cat.z*CARRIER_C }; }   // world position of a catapult spot
 const CAT_POS_TOL=3, CAT_HEADING_DOT=0.99;   // "spotted on the cat": within 3 m of the spot and ~8° of the launch heading — tight, so the launch (which fires from the actual pose, never snapped) always looks clean
 function on_cat_spot(){   // which catapult the aircraft is parked on, lined up down its launch heading — -1 for none (works before the carrier GLB finishes loading — the spots are fixed world coords)
 	if(ownship.launching) return -1;
 	const fh=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	const nx=ownship.pos.x+ownship.fwd.x/fh*nose, nz=ownship.pos.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
-	for(let i=0;i<SHIP.shuttles.length;i++){
+	for(let i=0;i<SHIP.catapults.length;i++){
 		const cs=cat_spot(i); if(Math.hypot(nx-cs.x,nz-cs.z)>CAT_POS_TOL) continue;
-		const hd=SHIP.shuttles[i].h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
+		const hd=SHIP.catapults[i].heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
 		if((ownship.fwd.x*cfx+ownship.fwd.z*cfz)/fh >= CAT_HEADING_DOT) return i;
 	}
 	return -1;
 }
 function launch_status(){ return (flight_active?(core_catapult>=0&&core_stroke<0):on_cat_spot()>=0) ? (ownship.throttle>=0.9?2:1) : 0; }   // 0 off the cat / not attached · 1 attached, run up · 2 attached + full power, ready
 // Landing line, measured directly at the three wire crossings on the landing path.
-function strip_lat(fa){ return SHIP.line.alat+(fa-SHIP.line.afa)*((SHIP.line.blat-SHIP.line.alat)/(SHIP.line.bfa-SHIP.line.afa)); }   // lateral of the landing centreline at a given fore-aft
-const _slen=Math.hypot(SHIP.line.bfa-SHIP.line.afa,SHIP.line.blat-SHIP.line.alat), STRIP_UFA=(SHIP.line.bfa-SHIP.line.afa)/_slen, STRIP_ULAT=(SHIP.line.blat-SHIP.line.alat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
+function strip_lat(fa){ const [[af,al],[bf,bl]]=SHIP.landing.line; return al+(fa-af)*((bl-al)/(bf-af)); }   // lateral of the landing centreline at a given fore-aft
+const _slen=Math.hypot(SHIP.landing.line[1][0]-SHIP.landing.line[0][0],SHIP.landing.line[1][1]-SHIP.landing.line[0][1]), STRIP_UFA=(SHIP.landing.line[1][0]-SHIP.landing.line[0][0])/_slen, STRIP_ULAT=(SHIP.landing.line[1][1]-SHIP.landing.line[0][1])/_slen;   // unit vector along the landing line (toward +fa = the rollout)
 let _ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	_ground_kind="";
@@ -10075,8 +10069,8 @@ function scenery(){
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
-		catapults:SHIP.shuttles.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.h*D2R, stroke:SHIP.stroke, speed:SHIP.speed })),   // shuttles ARE the nose-gear points — the core's native convention
-		wires:SHIP.wires.map(fa=>({ a:{x:fa+SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.halfspan*STRIP_UFA}, b:{x:fa-SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.halfspan*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
+		catapults:SHIP.catapults.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.heading*D2R, stroke:c.stroke, speed:c.speed })),   // shuttles ARE the nose-gear points — the core's native convention
+		wires:SHIP.landing.wires.map(fa=>({ a:{x:fa+SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.landing.span/2*STRIP_UFA}, b:{x:fa-SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.landing.span/2*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const prisms=obstacles.buildings.map(b=>({ outline:b.pts.map(q=>({x:q[0], z:q[1]})), top:b.topY }));
 	const posts=obstacles.posts.map(p=>({ position:{x:p.x, z:p.z}, radius:p.r, top:p.y1 }));
 	const island=carrier_island(); if(island){ prisms.push(island.prism); posts.push(island.post); }
@@ -10132,7 +10126,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.grounded=out[STATE.wow]>0.5;
 	landing_track(ownship.grounded,ownship.gload??1);   // the CHKLST's MAX NZ
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
-	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
+	if(core_catapult>=0 && core_catapult<SHIP.catapults.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
@@ -10906,9 +10900,9 @@ function reset_ownship(){
 		if(cfg.demonstration) demonstration=demonstration_start(demonstration_seed||Math.floor(Math.random()*4294967296));   // "Watch a bot fly it": the scripted pilot takes the controls from the spawn (demonstration.ts)
 		hint(HINT.wake,{heading:ship_course()}); }   // side follows at its position — one hint at a time in the slot
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
-		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
+		const A=carrier_world(...SHIP.landing.line[0]), B=carrier_world(...SHIP.landing.line[1]);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
-		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=6*1852;   // 6 NM astern of the aim wire
+		const tw=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=6*1852;   // 6 NM astern of the aim wire
 		ownship.pos.set(td.x-ldx*dist, 366, td.z-ldz*dist);
 		ownship.speed=72; ownship.throttle=0.35;   // pre-core fallback only — flight_push asks the core for the real LEVEL on-speed trim the moment it is up
 		ownship.fwd.set(ldx,0,ldz).normalize();
@@ -10918,9 +10912,9 @@ function reset_ownship(){
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false };   // Case II starts configured on the final bearing: only the ball remains
 		hint(HINT.final,{heading:ship_groove()}); }   // needle follows a mile in — one hint at a time in the slot
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
-		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+		const A=carrier_world(...SHIP.landing.line[0]), B=carrier_world(...SHIP.landing.line[1]);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
-		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=21*1852;
+		const tw=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=21*1852;
 		ownship.pos.set(td.x-ldx*dist, 1829, td.z-ldz*dist);   // angels 6 at 21 DME: "angels = DME − 15"
 		ownship.speed=129; ownship.throttle=0.7;   // 250 kt hold speed; pre-core fallback — flight_push trims speed AND power via Level
 		ownship.fwd.set(ldx,0,ldz).normalize();

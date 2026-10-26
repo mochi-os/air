@@ -8,6 +8,7 @@ so fit the whole outline."""
 import json, math, sys
 import numpy as np
 from PIL import Image, ImageDraw
+from ship import SHIP, OUTLINE, end as track_end
 
 IMG = 'nimitz-plan.jpg'
 X0, X1, FA0, FA1 = 8.0, 993.0, -167.0, 165.0     # stern/bow columns -> outline fa extremes
@@ -17,8 +18,7 @@ FRAME = dict(a=335.0, b=0.0030, plat=2.950)      # axis y = a + b*x, lateral px/
 im = np.asarray(Image.open(IMG).convert('L')).astype(float)
 H, W = im.shape
 dark = (255-im)/255.0
-cur = json.load(open('outline.json'))
-OUT = np.array(cur['OUT'])
+OUT = OUTLINE
 
 def x_of(fa): return X0+(fa-FA0)*PXM
 def y_of(x, lat, f=FRAME): return f['a']+f['b']*x+lat*f['plat']
@@ -73,7 +73,7 @@ def overlay(name='plan_overlay.png'):
     SC = 2
     big = img.resize((img.width*SC, img.height*SC), Image.LANCZOS)
     d = ImageDraw.Draw(big)
-    pts = [(x_of(fa)*SC, y_of(x_of(fa), lat)*SC) for fa, lat in cur['OUT']]
+    pts = [(x_of(fa)*SC, y_of(x_of(fa), lat)*SC) for fa, lat in OUT]
     d.line(pts+[pts[0]], fill=(255, 0, 0), width=2)
     for f0, l0, h, f1 in CATS:
         t = math.tan(math.radians(h))
@@ -82,15 +82,17 @@ def overlay(name='plan_overlay.png'):
     for wfa in WIRES:
         ll = LINE_A-LINE_S*(wfa-LINE_F)
         x = x_of(wfa)
-        d.line([((x-0.15*12.5*FRAME['plat'])*SC, y_of(x, ll-12.5)*SC),
-                ((x+0.15*12.5*FRAME['plat'])*SC, y_of(x, ll+12.5)*SC)], fill=(255, 0, 255), width=2)
+        d.line([((x-0.15*HALF*FRAME['plat'])*SC, y_of(x, ll-HALF)*SC),
+                ((x+0.15*HALF*FRAME['plat'])*SC, y_of(x, ll+HALF)*SC)], fill=(255, 0, 255), width=2)
     big.save(name); print(f'wrote {name}')
 
-# engine constants to check (post-squash deck-ops frame) — keep in sync with engine.ts
-CATS = [(48.98, 15.50, 3.30, 163.0), (47.23, -3.44, 0.0, 163.0),
-        (-46.61, -17.08, 4.03, 74.0), (-66.50, -27.75, 0.0, 72.0)]
-WIRES = [-115.6, -103.9, -92.2, -80.5]
-LINE_F, LINE_A, LINE_S = -115.6, 1.92, 0.15171   # landing line: lat = A - S*(fa-F)
+# the ship file's layout to check (post-squash deck-ops frame): each catapult's line runs from its
+# shuttle to where it leaves the deck
+CATS = [(c['x'], c['z'], c['heading'], track_end(c, c['x'])) for c in SHIP['catapults']]
+WIRES = SHIP['landing']['wires']
+HALF = SHIP['landing']['span']/2
+(LINE_F, LINE_A), (_f2, _a2) = SHIP['landing']['line']
+LINE_S = (LINE_A-_a2)/(_f2-LINE_F)   # landing line: lat = A - S*(fa-F)
 
 if __name__ == '__main__':
     if 'fit' in sys.argv: FRAME = fit_frame()

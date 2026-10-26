@@ -13,28 +13,33 @@ and iteration knobs, so multiple attempts don't lose the design.
 ## Scripts
 
 - **`build_carrier.py`** — the main build. Edge-line purge → auto-traced deck rim
-  (`flush_walk`, writes `outline.json`) → boundary-owned deck-band clear (keep boxes,
+  (`flush_walk`, writes the outline to the ship file) → boundary-owned deck-band clear (keep boxes,
   ELEV_CLEAR, material-blind life-raft zone kill, deck-tone/steel repaint, walkway
   clear, interior purge) → sheer-following textured deck polygon + steel underside
   plate → 2 m skirt (the generated fascia) → generated catapult control cabs + railings →
   generated catwalks and life-raft racks → GC repack. Reads
-  `decktex12.png`. Writes `nimitz-clean.glb` + `outline.json`.
+  `decktex12.png` and the ship file. Writes `nimitz-clean.glb`, and the ship file's outline
+  when the trace changes it.
   The header docstring carries the accumulated lessons (sources of truth, why the catwalk
   and rafts are generated whole, why every generated mesh's winding is flipped,
   verification protocol) —
   read it before changing any rule.
 - **`bake_decktex.py`** — bakes the deck texture (`decktex12.png`, 8192×2400) from the
   original's up-facing paint + catapult tracks + rubber + the cabs' deck plates, all
-  anti-aliased. Reads `outline.json` when present.
-- **`cabs.py`** — where the two catapult control cabs (ICCS "bubbles") stand and how big
-  they are, from the 1:200 plan, navysite.de and Navy photographs. The bake paints their
-  deck plates from it, the build makes the cabs, and `edgecheck.py` checks the two agree.
-- **`splice_outline.py`** — splices `outline.json` into `engine.ts` `SHIP.outline` (the
-  physics polygon must match the drawn deck strip).
-- **`plan_check.py`** — checks the engine layout (outline, cats, wires) against the
+  anti-aliased. Reads the outline, catapults, deflector boxes, landing line and cabs from the
+  ship file.
+- **`ship.py`** — loads `web/src/assets/nimitz.json`, the deck layout `engine.ts` flies and
+  draws: the catapults with their blast deflector boxes, the landing line and wires, the OLS,
+  the elevator openings, the cabs, the deck texture's extent and the outline. Every script
+  here reads it too, so the jet, the paint and the cabs cannot drift apart; its notes say
+  where each number came from. `test_ship.py` is its unit test (`python3 -m unittest test_ship`).
+- **`cabs.py`** — how big the two catapult control cabs (ICCS "bubbles") are, from the 1:200
+  plan, navysite.de and Navy photographs; where they stand is the ship file's. The bake paints
+  their deck plates, the build makes the cabs, and `edgecheck.py` checks the two agree.
+- **`plan_check.py`** — checks the ship file's layout (outline, cats, wires) against the
   1:200 GA drawing `nimitz-plan.jpg` by registering the outline onto the scan and
   ridge-fitting the equipment lines (Stage C of PLAN.md; found + fixed the cat-1/cat-4
-  misplacements 2026-07-10). Run after changing SHIP equipment constants; `fit` arg
+  misplacements 2026-07-10). Run after changing the ship file's equipment; `fit` arg
   refits the registration frame. The scan itself is NOT in the repository
   (third-party drawing, rights unverified — gitignored): it lives only in the
   local working tree, so keep a copy before wiping this checkout.
@@ -51,7 +56,7 @@ and iteration knobs, so multiple attempts don't lose the design.
   ship or lying in a catwalk's plane over an authored plate (z-fighting); every slab on
   the skirt or the ship's side, every post on a slab, every brace slab-to-side; every face
   outward. Each check is what the authored-raft attempts (v57-v74) got wrong. It also checks
-  the two catapult control cabs: where `cabs.py` puts them, at their size, on the deck, on a
+  the two catapult control cabs: where the ship file puts them, at their size, on the deck, on a
   painted plate in the deck texture, facing out, with the original bow cab gone. Run after any
   change to the catwalk plan, the walkway clear, the generator or the cabs; `-v` lists where each
   failure is.
@@ -67,15 +72,16 @@ and iteration knobs, so multiple attempts don't lose the design.
   every run, so damage can only come from a current rule, and this finds it.
 - **`purge_fa18c.py`** — rig-safe sealed-interior purge for the F/A-18C model.
 
-## Regen chain (order matters — bake reads outline.json, build writes it then reads the texture)
+## Regen chain (order matters — bake reads the ship file's outline, build writes it then reads the texture)
 
 ```
-python3 bake_decktex.py                # bootstrap texture (uses previous/placeholder outline)
-python3 build_carrier.py               # writes outline.json, reads decktex12.png
-python3 bake_decktex.py                # re-bake with the real traced outline
-python3 build_carrier.py               # final model
+python3 bake_decktex.py                # texture from the ship file
+python3 build_carrier.py               # reads decktex12.png; writes the outline to the ship file if the trace moved
+python3 bake_decktex.py                # only when the build said the outline changed: re-bake on it
+python3 build_carrier.py               # ... and rebuild with that texture
 ../gltfpack-native -i nimitz-clean.glb -o ../../web/src/assets/nimitz.glb -cc -kn -noq -tc -tu
-python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
+# a changed outline, catapult or wire moves the physics too: re-export the world
+# server's map with claude/scripts/air/geometry.py and rebuild the world
 # then run `make` in apps/air — Vite content-hashes the GLB into the bundle,
 # so the new bytes get a new URL automatically (no version constant to bump).
 # Native gltfpack (meshoptimizer release binary, not committed; the npm build

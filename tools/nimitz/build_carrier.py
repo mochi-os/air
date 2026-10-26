@@ -15,10 +15,11 @@ Steps:
   4. deck-edge skirt, generated catapult control cabs (cabs.py), generated railings
   4b. generated catwalks on the planned runs, and the life-raft racks hung on them
   5. strip empty meshes, GC-repack
-Wires, sheaves, shuttles, JBD animation, OLS lights and floods are engine-drawn.
+Wires, sheaves, shuttles, JBD animation, OLS lights and floods are engine-drawn, from the same ship file
+(ship.py) this build reads its elevators and cabs from and writes the traced outline to.
 
-REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py (-> decktex12.png)
--> build_carrier.py -> cp to web/src/assets/nimitz.glb + splice_outline.py + make.
+REGEN CHAIN (order matters): build_carrier.py (writes the outline) -> bake_decktex.py (-> decktex12.png)
+-> build_carrier.py -> pack to web/src/assets/nimitz.glb + make.
 
 Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. The
 deck-edge catwalk and the life rafts are generated whole (4b) - never reuse the authored racks, which
@@ -33,6 +34,7 @@ md5-compare dist/assets/nimitz-*.glb against src/assets/nimitz.glb.
 import json, struct
 import numpy as np
 from collections import defaultdict, deque
+from ship import SHIP, save as save_ship
 from cabs import CABS, axes as cab_axes, octagon as cab_octagon, LENGTH as CAB_LENGTH, WIDTH as CAB_WIDTH, CHAMFER as CAB_CHAMFER, HEIGHT as CAB_HEIGHT, HATCH as CAB_HATCH
 
 import os
@@ -299,8 +301,9 @@ OUT=[[f,l] for f,l,_ in port_pts]+[[f,l] for f,l,_ in reversed(stbd_pts)]
 RIMH=[h for _,_,h in port_pts]+[h for _,_,h in reversed(stbd_pts)]
 NS=len(port_pts)
 print(f"  traced {NS} stations/side, fa {port_pts[0][0]}..{port_pts[-1][0]}")
-import json as _json
-_json.dump({'OUT':OUT,'RIMH':RIMH,'NS':NS}, open('outline.json','w'))
+if OUT!=SHIP['outline']:
+    SHIP['outline']=OUT; save_ship(SHIP)
+    print("  the traced outline changed: wrote it to the ship file (re-bake, re-export the world's map)")
 
 def expand(d):
     return [[f+(d if f>100 else (-d if f<-160 else 0)), l+(d if l>0 else -d)] for f,l in OUT]
@@ -442,7 +445,7 @@ WALK_REACH=2.5     # how far out the catwalk and its raft racks reach
 WALK_CLEAR=3.6     # authored walkway out to here goes
 WALK_FORE=105      # the bows keep their authored walkways: they follow the flare out to 2.9 m, where a
                    # generated catwalk at a fixed drop cuts through them
-ELEVATORS=[(11,35,1),(-33,-11,1),(-111,-89,1),(-119,-93,-1)]   # deck-edge elevator openings (fa span, side), as engine.ts marks their edges
+ELEVATORS=[(e['aft'],e['forward'],e['side']) for e in SHIP['elevators']]   # deck-edge elevator openings (fa span, side), where the engine marks their edges
 def side_line(s):
     # one long edge of the outline, stern to bow: s=+1 starboard (OUT[:NS]), -1 port
     ix=list(range(NS)) if s>0 else list(range(2*NS-1,NS-1,-1))
@@ -1252,7 +1255,7 @@ G.setdefault('samplers',[]).append({'magFilter':9729,'minFilter':9987,'wrapS':33
 G.setdefault('textures',[]).append({'source':len(G['images'])-1,'sampler':len(G['samplers'])-1})
 mats.append({'name':'deck_baked','pbrMetallicRoughness':{'baseColorTexture':{'index':len(G['textures'])-1},'metallicFactor':0.0,'roughnessFactor':0.92}})
 MDECK=len(mats)-1
-FA0,FA1,LA0,LA1=-172.0,172.0,-52.0,48.0
+(FA0,FA1),(LA0,LA1)=SHIP['texture']['x'],SHIP['texture']['z']
 # 4 columns per station, all at the measured hull-rim height: the real deck is
 # flat across (sinking the inner columns to DECKY made each cross-section a
 # bowl). CARRIER.deckY is raycast from the drawn deck, so physics follows. Rim

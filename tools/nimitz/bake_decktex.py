@@ -9,16 +9,18 @@
      mono marks (lum<=0.60) within 4.5 m of the outline skipped (bow "68" numerals exempted by box);
      the original bow cab's tops skipped, and a steel plate with a red/yellow border drawn under each
      catapult control cab (cabs.py)
-  4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from aft of each shuttle to the
-     deck-outline exit; cats 1/4 are plan-derived
+  4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from just aft of each shuttle
+     to the deck-outline exit
   5. rubber: landing-strip band + catapult start streaks
+Where the deck ends, where the catapults, deflectors, landing line and cabs are, and the texture's
+extent come from the ship file (ship.py), which the engine reads too.
 
 After any mark-rule change, diff lost bright pixels against the previous texture clustered by fa bin;
 per-spot probes miss systemic damage. Discriminating lum: phantom plates 0.523, painted lines 0.659,
 whites 0.976. All markings are anti-aliased (3x3 coverage for model paint, analytic lateral coverage
 for tracks); track steel noise is smooth 1D.
 
-Output: decktex12.png (8192x2400, fa -172..172, lat -52..48)
+Output: decktex12.png (8192x2400 over the ship file's texture extent)
 """
 import json, math, struct, sys
 import resource
@@ -26,6 +28,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from cabs import CABS, footprint, PLATE, BORDER, DASH
+from ship import SHIP, OUTLINE, inside as inpoly, line as catapult_line, axes as catapult_axes, end as track_end
 
 # Hard memory cap: a healthy bake fits in well under 4 GB; a MemoryError here
 # means a new unbounded allocation.
@@ -38,45 +41,19 @@ APP = ROOT / "apps" / "air"
 ORIG = str(APP / "downloads" / "uss_nimitz_cvn-68_aircraft_carrier.glb")
 
 W, H = 8192, 2400
-FA0, FA1, LA0, LA1 = -172.0, 172.0, -52.0, 48.0
+(FA0, FA1), (LA0, LA1) = SHIP['texture']['x'], SHIP['texture']['z']
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 
-OUT = [[-166,4.2],[-158,31.2]]   # placeholder; outline.json (from build_carrier) overrides
-import os as _os, json as _json
-
-
-if _os.path.exists('outline.json'):
-    OUT=_json.load(open('outline.json'))['OUT']
-    print(f"using traced outline ({len(OUT)} pts)")
-POLY = np.array(OUT, np.float64)
-PX_, PY_ = POLY[:,0], POLY[:,1]
-PX2, PY2 = np.roll(PX_,-1), np.roll(PY_,-1)
-
-def inpoly(f, l):
-    cross = (PY_>l) != (PY2>l)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        xi = PX_ + (l-PY_)*(PX2-PX_)/np.where((PY2-PY_)!=0, (PY2-PY_), 1)
-    return (np.sum(cross & (f<xi)) % 2) == 1
+POLY = OUTLINE   # the deck's edge
 
 # Stage B: the model is laterally squashed to the real 76.8 m beam in build_carrier
 # (S_LAT below); every lat this bake paints must follow (tracks, marks, exclusions, rubber)
 S_LAT = 76.8/80.0
-# catapult centrelines (pre-squash frame - outputs scaled) + shuttle starts.
-# Cats 2/3 are model-paint fits; cats 1/4 are plan-derived (the model's paint
-# sits 3.9 m / 0.93 m off the plan lines).
-CATS = [
-    (48.5,  lambda f: (16.15-0.0601*(f-48.98))*S_LAT, 12),
-    (46.8,  lambda f: (-3.58+0*f)*S_LAT,              12),
-    (-47.0, lambda f: (-17.79-0.0739*(f+46.61))*S_LAT,10),
-    (-67.0, lambda f: (-28.91+0*f)*S_LAT,             10),
-]
-def track_end(start, line):
-    f = start
-    while f < 170.0:
-        if not inpoly(f+0.1, line(f+0.1)): return f
-        f += 0.1
-    return f
-TRACKS = [(s, track_end(s, ln), ln, st) for s, ln, st in CATS]
+# catapult tracks: each slot starts half a metre aft of its shuttle's rest spot; the start
+# streaks are darker on the bow catapults
+STAINS = [12, 12, 10, 10]
+assert len(STAINS) == len(SHIP['catapults'])
+TRACKS = [(c['x']-0.5, track_end(c, c['x']-0.5), catapult_line(c), st) for c, st in zip(SHIP['catapults'], STAINS)]
 # superseded model paint (cats 1/4 moved to the plan lines): the model's own painted
 # track pairs still lie on the OLD lines — keep killing them exactly where the old
 # corridor did.
@@ -87,45 +64,34 @@ OLD = [
 def superseded(f, l): return any(a < f < b and abs(l-ln(f)) < 0.9 for a, b, ln in OLD)
 # JBD regions: the model authored each cat's red/yellow dashed box 8-10 m aft of
 # the shuttle spot; the 1:200 plan puts the JBD 18-24 m aft, centred on the
-# track. Per cat, saturated marks in the authored region are killed and the
-# border is drawn at the plan rectangle (the one the engine's animated panel
-# fills); grey mono marks there (lum<=0.85 spares the landing-area stripes) are
-# killed. The cat-1 blast-zone rectangle stays except where it crosses a plan
-# JBD rectangle (jbd_zone). region fa0,fa1,lat0,lat1      box centre target
-# centre
+# track. Per cat, saturated marks in the authored region (fa0, fa1, lat0, lat1)
+# are killed and the border is drawn at the ship file's deflector box (the one the
+# engine's animated panel fills); grey mono marks there (lum<=0.85 spares the
+# landing-area stripes) are killed. The cat-1 blast-zone rectangle stays except
+# where it crosses a drawn box (jbd_zone).
 JBD = [
-    (36.4, 53.5, 14.6, 25.4,     39.35, 20.47,    27.2, 16.76),
-    (35.0, 47.6, -8.7, 1.9,      37.5, -3.40,     23.5, -3.44),
-    (-59.2, -45.6, -21.5, -11.0, -56.3, -17.06,   -68.7, -15.52),
-    (-78.9, -60.4, -32.4, -21.8, -76.25, -26.79,  -84.5, -27.75),
+    (36.4, 53.5, 14.6, 25.4),
+    (35.0, 47.6, -8.7, 1.9),
+    (-59.2, -45.6, -21.5, -11.0),
+    (-78.9, -60.4, -32.4, -21.8),
 ]
-# plan-rectangle geometry, shared by the kill pass and the border drawing at the end:
 # 0.34 m border matches the measured neighbouring safety borders (blast zone, elevators,
-# 25-33 cm); the rectangle is the one the engine's animated panel fills.
-JBD_BW, JBD_BD, JBD_LW, JBD_DASH = 9.65, 4.4, 0.34, 1.55
-JBD_M = [-0.0601*S_LAT, 0.0, -0.0705*S_LAT, 0.0]   # track slope d(lat)/d(fa) per cat (post-squash)
-# Box width per cat. Cat 1's plan box would reach 0.6 m over elevator 1's inboard border:
-# the model's elevator 1 sits ~10 m forward of the plan's, which puts it beside the box
-# instead of aft of it. Its starboard side comes in 1.75 m so its border stops clear of
-# the elevator's grey safety line (lat 20.27) and its kill margin clear of the elevator's
-# red/yellow border (lat 21.06); the port side stays on the plan. engine.ts JBDS carries
-# the same centre and width.
-JBD_BWS = [7.90, JBD_BW, JBD_BW, JBD_BW]
-def jbd_frame(i):
-    # (centre, along-track unit, starboard unit, width) of cat i's drawn box
-    e, m = JBD[i], JBD_M[i]
-    u = np.array([1.0, m]); u /= np.linalg.norm(u)
-    w2 = np.array([-u[1], u[0]])
-    return np.array([e[6], e[7]])-w2*(JBD_BW-JBD_BWS[i])/2, u, w2, JBD_BWS[i]
-JBD_FRAMES = [jbd_frame(i) for i in range(len(JBD))]
+# 25-33 cm)
+JBD_LW, JBD_DASH = 0.34, 1.55
+def jbd_frame(c):
+    # (centre, along-track unit, starboard unit, width, depth) of a catapult's deflector box
+    d = c['deflector']
+    u, w2 = catapult_axes(c)
+    return np.array([d['x'], d['z']]), u, w2, d['width'], d['depth']
+JBD_FRAMES = [jbd_frame(c) for c in SHIP['catapults']]
 def jbd_zone(f, l, margin=0.55):
     # Inside a JBD rectangle (+margin). Authored SAT paint dies here: besides stray
     # dashes, this terminates the authored cat-1 blast-zone border cleanly at the box —
     # that rectangle sits ~10 m from its plan position, so its port edge crosses the plan
     # JBD box at a shallow angle, and deck features do not overpaint each other.
-    for c, u, w2, bw in JBD_FRAMES:
+    for c, u, w2, bw, bd in JBD_FRAMES:
         df, dl = f-c[0], l-c[1]
-        if abs(df*u[0]+dl*u[1]) < JBD_BD/2+margin and abs(df*w2[0]+dl*w2[1]) < bw/2+margin:
+        if abs(df*u[0]+dl*u[1]) < bd/2+margin and abs(df*w2[0]+dl*w2[1]) < bw/2+margin:
             return True
     return False
 # grey-frame mono kill boxes, not the JBD regions: the landing-area edge stripes
@@ -142,12 +108,15 @@ MONO_KILL = [
 # -147..+37). The authored versions are triangle fans every kill rule nicks, so
 # authored marks near them are suppressed and the lines drawn continuously,
 # before tracks and rubber so cats and wires paint over them.
-LINE_A, LINE_S, LINE_F = 1.92, 0.15171, -115.6
+(LINE_F, LINE_A), (LINE_F2, LINE_A2) = SHIP['landing']['line']
+def landing_centre(f):
+    # z of the landing centreline at fore-aft f
+    return LINE_A+(f-LINE_F)*(LINE_A2-LINE_A)/(LINE_F2-LINE_F)
 LANDING_LINES = [-11.42, -9.06, 9.28, 11.75]
 LANDING_SPAN = (-147.0, 36.8)
 def near_landing_line(f, l):
     if not (LANDING_SPAN[0]-1 < f < LANDING_SPAN[1]+1): return False
-    o = l-(LINE_A-LINE_S*(f-LINE_F))
+    o = l-landing_centre(f)
     return any(abs(o-c) < 0.9 for c in LANDING_LINES)
 # neutral model marks inside a corridor are owned by the drawn strip
 def in_corridor(f, l):
@@ -312,8 +281,8 @@ def dashed_loop(corners, width, dash, h):
             marks.append((h, np.stack([p0+nn, p1+nn, p1-nn]), col))
             marks.append((h, np.stack([p0+nn, p1-nn, p0-nn]), col))
         s += seglen
-for c, u, w2, bw in JBD_FRAMES:
-    dashed_loop([c+u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2-w2*bw/2, c+u*JBD_BD/2-w2*bw/2], JBD_LW, JBD_DASH, 10.0)
+for c, u, w2, bw, bd in JBD_FRAMES:
+    dashed_loop([c+u*bd/2+w2*bw/2, c-u*bd/2+w2*bw/2, c-u*bd/2-w2*bw/2, c+u*bd/2-w2*bw/2], JBD_LW, JBD_DASH, 10.0)
 # catapult control cabs: each stands on a smooth steel plate, lighter than the non-skid, with a
 # red/yellow dashed border round its outer edge (Navy photographs); painted over everything
 # beneath, as the plate replaces the deck there
@@ -355,7 +324,7 @@ _pxm = (LA1-LA0)/H
 for _c in LANDING_LINES:
     for u in range(int(U(LANDING_SPAN[0])), int(U(LANDING_SPAN[1]))+1):
         f = (u+0.5)/W*(FA1-FA0)+FA0
-        lc = (LINE_A-LINE_S*(f-LINE_F))+_c
+        lc = landing_centre(f)+_c
         if not inpoly(f, lc): continue
         v0 = max(0, int(V(lc-0.5))); v1 = min(H, int(V(lc+0.5))+1)
         d = np.abs(_rowlat[v0:v1]-lc)
@@ -388,15 +357,15 @@ for u in range(W):
     fa = u/W*(FA1-FA0)+FA0
     # landing strip band
     if -112 < fa < 12:
-        lc = (-16.27 - 0.1583*fa)*S_LAT
-        d2 = (vv - V(lc))/ (5.0*H/100.0)
+        lc = landing_centre(fa)
+        d2 = (vv - V(lc))/ (5.0*H/(LA1-LA0))
         img[:, u, 0] -= 26*np.exp(-0.5*d2*d2); img[:, u, 1] -= 26*np.exp(-0.5*d2*d2); img[:, u, 2] -= 24*np.exp(-0.5*d2*d2)
     # cat start streaks
     for s, e, line, stain in TRACKS:
         if s-2 < fa < s+55:
             fade = max(0.0, 1.0-(fa-s)/55.0)
             lc = line(fa)
-            d2 = (vv - V(lc))/(1.8*H/100.0)
+            d2 = (vv - V(lc))/(1.8*H/(LA1-LA0))
             g = stain*fade*np.exp(-0.5*d2*d2)
             img[:, u, 0] -= g; img[:, u, 1] -= g; img[:, u, 2] -= g
 

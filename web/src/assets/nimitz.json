@@ -1,0 +1,145 @@
+{
+  "note": "The Nimitz's deck layout, read by engine.ts and by the model tools (tools/nimitz/ship.py). Deck frame in metres after the model's lateral squash: x forward, z to starboard; headings in degrees, positive to port. A catapult's x, z is where the nose wheel rests on its shuttle; stroke is its throw in metres and speed its end speed in m/s; its deflector is the painted box the blast deflector lies in, width across the track and depth along it. elevators: each deck-edge elevator opening's fore-aft span and side (1 starboard, -1 port). cabs: where each catapult control cab stands and which way it points; cabs.py has their size. build_carrier.py writes the outline, traced from the deck it builds; the rest is set by hand.",
+  "catapults": [
+    {
+      "x": 48.98,
+      "z": 15.5,
+      "heading": 3.3,
+      "stroke": 85,
+      "speed": 88,
+      "deflector": {
+        "x": 27.15,
+        "z": 15.887,
+        "width": 7.9,
+        "depth": 4.4
+      },
+      "note": "Starboard bow, from the 1:200 plan (2026-07-10): its track line starts just aft of this spot and runs to the bow water-brake slot. The model's own painted track sits 3.9 m to starboard on no plan feature. The deflector's starboard side comes in 1.75 m, clear of elevator 1's border: the model's elevator 1 sits about 10 m forward of the plan's."
+    },
+    {
+      "x": 47.23,
+      "z": -3.44,
+      "heading": 0,
+      "stroke": 85,
+      "speed": 88,
+      "deflector": {
+        "x": 23.5,
+        "z": -3.44,
+        "width": 9.65,
+        "depth": 4.4
+      },
+      "note": "Port bow, where the carrier start spawns: located in game (2026-07-07) and fitted to the track's own triangles."
+    },
+    {
+      "x": -46.61,
+      "z": -17.08,
+      "heading": 4.03,
+      "stroke": 85,
+      "speed": 88,
+      "deflector": {
+        "x": -68.7,
+        "z": -15.52,
+        "width": 9.65,
+        "depth": 4.4
+      },
+      "note": "Starboard waist: located in game (2026-07-07) and fitted to the track's own triangles."
+    },
+    {
+      "x": -66.5,
+      "z": -27.75,
+      "heading": 0,
+      "stroke": 85,
+      "speed": 88,
+      "deflector": {
+        "x": -84.5,
+        "z": -27.75,
+        "width": 9.65,
+        "depth": 4.4
+      },
+      "note": "Port waist: heading as read in game (2026-07-07), z from the plan's track line (2026-07-10)."
+    }
+  ],
+  "landing": {
+    "line": [[-115.6, 1.92], [-92.2, -1.63]],
+    "wires": [-115.6, -103.9, -92.2, -80.5],
+    "span": 25.0,
+    "note": "line: the landing centreline, its aft point then its forward point, on the model's painted stripe (a least-squares fit through its yellow centreline segments, 8.99 degrees; the real angled deck is 9.05). wires: where each cross-deck pendant crosses the line, square to it: the four-wire CVN-68 fit, 11.7 m apart, the first 51 m from the round-down. span: a pendant's length between its sheaves, centred on the line as the plan draws them, which stands the sheaves just outside the 22 m landing area."
+  },
+  "ols": {
+    "x": -21.0,
+    "z": -37.06,
+    "model": true,
+    "note": "The lens on its port-side bracket, measured off the model's own lens. model: the ship model carries the bracket, so the engine draws only the lights."
+  },
+  "elevators": [
+    {
+      "aft": 11,
+      "forward": 35,
+      "side": 1
+    },
+    {
+      "aft": -33,
+      "forward": -11,
+      "side": 1
+    },
+    {
+      "aft": -111,
+      "forward": -89,
+      "side": 1
+    },
+    {
+      "aft": -119,
+      "forward": -93,
+      "side": -1
+    }
+  ],
+  "cabs": [
+    {
+      "x": 43.5,
+      "z": 9.71,
+      "heading": 1.65,
+      "note": "Bow: between cats 1 and 2 at the plan's x, centred between the dashed lines that run between them, its heading halfway between theirs."
+    },
+    {
+      "x": -33.5,
+      "z": -32.8,
+      "heading": 0,
+      "note": "Waist: the deck-edge cab outboard of cat 4 (NAVAIR 00-80T-120's deckedge ICCS), its inboard side on the painted deck-edge line as the plan draws it, but 4.7 m aft of the plan's x: the traced deck edge notches in by 1.3 m at the plan's spot, and the cab's plate keeps 0.15 m inside it. A jet's main wheels on cat 4 pass about 2.4 m clear, as on the plan."
+    }
+  ],
+  "texture": {
+    "x": [-172.0, 172.0],
+    "z": [-52.0, 48.0],
+    "note": "The deck texture's extent: the baked deck's u runs from x[0] to x[1], v from z[0] to z[1]."
+  },
+  "outline": [
+    [-167.0, 8.11], [-164.0, 16.72], [-161.0, 23.5], [-158.0, 24.35], [-155.0, 23.36], [-152.0, 24.56], [-149.0, 25.74], [-146.0, 26.68],
+    [-143.0, 27.34], [-140.0, 28.56], [-137.0, 28.88], [-134.0, 29.37], [-131.0, 29.85], [-128.0, 30.25], [-125.0, 30.36], [-122.0, 30.46],
+    [-119.0, 31.88], [-116.0, 33.41], [-113.0, 34.89], [-110.0, 35.02], [-107.0, 35.11], [-104.0, 35.19], [-101.0, 35.28], [-98.0, 35.36],
+    [-95.0, 35.44], [-92.0, 35.52], [-89.0, 35.6], [-86.0, 36.4], [-83.0, 37.35], [-80.0, 38.27], [-77.0, 38.45], [-74.0, 38.45],
+    [-71.0, 38.27], [-68.0, 38.08], [-65.0, 34.5], [-62.0, 31.1], [-59.0, 27.37], [-56.0, 27.03], [-53.0, 26.7], [-50.0, 26.7],
+    [-47.0, 26.7], [-44.0, 30.62], [-41.0, 34.53], [-38.0, 38.27], [-35.0, 37.35], [-32.0, 36.43], [-29.0, 35.69], [-26.0, 35.69],
+    [-23.0, 35.69], [-20.0, 35.69], [-17.0, 35.69], [-14.0, 35.69], [-11.0, 35.69], [-8.0, 36.43], [-5.0, 37.16], [-2.0, 37.9],
+    [1.0, 37.9], [4.0, 37.9], [7.0, 37.9], [10.0, 37.9], [13.0, 37.16], [16.0, 36.43], [19.0, 35.69], [22.0, 35.69],
+    [25.0, 35.69], [28.0, 35.69], [31.0, 35.69], [34.0, 35.69], [37.0, 35.69], [40.0, 36.43], [43.0, 37.16], [46.0, 37.9],
+    [49.0, 37.9], [52.0, 37.9], [55.0, 37.9], [58.0, 37.9], [61.0, 37.9], [64.0, 37.85], [67.0, 37.33], [70.0, 36.04],
+    [73.0, 33.99], [76.0, 31.65], [79.0, 29.27], [82.0, 26.93], [85.0, 24.55], [88.0, 22.43], [91.0, 21.04], [94.0, 20.41],
+    [97.0, 19.46], [100.0, 18.47], [103.0, 17.44], [106.0, 17.22], [109.0, 17.0], [112.0, 16.76], [115.0, 16.52], [118.0, 16.32],
+    [121.0, 16.13], [124.0, 15.95], [127.0, 15.68], [130.0, 15.43], [133.0, 15.17], [136.0, 15.0], [139.0, 14.78], [142.0, 14.61],
+    [145.0, 14.38], [148.0, 14.16], [151.0, 13.99], [154.0, 13.74], [157.0, 13.54], [160.0, 13.23], [163.0, 13.02], [164.0, 12.84],
+    [165.0, 12.77], [165.0, -10.34], [164.0, -10.51], [163.0, -10.76], [160.0, -10.9], [157.0, -11.1], [154.0, -11.29], [151.0, -11.44],
+    [148.0, -11.61], [145.0, -11.78], [142.0, -12.1], [139.0, -12.33], [136.0, -12.62], [133.0, -12.76], [130.0, -12.93], [127.0, -13.03],
+    [124.0, -13.31], [121.0, -13.58], [118.0, -13.91], [115.0, -14.06], [112.0, -14.25], [109.0, -14.39], [106.0, -14.6], [103.0, -14.86],
+    [100.0, -15.13], [97.0, -15.37], [94.0, -15.53], [91.0, -15.77], [88.0, -16.75], [85.0, -18.5], [82.0, -20.84], [79.0, -23.16],
+    [76.0, -25.49], [73.0, -27.81], [70.0, -30.12], [67.0, -32.44], [64.0, -34.66], [61.0, -36.46], [58.0, -37.48], [55.0, -37.83],
+    [52.0, -37.83], [49.0, -37.83], [46.0, -37.83], [43.0, -37.83], [40.0, -37.83], [37.0, -37.83], [34.0, -37.83], [31.0, -37.36],
+    [28.0, -36.6], [25.0, -35.65], [22.0, -34.99], [19.0, -34.45], [16.0, -33.92], [13.0, -33.48], [10.0, -33.57], [7.0, -33.83],
+    [4.0, -34.19], [1.0, -34.19], [-2.0, -34.32], [-5.0, -33.56], [-8.0, -33.56], [-11.0, -33.43], [-14.0, -34.2], [-17.0, -35.95],
+    [-20.0, -35.45], [-23.0, -34.7], [-26.0, -33.0], [-29.0, -33.55], [-32.0, -34.35], [-35.0, -34.35], [-38.0, -34.35], [-41.0, -34.35],
+    [-44.0, -34.67], [-47.0, -34.98], [-50.0, -35.3], [-53.0, -34.98], [-56.0, -34.66], [-59.0, -34.34], [-62.0, -34.34], [-65.0, -34.34],
+    [-68.0, -35.16], [-71.0, -35.97], [-74.0, -36.79], [-77.0, -36.79], [-80.0, -36.79], [-83.0, -35.97], [-86.0, -35.16], [-89.0, -33.81],
+    [-92.0, -33.29], [-95.0, -32.76], [-98.0, -32.76], [-101.0, -32.76], [-104.0, -32.76], [-107.0, -32.76], [-110.0, -32.76], [-113.0, -32.76],
+    [-116.0, -32.81], [-119.0, -32.64], [-122.0, -28.11], [-125.0, -22.52], [-128.0, -17.05], [-131.0, -15.77], [-134.0, -15.39], [-137.0, -15.0],
+    [-140.0, -14.69], [-143.0, -14.37], [-146.0, -14.06], [-149.0, -13.6], [-152.0, -13.18], [-155.0, -12.77], [-158.0, -12.42], [-161.0, -11.97],
+    [-164.0, -9.43], [-167.0, -7.09]
+  ]
+}

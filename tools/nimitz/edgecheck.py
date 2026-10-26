@@ -12,10 +12,10 @@ exits non-zero on any failure.
   attached  every catwalk slab's inboard edge is on the skirt or the ship's side, every railing post
             stands on a slab, every brace runs from under a slab to the skirt or the ship's side
   outward   every face of every generated piece faces out (single-sided materials are culled)
-  cabs      each catapult control cab stands where cabs.py puts it, at its size, its walls starting
+  cabs      each catapult control cab stands where the ship file puts it, at its size, its walls starting
             just under the deck, on a painted plate with a red/yellow border in the deck texture,
             and at least WHEEL_CLEAR from every catapult's centreline over the jet's whole run (its
-            main wheels at the launch spot to the end of the stroke; engine.ts carrier data); the
+            main wheels at the launch spot to the end of the stroke; the ship file's catapults); the
             original bow cab is gone, and every cab face faces out
 Usage: edgecheck.py [-v] [glb]   (default nimitz-clean.glb; -v lists where each failure is)"""
 import json, struct, sys
@@ -72,7 +72,7 @@ VERBOSE='-v' in sys.argv
 def check(name,ok,detail):
     print(f"{'PASS' if ok else 'FAIL'}  {name}: {detail}")
     if not ok: failures.append(name)
-O=json.load(open('outline.json')); OUT=np.array(O['OUT'],np.float64); NS=O['NS']
+from ship import SHIP, OUTLINE as OUT
 def edge_project(f,l):
     # nearest point on the deck outline: (distance, unit direction of that edge, outward offset sign)
     P=np.vstack([OUT,OUT[:1]]); a=P[:-1]; dd=P[1:]-a; L2=(dd**2).sum(1)+1e-12
@@ -297,23 +297,19 @@ check('outward',not any(bad_out.values()),f"inward faces per mesh {bad_out}")
 # --- cabs ---
 from cabs import CABS, axes as cab_axes, footprint as cab_footprint, LENGTH as CAB_L, WIDTH as CAB_W, HEIGHT as CAB_H, \
     PLATE as CAB_PLATE, BORDER as CAB_BORDER, HATCH as CAB_HATCH, WHEEL_CLEAR
-import os, re
-_engine=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','web','src','game','engine.ts')).read()
-_nimitz=_engine[_engine.index('nimitz:{'):]
-STROKE=float(re.search(r'stroke:([\d.]+)',_nimitz).group(1))
-SHUTTLES=[tuple(map(float,m)) for m in re.findall(r'\{x:([-\d.]+), z:([-\d.]+), h:([-\d.]+)\}',_nimitz[:_nimitz.index(']')])]
 MAIN_WHEELS=6.0   # the main wheels sit this far aft of the nose wheel on the shuttle (F/A-18C wheelbase 5.4 m)
-def track_distance(points,shuttle):
+def track_distance(points,cat):
     # least distance from the points to the catapult's centreline over the jet's run (heading + = to
     # port): for a straight run past a convex cab the nearest point of the cab is one of its corners
-    x,z,h=shuttle; d=np.array([np.cos(np.radians(h)),-np.sin(np.radians(h))])
-    a=np.array([x,z])-MAIN_WHEELS*d; q=points[:,:2]-a; s=np.clip(q@d,0,MAIN_WHEELS+STROKE)
+    d=np.array([np.cos(np.radians(cat['heading'])),-np.sin(np.radians(cat['heading']))])
+    a=np.array([cat['x'],cat['z']])-MAIN_WHEELS*d; q=points[:,:2]-a; s=np.clip(q@d,0,MAIN_WHEELS+cat['stroke'])
     return float(np.hypot(*(q-s[:,None]*d).T).min())
 from PIL import Image
 CABT=np.concatenate([tris[k] for k in ('iccs_cab','iccs_glass') if k in tris]+[np.zeros((0,3,3))]); CC=CABT.mean(1)
 DT=tris.get('deck_baked',np.zeros((0,3,3))); DTC=DT.mean(1)
 TEX=np.asarray(Image.open('decktex12.png').convert('RGB')).astype(int)
-def texel(p): return TEX[int((p[1]+52)/100*TEX.shape[0]), int((p[0]+172)/344*TEX.shape[1])]
+(FA0,FA1),(LA0,LA1)=SHIP['texture']['x'],SHIP['texture']['z']
+def texel(p): return TEX[int((p[1]-LA0)/(LA1-LA0)*TEX.shape[0]), int((p[0]-FA0)/(FA1-FA0)*TEX.shape[1])]
 def ring(cab,grow): q=cab_footprint(cab,grow); return [q[k]+(q[(k+1)%8]-q[k])*t for k in range(8) for t in np.linspace(0.1,0.9,5)]
 PLATE_GREY=np.array([150,152,153])   # bake_decktex.py
 def deck_height(p):
@@ -337,7 +333,7 @@ for i,cab in enumerate(CABS):
     if any(abs(g-v)>0.02 for g,v in zip(got,want)) or not -0.10<got[5]<=0.0: bad_cab.append((i,'size/place',list(got)))
     if any(np.abs(texel(p)-PLATE_GREY).max()>6 for p in ring(cab,(CAB_PLATE-CAB_BORDER)/2)): bad_cab.append((i,'no plate round the base'))
     if any(np.ptp(texel(p))<80 for p in ring(cab,CAB_PLATE-CAB_BORDER/2)): bad_cab.append((i,'no red/yellow border round the plate'))
-    near=[round(track_distance(P,s),2) for s in SHUTTLES]
+    near=[round(track_distance(P,s),2) for s in SHIP['catapults']]
     if min(near)<WHEEL_CLEAR: bad_cab.append((i,'a catapult runs too close',near))
     # every face away from the cab's middle, the hatch's faces away from the hatch's
     hc=c+u*CAB_HATCH[0]; m=T.mean(1); nrm=np.cross(T[:,1]-T[:,0],T[:,2]-T[:,0])
