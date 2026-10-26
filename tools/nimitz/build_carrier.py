@@ -85,7 +85,11 @@ DOME_PLATFORMS = [(53.7,58.3,-45.2,-40.7),(-153.7,-148.1,22.9,28.7)]
 # band dies regardless of facing — the orientation-gated rules leave vertical/metallic
 # under-machinery shards visible through part-killed platform tops. Saturated paint
 # (red/yellow border strips) survives; keep boxes (OLS bracket overlaps el-4) still win.
-ELEV_CLEAR = [(-12,83,26,40.5),(-114,-92.5,25,39.5),(-23,-1,-44.5,-31.5)]   # stbd els 1+2 + staging (one continuous overhang), el3 aft of island, el4 port
+# the four deck-edge aircraft elevators, from their painted platform outlines in the model (the 1:200
+# plan and the hangar openings in the hull agree): starboard 1 and 2 forward of the island, 3 aft of it
+# (stopping where the island starts at -92), port 4 aft. Fore-aft exactly the painted span - the end
+# walls of the openings stand just outside it - and inboard edge to 1.5 m past the deck edge.
+ELEV_CLEAR = [(13.1,39.5,21.5,40.5),(-33.4,-3.4,21.5,40.5),(-112.1,-92.5,21.5,40.5),(-117.0,-85.0,-36.5,-18.5)]
 
 data = open(ORIG,'rb').read()
 clen,_ = struct.unpack('<II', data[12:20])
